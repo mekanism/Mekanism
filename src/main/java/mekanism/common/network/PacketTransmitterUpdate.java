@@ -48,6 +48,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
 				network.register();
 				transmitter.setTransmitterNetwork(network);
+				
 				for(Coord4D coord : message.transmitterCoords)
 				{
 					TileEntity tile = coord.getTileEntity(player.worldObj);
@@ -57,6 +58,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 						((ITransmitterTile)tile).getTransmitter().setTransmitterNetwork(network);
 					}
 				}
+				
 				network.updateCapacity();
 			}
 		}
@@ -67,6 +69,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			if(tileEntity instanceof ITransmitterTile)
 			{
 				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				
 				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.ENERGY)
 				{
 					((IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork>)transmitter).getTransmitterNetwork().clientEnergyScale = message.power;
@@ -80,6 +83,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			if(tileEntity instanceof ITransmitterTile)
 			{
 				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				
 				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.GAS)
 				{
 					GasNetwork net = ((IGridTransmitter<IGasHandler, GasNetwork>)transmitter).getTransmitterNetwork();
@@ -101,6 +105,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			if(tileEntity instanceof ITransmitterTile)
 			{
 				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				
 				if(transmitter.hasTransmitterNetwork() && ((ITransmitterTile)tileEntity).getTransmitter().getTransmissionType() == TransmissionType.FLUID)
 				{
 					FluidNetwork net = ((IGridTransmitter<IFluidHandler, FluidNetwork>)transmitter).getTransmitterNetwork();
@@ -179,16 +184,20 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			dataStream.writeInt(coord4D.yCoord);
 			dataStream.writeInt(coord4D.zCoord);
 			dataStream.writeInt(coord4D.dimensionId);
+			
+			PacketHandler.log("Sending '" + packetType + "' update message from coordinate " + coord4D);
 	
 			switch(packetType)
 			{
 				case UPDATE:
 					dataStream.writeBoolean(newNetwork);
 					dataStream.writeInt(transmittersAdded.size());
+					
 					for(IGridTransmitter transmitter : transmittersAdded)
 					{
 						transmitter.coord().write(dataStream);
 					}
+					
 					break;
 				case ENERGY:
 					dataStream.writeDouble(power);

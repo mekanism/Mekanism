@@ -55,9 +55,7 @@ public class DynamicFluidTank implements IFluidTank
 						if(resource.amount > 0)
 						{
 							MekanismUtils.saveChunk(dynamicTank);
-							updateValveData(true);
-							dynamicTank.sendPacketToRenderer();
-							updateValveData(false);
+							updateValveData();
 						}
 					}
 
@@ -72,9 +70,7 @@ public class DynamicFluidTank implements IFluidTank
 						if(getCapacity() > 0)
 						{
 							MekanismUtils.saveChunk(dynamicTank);
-							updateValveData(true);
-							dynamicTank.sendPacketToRenderer();
-							updateValveData(false);
+							updateValveData();
 						}
 					}
 
@@ -90,9 +86,7 @@ public class DynamicFluidTank implements IFluidTank
 					if(resource.amount > 0)
 					{
 						MekanismUtils.saveChunk(dynamicTank);
-						updateValveData(true);
-						dynamicTank.sendPacketToRenderer();
-						updateValveData(false);
+						updateValveData();
 					}
 				}
 
@@ -108,9 +102,7 @@ public class DynamicFluidTank implements IFluidTank
 					if(prevNeeded > 0)
 					{
 						MekanismUtils.saveChunk(dynamicTank);
-						updateValveData(true);
-						dynamicTank.sendPacketToRenderer();
-						updateValveData(false);
+						updateValveData();
 					}
 				}
 
@@ -121,7 +113,7 @@ public class DynamicFluidTank implements IFluidTank
 		return 0;
 	}
 
-	public void updateValveData(boolean value)
+	public void updateValveData()
 	{
 		if(dynamicTank.structure != null)
 		{
@@ -129,7 +121,7 @@ public class DynamicFluidTank implements IFluidTank
 			{
 				if(data.location.equals(Coord4D.get(dynamicTank)))
 				{
-					data.serverFluid = value;
+					data.onTransfer();
 				}
 			}
 		}

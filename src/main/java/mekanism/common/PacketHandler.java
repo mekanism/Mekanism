@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
@@ -269,11 +270,18 @@ public class PacketHandler
 		}
 	}
 	
+	public static void log(String log)
+	{
+		if(general.logPackets)
+		{
+			System.out.println("[Mekanism] " + log);
+		}
+	}
+	
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
 		return Mekanism.proxy.getPlayer(context);
 	}
-
 
 	/**
 	 * Send this message to the specified player.

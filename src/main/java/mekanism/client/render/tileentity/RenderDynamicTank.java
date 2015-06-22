@@ -73,23 +73,20 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 				pop();
 
-				for(ValveData valveData : tileEntity.valveViewing.keySet())
+				for(ValveData valveData : tileEntity.valveViewing)
 				{
-					if(tileEntity.valveViewing.get(valveData) > 0)
-					{
-						push();
+					push();
 
-						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
+					GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 
-						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 
-						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
+					getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
 
-						MekanismRenderer.glowOff();
-						MekanismRenderer.resetColor();
+					MekanismRenderer.glowOff();
+					MekanismRenderer.resetColor();
 
-						pop();
-					}
+					pop();
 				}
 			}
 		}

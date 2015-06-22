@@ -6,20 +6,41 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 {
 	public FluidStack fluidStored;
 	
+	/** For use by rendering segment */
+	public FluidStack prevFluid;
+	
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
 	public ItemStack[] inventory = new ItemStack[2];
 
 	public Set<ValveData> valves = new HashSet<ValveData>();
+	
+	public boolean needsRenderUpdate()
+	{
+		if((fluidStored == null && prevFluid != null) || (fluidStored != null && prevFluid == null))
+		{
+			return true;
+		}
+		
+		if(fluidStored != null && prevFluid != null)
+		{
+			if((fluidStored.getFluid() != prevFluid.getFluid()) || (fluidStored.amount != prevFluid.amount))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	@Override
 	public ItemStack[] getInventory()
@@ -31,7 +52,14 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 	{
 		public ForgeDirection side;
 		public Coord4D location;
-		public boolean serverFluid;
+		
+		public boolean prevActive;
+		public int activeTicks;
+		
+		public void onTransfer()
+		{
+			activeTicks = 30;
+		}
 
 		@Override
 		public int hashCode()

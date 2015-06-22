@@ -53,6 +53,7 @@ public class MekanismConfig
 		public static int jetpackTankSize;
 		public static boolean aestheticWorldDamage;
 		public static boolean opsBypassRestrictions;
+		public static double solarEvaporationSpeed;
 	}
 
 	public static class client
