@@ -258,6 +258,7 @@ public class CommonProxy
 		general.armoredJetpackDamageRatio = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ArmoredJetpackDamageRatio", 0.8).getDouble();
 		general.armoredJetpackDamageMax = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ArmoredJepackDamageMax", 115).getInt();
 		general.aestheticWorldDamage = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AestheticWorldDamage", true).getBoolean();
+		general.jetpackTankSize = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JetpackTankSize", 24000).getInt();
 		general.opsBypassRestrictions = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OpsBypassRestrictions", true).getBoolean();
 		general.solarEvaporationSpeed = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SolarEvaporationSpeed", 1.0D).getDouble();
 		
