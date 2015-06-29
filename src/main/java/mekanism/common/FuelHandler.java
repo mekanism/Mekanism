@@ -5,12 +5,10 @@ import java.util.HashMap;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import cpw.mods.fml.common.ModAPIManager;
-
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
+import cpw.mods.fml.common.ModAPIManager;
 
 public class FuelHandler
 {
@@ -28,7 +26,7 @@ public class FuelHandler
 			return fuels.get(gas.getName());
 		}
 
-		if(BCPresent() && gas.hasFluid())
+		if(BCPresent() && gas.hasFluid() && BuildcraftFuelRegistry.fuel != null)
 		{
 			IFuel bcFuel = BuildcraftFuelRegistry.fuel.getFuel(gas.getFluid());
 			
