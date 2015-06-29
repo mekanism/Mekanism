@@ -1256,7 +1256,9 @@ public class Mekanism
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
-	{		
+	{
+		logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
+		
 		hooks = new MekanismHooks();
 		hooks.hook();
 		

@@ -40,6 +40,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	
 	public PartPressurizedTube(Tier.TubeTier tubeTier)
 	{
+		super();
 		tier = tubeTier;
 	}
 
