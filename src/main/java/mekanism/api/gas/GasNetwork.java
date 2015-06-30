@@ -8,10 +8,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -137,7 +138,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 	public int tickEmit(GasStack stack)
 	{
-		List<IGasHandler> availableAcceptors = new ArrayList<>();
+		List<IGasHandler> availableAcceptors = Lists.newArrayList();
 
 		availableAcceptors.addAll(getAcceptors(stack.getGas()));
 
