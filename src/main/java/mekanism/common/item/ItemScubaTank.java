@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -27,7 +28,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemScubaTank extends ItemArmor implements IGasItem
 {
-	public int MAX_GAS = 24000;
 	public int TRANSFER_RATE = 16;
 
 	public ItemScubaTank()
@@ -98,7 +98,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public int getMaxGas(ItemStack itemstack)
 	{
-		return MAX_GAS;
+		return general.maxScubaGas;
 	}
 
 	@Override

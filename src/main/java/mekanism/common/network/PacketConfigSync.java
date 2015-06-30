@@ -59,6 +59,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.aestheticWorldDamage);
 			dataStream.writeBoolean(general.opsBypassRestrictions);
 			dataStream.writeDouble(general.solarEvaporationSpeed);
+			dataStream.writeInt(general.maxJetpackGas);
+			dataStream.writeInt(general.maxScubaGas);
+			dataStream.writeInt(general.maxFlamethrowerGas);
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -133,6 +136,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.aestheticWorldDamage = dataStream.readBoolean();
 			general.opsBypassRestrictions = dataStream.readBoolean();
 			general.solarEvaporationSpeed = dataStream.readDouble();
+			general.maxJetpackGas = dataStream.readInt();
+			general.maxScubaGas = dataStream.readInt();
+			general.maxFlamethrowerGas = dataStream.readInt();
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{

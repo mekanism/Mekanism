@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -18,7 +19,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFlamethrower extends ItemMekanism implements IGasItem
 {
-	public int MAX_GAS = 24000;
 	public int TRANSFER_RATE = 16;
 	
 	public ItemFlamethrower()
@@ -55,7 +55,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	@Override
 	public int getMaxGas(ItemStack itemstack)
 	{
-		return MAX_GAS;
+		return general.maxFlamethrowerGas;
 	}
 
 	@Override
