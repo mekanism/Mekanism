@@ -161,7 +161,7 @@ public class GuiPasswordEnter extends GuiScreen
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTick)
 	{
-        drawDefaultBackground();
+		drawDefaultBackground();
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiPasswordEnter.png"));
