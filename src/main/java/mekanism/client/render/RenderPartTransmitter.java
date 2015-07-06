@@ -321,8 +321,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		{
 			fluid = pipe.getTransmitter().getTransmitterNetwork().refFluid;
 		}
-		else
-		{
+		else {
 			fluid = pipe.getBuffer() == null ? null : pipe.getBuffer().getFluid();
 		}
 
