@@ -441,6 +441,7 @@ gui.inductionMatrix=Induction Matrix
 gui.matrixStats=Matrix Statistics
 gui.main=Main
 gui.outputting=Outputting
+gui.receiving=Receiving
 gui.dimensions=Dimensions
 gui.constituents=Constituents
 gui.cells=cells

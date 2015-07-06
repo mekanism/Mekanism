@@ -42,7 +42,7 @@ public class GuiMatrixStats extends GuiMekanism
 			@Override
 			public String getTooltip()
 			{
-				return LangUtils.localize("gui.outputting") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t";
+				return LangUtils.localize("gui.receiving") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t";
 			}
 			
 			@Override
@@ -51,6 +51,20 @@ public class GuiMatrixStats extends GuiMekanism
 				return tileEntity.structure.lastOutput/tileEntity.structure.transferCap;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png"), 30, 13));
+		guiElements.add(new GuiRateBar(this, new IRateInfoHandler()
+		{
+			@Override
+			public String getTooltip()
+			{
+				return LangUtils.localize("gui.outputting") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t";
+			}
+			
+			@Override
+			public double getLevel()
+			{
+				return tileEntity.structure.lastOutput/tileEntity.structure.transferCap;
+			}
+		}, MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png"), 38, 13));
 	}
 
 	@Override
@@ -62,8 +76,8 @@ public class GuiMatrixStats extends GuiMekanism
 		String stats = LangUtils.localize("gui.matrixStats");
 		
 		fontRendererObj.drawString(stats, (xSize/2)-(fontRendererObj.getStringWidth(stats)/2), 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.energy") + ":", 53, 26, 0x797979);
-		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()), 59, 35, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x797979);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.structure.transferCap), 59, 35, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.output") + ":", 53, 46, 0x797979);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.structure.transferCap), 59, 55, 0x404040);
 		

@@ -155,6 +155,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		return structure != null ? structure.remainingOutput : 0;
 	}
+	
+	private double getMaxInput()
+	{
+		return structure != null ? structure.remainingInput : 0;
+	}
 
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
@@ -231,14 +236,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive* general.FROM_TE);
+			double toAdd = (int)Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), maxReceive* general.FROM_TE);
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() + toAdd);
+				structure.remainingInput -= toAdd;
 			}
 
-			return (int)Math.round(toAdd* general.TO_TE);
+			return (int)Math.round(toAdd*general.TO_TE);
 		}
 
 		return 0;
@@ -258,7 +264,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				structure.remainingOutput -= toSend;
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_TE);
 		}
 
 		return 0;
@@ -275,14 +281,14 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getEnergy()* general.TO_TE);
+		return (int)Math.round(getEnergy()*general.TO_TE);
 	}
 
 	@Override
 	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getMaxEnergy()* general.TO_TE);
+		return (int)Math.round(getMaxEnergy()*general.TO_TE);
 	}
 
 	@Override
@@ -310,7 +316,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public int addEnergy(int amount)
 	{
-		setEnergy(getEnergy() + amount*general.FROM_IC2);
+		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount*general.FROM_IC2);
+		setEnergy(getEnergy() + toUse);
+		structure.remainingInput -= toUse;
 		return (int)Math.round(getEnergy()*general.TO_IC2);
 	}
 
@@ -421,8 +429,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			return 0;
 		}
 
-		double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
+		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount);
 		setEnergy(getEnergy() + toUse);
+		structure.remainingInput -= toUse;
 
 		return toUse;
 	}
