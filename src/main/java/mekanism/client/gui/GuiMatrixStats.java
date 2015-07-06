@@ -48,7 +48,7 @@ public class GuiMatrixStats extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				return tileEntity.structure.lastOutput/tileEntity.structure.transferCap;
+				return tileEntity.structure.lastInput/tileEntity.structure.transferCap;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png"), 30, 13));
 		guiElements.add(new GuiRateBar(this, new IRateInfoHandler()
