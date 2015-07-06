@@ -18,12 +18,15 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 	
 	public Set<Coord4D> providers = new HashSet<Coord4D>();
 	
+	public double remainingInput;
+	public double lastInput;
+	
 	public double remainingOutput;
 	public double lastOutput;
 	
 	public double clientEnergy;
 	public double storageCap;
-	public double outputCap;
+	public double transferCap;
 	
 	@Override
 	public ItemStack[] getInventory()

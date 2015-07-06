@@ -48,7 +48,7 @@ public class GuiMatrixStats extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				return tileEntity.structure.lastOutput/tileEntity.structure.outputCap;
+				return tileEntity.structure.lastOutput/tileEntity.structure.transferCap;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png"), 30, 13));
 	}
@@ -65,7 +65,7 @@ public class GuiMatrixStats extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.energy") + ":", 53, 26, 0x797979);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()), 59, 35, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.output") + ":", 53, 46, 0x797979);
-		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.structure.outputCap), 59, 55, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.structure.transferCap), 59, 55, 0x404040);
 		
 		fontRendererObj.drawString(LangUtils.localize("gui.dimensions") + ":", 8, 82, 0x797979);
 		fontRendererObj.drawString(tileEntity.structure.volWidth + " x " + tileEntity.structure.volHeight + " x " + tileEntity.structure.volLength, 14, 91, 0x404040);

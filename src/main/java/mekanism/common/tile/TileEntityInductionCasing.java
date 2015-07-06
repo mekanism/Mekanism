@@ -48,8 +48,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		{
 			if(structure != null && isRendering)
 			{
-				structure.lastOutput = structure.outputCap-structure.remainingOutput;
-				structure.remainingOutput = structure.outputCap;
+				structure.lastInput = structure.transferCap-structure.remainingInput;
+				structure.remainingInput = structure.transferCap;
+				
+				structure.lastOutput = structure.transferCap-structure.remainingOutput;
+				structure.remainingOutput = structure.transferCap;
 				
 				ChargeUtils.charge(0, this);
 				ChargeUtils.discharge(1, this);
@@ -66,7 +69,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		{
 			data.add(structure.getEnergy(worldObj));
 			data.add(structure.storageCap);
-			data.add(structure.outputCap);
+			data.add(structure.transferCap);
+			data.add(structure.lastInput);
 			data.add(structure.lastOutput);
 			
 			data.add(structure.volWidth);
@@ -89,7 +93,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		{
 			structure.clientEnergy = dataStream.readDouble();
 			structure.storageCap = dataStream.readDouble();
-			structure.outputCap = dataStream.readDouble();
+			structure.transferCap = dataStream.readDouble();
+			structure.lastInput = dataStream.readDouble();
 			structure.lastOutput = dataStream.readDouble();
 			
 			structure.volWidth = dataStream.readInt();
@@ -168,10 +173,10 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
-		return "Mekanism-InductionMatrix";
+		return "InductionMatrix";
 	}
 
-	public static final String[] NAMES = new String[] { "getEnergyStored", "getMaxEnergyStored", "getEnergyStoredMJ", "getMaxEnergyStoredMJ", "getLastOutput", "getOutputCap" };
+	public static final String[] NAMES = new String[] {"getStored", "getMaxEnergy", "getLastInput", "getLastOutput", "getTransferCap"};
 
 	@Override
 	@Method(modid = "ComputerCraft")
@@ -184,28 +189,25 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
 	{
-		if (structure == null)
+		if(structure == null)
 		{
-			return new Object[] { "Unformed." };
+			return new Object[] {"Unformed."};
 		}
 
-		switch (method)
+		switch(method)
 		{
 			case 0:
-				return new Object[] { getEnergy() * general.TO_TE };
+				return new Object[] {getEnergy()};
 			case 1:
-				return new Object[] { getMaxEnergy() * general.TO_TE };
+				return new Object[] {getMaxEnergy()};
 			case 2:
-				return new Object[] { getEnergy() };
+				return new Object[] {structure.lastInput};
 			case 3:
-				return new Object[] { getMaxEnergy() };
+				return new Object[] {structure.lastOutput};
 			case 4:
-				return new Object[] { structure.lastOutput };
-			case 5:
-				return new Object[] { structure.outputCap };
+				return new Object[] {structure.transferCap};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return new Object[] { "Unknown command." };
+				return new Object[] {"Unknown command."};
 		}
 	}
 

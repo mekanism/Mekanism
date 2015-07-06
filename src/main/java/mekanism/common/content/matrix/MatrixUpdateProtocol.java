@@ -87,7 +87,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 			else if(tile instanceof TileEntityInductionProvider)
 			{
 				structureFound.providers.add(coord);
-				structureFound.outputCap += ((TileEntityInductionProvider)tile).tier.output;
+				structureFound.transferCap += ((TileEntityInductionProvider)tile).tier.output;
 			}
 		}
 	}
