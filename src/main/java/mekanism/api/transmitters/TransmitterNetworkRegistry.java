@@ -10,6 +10,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
@@ -21,11 +24,11 @@ public class TransmitterNetworkRegistry
 	private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
 	private static boolean loaderRegistered = false;
 
-	private HashSet<DynamicNetwork> networks = new HashSet<>();
-	private HashSet<DynamicNetwork> networksToChange = new HashSet<>();
+	private HashSet<DynamicNetwork> networks = Sets.newHashSet();
+	private HashSet<DynamicNetwork> networksToChange = Sets.newHashSet();
 
-	private HashSet<IGridTransmitter> invalidTransmitters = new HashSet<>();
-	private HashMap<Coord4D, IGridTransmitter> orphanTransmitters = new HashMap<>();
+	private HashSet<IGridTransmitter> invalidTransmitters = Sets.newHashSet();
+	private HashMap<Coord4D, IGridTransmitter> orphanTransmitters = Maps.newHashMap();
 
 	private Logger logger = LogManager.getLogger("MekanismTransmitters");
 
@@ -151,7 +154,7 @@ public class TransmitterNetworkRegistry
 	{
 		if(startOrphan.isValid() && startOrphan.isOrphan())
 		{
-			OrphanPathFinder<A, N> finder = new OrphanPathFinder<>(startOrphan);
+			OrphanPathFinder<A, N> finder = new OrphanPathFinder<A, N>(startOrphan);
 			finder.start();
 			N network;
 			
@@ -225,10 +228,10 @@ public class TransmitterNetworkRegistry
 	{
 		public IGridTransmitter<A, N> startPoint;
 
-		public HashSet<Coord4D> iterated = new HashSet<>();
+		public HashSet<Coord4D> iterated = Sets.newHashSet();
 
-		public HashSet<IGridTransmitter<A, N>> connectedTransmitters = new HashSet<>();
-		public HashSet<N> networksFound = new HashSet<>();
+		public HashSet<IGridTransmitter<A, N>> connectedTransmitters = Sets.newHashSet();
+		public HashSet<N> networksFound = Sets.newHashSet();
 
 		public OrphanPathFinder(IGridTransmitter<A, N> start)
 		{
