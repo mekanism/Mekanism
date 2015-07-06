@@ -21,8 +21,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
+public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage, IPeripheral
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
@@ -308,5 +315,49 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public double getMaxEnergy()
 	{
 		return MAX_ENERGY;
+	}
+	
+	@Override
+	@Method(modid = "ComputerCraft")
+	public String getType()
+	{
+		return getInventoryName();
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public String[] getMethodNames()
+	{
+		return new String[] {"getStored", "getMaxEnergy"};
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		switch(method)
+		{
+			case 0:
+				return new Object[] {getEnergy()};
+			case 1:
+				return new Object[] {getMaxEnergy()};
+			default:
+				return new Object[] {"Unknown command."};
+		}
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public void attach(IComputerAccess computer) {}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public void detach(IComputerAccess computer) {}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public boolean equals(IPeripheral other)
+	{
+		return this == other;
 	}
 }
