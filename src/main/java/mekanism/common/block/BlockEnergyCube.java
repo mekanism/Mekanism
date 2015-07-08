@@ -204,8 +204,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
-
+			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z, player));
 			world.spawnEntityInWorld(entityItem);
 		}
 
@@ -238,7 +237,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
@@ -257,7 +256,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
 
 		world.setBlockToAir(x, y, z);
 
