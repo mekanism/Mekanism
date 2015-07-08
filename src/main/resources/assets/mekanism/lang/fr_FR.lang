@@ -34,6 +34,7 @@ item.Sawdust.name=Sciure
 item.Salt.name=Sel
 item.BrineBucket.name=Seau de saumure
 item.LithiumBucket.name=Seau de lithium
+item.HeavyWaterBucket.name=Seau d'eau lourde 
 item.FreeRunners.name=Bottes rapides
 item.ArmoredJetpack.name=Propulseur blindé
 item.FilterCard.name=Carte à filtre
@@ -660,6 +661,7 @@ tooltip.outputRate=Taux de sortie
 tooltip.insufficientFuel=Carburant insufisant
 tooltip.readyForReaction=Prêt pour la réaction
 tooltip.speed=Vitesse
+tooltip.and=et
 
 tooltip.portableTank.bucketMode=Mode de seau
 
@@ -805,14 +807,14 @@ dye.yellow=Jaune
 dye.white=Blanc
 
 //Reactor Logic modes
-reactor.disabled=Disabled
-reactor.disabled.desc=Will not emit a redstone signal
-reactor.ready=Ready for Ignition
-reactor.ready.desc=Reactor has reached the required heat level to ignite
-reactor.capacity=Heat Capacity Met
-reactor.capacity.desc=The reactor's core heat capacity has been met
-reactor.depleted=Insufficient Fuel
-reactor.depleted.desc=The reactor has insufficient fuel to sustain a reaction
+reactor.disabled=Désactivé
+reactor.disabled.desc=N'émettera pas de signal redstone
+reactor.ready=Pret pour la mise à feu
+reactor.ready.desc=Le réacteur a atteint le niveau de chaleur requit pour s'enflammer
+reactor.capacity=Capacité de chaleur respecté
+reactor.capacity.desc=La capacité de chaleur principale du réacteur a été respectée
+reactor.depleted=Carburant insuffisant
+reactor.depleted.desc=Le réacteur manque de carburant pour maintenir la réaction
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
