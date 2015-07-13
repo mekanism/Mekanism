@@ -214,7 +214,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(getConsumingSides().contains(from))
+		if(getConsumingSides().contains(from) || from == ForgeDirection.UNKNOWN)
 		{
 			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive* general.FROM_TE);
 
