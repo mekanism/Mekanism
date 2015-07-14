@@ -366,6 +366,20 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 		}
 	}
 
+	@Override
+	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+	{
+		ReactorBlockType type = ReactorBlockType.get(this, world.getBlockMetadata(x, y, z));
+
+		switch(type)
+		{
+			case ADAPTER:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	public static enum ReactorBlockType
 	{
 		CONTROLLER(GeneratorsBlocks.Reactor, 0, "ReactorController", 10, TileEntityReactorController.class),
