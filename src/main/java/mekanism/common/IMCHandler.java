@@ -20,7 +20,14 @@ public class IMCHandler
 			{
 				try {
 					boolean found = false;
-					
+					boolean delete = false;
+
+					if(msg.key.startsWith("Delete"))
+					{
+						msg.key.replace("Delete", "");
+						delete = true;
+					}
+
 					for(Recipe type : Recipe.values())
 					{
 						if(msg.key.equalsIgnoreCase(type.getRecipeName() + "Recipe"))
@@ -33,15 +40,22 @@ public class IMCHandler
 								
 								if(recipe != null && recipe.recipeOutput != null)
 								{
-									RecipeHandler.addRecipe(type, recipe);
-									Mekanism.logger.info("[Mekanism] " + msg.getSender() + " added recipe of type " + type.getRecipeName() + " to the recipe list.");
+									if(delete)
+									{
+										RecipeHandler.removeRecipe(type, recipe);
+										Mekanism.logger.info("[Mekanism] " + msg.getSender() + " removed recipe of type " + type.getRecipeName() + " from the recipe list.");
+									}
+									else {
+										RecipeHandler.addRecipe(type, recipe);
+										Mekanism.logger.info("[Mekanism] " + msg.getSender() + " added recipe of type " + type.getRecipeName() + " to the recipe list.");
+									}
 								}
 								else {
-									Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to add recipe of type " + type.getRecipeName() + " with an invalid output.");
+									Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to " + (delete ? "remove" : "add") + "recipe of type " + type.getRecipeName() + " with an invalid output.");
 								}
 							}
 							else {
-								Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to add recipe of type " + type.getRecipeName() + " with an invalid input.");
+								Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to " + (delete ? "remove" : "add") + "recipe of type " + type.getRecipeName() + " with an invalid input.");
 							}
 							
 							found = true;

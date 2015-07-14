@@ -65,6 +65,11 @@ public final class RecipeHandler
 		recipeMap.put(recipe);
 	}
 
+	public static void removeRecipe(Recipe recipeMap, MachineRecipe recipe)
+	{
+		recipeMap.remove(recipe);
+	}
+
 	/**
 	 * Add an Enrichment Chamber recipe.
 	 * @param input - input ItemStack
@@ -574,6 +579,11 @@ public final class RecipeHandler
 		public <RECIPE extends MachineRecipe<?, ?, RECIPE>> void put(RECIPE recipe)
 		{
 			recipes.put(recipe.getInput(), recipe);
+		}
+
+		public <RECIPE extends MachineRecipe<?, ?, RECIPE>> void remove(RECIPE recipe)
+		{
+			recipes.remove(recipe.getInput());
 		}
 		
 		public String getRecipeName()
