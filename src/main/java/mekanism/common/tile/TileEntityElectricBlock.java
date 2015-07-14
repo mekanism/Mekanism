@@ -103,9 +103,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public EnumSet<ForgeDirection> getConsumingSides()
 	{
-		EnumSet set = EnumSet.allOf(ForgeDirection.class);
-		set.remove(ForgeDirection.UNKNOWN);
-		return set;
+		return EnumSet.allOf(ForgeDirection.class);
 	}
 
 	@Override
