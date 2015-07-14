@@ -87,7 +87,7 @@ public final class StackKey {
 			}
 		}
 		if (fluidStack != null) {
-			if (fluidStack.fluidID != k.fluidStack.fluidID ||
+			if (fluidStack.getFluid().getID() != k.fluidStack.getFluid().getID() ||
 					fluidStack.amount != k.fluidStack.amount ||
 					!objectsEqual(fluidStack.tag, k.fluidStack.tag)) {
 				return false;
@@ -106,7 +106,7 @@ public final class StackKey {
 		}
 		result = 31 * result + 7;
 		if (fluidStack != null) {
-			result = 31 * result + fluidStack.fluidID;
+			result = 31 * result + fluidStack.getFluid().getID();
 			result = 31 * result + fluidStack.amount;
 			result = 31 * result + objectHashCode(fluidStack.tag);
 		}

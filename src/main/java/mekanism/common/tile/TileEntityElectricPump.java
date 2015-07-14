@@ -282,7 +282,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().fluidID);
+			data.add(fluidTank.getFluid().getFluidID());
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {

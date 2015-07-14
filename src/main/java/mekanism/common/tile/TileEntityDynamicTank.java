@@ -317,7 +317,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			if(structure.fluidStored != null)
 			{
 				data.add(1);
-				data.add(structure.fluidStored.fluidID);
+				data.add(structure.fluidStored.getFluidID());
 				data.add(structure.fluidStored.amount);
 			}
 			else {
