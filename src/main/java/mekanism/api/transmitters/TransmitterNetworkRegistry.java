@@ -110,7 +110,7 @@ public class TransmitterNetworkRegistry
 	{
 		if(MekanismAPI.debug && !invalidTransmitters.isEmpty())
 		{
-			logger.debug("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
+			logger.info("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
 		}
 		
 		for(IGridTransmitter invalid : invalidTransmitters)
@@ -133,7 +133,7 @@ public class TransmitterNetworkRegistry
 	{
 		if(MekanismAPI.debug && !orphanTransmitters.isEmpty())
 		{
-			logger.debug("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
+			logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
 		}
 		
 		for(IGridTransmitter orphanTransmitter : orphanTransmitters.values())
@@ -163,7 +163,7 @@ public class TransmitterNetworkRegistry
 				case 0:
 					if(MekanismAPI.debug)
 					{
-						logger.debug("No networks found. Creating new network");
+						logger.info("No networks found. Creating new network");
 					}
 					
 					network = startOrphan.createEmptyNetwork();
@@ -172,7 +172,7 @@ public class TransmitterNetworkRegistry
 				case 1:
 					if(MekanismAPI.debug)
 					{
-						logger.debug("Using single found network");
+						logger.info("Using single found network");
 					}
 					
 					network = finder.networksFound.iterator().next();
@@ -181,7 +181,7 @@ public class TransmitterNetworkRegistry
 				default:
 					if(MekanismAPI.debug)
 					{
-						logger.debug("Merging " + finder.networksFound.size() + " networks");
+						logger.info("Merging " + finder.networksFound.size() + " networks");
 					}
 					
 					network = startOrphan.mergeNetworks(finder.networksFound);
