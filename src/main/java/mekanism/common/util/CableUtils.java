@@ -81,7 +81,7 @@ public final class CableUtils
 			return true;
 		}
 		
-		return isOutputter(tile, side);
+		return isOutputter(tile, side) || (MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection)tile).canConnectEnergy(side.getOpposite()));
 	}
 
 	/**

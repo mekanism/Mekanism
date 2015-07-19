@@ -38,9 +38,9 @@ public class TMaterialFilter extends TransporterFilter
 	}
 	
 	@Override
-	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
+	public Finder getFinder()
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal(), new MaterialFinder(getMaterial()));
+		return new MaterialFinder(getMaterial());
 	}
 
 	@Override

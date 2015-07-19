@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -23,7 +24,12 @@ public abstract class TransporterFilter
 
 	public abstract boolean canFilter(ItemStack itemStack);
 
-	public abstract InvStack getStackFromInventory(IInventory inv, ForgeDirection side);
+	public abstract Finder getFinder();
+
+	public InvStack getStackFromInventory(StackSearcher searcher)
+	{
+		return searcher.takeTopStack(getFinder());
+	}
 
 	public void write(NBTTagCompound nbtTags)
 	{
