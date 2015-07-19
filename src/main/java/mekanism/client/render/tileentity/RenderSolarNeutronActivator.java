@@ -21,7 +21,7 @@ public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer
 	
 	public RenderSolarNeutronActivator()
 	{
-		model = AdvancedModelLoader.loadModel(new ResourceLocation("mekanism:models/solar_tri.obj"));
+		model = AdvancedModelLoader.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "solar_tri.obj"));
 	}
 	
 	@Override

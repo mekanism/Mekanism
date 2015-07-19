@@ -28,6 +28,15 @@ repositories {
      }
 }
 
+apply plugin: 'idea'
+
+idea {
+    module {
+        // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
+        inheritOutputDirs = true
+    }
+}
+
 apply plugin: 'forge'
 
 // Define properties file
