@@ -29,9 +29,9 @@ public class TModIDFilter extends TransporterFilter
 	}
 
 	@Override
-	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
+	public Finder getFinder()
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal(), new ModIDFinder(modID));
+		return new ModIDFinder(modID);
 	}
 
 	@Override

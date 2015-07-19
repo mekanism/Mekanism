@@ -40,15 +40,20 @@ public class TItemStackFilter extends TransporterFilter
 	}
 
 	@Override
-	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
+	public InvStack getStackFromInventory(StackSearcher searcher)
 	{
 		if(sizeMode)
 		{
-			return InventoryUtils.takeDefinedItem(inv, side.ordinal(), itemType, min, max);
+			return searcher.takeDefinedItem(itemType, min, max);
 		}
 		else {
-			return InventoryUtils.takeTopStack(inv, side.ordinal(), new ItemStackFinder(itemType));
+			return super.getStackFromInventory(searcher);
 		}
+	}
+
+	public Finder getFinder()
+	{
+		return new ItemStackFinder(itemType);
 	}
 
 	@Override

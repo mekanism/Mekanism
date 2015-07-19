@@ -19,6 +19,7 @@ import mekanism.common.base.ITransporterTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.content.transporter.InvStack;
+import mekanism.common.content.transporter.StackSearcher;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.content.transporter.TransporterManager;
@@ -93,12 +94,19 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					boolean sentItems = false;
 					int min = 0;
 
+					outer:
 					for(TransporterFilter filter : filters)
 					{
-						InvStack invStack = filter.getStackFromInventory(inventory, ForgeDirection.getOrientation(facing).getOpposite());
-
-						if(invStack != null && invStack.getStack() != null)
+						inner:
+						for(StackSearcher search = new StackSearcher(inventory, ForgeDirection.getOrientation(facing)); search.i >= 0;)
 						{
+							InvStack invStack = filter.getStackFromInventory(search);
+
+							if(invStack == null || invStack.getStack() == null)
+							{
+								break inner;
+							}
+
 							if(filter.canFilter(invStack.getStack()))
 							{
 								if(filter instanceof TItemStackFilter)
@@ -110,19 +118,20 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 										min = itemFilter.min;
 									}
 								}
-								
+
 								ItemStack used = emitItemToTransporter(front, invStack, filter.color, min);
-								
+
 								if(used != null)
 								{
 									invStack.use(used.stackSize);
 									inventory.markDirty();
 									setActive(true);
 									sentItems = true;
-									
-									break;
+
+									break outer;
 								}
 							}
+
 						}
 					}
 

@@ -29,9 +29,9 @@ public class TOreDictFilter extends TransporterFilter
 	}
 
 	@Override
-	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
+	public Finder getFinder()
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal(), new OreDictFinder(oreDictName));
+		return new OreDictFinder(oreDictName);
 	}
 
 	@Override
