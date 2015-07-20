@@ -1,10 +1,15 @@
 package mekanism.common.block;
 
-import java.util.Random;
-
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import mekanism.common.integration.CCPeripheral;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,13 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import java.util.Random;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
 public class BlockBounding extends Block implements IPeripheralProvider
@@ -139,9 +139,9 @@ public class BlockBounding extends Block implements IPeripheralProvider
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
 
-		if(te != null && te instanceof IPeripheral)
+		if(te != null && te instanceof IComputerIntegration)
 		{
-			return (IPeripheral)te;
+			return new CCPeripheral((IComputerIntegration)te);
 		}
 
 		return null;

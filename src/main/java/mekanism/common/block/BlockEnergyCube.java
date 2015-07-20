@@ -1,8 +1,12 @@
 package mekanism.common.block;
 
-import java.util.List;
-import java.util.Random;
-
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -10,12 +14,12 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.integration.CCPeripheral;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -27,21 +31,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-import buildcraft.api.tools.IToolWrench;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Block class for handling multiple energy cube block IDs.
@@ -341,9 +338,9 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
 
-		if(te != null && te instanceof IPeripheral)
+		if(te != null && te instanceof IComputerIntegration)
 		{
-			return (IPeripheral)te;
+			return new CCPeripheral((IComputerIntegration)te);
 		}
 
 		return null;

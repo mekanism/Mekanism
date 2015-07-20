@@ -1,30 +1,26 @@
 package mekanism.generators.common.block;
 
-import java.util.List;
-import java.util.Random;
-
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.ISpecialBounds;
-import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ISustainedTank;
+import mekanism.common.base.*;
+import mekanism.common.integration.CCPeripheral;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
-import mekanism.generators.common.tile.TileEntityBioGenerator;
-import mekanism.generators.common.tile.TileEntityGasGenerator;
-import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import mekanism.generators.common.tile.TileEntitySolarGenerator;
-import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.tile.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -41,14 +37,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
+
+import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -654,9 +645,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
 
-		if(te != null && te instanceof IPeripheral)
+		if(te != null && te instanceof IComputerIntegration)
 		{
-			return (IPeripheral)te;
+			return new CCPeripheral((IComputerIntegration)te);
 		}
 
 		return null;

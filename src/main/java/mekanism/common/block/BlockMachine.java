@@ -25,6 +25,8 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.*;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.integration.CCPeripheral;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
@@ -1302,9 +1304,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
 		
-		if(te != null && te instanceof IPeripheral)
+		if(te != null && te instanceof IComputerIntegration)
 		{
-			return (IPeripheral)te;
+			return new CCPeripheral((IComputerIntegration)te);
 		}
 		
 		return null;

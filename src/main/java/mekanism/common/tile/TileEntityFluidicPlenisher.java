@@ -1,10 +1,5 @@
 package mekanism.common.tile;
 
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -503,33 +498,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	{
 		return false;
 	}
-	
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
-	{
-		return getInventoryName();
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
-	{
-		return getMethods();
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
-	{
-		try {
-			return invoke(method, arguments);
-		} catch(NoSuchMethodException e) {
-			return new Object[] {"Unknown command."};
-		} finally {
-			return new Object[] {"Error."};
-		}
-	}
 
 	private static final String[] methods = new String[] {"reset"};
 
@@ -541,32 +509,17 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 
 	@Override
 	public Object[] invoke(int method, Object[] arguments) throws Exception
-	{
-		switch(method)
-		{
-			case 0:
-				activeNodes.clear();
-				usedNodes.clear();
-				finishedCalc = false;
-				
-				return new Object[] {"Plenisher calculation reset."};
-			default:
-				throw new NoSuchMethodException();
-		}
-	}
+    {
+        switch(method)
+        {
+            case 0:
+                activeNodes.clear();
+                usedNodes.clear();
+                finishedCalc = false;
 
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
+                return new Object[]{"Plenisher calculation reset."};
+            default:
+                throw new NoSuchMethodException();
+        }
+    }
 }

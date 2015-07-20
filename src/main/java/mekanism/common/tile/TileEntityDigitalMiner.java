@@ -1,12 +1,7 @@
 package mekanism.common.tile;
 
-import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
@@ -1229,33 +1224,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		numPowering--;
 	}
 
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
-	{
-		return getInventoryName();
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
-	{
-		return getMethods();
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
-	{
-		try {
-			return invoke(method, arguments);
-		} catch(NoSuchMethodException e) {
-			return new Object[] {"Unknown command."};
-		} finally {
-			return new Object[] {"Error."};
-		}
-	}
-
 	public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};
 
 	@Override
@@ -1377,21 +1345,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		return null;
 	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
 
 	@Override
 	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)

@@ -1,13 +1,9 @@
 package mekanism.common.tile;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
@@ -17,6 +13,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
@@ -36,18 +33,10 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral, IChunkLoader
+import java.util.*;
+
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader
 {
 	private MinecraftServer server = MinecraftServer.getServer();
 
@@ -655,23 +644,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		return ChargeUtils.canBeOutputted(itemstack, false);
 	}
 
+    private static final String[] methods = new String[] {"getStored", "canTeleport", "getMaxEnergy", "getEnergyNeeded", "teleport", "set"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
+	public String[] getMethods()
 	{
-		return getInventoryName();
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
-	{
-		return new String[] {"getStored", "canTeleport", "getMaxEnergy", "getEnergyNeeded", "teleport", "set"};
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -699,25 +681,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				
 				return new Object[] {"Frequency set."};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
 
 	@Override
 	@SideOnly(Side.CLIENT)
