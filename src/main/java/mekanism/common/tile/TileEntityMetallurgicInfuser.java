@@ -1,10 +1,11 @@
 package mekanism.common.tile;
 
+import cpw.mods.fml.common.Optional.Method;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
@@ -13,17 +14,13 @@ import mekanism.api.Range4D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.InfuseStorage;
-import mekanism.common.Mekanism;
-import mekanism.common.MekanismItems;
-import mekanism.common.PacketHandler;
-import mekanism.common.SideData;
-import mekanism.common.Upgrade;
+import mekanism.common.*;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -38,15 +35,11 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IPeripheral, ISideConfiguration, IUpgradeTile, IRedstoneControl
+import java.util.ArrayList;
+import java.util.EnumSet;
+
+public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl
 {
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
@@ -378,16 +371,36 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		return getInventoryName();
 	}
 
+    @Override
+    @Method(modid = "ComputerCraft")
+    public String[] getMethodNames()
+    {
+        return getMethods();
+    }
+
+    @Override
+    @Method(modid = "ComputerCraft")
+    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+    {
+        try {
+            return invoke(method, arguments);
+        } catch(NoSuchMethodException e) {
+            return new Object[] {"Unknown command."};
+        } finally {
+            return new Object[] {"Error."};
+        }
+    }
+
+    private static final String[] methods = new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
-		return new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -408,8 +421,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			case 7:
 				return new Object[] {MAX_INFUSE-infuseStored.amount};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 

@@ -67,7 +67,7 @@ public class OCDriver extends DriverTileEntity
         @Override
         public int priority()
         {
-            return 1;
+            return 4;
         }
 
         @Override

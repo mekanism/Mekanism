@@ -1,23 +1,19 @@
 package mekanism.common.tile;
 
+import cpw.mods.fml.common.Optional.Method;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
+import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.util.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,22 +21,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraftforge.fluids.*;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IPeripheral, IConfigurable, IFluidHandler, ISustainedTank
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+
+public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank
 {
 	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
 	public Set<Coord4D> usedNodes = new HashSet<Coord4D>();
@@ -527,12 +515,32 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
-		return new String[] {"reset"};
+		return getMethods();
 	}
 
 	@Override
 	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		try {
+			return invoke(method, arguments);
+		} catch(NoSuchMethodException e) {
+			return new Object[] {"Unknown command."};
+		} finally {
+			return new Object[] {"Error."};
+		}
+	}
+
+	private static final String[] methods = new String[] {"reset"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -543,7 +551,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				
 				return new Object[] {"Plenisher calculation reset."};
 			default:
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 

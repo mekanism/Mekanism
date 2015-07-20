@@ -1,9 +1,11 @@
 package mekanism.common.tile;
 
+import cpw.mods.fml.common.Optional.Method;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
@@ -13,6 +15,7 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -21,15 +24,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage, IPeripheral
+import java.util.ArrayList;
+
+public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage, IComputerIntegration
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
@@ -328,12 +326,32 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
-		return new String[] {"getStored", "getMaxEnergy"};
+		return getMethods();
 	}
 
 	@Override
 	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		try {
+			return invoke(method, arguments);
+		} catch(NoSuchMethodException e) {
+			return new Object[] {"Unknown command."};
+		} finally {
+			return new Object[] {"Error."};
+		}
+	}
+
+	private static final String[] methods = new String[] {"getStored", "getMaxEnergy"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -342,7 +360,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			case 1:
 				return new Object[] {getMaxEnergy()};
 			default:
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 

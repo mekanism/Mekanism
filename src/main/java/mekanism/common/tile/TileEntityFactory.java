@@ -1,38 +1,27 @@
 package mekanism.common.tile;
 
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
+import mekanism.api.gas.*;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.StackUtils;
-import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismItems;
-import mekanism.common.SideData;
+import mekanism.common.*;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.Upgrade;
-import mekanism.common.base.IEjector;
+import mekanism.common.base.*;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.IUpgradeTile;
-import mekanism.common.base.SoundWrapper;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -47,17 +36,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IPeripheral, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
+public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -809,12 +793,32 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
-		return new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+		return getMethods();
 	}
 
 	@Override
 	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		try {
+			return invoke(method, arguments);
+		} catch(NoSuchMethodException e) {
+			return new Object[] {"Unknown command."};
+		} finally {
+			return new Object[] {"Error."};
+		}
+	}
+
+	private static final String[] methods = new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -861,8 +865,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			case 5:
 				return new Object[] {getMaxEnergy()-getEnergy()};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 

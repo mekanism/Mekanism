@@ -1,14 +1,17 @@
 package mekanism.common.tile;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
+import cpw.mods.fml.common.Optional.Method;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
@@ -18,16 +21,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import io.netty.buffer.ByteBuf;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPeripheral, IRedstoneControl
+import java.util.ArrayList;
+import java.util.EnumSet;
+
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
@@ -163,12 +161,32 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
+		return getMethods();
 	}
 
 	@Override
 	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		try {
+			return invoke(method, arguments);
+		} catch(NoSuchMethodException e) {
+			return new Object[] {"Unknown command."};
+		} finally {
+			return new Object[] {"Error."};
+		}
+	}
+
+    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -181,7 +199,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 			case 3:
 				return new Object[] {(getMaxEnergy()-getEnergy())};
 			default:
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 

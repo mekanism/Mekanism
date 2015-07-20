@@ -1,12 +1,12 @@
 package mekanism.common.block;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
@@ -23,63 +23,15 @@ import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IBlockCTM;
-import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.IElectricChest;
-import mekanism.common.base.IFactory;
+import mekanism.common.base.*;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ISpecialBounds;
-import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ISustainedTank;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.recipe.MekanismRecipe;
-import mekanism.common.tile.TileEntityAdvancedFactory;
-import mekanism.common.tile.TileEntityAmbientAccumulator;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.TileEntityChemicalCrystallizer;
-import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
-import mekanism.common.tile.TileEntityChemicalInfuser;
-import mekanism.common.tile.TileEntityChemicalInjectionChamber;
-import mekanism.common.tile.TileEntityChemicalOxidizer;
-import mekanism.common.tile.TileEntityChemicalWasher;
-import mekanism.common.tile.TileEntityCombiner;
-import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.tile.TileEntityCrusher;
-import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.tile.TileEntityElectricChest;
-import mekanism.common.tile.TileEntityElectricPump;
-import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityEliteFactory;
-import mekanism.common.tile.TileEntityEnergizedSmelter;
-import mekanism.common.tile.TileEntityEnrichmentChamber;
-import mekanism.common.tile.TileEntityEntangledBlock;
-import mekanism.common.tile.TileEntityFactory;
-import mekanism.common.tile.TileEntityFluidicPlenisher;
-import mekanism.common.tile.TileEntityLaser;
-import mekanism.common.tile.TileEntityLaserAmplifier;
-import mekanism.common.tile.TileEntityLaserTractorBeam;
-import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityOredictionificator;
-import mekanism.common.tile.TileEntityOsmiumCompressor;
-import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPortableTank;
-import mekanism.common.tile.TileEntityPrecisionSawmill;
-import mekanism.common.tile.TileEntityPurificationChamber;
-import mekanism.common.tile.TileEntityRotaryCondensentrator;
-import mekanism.common.tile.TileEntitySeismicVibrator;
-import mekanism.common.tile.TileEntitySolarNeutronActivator;
-import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.tile.*;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -97,11 +49,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -109,13 +57,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
+
+import java.util.*;
 
 /**
  * Block class for handling multiple machine block IDs.
@@ -199,8 +142,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				
 				for(RecipeType type : RecipeType.values())
 				{
-					MekanismRenderer.loadDynamicTextures(register, BaseTier.BASIC.getName() + type.getUnlocalizedName() + MachineType.BASIC_FACTORY.name, factoryIcons[0][type.ordinal()], 
-							DefIcon.getActivePair(register.registerIcon("mekanism:BasicFactoryFront"), 2), 
+					MekanismRenderer.loadDynamicTextures(register, BaseTier.BASIC.getName() + type.getUnlocalizedName() + MachineType.BASIC_FACTORY.name, factoryIcons[0][type.ordinal()],
+							DefIcon.getActivePair(register.registerIcon("mekanism:BasicFactoryFront"), 2),
 							DefIcon.getActivePair(register.registerIcon("mekanism:BasicFactoryTop"), 1), 
 							DefIcon.getActivePair(register.registerIcon("mekanism:BasicFactoryBottom"), 0), 
 							DefIcon.getActivePair(register.registerIcon("mekanism:BasicFactorySide"), 3, 4, 5));
@@ -569,7 +512,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(entityplayer.isSneaking() && MachineType.get(world.getBlock(x, y, z), metadata) != MachineType.ELECTRIC_CHEST)
+				if(entityplayer.isSneaking() && MachineType.get(blockType, metadata) != MachineType.ELECTRIC_CHEST)
 				{
 					dismantleBlock(world, x, y, z, false);
 					return true;
@@ -607,7 +550,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		if(tileEntity != null)
 		{
-			MachineType type = MachineType.get(this, metadata);
+			MachineType type = MachineType.get(blockType, metadata);
 
 			switch(type)
 			{
@@ -685,12 +628,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		if(MachineType.get(this, metadata) == null)
+		if(MachineType.get(blockType, metadata) == null)
 		{
 			return null;
 		}
 
-		return MachineType.get(this, metadata).create();
+		return MachineType.get(blockType, metadata).create();
 	}
 
 	@Override
@@ -726,7 +669,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
-		if(MachineType.get(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
+		if(MachineType.get(blockType, world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
 		{
 			return blockHardness;
 		}
@@ -739,7 +682,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
     {
-		if(MachineType.get(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
+		if(MachineType.get(blockType, world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
 		{
 			return blockResistance;
 		}
@@ -1000,6 +943,20 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		}
 	}
 
+	@Override
+	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+	{
+		MachineType type = MachineType.get(blockType, world.getBlockMetadata(x, y, z));
+
+		switch(type)
+		{
+			case LASER_AMPLIFIER:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
 		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
@@ -1024,7 +981,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		MachineType type = MachineType.get(this, world.getBlockMetadata(x, y, z));
+		MachineType type = MachineType.get(blockType, world.getBlockMetadata(x, y, z));
 
 		switch(type)
 		{

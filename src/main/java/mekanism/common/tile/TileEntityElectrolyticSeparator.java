@@ -1,20 +1,14 @@
 package mekanism.common.tile;
 
+import cpw.mods.fml.common.Optional.Method;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
+import mekanism.api.gas.*;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -22,6 +16,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -38,23 +33,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraftforge.fluids.*;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager
+import java.util.ArrayList;
+import java.util.List;
+
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager
 {
 	/** This separator's water slot. */
 	public FluidTank fluidTank = new FluidTank(24000);
@@ -559,12 +543,32 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen", "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
+		return getMethods();
 	}
 
 	@Override
 	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		try {
+			return invoke(method, arguments);
+		} catch(NoSuchMethodException e) {
+			return new Object[] {"Unknown command."};
+		} finally {
+			return new Object[] {"Error."};
+		}
+	}
+
+	private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen", "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -589,8 +593,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			case 9:
 				return new Object[] {rightTank.getNeeded()};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 

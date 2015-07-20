@@ -1,16 +1,13 @@
 package mekanism.common.tile;
 
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.usage;
@@ -18,12 +15,7 @@ import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IAdvancedBoundingBlock;
-import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ITransporterTile;
-import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.*;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
@@ -36,11 +28,7 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MinerUtils;
-import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -56,17 +44,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IPeripheral, IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock
+import java.util.*;
+
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock
 {
 	public static int[] EJECT_INV;
 
@@ -1255,18 +1236,36 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return getInventoryName();
 	}
 
-	public String[] names = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};
-
 	@Override
 	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
-		return names;
+		return getMethods();
 	}
 
 	@Override
 	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		try {
+			return invoke(method, arguments);
+		} catch(NoSuchMethodException e) {
+			return new Object[] {"Unknown command."};
+		} finally {
+			return new Object[] {"Error."};
+		}
+	}
+
+	public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		if(arguments.length > 0)
 		{
