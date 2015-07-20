@@ -1,27 +1,18 @@
 package mekanism.generators.common.tile;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import mekanism.api.MekanismConfig.generators;
-import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
+import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-import io.netty.buffer.ByteBuf;
-
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
+import java.util.ArrayList;
+import java.util.EnumSet;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator
 {
@@ -147,16 +138,16 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		return 0;
 	}
 
+    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -171,8 +162,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			case 4:
 				return new Object[] {seesSun};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return null;
+				throw new NoSuchMethodException();
 		}
 	}
 

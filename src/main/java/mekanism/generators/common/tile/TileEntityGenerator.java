@@ -1,17 +1,22 @@
 package mekanism.generators.common.tile;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.client.sound.ISoundSource;
-import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityNoisyElectricBlock;
 import mekanism.common.util.CableUtils;
@@ -19,16 +24,11 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock implements IPeripheral, IActiveState, IHasSound, ISoundSource, IRedstoneControl
+import java.util.ArrayList;
+import java.util.EnumSet;
+
+public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -145,6 +145,26 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	{
 		return getInventoryName();
 	}
+
+    @Override
+    @Method(modid = "ComputerCraft")
+    public String[] getMethodNames()
+    {
+        return getMethods();
+    }
+
+    @Override
+    @Method(modid = "ComputerCraft")
+    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+    {
+        try {
+            return invoke(method, arguments);
+        } catch(NoSuchMethodException e) {
+            return new Object[] {"Unknown command."};
+        } finally {
+            return new Object[] {"Error."};
+        }
+    }
 
 	@Override
 	@Method(modid = "ComputerCraft")

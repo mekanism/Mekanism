@@ -1,20 +1,13 @@
 package mekanism.generators.common.tile;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.generators;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class TileEntityWindTurbine extends TileEntityGenerator implements IBoundingBlock
 {
@@ -77,16 +70,16 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 		return 1.5F;
 	}
 
+    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -101,8 +94,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			case 4:
 				return new Object[] {getMultiplier()};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return null;
+				throw new NoSuchMethodException();
 		}
 	}
 
