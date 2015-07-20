@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.Map;
-
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
@@ -18,10 +16,8 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
+
+import java.util.Map;
 
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE>
 {
@@ -163,17 +159,35 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		return null;
 	}
 
+	private static final String[] methods = new String[] {"getStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
-		return null;
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		return null;
+		switch(method)
+		{
+			case 0:
+				return new Object[] {getEnergy()};
+			case 1:
+				return new Object[] {operatingTicks};
+			case 2:
+				return new Object[] {isActive};
+			case 3:
+				return new Object[] {facing};
+			case 4:
+				return new Object[] {canOperate(getRecipe())};
+			case 5:
+				return new Object[] {getMaxEnergy()};
+			case 6:
+				return new Object[] {getMaxEnergy()-getEnergy()};
+			default:
+				throw new NoSuchMethodException();
+		}
 	}
 }

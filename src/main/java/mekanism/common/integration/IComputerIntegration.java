@@ -12,5 +12,5 @@ public interface IComputerIntegration extends IInventory, IPeripheral
 {
     public String[] getMethods();
 
-    public Object[] invoke(String method, Object[] args) throws Exception;
+    public Object[] invoke(int method, Object[] args) throws Exception;
 }

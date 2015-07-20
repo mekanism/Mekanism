@@ -11,6 +11,7 @@ import li.cil.oc.api.prefab.ManagedEnvironment;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -60,7 +61,7 @@ public class OCDriver extends DriverTileEntity
         @Override
         public Object[] invoke(String method, Context context, Arguments args) throws Exception
         {
-            return computerTile.invoke(method, args.toArray());
+            return computerTile.invoke(Arrays.asList(methods()).indexOf(method), args.toArray());
         }
 
         @Override
