@@ -1,14 +1,15 @@
 package mekanism.common.multipart;
 
-import java.util.Collection;
-
+import mekanism.api.Chunk3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Collection;
 
 public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements ITransmitterTile<A, N>
 {
@@ -32,6 +33,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		
 		if(!world().isRemote)
 		{
+			System.out.println("Reload " + new Chunk3D(Coord4D.get(tile())));
 			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
 		}
 		else {
@@ -50,6 +52,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		
 		if(!world().isRemote)
 		{
+			System.out.println("Unload " + new Chunk3D(Coord4D.get(tile())));
 			getTransmitter().takeShare();
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}

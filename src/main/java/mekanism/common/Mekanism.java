@@ -1,15 +1,16 @@
 package mekanism.common;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
+import codechicken.multipart.handler.MultipartProxy;
+import com.mojang.authlib.GameProfile;
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
@@ -31,11 +32,7 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.Tier.FactoryTier;
-import mekanism.common.Tier.InductionCellTier;
-import mekanism.common.Tier.InductionProviderTier;
+import mekanism.common.Tier.*;
 import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
@@ -48,11 +45,7 @@ import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.turbine.SynchronizedTurbineData;
-import mekanism.common.entity.EntityBabySkeleton;
-import mekanism.common.entity.EntityBalloon;
-import mekanism.common.entity.EntityFlame;
-import mekanism.common.entity.EntityObsidianTNT;
-import mekanism.common.entity.EntityRobit;
+import mekanism.common.entity.*;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.MekanismHooks;
@@ -69,15 +62,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
-import mekanism.common.tile.TileEntityBoiler;
-import mekanism.common.tile.TileEntityBoilerValve;
-import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.tile.TileEntityElectricBlock;
-import mekanism.common.tile.TileEntityEntangledBlock;
-import mekanism.common.tile.TileEntitySolarEvaporationBlock;
-import mekanism.common.tile.TileEntitySolarEvaporationValve;
+import mekanism.common.tile.*;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
@@ -105,34 +90,13 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
-import codechicken.multipart.handler.MultipartProxy;
 
-import com.mojang.authlib.GameProfile;
-
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.IFuelHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
+import java.io.File;
+import java.util.*;
 
 /**
  * Mekanism - a Minecraft mod
@@ -159,7 +123,7 @@ public class Mekanism
     public static Mekanism instance;
     
     /** Mekanism hooks instance */
-    public static MekanismHooks hooks;
+    public static MekanismHooks hooks = new MekanismHooks();
     
     /** Mekanism configuration instance */
     public static Configuration configuration;
@@ -1242,6 +1206,12 @@ public class Mekanism
 		//Integrate with Waila
 		FMLInterModComms.sendMessage("Waila", "register", "mekanism.common.integration.WailaDataProvider.register");
 
+		//Integrate with OpenComputers
+		if(Loader.isModLoaded("OpenComputers"))
+		{
+			hooks.loadOCDrivers();
+		}
+
 		//Packet registrations
 		packetHandler.initialize();
 
@@ -1260,8 +1230,7 @@ public class Mekanism
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
-		
-		hooks = new MekanismHooks();
+
 		hooks.hook();
 		
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());

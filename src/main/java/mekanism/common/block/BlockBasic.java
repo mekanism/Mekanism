@@ -1,10 +1,9 @@
 package mekanism.common.block;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
@@ -24,18 +23,7 @@ import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityInductionCell;
-import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntityInductionProvider;
-import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.tile.TileEntitySolarEvaporationBlock;
-import mekanism.common.tile.TileEntitySolarEvaporationController;
-import mekanism.common.tile.TileEntitySolarEvaporationValve;
+import mekanism.common.tile.*;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -58,9 +46,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Block class for handling multiple metal block IDs.
@@ -478,6 +468,28 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			if(metadata == 6)
 			{
 				TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
+
+				Item tool = entityplayer.getCurrentEquippedItem().getItem();
+
+				if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
+				{
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(world, x, y, z, false);
+						return true;
+					}
+
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					}
+
+					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][bin.facing];
+
+					bin.setFacing((short)change);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
+					return true;
+				}
 
 				if(bin.getItemCount() < bin.MAX_STORAGE)
 				{

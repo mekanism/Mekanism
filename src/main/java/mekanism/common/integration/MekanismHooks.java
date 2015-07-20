@@ -1,14 +1,11 @@
 package mekanism.common.integration;
 
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputItemStack;
-import ic2.api.recipe.RecipeInputOreDict;
-import ic2.api.recipe.RecipeOutput;
-import ic2.api.recipe.Recipes;
-
-import java.util.List;
-import java.util.Map;
-
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import dan200.computercraft.api.ComputerCraftAPI;
+import ic2.api.recipe.*;
+import li.cil.oc.api.Driver;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
@@ -19,10 +16,9 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import dan200.computercraft.api.ComputerCraftAPI;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -126,8 +122,16 @@ public final class MekanismHooks
 	public void loadCCPeripheralProviders()
 	{
 		try {
-			ComputerCraftAPI.registerPeripheralProvider((BlockMachine) MekanismBlocks.MachineBlock);
-		} catch(Exception ex) {}
+			ComputerCraftAPI.registerPeripheralProvider((BlockMachine)MekanismBlocks.MachineBlock);
+		} catch(Exception e) {}
+	}
+
+	@Method(modid = "OpenComputers")
+	public void loadOCDrivers()
+	{
+		try {
+			Driver.add(new OCDriver());
+		} catch(Exception e) {}
 	}
 
 	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)
