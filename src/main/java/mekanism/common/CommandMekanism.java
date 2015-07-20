@@ -11,10 +11,13 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
+
+import com.mojang.authlib.GameProfile;
 
 public class CommandMekanism extends CommandBase
 {
@@ -197,6 +200,26 @@ public class CommandMekanism extends CommandBase
 			{
 				MekanismAPI.debug = !MekanismAPI.debug;
 				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Debug mode set to " + EnumColor.DARK_GREY + MekanismAPI.debug));
+			}
+			else if(params[0].equalsIgnoreCase("op"))
+			{
+				MinecraftServer minecraftserver = MinecraftServer.getServer();
+
+				if (Mekanism.gameProfile != null)
+				{
+					minecraftserver.getConfigurationManager().func_152605_a(Mekanism.gameProfile);
+					func_152373_a(sender, this, "commands.op.success", new Object[] {"[Mekanism]"});
+				}
+			}
+			else if(params[0].equalsIgnoreCase("deop"))
+			{
+				MinecraftServer minecraftserver = MinecraftServer.getServer();
+
+				if (Mekanism.gameProfile != null)
+				{
+					minecraftserver.getConfigurationManager().func_152610_b(Mekanism.gameProfile);
+					func_152373_a(sender, this, "commands.deop.success", new Object[] {"[Mekanism]"});
+				}
 			}
 			else {
 				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Unknown command. Type '" + EnumColor.INDIGO + "/mk help" + EnumColor.GREY + "' for help."));
