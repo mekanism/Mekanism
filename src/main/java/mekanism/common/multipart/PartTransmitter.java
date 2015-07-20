@@ -1,7 +1,5 @@
 package mekanism.common.multipart;
 
-import mekanism.api.Chunk3D;
-import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.ITransmitterTile;
@@ -33,7 +31,6 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		
 		if(!world().isRemote)
 		{
-			System.out.println("Reload " + new Chunk3D(Coord4D.get(tile())));
 			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
 		}
 		else {
@@ -52,7 +49,6 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		
 		if(!world().isRemote)
 		{
-			System.out.println("Unload " + new Chunk3D(Coord4D.get(tile())));
 			getTransmitter().takeShare();
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
