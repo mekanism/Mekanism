@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
@@ -17,10 +17,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class ItemBalloon extends ItemMekanism
 {
@@ -74,14 +75,20 @@ public class ItemBalloon extends ItemMekanism
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
-		String color = getColor(stack).getDyedName();
+		EnumColor color = getColor(stack);
+        String dyeName = color.getDyedName();
+
+        if(StatCollector.canTranslate(getUnlocalizedName(stack) + "." + color.dyeName))
+        {
+            return LangUtils.localize(getUnlocalizedName(stack) + "." + color.dyeName);
+        }
 
 		if(getColor(stack) == EnumColor.BLACK)
 		{
-			color = EnumColor.DARK_GREY + getColor(stack).getDyeName();
+			dyeName = EnumColor.DARK_GREY + color.getDyeName();
 		}
 
-		return color + " " + LangUtils.localize("tooltip.balloon");
+		return dyeName + " " + LangUtils.localize("tooltip.balloon");
 	}
 
 	@Override

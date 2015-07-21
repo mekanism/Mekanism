@@ -1,13 +1,14 @@
 package mekanism.common.item;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.StatCollector;
 
 public class ItemBlockPlastic extends ItemBlock
 {
@@ -37,6 +38,12 @@ public class ItemBlockPlastic extends ItemBlock
 	{
 		EnumColor colour = EnumColor.DYES[stack.getItemDamage()&15];
 		String colourName;
+
+        if(StatCollector.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
+        {
+            return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
+        }
+
 		if(colour == EnumColor.BLACK)
 		{
 			colourName = EnumColor.DARK_GREY + colour.getDyeName();

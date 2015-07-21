@@ -1,16 +1,5 @@
 package mekanism.common.multipart;
 
-import java.util.List;
-
-import mekanism.api.EnumColor;
-import mekanism.common.Mekanism;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
 import codechicken.microblock.HollowMicroblock;
@@ -19,6 +8,19 @@ import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
+import mekanism.common.util.LangUtils;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
 
 public class ItemGlowPanel extends JItemMultiPart
 {
@@ -104,6 +106,11 @@ public class ItemGlowPanel extends JItemMultiPart
 	{
 		EnumColor colour = EnumColor.DYES[stack.getItemDamage()];
 		String colourName;
+
+        if(StatCollector.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
+        {
+            return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
+        }
 		
 		if(colour == EnumColor.BLACK)
 		{
