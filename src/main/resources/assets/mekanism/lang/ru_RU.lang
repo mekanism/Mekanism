@@ -8,10 +8,10 @@ item.EnrichedAlloy.name=Обогащённый сплав
 item.ReinforcedAlloy.name=Укреплённый сплав
 item.AtomicAlloy.name=Атомный сплав
 item.EnergyTablet.name=Энергетический планшет
-item.SpeedUpgrade.name=Улучшение «Скорость»
-item.EnergyUpgrade.name=Улучшение «Энергия»
-item.FilterUpgrade.name=Улучшение «Фильтр»
-item.GasUpgrade.name=Улучшение «Газ»
+item.SpeedUpgrade.name=Улучшение: «Скорость»
+item.EnergyUpgrade.name=Улучшение: «Энергия»
+item.FilterUpgrade.name=Улучшение: «Фильтр»
+item.GasUpgrade.name=Улучшение: «Газ»
 item.Robit.name=Робит
 item.AtomicDisassembler.name=Атомный разборщик
 item.ElectricBow.name=Электрический лук
@@ -34,7 +34,7 @@ item.Sawdust.name=Опилки
 item.Salt.name=Соль
 item.BrineBucket.name=Ведро рапы
 item.LithiumBucket.name=Ведро лития
-item.FreeRunners.name=Free Runners
+item.FreeRunners.name=Свободные бегунки
 item.ArmoredJetpack.name=Бронированный реактивный ранец
 item.FilterCard.name=Карта фильтра
 item.SeismicReader.name=Сейсмический считыватель
@@ -507,13 +507,13 @@ gui.factory.secondaryEnergy=Вторичная энергия
 gui.factory.autoSort=Авто-сортировка
 
 //Recipe types
-#gui.factory.Smelting=Плавление
-#gui.factory.Enriching=Обогащение
-#gui.factory.Crushing=Дробление
-#gui.factory.Compressing=Сжатие
-#gui.factory.Combining=Объединение
-#gui.factory.Purifying=Очищение
-#gui.factory.Injecting=Впрыскивание
+gui.factory.Smelting=Плавящая
+gui.factory.Enriching=Обогащающая
+gui.factory.Crushing=Дроблящая
+gui.factory.Compressing=Сжимающая
+gui.factory.Combining=Объединяющая
+gui.factory.Purifying=Очищающая
+gui.factory.Injecting=Впрыскивающая
 
 gui.seismicReader.short=С. считыватель
 gui.seismicReader.solids=Твёрдые
@@ -827,7 +827,7 @@ nei.rotaryCondensentrator=Рот. сгуститель
 
 //Items
 item.SolarPanel.name=Солнечная панель
-item.Hohlraum.name=Hohlraum
+item.Hohlraum.name=Реакционная камера
 
 //Generators
 tile.Generator.HeatGenerator.name=Тепловой генератор
@@ -867,18 +867,18 @@ gui.steamProduction=Производство пара
 //*****//
 
 //Vanilla Paxels
-item.WoodPaxel.name=Деревянный паксель
-item.StonePaxel.name=Каменный паксель
-item.IronPaxel.name=Железный паксель
-item.DiamondPaxel.name=Алмазный паксель
-item.GoldPaxel.name=Золотой паксель
+item.WoodPaxel.name=Деревянный мульти-инмтрумент
+item.StonePaxel.name=Каменный мульти-инмтрумент
+item.IronPaxel.name=Железный мульти-инмтрумент
+item.DiamondPaxel.name=Алмазный мульти-инмтрумент
+item.GoldPaxel.name=Золотой мульти-инмтрумент
 
 //Obsidian
 item.ObsidianHelmet.name=Обсидиановый шлем
 item.ObsidianChestplate.name=Обсидиановая кираса
 item.ObsidianLeggings.name=Обсидиановые поножи
 item.ObsidianBoots.name=Обсидиановые ботинки
-item.ObsidianPaxel.name=Обсидиановый паксель
+item.ObsidianPaxel.name=Обсидиановый мульти-инмтрумент
 item.ObsidianPickaxe.name=Обсидиановая кирка
 item.ObsidianAxe.name=Обсидиановый топор
 item.ObsidianShovel.name=Обсидиановая лопата
@@ -890,7 +890,7 @@ item.LazuliHelmet.name=Лазуритовый шлем
 item.LazuliChestplate.name=Лазуритовая кираса
 item.LazuliLeggings.name=Лазуритовые поножи
 item.LazuliBoots.name=Лазуритовые ботинки
-item.LazuliPaxel.name=Лазуритовый паксель
+item.LazuliPaxel.name=Лазуритовый мульти-инмтрумент
 item.LazuliPickaxe.name=Лазуритовая кирка
 item.LazuliAxe.name=Лазуритовый топор
 item.LazuliShovel.name=Лазуритовая лопата
@@ -902,7 +902,7 @@ item.OsmiumHelmet.name=Осмиевый шлем
 item.OsmiumChestplate.name=Осмиевая кираса
 item.OsmiumLeggings.name=Осмиевые поножи
 item.OsmiumBoots.name=Осмиевые ботинки
-item.OsmiumPaxel.name=Осмиевый паксель
+item.OsmiumPaxel.name=Осмиевый мульти-инмтрумент
 item.OsmiumPickaxe.name=Осмиевая кирка
 item.OsmiumAxe.name=Осмиевый топор
 item.OsmiumShovel.name=Осмиевая лопата
@@ -914,7 +914,7 @@ item.BronzeHelmet.name=Бронзовый шлем
 item.BronzeChestplate.name=Бронзовая кираса
 item.BronzeLeggings.name=Бронзовые поножи
 item.BronzeBoots.name=Бронзовые ботинки
-item.BronzePaxel.name=Бронзовый паксель
+item.BronzePaxel.name=Бронзовый мульти-инмтрумент
 item.BronzePickaxe.name=Бронзовая кирка
 item.BronzeAxe.name=Бронзовый топор
 item.BronzeShovel.name=Бронзовая лопата
@@ -926,7 +926,7 @@ item.GlowstoneHelmet.name=Шлем из светящегося камня
 item.GlowstoneChestplate.name=Кираса из светящегося камня
 item.GlowstoneLeggings.name=Поножи из светящегося камня
 item.GlowstoneBoots.name=Ботинки из светящегося камня
-item.GlowstonePaxel.name=Паксель из светящегося камня
+item.GlowstonePaxel.name=Мульти-инмтрумент из светящегося камня
 item.GlowstonePickaxe.name=Кирка из светящегося камня
 item.GlowstoneAxe.name=Топор из светящегося камня
 item.GlowstoneShovel.name=Лопата из светящегося камня
@@ -938,7 +938,7 @@ item.SteelHelmet.name=Стальной шлем
 item.SteelChestplate.name=Стальная кираса
 item.SteelLeggings.name=Стальные поножи
 item.SteelBoots.name=Стальные ботинки
-item.SteelPaxel.name=Стальной паксель
+item.SteelPaxel.name=Стальной мульти-инмтрумент
 item.SteelPickaxe.name=Стальная кирка
 item.SteelAxe.name=Стальной топор
 item.SteelShovel.name=Стальная лопата
