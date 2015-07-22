@@ -115,7 +115,7 @@ public class TransmitterNetworkRegistry
 		
 		for(IGridTransmitter invalid : invalidTransmitters)
 		{
-			if(!invalid.isOrphan())
+			if(!(invalid.isOrphan() && invalid.isValid()))
 			{
 				DynamicNetwork n = invalid.getTransmitterNetwork();
 				
@@ -163,7 +163,7 @@ public class TransmitterNetworkRegistry
 				case 0:
 					if(MekanismAPI.debug)
 					{
-						logger.info("No networks found. Creating new network");
+						logger.info("No networks found. Creating new network for " + finder.connectedTransmitters.size() + " transmitters");
 					}
 					
 					network = startOrphan.createEmptyNetwork();
@@ -172,7 +172,7 @@ public class TransmitterNetworkRegistry
 				case 1:
 					if(MekanismAPI.debug)
 					{
-						logger.info("Using single found network");
+						logger.info("Adding " + finder.connectedTransmitters.size() + " transmitters to single found network");
 					}
 					
 					network = finder.networksFound.iterator().next();
@@ -181,7 +181,7 @@ public class TransmitterNetworkRegistry
 				default:
 					if(MekanismAPI.debug)
 					{
-						logger.info("Merging " + finder.networksFound.size() + " networks");
+						logger.info("Merging " + finder.networksFound.size() + " networks with " + finder.connectedTransmitters.size() + " new transmitters");
 					}
 					
 					network = startOrphan.mergeNetworks(finder.networksFound);

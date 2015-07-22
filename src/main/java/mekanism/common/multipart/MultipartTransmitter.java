@@ -74,7 +74,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	@Override
 	public boolean isValid()
 	{
-		return !(getPart().tile() == null || getPart().tile().isInvalid()) && coord().exists(world());
+		return getPart().tile() != null && !getPart().tile().isInvalid() && !getPart().unloaded && coord().exists(world());
 	}
 
 	@Override

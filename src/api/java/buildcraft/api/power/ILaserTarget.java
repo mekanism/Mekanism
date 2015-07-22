@@ -1,13 +1,19 @@
 /**
- * Copyright (c) 2011-2014, SpaceToad and the BuildCraft Team
+ * Copyright (c) 2011-2015, SpaceToad and the BuildCraft Team
  * http://www.mod-buildcraft.com
  *
- * BuildCraft is distributed under the terms of the Minecraft Mod Public
- * License 1.0, or MMPL. Please check the contents of the license located in
- * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ * The BuildCraft API is distributed under the terms of the MIT License.
+ * Please check the contents of the license, which should be located
+ * as "LICENSE.API" in the BuildCraft source code distribution.
  */
 package buildcraft.api.power;
 
+/**
+ * This interface should be defined by any Tile which wants
+ * to receive energy from BuildCraft lasers.
+ *
+ * The respective Block MUST implement ILaserTargetBlock!
+ */
 public interface ILaserTarget {
 
 	/**
@@ -33,9 +39,21 @@ public interface ILaserTarget {
 	 */
 	boolean isInvalidTarget();
 
+	/**
+	 * Get the X coordinate of the laser stream.
+	 * @return
+	 */
 	double getXCoord();
 
+	/**
+	 * Get the Y coordinate of the laser stream.
+	 * @return
+	 */
 	double getYCoord();
 
+	/**
+	 * Get the Z coordinate of the laser stream.
+	 * @return
+	 */
 	double getZCoord();
 }

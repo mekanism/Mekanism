@@ -13,6 +13,8 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 {
 	public MultipartTransmitter<A, N> transmitterDelegate;
 
+	public boolean unloaded = true;
+
 	public PartTransmitter()
 	{
 		transmitterDelegate = new MultipartTransmitter<>(this);
@@ -36,6 +38,8 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		else {
 			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile()));
 		}
+
+		unloaded = false;
 	}
 
 	public abstract N createNewNetwork();
@@ -46,6 +50,8 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
+
+		unloaded = true;
 		
 		if(!world().isRemote)
 		{

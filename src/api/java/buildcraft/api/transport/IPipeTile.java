@@ -1,46 +1,36 @@
 /**
- * Copyright (c) 2011-2014, SpaceToad and the BuildCraft Team
+ * Copyright (c) 2011-2015, SpaceToad and the BuildCraft Team
  * http://www.mod-buildcraft.com
  *
- * BuildCraft is distributed under the terms of the Minecraft Mod Public
- * License 1.0, or MMPL. Please check the contents of the license located in
- * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ * The BuildCraft API is distributed under the terms of the MIT License.
+ * Please check the contents of the license, which should be located
+ * as "LICENSE.API" in the BuildCraft source code distribution.
  */
 package buildcraft.api.transport;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import buildcraft.api.core.EnumColor;
+import buildcraft.api.transport.pluggable.PipePluggable;
 
-public interface IPipeTile {
-
-	public enum PipeType {
-
-		ITEM, FLUID, POWER, STRUCTURE;
+public interface IPipeTile extends IInjectable {
+	enum PipeType {
+		ITEM, FLUID, POWER, STRUCTURE
 	}
 
 	PipeType getPipeType();
 
-	/**
-	 * Offers an ItemStack for addition to the pipe. Will be rejected if the
-	 * pipe doesn't accept items from that side.
-	 *
-	 * @param stack ItemStack offered for addition. Do not manipulate this!
-	 * @param doAdd If false no actual addition should take place. Implementors
-	 * should simulate.
-	 * @param from Orientation the ItemStack is offered from.
-	 * @param color The color of the item to be added to the pipe, or null for no color.
-	 * @return Amount of items used from the passed stack.
-	 */
-	int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, EnumColor color);
+	World getWorld();
 
-	/**
-	 * Same as
-	 * {@link #injectItem(ItemStack, boolean, ForgeDirection, EnumColor)}
-	 * but with no color attribute.
-	 */
-	int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from);
+	int x();
+
+	int y();
+
+	int z();
 
 	/**
 	 * True if the pipe is connected to the block/pipe in the specific direction
@@ -50,7 +40,23 @@ public interface IPipeTile {
 	 */
 	boolean isPipeConnected(ForgeDirection with);
 
-	TileEntity getAdjacentTile(ForgeDirection dir);
+	Block getNeighborBlock(ForgeDirection dir);
+	TileEntity getNeighborTile(ForgeDirection dir);
+	IPipe getNeighborPipe(ForgeDirection dir);
 	
 	IPipe getPipe();
+	int getPipeColor();
+
+	PipePluggable getPipePluggable(ForgeDirection direction); // Now in IPluggableProvider
+	boolean hasPipePluggable(ForgeDirection direction); // Now in IPluggableProvider
+	boolean hasBlockingPluggable(ForgeDirection direction);
+
+	void scheduleNeighborChange();
+	void scheduleRenderUpdate();
+
+	// For compatibility with BC 6.2.x and below
+	int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, EnumColor color);
+
+	@Deprecated // Now in IInjectable
+	int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from);
 }
