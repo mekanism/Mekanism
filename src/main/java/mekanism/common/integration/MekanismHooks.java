@@ -6,11 +6,13 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import dan200.computercraft.api.ComputerCraftAPI;
 import ic2.api.recipe.*;
 import li.cil.oc.api.Driver;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
 import mekanism.common.block.BlockMachine;
+import mekanism.common.multipart.TransmitterType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
@@ -34,6 +36,7 @@ public final class MekanismHooks
 	public boolean CoFHCoreLoaded = false;
 	public boolean TELoaded = false;
 	public boolean CCLoaded = false;
+	public boolean AE2Loaded = false;
 
 	public boolean MetallurgyCoreLoaded = false;
 	public boolean MetallurgyBaseLoaded = false;
@@ -45,7 +48,8 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
-
+		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
+		
 		if(Loader.isModLoaded("Metallurgy3Core"))
 		{
 			MetallurgyCoreLoaded = true;
@@ -62,6 +66,11 @@ public final class MekanismHooks
 		if(CCLoaded)
 		{
 			loadCCPeripheralProviders();
+		}
+		
+		if(AE2Loaded)
+		{
+			hookAE2();
 		}
 		
 	}
@@ -143,5 +152,37 @@ public final class MekanismHooks
 		nbtTags.setTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
 
 		FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
+	}
+	
+	@Method(modid = "appliedenergistics2")
+	public void hookAE2() {
+		String energyP2P = "add-p2p-attunement-rf-power";
+		if(IC2Loaded)
+		{
+			energyP2P = "add-p2p-attunement-ic2-power";
+		}
+		
+		for(TransmitterType type : TransmitterType.values())
+		{
+			if(type.getTransmission().equals(TransmissionType.ITEM))
+			{
+				FMLInterModComms.sendMessage("appliedenergistics2","add-p2p-attunement-item",new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
+				continue;
+			}
+			
+			if(type.getTransmission().equals(TransmissionType.FLUID))
+			{
+				FMLInterModComms.sendMessage("appliedenergistics2","add-p2p-attunement-fluid",new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
+				continue;
+			}
+			
+			if(type.getTransmission().equals(TransmissionType.ENERGY))
+			{
+				FMLInterModComms.sendMessage("appliedenergistics2",energyP2P,new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
+				continue;
+			}
+			
+		}
+		
 	}
 }
