@@ -67,11 +67,7 @@ public final class MekanismHooks
 		{
 			loadCCPeripheralProviders();
 		}
-		
-		if(AE2Loaded)
-		{
-			hookAE2();
-		}
+
 		
 	}
 
@@ -155,7 +151,7 @@ public final class MekanismHooks
 	}
 	
 	@Method(modid = "appliedenergistics2")
-	public void hookAE2() {
+	public void registerAE2P2P() {
 		String energyP2P = "add-p2p-attunement-rf-power";
 		if(IC2Loaded)
 		{
