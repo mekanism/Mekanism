@@ -469,10 +469,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			{
 				TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
 
-				Item tool = entityplayer.getCurrentEquippedItem().getItem();
-
-				if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
+				if(entityplayer.getCurrentEquippedItem() != null && MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 				{
+					Item tool = entityplayer.getCurrentEquippedItem().getItem();
 					if(entityplayer.isSneaking())
 					{
 						dismantleBlock(world, x, y, z, false);
