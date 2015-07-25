@@ -1212,6 +1212,11 @@ public class Mekanism
 			hooks.loadOCDrivers();
 		}
 
+		if(Loader.isModLoaded("appliedenergistics2"))
+		{
+			hooks.registerAE2P2P();
+		}
+
 		//Packet registrations
 		packetHandler.initialize();
 
