@@ -18,6 +18,7 @@ public class StackSearcher
 	public StackSearcher(IInventory inventory, ForgeDirection direction)
 	{
 		theInventory = InventoryUtils.checkChestInv(inventory);
+		side = direction;
 		if(!(theInventory instanceof ISidedInventory))
 		{
 			i = inventory.getSizeInventory();
@@ -30,7 +31,6 @@ public class StackSearcher
 				i = slots.length;
 			}
 		}
-		side = direction;
 	}
 
 	public InvStack takeTopStack(Finder id)
