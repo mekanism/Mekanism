@@ -227,12 +227,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			return false;
 		}
 		
-		if(coord.isAirBlock(worldObj) || MekanismUtils.isDeadFluid(worldObj, coord.xCoord, coord.yCoord, coord.zCoord))
+		if(coord.isAirBlock(worldObj) || MekanismUtils.isDeadFluid(worldObj, coord))
 		{
 			return true;
 		}
 		
-		if(MekanismUtils.isFluid(worldObj, coord.xCoord, coord.yCoord, coord.zCoord))
+		if(MekanismUtils.isFluid(worldObj, coord))
 		{
 			return isPathfinding;
 		}

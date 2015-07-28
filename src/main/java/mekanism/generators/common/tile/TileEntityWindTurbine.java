@@ -8,6 +8,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityWindTurbine extends TileEntityGenerator implements IBoundingBlock
 {
@@ -107,10 +108,11 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	@Override
 	public void onPlace()
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, Coord4D.get(this));
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+2, zCoord, Coord4D.get(this));
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+3, zCoord, Coord4D.get(this));
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+4, zCoord, Coord4D.get(this));
+		Coord4D pos = Coord4D.get(this);
+		MekanismUtils.makeBoundingBlock(worldObj, pos.getFromSide(ForgeDirection.UP, 1), pos);
+		MekanismUtils.makeBoundingBlock(worldObj, pos.getFromSide(ForgeDirection.UP, 2), pos);
+		MekanismUtils.makeBoundingBlock(worldObj, pos.getFromSide(ForgeDirection.UP, 3), pos);
+		MekanismUtils.makeBoundingBlock(worldObj, pos.getFromSide(ForgeDirection.UP, 4), pos);
 	}
 
 	@Override

@@ -166,15 +166,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
 
-			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+			if(MekanismUtils.isFluid(worldObj, wrapper))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper, hasFilter()).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(getEnergy() - usage.electricPumpUsage);
 						recurringNodes.add(wrapper.clone());
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()), true);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper, hasFilter()), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 
@@ -187,14 +187,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		//and then add the adjacent block to the recurring list
 		for(Coord4D wrapper : tempPumpList)
 		{
-			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+			if(MekanismUtils.isFluid(worldObj, wrapper))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper, hasFilter()).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(getEnergy() - usage.electricPumpUsage);
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()), true);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper, hasFilter()), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 
@@ -209,15 +209,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 				if(Coord4D.get(this).distanceTo(side) <= 80)
 				{
-					if(MekanismUtils.isFluid(worldObj, side.xCoord, side.yCoord, side.zCoord))
+					if(MekanismUtils.isFluid(worldObj, side))
 					{
-						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
+						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side, hasFilter()).isFluidEqual(fluidTank.getFluid()))
 						{
 							if(take)
 							{
 								setEnergy(getEnergy() - usage.electricPumpUsage);
 								recurringNodes.add(side);
-								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord, hasFilter()), true);
+								fluidTank.fill(MekanismUtils.getFluid(worldObj, side, hasFilter()), true);
 								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
 							}
 

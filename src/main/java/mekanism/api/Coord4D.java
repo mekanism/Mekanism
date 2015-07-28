@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -74,6 +75,13 @@ public class Coord4D
 		zCoord = z;
 
 		dimensionId = dimension;
+	}
+
+	public Coord4D(MovingObjectPosition mop)
+	{
+		xCoord = mop.blockX;
+		yCoord = mop.blockY;
+		zCoord = mop.blockZ;
 	}
 
 	/**

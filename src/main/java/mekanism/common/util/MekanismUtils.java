@@ -548,7 +548,6 @@ public final class MekanismUtils
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
 		tile.markDirty();
 	}
@@ -574,8 +573,6 @@ public final class MekanismUtils
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
-
 		tile.markDirty();
 	}
 
@@ -749,97 +746,88 @@ public final class MekanismUtils
 	/**
 	 * Places a fake bounding block at the defined location.
 	 * @param world - world to place block in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param boundingLocation - coordinates of bounding block
 	 * @param orig - original block
 	 */
-	public static void makeBoundingBlock(World world, int x, int y, int z, Coord4D orig)
+	public static void makeBoundingBlock(World world, Coord4D boundingLocation, Coord4D orig)
 	{
-		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock);
+		world.setBlock(boundingLocation.xCoord, boundingLocation.yCoord, boundingLocation.zCoord, MekanismBlocks.BoundingBlock);
 
 		if(!world.isRemote)
 		{
-			((TileEntityBoundingBlock)world.getTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+			((TileEntityBoundingBlock)boundingLocation.getTileEntity(world)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
 		}
 	}
 
 	/**
 	 * Places a fake advanced bounding block at the defined location.
 	 * @param world - world to place block in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param boundingLocation - coordinates of bounding block
 	 * @param orig - original block
 	 */
-	public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Coord4D orig)
+	public static void makeAdvancedBoundingBlock(World world, Coord4D boundingLocation, Coord4D orig)
 	{
-		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock, 1, 0);
+		world.setBlock(boundingLocation.xCoord, boundingLocation.yCoord, boundingLocation.zCoord, MekanismBlocks.BoundingBlock, 1, 0);
 
 		if(!world.isRemote)
 		{
-			((TileEntityAdvancedBoundingBlock)world.getTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+			((TileEntityAdvancedBoundingBlock)boundingLocation.getTileEntity(world)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
 		}
 	}
 
 	/**
 	 * Updates a block's light value and marks it for a render update.
 	 * @param world - world the block is in
-	 * @param x - x coord
-	 * @param y - y coord
-	 * @param z - z coord
+	 * @param x - x coordinate
+	 * @param y - y coordinate
+	 * @param z - z coordinate
 	 */
 	public static void updateBlock(World world, int x, int y, int z)
 	{
-		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).renderUpdate())
+		Coord4D pos = new Coord4D(x, y, z);
+		if(!(pos.getTileEntity(world) instanceof IActiveState) || ((IActiveState)pos.getTileEntity(world)).renderUpdate())
 		{
-			world.func_147479_m(x, y, z);
+			world.func_147479_m(pos.xCoord, pos.yCoord, pos.zCoord);
 		}
 
-		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && client.machineEffects)
+		if(!(pos.getTileEntity(world) instanceof IActiveState) || ((IActiveState)pos.getTileEntity(world)).lightUpdate() && client.machineEffects)
 		{
-			updateAllLightTypes(world, x, y, z);
+			updateAllLightTypes(world, pos);
 		}
 	}
 	
 	/**
 	 * Updates all light types at the given coordinates.
 	 * @param world - the world to perform the lighting update in
-	 * @param x - x coordinate of the block to update
-	 * @param y - y coordinate of the block to update
-	 * @param z - z coordinate of the block to update
+	 * @param pos - coordinates of the block to update
 	 */
-	public static void updateAllLightTypes(World world, int x, int y, int z)
+	public static void updateAllLightTypes(World world, Coord4D pos)
 	{
-		world.updateLightByType(EnumSkyBlock.Block, x, y, z);
-		world.updateLightByType(EnumSkyBlock.Sky, x, y, z);
+		world.updateLightByType(EnumSkyBlock.Block, pos.xCoord, pos.yCoord, pos.zCoord);
+		world.updateLightByType(EnumSkyBlock.Sky, pos.xCoord, pos.yCoord, pos.zCoord);
 	}
 
 	/**
 	 * Whether or not a certain block is considered a fluid.
 	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 * @return if the block is a fluid
 	 */
-	public static boolean isFluid(World world, int x, int y, int z)
+	public static boolean isFluid(World world, Coord4D pos)
 	{
-		return getFluid(world, x, y, z, false) != null;
+		return getFluid(world, pos, false) != null;
 	}
 
 	/**
 	 * Gets a fluid from a certain location.
 	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - location of the block
 	 * @return the fluid at the certain location, null if it doesn't exist
 	 */
-	public static FluidStack getFluid(World world, int x, int y, int z, boolean filter)
+	public static FluidStack getFluid(World world, Coord4D pos, boolean filter)
 	{
-		Block block = world.getBlock(x, y, z);
-		int meta = world.getBlockMetadata(x, y, z);
+		Block block = pos.getBlock(world);
+		int meta = pos.getMetadata(world);
 
 		if(block == null)
 		{
@@ -866,7 +854,7 @@ public final class MekanismUtils
 
 			if(meta == 0)
 			{
-				return fluid.drain(world, x, y, z, false);
+				return fluid.drain(world, pos.xCoord, pos.yCoord, pos.zCoord, false);
 			}
 		}
 
@@ -874,55 +862,15 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Gets the fluid ID at a certain location, 0 if there isn't one
-	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
-	 * @return fluid ID
-	 */
-	public static int getFluidId(World world, int x, int y, int z)
-	{
-		Block block = world.getBlock(x, y, z);
-		int meta = world.getBlockMetadata(x, y, z);
-
-		if(block == null)
-		{
-			return 0;
-		}
-
-		if(block == Blocks.water || block == Blocks.flowing_water)
-		{
-			return FluidRegistry.WATER.getID();
-		}
-		else if(block == Blocks.lava || block == Blocks.flowing_lava)
-		{
-			return FluidRegistry.LAVA.getID();
-		}
-
-		for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
-		{
-			if(fluid.getBlock() == block)
-			{
-				return fluid.getID();
-			}
-		}
-
-		return 0;
-	}
-
-	/**
 	 * Whether or not a block is a dead fluid.
 	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 * @return if the block is a dead fluid
 	 */
-	public static boolean isDeadFluid(World world, int x, int y, int z)
+	public static boolean isDeadFluid(World world, Coord4D pos)
 	{
-		Block block = world.getBlock(x, y, z);
-		int meta = world.getBlockMetadata(x, y, z);
+		Block block = pos.getBlock(world);
+		int meta = pos.getMetadata(world);
 
 		if(block == null || meta == 0)
 		{
