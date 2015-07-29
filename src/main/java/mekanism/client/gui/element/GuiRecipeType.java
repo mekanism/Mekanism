@@ -15,26 +15,37 @@ public class GuiRecipeType extends GuiElement
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRecipeType.png"), gui, def);
 
+		lmntLeft = 176;
+		lmntTop = 70;
+		lmntWidth = 26;
+		lmntHeight = 54;
+
 		tileEntity = tile;
 	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+
+	public GuiRecipeType(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def, int guiLeft, int guiTop )
 	{
-		return new Rectangle4i(guiWidth + 176, guiHeight + 70, 26, 63);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRecipeType.png"), gui, def);
+
+		lmntLeft = guiLeft;
+		lmntTop = guiTop;
+		lmntWidth = 26;
+		lmntHeight = 54;
+
+		tileEntity = tile;
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
+	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
+		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, lmntWidth, lmntHeight);
 
 		TileEntityFactory factory = tileEntity;
-		int displayInt = factory.getScaledRecipeProgress(15);
+		int displayInt = factory.getScaledRecipeProgress(10);
 
-		guiObj.drawTexturedRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
+		guiObj.drawTexturedRect(guiLeft + lmntLeft + 8, guiTop + lmntTop + 22, 26, 0, 9, displayInt);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

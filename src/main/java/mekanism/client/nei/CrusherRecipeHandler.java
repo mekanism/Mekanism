@@ -31,7 +31,7 @@ public class CrusherRecipeHandler extends MachineRecipeHandler
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.CRUSH;
+		return ProgressBar.CRUSH2;
 	}
 
 	@Override

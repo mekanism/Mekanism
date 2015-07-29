@@ -87,8 +87,8 @@ public class GuiTeleporter extends GuiMekanism
 			{
 				return getEnergy()/getMaxEnergy();
 			}
-		}, resource, 158, 26));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, resource, 152, 6).with(SlotOverlay.POWER));
+		}, resource, 7, 79));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, resource, 13, 115).with(SlotOverlay.POWER));
 		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 		
 		if(tileEntity.frequency != null)
@@ -118,7 +118,7 @@ public class GuiTeleporter extends GuiMekanism
 			{
 				return getEnergy()/getMaxEnergy();
 			}
-		}, resource, 158, 26));
+		}, resource, 7, 79));
 		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 		
 		ySize = 175;
@@ -129,23 +129,20 @@ public class GuiTeleporter extends GuiMekanism
 	{
 		super.initGui();
 
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-
 		buttonList.clear();
 		
-		publicButton = new GuiButton(0, guiWidth + 27, guiHeight + 14, 60, 20, LangUtils.localize("gui.public"));
-		privateButton = new GuiButton(1, guiWidth + 89, guiHeight + 14, 60, 20, LangUtils.localize("gui.private"));
+		publicButton = new GuiButton(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public"));
+		privateButton = new GuiButton(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private"));
 		
-		setButton = new GuiButton(2, guiWidth + 27, guiHeight + 116, 60, 20, LangUtils.localize("gui.set"));
-		deleteButton = new GuiButton(3, guiWidth + 89, guiHeight + 116, 60, 20, LangUtils.localize("gui.delete"));
+		setButton = new GuiButton(2, guiLeft + 33, guiTop + 114, 60, 20, LangUtils.localize("gui.set"));
+		deleteButton = new GuiButton(3, guiLeft + 95, guiTop + 114, 60, 20, LangUtils.localize("gui.delete"));
 		
 		if(itemStack != null)
 		{
-			teleportButton = new GuiButton(4, guiWidth + 42, guiHeight + 140, 92, 20, LangUtils.localize("gui.teleport"));
+			teleportButton = new GuiButton(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport"));
 		}
 		
-		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
+		frequencyField = new GuiTextField(fontRendererObj, guiLeft + 50, guiTop + 102, 86, 11);
 		frequencyField.setMaxStringLength(MAX_LENGTH);
 		frequencyField.setEnableBackgroundDrawing(false);
 		
@@ -285,10 +282,10 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(button == 0)
 		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
+			int xAxis = mouseX - guiLeft;
+			int yAxis = mouseY - guiTop;
 			
-			if(xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114)
+			if(xAxis >= 137 && xAxis <= 148 && yAxis >= 101 && yAxis <= 111)
 			{
 				setFrequency(frequencyField.getText());
 				frequencyField.setText("");
@@ -385,22 +382,22 @@ public class GuiTeleporter extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		int xAxis = (mouseX-(width-xSize)/2);
-		int yAxis = (mouseY-(height-ySize)/2);
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 
 		fontRendererObj.drawString(getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(getInventoryName())/2), 4, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (getOwner() != null ? getOwner() : LangUtils.localize("gui.none")), 8, itemStack != null ? ySize-12 : (ySize-96)+4, 0x404040);
 		
-		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 79, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.security") + ":", 32, 89, 0x404040);
 		
-		fontRendererObj.drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
-		fontRendererObj.drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
+		fontRendererObj.drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.freq") + ":"), 79, 0x797979);
+		fontRendererObj.drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.security") + ":"), 89, 0x797979);
 		
 		String str = LangUtils.localize("gui.set") + ":";
-		renderScaledText(str, 27, 104, 0x404040, 20);
+		renderScaledText(str, 27, 102, 0x404040, 20);
 		
-		if(xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24)
+		if(xAxis >= 7 && xAxis <= 24 && yAxis >= 15 && yAxis <= 32)
 		{
 			if(getFrequency() == null)
 			{
@@ -419,25 +416,23 @@ public class GuiTeleporter extends GuiMekanism
 	{
 		mc.renderEngine.bindTexture(resource);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int guiWidth = (width-xSize)/2;
-		int guiHeight = (height-ySize)/2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 		
-		if(xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114)
+		if(xAxis >= 137 && xAxis <= 148 && yAxis >= 101 && yAxis <= 111)
 		{
-			drawTexturedModalRect(guiWidth + 137, guiHeight + 103, xSize, 0, 11, 11);
+			drawTexturedModalRect(guiLeft + 137, guiTop + 101, xSize, 0, 11, 11);
 		}
 		else {
-			drawTexturedModalRect(guiWidth + 137, guiHeight + 103, xSize, 11, 11, 11);
+			drawTexturedModalRect(guiLeft + 137, guiTop + 101, xSize, 11, 11, 11);
 		}
 		
 		int y = getFrequency() == null ? 94 : (getStatus() == 2 ? 22 : (getStatus() == 3 ? 40 : 
 			(getStatus() == 4 ? 58 : 76)));
 		
-		drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, y, 18, 18);
+		drawTexturedModalRect(guiLeft + 7, guiTop + 15, 176, y, 18, 18);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 		

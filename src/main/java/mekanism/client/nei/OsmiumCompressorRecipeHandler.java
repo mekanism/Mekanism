@@ -42,7 +42,7 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.RED;
+		return ProgressBar.COMPRESS;
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.BLUE;
+		return ProgressBar.ENRICH;
 	}
 
 	@Override

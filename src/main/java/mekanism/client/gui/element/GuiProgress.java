@@ -30,21 +30,21 @@ public class GuiProgress extends GuiElement
 	}
 	
 	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	public Rectangle4i getBounds(int guiLeft, int guiTop)
 	{
-		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, type.width, type.height);
+		return new Rectangle4i(guiLeft + xLocation, guiTop + yLocation, type.width, type.height);
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
+	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 		
 		if(handler.isActive())
 		{
-			guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
+			guiObj.drawTexturedRect(guiLeft + xLocation, guiTop + yLocation, type.textureX, type.textureY, type.width, type.height);
 			int displayInt = (int)(handler.getProgress() * (type.width-2*innerOffsetX));
-			guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
+			guiObj.drawTexturedRect(guiLeft + xLocation + innerOffsetX, guiTop + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
 		}
 		
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -71,20 +71,30 @@ public class GuiProgress extends GuiElement
 
 	public enum ProgressBar
 	{
-		BLUE(28, 11, 0, 0),
-		YELLOW(28, 11, 0, 11),
-		RED(28, 11, 0, 22),
-		GREEN(28, 11, 0, 33),
-		PURPLE(28, 11, 0, 44),
-		STONE(28, 11, 0, 55),
-		CRUSH(28, 11, 0, 66),
+		BLUE(54, 18, 0, 0),
+		YELLOW(54, 18, 0, 18),
+		RED(54, 18, 0, 36),
+		GREEN(54, 18, 0, 54),
+		PURPLE(54, 18, 0, 72),
+		STONE(54, 18, 0, 90),
+		CRUSH(54, 18, 0, 108),
 
 		LARGE_RIGHT(52, 10, 128, 0),
 		LARGE_LEFT(52, 10, 128, 10),
 		MEDIUM(36, 10, 128, 20),
 		SMALL_RIGHT(32, 10, 128, 30),
 		SMALL_LEFT(32, 10, 128, 40),
-		BI(20, 8, 128, 50);
+		BI(20, 8, 128, 50),
+
+		SAW(54, 18, 0, 126),
+		ENRICH(54, 18, 0, 144),
+		COMPRESS(54, 18, 0, 162),
+		COMBINE(54, 18, 0, 180),
+		CRUSH2(54, 18, 0, 198),
+		INFUSE(54, 18, 0, 216),
+		PURIFY(54, 18, 0, 234),
+
+		SMELT(54, 18, 128, 126);
 
 		public int width;
 		public int height;

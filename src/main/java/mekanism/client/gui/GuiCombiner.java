@@ -17,6 +17,6 @@ public class GuiCombiner extends GuiAdvancedElectricMachine
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.STONE;
+		return ProgressBar.COMBINE;
 	}
 }

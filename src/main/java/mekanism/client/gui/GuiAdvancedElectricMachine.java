@@ -39,11 +39,14 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		super(tentity, new ContainerAdvancedElectricMachine(inventory, tentity));
 		tileEntity = tentity;
 
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiPowerBar(this, tileEntity, tileEntity.guiLocation, 164, 15));
+		xSize = 176;
+	    ySize = 186;
+
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation, xSize, 63));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.guiLocation, xSize, 5));
+		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, tileEntity.guiLocation,-26, 5));
+		guiElements.add(new GuiTransporterConfigTab(this, tileEntity, tileEntity.guiLocation,-26, 34));
+		guiElements.add(new GuiPowerBar(this, tileEntity, tileEntity.guiLocation, 7, 35));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
@@ -51,12 +54,12 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
 				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, tileEntity.guiLocation));
+		}, this, tileEntity.guiLocation,-26, 63));
 
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity.guiLocation, 55, 16));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity.guiLocation, 30, 34).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.EXTRA, this, tileEntity.guiLocation, 55, 52));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, tileEntity.guiLocation, 111, 30));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity.guiLocation, 39, 20));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity.guiLocation, 13, 71).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, tileEntity.guiLocation, 39, 56));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, tileEntity.guiLocation, 111, 34));
 
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
@@ -65,7 +68,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 			{
 				return tileEntity.getScaledProgress();
 			}
-		}, getProgressType(), this, tileEntity.guiLocation, 77, 37));
+		}, getProgressType(), this, tileEntity.guiLocation, 57, 39));
 	}
 	
 	public ProgressBar getProgressType()
@@ -76,13 +79,17 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
+
+		mc.renderEngine.bindTexture(tileEntity.guiLocation);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		drawTexturedModalRect(guiLeft + 44, guiTop + 40, 176, 0, 8, 14);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		if(xAxis >= 61 && xAxis <= 67 && yAxis >= 37 && yAxis <= 49)
+		if(xAxis >= 43 && xAxis <= 52 && yAxis >= 39 && yAxis <= 54)
 		{
 			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : LangUtils.localize("gui.none"), xAxis, yAxis);
 		}
@@ -95,16 +102,14 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 	{
 		mc.renderEngine.bindTexture(tileEntity.guiLocation);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int displayInt;
 
 		if(tileEntity.getScaledGasLevel(12) > 0)
 		{
 			displayInt = tileEntity.getScaledGasLevel(12);
-			displayGauge(61, 37 + 12 - displayInt, 6, displayInt, tileEntity.gasTank.getGas());
+			displayGauge(45, 41 + 12 - displayInt, 6, displayInt, tileEntity.gasTank.getGas());
 		}
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
@@ -117,10 +122,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 			return;
 		}
 
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-
 		mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, gas.getGas().getIcon(), sizeX, sizeY);
+		drawTexturedModelRectFromIcon(guiLeft + xPos, guiTop + yPos, gas.getGas().getIcon(), sizeX, sizeY);
 	}
 }

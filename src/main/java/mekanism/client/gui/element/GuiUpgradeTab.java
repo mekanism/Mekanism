@@ -10,7 +10,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
 
 public class GuiUpgradeTab extends GuiElement
 {
@@ -20,29 +19,32 @@ public class GuiUpgradeTab extends GuiElement
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeTab.png"), gui, def);
 
+		lmntLeft = 176;
+		lmntTop = 6;
+
 		tileEntity = tile;
 	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+
+	public GuiUpgradeTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def, int guiLeft, int guiTop)
 	{
-		return new Rectangle4i(guiWidth + 176, guiHeight + 6, 26, 26);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeTab.png"), gui, def);
+
+		lmntLeft = guiLeft;
+		lmntTop = guiTop;
+
+		tileEntity = tile;
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
+	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, lmntWidth, lmntHeight);
 		
-		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
-		{
-			guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, 18, 18, 18);
-		}
+		boolean mouseOver = xAxis >= lmntLeft + 3 && xAxis <= lmntLeft + 21 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22;
+
+		guiObj.drawTexturedRect(guiLeft + lmntLeft + 3, guiTop + lmntTop + 4, 26, mouseOver?  0: 18, 18, 18);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
@@ -52,7 +54,7 @@ public class GuiUpgradeTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
+		if(xAxis >= lmntLeft + 3 && xAxis <= lmntLeft + 21 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 		{
 			displayTooltip(LangUtils.localize("gui.upgrades"), xAxis, yAxis);
 		}
@@ -68,7 +70,7 @@ public class GuiUpgradeTab extends GuiElement
 	{
 		if(button == 0)
 		{
-			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
+			if(xAxis >= lmntLeft + 3 && xAxis <= lmntLeft + 21 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 			{
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 43));
 	            SoundHandler.playSound("gui.button.press");

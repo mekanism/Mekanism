@@ -37,7 +37,7 @@ public class PrecisionSawmillRecipeHandler extends ChanceMachineRecipeHandler
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.PURPLE;
+		return ProgressBar.SAW;
 	}
 
 	@Override

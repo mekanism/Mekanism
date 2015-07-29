@@ -29,6 +29,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -44,15 +45,19 @@ public class GuiDigitalMiner extends GuiMekanism
 	public GuiButton stopButton;
 	public GuiButton configButton;
 
+	public ResourceLocation guiLocation = MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png");
+
 	public GuiDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tentity)
 	{
 		super(tentity, new ContainerDigitalMiner(inventory, tentity));
 		tileEntity = tentity;
 
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 163, 23));
-		guiElements.add(new GuiVisualsTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
+		//guiLocation = MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png");
+
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, guiLocation, 176, 107));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, guiLocation, 176, 5));
+		guiElements.add(new GuiPowerBar(this, tileEntity, guiLocation, 7, 23));
+		guiElements.add(new GuiVisualsTab(this, tileEntity, guiLocation, -26, 5));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
@@ -60,10 +65,10 @@ public class GuiDigitalMiner extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.getPerTick());
 				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
+		}, this, guiLocation,-26, 107));
 
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 151, 5).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 143, 26));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 13, 59).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 13, 17));
 
 		ySize+=64;
 	}
@@ -77,21 +82,21 @@ public class GuiDigitalMiner extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, LangUtils.localize("gui.start"));
+		startButton = new GuiButton(0, guiWidth + 49, guiHeight + 17, 60, 20, LangUtils.localize("gui.start"));
 
 		if(tileEntity.searcher.state != State.IDLE && tileEntity.running)
 		{
 			startButton.enabled = false;
 		}
 
-		stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, LangUtils.localize("gui.stop"));
+		stopButton = new GuiButton(1, guiWidth + 49, guiHeight + 37, 60, 20, LangUtils.localize("gui.stop"));
 
 		if(tileEntity.searcher.state == State.IDLE || !tileEntity.running)
 		{
 			stopButton.enabled = false;
 		}
 
-		configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, LangUtils.localize("gui.config"));
+		configButton = new GuiButton(2, guiWidth + 49, guiHeight + 57, 60, 20, LangUtils.localize("gui.config"));
 
 		if(tileEntity.searcher.state != State.IDLE)
 		{
@@ -161,21 +166,21 @@ public class GuiDigitalMiner extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 69, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 8, 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		fontRendererObj.drawString(tileEntity.running ? LangUtils.localize("gui.digitalMiner.running") : LangUtils.localize("gui.idle"), 9, 10, 0x00CD00);
-		fontRendererObj.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.running ? LangUtils.localize("gui.digitalMiner.running") : LangUtils.localize("gui.idle"), 113, 10, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.searcher.state.desc, 113, 19, 0x00CD00);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.pull") + ": " + LangUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.silk") + ": " + LangUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 113, 30, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.pull") + ": " + LangUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 113, 39, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.silk") + ": " + LangUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 113, 48, 0x00CD00);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
-		fontRendererObj.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 113, 59, 0x00CD00);
+		fontRendererObj.drawString("" + tileEntity.clientToMine, 113, 68, 0x00CD00);
 
 		if(tileEntity.missingStack != null)
 		{
@@ -186,33 +191,37 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 			
-			itemRender.renderIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tileEntity.missingStack, 144, 27);
+			itemRender.renderIcon(14, 18, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tileEntity.missingStack, 14, 18);
 			
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
 		else {
 			mc.getTextureManager().bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
-			drawTexturedModalRect(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
+			drawTexturedModalRect(13, 17, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
 		}
 
+		/*
 		if(xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
+		*/
 
-		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61)
+		// Auto eject
+		if(xAxis >= 33 && xAxis <= 46 && yAxis >= 32 && yAxis <= 45)
 		{
 			drawCreativeTabHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 
-		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
+		// Auto pull
+		if(xAxis >= 33 && xAxis <= 46 && yAxis >= 48 && yAxis <= 61)
 		{
 			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
 		}
 
-		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
+		if(xAxis >= 13 && xAxis <= 30 && yAxis >= 17 && yAxis <= 34)
 		{
 			if(tileEntity.missingStack != null)
 			{
@@ -223,12 +232,14 @@ public class GuiDigitalMiner extends GuiMekanism
 			}
 		}
 
-		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
+		// Reset
+		if(xAxis >= 33 && xAxis <= 46 && yAxis >= 17 && yAxis <= 30)
 		{
 			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
 		}
 
-		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
+		// Silk touch
+		if(xAxis >= 33 && xAxis <= 46 && yAxis >= 63 && yAxis <= 76)
 		{
 			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
 		}
@@ -241,49 +252,31 @@ public class GuiDigitalMiner extends GuiMekanism
 	{
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 
 		int displayInt;
 
 		displayInt = tileEntity.getScaledEnergyLevel(52);
-		drawTexturedModalRect(guiWidth + 164, guiHeight + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+		drawTexturedModalRect(guiLeft + 164, guiTop + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
 
-		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61)
-		{
-			drawTexturedModalRect(guiWidth + 147, guiHeight + 47, 176 + 4, 0, 14, 14);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 147, guiHeight + 47, 176 + 4, 14, 14, 14);
-		}
+		// Reset
+		boolean mouseOver = xAxis >= 33 && xAxis <= 46 && yAxis >= 17 && yAxis <= 30;
+		drawTexturedModalRect(guiLeft + 33, guiTop + 17, 180, mouseOver?  0: 14, 14, 14);
 
-		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
-		{
-			drawTexturedModalRect(guiWidth + 147, guiHeight + 63, 176 + 4 + 14, 0, 14, 14);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 147, guiHeight + 63, 176 + 4 + 14, 14, 14, 14);
-		}
+		// Auto eject
+		mouseOver = xAxis >= 33 && xAxis <= 46 && yAxis >= 32 && yAxis <= 45;
+		drawTexturedModalRect(guiLeft + 33, guiTop + 32, tileEntity.doEject ? 194 : 180, mouseOver?  28: 42, 14, 14);
 
-		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
-		{
-			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 4 + 28, 0, 14, 14);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 4 + 28, 14, 14, 14);
-		}
+		// Auto pull
+		mouseOver = xAxis >= 33 && xAxis <= 46 && yAxis >= 48 && yAxis <= 61;
+		drawTexturedModalRect(guiLeft + 33, guiTop + 48, tileEntity.doPull ? 194 : 180, mouseOver?  56: 70, 14, 14);
 
-		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
-		{
-			drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 176 + 4 + 42, 0, 14, 14);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 176 + 4 + 42, 14, 14, 14);
-		}
+		// Silk touch
+		mouseOver = xAxis >= 33 && xAxis <= 46 && yAxis >= 63 && yAxis <= 76;
+		drawTexturedModalRect(guiLeft + 33, guiTop + 63, tileEntity.silkTouch ? 194 : 180, mouseOver?  84: 98, 14, 14);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
@@ -295,10 +288,11 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		if(button == 0)
 		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
+			int xAxis = mouseX - guiLeft;
+			int yAxis = mouseY - guiTop;
 
-			if(xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61)
+			// Auto eject
+			if(xAxis >= 33 && xAxis <= 46 && yAxis >= 32 && yAxis <= 45)
 			{
                 SoundHandler.playSound("gui.button.press");
 
@@ -308,7 +302,8 @@ public class GuiDigitalMiner extends GuiMekanism
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			}
 
-			if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
+			// Auto pull
+			if(xAxis >= 33 && xAxis <= 46 && yAxis >= 48 && yAxis <= 61)
 			{
                 SoundHandler.playSound("gui.button.press");
 
@@ -318,7 +313,8 @@ public class GuiDigitalMiner extends GuiMekanism
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			}
 
-			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
+			// Reset
+			if(xAxis >= 33 && xAxis <= 46 && yAxis >= 17 && yAxis <= 30)
 			{
                 SoundHandler.playSound("gui.button.press");
 
@@ -328,7 +324,8 @@ public class GuiDigitalMiner extends GuiMekanism
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			}
 
-			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
+			// Silk touch
+			if(xAxis >= 33 && xAxis <= 46 && yAxis >= 63 && yAxis <= 76)
 			{
                 SoundHandler.playSound("gui.button.press");
 
