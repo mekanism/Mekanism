@@ -3,6 +3,9 @@ output
 .gradle
 .idea
 *.iml
+*.ipr
+*.iws
+out
 
 Mekanism*.jar
 MDK.zip
