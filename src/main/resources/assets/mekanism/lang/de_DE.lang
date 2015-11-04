@@ -34,6 +34,7 @@ item.Sawdust.name=Sägemehl
 item.Salt.name=Salz
 item.BrineBucket.name=Eimer mit Salzwasser
 item.LithiumBucket.name=Eimer mit Lithium
+item.HeavyWaterBucket.name=Eimer mit Schwerem Wasser
 item.FreeRunners.name=Freiläufer
 item.ArmoredJetpack.name=Panzer-Jetpack
 item.FilterCard.name=Filterkarte
@@ -440,6 +441,7 @@ gui.inductionMatrix=Induktionsmatrix
 gui.matrixStats=Matrixstatistik
 gui.main=Kern
 gui.outputting=Output
+gui.receiving=Empfängt
 gui.dimensions=Maße
 gui.constituents=Bestandteile
 gui.cells=Zellen
@@ -660,6 +662,7 @@ tooltip.outputRate=Output-Rate
 tooltip.insufficientFuel=Nicht genügend Treibstoff
 tooltip.readyForReaction=Bereit für Reaktion
 tooltip.speed=Geschwindigkeit
+tooltip.and=und
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
