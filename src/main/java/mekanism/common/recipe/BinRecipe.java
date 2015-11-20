@@ -68,7 +68,7 @@ public class BinRecipe implements IRecipe
 			}
 		}
 
-		if(bin == null)
+		if(bin == null || bin.stackSize > 1)
 		{
 			return null;
 		}
