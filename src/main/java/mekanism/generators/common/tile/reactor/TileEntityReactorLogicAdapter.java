@@ -1,20 +1,19 @@
 package mekanism.generators.common.tile.reactor;
 
-import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-
-import mekanism.common.Mekanism;
-import mekanism.common.util.LangUtils;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import io.netty.buffer.ByteBuf;
+import mekanism.common.Mekanism;
+import mekanism.common.util.LangUtils;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.ArrayList;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IPeripheral
@@ -194,9 +193,9 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			case 6:
 				return new Object[] {getReactor().getInjectionRate()};
 			case 7:
-				if(arguments[0] instanceof Integer)
+				if(arguments[0] instanceof Double)
 				{
-					getReactor().setInjectionRate((Integer)arguments[0]);
+					getReactor().setInjectionRate((int)arguments[0]);
 					return new Object[] {"Injection rate set."};
 				}
 				else {
