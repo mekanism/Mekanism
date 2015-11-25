@@ -1,9 +1,5 @@
 package mekanism.client.gui.element;
 
-import java.util.Arrays;
-
-import org.lwjgl.input.Keyboard;
-
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanism;
@@ -19,6 +15,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
+import org.lwjgl.input.Keyboard;
+
+import java.util.Arrays;
 
 public class GuiFluidGauge extends GuiGauge<Fluid>
 {
@@ -81,8 +80,13 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 		{
 			return height-2;
 		}
+
+        if(infoHandler.getTank().getFluid() == null || infoHandler.getTank().getCapacity() == 0)
+        {
+            return 0;
+        }
 		
-		return infoHandler.getTank().getFluid() != null ? infoHandler.getTank().getFluidAmount()*(height-2) / infoHandler.getTank().getCapacity() : 0;
+		return infoHandler.getTank().getFluidAmount()*(height-2) / infoHandler.getTank().getCapacity();
 	}
 
 	@Override
