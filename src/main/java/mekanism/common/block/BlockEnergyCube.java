@@ -138,7 +138,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 			((ItemBlockEnergyCube)charged.getItem()).setEnergyCubeTier(charged, tier);
 			((ItemBlockEnergyCube)charged.getItem()).setEnergy(charged, tier.maxEnergy);
 			list.add(charged);
-		};
+		}
 	}
 
 	@Override
@@ -169,7 +169,9 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 				}
 
 				if(MekanismUtils.isBCWrench(tool))
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+                {
+                    ((IToolWrench) tool).wrenchUsed(entityplayer, x, y, z);
+                }
 
 				int change = ForgeDirection.ROTATION_MATRIX[side][tileEntity.facing];
 
@@ -211,8 +213,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
-		TileEntityEnergyCube tile = new TileEntityEnergyCube();
-		return tile;
+		return new TileEntityEnergyCube();
 	}
 
 	@Override
@@ -246,7 +247,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		energizedItem.setEnergy(itemStack, tileEntity.electricityStored);
 
 		ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
-		inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
+		inventory.setInventory(tileEntity.getInventory(), itemStack);
 
 		return itemStack;
 	}
