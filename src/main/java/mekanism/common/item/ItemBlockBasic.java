@@ -1,8 +1,7 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -29,8 +28,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Item class for handling multiple metal block IDs.
@@ -199,12 +199,14 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			{
 				return null;
 			}
+
+            ItemStack ret = stack.copy();
+            ret.stackTagCompound.setInteger("itemCount", stack.stackTagCompound.getInteger("newCount"));
+
+            return ret;
 		}
 
-		ItemStack ret = stack.copy();
-		ret.stackTagCompound.setInteger("itemCount", stack.stackTagCompound.getInteger("newCount"));
-
-		return ret;
+		return null;
 	}
 
 	@Override
