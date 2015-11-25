@@ -6,17 +6,11 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.core.render;
+package buildcraft.api.transport;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.IIcon;
+/**
+ * To be implemented by the real item pipe in Transport mod, but leaves knowledge for classes that do not have direct dependency on transport.
+ */
+public interface IItemPipe {
 
-public interface ITextureStates extends ICullable {
-
-	ITextureStateManager getTextureState();
-	
-	IIcon getIcon(int side, int meta);
-	
-	Block getBlock();
-	
 }

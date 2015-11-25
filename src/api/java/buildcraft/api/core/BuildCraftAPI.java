@@ -8,6 +8,7 @@
  */
 package buildcraft.api.core;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,16 @@ public final class BuildCraftAPI {
 	 * Deactivate constructor
 	 */
 	private BuildCraftAPI() {
+	}
+
+	public static String getVersion() {
+		try {
+			Class<?> clazz = Class.forName("buildcraft.core.Version");
+			Method method = clazz.getDeclaredMethod("getVersion");
+			return String.valueOf(method.invoke(null));
+		} catch (Exception e) {
+			return "UNKNOWN VERSION";
+		}
 	}
 
 	public static IWorldProperty getWorldProperty(String name) {

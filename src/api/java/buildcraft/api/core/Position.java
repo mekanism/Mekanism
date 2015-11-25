@@ -15,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class Position implements ISerializable {
-
 	public double x, y, z;
 	public ForgeDirection orientation;
 
