@@ -1,31 +1,16 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
+import mekanism.api.gas.*;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IEjector;
-import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ITankManager;
-import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.*;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
@@ -37,13 +22,11 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
+
+import java.util.ArrayList;
 
 public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, IUpgradeTile, ISustainedData, ITankManager
 {
@@ -327,7 +310,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0) && inputTank.canReceive(type);
+		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0) && inputTank.canReceive(type) &&
+                RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.containsRecipe(type);
 	}
 
 	@Override
@@ -389,7 +373,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		if(slotID == 0)
 		{
-			return FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluid() == FluidRegistry.WATER;
+			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
+                    RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.containsRecipe(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas());
 		}
 		else if(slotID == 2)
 		{
@@ -404,7 +389,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		if(slotID == 0)
 		{
-			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
+			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) == null;
 		}
 		else if(slotID == 1)
 		{
