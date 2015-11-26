@@ -1,13 +1,20 @@
 package mekanism.tools.common;
 
-import java.io.IOException;
-
+import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import io.netty.buffer.ByteBuf;
 import mekanism.api.MekanismConfig.tools;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.recipe.MekanismRecipe;
-
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Items;
@@ -18,19 +25,10 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "8.1.7", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "8.1.8", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
 public class MekanismTools implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
@@ -40,7 +38,7 @@ public class MekanismTools implements IModule
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(8, 1, 7);
+	public static Version versionNumber = new Version(8, 1, 8);
 
 	//Enums: Tools
 	public static ToolMaterial toolOBSIDIAN;
