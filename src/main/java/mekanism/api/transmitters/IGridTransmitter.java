@@ -1,11 +1,10 @@
 package mekanism.api.transmitters;
 
-import java.util.Collection;
-
 import mekanism.api.Coord4D;
-
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Collection;
 
 public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITransmitter
 {
@@ -58,6 +57,8 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
 	public N getExternalNetwork(Coord4D from);
 
 	public void takeShare();
+
+    public void updateShare();
 
 	public Object getBuffer();
 }

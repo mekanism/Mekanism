@@ -122,4 +122,6 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public abstract Object getBuffer();
 
 	public abstract void takeShare();
+
+    public abstract void updateShare();
 }

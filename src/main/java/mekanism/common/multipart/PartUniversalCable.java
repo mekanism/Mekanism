@@ -1,11 +1,16 @@
 package mekanism.common.multipart;
 
-import java.util.Collection;
-import java.util.List;
-
+import codechicken.lib.vec.Vector3;
+import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyProvider;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import ic2.api.energy.tile.IEnergySource;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
-import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -14,6 +19,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Tier;
+import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -21,15 +27,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Vector3;
-import cofh.api.energy.IEnergyHandler;
-import cofh.api.energy.IEnergyProvider;
-import ic2.api.energy.tile.IEnergySource;
+
+import java.util.Collection;
+import java.util.List;
 
 @InterfaceList({
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
@@ -64,16 +64,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			}
 		} 
 		else {
-			if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
-			{
-				double last = getSaveShare();
-
-				if(last != lastWrite)
-				{
-					lastWrite = last;
-					MekanismUtils.saveChunk(tile());
-				}
-			}
+			updateShare();
 
 			List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
 
@@ -134,6 +125,21 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 
 		super.update();
 	}
+
+    @Override
+    public void updateShare()
+    {
+        if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
+        {
+            double last = getSaveShare();
+
+            if(last != lastWrite)
+            {
+                lastWrite = last;
+                MekanismUtils.saveChunk(tile());
+            }
+        }
+    }
 
 	private double getSaveShare()
 	{

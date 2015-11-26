@@ -1,28 +1,23 @@
 package mekanism.common.multipart;
 
-import java.util.Collection;
-
-import mekanism.api.Coord4D;
+import codechicken.lib.colour.ColourRGBA;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HeatNetwork;
-import mekanism.common.util.HeatUtils;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.Vector3;
+import java.util.Collection;
 
 public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetwork>
 {
@@ -59,6 +54,9 @@ public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetw
 
 	@Override
 	public void takeShare() {}
+
+    @Override
+    public void updateShare() {}
 
 	public static void registerIcons(IIconRegister register)
 	{

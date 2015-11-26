@@ -1,17 +1,16 @@
 package mekanism.common.multipart;
 
-import java.util.Collection;
-
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.transmitters.Transmitter;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Collection;
 
 public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Transmitter<A, N>
 {
@@ -106,6 +105,12 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	{
 		containingPart.takeShare();
 	}
+
+    @Override
+    public void updateShare()
+    {
+        containingPart.updateShare();
+    }
 
 	@Override
 	public Object getBuffer()

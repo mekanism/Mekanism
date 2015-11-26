@@ -42,17 +42,8 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	{
 		if(!world().isRemote)
 		{
-			if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
-			{
-				FluidStack last = getSaveShare();
-
-				if((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getFluid() == last.getFluid())) || (last == null && lastWrite != null))
-				{
-					lastWrite = last;
-					MekanismUtils.saveChunk(tile());
-				}
-			}
-
+            updateShare();
+            
 			IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());
 
 			for(ForgeDirection side : getConnections(ConnectionType.PULL))
@@ -76,6 +67,21 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 
 		super.update();
 	}
+
+    @Override
+    public void updateShare()
+    {
+        if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
+        {
+            FluidStack last = getSaveShare();
+
+            if((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getFluid() == last.getFluid())) || (last == null && lastWrite != null))
+            {
+                lastWrite = last;
+                MekanismUtils.saveChunk(tile());
+            }
+        }
+    }
 
 	private FluidStack getSaveShare()
 	{

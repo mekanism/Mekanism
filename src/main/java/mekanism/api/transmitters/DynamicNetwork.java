@@ -1,18 +1,10 @@
 package mekanism.api.transmitters;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range4D;
@@ -21,8 +13,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implements IClientTicker, INetworkDataHandler
 {
@@ -146,6 +139,28 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	public void invalidate()
 	{
+        //Remove invalid transmitters first for share calculations
+        for(Iterator<IGridTransmitter<A, N>> iter = transmitters.iterator(); iter.hasNext();)
+        {
+            IGridTransmitter<A, N> transmitter = iter.next();
+
+            if(!transmitter.isValid())
+            {
+                iter.remove();
+                continue;
+            }
+        }
+
+        //Clamp the new buffer
+        clampBuffer();
+
+        //Update all shares
+        for(IGridTransmitter<A, N> transmitter : transmitters)
+        {
+            transmitter.updateShare();
+        }
+
+        //Now invalidate the transmitters
 		for(IGridTransmitter<A, N> transmitter : transmitters)
 		{
 			invalidateTransmitter(transmitter);

@@ -39,17 +39,8 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	public void update()
 	{
 		if(!world().isRemote)
-		{
-			if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
-			{
-				GasStack last = getSaveShare();
-
-                if((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getGas() == last.getGas())) || (last == null && lastWrite != null))
-				{
-                    lastWrite = last;
-					MekanismUtils.saveChunk(tile());
-				}
-			}
+        {
+            updateShare();
 
 			IGasHandler[] connectedAcceptors = GasTransmission.getConnectedAcceptors(tile());
 
@@ -83,6 +74,21 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 
 		super.update();
 	}
+
+    @Override
+    public void updateShare()
+    {
+        if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
+        {
+            GasStack last = getSaveShare();
+
+            if((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getGas() == last.getGas())) || (last == null && lastWrite != null))
+            {
+                lastWrite = last;
+                MekanismUtils.saveChunk(tile());
+            }
+        }
+    }
 
 	private GasStack getSaveShare()
 	{
