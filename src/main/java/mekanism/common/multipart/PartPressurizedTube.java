@@ -1,15 +1,9 @@
 package mekanism.common.multipart;
 
-import java.util.Collection;
-import java.util.Set;
-
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasNetwork;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.transmitters.IGridTransmitter;
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.api.gas.*;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.Tier;
@@ -20,11 +14,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-import codechicken.lib.vec.Vector3;
+import java.util.Collection;
 
 public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {
@@ -51,10 +42,11 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		{
 			if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
 			{
-				int last = lastWrite != null ? lastWrite.amount : 0;
+				GasStack last = getSaveShare();
 
-				if(last != getSaveShare())
+                if((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getGas() == last.getGas())) || (last == null && lastWrite != null))
 				{
+                    lastWrite = last;
 					MekanismUtils.saveChunk(tile());
 				}
 			}
@@ -92,7 +84,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		super.update();
 	}
 
-	private int getSaveShare()
+	private GasStack getSaveShare()
 	{
 		if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null)
 		{
@@ -104,10 +96,10 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 				toSave += remain;
 			}
 
-			return toSave;
+            return new GasStack(getTransmitter().getTransmitterNetwork().buffer.getGas(), toSave);
 		}
 
-		return 0;
+		return null;
 	}
 
 	@Override
@@ -141,23 +133,25 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		{
 			buffer.setGas(GasStack.readFromNBT(nbtTags.getCompoundTag("cacheGas")));
 		}
+        else {
+            buffer.setGas(null);
+        }
 	}
 
 	@Override
 	public void save(NBTTagCompound nbtTags)
 	{
 		super.save(nbtTags);
-		
-		nbtTags.setInteger("tier", tier.ordinal());
 
-		int toSave = getSaveShare();
-
-		if(toSave > 0)
-		{
-			GasStack stack = new GasStack(getTransmitter().getTransmitterNetwork().buffer.getGas(), toSave);
-			lastWrite = stack;
-			nbtTags.setTag("cacheGas", stack.write(new NBTTagCompound()));
+        if(lastWrite != null && lastWrite.amount > 0)
+        {
+            nbtTags.setTag("cacheGas", lastWrite.write(new NBTTagCompound()));
+        }
+        else {
+            nbtTags.removeTag("cacheGas");
 		}
+
+        nbtTags.setInteger("tier", tier.ordinal());
 	}
 
 	@Override
@@ -244,7 +238,14 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	}
 
 	@Override
-	public void takeShare() {}
+	public void takeShare()
+    {
+        if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null && lastWrite != null)
+        {
+            getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
+            buffer.setGas(lastWrite);
+        }
+    }
 
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)

@@ -1,15 +1,7 @@
 package mekanism.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -20,8 +12,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
+
+import java.util.*;
 
 public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 {
@@ -82,7 +74,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork> transmitter)
 	{
 		Object b = transmitter.getBuffer();
-		
+
 		if(!(b instanceof FluidStack) || ((FluidStack)b).getFluid() == null || ((FluidStack)b).amount == 0)
 		{
 			return;
@@ -93,6 +85,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		if(buffer == null || buffer.getFluid() == null || buffer.amount == 0)
 		{
 			buffer = fluid.copy();
+            fluid.amount = 0;
 			return;
 		}
 		
@@ -101,8 +94,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			buffer.amount += fluid.amount;
 		}
-		
-		fluid.amount = 0;
+
+        fluid.amount = 0;
 	}
 
 	@Override

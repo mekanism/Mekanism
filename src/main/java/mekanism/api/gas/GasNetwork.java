@@ -1,23 +1,16 @@
 package mekanism.api.gas;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
-
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
+
+import java.util.*;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Gasses. By default this is server-only, but if ticked on
@@ -110,6 +103,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		if(buffer == null || buffer.getGas() == null || buffer.amount == 0)
 		{
 			buffer = gas.copy();
+            gas.amount = 0;
 			return;
 		}
 
