@@ -1,10 +1,10 @@
 package mekanism.common.network;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
@@ -22,10 +22,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PacketPortableTeleporter implements IMessageHandler<PortableTeleporterMessage, IMessage>
 {
@@ -115,6 +114,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							
 							Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(new Coord4D(player)), coords.getTargetPoint(40D));
 							TileEntityTeleporter.teleportPlayerTo((EntityPlayerMP)player, coords, teleporter);
+                            TileEntityTeleporter.alignPlayer((EntityPlayerMP)player, coords);
 							
 							world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
 							Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
