@@ -446,6 +446,6 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 
 	public double getCost()
 	{
-		return 5D / tier.speed;
+		return (double)TransporterTier.ULTIMATE.speed / (double)tier.speed;
 	}
 }
