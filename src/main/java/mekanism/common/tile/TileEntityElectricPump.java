@@ -240,7 +240,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(dataStream.readInt() == 1)
 		{
-			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
 		}
 		else {
 			fluidTank.setFluid(null);

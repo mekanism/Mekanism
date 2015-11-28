@@ -1,9 +1,6 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
@@ -11,9 +8,9 @@ import mekanism.api.Range4D;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.base.ITankManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -24,14 +21,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
+
+import java.util.ArrayList;
 
 public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager
 {
@@ -389,7 +381,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		
 		if(dataStream.readInt() == 1)
 		{
-			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
 		}
 		else {
 			fluidTank.setFluid(null);

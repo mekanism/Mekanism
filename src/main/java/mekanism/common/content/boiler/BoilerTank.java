@@ -160,7 +160,7 @@ public abstract class BoilerTank implements IFluidTank
 				getFluid().amount -= used;
 			}
 
-			FluidStack drained = new FluidStack(getFluid().getFluidID(), used);
+			FluidStack drained = new FluidStack(getFluid(), used);
 
 			if(getFluid().amount <= 0)
 			{

@@ -1,13 +1,8 @@
 package mekanism.generators.common.tile.reactor;
 
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import io.netty.buffer.ByteBuf;
-import mekanism.common.Mekanism;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -15,8 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IPeripheral
+public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration
 {
 	public ReactorLogic logicType = ReactorLogic.DISABLED;
 	
@@ -137,39 +131,17 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		return data;
 	}
+
+    private static final String[] methods = new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel"};
 	
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
+	public String[] getMethods()
 	{
-		return getInventoryName();
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
-	
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
-	
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
-	{
-		return new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel"};
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws LuaException, InterruptedException
 	{
 		if(getReactor() == null || !getReactor().isFormed())
 		{
@@ -205,7 +177,6 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 				return new Object[] {(getReactor().getDeuteriumTank().getStored() >= getReactor().getInjectionRate()/2) &&
 						(getReactor().getTritiumTank().getStored() >= getReactor().getInjectionRate()/2)};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
 		}
 	}

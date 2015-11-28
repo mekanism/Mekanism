@@ -1,21 +1,10 @@
 package mekanism.common.util;
 
+import buildcraft.api.tools.IToolWrench;
+import cofh.api.item.IToolHammer;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.registry.GameData;
 import ic2.api.energy.EnergyNet;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -28,24 +17,10 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.UnitDisplayUtils;
 import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismItems;
-import mekanism.common.OreDictCache;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.Tier.FactoryTier;
-import mekanism.common.Tier.InductionCellTier;
-import mekanism.common.Tier.InductionProviderTier;
-import mekanism.common.Upgrade;
-import mekanism.common.Version;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IFactory;
+import mekanism.common.*;
+import mekanism.common.Tier.*;
+import mekanism.common.base.*;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IModule;
-import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -74,17 +49,18 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -1426,14 +1402,11 @@ public final class MekanismUtils
 		{
 			theClass = classesFound.get(className);
 		}
-		else
-		{
-			try
-			{
+		else {
+			try {
 				theClass = Class.forName(className);
 				classesFound.put(className, theClass);
-			} catch(ClassNotFoundException e)
-			{
+			} catch(ClassNotFoundException e) {
 				classesFound.put(className, null);
 				return false;
 			}
