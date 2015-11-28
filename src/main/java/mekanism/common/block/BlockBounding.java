@@ -1,13 +1,7 @@
 package mekanism.common.block;
 
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import mekanism.common.integration.CCPeripheral;
-import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
@@ -22,8 +16,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
-public class BlockBounding extends Block implements IPeripheralProvider
+public class BlockBounding extends Block
 {
 	public BlockBounding()
 	{
@@ -128,20 +121,6 @@ public class BlockBounding extends Block implements IPeripheralProvider
 		else if(metadata == 1)
 		{
 			return new TileEntityAdvancedBoundingBlock();
-		}
-
-		return null;
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
-	{
-		TileEntity te = world.getTileEntity(x, y, z);
-
-		if(te != null && te instanceof IComputerIntegration)
-		{
-			return new CCPeripheral((IComputerIntegration)te);
 		}
 
 		return null;

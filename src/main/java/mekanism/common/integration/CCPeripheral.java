@@ -5,10 +5,14 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
  * Created by aidancbrady on 7/20/15.
  */
+@Optional.Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 public class CCPeripheral implements IPeripheral
 {
     public IComputerIntegration computerTile;
@@ -59,5 +63,21 @@ public class CCPeripheral implements IPeripheral
     public boolean equals(IPeripheral other)
     {
         return this == other;
+    }
+
+    public static class CCPeripheralProvider implements IPeripheralProvider
+    {
+        @Override
+        public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
+        {
+            TileEntity te = world.getTileEntity(x, y, z);
+
+            if(te != null && te instanceof IComputerIntegration)
+            {
+                return new CCPeripheral((IComputerIntegration)te);
+            }
+
+            return null;
+        }
     }
 }

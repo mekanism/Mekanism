@@ -1,12 +1,8 @@
 package mekanism.common.block;
 
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
@@ -25,8 +21,6 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.*;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.integration.CCPeripheral;
-import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
@@ -104,8 +98,7 @@ import java.util.*;
  * @author AidanBrady
  *
  */
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
-public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider, IBlockCTM, ICustomBlockIcon
+public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlockCTM, ICustomBlockIcon
 {
 	public IIcon[][] icons = new IIcon[16][16];
 	public IIcon[][][] factoryIcons = new IIcon[4][16][16];
@@ -1296,20 +1289,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	public boolean doDefaultBoundSetting(int metadata)
 	{
 		return false;
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
-	{
-		TileEntity te = world.getTileEntity(x, y, z);
-		
-		if(te != null && te instanceof IComputerIntegration)
-		{
-			return new CCPeripheral((IComputerIntegration)te);
-		}
-		
-		return null;
 	}
 
 	@Override

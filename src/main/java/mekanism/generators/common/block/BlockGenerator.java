@@ -1,19 +1,13 @@
 package mekanism.generators.common.block;
 
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.base.*;
-import mekanism.common.integration.CCPeripheral;
-import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
@@ -53,8 +47,7 @@ import java.util.Random;
  * @author AidanBrady
  *
  */
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
-public class BlockGenerator extends BlockContainer implements ISpecialBounds, IPeripheralProvider
+public class BlockGenerator extends BlockContainer implements ISpecialBounds
 {
 	public Random machineRand = new Random();
 
@@ -637,19 +630,5 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		}
 		
 		return false;
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
-	{
-		TileEntity te = world.getTileEntity(x, y, z);
-
-		if(te != null && te instanceof IComputerIntegration)
-		{
-			return new CCPeripheral((IComputerIntegration)te);
-		}
-
-		return null;
 	}
 }

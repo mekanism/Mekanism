@@ -8,10 +8,8 @@ import ic2.api.recipe.*;
 import li.cil.oc.api.Driver;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
-import mekanism.common.block.BlockMachine;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
@@ -127,7 +125,7 @@ public final class MekanismHooks
 	public void loadCCPeripheralProviders()
 	{
 		try {
-			ComputerCraftAPI.registerPeripheralProvider((BlockMachine)MekanismBlocks.MachineBlock);
+			ComputerCraftAPI.registerPeripheralProvider(new CCPeripheral.CCPeripheralProvider());
 		} catch(Exception e) {}
 	}
 

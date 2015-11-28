@@ -1,12 +1,8 @@
 package mekanism.common.block;
 
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -14,8 +10,6 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.integration.CCPeripheral;
-import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
@@ -50,8 +44,7 @@ import java.util.Random;
  * @author AidanBrady
  *
  */
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
-public class BlockEnergyCube extends BlockContainer implements IPeripheralProvider
+public class BlockEnergyCube extends BlockContainer
 {
 	public BlockEnergyCube()
 	{
@@ -331,19 +324,5 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		}
 		
 		return false;
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
-	{
-		TileEntity te = world.getTileEntity(x, y, z);
-
-		if(te != null && te instanceof IComputerIntegration)
-		{
-			return new CCPeripheral((IComputerIntegration)te);
-		}
-
-		return null;
 	}
 }
