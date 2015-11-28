@@ -1,30 +1,22 @@
 package mekanism.client;
 
-import static mekanism.client.sound.SoundHandler.Channel.FLAMETHROWER;
-import static mekanism.client.sound.SoundHandler.Channel.GASMASK;
-import static mekanism.client.sound.SoundHandler.Channel.JETPACK;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.IClientTicker;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.GasStack;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
-import mekanism.common.ObfuscatedNames;
-import mekanism.common.item.ItemFlamethrower;
-import mekanism.common.item.ItemFreeRunners;
-import mekanism.common.item.ItemGasMask;
-import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.*;
 import mekanism.common.item.ItemJetpack.JetpackMode;
-import mekanism.common.item.ItemScubaTank;
-import mekanism.common.network.PacketFlamethrowerActive.FlamethrowerActiveMessage;
+import mekanism.common.network.PacketFlamethrowerData;
+import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
@@ -36,14 +28,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringUtils;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import java.util.*;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import static mekanism.client.sound.SoundHandler.Channel.*;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -220,7 +207,7 @@ public class ClientTickHandler
 					Mekanism.flamethrowerActive.remove(mc.thePlayer.getCommandSenderName());
 				}
 				
-				Mekanism.packetHandler.sendToServer(new FlamethrowerActiveMessage(mc.thePlayer.getCommandSenderName(), isFlamethrowerOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isFlamethrowerOn(mc.thePlayer)));
 			}
 
 			if(Mekanism.jetpackOn.contains(mc.thePlayer.getCommandSenderName()) != isJetpackOn(mc.thePlayer))

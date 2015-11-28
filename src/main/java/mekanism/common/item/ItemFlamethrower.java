@@ -1,7 +1,8 @@
 package mekanism.common.item;
 
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -14,8 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class ItemFlamethrower extends ItemMekanism implements IGasItem
 {
@@ -41,6 +42,8 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 		else {
 			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
+
+        list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 	
 	@Override
@@ -49,7 +52,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	
 	public void useGas(ItemStack stack)
 	{
-		setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount-1));
+		setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount - 1));
 	}
 
 	@Override
@@ -175,4 +178,55 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 		setGas(filled, new GasStack(GasRegistry.getGas("hydrogen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
+
+    public void incrementMode(ItemStack stack)
+    {
+        setMode(stack, getMode(stack).increment());
+    }
+
+    public FlamethrowerMode getMode(ItemStack stack)
+    {
+        if(stack.stackTagCompound == null)
+        {
+            return FlamethrowerMode.COMBAT;
+        }
+
+        return FlamethrowerMode.values()[stack.stackTagCompound.getInteger("mode")];
+    }
+
+    public void setMode(ItemStack stack, FlamethrowerMode mode)
+    {
+        if(stack.stackTagCompound == null)
+        {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+
+        stack.stackTagCompound.setInteger("mode", mode.ordinal());
+    }
+
+    public static enum FlamethrowerMode
+    {
+        COMBAT("tooltip.flamethrower.combat", EnumColor.YELLOW),
+        HEAT("tooltip.flamethrower.heat", EnumColor.ORANGE),
+        INFERNO("tooltip.flamethrower.inferno", EnumColor.DARK_RED);
+
+        private String unlocalized;
+        private EnumColor color;
+
+        private FlamethrowerMode(String s, EnumColor c)
+        {
+            unlocalized = s;
+            color = c;
+        }
+
+        public FlamethrowerMode increment()
+        {
+            return ordinal() < values().length-1 ? values()[ordinal()+1] : values()[0];
+        }
+
+        public String getName()
+        {
+            return color + LangUtils.localize(unlocalized);
+        }
+    }
 }

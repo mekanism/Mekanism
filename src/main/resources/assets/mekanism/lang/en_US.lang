@@ -685,6 +685,11 @@ tooltip.jetpack.regular=Regular
 tooltip.jetpack.hover=Hover
 tooltip.jetpack.disabled=Disabled
 
+tooltip.flamethrower.combat=Combat
+tooltip.flamethrower.heat=Heat
+tooltip.flamethrower.inferno=Inferno
+tooltip.flamethrower.modeBump=Flamethrower mode bumped to
+
 tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
 tooltip.seismicReader.noVibrations=Unable to discover any vibrations
 

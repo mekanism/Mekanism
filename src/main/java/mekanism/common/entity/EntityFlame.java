@@ -1,13 +1,12 @@
 package mekanism.common.entity;
 
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
-
-import java.util.List;
-
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.util.StackUtils;
+import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -17,14 +16,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+
+import java.util.List;
 
 public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 {
@@ -32,6 +28,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	public static final int DAMAGE = 10;
 	
 	public Entity owner = null;
+    public ItemFlamethrower.FlamethrowerMode mode = ItemFlamethrower.FlamethrowerMode.COMBAT;
 	
 	public EntityFlame(World world)
 	{
@@ -63,6 +60,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 		motionZ = motion.zPos;
 		
 		owner = player;
+        mode = ((ItemFlamethrower)player.getCurrentEquippedItem().getItem()).getMode(player.getCurrentEquippedItem());
 	}
 	
     public void setHeading(Pos3D motion)
@@ -163,9 +161,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
         {
             if(mop.entityHit != null && !mop.entityHit.isImmuneToFire())
             {
-            	if(mop.entityHit instanceof EntityItem)
+            	if(mop.entityHit instanceof EntityItem && mode != ItemFlamethrower.FlamethrowerMode.COMBAT)
             	{
-            		if(mop.entityHit.ticksExisted > 80)
+            		if(mop.entityHit.ticksExisted > 100)
             		{
             			if(!smeltItem((EntityItem)mop.entityHit))
             			{
@@ -186,9 +184,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 
                 if(general.aestheticWorldDamage && !fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
                 {
-                	if(!smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ)))
+                	if(mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ)))
                 	{
-                		if(!worldObj.isRemote)
+                		if(mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !worldObj.isRemote)
                 		{
                 			worldObj.setBlock(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, Blocks.fire);
                 		}
@@ -296,14 +294,26 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbtTags) {}
+	protected void readEntityFromNBT(NBTTagCompound nbtTags)
+    {
+        mode = ItemFlamethrower.FlamethrowerMode.values()[nbtTags.getInteger("mode")];
+    }
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbtTags) {}
+	protected void writeEntityToNBT(NBTTagCompound nbtTags)
+    {
+        nbtTags.setInteger("mode", mode.ordinal());
+    }
 
 	@Override
-	public void writeSpawnData(ByteBuf dataStream) {}
+	public void writeSpawnData(ByteBuf dataStream)
+    {
+        dataStream.writeInt(mode.ordinal());
+    }
 
 	@Override
-	public void readSpawnData(ByteBuf dataStream) {}
+	public void readSpawnData(ByteBuf dataStream)
+    {
+        mode = ItemFlamethrower.FlamethrowerMode.values()[dataStream.readInt()];
+    }
 }
