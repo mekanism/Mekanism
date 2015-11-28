@@ -132,7 +132,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		return data;
 	}
 
-    private static final String[] methods = new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel"};
+    private static final String[] methods = new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing"};
 	
 	@Override
 	public String[] getMethods()
@@ -176,6 +176,8 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			case 8:
 				return new Object[] {(getReactor().getDeuteriumTank().getStored() >= getReactor().getInjectionRate()/2) &&
 						(getReactor().getTritiumTank().getStored() >= getReactor().getInjectionRate()/2)};
+            case 9:
+                return new Object[] {getReactor().getPassiveGeneration(false, true)};
 			default:
 				return new Object[] {"Unknown command."};
 		}
