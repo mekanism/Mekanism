@@ -1,18 +1,8 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
+import mekanism.api.gas.*;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -24,6 +14,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
 
 public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl
 {
@@ -279,14 +271,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
 	public int getRedstoneLevel()
 	{
-		int stored = gasTank.getStored();
-		
-		if(stored == 0) 
-		{
-			return 0;
-		}
-		
-		return MathHelper.floor_float((float)stored / (float)MAX_GAS * 14.0f + 1.0f);
+        double fractionFull = (float)gasTank.getStored()/(float)gasTank.getMaxGas();
+        return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
 	
 	@Override
