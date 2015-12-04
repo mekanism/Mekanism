@@ -123,7 +123,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			if(MekanismUtils.canFunction(this))
 			{
 				int suckAmount = FluidContainerRegistry.BUCKET_VOLUME;
-				if(hasFilter() && (fluidTank.getFluid() == null || fluidTank.getFluid() == heavyWater))
+				if(hasFilter() && (fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == heavyWater))
 				{
 					suckAmount = 10;
 				}
