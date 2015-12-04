@@ -38,6 +38,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
 
+	/** Heavy water assigned to a private property to avoid getting it from registry on every tick. */
+	private Fluid heavyWater = FluidRegistry.getFluid("heavywater");
+	
 	public TileEntityElectricPump()
 	{
 		super("ElectricPump", 10000);
@@ -119,7 +122,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			if(MekanismUtils.canFunction(this))
 			{
-				if(getEnergy() >= usage.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount + FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
+				int suckAmount = FluidContainerRegistry.BUCKET_VOLUME;
+				if(hasFilter() && (fluidTank.getFluid() == null || fluidTank.getFluid() == heavyWater))
+				{
+					suckAmount = 10;
+				}
+				if(getEnergy() >= usage.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount + suckAmount <= fluidTank.getCapacity()))
 				{
 					suck(true);
 				}
