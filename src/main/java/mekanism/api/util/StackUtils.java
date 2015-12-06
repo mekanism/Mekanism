@@ -3,6 +3,8 @@ package mekanism.api.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -237,7 +239,10 @@ public final class StackUtils
 
 	public static boolean contains(ItemStack container, ItemStack contained)
 	{
-		return equalsWildcardWithNBT(contained, container) && container.stackSize >= contained.stackSize;
+		return container.stackSize >= contained.stackSize
+				&& ( equalsWildcardWithNBT(contained, container)
+						|| ( MekanismUtils.getOreDictName( container ).contains( "treeSapling" )
+								&& equalsWildcard(contained, container) ) );
 	}
 
 	public static int hashItemStack(ItemStack stack)
