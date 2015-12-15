@@ -87,7 +87,7 @@ public abstract class Finder
 		@Override
 		public boolean modifies(ItemStack stack)
 		{
-			return StackUtils.equalsWildcard(itemType, stack);
+			return StackUtils.equalsIgnoreItemDamage(itemType, stack);
 		}
 	}
 	
