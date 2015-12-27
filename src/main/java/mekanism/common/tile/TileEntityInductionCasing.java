@@ -10,20 +10,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IPeripheral
+public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration
 {
 	public int clientCells;
 	public int clientProviders;
@@ -169,25 +163,14 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		return structure != null ? structure.storageCap : 0;
 	}
 
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
-	{
-		return "InductionMatrix";
-	}
-
 	public static final String[] NAMES = new String[] {"getStored", "getMaxEnergy", "getLastInput", "getLastOutput", "getTransferCap"};
 
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
 		return NAMES;
 	}
 
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		if(structure == null)
 		{
@@ -210,19 +193,4 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 				return new Object[] {"Unknown command."};
 		}
 	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
 }
