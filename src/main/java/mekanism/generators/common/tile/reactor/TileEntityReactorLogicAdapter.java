@@ -5,19 +5,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.common.Mekanism;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IPeripheral
+public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration
 {
 	public ReactorLogic logicType = ReactorLogic.DISABLED;
 	
@@ -140,37 +134,13 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 	
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
-	{
-		return getInventoryName();
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
-	
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
-	
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
 		return new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel"};
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		if(getReactor() == null || !getReactor().isFormed())
 		{
@@ -194,9 +164,9 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			case 6:
 				return new Object[] {getReactor().getInjectionRate()};
 			case 7:
-				if(arguments[0] instanceof Integer)
+				if(arguments[0] instanceof Double)
 				{
-					getReactor().setInjectionRate((Integer)arguments[0]);
+					getReactor().setInjectionRate(((Double)arguments[0]).intValue());
 					return new Object[] {"Injection rate set."};
 				}
 				else {
@@ -206,7 +176,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 				return new Object[] {(getReactor().getDeuteriumTank().getStored() >= getReactor().getInjectionRate()/2) &&
 						(getReactor().getTritiumTank().getStored() >= getReactor().getInjectionRate()/2)};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method");
 				return new Object[] {"Unknown command."};
 		}
 	}
