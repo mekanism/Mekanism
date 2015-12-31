@@ -1,14 +1,13 @@
 package mekanism.common.inventory.container;
 
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.ChargeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -22,10 +21,10 @@ public class ContainerMetallurgicInfuser extends Container
 	public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotDischarge(tentity, 0, 143, 35));
 		addSlotToContainer(new Slot(tentity, 1, 17, 35));
 		addSlotToContainer(new Slot(tentity, 2, 51, 43));
 		addSlotToContainer(new SlotOutput(tentity, 3, 109, 43));
+        addSlotToContainer(new SlotEnergy.SlotDischarge(tentity, 4, 143, 35));
 		
 		int slotY;
 
@@ -83,7 +82,7 @@ public class ContainerMetallurgicInfuser extends Container
 				}
 				else if(ChargeUtils.canBeDischarged(slotStack))
 				{
-					if(!mergeItemStack(slotStack, 0, 1, false))
+					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
 						return null;
 					}

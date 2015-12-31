@@ -124,7 +124,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 				}
 			}
 
-			ChargeUtils.discharge(0, this);
+			ChargeUtils.discharge(4, this);
 
 			if(inventory[1] != null)
 			{
