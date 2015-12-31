@@ -2,14 +2,13 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig;
 import mekanism.api.Range4D;
 import mekanism.api.gas.*;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ITankManager;
-import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.*;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -33,7 +32,7 @@ import net.minecraftforge.fluids.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager, IRedstoneControl, IActiveState
 {
 	/** This separator's water slot. */
 	public FluidTank fluidTank = new FluidTank(24000);
@@ -63,13 +62,22 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	
 	public double energyPerTick;
 
+    public int updateDelay;
+
 	public boolean isActive = false;
+
+    public boolean clientActive = false;
+
+    public double prevEnergy;
 
 	public SeparatorRecipe cachedRecipe;
 	
 	public double clientEnergyUsed;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
+
+    /** This machine's current RedstoneControl type. */
+    public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileEntityElectrolyticSeparator()
 	{
@@ -82,8 +90,29 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 
+        if(worldObj.isRemote && updateDelay > 0)
+        {
+            updateDelay--;
+
+            if(updateDelay == 0 && clientActive != isActive)
+            {
+                isActive = clientActive;
+                MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+            }
+        }
+
 		if(!worldObj.isRemote)
 		{
+            if(updateDelay > 0)
+            {
+                updateDelay--;
+
+                if(updateDelay == 0 && clientActive != isActive)
+                {
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+                }
+            }
+
 			ChargeUtils.discharge(3, this);
 			
 			if(inventory[0] != null)
@@ -132,8 +161,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			
 			SeparatorRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= energyPerTick)
+			if(canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this))
 			{
+                setActive(true);
+
 				boolean update = BASE_ENERGY_USAGE != recipe.energyUsage;
 				
 				BASE_ENERGY_USAGE = recipe.energyUsage;
@@ -143,8 +174,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					recalculateUpgradables(Upgrade.ENERGY);
 				}
 				
-				setActive(true);
-				
 				int operations = operate(recipe);
 				double prev = getEnergy();
 				
@@ -152,7 +181,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				clientEnergyUsed = prev-getEnergy();
 			}
 			else {
-				setActive(false);
+                if(prevEnergy >= getEnergy())
+                {
+                    setActive(false);
+                }
 			}
 			
 			int dumpAmount = 8*(int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
@@ -229,6 +261,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
+
+            prevEnergy = getEnergy();
 		}
 		else {
 			if(clientDumpLeft)
@@ -434,12 +468,20 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			rightTank.setGas(null);
 		}
 
+        controlType = RedstoneControl.values()[dataStream.readInt()];
 		dumpLeft = GasMode.values()[dataStream.readInt()];
 		dumpRight = GasMode.values()[dataStream.readInt()];
 		clientDumpLeft = dataStream.readBoolean();
 		clientDumpRight = dataStream.readBoolean();
-		isActive = dataStream.readBoolean();
+		clientActive = dataStream.readBoolean();
 		clientEnergyUsed = dataStream.readDouble();
+
+        if(updateDelay == 0 && clientActive != isActive)
+        {
+            updateDelay = MekanismConfig.general.UPDATE_DELAY;
+            isActive = clientActive;
+            MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+        }
 	}
 
 	@Override
@@ -477,6 +519,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			data.add(false);
 		}
 
+        data.add(controlType.ordinal());
 		data.add(dumpLeft.ordinal());
 		data.add(dumpRight.ordinal());
 		data.add(clientDumpLeft);
@@ -503,6 +546,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
 		}
 
+        isActive = nbtTags.getBoolean("isActive");
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+
 		leftTank.read(nbtTags.getCompoundTag("leftTank"));
 		rightTank.read(nbtTags.getCompoundTag("rightTank"));
 
@@ -519,6 +565,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
 		}
+
+        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("controlType", controlType.ordinal());
 
 		nbtTags.setTag("leftTank", leftTank.write(new NBTTagCompound()));
 		nbtTags.setTag("rightTank", rightTank.write(new NBTTagCompound()));
@@ -693,10 +742,56 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return false;
 	}
 
-	public void setActive(boolean active)
-	{
-		isActive = active;
-	}
+    @Override
+    public RedstoneControl getControlType()
+    {
+        return controlType;
+    }
+
+    @Override
+    public void setControlType(RedstoneControl type)
+    {
+        controlType = type;
+        MekanismUtils.saveChunk(this);
+    }
+
+    @Override
+    public boolean canPulse()
+    {
+        return false;
+    }
+
+    @Override
+    public void setActive(boolean active)
+    {
+        isActive = active;
+
+        if(clientActive != active && updateDelay == 0)
+        {
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+
+            updateDelay = 10;
+            clientActive = active;
+        }
+    }
+
+    @Override
+    public boolean getActive()
+    {
+        return isActive;
+    }
+
+    @Override
+    public boolean renderUpdate()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean lightUpdate()
+    {
+        return true;
+    }
 	
 	@Override
 	public TileComponentUpgrade getComponent() 
