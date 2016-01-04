@@ -13,8 +13,16 @@ public class ContainerNull extends Container
 	{
 		tileEntity = tile;
 
-		tileEntity.open(player);
-		tileEntity.openInventory();
+		if(tileEntity != null)
+		{
+			tileEntity.open(player);
+			tileEntity.openInventory();
+		}
+	}
+	
+	public ContainerNull(TileEntityContainerBlock tile)
+	{
+		tileEntity = tile;
 	}
 	
 	public ContainerNull() {}
