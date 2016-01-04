@@ -1437,6 +1437,11 @@ public final class MekanismUtils
 	{
 		ItemStack tool = player.getCurrentEquippedItem();
 		
+		if(tool == null)
+		{
+			return false;
+		}
+		
 		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(player, x, y, z))
 		{
 			return true;
