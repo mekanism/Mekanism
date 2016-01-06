@@ -71,7 +71,7 @@ public class BlockObsidianTNT extends Block
 		{
 			EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
 			world.spawnEntityInWorld(entity);
-			world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
+			world.playSoundAtEntity(entity, "game.tnt.primed", 1.0F, 1.0F);
 		}
 	}
 

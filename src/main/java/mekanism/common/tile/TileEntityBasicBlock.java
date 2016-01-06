@@ -252,23 +252,35 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	{
 		return redstoneLastTick;
 	}
+	
+	public void onPowerChange() {}
 
 	public void onNeighborChange(Block block)
 	{
 		if(!worldObj.isRemote)
 		{
-			boolean power = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-
-			if(redstone != power)
-			{
-				redstone = power;
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			}
+			updatePower();
 		}
 	}
 	
-	public void onAdded()
+	private void updatePower()
 	{
+		boolean power = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+
+		if(redstone != power)
+		{
+			redstone = power;
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 		
+			onPowerChange();
+		}
+	}
+	
+	/**
+	 * Called when block is placed in world
+	 */
+	public void onAdded() 
+	{
+		updatePower();
 	}
 }
