@@ -2,9 +2,8 @@ package mekanism.common.tile;
 
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.Pos3D;
+import mekanism.client.HolidayManager;
 import mekanism.client.sound.ISoundSource;
-import mekanism.client.sound.SoundHandler;
-import mekanism.client.sound.TileSound;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.SoundWrapper;
@@ -31,8 +30,8 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	public TileEntityNoisyElectricBlock(String soundPath, String name, double maxEnergy)
 	{
 		super(name, maxEnergy);
-
-		soundURL = new ResourceLocation("mekanism", "tile." + soundPath);
+		
+		soundURL = HolidayManager.filterSound(new ResourceLocation("mekanism", "tile." + soundPath));
 	}
 
 	@Override

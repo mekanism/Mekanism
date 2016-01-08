@@ -7,10 +7,10 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
 import mekanism.common.Mekanism;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ResourceLocation;
 
 public final class HolidayManager
 {
@@ -50,7 +50,7 @@ public final class HolidayManager
 		} catch(Exception e) {}
 	}
 
-	public static String filterSound(String sound)
+	public static ResourceLocation filterSound(ResourceLocation sound)
 	{
 		if(!client.holidays)
 		{
@@ -83,7 +83,7 @@ public final class HolidayManager
 
 		public abstract void onEvent(EntityPlayer player);
 
-		public String filterSound(String sound)
+		public ResourceLocation filterSound(ResourceLocation sound)
 		{
 			return sound;
 		}
@@ -91,12 +91,12 @@ public final class HolidayManager
 
 	private static class Christmas extends Holiday
 	{
-		private String[] nutcracker = new String[] {"holiday/Nutcracker1.ogg", "holiday/Nutcracker2.ogg", "holiday/Nutcracker3.ogg", "holiday/Nutcracker4.ogg", "holiday/Nutcracker5.ogg"};
+		private String[] nutcracker = new String[] {"christmas.1", "christmas.2", "christmas.3", "christmas.4", "christmas.5"};
 
 		@Override
 		public YearlyDate getDate()
 		{
-			return new YearlyDate(12, 25);
+			return new YearlyDate(1, 8);
 		}
 
 		@Override
@@ -113,27 +113,27 @@ public final class HolidayManager
 		}
 
 		@Override
-		public String filterSound(String sound)
+		public ResourceLocation filterSound(ResourceLocation sound)
 		{
-			if(sound.equals("Chamber.ogg"))
+			if(sound.toString().contains("machine.enrichment"))
 			{
-				return nutcracker[0];
+				return new ResourceLocation(sound.toString().replace("machine.enrichment", nutcracker[0]));
 			}
-			else if(sound.equals("MetallurgicInfuser.ogg"))
+			else if(sound.equals("machine.metalinfuser"))
 			{
-				return nutcracker[1];
+				return new ResourceLocation(sound.toString().replace("machine.metalinfuser", nutcracker[1]));
 			}
-			else if(sound.equals("PurificationChamber.ogg"))
+			else if(sound.equals("machine.purification"))
 			{
-				return nutcracker[2];
+				return new ResourceLocation(sound.toString().replace("machine.purification", nutcracker[2]));
 			}
-			else if(sound.equals("Smelter.ogg"))
+			else if(sound.equals("machine.smelter"))
 			{
-				return nutcracker[3];
+				return new ResourceLocation(sound.toString().replace("machine.smelter", nutcracker[3]));
 			}
-			else if(sound.equals("HeatGenerator.ogg"))
+			else if(sound.equals("machine.dissolution"))
 			{
-				return nutcracker[4];
+				return new ResourceLocation(sound.toString().replace("machine.dissolution", nutcracker[4]));
 			}
 
 			return sound;

@@ -6,8 +6,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class TileSound extends Sound implements IResettableSound {
-
+public class TileSound extends Sound implements IResettableSound 
+{
 	IHasSound source;
 	
 	boolean beginFadeOut;

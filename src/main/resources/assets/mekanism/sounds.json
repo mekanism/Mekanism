@@ -38,6 +38,12 @@
 	"tile.machine.laser": {"category": "block", "sounds": [{"name": "Laser", "stream": false}]},
 	"tile.machine.fusionreactor": {"category": "block", "sounds": [{"name": "FusionReactor", "stream": false}]},
 
+	"tile.christmas.1": {"category": "block", "sounds": [{"name": "holiday/Nutcracker1", "stream": false}]},
+	"tile.christmas.2": {"category": "block", "sounds": [{"name": "holiday/Nutcracker2", "stream": false}]},
+	"tile.christmas.3": {"category": "block", "sounds": [{"name": "holiday/Nutcracker3", "stream": false}]},
+	"tile.christmas.4": {"category": "block", "sounds": [{"name": "holiday/Nutcracker4", "stream": false}]},
+	"tile.christmas.5": {"category": "block", "sounds": [{"name": "holiday/Nutcracker5", "stream": false}]},
+
 	"tile.gen.bio": {"category": "block", "sounds": [{"name": "BioGenerator", "stream": false}]},
 	"tile.gen.gas": {"category": "block", "sounds": [{"name": "GasGenerator", "stream": false}]},
 	"tile.gen.heat": {"category": "block", "sounds": [{"name": "HeatGenerator", "stream": false}]},
