@@ -1,6 +1,15 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -12,7 +21,11 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.util.*;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,14 +34,22 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
-
-import java.util.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration
 {
 	/** This pump's tank */
 	public FluidTank fluidTank = new FluidTank(10000);
+	
+	/** The type of fluid this pump is pumping */
+	public Fluid activeType;
 
 	/** The nodes that have full sources near them or in them */
 	public Set<Coord4D> recurringNodes = new HashSet<Coord4D>();
@@ -121,7 +142,10 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(getEnergy() >= usage.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount + FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
 				{
-					suck(true);
+					if(!suck(true))
+					{
+						reset();
+					}
 				}
 			}
 			else {
@@ -168,11 +192,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 			if(MekanismUtils.isFluid(worldObj, wrapper))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper, hasFilter()).isFluidEqual(fluidTank.getFluid()))
+				FluidStack fluid = MekanismUtils.getFluid(worldObj, wrapper, hasFilter());
+				
+				if((activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 				{
 					if(take)
 					{
 						setEnergy(getEnergy() - usage.electricPumpUsage);
+						activeType = fluid.getFluid();
 						recurringNodes.add(wrapper.clone());
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper, hasFilter()), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -189,11 +216,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			if(MekanismUtils.isFluid(worldObj, wrapper))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper, hasFilter()).isFluidEqual(fluidTank.getFluid()))
+				FluidStack fluid = MekanismUtils.getFluid(worldObj, wrapper, hasFilter());
+				
+				if((activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 				{
 					if(take)
 					{
 						setEnergy(getEnergy() - usage.electricPumpUsage);
+						activeType = fluid.getFluid();
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper, hasFilter()), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
@@ -211,11 +241,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(MekanismUtils.isFluid(worldObj, side))
 					{
-						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side, hasFilter()).isFluidEqual(fluidTank.getFluid()))
+						FluidStack fluid = MekanismUtils.getFluid(worldObj, side, hasFilter());
+						
+						if((activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 						{
 							if(take)
 							{
 								setEnergy(getEnergy() - usage.electricPumpUsage);
+								activeType = fluid.getFluid();
 								recurringNodes.add(side);
 								fluidTank.fill(MekanismUtils.getFluid(worldObj, side, hasFilter()), true);
 								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
@@ -231,6 +264,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		}
 
 		return false;
+	}
+	
+	public void reset()
+	{
+		activeType = null;
+		recurringNodes.clear();
 	}
 
 	@Override
@@ -280,6 +319,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public void writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
+		
+		if(activeType != null)
+		{
+			nbtTags.setString("activeType", FluidRegistry.getFluidName(activeType));
+		}
 
 		if(fluidTank.getFluid() != null)
 		{
@@ -307,6 +351,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);
+		
+		if(nbtTags.hasKey("activeType"))
+		{
+			activeType = FluidRegistry.getFluid(nbtTags.getString("activeType"));
+		}
 
 		if(nbtTags.hasKey("fluidTank"))
 		{
@@ -463,7 +512,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		recurringNodes.clear();
+		reset();
 
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
 
@@ -521,7 +570,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		switch(method)
 		{
 			case 0:
-				recurringNodes.clear();
+				reset();
 				return new Object[] {"Pump calculation reset."};
 			default:
 				throw new NoSuchMethodException();

@@ -1,12 +1,12 @@
 # Mekanism for Minecraft 1.7.10 #
 
-[**Official Website**](http://aidancbrady.com)
+[**Official Website**](http://aidancbrady.com/mekanism/)
 
 Source code.  More information can be found on the [mod's forum post](http://www.minecraftforum.net/topic/1361286-164-mekanism-557-universal-cable-dynamic-tanks-wind-power/).
 
 # About #
 
-Mekanism is a Minecraft add-on featuring special machinery that can be used to create powerful tools, armor, and weapons.  It also includes a gas network that can be implemented by other mods.
+Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.
 
 # Modpacks, websites, reviews, or anything else #
 
@@ -19,7 +19,7 @@ Licenses are not really my friend -- strict closed source software really drives
 However, I welcome people wanting to learn how to mod, and because of this, I have licensed Mekanism under the MIT License, which doesn't include many guidelines.  This basically means you have the right to use my mod's source code, learn
 from it, and even use it in your own mod.  You even have the right to distribute this mod to the public and make money off of it, although this is something I wouldn't necessarily encourage! :)
 
-Copyright © 2015 Aidan Brady
+Copyright © 2016 Aidan Brady
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
