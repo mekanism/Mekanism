@@ -31,6 +31,17 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	{
 		super(name, maxEnergy);
 		
+		if(worldObj.isRemote)
+		{
+			try {
+				registerSound(soundPath);
+			} catch(Throwable t) {}
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private void registerSound(String soundPath)
+	{
 		soundURL = HolidayManager.filterSound(new ResourceLocation("mekanism", "tile." + soundPath));
 	}
 
@@ -104,7 +115,9 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 
 		if(worldObj.isRemote)
 		{
-			initSounds();
+			try {
+				initSounds();
+			} catch(Throwable t) {}
 		}
 	}
 
