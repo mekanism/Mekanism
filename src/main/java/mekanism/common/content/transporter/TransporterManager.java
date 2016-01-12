@@ -1,8 +1,10 @@
 package mekanism.common.content.transporter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -23,7 +25,7 @@ import cpw.mods.fml.common.Loader;
 
 public class TransporterManager
 {
-	public static Set<TransporterStack> flowingStacks = new HashSet<TransporterStack>();
+	public static Map<Coord4D, Set<TransporterStack>> flowingStacks = new HashMap<Coord4D, Set<TransporterStack>>();
 	
 	public static void reset()
 	{
@@ -32,25 +34,40 @@ public class TransporterManager
 
 	public static void add(TransporterStack stack)
 	{
-		flowingStacks.add(stack);
+		Set<TransporterStack> set = new HashSet<TransporterStack>();
+		set.add(stack);
+		
+		if(flowingStacks.get(stack.getDest()) == null)
+		{
+			flowingStacks.put(stack.getDest(), set);
+		}
+		else {
+			flowingStacks.get(stack.getDest()).addAll(set);
+		}
 	}
 
 	public static void remove(TransporterStack stack)
 	{
-		flowingStacks.remove(stack);
+		if(stack.hasPath() && stack.pathType != Path.NONE)
+		{
+			flowingStacks.get(stack.getDest()).remove(stack);
+		}
 	}
 
 	public static List<TransporterStack> getStacksToDest(Coord4D dest)
 	{
 		List<TransporterStack> ret = new ArrayList<TransporterStack>();
 
-		for(TransporterStack stack : flowingStacks)
+		if(flowingStacks.containsKey(dest))
 		{
-			if(stack != null && stack.pathType != Path.NONE && stack.hasPath())
+			for(TransporterStack stack : flowingStacks.get(dest))
 			{
-				if(stack.getDest().equals(dest))
+				if(stack != null && stack.pathType != Path.NONE && stack.hasPath())
 				{
-					ret.add(stack);
+					if(stack.getDest().equals(dest))
+					{
+						ret.add(stack);
+					}
 				}
 			}
 		}

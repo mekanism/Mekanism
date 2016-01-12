@@ -20,7 +20,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -80,7 +79,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 
 					if(stack.hasPath())
 					{
-						int currentIndex = stack.pathToTarget.indexOf(coord());
+						int currentIndex = stack.getPath().indexOf(coord());
 
 						if(currentIndex == 0) //Necessary for transition reasons, not sure why
 						{
@@ -88,7 +87,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 							continue;
 						}
 
-						Coord4D next = stack.pathToTarget.get(currentIndex-1);
+						Coord4D next = stack.getPath().get(currentIndex-1);
 
 						if(!stack.isFinal(this))
 						{
@@ -287,7 +286,6 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			if(doEmit)
 			{
 				transit.add(stack);
-				TransporterManager.add(stack);
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
 				MekanismUtils.saveChunk(getPart().tile());
 			}
@@ -323,7 +321,6 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			if(doEmit)
 			{
 				transit.add(stack);
-				TransporterManager.add(stack);
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
 				MekanismUtils.saveChunk(getPart().tile());
 			}

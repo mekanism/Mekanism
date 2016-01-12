@@ -1,9 +1,10 @@
 package mekanism.common.multipart;
 
-import codechicken.lib.vec.Vector3;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -35,9 +36,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork> implements ITransporterTile
 {
@@ -341,7 +342,6 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 				TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompoundTagAt(i));
 
 				getTransmitter().transit.add(stack);
-				TransporterManager.add(stack);
 			}
 		}
 	}

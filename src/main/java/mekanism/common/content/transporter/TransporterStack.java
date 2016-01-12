@@ -7,7 +7,6 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITransporterTile;
@@ -31,7 +30,7 @@ public class TransporterStack
 	
 	public ForgeDirection idleDir = ForgeDirection.UNKNOWN;
 
-	public List<Coord4D> pathToTarget = new ArrayList<Coord4D>();
+	private List<Coord4D> pathToTarget = new ArrayList<Coord4D>();
 
 	public Coord4D originalLocation;
 	public Coord4D homeLocation;
@@ -150,10 +149,27 @@ public class TransporterStack
 
 		return stack;
 	}
+	
+	public void setPath(List<Coord4D> path)
+	{
+		TransporterManager.remove(this);
+		
+		pathToTarget = path;
+		
+		if(pathType != Path.NONE)
+		{
+			TransporterManager.add(this);
+		}
+	}
 
 	public boolean hasPath()
 	{
-		return pathToTarget != null && pathToTarget.size() >= 2;
+		return getPath() != null && getPath().size() >= 2;
+	}
+	
+	public List<Coord4D> getPath()
+	{
+		return pathToTarget;
 	}
 
 	public ItemStack recalculatePath(ILogisticalTransporter transporter, int min)
@@ -165,9 +181,9 @@ public class TransporterStack
 			return itemStack;
 		}
 
-		pathToTarget = newPath.path;
 		pathType = Path.DEST;
 		idleDir = ForgeDirection.UNKNOWN;
+		setPath(newPath.path);
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -182,9 +198,9 @@ public class TransporterStack
 			return itemStack;
 		}
 
-		pathToTarget = newPath.path;
 		pathType = Path.DEST;
 		idleDir = ForgeDirection.UNKNOWN;
+		setPath(newPath.path);
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -203,8 +219,8 @@ public class TransporterStack
 		{
 			idleDir = ForgeDirection.UNKNOWN;
 		}
-
-		pathToTarget = newPath;
+		
+		setPath(newPath);
 
 		originalLocation = transporter.coord();
 		initiatedPath = true;
@@ -310,7 +326,7 @@ public class TransporterStack
 
 	public Coord4D getDest()
 	{
-		return pathToTarget.get(0);
+		return getPath().get(0);
 	}
 
 	public static enum Path
