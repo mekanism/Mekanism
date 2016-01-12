@@ -51,9 +51,6 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new ChemicalInjectionChamberRecipeHandler());
 		API.registerUsageHandler(new ChemicalInjectionChamberRecipeHandler());
 
-		API.registerRecipeHandler(new MekanismRecipeHandler());
-		API.registerUsageHandler(new MekanismRecipeHandler());
-
 		API.registerRecipeHandler(new ChemicalOxidizerRecipeHandler());
 		API.registerUsageHandler(new ChemicalOxidizerRecipeHandler());
 
@@ -86,6 +83,12 @@ public class NEIMekanismConfig implements IConfigureNEI
 		
 		API.registerRecipeHandler(new SolarNeutronRecipeHandler());
 		API.registerUsageHandler(new SolarNeutronRecipeHandler());
+		
+		API.registerRecipeHandler(new ShapedMekanismRecipeHandler());
+		API.registerUsageHandler(new ShapedMekanismRecipeHandler());
+		
+		API.registerRecipeHandler(new ShapelessMekanismRecipeHandler());
+		API.registerUsageHandler(new ShapelessMekanismRecipeHandler());
 
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);

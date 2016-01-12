@@ -598,6 +598,7 @@ gui.digitalMiner.missingBlock=Missing block
 
 //Recipe names
 recipe.mekanismShaped=Shaped
+recipe.mekanismShapeless=Shapeless
 
 //Item and block tooltip text
 tooltip.configurator.configurate=Configurate

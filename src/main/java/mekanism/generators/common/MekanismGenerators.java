@@ -22,7 +22,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.*;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IModule;
-import mekanism.common.recipe.MekanismRecipe;
+import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Blocks;
@@ -104,45 +104,45 @@ public class MekanismGenerators implements IModule
 	
 	public void addRecipes()
 	{
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 0), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 0), new Object[] {
 			"III", "WOW", "CFC", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "ingotCopper", Character.valueOf('O'), "ingotOsmium", Character.valueOf('F'), Blocks.furnace, Character.valueOf('W'), "plankWood"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 1), new Object[] {
 			"SSS", "AIA", "PEP", Character.valueOf('S'), GeneratorsItems.SolarPanel, Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron", Character.valueOf('P'), "dustOsmium", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 5), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 5), new Object[] {
 			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(GeneratorsBlocks.Generator, 1, 1), Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 4), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 4), new Object[] {
 			"RER", "BCB", "NEN", Character.valueOf('R'), "dustRedstone", Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('B'), MekanismItems.BioFuel, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('N'), "ingotIron"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 3), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 3), new Object[] {
 			"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('C'), MekanismItems.ElectrolyticCore
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsItems.SolarPanel), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsItems.SolarPanel), new Object[] {
 			"GGG", "RAR", "PPP", Character.valueOf('G'), "paneGlass", Character.valueOf('R'), "dustRedstone", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('P'), "ingotOsmium"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 6), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 6), new Object[] {
 			" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
 		}));
 		
 		//Reactor Recipes
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 4, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 4, 1), new Object[] {
 			" C ", "CAC", " C ", Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('A'), "alloyUltimate"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 2, 3), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 2, 3), new Object[] {
 			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 4, 0), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 4, 0), new Object[] {
 			" I ", "IGI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('G'), "blockGlass"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 0), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 0), new Object[] {
 			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank()
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 2, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 2, 1), new Object[] {
 			" I ", "ILI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.ReactorGlass, 1, 0), Character.valueOf('L'), "blockRedstone"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 4), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 4), new Object[] {
 			" R ", "RFR", " R ", Character.valueOf('R'), "dustRedstone", Character.valueOf('F'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1)
 		}));
 
