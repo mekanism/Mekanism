@@ -51,11 +51,13 @@ public class BlockPlasticFence extends BlockFence
     public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
     {
         int meta = world.getBlockMetadata(x, y, z);
-        if (meta != (15 - colour))
+        
+        if(meta != (15 - colour))
         {
             world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
             return true;
         }
+        
         return false;
     }
 
