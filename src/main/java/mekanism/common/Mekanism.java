@@ -90,7 +90,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -1244,35 +1243,6 @@ public class Mekanism
 		
 		//Integrate with Waila
 		FMLInterModComms.sendMessage("Waila", "register", "mekanism.common.integration.WailaDataProvider.register");
-		
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setTag("result", MekanismItems.EnergyTablet.getUnchargedItem().writeToNBT(new NBTTagCompound()));
-		
-		NBTTagList input = new NBTTagList();
-		
-		NBTTagCompound com0 = new NBTTagCompound();
-		com0.setString("pattern", "CS");
-		input.appendTag(com0);
-		
-		NBTTagCompound com5 = new NBTTagCompound();
-		com5.setString("character", "C");
-		input.appendTag(com5);
-		
-		NBTTagCompound com1 = new NBTTagCompound();
-		com1.setTag("itemstack", new ItemStack(Blocks.cobblestone).writeToNBT(new NBTTagCompound()));
-		input.appendTag(com1);
-		
-		NBTTagCompound com4 = new NBTTagCompound();
-		com4.setString("character", "S");
-		input.appendTag(com4);
-		
-		NBTTagCompound com2 = new NBTTagCompound();
-		com2.setTag("itemstack", new ItemStack(Blocks.stone).writeToNBT(new NBTTagCompound()));
-		input.appendTag(com2);
-		
-		compound.setTag("input", input);
-		
-		FMLInterModComms.sendMessage("Mekanism", "ShapedMekanismRecipe", compound);
 
 		//Integrate with OpenComputers
 		if(Loader.isModLoaded("OpenComputers"))
