@@ -21,10 +21,12 @@ public class IMCHandler
 				try {
 					boolean found = false;
 					boolean delete = false;
+					
+					String message = msg.key;
 
-					if(msg.key.startsWith("Delete"))
+					if(message.startsWith("Delete") || message.startsWith("Remove"))
 					{
-						msg.key.replace("Delete", "");
+						message = message.replace("Delete", "").replace("Remove", "");
 						delete = true;
 					}
 
