@@ -370,59 +370,62 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	public boolean buildStructure()
 	{
 		ForgeDirection right = MekanismUtils.getRight(facing);
+		ForgeDirection left = MekanismUtils.getLeft(facing);
 
 		height = 0;
 		controllerConflict = false;
 		updatedThisTick = true;
 		
-		if(!scanBottomLayer())
-		{
-			height = 0;
-			return false; 
-		}
-		
-		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
-		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
+		Coord4D startPoint = Coord4D.get(this);
 		
 		while(startPoint.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
 		{
 			startPoint.step(ForgeDirection.UP);
 		}
+		
+		Coord4D test = startPoint.getFromSide(ForgeDirection.DOWN).getFromSide(right, 2);
+		isLeftOnFace = test.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock;
+		
+		startPoint = startPoint.getFromSide(left, isLeftOnFace ? 1 : 2);
+		
+		if(!scanTopLayer(startPoint))
+		{
+			return false;
+		}
 
-		int middle = 0;
+		height = 1;
 		
 		Coord4D middlePointer = startPoint.getFromSide(ForgeDirection.DOWN);
 		
-		while(scanMiddleLayer(middlePointer))
+		while(scanLowerLayer(middlePointer))
 		{
 			middlePointer = middlePointer.getFromSide(ForgeDirection.DOWN);
-			middle++;
 		}
 		
-		if(height < 3 || height > 18 || middle != height-2)
+		if(height < 3 || height > 18)
 		{
 			height = 0;
 			return false;
 		}
 
-		structured = scanTopLayer(startPoint);
-		height = structured ? height : 0;
+		structured = true;
 		
 		markDirty();
 		
-		return structured;
+		return true;
 	}
 
 	public boolean scanTopLayer(Coord4D current)
 	{
-		ForgeDirection left = MekanismUtils.getLeft(facing);
+		ForgeDirection right = MekanismUtils.getRight(facing);
 		ForgeDirection back = MekanismUtils.getBack(facing);
 
 		for(int x = 0; x < 4; x++)
 		{
 			for(int z = 0; z < 4; z++)
 			{
-				Coord4D pointer = current.getFromSide(left, x).getFromSide(back, z);
+				Coord4D pointer = current.getFromSide(right, x).getFromSide(back, z);
+				TileEntity pointerTile = pointer.getTileEntity(worldObj);
 				
 				int corner = getCorner(x, z);
 				
@@ -432,7 +435,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 					{
 						continue;
 					}
-					else if(!addTankPart(pointer.getTileEntity(worldObj)))
+					else if(pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
 					{
 						return false;
 					}
@@ -446,9 +449,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 						}
 					}
 					else {
-						TileEntity pointerTile = pointer.getTileEntity(worldObj);
-						
-						if(!addTankPart(pointerTile))
+						if(pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
 						{
 							return false;
 						}
@@ -487,103 +488,57 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		return -1;
 	}
 
-	public boolean scanMiddleLayer(Coord4D current)
+	public boolean scanLowerLayer(Coord4D current)
 	{
-		ForgeDirection left = MekanismUtils.getLeft(facing);
+		ForgeDirection right = MekanismUtils.getRight(facing);
 		ForgeDirection back = MekanismUtils.getBack(facing);
+		
+		boolean foundCenter = false;
 
 		for(int x = 0; x < 4; x++)
 		{
 			for(int z = 0; z < 4; z++)
 			{
-				Coord4D pointer = current.getFromSide(left, x).getFromSide(back, z);
+				Coord4D pointer = current.getFromSide(right, x).getFromSide(back, z);
+				TileEntity pointerTile = pointer.getTileEntity(worldObj);
 				
 				if((x == 1 || x == 2) && (z == 1 || z == 2))
 				{
-					if(!pointer.isAirBlock(worldObj))
+					if(pointerTile instanceof TileEntitySolarEvaporationBlock)
 					{
-						return false;
+						if(!foundCenter)
+						{
+							if(x == 1 && z == 1)
+							{
+								foundCenter = true;
+							}
+							else {
+								height = -1;
+								return false;
+							}
+						}
+					}
+					else {
+						if(foundCenter || !pointer.isAirBlock(worldObj))
+						{
+							height = -1;
+							return false;
+						}
 					}
 				}
 				else {
-					TileEntity pointerTile = pointer.getTileEntity(worldObj);
-					
 					if(!addTankPart(pointerTile)) 
 					{
+						height = -1;
 						return false;
 					}
 				}
 			}
 		}
 
-		return true;
-	}
-
-	public boolean scanBottomLayer()
-	{
-		height = 1;
-		Coord4D baseBlock = Coord4D.get(this);
+		height++;
 		
-		while(baseBlock.getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
-		{
-			baseBlock.step(ForgeDirection.DOWN);
-			height++;
-		}
-
-		ForgeDirection left = MekanismUtils.getLeft(facing);
-		ForgeDirection right = MekanismUtils.getRight(facing);
-
-		if(!scanBottomRow(baseBlock)) 
-		{
-			return false;
-		};
-		
-		if(!scanBottomRow(baseBlock.getFromSide(left))) 
-		{
-			return false;
-		};
-		
-		if(!scanBottomRow(baseBlock.getFromSide(right))) 
-		{
-			return false;
-		};
-
-		boolean twoLeft = scanBottomRow(baseBlock.getFromSide(left).getFromSide(left));
-		boolean twoRight = scanBottomRow(baseBlock.getFromSide(right).getFromSide(right));
-
-		if(twoLeft == twoRight) 
-		{
-			return false;
-		}
-
-		isLeftOnFace = twoRight;
-		
-		return true;
-	}
-
-	/**
-	 * Scans the bottom row of this multiblock, going in a line across the base.
-	 * @param start
-	 * @return
-	 */
-	public boolean scanBottomRow(Coord4D start)
-	{
-		ForgeDirection back = MekanismUtils.getBack(facing);
-		Coord4D current = start;
-
-		for(int i = 1; i <= 4; i++)
-		{
-			TileEntity tile = current.getTileEntity(worldObj);
-			
-			if(!addTankPart(tile)) 
-			{
-				return false;
-			}
-			
-			current = current.getFromSide(back);
-		}
-
-		return true;
+		return !foundCenter;
 	}
 
 	public boolean addTankPart(TileEntity tile)
@@ -806,7 +761,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	@Override
 	public boolean renderUpdate()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

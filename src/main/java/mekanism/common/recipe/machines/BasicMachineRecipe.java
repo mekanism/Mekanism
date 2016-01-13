@@ -28,7 +28,5 @@ public abstract class BasicMachineRecipe<RECIPE extends BasicMachineRecipe<RECIP
 		{
 			getOutput().applyOutputs(inventory, outputIndex, true);
 		}
-
-
 	}
 }
