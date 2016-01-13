@@ -25,7 +25,6 @@ import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemCoal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -492,6 +491,21 @@ public class FusionReactor implements IFusionReactor
 	public void setInjectionRate(int rate)
 	{
 		injectionRate = rate;
+		
+		int capRate = Math.max(1, rate);
+		
+		controller.waterTank.setCapacity(TileEntityReactorController.MAX_WATER*capRate);
+		controller.steamTank.setCapacity(TileEntityReactorController.MAX_STEAM*capRate);
+		
+		if(controller.waterTank.getFluid() != null)
+		{
+			controller.waterTank.getFluid().amount = Math.min(controller.waterTank.getFluid().amount, controller.waterTank.getCapacity());
+		}
+		
+		if(controller.steamTank.getFluid() != null)
+		{
+			controller.steamTank.getFluid().amount = Math.min(controller.steamTank.getFluid().amount, controller.steamTank.getCapacity());
+		}
 	}
 
 	@Override
