@@ -11,12 +11,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityBoilerValve extends TileEntityBoiler implements IFluidHandler
+public class TileEntityThermoelectricValve extends TileEntityThermoelectricBoiler implements IFluidHandler
 {
 	public BoilerTank waterTank;
 	public BoilerTank steamTank;
 
-	public TileEntityBoilerValve()
+	public TileEntityThermoelectricValve()
 	{
 		super("Boiler Valve");
 		waterTank = new BoilerWaterTank(this);

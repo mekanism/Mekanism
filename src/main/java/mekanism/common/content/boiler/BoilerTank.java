@@ -2,7 +2,7 @@ package mekanism.common.content.boiler;
 
 import mekanism.api.Coord4D;
 import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
-import mekanism.common.tile.TileEntityBoiler;
+import mekanism.common.tile.TileEntityThermoelectricBoiler;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraftforge.fluids.FluidStack;
@@ -11,9 +11,9 @@ import net.minecraftforge.fluids.IFluidTank;
 
 public abstract class BoilerTank implements IFluidTank
 {
-	public TileEntityBoiler steamBoiler;
+	public TileEntityThermoelectricBoiler steamBoiler;
 
-	public BoilerTank(TileEntityBoiler tileEntity)
+	public BoilerTank(TileEntityThermoelectricBoiler tileEntity)
 	{
 		steamBoiler = tileEntity;
 	}

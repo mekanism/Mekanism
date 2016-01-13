@@ -1,12 +1,12 @@
 package mekanism.common.content.boiler;
 
-import mekanism.common.tile.TileEntityBoiler;
+import mekanism.common.tile.TileEntityThermoelectricBoiler;
 
 import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerSteamTank extends BoilerTank
 {
-	public BoilerSteamTank(TileEntityBoiler tileEntity)
+	public BoilerSteamTank(TileEntityThermoelectricBoiler tileEntity)
 	{
 		super(tileEntity);
 	}
