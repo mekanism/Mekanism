@@ -309,6 +309,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		return getReactor() != null && getReactor().isFormed() ? getReactor().getInventory()[slotID] : null;
 	}
+	
+	@Override
+	public int getSizeInventory()
+	{
+		return getReactor() != null && getReactor().isFormed() ? 1 : 0;
+	}
 
 	@Override
 	public void setInventorySlotContents(int slotID, ItemStack itemstack)
