@@ -4,14 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 {
-	public TileEntitySolarEvaporationController master;
+	public Coord4D master;
 	
 	public boolean attempted;
 
@@ -40,7 +40,7 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 		attempted = false;
 	}
 
-	public void addToStructure(TileEntitySolarEvaporationController controller)
+	public void addToStructure(Coord4D controller)
 	{
 		master = controller;
 	}
@@ -57,7 +57,12 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 
 		if(master != null)
 		{
-			master.refresh();
+			TileEntitySolarEvaporationController tile = getController();
+			
+			if(tile != null)
+			{
+				((TileEntitySolarEvaporationController)tile).refresh();
+			}
 		}
 	}
 
@@ -68,9 +73,11 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 
 		if(!worldObj.isRemote)
 		{
-			if(master != null)
+			TileEntitySolarEvaporationController tile = getController();
+			
+			if(tile != null)
 			{
-				master.refresh();
+				((TileEntitySolarEvaporationController)tile).refresh();
 			}
 			else {
 				updateController();
@@ -89,6 +96,21 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 				found.refresh();
 			}
 		}
+	}
+	
+	public TileEntitySolarEvaporationController getController()
+	{
+		if(master != null)
+		{
+			TileEntity tile = master.getTileEntity(worldObj);
+			
+			if(tile instanceof TileEntitySolarEvaporationController)
+			{
+				return (TileEntitySolarEvaporationController)tile;
+			}
+		}
+		
+		return null;
 	}
 	
 	public class ControllerFinder

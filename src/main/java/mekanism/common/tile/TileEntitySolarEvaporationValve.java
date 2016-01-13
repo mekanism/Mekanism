@@ -39,15 +39,18 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		return master == null ? 0 : master.inputTank.fill(resource, doFill);
+		TileEntitySolarEvaporationController controller = getController();
+		return controller == null ? 0 : controller.inputTank.fill(resource, doFill);
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(master != null && (resource == null || resource.isFluidEqual(master.outputTank.getFluid())))
+		TileEntitySolarEvaporationController controller = getController();
+		
+		if(controller != null && (resource == null || resource.isFluidEqual(controller.outputTank.getFluid())))
 		{
-			return master.outputTank.drain(resource.amount, doDrain);
+			return controller.outputTank.drain(resource.amount, doDrain);
 		}
 
 		return null;
@@ -56,9 +59,11 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		if(master != null)
+		TileEntitySolarEvaporationController controller = getController();
+		
+		if(controller != null)
 		{
-			return master.outputTank.drain(maxDrain, doDrain);
+			return controller.outputTank.drain(maxDrain, doDrain);
 		}
 
 		return null;
@@ -67,23 +72,27 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return master != null && master.hasRecipe(fluid);
+		TileEntitySolarEvaporationController controller = getController();
+		return controller != null && controller.hasRecipe(fluid);
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return master != null && master.outputTank.getFluidAmount() > 0;
+		TileEntitySolarEvaporationController controller = getController();
+		return controller != null && controller.outputTank.getFluidAmount() > 0;
 	}
 
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(master == null)
+		TileEntitySolarEvaporationController controller = getController();
+		
+		if(controller == null)
 		{
 			return PipeUtils.EMPTY;
 		}
 
-		return new FluidTankInfo[] {new FluidTankInfo(master.inputTank), new FluidTankInfo(master.outputTank)};
+		return new FluidTankInfo[] {new FluidTankInfo(controller.inputTank), new FluidTankInfo(controller.outputTank)};
 	}
 }

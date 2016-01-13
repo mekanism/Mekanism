@@ -43,7 +43,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	public FluidTank inputTank = new FluidTank(0);
 	public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
 
-	public Set<TileEntitySolarEvaporationBlock> tankParts = new HashSet<TileEntitySolarEvaporationBlock>();
+	public Set<Coord4D> tankParts = new HashSet<Coord4D>();
 	public ISalinationSolar[] solars = new ISalinationSolar[4];
 
 	public boolean temperatureSet = false;
@@ -547,8 +547,8 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		{
 			if(tile != this)
 			{
-				((TileEntitySolarEvaporationBlock)tile).addToStructure(this);
-				tankParts.add((TileEntitySolarEvaporationBlock)tile);
+				((TileEntitySolarEvaporationBlock)tile).addToStructure(Coord4D.get(this));
+				tankParts.add(Coord4D.get(tile));
 			}
 			
 			return true;
@@ -730,9 +730,14 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 	public void clearStructure()
 	{
-		for(TileEntitySolarEvaporationBlock tankPart : tankParts)
+		for(Coord4D tankPart : tankParts)
 		{
-			tankPart.controllerGone();
+			TileEntity tile = tankPart.getTileEntity(worldObj);
+			
+			if(tile instanceof TileEntitySolarEvaporationBlock)
+			{
+				((TileEntitySolarEvaporationBlock)tile).controllerGone();
+			}
 		}
 		
 		tankParts.clear();
