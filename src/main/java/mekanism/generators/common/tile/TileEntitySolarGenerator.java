@@ -1,8 +1,10 @@
 package mekanism.generators.common.tile;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -10,9 +12,8 @@ import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator
 {
@@ -83,7 +84,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert;
+		return worldObj.provider.getBiomeGenForCoords(xCoord, zCoord).getBiomeClass() == BiomeGenDesert.class;
 	}
 
 	@Override
