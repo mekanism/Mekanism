@@ -10,7 +10,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItems;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,11 +33,13 @@ public class ItemMekanismArmor extends ItemArmor
 		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
 
+/*
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}
+*/
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
@@ -80,7 +81,7 @@ public class ItemMekanismArmor extends ItemArmor
     		return new ItemStack(MekanismItems.Ingot, 1, 4);
     	}
     	
-    	return new ItemStack(getArmorMaterial().func_151685_b());
+    	return new ItemStack(getArmorMaterial().getRepairItem());
     }
 
 	@Override

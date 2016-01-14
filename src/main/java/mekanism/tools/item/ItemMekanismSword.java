@@ -4,7 +4,6 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -23,9 +22,11 @@ public class ItemMekanismSword extends ItemSword
 		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
 
+/*
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}
+*/
 }

@@ -2,6 +2,8 @@ package mekanism.tools.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
@@ -13,9 +15,9 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int meta)
+	public float getDigSpeed(ItemStack stack, IBlockState blockState)
 	{
-		return block != Blocks.bedrock ? efficiencyOnProperMaterial : 1.0F;
+		return blockState.getBlock() != Blocks.bedrock ? efficiencyOnProperMaterial : 1.0F;
 	}
 
 	@Override

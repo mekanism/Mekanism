@@ -2,6 +2,7 @@ package mekanism.tools.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
@@ -61,14 +62,14 @@ public class ItemMekanismPickaxe extends ItemMekanismTool
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack itemstack, Block block, int meta)
+	public float getDigSpeed(ItemStack itemstack, IBlockState blockState)
 	{
-		if(block != null && (block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil || block.getMaterial() == Material.rock))
+		if(blockState != null && blockState.getBlock() != null && (blockState.getBlock().getMaterial() == Material.iron || blockState.getBlock().getMaterial() == Material.anvil || blockState.getBlock().getMaterial() == Material.rock))
 		{
 			return efficiencyOnProperMaterial;
 		}
 		else {
-			return super.getDigSpeed(itemstack, block, meta);
+			return super.getDigSpeed(itemstack, blockState);
 		}
 	}
 

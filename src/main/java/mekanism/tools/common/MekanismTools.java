@@ -390,7 +390,7 @@ public class MekanismTools implements IModule
 		);
 
 		//Armors
-		armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN"
+		armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", "TODO"
 				, Mekanism.configuration.get("tools.armor-balance.obsidian", "durability", 50).getInt()
 				, new int[]
 				{
@@ -401,7 +401,7 @@ public class MekanismTools implements IModule
 				}
 				, Mekanism.configuration.get("tools.armor-balance.obsidian", "enchantability", 40).getInt()
 		);
-		armorLAZULI = EnumHelper.addArmorMaterial("LAZULI"
+		armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", "TODO"
 				, Mekanism.configuration.get("tools.armor-balance.lapis", "durability", 13).getInt()
 				, new int[]
 				{
@@ -412,7 +412,7 @@ public class MekanismTools implements IModule
 				}
 				, Mekanism.configuration.get("tools.armor-balance.lapis", "enchantability", 8).getInt()
 		);
-		armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM"
+		armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", "TODO"
 				, Mekanism.configuration.get("tools.armor-balance.osmium", "durability", 30).getInt()
 				, new int[]
 				{
@@ -423,7 +423,7 @@ public class MekanismTools implements IModule
 				}
 				, Mekanism.configuration.get("tools.armor-balance.osmium", "enchantability", 12).getInt()
 		);
-		armorBRONZE = EnumHelper.addArmorMaterial("BRONZE"
+		armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", "TODO"
 				, Mekanism.configuration.get("tools.armor-balance.bronze", "durability", 35).getInt()
 				, new int[]
 				{
@@ -434,7 +434,7 @@ public class MekanismTools implements IModule
 				}
 				, Mekanism.configuration.get("tools.armor-balance.bronze", "enchantability", 10).getInt()
 		);
-		armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE"
+		armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", "TODO"
 				, Mekanism.configuration.get("tools.armor-balance.glowstone", "durability", 18).getInt()
 				, new int[]
 				{
@@ -445,7 +445,7 @@ public class MekanismTools implements IModule
 				}
 				, Mekanism.configuration.get("tools.armor-balance.glowstone", "enchantability", 18).getInt()
 		);
-		armorSTEEL = EnumHelper.addArmorMaterial("STEEL"
+		armorSTEEL = EnumHelper.addArmorMaterial("STEEL", "TODO"
 				, Mekanism.configuration.get("tools.armor-balance.steel", "durability", 40).getInt()
 				, new int[]
 				{

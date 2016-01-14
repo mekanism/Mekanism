@@ -10,7 +10,6 @@ import mekanism.common.MekanismItems;
 import mekanism.common.util.LangUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -68,12 +67,14 @@ public class ItemMekanismTool extends ItemTool
     		return new ItemStack(MekanismItems.Ingot, 1, 4);
     	}
     	
-    	return new ItemStack(material.func_150995_f());
+    	return material.getRepairItemStack();
     }
 
+/*
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}
+*/
 }

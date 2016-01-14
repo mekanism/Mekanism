@@ -6,10 +6,14 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
@@ -37,14 +41,14 @@ public class ItemMekanismHoe extends ItemMekanism
     }
 
 	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float entityX, float entityY, float entityZ)
+	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, BlockPos pos, EnumFacing side, float entityX, float entityY, float entityZ)
 	{
-		if(!entityplayer.canPlayerEdit(x, y, z, side, itemstack))
+		if(!entityplayer.canPlayerEdit(pos, side, itemstack))
 		{
 			return false;
 		}
 		else {
-			UseHoeEvent event = new UseHoeEvent(entityplayer, itemstack, world, x, y, z);
+			UseHoeEvent event = new UseHoeEvent(entityplayer, itemstack, world, pos);
 
 			if(MinecraftForge.EVENT_BUS.post(event))
 			{
@@ -57,23 +61,23 @@ public class ItemMekanismHoe extends ItemMekanism
 				return true;
 			}
 
-			Block blockID = world.getBlock(x, y, z);
-			Block aboveBlock = world.getBlock(x, y + 1, z);
+			Block blockID = world.getBlockState(pos).getBlock();
+			Block aboveBlock = world.getBlockState(pos.add(0, 1, 0)).getBlock();
 
-			if((side == 0 || !aboveBlock.isAir(world, x, y, z+1) || blockID != Blocks.grass) && blockID != Blocks.dirt)
+			if((side == EnumFacing.DOWN || !aboveBlock.isAir(world, pos.add(0, 1, 0)) || blockID != Blocks.grass) && blockID != Blocks.dirt)
 			{
 				return false;
 			}
 			else {
-				Block block = Blocks.farmland;
-				world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.getStepResourcePath(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
+				IBlockState block = Blocks.farmland.getDefaultState();
+				world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, block.getBlock().stepSound.getStepSound(), (block.getBlock().stepSound.getVolume() + 1.0F) / 2.0F, block.getBlock().stepSound.getFrequency() * 0.8F);
 
 				if(world.isRemote)
 				{
 					return true;
 				}
 				else {
-					world.setBlock(x, y, z, block);
+					world.setBlockState(pos, block);
 					itemstack.damageItem(1, entityplayer);
 					return true;
 				}
