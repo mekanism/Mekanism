@@ -29,7 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderConfigurableMachine extends TileEntitySpecialRenderer
+public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntitySpecialRenderer<S>
 {
 	private Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -41,16 +41,10 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((ISideConfiguration)tileEntity, x, y, z, partialTick);
-	}
-
-	public void renderAModelAt(ISideConfiguration configurable, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(S configurable, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 
-		TileEntity tileEntity = (TileEntity)configurable;
 		EntityPlayer player = mc.thePlayer;
 		World world = mc.thePlayer.worldObj;
 		ItemStack itemStack = player.getCurrentEquippedItem();
@@ -62,12 +56,12 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			int yPos = MathHelper.floor_double(pos.blockY);
 			int zPos = MathHelper.floor_double(pos.blockZ);
 
-			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.getWorldObj().provider.dimensionId);
+			Coord4D obj = new Coord4D(xPos, yPos, zPos, configurable.getWorldObj().provider.dimensionId);
 			TransmissionType type = ((ItemConfigurator)itemStack.getItem()).getState(itemStack).getTransmission();
 
 			if(configurable.getConfig().supports(type))
 			{
-				if(xPos == tileEntity.xCoord && yPos == tileEntity.yCoord && zPos == tileEntity.zCoord)
+				if(xPos == configurable.xCoord && yPos == configurable.yCoord && zPos == configurable.zCoord)
 				{
 					EnumColor color = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation()).color;
 	

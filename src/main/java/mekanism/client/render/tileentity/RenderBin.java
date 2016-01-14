@@ -22,19 +22,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderBin extends TileEntitySpecialRenderer
+public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 {
 	private final RenderBlocks renderBlocks = new RenderBlocks();
 	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityBin)tileEntity, x, y, z, partialTick);
-	}
-
-	@SuppressWarnings("incomplete-switch")
-	private void renderAModelAt(TileEntityBin tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(tileEntity instanceof TileEntityBin)
 		{

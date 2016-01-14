@@ -24,18 +24,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderDynamicTank extends TileEntitySpecialRenderer
+public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank>
 {
 	private static Map<RenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<RenderData, HashMap<Fluid, DisplayInteger[]>>();
 	private static Map<ValveRenderData, HashMap<Fluid, DisplayInteger>> cachedValveFluids = new HashMap<ValveRenderData, HashMap<Fluid, DisplayInteger>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityDynamicTank)tileEntity, x, y, z, partialTick);
-	}
-
-	public void renderAModelAt(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
 		{

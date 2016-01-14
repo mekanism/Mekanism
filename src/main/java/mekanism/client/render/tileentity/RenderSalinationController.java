@@ -22,17 +22,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderSalinationController extends TileEntitySpecialRenderer
+public class RenderSalinationController extends TileEntitySpecialRenderer<TileEntitySolarEvaporationController>
 {
 	private static Map<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntitySolarEvaporationController)tileEntity, x, y, z, partialTick);
-	}
-
-	public void renderAModelAt(TileEntitySolarEvaporationController tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntitySolarEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(tileEntity.structured && tileEntity.inputTank.getFluid() != null)
 		{

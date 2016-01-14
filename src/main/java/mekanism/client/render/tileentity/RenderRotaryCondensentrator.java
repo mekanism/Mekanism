@@ -4,6 +4,7 @@ import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -13,17 +14,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderRotaryCondensentrator extends TileEntitySpecialRenderer
+public class RenderRotaryCondensentrator extends TileEntitySpecialRenderer<TileEntityRotaryCondensentrator>
 {
 	private ModelRotaryCondensentrator model = new ModelRotaryCondensentrator();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityRotaryCondensentrator)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityRotaryCondensentrator tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityRotaryCondensentrator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderPortableTank extends TileEntitySpecialRenderer
+public class RenderPortableTank extends TileEntitySpecialRenderer<TileEntityPortableTank>
 {
 	private static Map<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<Fluid, DisplayInteger[]>();
 	private static Map<Fluid, DisplayInteger[]> cachedValveFluids = new HashMap<Fluid, DisplayInteger[]>();
@@ -31,12 +31,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 	private ModelPortableTank model = new ModelPortableTank();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityPortableTank)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityPortableTank tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityPortableTank tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		Fluid fluid = tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid() : null;
 		render(fluid, tileEntity.prevScale, tileEntity.isActive, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);

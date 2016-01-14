@@ -18,17 +18,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderTeleporter extends TileEntitySpecialRenderer
+public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTeleporter>
 {
 	private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<Integer, DisplayInteger>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityTeleporter)tileEntity, x, y, z, partialTick);
-	}
-
-	public void renderAModelAt(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(tileEntity.shouldRender)
 		{

@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderChemicalOxidizer extends TileEntitySpecialRenderer
+public class RenderChemicalOxidizer extends TileEntitySpecialRenderer<TileEntityChemicalOxidizer>
 {
 	private ModelChemicalOxidizer model = new ModelChemicalOxidizer();
 
@@ -28,12 +28,7 @@ public class RenderChemicalOxidizer extends TileEntitySpecialRenderer
 	private Map<ForgeDirection, HashMap<Gas, DisplayInteger>> cachedGasses = new HashMap<ForgeDirection, HashMap<Gas, DisplayInteger>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityChemicalOxidizer)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityChemicalOxidizer tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityChemicalOxidizer tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		render(false, x, y, z, tileEntity);
 

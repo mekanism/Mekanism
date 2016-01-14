@@ -11,17 +11,12 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderLaserTractorBeam extends TileEntitySpecialRenderer
+public class RenderLaserTractorBeam extends TileEntitySpecialRenderer<TileEntityLaserTractorBeam>
 {
 	private ModelLaserAmplifier model = new ModelLaserAmplifier();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityLaserTractorBeam)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityLaserTractorBeam tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityLaserTractorBeam tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

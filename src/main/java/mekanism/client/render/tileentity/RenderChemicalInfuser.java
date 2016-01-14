@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderChemicalInfuser extends TileEntitySpecialRenderer
+public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityChemicalInfuser>
 {
 	private ModelChemicalInfuser model = new ModelChemicalInfuser();
 
@@ -28,13 +28,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer
 	private Map<ForgeDirection, HashMap<Gas, DisplayInteger>> cachedGasses = new HashMap<ForgeDirection, HashMap<Gas, DisplayInteger>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityChemicalInfuser)tileEntity, x, y, z, partialTick);
-	}
-
-	@SuppressWarnings("incomplete-switch")
-	private void renderAModelAt(TileEntityChemicalInfuser tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityChemicalInfuser tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		render(false, x, y, z, tileEntity);
 

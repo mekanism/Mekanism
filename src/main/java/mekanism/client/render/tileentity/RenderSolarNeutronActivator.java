@@ -1,13 +1,15 @@
 package mekanism.client.render.tileentity;
 
+import java.io.IOException;
+
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.obj.OBJLoader;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,22 +17,22 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer
+public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer<TileEntitySolarNeutronActivator>
 {
-	private IModelCustom model;
+	private IModel model;
 	
 	public RenderSolarNeutronActivator()
 	{
-		model = AdvancedModelLoader.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "solar_tri.obj"));
+		try
+		{
+			model = OBJLoader.instance.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "solar_tri.obj"));
+		}
+		catch(IOException e)
+		{}
 	}
 	
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntitySolarNeutronActivator)tileEntity, x, y, z, partialTick);
-	}
-	
-	private void renderAModelAt(TileEntitySolarNeutronActivator tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntitySolarNeutronActivator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x+0.5F, (float)y, (float)z+0.5F);

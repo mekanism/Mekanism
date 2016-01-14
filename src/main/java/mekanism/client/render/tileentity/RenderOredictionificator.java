@@ -13,17 +13,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderOredictionificator extends TileEntitySpecialRenderer
+public class RenderOredictionificator extends TileEntitySpecialRenderer<TileEntityOredictionificator>
 {
 	private ModelMetallurgicInfuser model = new ModelMetallurgicInfuser();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityOredictionificator)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityOredictionificator tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityOredictionificator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

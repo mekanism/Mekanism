@@ -13,17 +13,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderElectricChest extends TileEntitySpecialRenderer
+public class RenderElectricChest extends TileEntitySpecialRenderer<TileEntityElectricChest>
 {
 	private ModelChest model = new ModelChest();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityElectricChest)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityElectricChest tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityElectricChest tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x, (float)y + 1.0F, (float)z);
