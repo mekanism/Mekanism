@@ -6,24 +6,18 @@ import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer
+public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer<TileEntityAdvancedSolarGenerator>
 {
 	private ModelAdvancedSolarGenerator model = new ModelAdvancedSolarGenerator();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityAdvancedSolarGenerator)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityAdvancedSolarGenerator tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityAdvancedSolarGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

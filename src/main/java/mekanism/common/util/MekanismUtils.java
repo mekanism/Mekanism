@@ -2,8 +2,8 @@ package mekanism.common.util;
 
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.registry.GameData;
 import ic2.api.energy.EnergyNet;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;

@@ -7,4 +7,4 @@
 @API( owner="ComputerCraft", provides="ComputerCraft|API|Lua", apiVersion="1.65" )
 package dan200.computercraft.api.lua;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;

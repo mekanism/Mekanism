@@ -4,7 +4,7 @@ import mekanism.common.Mekanism;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
-import cpw.mods.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.GuiConfig;
 
 /**
  * Created by ben on 27/06/14.

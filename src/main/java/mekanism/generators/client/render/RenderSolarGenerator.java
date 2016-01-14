@@ -10,17 +10,12 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderSolarGenerator extends TileEntitySpecialRenderer
+public class RenderSolarGenerator extends TileEntitySpecialRenderer<TileEntitySolarGenerator>
 {
 	private ModelSolarGenerator model = new ModelSolarGenerator();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntitySolarGenerator)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntitySolarGenerator tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntitySolarGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

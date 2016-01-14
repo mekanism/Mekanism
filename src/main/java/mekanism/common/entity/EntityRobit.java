@@ -38,7 +38,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
-import cpw.mods.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Interface;
 
 import cofh.api.energy.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;

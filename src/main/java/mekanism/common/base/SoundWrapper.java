@@ -5,8 +5,8 @@ import mekanism.client.sound.IResettableSound;
 import mekanism.client.sound.ISoundSource;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.sound.TileSound;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SoundWrapper
 {

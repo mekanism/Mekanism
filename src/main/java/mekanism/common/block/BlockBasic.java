@@ -1,9 +1,9 @@
 package mekanism.common.block;
 
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;

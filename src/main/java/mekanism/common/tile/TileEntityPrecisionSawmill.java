@@ -10,8 +10,8 @@ import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillRecipe>
 {

@@ -3,8 +3,8 @@ package mekanism.generators.common;
 import mekanism.common.item.ItemMekanism;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.item.Item;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder("MekanismGenerators")
 public class GeneratorsItems

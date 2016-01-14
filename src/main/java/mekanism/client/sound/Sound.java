@@ -4,8 +4,8 @@ import mekanism.api.MekanismConfig.client;
 
 import net.minecraft.client.audio.ISound;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Generic ISound class with lots of constructor functionality.

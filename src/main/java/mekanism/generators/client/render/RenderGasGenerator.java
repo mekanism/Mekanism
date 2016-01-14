@@ -7,23 +7,18 @@ import mekanism.generators.common.tile.TileEntityGasGenerator;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderGasGenerator extends TileEntitySpecialRenderer
+public class RenderGasGenerator extends TileEntitySpecialRenderer<TileEntityGasGenerator>
 {
 	private ModelGasGenerator model = new ModelGasGenerator();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityGasGenerator)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityGasGenerator tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityGasGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

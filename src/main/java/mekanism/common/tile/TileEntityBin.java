@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Interface;
 import io.netty.buffer.ByteBuf;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 

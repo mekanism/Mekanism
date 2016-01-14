@@ -7,9 +7,9 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITankManager.DropperHandler;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMessage>
 {

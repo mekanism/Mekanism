@@ -11,8 +11,8 @@ import mekanism.tools.item.ItemMekanismSword;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder("MekanismTools")
 public class ToolsItems

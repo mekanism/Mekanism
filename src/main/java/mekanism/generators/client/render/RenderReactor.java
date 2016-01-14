@@ -10,23 +10,18 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderReactor extends TileEntitySpecialRenderer
+public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorController>
 {
 	private ModelEnergyCore core = new ModelEnergyCore();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityReactorController)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(tileEntity.isBurning())
 		{

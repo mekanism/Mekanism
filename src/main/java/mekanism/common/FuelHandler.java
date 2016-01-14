@@ -8,7 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
-import cpw.mods.fml.common.ModAPIManager;
+import net.minecraftforge.fml.common.ModAPIManager;
 
 public class FuelHandler
 {

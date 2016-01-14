@@ -10,8 +10,8 @@ import java.net.Socket;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.sound.sampled.AudioFormat;
 
