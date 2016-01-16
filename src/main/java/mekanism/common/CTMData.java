@@ -126,7 +126,7 @@ public class CTMData
 	{
 		Coord4D obj = new Coord4D(x, y, z);
 		Block coordBlock = obj.getBlock(world);
-		int coordMeta = obj.getMetadata(world);
+		int coordMeta = obj.getBlockState(world);
 		boolean valid = false;
 
 		for(Entry<Block, List<Integer>> entry : acceptableBlockMetas.entrySet())

@@ -505,7 +505,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 		}
 		else
 		{
-			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+			TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 			if(adj instanceof IHeatTransfer)
 			{
 				return (IHeatTransfer)adj;
@@ -522,7 +522,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 			return side == innerSide;
 		}
 
-		if(!Coord4D.get(this).getFromSide(side).getBlock(worldObj).isAir(worldObj, xCoord, yCoord, zCoord))
+		if(!Coord4D.get(this).offset(side).getBlock(worldObj).isAir(worldObj, xCoord, yCoord, zCoord))
 		{
 			return false;
 		}

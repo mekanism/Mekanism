@@ -70,7 +70,7 @@ public class SparkleAnimation
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Coord4D coord = Coord4D.get(tileEntity).getFromSide(side);
+			Coord4D coord = Coord4D.get(tileEntity).offset(side);
 			
 			if(coord.exists(pointer.getWorldObj()))
 			{

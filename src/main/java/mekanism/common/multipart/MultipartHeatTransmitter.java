@@ -80,7 +80,7 @@ public class MultipartHeatTransmitter extends MultipartTransmitter<IHeatTransfer
 	{
 		if(getPart().connectionMapContainsSide(getPart().getAllCurrentConnections(), side))
 		{
-			TileEntity adj = coord().getFromSide(side).getTileEntity(world());
+			TileEntity adj = coord().offset(side).getTileEntity(world());
 			if(adj instanceof IHeatTransfer)
 			{
 				return (IHeatTransfer)adj;

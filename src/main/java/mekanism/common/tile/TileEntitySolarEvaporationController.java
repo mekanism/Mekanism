@@ -378,15 +378,15 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		Coord4D startPoint = Coord4D.get(this);
 		
-		while(startPoint.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
+		while(startPoint.offset(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
 		{
 			startPoint.step(ForgeDirection.UP);
 		}
 		
-		Coord4D test = startPoint.getFromSide(ForgeDirection.DOWN).getFromSide(right, 2);
+		Coord4D test = startPoint.offset(ForgeDirection.DOWN).offset(right, 2);
 		isLeftOnFace = test.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock;
 		
-		startPoint = startPoint.getFromSide(left, isLeftOnFace ? 1 : 2);
+		startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
 		
 		if(!scanTopLayer(startPoint))
 		{
@@ -395,11 +395,11 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 		height = 1;
 		
-		Coord4D middlePointer = startPoint.getFromSide(ForgeDirection.DOWN);
+		Coord4D middlePointer = startPoint.offset(ForgeDirection.DOWN);
 		
 		while(scanLowerLayer(middlePointer))
 		{
-			middlePointer = middlePointer.getFromSide(ForgeDirection.DOWN);
+			middlePointer = middlePointer.offset(ForgeDirection.DOWN);
 		}
 		
 		if(height < 3 || height > 18)
@@ -424,7 +424,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		{
 			for(int z = 0; z < 4; z++)
 			{
-				Coord4D pointer = current.getFromSide(right, x).getFromSide(back, z);
+				Coord4D pointer = current.offset(right, x).offset(back, z);
 				TileEntity pointerTile = pointer.getTileEntity(worldObj);
 				
 				int corner = getCorner(x, z);
@@ -435,7 +435,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 					{
 						continue;
 					}
-					else if(pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
+					else if(pointer.offset(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
 					{
 						return false;
 					}
@@ -449,7 +449,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 						}
 					}
 					else {
-						if(pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
+						if(pointer.offset(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
 						{
 							return false;
 						}
@@ -499,7 +499,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		{
 			for(int z = 0; z < 4; z++)
 			{
-				Coord4D pointer = current.getFromSide(right, x).getFromSide(back, z);
+				Coord4D pointer = current.offset(right, x).offset(back, z);
 				TileEntity pointerTile = pointer.getTileEntity(worldObj);
 				
 				if((x == 1 || x == 2) && (z == 1 || z == 2))
@@ -598,10 +598,10 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		}
 		
 		ForgeDirection right = MekanismUtils.getRight(facing);
-		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
-		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
+		Coord4D startPoint = Coord4D.get(this).offset(right);
+		startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
 		
-		startPoint = startPoint.getFromSide(right.getOpposite()).getFromSide(MekanismUtils.getBack(facing));
+		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing));
 		startPoint.translate(0, -(height-2), 0);
 		
 		return startPoint;

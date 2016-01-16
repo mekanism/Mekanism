@@ -193,7 +193,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Coord4D coord = Coord4D.get(this).getFromSide(side);
+			Coord4D coord = Coord4D.get(this).offset(side);
 			
 			if(isLava(coord.xCoord, coord.yCoord, coord.zCoord))
 			{
@@ -425,7 +425,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(canConnectHeat(side))
 		{
-			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+			TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 			
 			if(adj instanceof IHeatTransfer)
 			{

@@ -11,7 +11,7 @@ import mekanism.api.transmitters.TransmissionType;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * A handy class containing several utilities for efficient gas transfer.
@@ -29,9 +29,9 @@ public final class GasTransmission
 	{
 		IGasHandler[] acceptors = new IGasHandler[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(acceptor instanceof IGasHandler)
 			{
@@ -51,9 +51,9 @@ public final class GasTransmission
 	{
 		ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
-			TileEntity connection = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity connection = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(canConnect(connection, orientation))
 			{
@@ -70,7 +70,7 @@ public final class GasTransmission
 	 * @param side - side to attempt connection on
 	 * @return if this tile and side are connectable
 	 */
-	public static boolean canConnect(TileEntity tileEntity, ForgeDirection side)
+	public static boolean canConnect(TileEntity tileEntity, EnumFacing side)
 	{
 		if(tileEntity instanceof ITubeConnection && (!(tileEntity instanceof ITransmitterTile) || TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), TransmissionType.GAS)))
 		{
@@ -130,7 +130,7 @@ public final class GasTransmission
 	 * @param from - the TileEntity to output from
 	 * @return the amount of gas emitted
 	 */
-	public static int emit(List<ForgeDirection> sides, GasStack stack, TileEntity from)
+	public static int emit(List<EnumFacing> sides, GasStack stack, TileEntity from)
 	{
 		if(stack == null)
 		{
@@ -144,7 +144,7 @@ public final class GasTransmission
 		{
 			IGasHandler handler = possibleAcceptors[i];
 			
-			if(handler != null && handler.canReceiveGas(ForgeDirection.getOrientation(i).getOpposite(), stack.getGas()))
+			if(handler != null && handler.canReceiveGas(EnumFacing.getFront(i).getOpposite(), stack.getGas()))
 			{
 				availableAcceptors.add(handler);
 			}
@@ -171,7 +171,7 @@ public final class GasTransmission
 					remaining--;
 				}
 				
-				ForgeDirection dir = ForgeDirection.getOrientation(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
+				EnumFacing dir = EnumFacing.getFront(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
 				toSend -= acceptor.receiveGas(dir, new GasStack(stack.getGas(), currentSending), true);
 			}
 		}

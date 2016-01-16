@@ -121,7 +121,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
@@ -261,7 +261,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).getFromSide(ForgeDirection.UP), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).offset(ForgeDirection.UP), Coord4D.get(this));
 	}
 
 	@Override

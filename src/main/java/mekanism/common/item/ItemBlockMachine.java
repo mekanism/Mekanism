@@ -570,7 +570,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        				return itemstack;
 	        			}
 	        			
-	        			Coord4D trans = coord.getFromSide(ForgeDirection.getOrientation(pos.sideHit));
+	        			Coord4D trans = coord.offset(ForgeDirection.getOrientation(pos.sideHit));
 
 	                    if(!entityplayer.canPlayerEdit(trans.xCoord, trans.yCoord, trans.zCoord, pos.sideHit, itemstack))
 	                    {

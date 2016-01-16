@@ -159,7 +159,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 			{
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(orientation).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(orientation).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IFluidHandler)
 				{
@@ -188,7 +188,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		//First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
+			Coord4D wrapper = Coord4D.get(this).offset(orientation);
 
 			if(MekanismUtils.isFluid(worldObj, wrapper))
 			{
@@ -235,7 +235,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			//Add all the blocks surrounding this recurring node to the recurring node list
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 			{
-				Coord4D side = wrapper.getFromSide(orientation);
+				Coord4D side = wrapper.offset(orientation);
 
 				if(Coord4D.get(this).distanceTo(side) <= 80)
 				{

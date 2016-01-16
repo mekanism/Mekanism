@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fml.relauncher.Side;
@@ -40,7 +39,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 				amount = Integer.toString(tileEntity.clientAmount);
 			}
 
-			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));
+			Coord4D obj = Coord4D.get(tileEntity).offset(ForgeDirection.getOrientation(tileEntity.facing));
 
 			if(tileEntity.getWorldObj().getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isSideSolid(tileEntity.getWorldObj(), obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
 			{

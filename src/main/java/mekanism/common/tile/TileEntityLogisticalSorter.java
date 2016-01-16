@@ -75,8 +75,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			if(MekanismUtils.canFunction(this) && delayTicks == 0)
 			{
-				TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
-				TileEntity front = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity back = Coord4D.get(this).offset(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+				TileEntity front = Coord4D.get(this).offset(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 
 				if(back instanceof IInventory && (front instanceof ITransporterTile || front instanceof IInventory))
 				{
@@ -448,7 +448,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean canSendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).offset(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 
 		if(back instanceof IInventory)
 		{
@@ -460,12 +460,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean hasInventory()
 	{
-		return Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
+		return Coord4D.get(this).offset(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
 	}
 
 	public ItemStack sendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).offset(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 
 		if(back instanceof IInventory)
 		{

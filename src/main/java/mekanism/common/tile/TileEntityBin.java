@@ -191,7 +191,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				if(bottomStack != null && isActive)
 				{
-					TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
+					TileEntity tile = Coord4D.get(this).offset(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
 
 					if(tile instanceof ITransporterTile)
 					{

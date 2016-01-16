@@ -236,7 +236,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			{
 				for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 				{
-					TileEntity tile = Coord4D.get(transporter).getFromSide(dir).getTileEntity(world);
+					TileEntity tile = Coord4D.get(transporter).offset(dir).getTileEntity(world);
 
 					if(tile instanceof IInventory)
 					{
@@ -526,7 +526,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					{
 						for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 						{
-							TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+							TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
 							if(tile instanceof IInventory)
 							{
@@ -837,7 +837,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				{
 					for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 					{
-						TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+						TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
 						if(tile instanceof IInventory)
 						{

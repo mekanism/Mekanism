@@ -56,7 +56,7 @@ public final class PipeUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitterTile))
 			{

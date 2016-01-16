@@ -7,8 +7,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.*;
 
@@ -150,7 +150,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			for(IGasHandler acceptor : availableAcceptors)
 			{
 				int currentSending = sending;
-				EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+				EnumSet<EnumFacing> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
 
 				if(remaining > 0)
 				{
@@ -158,7 +158,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 					remaining--;
 				}
 
-				for(ForgeDirection side : sides)
+				for(EnumFacing side : sides)
 				{
 					int prev = toSend;
 
@@ -289,7 +289,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{
-			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
 			TileEntity tile = coord.getTileEntity(getWorld());
 			
 			if(!(tile instanceof IGasHandler) || sides == null || sides.isEmpty())
@@ -299,7 +299,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			
 			IGasHandler acceptor = (IGasHandler)tile;
 
-			for(ForgeDirection side : sides)
+			for(EnumFacing side : sides)
 			{
 				if(acceptor != null && acceptor.canReceiveGas(side, type))
 				{

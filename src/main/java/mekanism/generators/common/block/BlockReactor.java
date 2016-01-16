@@ -309,11 +309,11 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).offset(ForgeDirection.getOrientation(side).getOpposite());
 		
 		if(this == GeneratorsBlocks.ReactorGlass)
 		{
-			int metadata = obj.getMetadata(world);
+			int metadata = obj.getBlockState(world);
 			
 			switch(metadata)
 			{

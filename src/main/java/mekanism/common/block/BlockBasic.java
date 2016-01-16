@@ -991,9 +991,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).offset(ForgeDirection.getOrientation(side).getOpposite());
 		
-		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getMetadata(world) == 10)
+		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getBlockState(world) == 10)
 		{
 			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
 		}

@@ -6,7 +6,6 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,7 +53,7 @@ public final class CableUtils
 
 		for(ForgeDirection side : sides)
 		{
-			TileEntity tile = coord.getFromSide(side).getTileEntity(tileEntity.getWorldObj());
+			TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorldObj());
 
 			connectable[side.ordinal()] = isValidAcceptorOnSide(tileEntity, tile, side);
 			connectable[side.ordinal()] |= isCable(tile);
@@ -95,7 +94,7 @@ public final class CableUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity outputter = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity outputter = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(isOutputter(outputter, orientation))
 			{
@@ -202,7 +201,7 @@ public final class CableUtils
 
 		for(ForgeDirection side : outputtingSides)
 		{
-			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).getFromSide(side).getTileEntity(((TileEntity)emitter).getWorldObj());
+			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).offset(side).getTileEntity(((TileEntity)emitter).getWorldObj());
 			double toSend = splitSend+remains;
 			remains = 0;
 

@@ -187,7 +187,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							}
 	
 							Block block = coord.getBlock(worldObj);
-							int meta = coord.getMetadata(worldObj);
+							int meta = coord.getBlockState(worldObj);
 	
 							if(block == null || coord.isAirBlock(worldObj))
 							{
@@ -335,7 +335,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public boolean setReplace(Coord4D obj, int index)
 	{
 		Block block = obj.getBlock(worldObj);
-		int meta = obj.getMetadata(worldObj);
+		int meta = obj.getBlockState(worldObj);
 		
 		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, obj.xCoord, obj.yCoord, obj.zCoord).get();
 		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(obj.xCoord, obj.yCoord, obj.zCoord, worldObj, block, meta, dummy);
@@ -351,7 +351,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 				if(obj.getBlock(worldObj) != null && !obj.getBlock(worldObj).canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
 				{
-					obj.getBlock(worldObj).dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
+					obj.getBlock(worldObj).dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getBlockState(worldObj), 1);
 					worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
 				}
 				

@@ -5,7 +5,8 @@ import java.util.HashSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
-import net.minecraftforge.common.util.ForgeDirection;
+
+import net.minecraft.util.EnumFacing;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -240,10 +241,10 @@ public class TransmitterNetworkRegistry
 
 		public void start()
 		{
-			iterate(startPoint.coord(), ForgeDirection.UNKNOWN);
+			iterate(startPoint.coord(), null);
 		}
 
-		public void iterate(Coord4D from, ForgeDirection fromDirection)
+		public void iterate(Coord4D from, EnumFacing fromDirection)
 		{
 			if(iterated.contains(from))
 			{
@@ -261,7 +262,7 @@ public class TransmitterNetworkRegistry
 					connectedTransmitters.add(transmitter);
 					transmitter.setOrphan(false);
 					
-					for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+					for(EnumFacing direction : EnumFacing.VALUES)
 					{
 						if(direction != fromDirection)
 						{

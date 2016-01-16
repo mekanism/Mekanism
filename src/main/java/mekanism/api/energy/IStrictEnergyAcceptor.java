@@ -1,6 +1,6 @@
 package mekanism.api.energy;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Implement this if your TileEntity can accept energy at a floating-point double value from Universal Cables.
@@ -14,12 +14,12 @@ public interface IStrictEnergyAcceptor extends IStrictEnergyStorage
 	 * @param amount - amount to transfer
 	 * @return energy used
 	 */
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount);
+	public double transferEnergyToAcceptor(EnumFacing side, double amount);
 
 	/**
 	 * Whether or not this tile entity accepts energy from a certain side.
 	 * @param side - side to check
 	 * @return if tile entity accepts energy
 	 */
-	public boolean canReceiveEnergy(ForgeDirection side);
+	public boolean canReceiveEnergy(EnumFacing side);
 }

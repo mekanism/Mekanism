@@ -12,7 +12,6 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.util.MekanismUtils;
@@ -375,7 +374,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public double injectEnergy(ForgeDirection direction, double amount, double voltage)
 	{
-		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof ITransmitterTile)
+		if(Coord4D.get(this).offset(direction).getTileEntity(worldObj) instanceof ITransmitterTile)
 		{
 			return amount;
 		}

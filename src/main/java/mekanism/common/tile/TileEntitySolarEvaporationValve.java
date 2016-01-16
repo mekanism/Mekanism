@@ -23,7 +23,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 			{
 				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 				{
-					Coord4D obj = Coord4D.get(this).getFromSide(side);
+					Coord4D obj = Coord4D.get(this).offset(side);
 
 					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock))
 					{

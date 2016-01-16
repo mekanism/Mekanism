@@ -80,7 +80,7 @@ public class LaserManager
 		
 		List<ItemStack> ret = null;
 		Block blockHit = blockCoord.getBlock(world);
-		int meta = blockCoord.getMetadata(world);
+		int meta = blockCoord.getBlockState(world);
 		
 		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord).get();
 		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, world, blockHit, meta, dummy);
@@ -93,13 +93,13 @@ public class LaserManager
 		
 		if(dropAtBlock)
 		{
-			blockHit.dropBlockAsItem(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getMetadata(world), 0);
+			blockHit.dropBlockAsItem(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getBlockState(world), 0);
 		}
 		else {
-			ret = blockHit.getDrops(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getMetadata(world), 0);
+			ret = blockHit.getDrops(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getBlockState(world), 0);
 		}
 		
-		blockHit.breakBlock(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockHit, blockCoord.getMetadata(world));
+		blockHit.breakBlock(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockHit, blockCoord.getBlockState(world));
 		world.setBlockToAir(blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord);
 		world.playAuxSFX(2001, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, Block.getIdFromBlock(blockHit));
 		

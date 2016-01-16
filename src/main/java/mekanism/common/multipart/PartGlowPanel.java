@@ -207,7 +207,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 
 	public boolean canStay()
 	{
-		Coord4D adj = Coord4D.get(tile()).getFromSide(side);
+		Coord4D adj = Coord4D.get(tile()).offset(side);
 		return world().isSideSolid(adj.xCoord, adj.yCoord, adj.zCoord, side.getOpposite()) || tile().partMap(side.ordinal()) instanceof HollowMicroblock;
 	}
 }

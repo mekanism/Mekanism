@@ -138,7 +138,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			{
 				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{

@@ -198,7 +198,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					GasStack toSend = new GasStack(leftTank.getGas().getGas(), Math.min(leftTank.getStored(), output));
 
-					TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
 
 					if(tileEntity instanceof IGasHandler)
 					{
@@ -229,7 +229,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					GasStack toSend = new GasStack(rightTank.getGas().getGas(), Math.min(rightTank.getStored(), output));
 
-					TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 
 					if(tileEntity instanceof IGasHandler)
 					{

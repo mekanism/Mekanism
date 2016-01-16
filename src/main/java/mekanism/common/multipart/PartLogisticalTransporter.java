@@ -167,7 +167,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 
 			for(ForgeDirection side : getConnections(ConnectionType.PULL))
 			{
-				TileEntity tile = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+				TileEntity tile = Coord4D.get(tile()).offset(side).getTileEntity(world());
 
 				if(tile instanceof IInventory)
 				{

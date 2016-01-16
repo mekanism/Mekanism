@@ -160,7 +160,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{

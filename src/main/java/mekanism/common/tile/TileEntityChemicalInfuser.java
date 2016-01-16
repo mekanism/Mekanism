@@ -32,8 +32,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -144,7 +143,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			{
 				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{

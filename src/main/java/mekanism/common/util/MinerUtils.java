@@ -29,7 +29,7 @@ public final class MinerUtils
 			return new ArrayList<ItemStack>();
 		}
 
-		int meta = obj.getMetadata(world);
+		int meta = obj.getBlockState(world);
 
 		if(!silk)
 		{

@@ -15,7 +15,6 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.base.IEjector;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
@@ -185,7 +184,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 			for(ForgeDirection side : outputs)
 			{
-				TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.getWorldObj());
+				TileEntity tile = Coord4D.get(tileEntity).offset(side).getTileEntity(tileEntity.getWorldObj());
 				ItemStack prev = stack.copy();
 
 				if(tile instanceof IInventory && !(tile instanceof ITransporterTile))

@@ -640,9 +640,9 @@ public final class MekanismUtils
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Coord4D sideCoord = coord.getFromSide(side);
+			Coord4D sideCoord = coord.offset(side);
 			
-			if(sideCoord.exists(world) && sideCoord.getFromSide(side).exists(world))
+			if(sideCoord.exists(world) && sideCoord.offset(side).exists(world))
 			{
 				Block block = sideCoord.getBlock(world);
 				boolean weakPower = block.shouldCheckWeakPower(world, coord.xCoord, coord.yCoord, coord.zCoord, side.ordinal());
@@ -671,7 +671,7 @@ public final class MekanismUtils
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Coord4D sideCoord = coord.getFromSide(side);
+			Coord4D sideCoord = coord.offset(side);
 			
 			if(sideCoord.exists(world))
 			{
@@ -694,7 +694,7 @@ public final class MekanismUtils
 	{
 		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Coord4D offset = coord.getFromSide(dir);
+			Coord4D offset = coord.offset(dir);
 
 			if(offset.exists(world))
 			{
@@ -703,7 +703,7 @@ public final class MekanismUtils
 				
 				if(block1.isNormalCube(world, offset.xCoord, offset.yCoord, offset.zCoord))
 				{
-					offset = offset.getFromSide(dir);
+					offset = offset.offset(dir);
 					
 					if(offset.exists(world))
 					{
@@ -803,7 +803,7 @@ public final class MekanismUtils
 	public static FluidStack getFluid(World world, Coord4D pos, boolean filter)
 	{
 		Block block = pos.getBlock(world);
-		int meta = pos.getMetadata(world);
+		int meta = pos.getBlockState(world);
 
 		if(block == null)
 		{
@@ -846,7 +846,7 @@ public final class MekanismUtils
 	public static boolean isDeadFluid(World world, Coord4D pos)
 	{
 		Block block = pos.getBlock(world);
-		int meta = pos.getMetadata(world);
+		int meta = pos.getBlockState(world);
 
 		if(block == null || meta == 0)
 		{

@@ -240,7 +240,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			if(canConnectMutual(side))
 			{
-				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+				TileEntity tileEntity = Coord4D.get(tile()).offset(side).getTileEntity(world());
 
 				if(tileEntity instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))
 				{
@@ -261,7 +261,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(canConnectMutual(side))
 		{
-			TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+			TileEntity tileEntity = Coord4D.get(tile()).offset(side).getTileEntity(world());
 
 			if(isValidAcceptor(tileEntity, side))
 			{
@@ -291,7 +291,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(canConnectMutual(side))
 		{
-			TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+			TileEntity tileEntity = Coord4D.get(tile()).offset(side).getTileEntity(world());
 
 			if(tileEntity instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))
 			{
@@ -315,7 +315,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			if(canConnectMutual(side))
 			{
-				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+				TileEntity tileEntity = Coord4D.get(tile()).offset(side).getTileEntity(world());
 
 				if(isValidAcceptor(tileEntity, side))
 				{
@@ -469,7 +469,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		if(!canConnect(side)) return false;
 
-		TileEntity tile = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+		TileEntity tile = Coord4D.get(tile()).offset(side).getTileEntity(world());
 		return (!(tile instanceof IBlockableConnection) || ((IBlockableConnection)tile).canConnect(side.getOpposite()));
 	}
 

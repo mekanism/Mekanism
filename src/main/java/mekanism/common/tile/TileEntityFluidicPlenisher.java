@@ -129,7 +129,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						doPlenish();
 					}
 					else {
-						Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
+						Coord4D below = Coord4D.get(this).offset(ForgeDirection.DOWN);
 						
 						if(canReplace(below, false, false) && getEnergy() >= usage.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
@@ -159,7 +159,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			if(usedNodes.isEmpty())
 			{
-				Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
+				Coord4D below = Coord4D.get(this).offset(ForgeDirection.DOWN);
 				
 				if(!canReplace(below, true, true))
 				{
@@ -192,7 +192,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				
 				for(ForgeDirection dir : dirs)
 				{
-					Coord4D sideCoord = coord.getFromSide(dir);
+					Coord4D sideCoord = coord.offset(dir);
 					
 					if(sideCoord.exists(worldObj) && canReplace(sideCoord, true, true))
 					{

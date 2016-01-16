@@ -439,13 +439,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
     public static void alignPlayer(EntityPlayerMP player, Coord4D coord)
     {
-        Coord4D upperCoord = coord.getFromSide(ForgeDirection.UP);
+        Coord4D upperCoord = coord.offset(ForgeDirection.UP);
         ForgeDirection side = null;
         float yaw = player.rotationYaw;
 
         for(ForgeDirection iterSide : MekanismUtils.SIDE_DIRS)
         {
-            if(upperCoord.getFromSide(iterSide).isAirBlock(player.worldObj))
+            if(upperCoord.offset(iterSide).isAirBlock(player.worldObj))
             {
                 side = iterSide;
                 break;

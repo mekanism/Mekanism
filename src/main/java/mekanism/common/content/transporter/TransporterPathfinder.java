@@ -61,7 +61,7 @@ public final class TransporterPathfinder
 				return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 			}
 			else {
-				TileEntity tile = start.getFromSide(transportStack.idleDir).getTileEntity(worldObj);
+				TileEntity tile = start.offset(transportStack.idleDir).getTileEntity(worldObj);
 				
 				if(transportStack.canInsertToTransporter(tile, transportStack.idleDir))
 				{
@@ -102,7 +102,7 @@ public final class TransporterPathfinder
 			
 			while(true)
 			{
-				Coord4D coord = start.getFromSide(side, count);
+				Coord4D coord = start.offset(side, count);
 				
 				if(transportStack.canInsertToTransporter(coord.getTileEntity(worldObj), side))
 				{
@@ -121,7 +121,7 @@ public final class TransporterPathfinder
 			{
 				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 				{
-					TileEntity tile = start.getFromSide(side).getTileEntity(worldObj);
+					TileEntity tile = start.offset(side).getTileEntity(worldObj);
 	
 					if(transportStack.canInsertToTransporter(tile, side))
 					{
@@ -132,7 +132,7 @@ public final class TransporterPathfinder
 			else {
 				for(ForgeDirection side : EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN, transportStack.idleDir.getOpposite())))
 				{
-					TileEntity tile = start.getFromSide(side).getTileEntity(worldObj);
+					TileEntity tile = start.offset(side).getTileEntity(worldObj);
 	
 					if(transportStack.canInsertToTransporter(tile, side))
 					{
@@ -140,7 +140,7 @@ public final class TransporterPathfinder
 					}
 				}
 				
-				TileEntity tile = start.getFromSide(transportStack.idleDir.getOpposite()).getTileEntity(worldObj);
+				TileEntity tile = start.offset(transportStack.idleDir.getOpposite()).getTileEntity(worldObj);
 				
 				if(transportStack.canInsertToTransporter(tile, transportStack.idleDir.getOpposite()))
 				{
@@ -428,7 +428,7 @@ public final class TransporterPathfinder
 			for(int i = 0; i < 6; i++)
 			{
 				ForgeDirection direction = ForgeDirection.getOrientation(i);
-				Coord4D neighbor = start.getFromSide(direction);
+				Coord4D neighbor = start.offset(direction);
 
 				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
 				{
@@ -467,7 +467,7 @@ public final class TransporterPathfinder
 
 				for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 				{
-					Coord4D neighbor = currentNode.getFromSide(direction);
+					Coord4D neighbor = currentNode.offset(direction);
 
 					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction))
 					{

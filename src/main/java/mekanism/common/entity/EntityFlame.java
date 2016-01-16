@@ -180,7 +180,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 int meta = worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
                 boolean fluid = MekanismUtils.isFluid(worldObj, new Coord4D(mop)) || MekanismUtils.isDeadFluid(worldObj, new Coord4D(mop));
                 
-                Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId).getFromSide(ForgeDirection.getOrientation(mop.sideHit));
+                Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId).offset(ForgeDirection.getOrientation(mop.sideHit));
                 
                 if(general.aestheticWorldDamage && !fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
                 {
@@ -238,7 +238,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 			if(!worldObj.isRemote)
 			{
 				Block b = block.getBlock(worldObj);
-				int meta = block.getMetadata(worldObj);
+				int meta = block.getBlockState(worldObj);
 				
 				if(Block.getBlockFromItem(result.getItem()) != Blocks.air)
 				{

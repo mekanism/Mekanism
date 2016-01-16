@@ -36,7 +36,7 @@ public final class TransporterUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tile = tileEntity.coord().getFromSide(orientation).getTileEntity(tileEntity.world());
+			TileEntity tile = tileEntity.coord().offset(orientation).getTileEntity(tileEntity.world());
 
 			if(tile instanceof ITransporterTile)
 			{
@@ -149,7 +149,7 @@ public final class TransporterUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity inventory = transporter.coord().getFromSide(orientation).getTileEntity(transporter.world());
+			TileEntity inventory = transporter.coord().offset(orientation).getTileEntity(transporter.world());
 
 			if(inventory instanceof IInventory && !(inventory instanceof ITransmitterTile))
 			{

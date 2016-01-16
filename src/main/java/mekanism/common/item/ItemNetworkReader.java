@@ -74,16 +74,16 @@ public class ItemNetworkReader extends ItemEnergized
 					
 					for(ForgeDirection iterSide : ForgeDirection.VALID_DIRECTIONS)
 					{
-						Coord4D coord = Coord4D.get(tileEntity).getFromSide(iterSide);
+						Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
 						
 						if(coord.getTileEntity(world) instanceof ITransmitterTile)
 						{
 							IGridTransmitter transmitter = ((ITransmitterTile)coord.getTileEntity(world)).getTransmitter();
 							
-							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.getFromSide(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
+							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.offset(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
 							{
 								player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" + transmitter.getTransmissionType().getName() + "]" + EnumColor.GREY + " -------------"));
-								player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().acceptorDirections.get(coord.getFromSide(iterSide.getOpposite()))));
+								player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().acceptorDirections.get(coord.offset(iterSide.getOpposite()))));
 								player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 								
 								iteratedNetworks.add(transmitter.getTransmitterNetwork());

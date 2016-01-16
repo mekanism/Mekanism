@@ -181,7 +181,7 @@ public class ItemBalloon extends ItemMekanism
 			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.dimensionId);
 			ForgeDirection side = ForgeDirection.getOrientation(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
 
-			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.getFromSide(side).getBoundingBox());
+			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());
 			boolean latched = false;
 			
 			for(EntityLivingBase entity : entities)

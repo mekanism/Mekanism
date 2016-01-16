@@ -359,7 +359,7 @@ public class FusionReactor implements IFusionReactor
 		updatedThisTick = true;
 
 		Coord4D controllerPosition = Coord4D.get(controller);
-		Coord4D centreOfReactor = controllerPosition.getFromSide(ForgeDirection.DOWN, 2);
+		Coord4D centreOfReactor = controllerPosition.offset(ForgeDirection.DOWN, 2);
 
 		unformMultiblock(true);
 

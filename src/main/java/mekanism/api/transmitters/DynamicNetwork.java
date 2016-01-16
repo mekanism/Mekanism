@@ -10,9 +10,9 @@ import mekanism.api.IClientTicker;
 import mekanism.api.Range4D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -24,8 +24,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public LinkedHashSet<IGridTransmitter<A, N>> transmittersAdded = Sets.newLinkedHashSet();
 
 	public HashMap<Coord4D, A> possibleAcceptors = new HashMap<Coord4D, A>();
-	public HashMap<Coord4D, EnumSet<ForgeDirection>> acceptorDirections = new HashMap<Coord4D, EnumSet<ForgeDirection>>();
-	public HashMap<IGridTransmitter<A, N>, EnumSet<ForgeDirection>> changedAcceptors = Maps.newHashMap();
+	public HashMap<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<Coord4D, EnumSet<EnumFacing>>();
+	public HashMap<IGridTransmitter<A, N>, EnumSet<EnumFacing>> changedAcceptors = Maps.newHashMap();
 
 	private Set<DelayQueue> updateQueue = new LinkedHashSet<DelayQueue>();
 
@@ -58,7 +58,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 						worldObj = transmitter.world();
 					}
 
-					for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+					for(EnumFacing side : EnumFacing.VALUES)
 					{
 						updateTransmitterOnSide(transmitter, side);
 					}
@@ -77,15 +77,15 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 		if(!changedAcceptors.isEmpty())
 		{
-			for(Entry<IGridTransmitter<A, N>, EnumSet<ForgeDirection>> entry : changedAcceptors.entrySet())
+			for(Entry<IGridTransmitter<A, N>, EnumSet<EnumFacing>> entry : changedAcceptors.entrySet())
 			{
 				IGridTransmitter<A, N> transmitter = entry.getKey();
 				
 				if(transmitter.isValid())
 				{
-					EnumSet<ForgeDirection> directionsChanged = entry.getValue();
+					EnumSet<EnumFacing> directionsChanged = entry.getValue();
 
-					for(ForgeDirection side : directionsChanged)
+					for(EnumFacing side : directionsChanged)
 					{
 						updateTransmitterOnSide(transmitter, side);
 					}
@@ -96,11 +96,11 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		}
 	}
 
-	public void updateTransmitterOnSide(IGridTransmitter<A, N> transmitter, ForgeDirection side)
+	public void updateTransmitterOnSide(IGridTransmitter<A, N> transmitter, EnumFacing side)
 	{
 		A acceptor = transmitter.getAcceptor(side);
-		Coord4D acceptorCoord = transmitter.coord().getFromSide(side);
-		EnumSet<ForgeDirection> directions = acceptorDirections.get(acceptorCoord);
+		Coord4D acceptorCoord = transmitter.coord().offset(side);
+		EnumSet<EnumFacing> directions = acceptorDirections.get(acceptorCoord);
 
 		if(acceptor != null)
 		{
@@ -180,9 +180,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		}
 	}
 
-	public void acceptorChanged(IGridTransmitter<A, N> transmitter, ForgeDirection side)
+	public void acceptorChanged(IGridTransmitter<A, N> transmitter, EnumFacing side)
 	{
-		EnumSet<ForgeDirection> directions = changedAcceptors.get(transmitter);
+		EnumSet<EnumFacing> directions = changedAcceptors.get(transmitter);
 		
 		if(directions != null)
 		{
@@ -206,7 +206,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		
 		possibleAcceptors.putAll(net.possibleAcceptors);
 		
-		for(Entry<Coord4D, EnumSet<ForgeDirection>> entry : net.acceptorDirections.entrySet())
+		for(Entry<Coord4D, EnumSet<EnumFacing>> entry : net.acceptorDirections.entrySet())
 		{
 			Coord4D coord = entry.getKey();
 			
@@ -242,26 +242,26 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		IGridTransmitter<A, N> initTransmitter = transmitters.iterator().next();
 		Coord4D initCoord = initTransmitter.coord();
 		
-		int minX = initCoord.xCoord;
-		int minY = initCoord.yCoord;
-		int minZ = initCoord.zCoord;
-		int maxX = initCoord.xCoord;
-		int maxY = initCoord.yCoord;
-		int maxZ = initCoord.zCoord;
+		int minX = initCoord.getX();
+		int minY = initCoord.getY();
+		int minZ = initCoord.getZ();
+		int maxX = initCoord.getX();
+		int maxY = initCoord.getY();
+		int maxZ = initCoord.getZ();
 		
 		for(IGridTransmitter transmitter : transmitters)
 		{
 			Coord4D coord = transmitter.coord();
 			
-			if(coord.xCoord < minX) minX = coord.xCoord;
-			if(coord.yCoord < minY) minY = coord.yCoord;
-			if(coord.zCoord < minZ) minZ = coord.zCoord;
-			if(coord.xCoord > maxX) maxX = coord.xCoord;
-			if(coord.yCoord > maxY) maxY = coord.yCoord;
-			if(coord.zCoord > maxZ) maxZ = coord.zCoord;
+			if(coord.getX() < minX) minX = coord.getX();
+			if(coord.getY() < minY) minY = coord.getY();
+			if(coord.getZ() < minZ) minZ = coord.getZ();
+			if(coord.getX() > maxX) maxX = coord.getX();
+			if(coord.getY() > maxY) maxY = coord.getY();
+			if(coord.getX() > maxZ) maxZ = coord.getZ();
 		}
 		
-		return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, initTransmitter.world().provider.dimensionId);
+		return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, initTransmitter.world().provider.getDimensionId());
 	}
 
 	public void register()

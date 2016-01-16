@@ -352,9 +352,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				Coord4D coord = pointer.getFromSide(side);
+				Coord4D coord = pointer.offset(side);
 
-				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getMetadata(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getMetadata(world) % 4 == stack.getItemDamage() % 4)))
+				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getBlockState(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getBlockState(world) % 4 == stack.getItemDamage() % 4)))
 				{
 					loop(coord);
 				}

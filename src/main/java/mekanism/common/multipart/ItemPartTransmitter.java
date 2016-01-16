@@ -57,7 +57,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				TileEntity tile = obj.getFromSide(side).getTileEntity(world);
+				TileEntity tile = obj.offset(side).getTileEntity(world);
 
 				if(tile instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tile).getTransmitter(), type.getTransmission()))
 				{

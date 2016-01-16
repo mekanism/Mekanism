@@ -136,7 +136,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(ForgeDirection.DOWN).getTileEntity(worldObj);
 
 			if(tileEntity instanceof IFluidHandler)
 			{
@@ -277,7 +277,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	
 	public int pushUp(FluidStack fluid, boolean doFill)
 	{
-		Coord4D up = Coord4D.get(this).getFromSide(ForgeDirection.UP);
+		Coord4D up = Coord4D.get(this).offset(ForgeDirection.UP);
 		
 		if(up.getTileEntity(worldObj) instanceof TileEntityPortableTank)
 		{
@@ -399,7 +399,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		int needed = fluidTank.getCapacity()-fluidTank.getFluidAmount();
 		
-		Coord4D top = Coord4D.get(this).getFromSide(ForgeDirection.UP);
+		Coord4D top = Coord4D.get(this).offset(ForgeDirection.UP);
 		
 		if(top.getTileEntity(worldObj) instanceof TileEntityPortableTank)
 		{
@@ -542,7 +542,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(from == ForgeDirection.DOWN)
 		{
-			TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj);
+			TileEntity tile = Coord4D.get(this).offset(ForgeDirection.DOWN).getTileEntity(worldObj);
 			
 			if(isActive && !(tile instanceof TileEntityPortableTank))
 			{

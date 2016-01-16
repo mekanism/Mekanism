@@ -1,8 +1,9 @@
 package mekanism.api.transmitters;
 
 import mekanism.api.Coord4D;
+
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Collection;
 
@@ -40,9 +41,9 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
 	
 	public Coord4D coord();
 
-	public Coord4D getAdjacentConnectableTransmitterCoord(ForgeDirection side);
+	public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side);
 
-	public A getAcceptor(ForgeDirection side);
+	public A getAcceptor(EnumFacing side);
 
 	public boolean isValid();
 

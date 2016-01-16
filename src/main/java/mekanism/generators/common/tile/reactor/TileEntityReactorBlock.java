@@ -147,7 +147,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				Coord4D coord = pos.getFromSide(side);
+				Coord4D coord = pos.offset(side);
 				
 				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntityReactorBlock)
 				{

@@ -106,7 +106,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 				{
-					Coord4D obj = Coord4D.get(this).getFromSide(side);
+					Coord4D obj = Coord4D.get(this).offset(side);
 
 					if(!obj.isAirBlock(worldObj) && (obj.getTileEntity(worldObj) == null || obj.getTileEntity(worldObj).getClass() != getClass()))
 					{

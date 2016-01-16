@@ -42,7 +42,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	@Override
 	public Coord4D getAdjacentConnectableTransmitterCoord(ForgeDirection side)
 	{
-		Coord4D sideCoord = coord().getFromSide(side);
+		Coord4D sideCoord = coord().offset(side);
 
 		TileEntity potentialTransmitterTile = sideCoord.getTileEntity(world());
 

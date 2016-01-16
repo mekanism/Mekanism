@@ -294,7 +294,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public IHeatTransfer getAdjacent(ForgeDirection side)
 	{
-		TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
 		if(adj instanceof IHeatTransfer && !(adj instanceof IReactorBlock))
 		{

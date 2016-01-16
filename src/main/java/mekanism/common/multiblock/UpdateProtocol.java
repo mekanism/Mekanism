@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -211,7 +210,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
+			TileEntity tileEntity = Coord4D.get(tile).offset(side).getTileEntity(tile.getWorldObj());
 
 			if(MultiblockManager.areEqual(tileEntity, pointer))
 			{
