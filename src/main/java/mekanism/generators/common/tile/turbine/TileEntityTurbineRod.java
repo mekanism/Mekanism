@@ -8,10 +8,8 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ITileComponent;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -43,6 +41,11 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		Coord4D current = Coord4D.get(this);
 		Coord4D up = current.getFromSide(ForgeDirection.UP);
 		Coord4D down = current.getFromSide(ForgeDirection.DOWN);
+		
+		if(!rods.contains(current))
+		{
+			rods.add(current);
+		}
 		
 		if((isRod(up) != !rods.contains(up)) || (isRod(down) != !rods.contains(down)))
 		{
@@ -132,7 +135,19 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 	
 	public int getHousedBlades()
 	{
-		return Math.max(0, Math.min(2, blades - (rods.indexOf(Coord4D.get(this))+1)*2));
+		if(!worldObj.isRemote)
+		{
+			if(rods.size() > 0)
+			{
+				return Math.max(0, Math.min(2, blades - (rods.indexOf(Coord4D.get(this)))*2));
+			}
+			else {
+				return blades;
+			}
+		}
+		else {
+			return blades;
+		}
 	}
 	
 	private boolean isRod(Coord4D coord)
