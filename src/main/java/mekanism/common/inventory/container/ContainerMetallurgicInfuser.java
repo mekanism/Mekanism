@@ -75,7 +75,7 @@ public class ContainerMetallurgicInfuser extends Container
 			{
 				if(InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
 				{
-					if(!mergeItemStack(slotStack, 1, 2, false))
+					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
 						return null;
 					}
@@ -89,7 +89,7 @@ public class ContainerMetallurgicInfuser extends Container
 				}
 				else if(isInputItem(slotStack))
 				{
-					if(!mergeItemStack(slotStack, 2, 3, false))
+					if(!mergeItemStack(slotStack, 1, 2, false))
 					{
 						return null;
 					}
