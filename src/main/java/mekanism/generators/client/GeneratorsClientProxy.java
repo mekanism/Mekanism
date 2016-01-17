@@ -10,7 +10,7 @@ import mekanism.generators.client.gui.GuiReactorHeat;
 import mekanism.generators.client.gui.GuiReactorLogicAdapter;
 import mekanism.generators.client.gui.GuiReactorStats;
 import mekanism.generators.client.gui.GuiSolarGenerator;
-import mekanism.generators.client.gui.GuiWindTurbine;
+import mekanism.generators.client.gui.GuiWindGenerator;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderGasGenerator;
@@ -24,7 +24,7 @@ import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
-import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
@@ -48,7 +48,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator", new RenderBioGenerator());
 		ClientRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator", new RenderHeatGenerator());
 		ClientRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator", new RenderGasGenerator());
-		ClientRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine", new RenderWindTurbine());
+		ClientRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine", new RenderWindTurbine());
 		ClientRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController", new RenderReactor());
 	}
 
@@ -77,7 +77,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 			case 4:
 				return new GuiBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
 			case 5:
-				return new GuiWindTurbine(player.inventory, (TileEntityWindTurbine)tileEntity);
+				return new GuiWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
 			case 10:
 				return new GuiReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:

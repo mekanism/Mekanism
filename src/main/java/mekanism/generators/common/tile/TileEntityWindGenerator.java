@@ -10,14 +10,14 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityWindTurbine extends TileEntityGenerator implements IBoundingBlock
+public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
 	/** The angle the blades of this Wind Turbine are currently at. */
 	public double angle;
 
-	public TileEntityWindTurbine()
+	public TileEntityWindGenerator()
 	{
-		super("wind", "WindTurbine", 200000, (generators.windGenerationMax)*2);
+		super("wind", "WindGenerator", 200000, (generators.windGenerationMax)*2);
 		inventory = new ItemStack[1];
 	}
 

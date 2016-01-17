@@ -43,7 +43,8 @@ import java.util.Random;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
- * 6: Wind Turbine
+ * 6: Wind Generator
+ * 7: Turbine Rod
  * @author AidanBrady
  *
  */
@@ -161,6 +162,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		
 		if(MekanismUtils.isActive(world, x, y, z))
 		{
 			float xRandom = (float)x + 0.5F;
@@ -254,7 +256,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 			return (!nonAir) && canPlace;
 		}
-		else if(world.getBlockMetadata(x, y, z) == GeneratorType.WIND_TURBINE.meta)
+		else if(world.getBlockMetadata(x, y, z) == GeneratorType.WIND_GENERATOR.meta)
 		{
 			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
 
@@ -313,7 +315,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 				}
 
 				if(MekanismUtils.isBCWrench(tool))
+				{
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+				}
 
 				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
 
@@ -501,7 +505,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		if(metadata != GeneratorType.SOLAR_GENERATOR.meta && metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta && metadata != GeneratorType.WIND_TURBINE.meta)
+		if(metadata != GeneratorType.SOLAR_GENERATOR.meta && metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta && metadata != GeneratorType.WIND_GENERATOR.meta)
 		{
 			return true;
 		}
@@ -516,7 +520,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		GAS_GENERATOR(3, "GasGenerator", 3, general.FROM_H2*100, TileEntityGasGenerator.class, true),
 		BIO_GENERATOR(4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true),
 		ADVANCED_SOLAR_GENERATOR(5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
-		WIND_TURBINE(6, "WindTurbine", 5, 200000, TileEntityWindTurbine.class, true);
+		WIND_GENERATOR(6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class, true);
 
 		public int meta;
 		public String name;
@@ -540,8 +544,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 			for(GeneratorType type : values())
 			{
 				if(type.meta == meta)
+				{
 					return type;
+				}
 			}
+			
 			return null;
 		}
 

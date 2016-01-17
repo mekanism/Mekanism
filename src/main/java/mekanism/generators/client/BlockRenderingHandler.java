@@ -80,7 +80,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 				hydrogenGenerator.render(0.0625F);
 			}
-			else if(metadata == GeneratorType.WIND_TURBINE.meta)
+			else if(metadata == GeneratorType.WIND_GENERATOR.meta)
 			{
 				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 				GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);

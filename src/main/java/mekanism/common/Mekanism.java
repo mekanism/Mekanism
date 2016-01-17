@@ -71,14 +71,14 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
-import mekanism.common.tile.TileEntityThermoelectricBoiler;
-import mekanism.common.tile.TileEntityThermoelectricValve;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationValve;
+import mekanism.common.tile.TileEntityThermoelectricBoiler;
+import mekanism.common.tile.TileEntityThermoelectricValve;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
@@ -140,7 +140,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "8.1.8", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "Mekanism", name = "Mekanism", version = "9.0.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:ForgeMultipart;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
 				"after:ComputerCraft;after:Galacticraft API;after:MetallurgyCore")
 public class Mekanism
@@ -166,7 +166,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(8, 1, 8);
+	public static Version versionNumber = new Version(9, 0, 0);
 	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");

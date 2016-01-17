@@ -45,7 +45,8 @@ import ic2.api.item.ISpecialElectricItem;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
- * 6: Wind Turbine
+ * 6: Wind Generator
+ * 7: Turbine Rod
  * @author AidanBrady
  *
  */
@@ -145,7 +146,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 				}
 			}
 		}
-		else if(stack.getItemDamage() == GeneratorType.WIND_TURBINE.meta)
+		else if(stack.getItemDamage() == GeneratorType.WIND_GENERATOR.meta)
 		{
 			if(!block.isReplaceable(world, x, y, z))
 			{

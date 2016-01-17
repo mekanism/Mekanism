@@ -734,7 +734,8 @@ tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce e
 tooltip.GasGenerator=A generator that harnesses the molecular !nvarying gasses to produce energy.
 tooltip.BioGenerator=A generator that burns organic materials of !nthe world to produce energy.
 tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
-tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
+tooltip.WindGenerator=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
+tooltip.TurbineRod=The steel rod that is used to house !nTurbine Blades within an Industrial Turbine.
 
 tooltip.ReactorGlass=Reinforced glass that can be used in !nthe Fusion Reactor multiblock.
 tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that !nis capable of absorbing optical energy and !nthereby heating up the Fusion Reactor.
@@ -837,6 +838,7 @@ nei.rotaryCondensentrator=R. Condensentrator
 //Items
 item.SolarPanel.name=Solar Panel
 item.Hohlraum.name=Hohlraum
+item.TurbineBlade.name=Turbine Blade
 
 //Generators
 tile.Generator.HeatGenerator.name=Heat Generator
@@ -844,7 +846,8 @@ tile.Generator.SolarGenerator.name=Solar Generator
 tile.Generator.GasGenerator.name=Gas-Burning Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
-tile.Generator.WindTurbine.name=Wind Turbine
+tile.Generator.WindGenerator.name=Wind Generator
+tile.Generator.TurbineRod.name=Turbine Rod
 
 tile.Reactor.ReactorController.name=Reactor Controller
 tile.Reactor.ReactorFrame.name=Reactor Frame

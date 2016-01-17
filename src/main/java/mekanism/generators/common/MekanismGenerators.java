@@ -34,7 +34,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.IOException;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "8.1.8", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "9.0.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
 	/** Mekanism Generators Packet Pipeline */
@@ -47,7 +47,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(8, 1, 8);
+	public static Version versionNumber = new Version(9, 0, 0);
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)

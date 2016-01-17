@@ -4,7 +4,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindTurbine;
-import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -18,10 +18,10 @@ public class RenderWindTurbine extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityWindTurbine)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityWindGenerator)tileEntity, x, y, z, partialTick);
 	}
 
-	private void renderAModelAt(TileEntityWindTurbine tileEntity, double x, double y, double z, float partialTick)
+	private void renderAModelAt(TileEntityWindGenerator tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

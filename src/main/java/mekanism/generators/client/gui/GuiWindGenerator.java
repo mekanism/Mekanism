@@ -17,8 +17,8 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.inventory.container.ContainerWindTurbine;
-import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.inventory.container.ContainerWindGenerator;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,15 +26,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiWindTurbine extends GuiMekanism
+public class GuiWindGenerator extends GuiMekanism
 {
-	public TileEntityWindTurbine tileEntity;
+	public TileEntityWindGenerator tileEntity;
 
 	private DecimalFormat powerFormat = new DecimalFormat("0.##");
 
-	public GuiWindTurbine(InventoryPlayer inventory, TileEntityWindTurbine tentity)
+	public GuiWindGenerator(InventoryPlayer inventory, TileEntityWindGenerator tentity)
 	{
-		super(new ContainerWindTurbine(inventory, tentity));
+		super(new ContainerWindGenerator(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
