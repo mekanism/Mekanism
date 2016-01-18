@@ -24,6 +24,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.mojang.realmsclient.util.Pair;
+
 public final class TransporterPathfinder
 {
 	public static class IdlePath
@@ -541,7 +543,7 @@ public final class TransporterPathfinder
 		}
 	}
 
-	public static List<Coord4D> getIdlePath(ILogisticalTransporter start, TransporterStack stack)
+	public static Pair<List<Coord4D>, Path> getIdlePath(ILogisticalTransporter start, TransporterStack stack)
 	{
 		if(stack.homeLocation != null)
 		{
@@ -559,8 +561,7 @@ public final class TransporterPathfinder
 
 			if(path.size() >= 2)
 			{
-				stack.pathType = Path.HOME;
-				return path;
+				return Pair.of(path, Path.HOME);
 			}
 			else {
 				stack.homeLocation = null;
@@ -574,9 +575,7 @@ public final class TransporterPathfinder
 		{
 			return null;
 		}
-		
-		stack.pathType = dest.pathType;
 
-		return dest.path;
+		return Pair.of(dest.path, dest.pathType);
 	}
 }
