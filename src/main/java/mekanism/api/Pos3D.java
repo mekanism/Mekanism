@@ -42,11 +42,6 @@ public class Pos3D extends Vec3
 	{
 		super(x, y, z);
 	}
-	
-	public Pos3D(Coord4D coord)
-	{
-		super(coord.xCoord, coord.yCoord, coord.zCoord);
-	}
 
 	/**
 	 * Creates a Pos3D with an entity's posX, posY, and posZ values.

@@ -40,13 +40,13 @@ public class Range4D
 	
 	public Range4D(Coord4D coord)
 	{
-		xMin = coord.xCoord;
-		yMin = coord.yCoord;
-		zMin = coord.zCoord;
+		xMin = coord.getX();
+		yMin = coord.getY();
+		zMin = coord.getZ();
 		
-		xMax = coord.xCoord+1;
-		yMax = coord.yCoord+1;
-		zMax = coord.zCoord+1;
+		xMax = coord.getX()+1;
+		yMax = coord.getY()+1;
+		zMax = coord.getZ()+1;
 		
 		dimensionId = coord.dimensionId;
 	}
