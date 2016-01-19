@@ -199,13 +199,17 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 					if(structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(Coord4D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
 					{
-						structureFound = structure;
-						return;
+						if(isInteriorValid(structure))
+						{
+							structureFound = structure;
+							return;
+						}
 					}
 				}
 			}
 		}
 
+		innerNodes.clear();
 		iteratedNodes.add(tile);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -220,6 +224,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				}
 			}
 		}
+	}
+	
+	public boolean isInteriorValid(T structure)
+	{
+		return true;
 	}
 
 	public ForgeDirection getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)

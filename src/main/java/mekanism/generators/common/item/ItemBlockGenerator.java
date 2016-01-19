@@ -45,7 +45,8 @@ import ic2.api.item.ISpecialElectricItem;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
- * 6: Wind Turbine
+ * 6: Wind Generator
+ * 7: Turbine Rod
  * @author AidanBrady
  *
  */
@@ -95,24 +96,30 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.getFromMetadata(itemstack.getItemDamage());
 		
-		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
+		if(type != GeneratorType.TURBINE_ROD)
 		{
-			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
-			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDesc") + ".");
-		}
-		else if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey))
-		{
-			list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
-
-			if(hasTank(itemstack))
+			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 			{
-				if(getFluidStack(itemstack) != null)
-				{
-					list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
-				}
+				list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
+				list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDesc") + ".");
 			}
-
-			list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+			else if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey))
+			{
+				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+	
+				if(hasTank(itemstack))
+				{
+					if(getFluidStack(itemstack) != null)
+					{
+						list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
+					}
+				}
+	
+				list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+			}
+			else {
+				list.addAll(MekanismUtils.splitLines(type.getDescription()));
+			}
 		}
 		else {
 			list.addAll(MekanismUtils.splitLines(type.getDescription()));
@@ -145,7 +152,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 				}
 			}
 		}
-		else if(stack.getItemDamage() == GeneratorType.WIND_TURBINE.meta)
+		else if(stack.getItemDamage() == GeneratorType.WIND_GENERATOR.meta)
 		{
 			if(!block.isReplaceable(world, x, y, z))
 			{
@@ -165,10 +172,17 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 
 		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
 		{
-			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
-			tileEntity.electricityStored = getEnergy(stack);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+			
+			if(tileEntity instanceof TileEntityElectricBlock)
+			{
+				((TileEntityElectricBlock)tileEntity).electricityStored = getEnergy(stack);
+			}
 
-			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			if(tileEntity instanceof ISustainedInventory)
+			{
+				((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			}
 			
 			if(tileEntity instanceof ISustainedData)
 			{
@@ -360,7 +374,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
-		return true;
+		return GeneratorType.getFromMetadata(itemStack.getItemDamage()).maxEnergy != -1;
 	}
 
 	@Override

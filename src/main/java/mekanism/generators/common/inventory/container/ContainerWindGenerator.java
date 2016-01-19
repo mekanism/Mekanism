@@ -2,7 +2,7 @@ package mekanism.generators.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
-import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -10,11 +10,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerWindTurbine extends Container
+public class ContainerWindGenerator extends Container
 {
-	private TileEntityWindTurbine tileEntity;
+	private TileEntityWindGenerator tileEntity;
 
-	public ContainerWindTurbine(InventoryPlayer inventory, TileEntityWindTurbine tentity)
+	public ContainerWindGenerator(InventoryPlayer inventory, TileEntityWindGenerator tentity)
 	{
 		tileEntity = tentity;
 		addSlotToContainer(new SlotCharge(tentity, 0, 143, 35));

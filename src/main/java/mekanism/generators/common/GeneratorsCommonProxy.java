@@ -10,13 +10,13 @@ import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.inventory.container.ContainerNeutronCapture;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
-import mekanism.generators.common.inventory.container.ContainerWindTurbine;
+import mekanism.generators.common.inventory.container.ContainerWindGenerator;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
-import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
@@ -24,6 +24,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineRod;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -63,8 +64,9 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator");
 		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
 		GameRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator");
-		GameRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine");
+		GameRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine");
 		GameRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController");
+		GameRegistry.registerTileEntity(TileEntityTurbineRod.class, "TurbineRod");
 	}
 
 	/**
@@ -157,7 +159,7 @@ public class GeneratorsCommonProxy
 			case 4:
 				return new ContainerBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
 			case 5:
-				return new ContainerWindTurbine(player.inventory, (TileEntityWindTurbine)tileEntity);
+				return new ContainerWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
 			case 10:
 				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:

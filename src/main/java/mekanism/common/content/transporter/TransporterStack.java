@@ -18,6 +18,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.mojang.realmsclient.util.Pair;
+
 public class TransporterStack
 {
 	public ItemStack itemStack;
@@ -150,11 +152,16 @@ public class TransporterStack
 		return stack;
 	}
 	
-	public void setPath(List<Coord4D> path)
+	public void setPath(List<Coord4D> path, Path type)
 	{
-		TransporterManager.remove(this);
+		//Make sure old path isn't null
+		if(pathType != Path.NONE)
+		{
+			TransporterManager.remove(this);
+		}
 		
 		pathToTarget = path;
+		pathType = type;
 		
 		if(pathType != Path.NONE)
 		{
@@ -181,9 +188,8 @@ public class TransporterStack
 			return itemStack;
 		}
 
-		pathType = Path.DEST;
 		idleDir = ForgeDirection.UNKNOWN;
-		setPath(newPath.path);
+		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -198,9 +204,8 @@ public class TransporterStack
 			return itemStack;
 		}
 
-		pathType = Path.DEST;
 		idleDir = ForgeDirection.UNKNOWN;
-		setPath(newPath.path);
+		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -208,19 +213,19 @@ public class TransporterStack
 
 	public boolean calculateIdle(ILogisticalTransporter transporter)
 	{
-		List<Coord4D> newPath = TransporterPathfinder.getIdlePath(transporter, this);
+		Pair<List<Coord4D>, Path> newPath = TransporterPathfinder.getIdlePath(transporter, this);
 
 		if(newPath == null)
 		{
 			return false;
 		}
 		
-		if(pathType == Path.HOME)
+		if(newPath.second() == Path.HOME)
 		{
 			idleDir = ForgeDirection.UNKNOWN;
 		}
 		
-		setPath(newPath);
+		setPath(newPath.first(), newPath.second());
 
 		originalLocation = transporter.coord();
 		initiatedPath = true;

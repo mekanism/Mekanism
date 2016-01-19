@@ -4,19 +4,19 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindTurbine;
-import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderWindTurbine extends TileEntitySpecialRenderer<TileEntityWindTurbine>
+public class RenderWindTurbine extends TileEntitySpecialRenderer<TileEntityWindGenerator>
 {
 	private ModelWindTurbine model = new ModelWindTurbine();
 
 	@Override
-	public void renderTileEntityAt(TileEntityWindTurbine tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void renderTileEntityAt(TileEntityWindGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
