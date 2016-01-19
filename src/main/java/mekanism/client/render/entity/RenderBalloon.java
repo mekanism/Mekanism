@@ -17,37 +17,42 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderBalloon extends Render
+public class RenderBalloon extends Render<EntityBalloon>
 {
 	private Minecraft mc = Minecraft.getMinecraft();
 
 	public ModelBalloon model = new ModelBalloon();
 
+	public RenderBalloon(RenderManager renderManager)
+	{
+		super(renderManager);
+	}
+
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity)
+	protected ResourceLocation getEntityTexture(EntityBalloon entity)
 	{
 		return MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png");
 	}
 
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f, float partialTick)
+	public void doRender(EntityBalloon balloon, double x, double y, double z, float f, float partialTick)
 	{
-		EntityBalloon balloon = (EntityBalloon)entity;
-
 		if(balloon.isLatchedToEntity())
 		{
 			x = (balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.posX - balloon.latchedEntity.lastTickPosX)*partialTick);
 			y = (balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY)*partialTick);
 			z = (balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ)*partialTick);
 
+/*TODO
 			x -= RenderManager.renderPosX;
 			y -= RenderManager.renderPosY;
 			z -= RenderManager.renderPosZ;
+*/
 
 			y += balloon.getAddedHeight();
 		}
 
-		render(((EntityBalloon)entity).color, x, y, z);
+		render(balloon.color, x, y, z);
 	}
 
 	public void render(EnumColor color, double x, double y, double z)

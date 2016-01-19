@@ -62,10 +62,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.block.BasicRenderingHandler;
-import mekanism.client.render.block.CTMRenderingHandler;
-import mekanism.client.render.block.MachineRenderingHandler;
-import mekanism.client.render.block.PlasticRenderingHandler;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
@@ -102,8 +98,6 @@ import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismItems;
 import mekanism.common.base.IElectricChest;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
@@ -170,17 +164,20 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -218,16 +215,18 @@ public class ClientProxy extends CommonProxy
 		}
 	}
 
+/*
 	@Override
 	public int getArmorIndex(String string)
 	{
 		return RenderingRegistry.addNewArmourRendererPrefix(string);
 	}
+*/
 
 	@Override
-	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z)
+	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos)
 	{
-		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getTileEntity(x, y, z);
+		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getTileEntity(pos);
 
 		if(id == 0)
 		{
@@ -282,15 +281,15 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerSpecialTileEntities()
 	{
-		ClientRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityFactory.class, "SmeltingFactory", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter", new RenderConfigurableMachine());
+		ClientRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber", new RenderConfigurableMachine<TileEntityEnrichmentChamber>());
+		ClientRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor", new RenderConfigurableMachine<TileEntityOsmiumCompressor>());
+		ClientRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner", new RenderConfigurableMachine<TileEntityCombiner>());
+		ClientRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher", new RenderConfigurableMachine<TileEntityCrusher>());
+		ClientRegistry.registerTileEntity(TileEntityFactory.class, "SmeltingFactory", new RenderConfigurableMachine<TileEntityFactory>());
+		ClientRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory", new RenderConfigurableMachine<TileEntityAdvancedFactory>());
+		ClientRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory", new RenderConfigurableMachine<TileEntityEliteFactory>());
+		ClientRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber", new RenderConfigurableMachine<TileEntityPurificationChamber>());
+		ClientRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter", new RenderConfigurableMachine<TileEntityEnergizedSmelter>());
 		ClientRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser", new RenderMetallurgicInfuser());
 		ClientRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT", new RenderObsidianTNT());
 		ClientRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank", new RenderGasTank());
@@ -307,10 +306,10 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter", new RenderTeleporter());
 		ClientRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer", new RenderChemicalOxidizer());
 		ClientRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser", new RenderChemicalInfuser());
-		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine());
+		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine<TileEntityChemicalInjectionChamber>());
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
 		ClientRegistry.registerTileEntity(TileEntitySolarEvaporationController.class, "SalinationController", new RenderSalinationController());
-		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine());
+		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine<TileEntityPrecisionSawmill>());
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
 		ClientRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer", new RenderChemicalCrystallizer());
@@ -337,15 +336,46 @@ public class ClientProxy extends CommonProxy
 		RenderGlowPanel.init();
 
 		//Register entity rendering handlers
-		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed());
-		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
-		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new RenderBalloon());
-		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new RenderSkeleton());
-		RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, new RenderFlame());
+		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {
+			@Override
+			public Render<EntityObsidianTNT> createRenderFor(RenderManager manager)
+			{
+				return new RenderObsidianTNTPrimed(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new IRenderFactory<EntityRobit>() {
+			@Override
+			public Render<EntityRobit> createRenderFor(RenderManager manager)
+			{
+				return new RenderRobit(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new IRenderFactory<EntityBalloon>() {
+			@Override
+			public Render<EntityBalloon> createRenderFor(RenderManager manager)
+			{
+				return new RenderBalloon(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new IRenderFactory<EntityBabySkeleton>() {
+			@Override
+			public Render<EntitySkeleton> createRenderFor(RenderManager manager)
+			{
+				return new RenderSkeleton(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, new IRenderFactory<EntityFlame>() {
+			@Override
+			public Render<? super EntityFlame> createRenderFor(RenderManager manager)
+			{
+				return new RenderFlame(manager);
+			}
+		});
 
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
 
+/*TODO
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.EnergyCube), handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock), handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), handler);
@@ -372,14 +402,15 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new PlasticRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new CTMRenderingHandler());
+*/
 
 		Mekanism.logger.info("Render registrations complete.");
 	}
 
 	@Override
-	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		switch(ID)
 		{
@@ -431,30 +462,30 @@ public class ClientProxy extends CommonProxy
 			case 20:
 				return new GuiPasswordModify((TileEntityElectricChest)tileEntity);
 			case 21:
-				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit != null)
 				{
 					return new GuiRobitMain(player.inventory, robit);
 				}
 			case 22:
-				return new GuiRobitCrafting(player.inventory, world, x);
+				return new GuiRobitCrafting(player.inventory, world, pos.getX());
 			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit1 = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit1 != null)
 				{
 					return new GuiRobitInventory(player.inventory, robit1);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit2 = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit2 != null)
 				{
 					return new GuiRobitSmelting(player.inventory, robit2);
 				}
 			case 25:
-				return new GuiRobitRepair(player.inventory, world, x);
+				return new GuiRobitRepair(player.inventory, world, pos.getX());
 			case 29:
 				return new GuiChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer)tileEntity);
 			case 30:
@@ -536,7 +567,7 @@ public class ClientProxy extends CommonProxy
 	{
 		if(Minecraft.getMinecraft().theWorld != null)
 		{
-			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord.xCoord, coord.yCoord, coord.zCoord, mop);
+			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord, mop);
 		}
 	}
 	
@@ -631,7 +662,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy)
+	public void renderLaser(World world, Pos3D from, Pos3D to, EnumFacing direction, double energy)
 	{
 		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction, energy));
 	}

@@ -54,7 +54,7 @@ public abstract class MekKeyHandler
 		for(int i = 0; i < keyBindings.length; i++)
 		{
 			KeyBinding keyBinding = keyBindings[i];
-			boolean state = keyBinding.getIsKeyPressed();
+			boolean state = keyBinding.isPressed();
 
 			if(state != keyDown[i] || (state && repeatings[i]))
 			{

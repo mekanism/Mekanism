@@ -112,12 +112,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -131,10 +132,12 @@ import net.minecraftforge.fml.relauncher.FMLInjectionData;
  */
 public class CommonProxy
 {
+/*
 	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int PLASTIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+*/
 
 	protected static WeakReference<EntityPlayer> dummyPlayer = new WeakReference<EntityPlayer>(null);
 
@@ -199,11 +202,9 @@ public class CommonProxy
 	 * @param id - the electric chest gui ID to open
 	 * @param windowId - the container-specific window ID
 	 * @param isBlock - if the chest is a block
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 */
-	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z) {}
+	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos) {}
 
 	/**
 	 * Register and load client-only render information.
@@ -395,12 +396,10 @@ public class CommonProxy
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI
 	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
+	 * @param pos - gui's  position
 	 * @return the GuiScreen of the GUI
 	 */
-	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
 		return null;
 	}
@@ -410,14 +409,12 @@ public class CommonProxy
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI
 	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
+	 * @param pos - gui's position
 	 * @return the Container of the GUI
 	 */
-	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		switch(ID)
 		{
@@ -463,7 +460,7 @@ public class CommonProxy
 			case 18:
 				return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank)tileEntity);
 			case 21:
-				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit != null)
 				{
@@ -472,14 +469,14 @@ public class CommonProxy
 			case 22:
 				return new ContainerRobitCrafting(player.inventory, world);
 			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit1 = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit1 != null)
 				{
 					return new ContainerRobitInventory(player.inventory, robit1);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit2 = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit2 != null)
 				{
@@ -652,5 +649,5 @@ public class CommonProxy
 		return context.getServerHandler().playerEntity;
 	}
 
-	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy) {}
+	public void renderLaser(World world, Pos3D from, Pos3D to, EnumFacing direction, double energy) {}
 }

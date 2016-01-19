@@ -33,7 +33,7 @@ public class ClientConnectionHandler
 			else {
 				//If the client is connecting to a foreign integrated or dedicated server.
 				try {
-					MekanismClient.voiceClient = new VoiceClient(((InetSocketAddress)event.manager.getSocketAddress()).getHostString());
+					MekanismClient.voiceClient = new VoiceClient(((InetSocketAddress)event.manager/*TODO is this right?*/.getRemoteAddress()).getHostString());
 				} catch(Throwable e) {
 					Mekanism.logger.error("Unable to establish VoiceClient on remote connection.");
 					e.printStackTrace();

@@ -6,9 +6,11 @@ import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -18,11 +20,11 @@ import org.lwjgl.opengl.GL11;
 public class EntityLaser extends EntityFX
 {
 	double length;
-	ForgeDirection direction;
+	EnumFacing direction;
 
-	public EntityLaser(World world, Pos3D start, Pos3D end, ForgeDirection dir, double energy)
+	public EntityLaser(World world, Pos3D start, Pos3D end, EnumFacing dir, double energy)
 	{
-		super(world, (start.xPos + end.xPos)/2D, (start.yPos + end.yPos)/2D, (start.zPos+end.zPos)/2D);
+		super(world, (start.xCoord + end.xCoord)/2D, (start.yCoord + end.yCoord)/2D, (start.zCoord+end.zCoord)/2D);
 		particleMaxAge = 5;
 		particleRed = 1;
 		particleGreen = 0;
@@ -34,9 +36,9 @@ public class EntityLaser extends EntityFX
 	}
 
 	@Override
-	public void renderParticle(Tessellator tessellator, float partialTick, float rotationX, float rotationXZ, float rotationZ, float rotationYZ, float rotationXY)
+	public void renderParticle(WorldRenderer worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_)
 	{
-		tessellator.draw();
+		worldRendererIn.finishDrawing();
 
 		GL11.glPushMatrix();
 		GL11.glPushAttrib(GL11.GL_POLYGON_BIT + GL11.GL_ENABLE_BIT);
@@ -44,9 +46,9 @@ public class EntityLaser extends EntityFX
 		MekanismRenderer.glowOn();
 		Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("mekanism", "particles/laser.png"));
 
-		float newX = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTick - interpPosX);
-		float newY = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTick - interpPosY);
-		float newZ = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTick - interpPosZ);
+		float newX = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
+		float newY = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
+		float newZ = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
 
 		GL11.glTranslatef(newX, newY, newZ);
 

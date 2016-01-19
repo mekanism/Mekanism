@@ -5,10 +5,9 @@ import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,23 +15,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderObsidianTNTPrimed extends Render
+public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT>
 {
-	private RenderBlocks blockRenderer = new RenderBlocks();
 	private ModelObsidianTNT model = new ModelObsidianTNT();
 
-	public RenderObsidianTNTPrimed()
+	public RenderObsidianTNTPrimed(RenderManager renderManager)
 	{
+		super(renderManager);
 		shadowSize = 0.5F;
 	}
 
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f, float f1)
-	{
-		renderObsidianTNT((EntityObsidianTNT)entity, x, y, z, f, f1);
-	}
-
-	public void renderObsidianTNT(EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float f, float f1)
+	public void doRender(EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float f, float f1)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x, (float)y+1.2F, (float)z);
@@ -81,7 +75,7 @@ public class RenderObsidianTNTPrimed extends Render
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity)
+	protected ResourceLocation getEntityTexture(EntityObsidianTNT entity)
 	{
 		return TextureMap.locationBlocksTexture;
 	}

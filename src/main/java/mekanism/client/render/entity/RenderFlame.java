@@ -5,6 +5,7 @@ import mekanism.common.entity.EntityFlame;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,11 +15,17 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public class RenderFlame extends Render
+public class RenderFlame extends Render<EntityFlame>
 {
+    public RenderFlame(RenderManager renderManager)
+    {
+        super(renderManager);
+    }
+
+    @Override
     public void doRender(EntityFlame entity, double x, double y, double z, float f, float partialTick)
     {
-    	float alpha = (float)(entity.ticksExisted+partialTick)/(float)EntityFlame.LIFESPAN;
+    	float alpha = (entity.ticksExisted+partialTick)/(float)EntityFlame.LIFESPAN;
     	float size = (float)Math.pow(2*alpha, 2);
     	
         GL11.glPushMatrix();
@@ -32,7 +39,7 @@ public class RenderFlame extends Render
         GL11.glRotatef((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F, 0.0F, 1.0F);
         
-        Tessellator tessellator = Tessellator.instance;
+        Tessellator tessellator = Tessellator.getInstance();
         
         int i = 0;
         float f2 = 0.0F;
@@ -50,12 +57,14 @@ public class RenderFlame extends Render
         {
             GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
             GL11.glNormal3f(0.0F, 0.0F, scale);
+/*TODO
             tessellator.startDrawingQuads();
             tessellator.addVertexWithUV(-8D, -2D, 0.0D, f2, f4);
             tessellator.addVertexWithUV(8D, -2D, 0.0D, f3, f4);
             tessellator.addVertexWithUV(8D, 2D, 0.0D, f3, f5);
             tessellator.addVertexWithUV(-8D, 2D, 0.0D, f2, f5);
             tessellator.draw();
+*/
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -63,15 +72,9 @@ public class RenderFlame extends Render
         MekanismRenderer.blendOff();
         GL11.glPopMatrix();
     }
-
-    @Override
-    public void doRender(Entity entity, double x, double y, double z, float f, float partialTick)
-    {
-        doRender((EntityFlame)entity, x, y, z, f, partialTick);
-    }
     
     @Override
-    protected ResourceLocation getEntityTexture(Entity entity)
+    protected ResourceLocation getEntityTexture(EntityFlame entity)
     {
         return new ResourceLocation("mekanism:render/Flame.png");
     }

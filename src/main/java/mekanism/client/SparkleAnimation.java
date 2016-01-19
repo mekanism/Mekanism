@@ -7,8 +7,9 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -34,7 +35,7 @@ public class SparkleAnimation
 		try {
 			if(general.dynamicTankEasterEgg)
 			{
-				pointer.getWorldObj().playSound(pointer.xCoord, pointer.yCoord, pointer.zCoord, "mekanism:etc.cj", 1F, 1F, false);
+				pointer.getWorld().playSound(pointer.getPos().getX(), pointer.getPos().getY(), pointer.getPos().getZ(), "mekanism:etc.cj", 1F, 1F, false);
 			}
 
 			loop(pointer);
@@ -45,18 +46,18 @@ public class SparkleAnimation
 				@Override
 				public void run()
 				{
-					World world = pointer.getWorldObj();
+					World world = pointer.getWorld();
 					
 					for(Coord4D coord : iteratedNodes)
 					{
 						for(int i = 0; i < 6; i++)
 						{
-							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + -.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + 1.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + -.01, 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + 1.01, 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + -.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + 1.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + random.nextDouble(), coord.getY() + -.01, coord.getZ() + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + random.nextDouble(), coord.getY() + 1.01, coord.getZ() + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + random.nextDouble(), coord.getY() + random.nextDouble(), coord.getZ() + -.01, 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + random.nextDouble(), coord.getY() + random.nextDouble(), coord.getZ() + 1.01, 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + -.01, coord.getY() + random.nextDouble(), coord.getZ() + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + 1.01, coord.getY() + random.nextDouble(), coord.getZ() + random.nextDouble(), 0, 0, 0);
 						}
 					}
 				}
@@ -68,13 +69,13 @@ public class SparkleAnimation
 	{
 		iteratedNodes.add(Coord4D.get(tileEntity));
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			Coord4D coord = Coord4D.get(tileEntity).offset(side);
 			
-			if(coord.exists(pointer.getWorldObj()))
+			if(coord.exists(pointer.getWorld()))
 			{
-				TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+				TileEntity tile = coord.getTileEntity(pointer.getWorld());
 	
 				if(tile != null && isNode(tile) && !iteratedNodes.contains(coord))
 				{
@@ -89,8 +90,8 @@ public class SparkleAnimation
 		return nodeChecker.isNode(tile);
 	}
 	
-	public static interface INodeChecker
+	public interface INodeChecker
 	{
-		public boolean isNode(TileEntity tile);
+		boolean isNode(TileEntity tile);
 	}
 }

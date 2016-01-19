@@ -20,7 +20,7 @@ public class MekanismClient extends Mekanism
 
 	public static void updateKey(KeyBinding key, int type)
 	{
-		boolean down = Minecraft.getMinecraft().currentScreen == null ? key.getIsKeyPressed() : false;
+		boolean down = Minecraft.getMinecraft().currentScreen == null && key.isPressed();
 
 		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, type))
 		{

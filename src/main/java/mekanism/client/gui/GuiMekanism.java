@@ -13,6 +13,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -193,18 +194,6 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
 		super.func_146283_a(list, x, y);
 		GL11.glPopAttrib();
-	}
-
-	@Override
-	public void drawTexturedRect(int x, int y, int u, int v, int w, int h)
-	{
-		drawTexturedModalRect(x, y, u, v, w, h);
-	}
-
-	@Override
-	public void drawTexturedRectFromIcon(int x, int y, IIcon icon, int w, int h)
-	{
-		drawTexturedModelRectFromIcon(x, y, icon, w, h);
 	}
 
 	@Override
