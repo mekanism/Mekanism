@@ -24,7 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.mojang.realmsclient.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder
 {
