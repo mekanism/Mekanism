@@ -53,6 +53,7 @@ public class MekanismConfig
 		public static boolean aestheticWorldDamage;
 		public static boolean opsBypassRestrictions;
 		public static double solarEvaporationSpeed;
+		public static double girdlerSulfidProcessorSpeed;
 		public static int maxJetpackGas;
 		public static int maxScubaGas;
 		public static int maxFlamethrowerGas;
