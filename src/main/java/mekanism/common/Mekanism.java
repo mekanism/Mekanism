@@ -854,7 +854,7 @@ public class Mekanism
 		RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(GasRegistry.getGas("brine"), 15), new ItemStack(MekanismItems.Salt));
 
         //Chemical Washer Recipes for Gsp
-        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 100), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidGas"), 100));
+        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 10), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidGas"), 10));
 
 
 		//T4 Processing Recipes
