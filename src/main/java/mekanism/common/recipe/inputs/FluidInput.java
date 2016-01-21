@@ -33,16 +33,14 @@ public class FluidInput extends MachineInput<FluidInput>
 		return ingredient != null;
 	}
 
-	public boolean useFluid(FluidTank fluidTank, boolean deplete, int scale)
-	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().containsFluid(ingredient))
-		{
-			fluidTank.drain(ingredient.amount*scale, deplete);
-			return true;
-		}
-		
-		return false;
-	}
+	public boolean useFluid(FluidTank fluidTank, boolean deplete, int scale) {
+        if (fluidTank.getFluid() != null && fluidTank.getFluid().containsFluid(ingredient)) {
+            fluidTank.drain(ingredient.amount * scale, deplete);
+            return true;
+        }
+
+        return false;
+    }
 
 	@Override
 	public int hashIngredients()
