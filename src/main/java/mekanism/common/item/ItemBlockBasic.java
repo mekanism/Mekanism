@@ -50,11 +50,14 @@ import java.util.List;
  * 0:13: Tin Block
  * 0:14: Solar Evaporation Controller
  * 0:15: Solar Evaporation Valve
+ * 0:16: Girdler Sulfid Processor Controller
+ * 0:17: Girdler Sulfid Processor Valve
  * 1:0: Solar Evaporation Block
  * 1:1: Induction Casing
  * 1:2: Induction Port
  * 1:3: Induction Cell
  * 1:4: Induction Provider
+ * 1:5: Girdler Sulfid Processor Block
  * @author AidanBrady
  *
  */
@@ -323,6 +326,12 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 				case 15:
 					name = "SolarEvaporationValve";
 					break;
+                case 16:
+                    name = "GirdlerSulfidProcessorController";
+                    break;
+                case 17:
+                    name = "GirdlerSulfidProcessorValve";
+                    break;
 				default:
 					name = "Unknown";
 					break;
@@ -347,6 +356,8 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 				case 4:
 					name = "InductionProvider" + getTier(itemstack).getName();
 					break;
+                case 5:
+                    name ="GirdlerSulfidProcessorBlock";
 			}
 		}
 
