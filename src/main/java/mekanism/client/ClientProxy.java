@@ -59,14 +59,11 @@ import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.RenderGlowPanel;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
-import mekanism.client.render.item.ItemRenderingHandler;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -332,8 +329,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderInformation()
 	{
-		RenderPartTransmitter.init();
-		RenderGlowPanel.init();
+//TODO		RenderPartTransmitter.init();
+//TODO		RenderGlowPanel.init();
 
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {
@@ -373,7 +370,7 @@ public class ClientProxy extends CommonProxy
 		});
 
 		//Register item handler
-		ItemRenderingHandler handler = new ItemRenderingHandler();
+//TODO		ItemRenderingHandler handler = new ItemRenderingHandler();
 
 /*TODO
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.EnergyCube), handler);

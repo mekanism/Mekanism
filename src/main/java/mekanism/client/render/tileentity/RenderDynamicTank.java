@@ -246,7 +246,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 			}
 		}
 
-		if(fluid.getFlowingIcon() != null)
+		if(fluid.getFlowing() != null)
 		{
 			MekanismRenderer.renderObject(toReturn);
 		}

@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -122,14 +121,14 @@ public class ClientTickHandler
 
 					if(player != null)
 					{
-						if(StringUtils.stripControlCodes(player.getCommandSenderName()).equals("mikeacttck"))
+						if(StringUtils.stripControlCodes(player.getName()).equals("mikeacttck"))
 						{
-							CapeBufferDownload download = mikeDownload.get(player.getCommandSenderName());
+							CapeBufferDownload download = mikeDownload.get(player.getName());
 
 							if(download == null)
 							{
-								download = new CapeBufferDownload(player.getCommandSenderName(), MIKE_CAPE);
-								mikeDownload.put(player.getCommandSenderName(), download);
+								download = new CapeBufferDownload(player.getName(), MIKE_CAPE);
+								mikeDownload.put(player.getName(), download);
 
 								download.start();
 							}
@@ -139,17 +138,17 @@ public class ClientTickHandler
 									continue;
 								}
 
-								player.func_152121_a(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
+								//TODO player.func_152121_a(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
 							}
 						}
-						else if(StringUtils.stripControlCodes(player.getCommandSenderName()).equals("aidancbrady"))
+						else if(StringUtils.stripControlCodes(player.getName()).equals("aidancbrady"))
 						{
-							CapeBufferDownload download = aidanDownload.get(player.getCommandSenderName());
+							CapeBufferDownload download = aidanDownload.get(player.getName());
 
 							if(download == null)
 							{
-								download = new CapeBufferDownload(player.getCommandSenderName(), AIDAN_CAPE);
-								aidanDownload.put(player.getCommandSenderName(), download);
+								download = new CapeBufferDownload(player.getName(), AIDAN_CAPE);
+								aidanDownload.put(player.getName(), download);
 
 								download.start();
 							}
@@ -159,17 +158,17 @@ public class ClientTickHandler
 									continue;
 								}
 
-								player.func_152121_a(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
+								//TODO player.skinAvailable(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
 							}
 						}
-						else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.getCommandSenderName())))
+						else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.getName())))
 						{
-							CapeBufferDownload download = donateDownload.get(player.getCommandSenderName());
+							CapeBufferDownload download = donateDownload.get(player.getName());
 
 							if(download == null)
 							{
-								download = new CapeBufferDownload(player.getCommandSenderName(), DONATE_CAPE);
-								donateDownload.put(player.getCommandSenderName(), download);
+								download = new CapeBufferDownload(player.getName(), DONATE_CAPE);
+								donateDownload.put(player.getName(), download);
 
 								download.start();
 							}
@@ -179,7 +178,7 @@ public class ClientTickHandler
 									continue;
 								}
 
-								player.func_152121_a(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
+								//TODO player.skinAvailable(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
 							}
 						}
 					}
@@ -197,43 +196,43 @@ public class ClientTickHandler
 				}
 			}
 			
-			if(Mekanism.flamethrowerActive.contains(mc.thePlayer.getCommandSenderName()) != isFlamethrowerOn(mc.thePlayer))
+			if(Mekanism.flamethrowerActive.contains(mc.thePlayer.getName()) != isFlamethrowerOn(mc.thePlayer))
 			{
 				if(isFlamethrowerOn(mc.thePlayer))
 				{
-					Mekanism.flamethrowerActive.add(mc.thePlayer.getCommandSenderName());
+					Mekanism.flamethrowerActive.add(mc.thePlayer.getName());
 				}
 				else {
-					Mekanism.flamethrowerActive.remove(mc.thePlayer.getCommandSenderName());
+					Mekanism.flamethrowerActive.remove(mc.thePlayer.getName());
 				}
 				
-				Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isFlamethrowerOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.UPDATE, mc.thePlayer.getName(), isFlamethrowerOn(mc.thePlayer)));
 			}
 
-			if(Mekanism.jetpackOn.contains(mc.thePlayer.getCommandSenderName()) != isJetpackOn(mc.thePlayer))
+			if(Mekanism.jetpackOn.contains(mc.thePlayer.getName()) != isJetpackOn(mc.thePlayer))
 			{
 				if(isJetpackOn(mc.thePlayer))
 				{
-					Mekanism.jetpackOn.add(mc.thePlayer.getCommandSenderName());
+					Mekanism.jetpackOn.add(mc.thePlayer.getName());
 				}
 				else {
-					Mekanism.jetpackOn.remove(mc.thePlayer.getCommandSenderName());
+					Mekanism.jetpackOn.remove(mc.thePlayer.getName());
 				}
 
-				Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isJetpackOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.UPDATE, mc.thePlayer.getName(), isJetpackOn(mc.thePlayer)));
 			}
 
-			if(Mekanism.gasmaskOn.contains(mc.thePlayer.getCommandSenderName()) != isGasMaskOn(mc.thePlayer))
+			if(Mekanism.gasmaskOn.contains(mc.thePlayer.getName()) != isGasMaskOn(mc.thePlayer))
 			{
 				if(isGasMaskOn(mc.thePlayer) && mc.currentScreen == null)
 				{
-					Mekanism.gasmaskOn.add(mc.thePlayer.getCommandSenderName());
+					Mekanism.gasmaskOn.add(mc.thePlayer.getName());
 				}
 				else {
-					Mekanism.gasmaskOn.remove(mc.thePlayer.getCommandSenderName());
+					Mekanism.gasmaskOn.remove(mc.thePlayer.getName());
 				}
 
-				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isGasMaskOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, mc.thePlayer.getName(), isGasMaskOn(mc.thePlayer)));
 			}
 
 			if(client.enablePlayerSounds)
@@ -309,7 +308,7 @@ public class ClientTickHandler
 				}
 				else if(jetpack.getMode(mc.thePlayer.getEquipmentInSlot(3)) == JetpackMode.HOVER)
 				{
-					if((!mc.gameSettings.keyBindJump.getIsKeyPressed() && !mc.gameSettings.keyBindSneak.getIsKeyPressed()) || (mc.gameSettings.keyBindJump.getIsKeyPressed() && mc.gameSettings.keyBindSneak.getIsKeyPressed()) || mc.currentScreen != null)
+					if((!mc.gameSettings.keyBindJump.isPressed() && !mc.gameSettings.keyBindSneak.isPressed()) || (mc.gameSettings.keyBindJump.isPressed() && mc.gameSettings.keyBindSneak.isPressed()) || mc.currentScreen != null)
 					{
 						if(mc.thePlayer.motionY > 0)
 						{
@@ -321,11 +320,11 @@ public class ClientTickHandler
 						}
 					}
 					else {
-						if(mc.gameSettings.keyBindJump.getIsKeyPressed() && mc.currentScreen == null)
+						if(mc.gameSettings.keyBindJump.isPressed() && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.2D);
 						}
-						else if(mc.gameSettings.keyBindSneak.getIsKeyPressed() && mc.currentScreen == null)
+						else if(mc.gameSettings.keyBindSneak.isPressed() && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
 						}
@@ -374,7 +373,7 @@ public class ClientTickHandler
 	{
 		if(player != mc.thePlayer)
 		{
-			return Mekanism.jetpackOn.contains(player.getCommandSenderName());
+			return Mekanism.jetpackOn.contains(player.getName());
 		}
 
 		ItemStack stack = player.inventory.armorInventory[2];
@@ -387,7 +386,7 @@ public class ClientTickHandler
 
 				if(jetpack.getGas(stack) != null)
 				{
-					if((mc.gameSettings.keyBindJump.getIsKeyPressed() && jetpack.getMode(stack) == JetpackMode.NORMAL) && mc.currentScreen == null)
+					if((mc.gameSettings.keyBindJump.isPressed() && jetpack.getMode(stack) == JetpackMode.NORMAL) && mc.currentScreen == null)
 					{
 						return true;
 					}
@@ -406,7 +405,7 @@ public class ClientTickHandler
 	{
 		if(player != mc.thePlayer)
 		{
-			return Mekanism.gasmaskOn.contains(player.getCommandSenderName());
+			return Mekanism.gasmaskOn.contains(player.getName());
 		}
 
 		ItemStack tank = player.inventory.armorInventory[2];
@@ -435,12 +434,12 @@ public class ClientTickHandler
 	{
 		if(player != mc.thePlayer)
 		{
-			return Mekanism.flamethrowerActive.contains(player.getCommandSenderName());
+			return Mekanism.flamethrowerActive.contains(player.getName());
 		}
 		
 		if(hasFlamethrower(player))
 		{
-			if(mc.gameSettings.keyBindUseItem.getIsKeyPressed())
+			if(mc.gameSettings.keyBindUseItem.isPressed())
 			{
 				return true;
 			}

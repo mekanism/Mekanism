@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -68,29 +70,27 @@ public class EntityLaser extends EntityFX
 				break;
 		}
 		GL11.glRotated(45, 0, 1, 0);
-		tessellator.startDrawingQuads();
-		tessellator.setColorRGBA_F(particleRed, particleGreen, particleBlue, particleAlpha);
-		tessellator.addVertexWithUV(-particleScale, -length/2, 0, 0, 0);
-		tessellator.addVertexWithUV(-particleScale, length/2, 0, 0, 1);
-		tessellator.addVertexWithUV(particleScale, length/2, 0, 1, 1);
-		tessellator.addVertexWithUV(particleScale, -length/2, 0, 1, 0);
-		tessellator.draw();
+		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		worldRendererIn.pos(-particleScale, -length/2, 0).tex(0, 0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+		worldRendererIn.pos(-particleScale, length/2, 0).tex(0, 1).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+		worldRendererIn.pos(particleScale, length/2, 0).tex(1, 1).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+		worldRendererIn.pos(particleScale, -length/2, 0).tex(1, 0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+		worldRendererIn.finishDrawing();
 
 		GL11.glRotated(90, 0, 1, 0);
-		tessellator.startDrawingQuads();
-		tessellator.setColorRGBA_F(particleRed, particleGreen, particleBlue, particleAlpha);
-		tessellator.addVertexWithUV(-particleScale, -length/2, 0, 0, 0);
-		tessellator.addVertexWithUV(-particleScale, length/2, 0, 0, 1);
-		tessellator.addVertexWithUV(particleScale, length/2, 0, 1, 1);
-		tessellator.addVertexWithUV(particleScale, -length/2, 0, 1, 0);
-		tessellator.draw();
+		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		worldRendererIn.pos(-particleScale, -length/2, 0).tex(0, 0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+		worldRendererIn.pos(-particleScale, length/2, 0).tex(0, 1).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+		worldRendererIn.pos(particleScale, length/2, 0).tex(1, 1).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+		worldRendererIn.pos(particleScale, -length/2, 0).tex(1, 0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+		worldRendererIn.finishDrawing();
 		
 		MekanismRenderer.glowOff();
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 
 		Minecraft.getMinecraft().renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-		tessellator.startDrawingQuads();
+		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 	}
 
 	@Override
