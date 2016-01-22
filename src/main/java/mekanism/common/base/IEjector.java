@@ -1,7 +1,8 @@
 package mekanism.common.base;
 
 import mekanism.api.EnumColor;
-import net.minecraftforge.common.util.ForgeDirection;
+
+import net.minecraft.util.EnumFacing;
 
 public interface IEjector
 {
@@ -11,9 +12,9 @@ public interface IEjector
 
 	public void setOutputColor(EnumColor color);
 
-	public EnumColor getInputColor(ForgeDirection side);
+	public EnumColor getInputColor(EnumFacing side);
 
-	public void setInputColor(ForgeDirection side, EnumColor color);
+	public void setInputColor(EnumFacing side, EnumColor color);
 
 	public boolean hasStrictInput();
 

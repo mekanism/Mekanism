@@ -6,8 +6,7 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.tileentity.TileEntity;
-
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import cofh.api.energy.IEnergyReceiver;
 import ic2.api.energy.tile.IEnergySink;
@@ -18,7 +17,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 
 	public static EnergyAcceptorWrapper get(TileEntity tileEntity)
 	{
-		if(tileEntity != null && tileEntity.getWorldObj() == null)
+		if(tileEntity != null && tileEntity.getWorld() == null)
 		{
 			return null;
 		}
@@ -46,7 +45,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		return wrapper;
 	}
 
-	public abstract boolean needsEnergy(ForgeDirection side);
+	public abstract boolean needsEnergy(EnumFacing side);
 
 	public static class MekanismAcceptor extends EnergyAcceptorWrapper
 	{
@@ -58,13 +57,13 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+		public double transferEnergyToAcceptor(EnumFacing side, double amount)
 		{
 			return acceptor.transferEnergyToAcceptor(side, amount);
 		}
 
 		@Override
-		public boolean canReceiveEnergy(ForgeDirection side)
+		public boolean canReceiveEnergy(EnumFacing side)
 		{
 			return acceptor.canReceiveEnergy(side);
 		}
@@ -88,7 +87,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public boolean needsEnergy(ForgeDirection side)
+		public boolean needsEnergy(EnumFacing side)
 		{
 			return acceptor.getMaxEnergy() - acceptor.getEnergy() > 0;
 		}
@@ -104,13 +103,13 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+		public double transferEnergyToAcceptor(EnumFacing side, double amount)
 		{
 			return fromRF(acceptor.receiveEnergy(side, toRF(amount), false));
 		}
 
 		@Override
-		public boolean canReceiveEnergy(ForgeDirection side)
+		public boolean canReceiveEnergy(EnumFacing side)
 		{
 			return acceptor.canConnectEnergy(side);
 		}
@@ -118,25 +117,25 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double getEnergy()
 		{
-			return fromRF(acceptor.getEnergyStored(ForgeDirection.UNKNOWN));
+			return fromRF(acceptor.getEnergyStored(null));
 		}
 
 		@Override
 		public void setEnergy(double energy)
 		{
 			int rfToSet = toRF(energy);
-			int amountToReceive = rfToSet - acceptor.getEnergyStored(ForgeDirection.UNKNOWN);
-			acceptor.receiveEnergy(ForgeDirection.UNKNOWN, amountToReceive, false);
+			int amountToReceive = rfToSet - acceptor.getEnergyStored(null);
+			acceptor.receiveEnergy(null, amountToReceive, false);
 		}
 
 		@Override
 		public double getMaxEnergy()
 		{
-			return fromRF(acceptor.getMaxEnergyStored(ForgeDirection.UNKNOWN));
+			return fromRF(acceptor.getMaxEnergyStored(null));
 		}
 
 		@Override
-		public boolean needsEnergy(ForgeDirection side)
+		public boolean needsEnergy(EnumFacing side)
 		{
 			return acceptor.getMaxEnergyStored(side) - acceptor.getEnergyStored(side) > 0 || acceptor.receiveEnergy(side, 1, true) > 0;
 		}
@@ -162,13 +161,13 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+		public double transferEnergyToAcceptor(EnumFacing side, double amount)
 		{
 			return amount - fromEU(acceptor.injectEnergy(side, toEU(amount), 0));
 		}
 
 		@Override
-		public boolean canReceiveEnergy(ForgeDirection side)
+		public boolean canReceiveEnergy(EnumFacing side)
 		{
 			return acceptor.acceptsEnergyFrom(null, side);
 		}
@@ -192,7 +191,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public boolean needsEnergy(ForgeDirection side)
+		public boolean needsEnergy(EnumFacing side)
 		{
 			return acceptor.getDemandedEnergy() > 0;
 		}

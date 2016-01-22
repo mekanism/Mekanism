@@ -10,7 +10,7 @@ import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import net.minecraft.inventory.IInventory;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.EnumSet;
 
@@ -22,9 +22,9 @@ import java.util.EnumSet;
 })
 public interface IEnergyWrapper extends IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter, IInventory
 {
-	public EnumSet<ForgeDirection> getOutputtingSides();
+	public EnumSet<EnumFacing> getOutputtingSides();
 
-	public EnumSet<ForgeDirection> getConsumingSides();
+	public EnumSet<EnumFacing> getConsumingSides();
 
 	public double getMaxOutput();
 }

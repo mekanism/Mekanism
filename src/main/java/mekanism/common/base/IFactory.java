@@ -17,8 +17,8 @@ import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Internal interface for managing various Factory types.
@@ -109,7 +109,7 @@ public interface IFactory
 			return 0;
 		}
 
-		public boolean canReceiveGas(ForgeDirection side, Gas type)
+		public boolean canReceiveGas(EnumFacing side, Gas type)
 		{
 			if(usesFuel)
 			{
@@ -119,7 +119,7 @@ public interface IFactory
 			return false;
 		}
 
-		public boolean canTubeConnect(ForgeDirection side)
+		public boolean canTubeConnect(EnumFacing side)
 		{
 			if(usesFuel)
 			{
