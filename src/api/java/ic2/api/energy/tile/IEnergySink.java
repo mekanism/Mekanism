@@ -1,6 +1,6 @@
 package ic2.api.energy.tile;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Allows a tile entity (mostly a machine) to receive energy.
@@ -40,6 +40,6 @@ public interface IEnergySink extends IEnergyAcceptor {
 	 * @param amount energy to be transferred
 	 * @return Energy not consumed (leftover)
 	 */
-	double injectEnergy(ForgeDirection directionFrom, double amount, double voltage);
+	double injectEnergy(EnumFacing directionFrom, double amount, double voltage);
 }
 
