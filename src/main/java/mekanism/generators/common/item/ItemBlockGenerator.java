@@ -47,6 +47,7 @@ import ic2.api.item.ISpecialElectricItem;
  * 5: Advanced Solar Generator
  * 6: Wind Generator
  * 7: Turbine Rod
+ * 8: Rotational Complex
  * @author AidanBrady
  *
  */
@@ -96,7 +97,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.getFromMetadata(itemstack.getItemDamage());
 		
-		if(type != GeneratorType.TURBINE_ROD)
+		if(type != GeneratorType.TURBINE_ROD && type != GeneratorType.ROTATIONAL_COMPLEX)
 		{
 			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 			{

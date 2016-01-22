@@ -8,8 +8,8 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.tile.TileEntityThermoelectricBoiler;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.TileEntityThermoelectricBoiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -25,12 +25,12 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
 
     public void tickSelf(World world)
     {
-        ArrayList<Integer> idsToKill = new ArrayList<Integer>();
-        HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
+        ArrayList<String> idsToKill = new ArrayList<String>();
+        HashMap<String, HashSet<Coord4D>> tilesToKill = new HashMap<String, HashSet<Coord4D>>();
 
-        for(Map.Entry<Integer, MultiblockCache<SynchronizedBoilerData>> entry : inventories.entrySet())
+        for(Map.Entry<String, MultiblockCache<SynchronizedBoilerData>> entry : inventories.entrySet())
         {
-            int inventoryID = entry.getKey();
+            String inventoryID = entry.getKey();
 
             HashSet<TileEntityThermoelectricBoiler> boilers = new HashSet<TileEntityThermoelectricBoiler>();
 
@@ -40,7 +40,7 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
                 {
                     TileEntity tileEntity = obj.getTileEntity(world);
 
-                    if(!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock)tileEntity).getManager() != this || (getStructureId(((TileEntityMultiblock<?>)tileEntity)) != -1 && getStructureId(((TileEntityMultiblock)tileEntity)) != inventoryID))
+                    if(!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock)tileEntity).getManager() != this || (getStructureId(((TileEntityMultiblock<?>)tileEntity)) != null && getStructureId(((TileEntityMultiblock)tileEntity)) != inventoryID))
                     {
                         if(!tilesToKill.containsKey(inventoryID))
                         {
@@ -78,7 +78,7 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
             }
         }
 
-        for(Map.Entry<Integer, HashSet<Coord4D>> entry : tilesToKill.entrySet())
+        for(Map.Entry<String, HashSet<Coord4D>> entry : tilesToKill.entrySet())
         {
             for(Coord4D obj : entry.getValue())
             {
@@ -86,7 +86,7 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
             }
         }
 
-        for(int inventoryID : idsToKill)
+        for(String inventoryID : idsToKill)
         {
             inventories.remove(inventoryID);
         }

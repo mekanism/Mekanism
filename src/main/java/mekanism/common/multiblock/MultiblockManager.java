@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
@@ -18,7 +19,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	public String name;
 	
 	/** A map containing references to all multiblock inventory caches. */
-	public Map<Integer, MultiblockCache<T>> inventories = new HashMap<Integer, MultiblockCache<T>>();
+	public Map<String, MultiblockCache<T>> inventories = new HashMap<String, MultiblockCache<T>>();
 	
 	public MultiblockManager(String s)
 	{
@@ -32,7 +33,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	 * @param id - inventory ID to pull
 	 * @return correct multiblock inventory cache
 	 */
-	public MultiblockCache<T> pullInventory(World world, int id)
+	public MultiblockCache<T> pullInventory(World world, String id)
 	{
 		MultiblockCache<T> toReturn = inventories.get(id);
 		
@@ -43,7 +44,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 			if(tileEntity != null)
 			{
 				tileEntity.cachedData = tileEntity.getNewCache();
-				tileEntity.cachedID = -1;
+				tileEntity.cachedID = null;
 			}
 		}
 		
@@ -56,23 +57,9 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	 * Grabs a unique inventory ID for a multiblock.
 	 * @return unique inventory ID
 	 */
-	public int getUniqueInventoryID()
+	public String getUniqueInventoryID()
 	{
-		int id = 0;
-
-		while(true)
-		{
-			for(Integer i : inventories.keySet())
-			{
-				if(id == i)
-				{
-					id++;
-					continue;
-				}
-			}
-
-			return id;
-		}
+		return UUID.randomUUID().toString();
 	}
 	
 	public static void tick(World world)
@@ -85,12 +72,12 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 
 	public void tickSelf(World world)
 	{
-		ArrayList<Integer> idsToKill = new ArrayList<Integer>();
-		HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
+		ArrayList<String> idsToKill = new ArrayList<String>();
+		HashMap<String, HashSet<Coord4D>> tilesToKill = new HashMap<String, HashSet<Coord4D>>();
 
-		for(Map.Entry<Integer, MultiblockCache<T>> entry : inventories.entrySet())
+		for(Map.Entry<String, MultiblockCache<T>> entry : inventories.entrySet())
 		{
-			int inventoryID = entry.getKey();
+			String inventoryID = entry.getKey();
 
 			for(Coord4D obj : entry.getValue().locations)
 			{
@@ -98,7 +85,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 				{
 					TileEntity tileEntity = obj.getTileEntity(world);
 
-					if(!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock)tileEntity).getManager() != this || (getStructureId(((TileEntityMultiblock<?>)tileEntity)) != -1 && getStructureId(((TileEntityMultiblock)tileEntity)) != inventoryID))
+					if(!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock)tileEntity).getManager() != this || (getStructureId(((TileEntityMultiblock<?>)tileEntity)) != null && getStructureId(((TileEntityMultiblock)tileEntity)) != inventoryID))
 					{
 						if(!tilesToKill.containsKey(inventoryID))
 						{
@@ -116,7 +103,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 			}
 		}
 
-		for(Map.Entry<Integer, HashSet<Coord4D>> entry : tilesToKill.entrySet())
+		for(Map.Entry<String, HashSet<Coord4D>> entry : tilesToKill.entrySet())
 		{
 			for(Coord4D obj : entry.getValue())
 			{
@@ -124,15 +111,15 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 			}
 		}
 
-		for(int inventoryID : idsToKill)
+		for(String inventoryID : idsToKill)
 		{
 			inventories.remove(inventoryID);
 		}
 	}
 	
-	public static int getStructureId(TileEntityMultiblock<?> tile)
+	public static String getStructureId(TileEntityMultiblock<?> tile)
 	{
-		return tile.structure != null ? tile.getSynchronizedData().inventoryID : -1;
+		return tile.structure != null ? tile.getSynchronizedData().inventoryID : null;
 	}
 	
 	public static boolean areEqual(TileEntity tile1, TileEntity tile2)

@@ -18,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.mojang.realmsclient.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterStack
 {
@@ -220,12 +220,12 @@ public class TransporterStack
 			return false;
 		}
 		
-		if(newPath.second() == Path.HOME)
+		if(newPath.getRight() == Path.HOME)
 		{
 			idleDir = ForgeDirection.UNKNOWN;
 		}
 		
-		setPath(newPath.first(), newPath.second());
+		setPath(newPath.getLeft(), newPath.getRight());
 
 		originalLocation = transporter.coord();
 		initiatedPath = true;

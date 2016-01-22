@@ -8,18 +8,32 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityTurbineRod extends TileEntityBasicBlock
 {
 	public List<Coord4D> rods = new ArrayList<Coord4D>();
 	
+	public boolean hasComplex;
+	
+	public String multiblockUUID;
+	
 	//Total blades on server, housed blades on client
 	public int blades = 0;
+	
+	//Client stuff
+	public int clientIndex;
+	
+	public float rotationLower;
+	public float rotationUpper;
 	
 	@Override
 	public boolean canUpdate()
@@ -36,28 +50,23 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		}
 	}
 	
-	private void updateRods()
+	public void updateRods()
 	{
-		Coord4D current = Coord4D.get(this);
-		Coord4D up = current.getFromSide(ForgeDirection.UP);
-		Coord4D down = current.getFromSide(ForgeDirection.DOWN);
-		
-		if(!rods.contains(current))
+		if(rods.contains(Coord4D.get(this)))
 		{
-			rods.add(current);
+			rods.add(Coord4D.get(this));
 		}
 		
-		if((isRod(up) != !rods.contains(up)) || (isRod(down) != !rods.contains(down)))
-		{
-			buildRods();
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-		}
+		buildRods();
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 	}
 	
 	private void buildRods()
 	{
 		List<Coord4D> newRods = new ArrayList<Coord4D>();
 		int newBlades = 0;
+		boolean complex = false;
+		String id = null;
 		
 		Coord4D pointer = Coord4D.get(this);
 		
@@ -88,24 +97,42 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 			break;
 		}
 		
+		if(isComplex(pointer.getFromSide(ForgeDirection.UP)))
+		{
+			id = ((TileEntityRotationalComplex)pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj)).multiblockUUID;
+			complex = true;
+		}
+		
 		//Update all rods, send packet if necessary
 		for(Coord4D coord : newRods)
 		{
 			TileEntityTurbineRod rod = (TileEntityTurbineRod)coord.getTileEntity(worldObj);
-			int prev = rod.getHousedBlades();
+			int prevHoused = rod.getHousedBlades();
+			int prevBlades = rod.blades;
 			
 			rod.rods = newRods;
 			rod.blades = newBlades;
+			rod.multiblockUUID = id;
 			
-			if(rod.getHousedBlades() != prev)
+			if(rods.indexOf(coord) == rods.size()-1)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rod.getNetworkedData(new ArrayList())), new Range4D(coord));
+				rod.hasComplex = complex;
 			}
+			else {
+				rod.hasComplex = false;
+			}
+			
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rod.getNetworkedData(new ArrayList())), new Range4D(coord));
 		}
 	}
 	
 	public boolean editBlade(boolean add)
 	{
+		if(!rods.contains(Coord4D.get(this)))
+		{
+			rods.add(Coord4D.get(this));
+		}
+		
 		if((add && (rods.size()*2) - blades > 0) || (!add && (blades > 0)))
 		{
 			for(Coord4D coord : rods)
@@ -155,6 +182,11 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		return coord.getTileEntity(worldObj) instanceof TileEntityTurbineRod;
 	}
 	
+	private boolean isComplex(Coord4D coord)
+	{
+		return coord.getTileEntity(worldObj) instanceof TileEntityRotationalComplex;
+	}
+	
 	@Override
 	public void onChunkLoad()
 	{
@@ -171,7 +203,25 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 	{
 		super.handlePacketData(dataStream);
 		
+		int prevBlades = blades;
+		int prevIndex = clientIndex;
+		
 		blades = dataStream.readInt();
+		clientIndex = dataStream.readInt();
+		
+		if(dataStream.readBoolean())
+		{
+			multiblockUUID = PacketHandler.readString(dataStream);
+		}
+		else {
+			multiblockUUID = null;
+		}
+		
+		if(prevBlades != blades || prevIndex != clientIndex)
+		{
+			rotationLower = 0;
+			rotationUpper = 0;
+		}
 	}
 
 	@Override
@@ -179,7 +229,17 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 	{
 		super.getNetworkedData(data);
 		
-		data.add(blades);
+		data.add(getHousedBlades());
+		data.add(rods.indexOf(Coord4D.get(this)));
+		
+		if(multiblockUUID != null)
+		{
+			data.add(true);
+			data.add(multiblockUUID);
+		}
+		else {
+			data.add(false);
+		}
 		
 		return data;
 	}
@@ -198,6 +258,13 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("blades", getHousedBlades());
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 
 	@Override
