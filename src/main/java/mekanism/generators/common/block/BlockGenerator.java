@@ -27,6 +27,7 @@ import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
+import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRod;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -59,6 +60,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 5: Advanced Solar Generator
  * 6: Wind Generator
  * 7: Turbine Rod
+ * 8: Rotational Complex
  * @author AidanBrady
  *
  */
@@ -83,6 +85,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
 		icons[7][0] = register.registerIcon("mekanism:TurbineRod");
+		icons[8][0] = register.registerIcon("mekanism:TurbineRod");
 	}
 	
 	@Override
@@ -90,6 +93,10 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	public IIcon getIcon(int side, int meta)
 	{
 		if(meta == GeneratorType.TURBINE_ROD.meta)
+		{
+			return icons[meta][0];
+		}
+		else if(meta == GeneratorType.ROTATIONAL_COMPLEX.meta)
 		{
 			return icons[meta][0];
 		}
@@ -652,7 +659,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		BIO_GENERATOR(4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true),
 		ADVANCED_SOLAR_GENERATOR(5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
 		WIND_GENERATOR(6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class, true),
-		TURBINE_ROD(7, "TurbineRod", -1, -1, TileEntityTurbineRod.class, false);
+		TURBINE_ROD(7, "TurbineRod", -1, -1, TileEntityTurbineRod.class, false),
+		ROTATIONAL_COMPLEX(8, "RotationalComplex", -1, -1, TileEntityRotationalComplex.class, false);
 
 		public int meta;
 		public String name;

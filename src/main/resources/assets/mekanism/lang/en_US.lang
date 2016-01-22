@@ -736,6 +736,7 @@ tooltip.BioGenerator=A generator that burns organic materials of !nthe world to 
 tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
 tooltip.WindGenerator=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
 tooltip.TurbineRod=The steel rod that is used to house !nTurbine Blades within an Industrial Turbine.
+tooltip.RotationalComplex=A connector that is placed on !nthe highest turbine rod to carry kinetic energy into the !ngenerator itself.
 
 tooltip.ReactorGlass=Reinforced glass that can be used in !nthe Fusion Reactor multiblock.
 tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that !nis capable of absorbing optical energy and !nthereby heating up the Fusion Reactor.
@@ -848,6 +849,7 @@ tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindGenerator.name=Wind Generator
 tile.Generator.TurbineRod.name=Turbine Rod
+tile.Generator.RotationalComplex.name=Rotational Complex
 
 tile.Reactor.ReactorController.name=Reactor Controller
 tile.Reactor.ReactorFrame.name=Reactor Frame
