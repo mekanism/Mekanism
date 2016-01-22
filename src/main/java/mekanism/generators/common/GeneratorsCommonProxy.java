@@ -24,6 +24,8 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
+import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
+import mekanism.generators.common.tile.turbine.TileEntityPressureDisperser;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,6 +56,8 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntityReactorPort.class, "ReactorPort");
 		GameRegistry.registerTileEntity(TileEntityReactorLogicAdapter.class, "ReactorLogicAdapter");
 		GameRegistry.registerTileEntity(TileEntityRotationalComplex.class, "RotationalComplex");
+		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
+		GameRegistry.registerTileEntity(TileEntityElectromagneticCoil.class, "ElectromagneticCoil");
 	}
 
 	/**

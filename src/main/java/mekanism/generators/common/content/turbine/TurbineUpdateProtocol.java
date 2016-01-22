@@ -8,7 +8,9 @@ import mekanism.api.Coord4D;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityPressureDisperser;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
@@ -30,6 +32,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 	protected boolean isValidFrame(int x, int y, int z) 
 	{
 		return false;
+		//return pointer.getWorldObj().getBlock(x, y, z) == GeneratorsBlocks.Generator && 
+		//		GeneratorType.getFromMetadata(pointer.getWorldObj().getBlockMetadata(x, y, z)) == GeneratorType.TURBINE_CASING;
 	}
 	
 	@Override
@@ -70,13 +74,17 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				int centerZ = structure.minLocation.zCoord+(structure.volWidth-1)/2;
 				
 				Coord4D complex = null;
+				
 				Set<Coord4D> turbines = new HashSet<Coord4D>();
 				Set<Coord4D> dispersers = new HashSet<Coord4D>();
+				Set<Coord4D> coils = new HashSet<Coord4D>();
 				
 				//Scan for complex
 				for(Coord4D coord : innerNodes)
 				{
-					if(coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityRotationalComplex)
+					TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+					
+					if(tile instanceof TileEntityRotationalComplex)
 					{
 						if(complex != null)
 						{
@@ -89,7 +97,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 						
 						complex = coord;
 					}
-					else if(coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityTurbineRotor)
+					else if(tile instanceof TileEntityTurbineRotor)
 					{
 						if(coord.xCoord != centerX || coord.zCoord != centerZ)
 						{
@@ -98,9 +106,13 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 						
 						turbines.add(coord);
 					}
-					else if(coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityPressureDisperser)
+					else if(tile instanceof TileEntityPressureDisperser)
 					{
 						dispersers.add(coord);
+					}
+					else if(tile instanceof TileEntityElectromagneticCoil)
+					{
+						coils.add(coord);
 					}
 				}
 				
@@ -135,6 +147,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					return false;
 				}
 				
+				int turbineHeight = 0;
+				
 				//Make sure a complete line of turbine rotors exist from the complex to the multiblock's base
 				for(int y = complex.yCoord-1; y > structure.minLocation.yCoord; y--)
 				{
@@ -145,6 +159,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 						return false;
 					}
 					
+					turbineHeight++;
 					turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorldObj().provider.dimensionId));
 				}
 				
@@ -162,6 +177,19 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					structure.coils = new CoilCounter().calculate((TileEntityElectromagneticCoil)startTile);
 				}
 				
+				Coord4D turbineCoord = complex.getFromSide(ForgeDirection.DOWN);
+				TileEntity turbineTile = turbineCoord.getTileEntity(pointer.getWorldObj());
+				
+				if(turbineTile instanceof TileEntityTurbineRotor)
+				{
+					structure.blades = ((TileEntityTurbineRotor)turbineTile).blades;
+				}
+				
+				if(coils.size() > structure.coils)
+				{
+					return false;
+				}
+				
 				for(Coord4D coord : structure.locations)
 				{
 					if(coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityTurbineVent)
@@ -175,6 +203,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 						}
 					}
 				}
+				
+				structure.lowerVolume = structure.volLength*structure.volWidth*turbineHeight;
 				
 				((TileEntityRotationalComplex)complex.getTileEntity(pointer.getWorldObj())).setMultiblock(structure.inventoryID);
 				

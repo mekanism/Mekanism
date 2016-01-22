@@ -736,8 +736,9 @@ tooltip.BioGenerator=A generator that burns organic materials of !nthe world to 
 tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
 tooltip.WindGenerator=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
 tooltip.TurbineRotor=The steel rod that is used to house !nTurbine Blades within an Industrial Turbine.
-tooltip.RotationalComplex=A connector that is placed on !nthe highest turbine rod to carry kinetic energy into the !ngenerator itself.
-tooltip.PressureDisperser=A block used to 
+tooltip.RotationalComplex=A connector that is placed on the highest !nTurbine Rotor of an Industrial Turbine to !ncarry kinetic energy into its !nElectromagnetic Coils.
+tooltip.PressureDisperser=A block used in the Industrial Turbine!n to direct steam outwards. These should !nbe placed just above your turbine rods, forming a !ngapless layer of dispersers surrounding your !nRotational Complex.
+tooltip.ElectromagneticCoil=A block that converts kinetic energy from a !nRotational Complex into useable electricity. These can be placed in !nany arrangement above your Rotational Complex, as long !nas they are all touching each other and the !ncomplex itself.
 
 tooltip.ReactorGlass=Reinforced glass that can be used in !nthe Fusion Reactor multiblock.
 tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that !nis capable of absorbing optical energy and !nthereby heating up the Fusion Reactor.
