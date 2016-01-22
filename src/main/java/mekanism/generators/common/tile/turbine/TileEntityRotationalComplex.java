@@ -88,9 +88,9 @@ public class TileEntityRotationalComplex extends TileEntityBasicBlock
 		Coord4D coord = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
 		TileEntity tile = coord.getTileEntity(worldObj);
 		
-		if(tile instanceof TileEntityTurbineRod)
+		if(tile instanceof TileEntityTurbineRotor)
 		{
-			((TileEntityTurbineRod)tile).updateRods();
+			((TileEntityTurbineRotor)tile).updateRotors();
 		}
 	}
 	

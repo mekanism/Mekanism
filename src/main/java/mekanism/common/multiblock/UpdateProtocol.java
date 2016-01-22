@@ -157,7 +157,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 								break;
 							}
 							else {
-								innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.dimensionId));
+								if(!isAir(origX+x, origY+y, origZ+z))
+								{
+									innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.dimensionId));
+								}
 							}
 
 							volume++;
@@ -227,7 +230,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		}
 	}
 	
-	public boolean canForm(T structure)
+	protected boolean canForm(T structure)
 	{
 		return true;
 	}
@@ -390,6 +393,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 	
 	public void onStructureDestroyed(T structure) {}
+	
+	public void killInnerNode(Coord4D coord) {}
 
 	/**
 	 * Runs the protocol and updates all nodes that make a part of the multiblock.
@@ -414,6 +419,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 						{
 							((IStructuralMultiblock)tile).setController(null);
 						}
+					}
+					
+					for(Coord4D coord : innerNodes)
+					{
+						killInnerNode(coord);
 					}
 
 					return;
@@ -516,6 +526,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				{
 					((IStructuralMultiblock)tile).setController(null);
 				}
+			}
+			
+			for(Coord4D coord : innerNodes)
+			{
+				killInnerNode(coord);
 			}
 		}
 	}

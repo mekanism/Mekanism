@@ -46,8 +46,11 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
  * 6: Wind Generator
- * 7: Turbine Rod
+ * 7: Turbine Rotor
  * 8: Rotational Complex
+ * 9: Pressure Disperser
+ * 10: Turbine Casing
+ * 11: Turbine Valve
  * @author AidanBrady
  *
  */
@@ -72,7 +75,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.getFromMetadata(stack.getItemDamage());
 		
-		if(type == GeneratorType.TURBINE_ROD || type == GeneratorType.ROTATIONAL_COMPLEX)
+		if(type.maxEnergy == -1)
 		{
 			return 64;
 		}
@@ -110,7 +113,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.getFromMetadata(itemstack.getItemDamage());
 		
-		if(type != GeneratorType.TURBINE_ROD && type != GeneratorType.ROTATIONAL_COMPLEX)
+		if(type.maxEnergy > -1)
 		{
 			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 			{

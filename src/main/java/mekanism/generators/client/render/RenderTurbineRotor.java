@@ -5,7 +5,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineRod;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderTurbineRod extends TileEntitySpecialRenderer
+public class RenderTurbineRotor extends TileEntitySpecialRenderer
 {
 	private ModelTurbine model = new ModelTurbine();
 	
@@ -24,10 +24,10 @@ public class RenderTurbineRod extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityTurbineRod)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityTurbineRotor)tileEntity, x, y, z, partialTick);
 	}
 
-	private void renderAModelAt(TileEntityTurbineRod tileEntity, double x, double y, double z, float partialTick)
+	private void renderAModelAt(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		

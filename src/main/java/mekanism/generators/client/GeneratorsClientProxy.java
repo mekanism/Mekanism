@@ -17,7 +17,7 @@ import mekanism.generators.client.render.RenderGasGenerator;
 import mekanism.generators.client.render.RenderHeatGenerator;
 import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
-import mekanism.generators.client.render.RenderTurbineRod;
+import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindTurbine;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
@@ -29,7 +29,7 @@ import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineRod;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -52,7 +52,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator", new RenderGasGenerator());
 		ClientRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine", new RenderWindTurbine());
 		ClientRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController", new RenderReactor());
-		ClientRegistry.registerTileEntity(TileEntityTurbineRod.class, "TurbineRod", new RenderTurbineRod());
+		ClientRegistry.registerTileEntity(TileEntityTurbineRotor.class, "TurbineRod", new RenderTurbineRotor());
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package mekanism.generators.common;
 
 import mekanism.common.item.ItemMekanism;
 import mekanism.generators.common.item.ItemHohlraum;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineRod;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
@@ -18,7 +18,7 @@ public class GeneratorsItems
 		@Override
 		public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
 		{
-			return world.getTileEntity(x, y, z) instanceof TileEntityTurbineRod;
+			return world.getTileEntity(x, y, z) instanceof TileEntityTurbineRotor;
 		}
 	}.setUnlocalizedName("TurbineBlade");
 

@@ -18,9 +18,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityTurbineRod extends TileEntityBasicBlock
+public class TileEntityTurbineRotor extends TileEntityBasicBlock
 {
-	public List<Coord4D> rods = new ArrayList<Coord4D>();
+	public List<Coord4D> rotors = new ArrayList<Coord4D>();
 	
 	public boolean hasComplex;
 	
@@ -46,34 +46,34 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 	{
 		if(!worldObj.isRemote)
 		{
-			updateRods();
+			updateRotors();
 		}
 	}
 	
-	public void updateRods()
+	public void updateRotors()
 	{
-		if(rods.contains(Coord4D.get(this)))
+		if(rotors.contains(Coord4D.get(this)))
 		{
-			rods.add(Coord4D.get(this));
+			rotors.add(Coord4D.get(this));
 		}
 		
-		buildRods();
+		buildRotors();
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 	}
 	
-	private void buildRods()
+	private void buildRotors()
 	{
-		List<Coord4D> newRods = new ArrayList<Coord4D>();
+		List<Coord4D> newRotors = new ArrayList<Coord4D>();
 		int newBlades = 0;
 		boolean complex = false;
 		String id = null;
 		
 		Coord4D pointer = Coord4D.get(this);
 		
-		//Go to bottom rod
+		//Go to bottom rotor
 		while(true)
 		{
-			if(isRod(pointer.getFromSide(ForgeDirection.DOWN)))
+			if(isRotor(pointer.getFromSide(ForgeDirection.DOWN)))
 			{
 				pointer.step(ForgeDirection.DOWN);
 				continue;
@@ -82,13 +82,13 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 			break;
 		}
 		
-		//Put all rods in new list, top to bottom
+		//Put all rotors in new list, top to bottom
 		while(true)
 		{
-			newRods.add(pointer.clone());
-			newBlades += ((TileEntityTurbineRod)pointer.getTileEntity(worldObj)).getHousedBlades();
+			newRotors.add(pointer.clone());
+			newBlades += ((TileEntityTurbineRotor)pointer.getTileEntity(worldObj)).getHousedBlades();
 			
-			if(isRod(pointer.getFromSide(ForgeDirection.UP)))
+			if(isRotor(pointer.getFromSide(ForgeDirection.UP)))
 			{
 				pointer.step(ForgeDirection.UP);
 				continue;
@@ -103,42 +103,42 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 			complex = true;
 		}
 		
-		//Update all rods, send packet if necessary
-		for(Coord4D coord : newRods)
+		//Update all rotors, send packet if necessary
+		for(Coord4D coord : newRotors)
 		{
-			TileEntityTurbineRod rod = (TileEntityTurbineRod)coord.getTileEntity(worldObj);
-			int prevHoused = rod.getHousedBlades();
-			int prevBlades = rod.blades;
+			TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)coord.getTileEntity(worldObj);
+			int prevHoused = rotor.getHousedBlades();
+			int prevBlades = rotor.blades;
 			
-			rod.rods = newRods;
-			rod.blades = newBlades;
-			rod.multiblockUUID = id;
+			rotor.rotors = newRotors;
+			rotor.blades = newBlades;
+			rotor.multiblockUUID = id;
 			
-			if(rods.indexOf(coord) == rods.size()-1)
+			if(rotors.indexOf(coord) == rotors.size()-1)
 			{
-				rod.hasComplex = complex;
+				rotor.hasComplex = complex;
 			}
 			else {
-				rod.hasComplex = false;
+				rotor.hasComplex = false;
 			}
 			
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rod.getNetworkedData(new ArrayList())), new Range4D(coord));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rotor.getNetworkedData(new ArrayList())), new Range4D(coord));
 		}
 	}
 	
 	public boolean editBlade(boolean add)
 	{
-		if(!rods.contains(Coord4D.get(this)))
+		if(!rotors.contains(Coord4D.get(this)))
 		{
-			rods.add(Coord4D.get(this));
+			rotors.add(Coord4D.get(this));
 		}
 		
-		if((add && (rods.size()*2) - blades > 0) || (!add && (blades > 0)))
+		if((add && (rotors.size()*2) - blades > 0) || (!add && (blades > 0)))
 		{
-			for(Coord4D coord : rods)
+			for(Coord4D coord : rotors)
 			{
-				TileEntityTurbineRod rod = (TileEntityTurbineRod)coord.getTileEntity(worldObj);
-				rod.internalEditBlade(add);
+				TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)coord.getTileEntity(worldObj);
+				rotor.internalEditBlade(add);
 			}
 			
 			return true;
@@ -164,9 +164,9 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 	{
 		if(!worldObj.isRemote)
 		{
-			if(rods.size() > 0)
+			if(rotors.size() > 0)
 			{
-				return Math.max(0, Math.min(2, blades - (rods.indexOf(Coord4D.get(this)))*2));
+				return Math.max(0, Math.min(2, blades - (rotors.indexOf(Coord4D.get(this)))*2));
 			}
 			else {
 				return blades;
@@ -177,9 +177,9 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		}
 	}
 	
-	private boolean isRod(Coord4D coord)
+	private boolean isRotor(Coord4D coord)
 	{
-		return coord.getTileEntity(worldObj) instanceof TileEntityTurbineRod;
+		return coord.getTileEntity(worldObj) instanceof TileEntityTurbineRotor;
 	}
 	
 	private boolean isComplex(Coord4D coord)
@@ -194,7 +194,7 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		
 		if(!worldObj.isRemote)
 		{
-			updateRods();
+			updateRotors();
 		}
 	}
 	
@@ -230,7 +230,7 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		super.getNetworkedData(data);
 		
 		data.add(getHousedBlades());
-		data.add(rods.indexOf(Coord4D.get(this)));
+		data.add(rotors.indexOf(Coord4D.get(this)));
 		
 		if(multiblockUUID != null)
 		{
