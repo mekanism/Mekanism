@@ -42,7 +42,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public MultiblockCache cachedData = getNewCache();
 	
 	/** This multiblock segment's cached inventory ID */
-	public int cachedID = -1;
+	public String cachedID = null;
 	
 	public TileEntityMultiblock(String name)
 	{
@@ -84,7 +84,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			{
 				isRendering = false;
 				
-				if(cachedID != -1)
+				if(cachedID != null)
 				{
 					getManager().updateCache(this);
 				}
@@ -123,7 +123,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			{
 				getSynchronizedData().didTick = false;
 
-				if(getSynchronizedData().inventoryID != -1)
+				if(getSynchronizedData().inventoryID != null)
 				{
 					cachedData.sync(getSynchronizedData());
 					cachedID = getSynchronizedData().inventoryID;
@@ -233,10 +233,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 		if(structure == null)
 		{
-			cachedID = nbtTags.getInteger("cachedID");
-
-			if(cachedID != -1)
+			if(nbtTags.hasKey("cachedID"))
 			{
+				cachedID = nbtTags.getString("cachedID");
 				cachedData.load(nbtTags);
 			}
 		}
@@ -247,10 +246,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("cachedID", cachedID);
-
-		if(cachedID != -1)
+		if(cachedID != null)
 		{
+			nbtTags.setString("cachedID", cachedID);
 			cachedData.save(nbtTags);
 		}
 	}

@@ -19,7 +19,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 
 	public int volume;
 	
-	public int inventoryID;
+	public String inventoryID;
 	
 	public boolean didTick;
 

@@ -12,7 +12,10 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityTurbineRod extends TileEntityBasicBlock
 {
@@ -20,6 +23,8 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 	
 	//Total blades on server, housed blades on client
 	public int blades = 0;
+	
+	public int clientIndex;
 	
 	@Override
 	public boolean canUpdate()
@@ -92,12 +97,13 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		for(Coord4D coord : newRods)
 		{
 			TileEntityTurbineRod rod = (TileEntityTurbineRod)coord.getTileEntity(worldObj);
-			int prev = rod.getHousedBlades();
+			int prevHoused = rod.getHousedBlades();
+			int prevBlades = rod.blades;
 			
 			rod.rods = newRods;
 			rod.blades = newBlades;
 			
-			if(rod.getHousedBlades() != prev)
+			if(rod.getHousedBlades() != prevHoused || rod.blades != prevBlades)
 			{
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rod.getNetworkedData(new ArrayList())), new Range4D(coord));
 			}
@@ -172,6 +178,7 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		super.handlePacketData(dataStream);
 		
 		blades = dataStream.readInt();
+		clientIndex = dataStream.readInt();
 	}
 
 	@Override
@@ -179,7 +186,8 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 	{
 		super.getNetworkedData(data);
 		
-		data.add(blades);
+		data.add(getHousedBlades());
+		data.add(rods.indexOf(Coord4D.get(this)));
 		
 		return data;
 	}
@@ -198,6 +206,13 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("blades", getHousedBlades());
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 
 	@Override

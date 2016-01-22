@@ -405,14 +405,14 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				}
 			}
 
-			List<Integer> idsFound = new ArrayList<Integer>();
-			int idToUse = -1;
+			List<String> idsFound = new ArrayList<String>();
+			String idToUse = null;
 
 			for(Coord4D obj : structureFound.locations)
 			{
 				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
 
-				if(tileEntity.cachedID != -1)
+				if(tileEntity.cachedID != null)
 				{
 					idsFound.add(tileEntity.cachedID);
 				}
@@ -423,7 +423,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 			if(!idsFound.isEmpty())
 			{
-				for(int id : idsFound)
+				for(String id : idsFound)
 				{
 					if(getManager().inventories.get(id) != null)
 					{
