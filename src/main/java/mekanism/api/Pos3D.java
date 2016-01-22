@@ -184,7 +184,7 @@ public class Pos3D extends Vec3
 	 * @param yaw - yaw to rotate by
 	 * @return rotated Pos3D
 	 */
-	public Pos3D rotateYaw(double yaw)
+	public Pos3D rotateYaw(float yaw)
 	{
 		double yawRadians = Math.toRadians(yaw);
 
@@ -200,7 +200,7 @@ public class Pos3D extends Vec3
 		return new Pos3D(xPos, yCoord, zPos);
 	}
 	
-	public Pos3D rotatePitch(double pitch)
+	public Pos3D rotatePitch(float pitch)
 	{
 		double pitchRadians = Math.toRadians(pitch);
 		
@@ -216,12 +216,12 @@ public class Pos3D extends Vec3
 		return new Pos3D(xCoord, yPos, zPos);
 	}
 	
-	public Pos3D rotate(double yaw, double pitch)
+	public Pos3D rotate(float yaw, float pitch)
 	{
 		return rotate(yaw, pitch, 0);
 	}
 
-    public Pos3D rotate(double yaw, double pitch, double roll)
+    public Pos3D rotate(float yaw, float pitch, float roll)
     {
         double yawRadians = Math.toRadians(yaw);
         double pitchRadians = Math.toRadians(pitch);

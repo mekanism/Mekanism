@@ -124,21 +124,21 @@ public class Gas
 	 * @param i - IIcon to associate with this Gas
 	 * @return this Gas object
 	 */
-/*
 	public Gas setIcon(ResourceLocation i)
 	{
 		icon = i;
 
+/*
 		if(hasFluid())
 		{
 			fluid.setIcons(getIcon());
 		}
-		
+*/
+
 		from_fluid = false;
 		
 		return this;
 	}
-*/
 
 	/**
 	 * Gets the ID associated with this gas.

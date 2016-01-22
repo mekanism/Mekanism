@@ -84,6 +84,18 @@ public class Coord4D extends BlockPos
 		dimensionId = dimension;
 	}
 
+	public Coord4D(Vec3i pos)
+	{
+		this(pos, 0);
+	}
+
+	public Coord4D(Vec3i pos, int dimension)
+	{
+		this(pos.getX(), pos.getY(), pos.getZ());
+
+		dimensionId = dimension;
+	}
+
 
 	public Coord4D(MovingObjectPosition mop)
 	{
