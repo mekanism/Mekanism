@@ -1,5 +1,32 @@
 package mekanism.generators.common;
 
+import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
+
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.generators;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.infuse.InfuseRegistry;
+import mekanism.common.FuelHandler;
+import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Version;
+import mekanism.common.base.IModule;
+import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.ShapedMekanismRecipe;
+import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
@@ -13,26 +40,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import io.netty.buffer.ByteBuf;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.generators;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
-import mekanism.api.infuse.InfuseRegistry;
-import mekanism.common.*;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.base.IModule;
-import mekanism.common.recipe.ShapedMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.oredict.OreDictionary;
-
-import java.io.IOException;
 
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "9.0.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
@@ -48,6 +55,8 @@ public class MekanismGenerators implements IModule
 	
 	/** MekanismGenerators version number */
 	public static Version versionNumber = new Version(9, 0, 0);
+	
+	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)

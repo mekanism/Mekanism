@@ -1,11 +1,10 @@
 package mekanism.common.block;
 
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.render.MekanismRenderer;
@@ -22,8 +21,21 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.*;
+import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.multiblock.IStructuralMultiblock;
+import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.tile.TileEntityDynamicValve;
+import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionPort;
+import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.TileEntitySolarEvaporationBlock;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
+import mekanism.common.tile.TileEntitySolarEvaporationValve;
+import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -46,11 +58,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple metal block IDs.
@@ -64,7 +75,7 @@ import java.util.Random;
  * 0:7: Teleporter Frame
  * 0:8: Steel Casing
  * 0:9: Dynamic Tank
- * 0:10: Dynamic Glass
+ * 0:10: Structural Glass
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
@@ -127,6 +138,11 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
 				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+			}
+			
+			if(tileEntity instanceof IStructuralMultiblock)
+			{
+				((IStructuralMultiblock)tileEntity).update();
 			}
 		}
 	}
@@ -526,24 +542,13 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 
 				return true;
 			}
-			else if(metadata == 9 || metadata == 10 || metadata == 11)
+			else if(metadata == 9 || metadata == 11)
 			{
-				if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getTileEntity(x, y, z)).structure != null)
-				{
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
-
-					if(!manageInventory(entityplayer, tileEntity))
-					{
-						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
-						entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
-					}
-					else {
-						entityplayer.inventory.markDirty();
-						tileEntity.sendPacketToRenderer();
-					}
-
-					return true;
-				}
+				return ((IMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
+			}
+			else if(metadata == 10)
+			{
+				return ((IStructuralMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
 			}
 		}
 		else if(blockType == BasicBlock.BASIC_BLOCK_2)
@@ -555,15 +560,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			
 			if(metadata == 1 || metadata == 2)
 			{
-				if(!entityplayer.isSneaking() && ((TileEntityInductionCasing)world.getTileEntity(x, y, z)).structure != null)
-				{
-					TileEntityInductionCasing tileEntity = (TileEntityInductionCasing)world.getTileEntity(x, y, z);
-					
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
-					entityplayer.openGui(Mekanism.instance, 49, world, x, y, z);
-					
-					return true;
-				}
+				return ((IMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
 			}
 		}
 
@@ -576,7 +573,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		return !(blockType == BasicBlock.BASIC_BLOCK_1 && world.getBlockMetadata(x, y, z) == 10);
 	}
 
-	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
+	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
 	{
 		ItemStack itemStack = player.getCurrentEquippedItem();
 
@@ -808,7 +805,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					case 9:
 						return new TileEntityDynamicTank();
 					case 10:
-						return new TileEntityDynamicTank();
+						return new TileEntityStructuralGlass();
 					case 11:
 						return new TileEntityDynamicValve();
 					case 14:
@@ -892,6 +889,11 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			if(tileEntity instanceof TileEntityMultiblock)
 			{
 				((TileEntityMultiblock)tileEntity).update();
+			}
+			
+			if(tileEntity instanceof IStructuralMultiblock)
+			{
+				((IStructuralMultiblock)tileEntity).update();
 			}
 		}
 	}

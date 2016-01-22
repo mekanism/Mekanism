@@ -1,13 +1,12 @@
-package mekanism.common.content.turbine;
-
-import mekanism.common.multiblock.MultiblockCache;
+package mekanism.generators.common.content.turbine;
 
 import net.minecraft.nbt.NBTTagCompound;
+import mekanism.common.multiblock.MultiblockCache;
 
 public class TurbineCache extends MultiblockCache<SynchronizedTurbineData>
 {
 	@Override
-	public void apply(SynchronizedTurbineData data) 
+	public void apply(SynchronizedTurbineData data)
 	{
 		
 	}
@@ -19,7 +18,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData>
 	}
 
 	@Override
-	public void load(NBTTagCompound nbtTags)
+	public void load(NBTTagCompound nbtTags) 
 	{
 		
 	}

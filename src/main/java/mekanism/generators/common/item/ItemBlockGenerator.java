@@ -65,7 +65,20 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
-		setMaxStackSize(1);
+	}
+	
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		GeneratorType type = GeneratorType.getFromMetadata(stack.getItemDamage());
+		
+		if(type == GeneratorType.TURBINE_ROD || type == GeneratorType.ROTATIONAL_COMPLEX)
+		{
+			return 64;
+		}
+		else {
+			return 1;
+		}
 	}
 
 	@Override

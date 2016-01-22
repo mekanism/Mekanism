@@ -758,10 +758,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	}
 
 	@Override
-	public void setActive(boolean active)
-	{
-
-	}
+	public void setActive(boolean active) {}
 
 	@Override
 	public boolean renderUpdate()

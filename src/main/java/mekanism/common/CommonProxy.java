@@ -104,6 +104,7 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
+import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -189,6 +190,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityInductionCell.class, "InductionCell");
 		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
 		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
+		GameRegistry.registerTileEntity(TileEntityStructuralGlass.class, "StructuralGlass");
 	}
 	
 	public void handleTeleporterUpdate(PortableTeleporterMessage message) {}

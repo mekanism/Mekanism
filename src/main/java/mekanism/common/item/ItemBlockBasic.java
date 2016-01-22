@@ -1,7 +1,8 @@
 package mekanism.common.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -28,9 +29,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item class for handling multiple metal block IDs.
@@ -44,7 +44,7 @@ import java.util.List;
  * 0:7: Teleporter Frame
  * 0:8: Steel Casing
  * 0:9: Dynamic Tank
- * 0:10: Dynamic Glass
+ * 0:10: Structural Glass
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
@@ -306,7 +306,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 					name = "DynamicTank";
 					break;
 				case 10:
-					name = "DynamicGlass";
+					name = "StructuralGlass";
 					break;
 				case 11:
 					name = "DynamicValve";

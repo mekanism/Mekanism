@@ -1,4 +1,4 @@
-package mekanism.common.content.turbine;
+package mekanism.generators.common.content.turbine;
 
 import mekanism.common.multiblock.SynchronizedData;
 

@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
@@ -133,6 +134,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		}
 	}
 	
+	@Override
 	public void update()
 	{
 		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))
@@ -271,6 +273,12 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				itemstack.stackSize = getInventoryStackLimit();
 			}
 		}
+	}
+	
+	@Override
+	public boolean onActivate(EntityPlayer player)
+	{
+		return false;
 	}
 	
 	@Override

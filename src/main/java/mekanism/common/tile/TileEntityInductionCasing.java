@@ -1,6 +1,11 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
+import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixCache;
@@ -8,12 +13,12 @@ import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration
 {
@@ -50,6 +55,20 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 				ChargeUtils.discharge(1, this);
 			}
 		}
+	}
+	
+	@Override
+	public boolean onActivate(EntityPlayer player)
+	{
+		if(!player.isSneaking() && structure != null)
+		{
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			player.openGui(Mekanism.instance, 49, worldObj, xCoord, yCoord, zCoord);
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
