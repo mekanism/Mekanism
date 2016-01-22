@@ -11,9 +11,10 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.tile.TileEntityTeleporter;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
@@ -33,10 +34,12 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 
-			Coord4D obj = Coord4D.get(tileEntity).offset(ForgeDirection.WEST);
+			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
 			int type = 0;
 
-			if(obj.getBlock(tileEntity.getWorldObj()) == MekanismBlocks.BasicBlock && obj.getBlockState(tileEntity.getWorldObj()) == 7)
+			IBlockState s = obj.getBlockState(tileEntity.getWorld());
+
+			if(s.getBlock() == MekanismBlocks.BasicBlock && s.getBlock().getMetaFromState(s) == 7)
 			{
 				type = 1;
 			}

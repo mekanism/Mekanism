@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+/*
 import java.util.Map;
 
 import mekanism.api.EnumColor;
@@ -21,9 +22,11 @@ import codechicken.lib.render.TextureUtils.IIconSelfRegister;
 import codechicken.lib.render.uv.IconTransformation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
+*/
 
-public class RenderGlowPanel implements IIconSelfRegister
+public class RenderGlowPanel//TODO implements IIconSelfRegister
 {
+/*TODO
 	public static RenderGlowPanel INSTANCE;
 
 	public static CCModel[] frameModels;
@@ -100,4 +103,5 @@ public class RenderGlowPanel implements IIconSelfRegister
 	{
 		return 0;
 	}
+*/
 }

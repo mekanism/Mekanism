@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 /**
@@ -357,11 +359,14 @@ public class CTM
 				break;
 		}
 
-		Block block1 = world.getBlock(x, y, z);
-		Block block2 = world.getBlock(x2, y2, z2);
+		IBlockState s1 = world.getBlockState(new BlockPos(x, y, z));
+		IBlockState s2 = world.getBlockState(new BlockPos(x2, y2, z2));
 
-		int meta1 = world.getBlockMetadata(x, y, z);
-		int meta2 = world.getBlockMetadata(x2, y2, z2);
+		Block block1 = s1.getBlock();
+		Block block2 = s2.getBlock();
+
+		int meta1 = block1.getMetaFromState(s1);
+		int meta2 = block2.getMetaFromState(s2);
 
 		boolean validBlockMeta1 = false;
 		boolean invalidBlockMeta2 = true;

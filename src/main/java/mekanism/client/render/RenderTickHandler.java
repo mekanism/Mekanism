@@ -22,12 +22,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javafx.geometry.Pos;
 
 @SideOnly(Side.CLIENT)
 public class RenderTickHandler
@@ -45,17 +48,13 @@ public class RenderTickHandler
 				EntityPlayer player = mc.thePlayer;
 				World world = mc.thePlayer.worldObj;
 	
-				FontRenderer font = mc.fontRenderer;
+				FontRenderer font = mc.fontRendererObj;
 	
 				MovingObjectPosition pos = player.rayTrace(40.0D, 1.0F);
 	
 				if(pos != null)
-				{
-					int x = MathHelper.floor_double(pos.blockX);
-					int y = MathHelper.floor_double(pos.blockY);
-					int z = MathHelper.floor_double(pos.blockZ);
-	
-					Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
+				{	
+					Coord4D obj = new Coord4D(pos.getBlockPos(), world.provider.getDimensionId());
 	
 					if(MekanismAPI.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 					{
@@ -81,7 +80,7 @@ public class RenderTickHandler
 				{
 					ItemStack stack = player.getEquipmentInSlot(3);
 	
-					ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+					ScaledResolution scaledresolution = new ScaledResolution(mc);
 	
 					int x = scaledresolution.getScaledWidth();
 					int y = scaledresolution.getScaledHeight();
@@ -123,25 +122,13 @@ public class RenderTickHandler
 
 						float random = (rand.nextFloat() - 0.5F) * 0.1F;
 
-						Pos3D vLeft = new Pos3D();
-						vLeft.xPos -= 0.43;
-						vLeft.yPos -= 0.55;
-						vLeft.zPos -= 0.54;
-						vLeft.rotateYaw(p.renderYawOffset);
+						Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotateYaw(p.renderYawOffset);
 
-						Pos3D vRight = new Pos3D();
-						vRight.xPos += 0.43;
-						vRight.yPos -= 0.55;
-						vRight.zPos -= 0.54;
-						vRight.rotateYaw(p.renderYawOffset);
+						Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotateYaw(p.renderYawOffset);
 
-						Pos3D vCenter = new Pos3D();
-						vCenter.xPos = (rand.nextFloat() - 0.5F) * 0.4F;
-						vCenter.yPos -= 0.86;
-						vCenter.zPos -= 0.30;
-						vCenter.rotateYaw(p.renderYawOffset);
+						Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotateYaw(p.renderYawOffset);
 
-						Pos3D rLeft = vLeft.clone().scale(random);
+						Pos3D rLeft = vLeft.scale(random);
 						Pos3D rRight = vRight.clone().scale(random);
 
 						Pos3D mLeft = vLeft.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
@@ -152,64 +139,65 @@ public class RenderTickHandler
 						mRight.translate(rRight);
 
 						Pos3D v = playerPos.clone().translate(vLeft);
-						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mLeft.xPos, mLeft.yPos, mLeft.zPos);
-						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mLeft.xPos, mLeft.yPos, mLeft.zPos);
+						spawnAndSetParticle("flame", world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
+						spawnAndSetParticle("smoke", world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
 
 						v = playerPos.clone().translate(vRight);
-						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mRight.xPos, mRight.yPos, mRight.zPos);
-						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mRight.xPos, mRight.yPos, mRight.zPos);
+						spawnAndSetParticle("flame", world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
+						spawnAndSetParticle("smoke", world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
 
 						v = playerPos.clone().translate(vCenter);
-						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
-						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
+						spawnAndSetParticle("flame", world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
+						spawnAndSetParticle("smoke", world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
 					}
 				}
 				
 				if(world.getWorldTime() % 4 == 0)
 				{
-					for(EntityPlayer p : (List<EntityPlayer>)world.playerEntities)
+					for(EntityPlayer p : world.playerEntities)
 					{
-						if(!Mekanism.flamethrowerActive.contains(p.getCommandSenderName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
 						{
 							if(((ItemFlamethrower)p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null)
 							{
 								Pos3D playerPos = new Pos3D(p);
-								Pos3D flameVec = new Pos3D();
+								Pos3D flameVec;
+
+								double flameXCoord = 0;
+								double flameYCoord = 0;
+								double flameZCoord = 0;
 								
 								if(p.isSneaking())
 								{
-									flameVec.yPos -= 0.35F;
-									flameVec.zPos -= 0.15F;
+									flameYCoord -= 0.35F;
+									flameZCoord -= 0.15F;
 								}
 								
 								Pos3D flameMotion = new Pos3D(p.motionX, p.onGround ? 0 : p.motionY, p.motionZ);
 								
 								if(player == p && mc.gameSettings.thirdPersonView == 0)
 								{
-									flameVec = new Pos3D(0.8, 0.8, 0.8);
-									
-									flameVec.multiply(new Pos3D(p.getLook(90)));
-									flameVec.rotateYaw(15);
+									flameVec = new Pos3D(0.8, 0.8, 0.8).multiply(new Pos3D(p.getLook(90))).rotateYaw(15);
 								}
 								else {
-									flameVec.xPos -= 0.45F;
+									flameXCoord -= 0.45F;
 									
 									if(player == p)
 									{
-										flameVec.yPos -= 0.5F;
+										flameYCoord -= 0.5F;
 									}
 									else {
-										flameVec.yPos += 1F;
+										flameYCoord += 1F;
 									}
 									
-									flameVec.zPos += 1.05F;
+									flameZCoord += 1.05F;
 									
-									flameVec.rotateYaw(p.renderYawOffset);
+									flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
 								}
 								
-								Pos3D mergedVec = playerPos.clone().translate(flameVec);
+								Pos3D mergedVec = playerPos.translate(flameVec);
 								
-								spawnAndSetParticle("flame", world, mergedVec.xPos, mergedVec.yPos, mergedVec.zPos, flameMotion.xPos, flameMotion.yPos, flameMotion.zPos);
+								spawnAndSetParticle("flame", world, mergedVec.xCoord, mergedVec.yCoord, mergedVec.zCoord, flameMotion.xCoord, flameMotion.yCoord, flameMotion.zCoord);
 							}
 						}
 					}

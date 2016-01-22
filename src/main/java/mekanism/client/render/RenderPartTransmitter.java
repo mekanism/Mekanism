@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+/*
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,10 +58,12 @@ import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+*/
 
-@SideOnly(Side.CLIENT)
-public class RenderPartTransmitter implements IIconSelfRegister
+//@SideOnly(Side.CLIENT)
+public class RenderPartTransmitter //TODO implements IIconSelfRegister
 {
+/*
 	public static RenderPartTransmitter INSTANCE;
 
 	public static Map<String, CCModel> small_models;
@@ -814,4 +817,5 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		cachedLiquids.clear();
 		cachedOverlays.clear();
 	}
+*/
 }

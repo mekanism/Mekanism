@@ -136,7 +136,7 @@ public class Sound implements ISound
 	}
 
 	@Override
-	public ResourceLocation getPositionedSoundLocation() 
+	public ResourceLocation getSoundLocation()
 	{
 		return sound;
 	}

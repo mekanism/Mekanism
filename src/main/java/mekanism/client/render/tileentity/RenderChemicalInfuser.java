@@ -14,8 +14,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
@@ -25,7 +24,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 
 	private static final double offset = 0.001;
 
-	private Map<ForgeDirection, HashMap<Gas, DisplayInteger>> cachedGasses = new HashMap<ForgeDirection, HashMap<Gas, DisplayInteger>>();
+	private Map<EnumFacing, HashMap<Gas, DisplayInteger>> cachedGasses = new HashMap<EnumFacing, HashMap<Gas, DisplayInteger>>();
 
 	@Override
 	public void renderTileEntityAt(TileEntityChemicalInfuser tileEntity, double x, double y, double z, float partialTick, int destroyStage)
@@ -39,7 +38,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.leftTank.getStored()/tileEntity.leftTank.getMaxGas());
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getListAndRender(ForgeDirection.getOrientation(tileEntity.facing), tileEntity.leftTank.getGas().getGas()).render();
+			getListAndRender(EnumFacing.getFront(tileEntity.facing), tileEntity.leftTank.getGas().getGas()).render();
 			GL11.glColor4f(1, 1, 1, 1);
 
 			pop();
@@ -49,7 +48,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 		{
 			push();
 
-			switch(ForgeDirection.getOrientation(tileEntity.facing))
+			switch(EnumFacing.getFront(tileEntity.facing))
 			{
 				case NORTH:
 					GL11.glTranslatef(-0.4375F, 0, 0);
@@ -68,7 +67,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.rightTank.getStored()/tileEntity.rightTank.getMaxGas());
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getListAndRender(ForgeDirection.getOrientation(tileEntity.facing), tileEntity.rightTank.getGas().getGas()).render();
+			getListAndRender(EnumFacing.getFront(tileEntity.facing), tileEntity.rightTank.getGas().getGas()).render();
 			GL11.glColor4f(1, 1, 1, 1);
 
 			pop();
@@ -109,7 +108,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private DisplayInteger getListAndRender(ForgeDirection side, Gas gas)
+	private DisplayInteger getListAndRender(EnumFacing side, Gas gas)
 	{
 		if(gas == null || gas.getIcon() == null)
 		{

@@ -22,16 +22,14 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.ResourceLocation;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -52,12 +50,12 @@ public class MekanismRenderer
 {
 	private static RenderBlocks renderBlocks = new RenderBlocks();
 	
-	public static IIcon[] colors = new IIcon[256];
+	public static ResourceLocation[] colors = new ResourceLocation[256];
 	
-	public static IIcon energyIcon;
-	public static IIcon heatIcon;
+	public static ResourceLocation energyIcon;
+	public static ResourceLocation heatIcon;
 	
-	public static Map<TransmissionType, IIcon> overlays = new HashMap<TransmissionType, IIcon>();
+	public static Map<TransmissionType, ResourceLocation> overlays = new HashMap<TransmissionType, ResourceLocation>();
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -77,16 +75,16 @@ public class MekanismRenderer
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
-		if(event.map.getTextureType() == 0)
+		if(event.map.getGlTextureId()/*TODO Is this right?*/ == 0)
 		{
 			for(EnumColor color : EnumColor.values())
 			{
-				colors[color.ordinal()] = event.map.registerIcon("mekanism:overlay/overlay_" + color.unlocalizedName);
+				colors[color.ordinal()] = event.map.registerSprite(new ResourceLocation("mekanism:overlay/overlay_" + color.unlocalizedName));
 			}
 			
 			for(TransmissionType type : TransmissionType.values())
 			{
-				overlays.put(type, event.map.registerIcon("mekanism:overlay/" + type.getTransmission() + "Overlay"));
+				overlays.put(type, event.map.registerSprite(new ResourceLocation("mekanism:overlay/" + type.getTransmission() + "Overlay")));
 			}
 			
 			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
@@ -152,7 +150,7 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static void loadDynamicTextures(IIconRegister register, String name, IIcon[] textures, DefIcon... defaults)
+	public static void loadDynamicTextures(ResourceLocationRegister register, String name, ResourceLocation[] textures, DefIcon... defaults)
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -204,11 +202,11 @@ public class MekanismRenderer
 	
 	public static class DefIcon
 	{
-		public IIcon defIcon;
+		public ResourceLocation defIcon;
 		
 		public List<Integer> icons = new ArrayList<Integer>();
 		
-		public DefIcon(IIcon icon, int... is)
+		public DefIcon(ResourceLocation icon, int... is)
 		{
 			defIcon = icon;
 			
@@ -218,12 +216,12 @@ public class MekanismRenderer
 			}
 		}
 		
-		public static DefIcon getAll(IIcon icon)
+		public static DefIcon getAll(ResourceLocation icon)
 		{
 			return new DefIcon(icon, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 		}
 		
-		public static DefIcon getActivePair(IIcon icon, int... is)
+		public static DefIcon getActivePair(ResourceLocation icon, int... is)
 		{
 			DefIcon ret = new DefIcon(icon, is);
 			
@@ -245,7 +243,7 @@ public class MekanismRenderer
 		public double maxY;
 		public double maxZ;
 		
-		public IIcon[] textures = new IIcon[6];
+		public ResourceLocation[] textures = new ResourceLocation[6];
 		
 		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true, false};
 
@@ -271,17 +269,17 @@ public class MekanismRenderer
 			return renderSides[side.ordinal()];
 		}
 
-		public IIcon getBlockTextureFromSide(int i)
+		public ResourceLocation getBlockTextureFromSide(int i)
 		{
 			return textures[i];
 		}
 		
-		public void setTexture(IIcon tex)
+		public void setTexture(ResourceLocation tex)
 		{
 			Arrays.fill(textures, tex);
 		}
 		
-		public void setTextures(IIcon down, IIcon up, IIcon north, IIcon south, IIcon west, IIcon east)
+		public void setTextures(ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation west, ResourceLocation east)
 		{
 			textures[0] = down;
 			textures[1] = up;
@@ -363,7 +361,7 @@ public class MekanismRenderer
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
-	public static IIcon getColorIcon(EnumColor color)
+	public static ResourceLocation getColorIcon(EnumColor color)
 	{
 		return colors[color.ordinal()];
 	}
@@ -440,7 +438,7 @@ public class MekanismRenderer
      */
     public static void renderItem(ItemStack item)
     {
-		IIcon icon = item.getItem().getIconIndex(item);
+		ResourceLocation icon = item.getItem().getIconIndex(item);
 		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
 
         if(icon == null)
@@ -689,6 +687,6 @@ public class MekanismRenderer
     
     public static interface ICustomBlockIcon
     {
-    	public IIcon getIcon(ItemStack stack, int side);
+    	public ResourceLocation getIcon(ItemStack stack, int side);
     }
 }

@@ -13,7 +13,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -120,7 +119,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer<TileEntityPort
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getFlowingIcon());
+		toReturn.setTexture(fluid.getFlowing());
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];
 		cachedValveFluids.put(fluid, displays);
@@ -129,7 +128,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer<TileEntityPort
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getIcon() != null)
+			if(fluid.getStill() != null)
 			{
 				toReturn.minX = 0.3125 + .01;
 				toReturn.minY = 0.0625 + ((float)i/(float)stages)*0.875;
@@ -157,7 +156,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer<TileEntityPort
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+		toReturn.setTexture(fluid.getStill());
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];
 		cachedCenterFluids.put(fluid, displays);
@@ -166,7 +165,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer<TileEntityPort
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getIcon() != null)
+			if(fluid.getStill() != null)
 			{
 				toReturn.minX = 0.125 + .01;
 				toReturn.minY = 0.0625 + .01;

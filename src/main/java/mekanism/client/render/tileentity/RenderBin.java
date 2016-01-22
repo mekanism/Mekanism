@@ -6,15 +6,12 @@ import mekanism.common.tile.TileEntityBin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -23,87 +20,82 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 {
-	private final RenderBlocks renderBlocks = new RenderBlocks();
-	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
+	private final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 
 	@Override
 	public void renderTileEntityAt(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		if(tileEntity instanceof TileEntityBin)
+		String amount = "";
+		ItemStack itemStack = tileEntity.itemType;
+
+		if(itemStack != null)
 		{
-			String amount = "";
-			ItemStack itemStack = tileEntity.itemType;
-
-			if(itemStack != null)
-			{
-				amount = Integer.toString(tileEntity.clientAmount);
-			}
-
-			Coord4D obj = Coord4D.get(tileEntity).offset(ForgeDirection.getOrientation(tileEntity.facing));
-
-			if(tileEntity.getWorldObj().getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isSideSolid(tileEntity.getWorldObj(), obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
-			{
-				return;
-			}
-
-			doLight(tileEntity.getWorldObj(), obj);
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
-
-			if(itemStack != null)
-			{
-				GL11.glPushMatrix();
-
-				switch(ForgeDirection.getOrientation(tileEntity.facing))
-				{
-					case NORTH:
-						GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
-						break;
-					case SOUTH:
-						GL11.glTranslated(x + 0.27, y + 0.83, z + 1.01);
-						GL11.glRotatef(180, 0, 1, 0);
-						break;
-					case WEST:
-						GL11.glTranslated(x - 0.01, y + 0.83, z + 0.27);
-						GL11.glRotatef(90, 0, 1, 0);
-						break;
-					case EAST:
-						GL11.glTranslated(x + 1.01, y + 0.83, z + 0.73);
-						GL11.glRotatef(-90, 0, 1, 0);
-						break;
-				}
-
-				float scale = 0.03125F;
-				float scaler = 0.9F;
-
-				GL11.glScalef(scale*scaler, scale*scaler, 0);
-				GL11.glRotatef(180, 0, 0, 1);
-
-				TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
-
-				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-				renderItem.renderItemAndEffectIntoGUI(func_147498_b()/*getFontRenderer()*/, renderEngine, itemStack, 0, 0);
-				
-				GL11.glEnable(GL11.GL_LIGHTING);
-				GL11.glPopMatrix();
-			}
-
-			if(amount != "")
-			{
-				renderText(amount, ForgeDirection.getOrientation(tileEntity.facing), 0.02F, x, y - 0.31F, z);
-			}
+			amount = Integer.toString(tileEntity.clientAmount);
 		}
-	}
 
-	private void doLight(World world, Coord4D obj)
-	{
-		if(world.getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isOpaqueCube())
+		Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.getFront(tileEntity.facing));
+
+		if(tileEntity.getWorld().getBlockState(obj).getBlock().isSideSolid(tileEntity.getWorld(), obj, EnumFacing.getFront(tileEntity.facing).getOpposite()))
 		{
 			return;
 		}
 
-		int brightness = world.getLightBrightnessForSkyBlocks(obj.xCoord, obj.yCoord, obj.zCoord, 0);
+		doLight(tileEntity.getWorld(), obj);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+
+		if(itemStack != null)
+		{
+			GL11.glPushMatrix();
+
+			switch(EnumFacing.getFront(tileEntity.facing))
+			{
+				case NORTH:
+					GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
+					break;
+				case SOUTH:
+					GL11.glTranslated(x + 0.27, y + 0.83, z + 1.01);
+					GL11.glRotatef(180, 0, 1, 0);
+					break;
+				case WEST:
+					GL11.glTranslated(x - 0.01, y + 0.83, z + 0.27);
+					GL11.glRotatef(90, 0, 1, 0);
+					break;
+				case EAST:
+					GL11.glTranslated(x + 1.01, y + 0.83, z + 0.73);
+					GL11.glRotatef(-90, 0, 1, 0);
+					break;
+			}
+
+			float scale = 0.03125F;
+			float scaler = 0.9F;
+
+			GL11.glScalef(scale*scaler, scale*scaler, 0);
+			GL11.glRotatef(180, 0, 0, 1);
+
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+
+			renderItem.renderItemAndEffectIntoGUI(itemStack, 0, 0);
+
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
+
+		if(!amount.equals(""))
+		{
+			renderText(amount, EnumFacing.getFront(tileEntity.facing), 0.02F, x, y - 0.31F, z);
+		}
+
+	}
+
+	private void doLight(World world, Coord4D obj)
+	{
+		if(world.getBlockState(obj).getBlock().isOpaqueCube())
+		{
+			return;
+		}
+
+		int brightness = world.getLightFromNeighborsFor(EnumSkyBlock.SKY, obj);
 		int lightX = brightness % 65536;
 		int lightY = brightness / 65536;
 		float scale = 0.6F;
@@ -112,7 +104,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private void renderText(String text, ForgeDirection side, float maxScale, double x, double y, double z)
+	private void renderText(String text, EnumFacing side, float maxScale, double x, double y, double z)
 	{
 		GL11.glPushMatrix();
 
@@ -150,7 +142,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 		GL11.glTranslatef(displayWidth / 2, 1F, displayHeight / 2);
 		GL11.glRotatef(-90, 1, 0, 0);
 
-		FontRenderer fontRenderer = func_147498_b();//getFontRenderer();
+		FontRenderer fontRenderer = getFontRenderer();
 
 		int requiredWidth = Math.max(fontRenderer.getStringWidth(text), 1);
 		int lineHeight = fontRenderer.FONT_HEIGHT + 2;

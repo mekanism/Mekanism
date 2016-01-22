@@ -13,8 +13,7 @@ import mekanism.common.tile.TileEntitySolarEvaporationController;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,7 +33,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer<TileEn
 			SalinationRenderData data = new SalinationRenderData();
 
 			data.height = tileEntity.height-2;
-			data.side = ForgeDirection.getOrientation(tileEntity.facing);
+			data.side = EnumFacing.getFront(tileEntity.facing);
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			
@@ -44,7 +43,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer<TileEn
 
 				push();
 
-				GL11.glTranslated(getX(renderLoc.xCoord), getY(renderLoc.yCoord), getZ(renderLoc.zCoord));
+				GL11.glTranslated(getX(renderLoc.getX()), getY(renderLoc.getY()), getZ(renderLoc.getZ()));
 
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
 
@@ -84,7 +83,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer<TileEn
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+		toReturn.setTexture(fluid.getStill());
 
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -105,7 +104,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer<TileEn
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getIcon() != null)
+			if(fluid.getStill() != null)
 			{
 				switch(data.side)
 				{
@@ -181,7 +180,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer<TileEn
 	public static class SalinationRenderData
 	{
 		public int height;
-		public ForgeDirection side;
+		public EnumFacing side;
 
 		@Override
 		public int hashCode()

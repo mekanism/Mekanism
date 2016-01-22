@@ -14,9 +14,8 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,12 +46,12 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 			{
 				push();
 
-				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+				GL11.glTranslated(getX(data.location.getX()), getY(data.location.getY()), getZ(data.location.getZ()));
 
 				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
 
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj());
+				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorld());
 
 				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
 				{
@@ -72,11 +71,11 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 				{
 					push();
 
-					GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
+					GL11.glTranslated(getX(valveData.location.getX()), getY(valveData.location.getY()), getZ(valveData.location.getZ()));
 
 					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 
-					getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
+					getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorld()).render();
 
 					MekanismRenderer.glowOff();
 					MekanismRenderer.resetColor();
@@ -112,7 +111,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+		toReturn.setTexture(fluid.getStill());
 
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -131,7 +130,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getIcon() != null)
+			if(fluid.getStill() != null)
 			{
 				toReturn.minX = 0 + .01;
 				toReturn.minY = 0 + .01;
@@ -159,7 +158,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getFlowingIcon());
+		toReturn.setTexture(fluid.getFlowing());
 
 		DisplayInteger display = DisplayInteger.createAndStart();
 
@@ -259,7 +258,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 	private int getValveFluidHeight(ValveRenderData data)
 	{
-		return data.valveLocation.yCoord - data.location.yCoord;
+		return data.valveLocation.getY() - data.location.getY();
 	}
 
 	private int getStages(int height)
@@ -311,7 +310,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 	public static class ValveRenderData extends RenderData
 	{
-		public ForgeDirection side;
+		public EnumFacing side;
 		public Coord4D valveLocation;
 
 		public static ValveRenderData get(RenderData renderData, ValveData valveData)

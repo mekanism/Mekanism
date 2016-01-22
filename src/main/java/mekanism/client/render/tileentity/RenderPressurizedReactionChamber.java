@@ -38,6 +38,6 @@ public class RenderPressurizedReactionChamber extends TileEntitySpecialRenderer<
 		model.render(0.0625F);
 		GL11.glPopMatrix();
 
-		MekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);
+		MekanismRenderer.machineRenderer.renderTileEntityAt(tileEntity, x, y, z, partialTick, destroyStage);
 	}
 }

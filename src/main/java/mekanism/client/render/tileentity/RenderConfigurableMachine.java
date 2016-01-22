@@ -2,7 +2,6 @@ package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
@@ -17,13 +16,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.math.MathHelper;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,11 +31,11 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 {
 	private Minecraft mc = FMLClientHandler.instance().getClient();
 
-	private HashMap<ForgeDirection, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<TransmissionType, DisplayInteger>>();
+	private HashMap<EnumFacing, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<EnumFacing, HashMap<TransmissionType, DisplayInteger>>();
 
 	public RenderConfigurableMachine()
 	{
-		field_147501_a = TileEntityRendererDispatcher.instance;
+		rendererDispatcher = TileEntityRendererDispatcher.instance;
 	}
 
 	@Override
@@ -46,24 +44,20 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		GL11.glPushMatrix();
 
 		EntityPlayer player = mc.thePlayer;
-		World world = mc.thePlayer.worldObj;
 		ItemStack itemStack = player.getCurrentEquippedItem();
 		MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
 
 		if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack).isConfigurating())
 		{
-			int xPos = MathHelper.floor_double(pos.blockX);
-			int yPos = MathHelper.floor_double(pos.blockY);
-			int zPos = MathHelper.floor_double(pos.blockZ);
+			BlockPos bp = pos.getBlockPos();
 
-			Coord4D obj = new Coord4D(xPos, yPos, zPos, configurable.getWorldObj().provider.dimensionId);
 			TransmissionType type = ((ItemConfigurator)itemStack.getItem()).getState(itemStack).getTransmission();
 
 			if(configurable.getConfig().supports(type))
 			{
-				if(xPos == configurable.xCoord && yPos == configurable.yCoord && zPos == configurable.zCoord)
+				if(bp.equals(configurable.getPos()))
 				{
-					EnumColor color = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation()).color;
+					EnumColor color = configurable.getConfig().getOutput(type, pos.sideHit.getIndex()/*TODO change to take EnumFacing*/, configurable.getOrientation()).color;
 	
 					push();
 	
@@ -72,7 +66,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 					bindTexture(MekanismRenderer.getBlocksTexture());
 					GL11.glTranslatef((float)x, (float)y, (float)z);
 	
-					int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), type).display;
+					int display = getOverlayDisplay(pos.sideHit, type).display;
 					GL11.glCallList(display);
 	
 					pop();
@@ -101,7 +95,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		MekanismRenderer.blendOn();
 	}
 
-	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, TransmissionType type)
+	private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type)
 	{
 		if(cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type))
 		{
