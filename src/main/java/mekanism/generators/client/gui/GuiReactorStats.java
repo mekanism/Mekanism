@@ -52,7 +52,7 @@ public class GuiReactorStats extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 46, 6, 0x404040);
 		
 		if(tileEntity.isFormed())
 		{

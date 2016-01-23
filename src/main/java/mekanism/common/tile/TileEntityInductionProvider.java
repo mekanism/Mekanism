@@ -22,7 +22,7 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 		return false;
 	}
 	
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".InductionProvider" + tier.getBaseTier().getName() + ".name");
 	}

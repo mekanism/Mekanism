@@ -26,7 +26,7 @@ public class CCPeripheral implements IPeripheral
     @Optional.Method(modid = "ComputerCraft")
     public String getType()
     {
-        return computerTile.getInventoryName();
+        return computerTile.getName();
     }
 
     @Override

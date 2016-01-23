@@ -104,7 +104,7 @@ public class GuiReactorFuel extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 46, 6, 0x404040);
 		String str = LangUtils.localize("gui.reactor.injectionRate") + ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate());
 		fontRendererObj.drawString(str, (xSize / 2) - (fontRendererObj.getStringWidth(str) / 2), 35, 0x404040);
 		fontRendererObj.drawString("Edit Rate" + ":", 50, 117, 0x404040);

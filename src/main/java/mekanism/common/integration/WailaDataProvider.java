@@ -50,15 +50,15 @@ public class WailaDataProvider implements IWailaDataProvider
 		
 		if(tile instanceof TileEntityInductionCell)
 		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionCell)tile).getInventoryName());
+			currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionCell)tile).getName());
 		}
 		else if(tile instanceof TileEntityInductionProvider)
 		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionProvider)tile).getInventoryName());
+			currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionProvider)tile).getName());
 		}
 		else if(tile instanceof TileEntityFactory)
 		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityFactory)tile).getInventoryName());
+			currenttip.set(0, EnumColor.WHITE + ((TileEntityFactory)tile).getName());
 		}
 		else if(tile instanceof TileEntityBoundingBlock)
 		{
@@ -67,7 +67,7 @@ public class WailaDataProvider implements IWailaDataProvider
 			
 			if(bound.receivedCoords && coord.getTileEntity(tile.getWorldObj()) instanceof IInventory)
 			{
-				currenttip.set(0, EnumColor.WHITE + ((IInventory)coord.getTileEntity(tile.getWorldObj())).getInventoryName());
+				currenttip.set(0, EnumColor.WHITE + ((IInventory)coord.getTileEntity(tile.getWorldObj())).getName());
 			}
 		}
 		

@@ -650,7 +650,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return "Robit";
 	}

@@ -47,7 +47,7 @@ public class OCDriver extends DriverTileEntity
         public OCManagedEnvironment(IComputerIntegration tile)
         {
             computerTile = tile;
-            name = tile.getInventoryName().toLowerCase(Locale.ENGLISH).replace(" ", "_");
+            name = tile.getName().toLowerCase(Locale.ENGLISH).replace(" ", "_");
 
             setNode(Network.newNode(this, Visibility.Network).withComponent(name, Visibility.Network).create());
         }

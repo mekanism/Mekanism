@@ -388,7 +388,7 @@ public class GuiTeleporter extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		fontRendererObj.drawString(getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(getInventoryName())/2), 4, 0x404040);
+		fontRendererObj.drawString(getName(), (xSize/2)-(fontRendererObj.getStringWidth(getName())/2), 4, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (getOwner() != null ? getOwner() : LangUtils.localize("gui.none")), 8, itemStack != null ? ySize-12 : (ySize-96)+4, 0x404040);
 		
 		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
@@ -486,9 +486,9 @@ public class GuiTeleporter extends GuiMekanism
 		return tileEntity != null ? tileEntity.frequency : clientFreq;
 	}
 	
-	private String getInventoryName()
+	private String getName()
 	{
-		return tileEntity != null ? tileEntity.getInventoryName() : itemStack.getDisplayName();
+		return tileEntity != null ? tileEntity.getName() : itemStack.getDisplayName();
 	}
 	
 	private double getEnergy()

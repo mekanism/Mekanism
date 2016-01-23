@@ -68,7 +68,7 @@ public class GuiSolarNeutronActivator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 26, 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 26, 4, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

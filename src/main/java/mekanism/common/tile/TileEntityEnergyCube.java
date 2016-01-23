@@ -71,7 +71,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getName() + ".name");
 	}

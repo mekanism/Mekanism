@@ -421,7 +421,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("tile.BasicBlock.Bin.name");
 	}

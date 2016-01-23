@@ -788,9 +788,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 	
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
-		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getInventoryName();
+		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getName();
 	}
 
 	private static final String[] methods = new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};

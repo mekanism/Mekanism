@@ -165,7 +165,7 @@ public class GuiReactorHeat extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 46, 6, 0x404040);
 	}
 
 	@Override

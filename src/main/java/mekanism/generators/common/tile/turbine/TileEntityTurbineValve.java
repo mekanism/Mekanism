@@ -405,7 +405,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 	
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("gui.industrialTurbine");
 	}

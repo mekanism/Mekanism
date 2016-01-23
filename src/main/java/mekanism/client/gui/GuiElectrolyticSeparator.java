@@ -117,7 +117,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 45, 6, 0x404040);
 
 		String name = chooseByMode(tileEntity.dumpLeft, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
 		renderScaledText(name, 21, 73, 0x404040, 66);

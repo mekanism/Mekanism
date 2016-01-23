@@ -148,7 +148,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".name");
 	}
