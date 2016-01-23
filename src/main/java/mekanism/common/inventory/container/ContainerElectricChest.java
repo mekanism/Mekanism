@@ -35,7 +35,7 @@ public class ContainerElectricChest extends Container
 			tileEntity.openInventory();
 		}
 		else {
-			itemInventory.openInventory();
+			itemInventory.openInventory(inventory.player);
 		}
 
 		for(int slotY = 0; slotY < 6; slotY++)
@@ -86,7 +86,7 @@ public class ContainerElectricChest extends Container
 			tileEntity.closeInventory();
 		}
 		else {
-			itemInventory.closeInventory();
+			itemInventory.closeInventory(entityplayer);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class ContainerElectricChest extends Container
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = null;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
@@ -121,7 +121,7 @@ public class ContainerElectricChest extends Container
 						return null;
 					}
 				}
-				else if(slotID == 54)
+				else
 				{
 					if(!mergeItemStack(slotStack, 55, inventorySlots.size(), true))
 					{
