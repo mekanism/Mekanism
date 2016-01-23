@@ -248,11 +248,11 @@ public final class OreDictManager
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.SILVER.ordinal()), StackUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
+			FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, Resource.SILVER.ordinal()), StackUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.LEAD.ordinal()), StackUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
+			FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, Resource.LEAD.ordinal()), StackUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
@@ -345,11 +345,11 @@ public final class OreDictManager
 			tempCrafting.setInventorySlotContents(i, null);
 		}
 
-		ArrayList registeredOres = OreDictionary.getOres("logWood");
+		List<ItemStack> registeredOres = OreDictionary.getOres("logWood");
 		
 		for(int i = 0; i < registeredOres.size(); i++)
 		{
-			ItemStack logEntry = (ItemStack)registeredOres.get(i);
+			ItemStack logEntry = registeredOres.get(i);
 
 			if(logEntry.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 			{

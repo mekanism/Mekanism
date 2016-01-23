@@ -10,7 +10,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
-import mekanism.common.multipart.TransmitterType;
+//import mekanism.common.multipart.TransmitterType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
@@ -27,8 +27,6 @@ import java.util.Map;
  */
 public final class MekanismHooks
 {
-	private Class BuildCraftEnergy;
-
 	public boolean IC2Loaded = false;
 	public boolean RailcraftLoaded = false;
 	public boolean CoFHCoreLoaded = false;
@@ -156,6 +154,7 @@ public final class MekanismHooks
 			energyP2P = "add-p2p-attunement-ic2-power";
 		}
 		
+/*
 		for(TransmitterType type : TransmitterType.values())
 		{
 			if(type.getTransmission().equals(TransmissionType.ITEM))
@@ -175,8 +174,9 @@ public final class MekanismHooks
 				FMLInterModComms.sendMessage("appliedenergistics2",energyP2P,new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
 				continue;
 			}
-			
+
 		}
+*/
 		
 	}
 }

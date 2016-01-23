@@ -9,6 +9,7 @@ import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.DriverTileEntity;
 import li.cil.oc.api.prefab.ManagedEnvironment;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
@@ -28,7 +29,7 @@ public class OCDriver extends DriverTileEntity
     @Override
     public ManagedEnvironment createEnvironment(World world, int x, int y, int z)
     {
-        TileEntity tile = world.getTileEntity(x, y, z);
+        TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
         if(tile instanceof IComputerIntegration)
         {

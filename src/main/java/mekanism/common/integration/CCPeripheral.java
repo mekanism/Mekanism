@@ -7,6 +7,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -70,7 +71,7 @@ public class CCPeripheral implements IPeripheral
         @Override
         public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
         {
-            TileEntity te = world.getTileEntity(x, y, z);
+            TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 
             if(te != null && te instanceof IComputerIntegration)
             {

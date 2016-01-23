@@ -206,7 +206,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	
 	private boolean smeltItem(EntityItem item)
 	{
-		ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(item.getEntityItem());
+		ItemStack result = FurnaceRecipes.instance().getSmeltingResult(item.getEntityItem());
 		
 		if(result != null)
 		{
@@ -231,7 +231,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 			return false;
 		}
 		
-		ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(block.getStack(worldObj));
+		ItemStack result = FurnaceRecipes.instance().getSmeltingResult(block.getStack(worldObj));
 		
 		if(result != null)
 		{

@@ -330,7 +330,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			return false;
 		}
 		else {
-			ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(inventory[28]);
+			ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory[28]);
 			if(itemstack == null) return false;
 			if(inventory[30] == null) return true;
 			if(!inventory[30].isItemEqual(itemstack)) return false;
@@ -343,7 +343,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		if(canSmelt())
 		{
-			ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(inventory[28]);
+			ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory[28]);
 
 			if(inventory[30] == null)
 			{
