@@ -1069,6 +1069,12 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 
 		return ctms[meta][0];
 	}
+	
+	@Override
+	public boolean shouldRenderBlock(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		return true;
+	}
 
 	public static enum BasicBlock
 	{

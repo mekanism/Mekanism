@@ -312,6 +312,7 @@ fluid.lithium=Liquid Lithium
 fluid.deuterium=Liquid Deuterium
 fluid.tritium=Liquid Tritium
 fluid.fusionFuelDT=Liquid D-T Fuel
+fluid.steam=Steam
 
 //OreGas names
 oregas.iron=Iron Ore

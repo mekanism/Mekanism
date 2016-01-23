@@ -1,8 +1,8 @@
 package mekanism.generators.common.block;
 
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Arrays;
+import java.util.List;
+
 import mekanism.api.Coord4D;
 import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
@@ -14,7 +14,13 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.reactor.*;
+import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
+import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
+import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
+import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
+import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
+import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -29,9 +35,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.Arrays;
-import java.util.List;
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockReactor extends BlockContainer implements IBlockCTM
 {
@@ -303,6 +309,12 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 		}
 
 		return ctms[meta][0];
+	}
+	
+	@Override
+	public boolean shouldRenderBlock(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		return true;
 	}
 
 	@Override
