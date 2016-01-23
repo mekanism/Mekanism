@@ -15,7 +15,6 @@ import net.minecraft.util.IIcon;
  */
 public class RenderBlocksCTM extends RenderBlocks
 {
-
 	RenderBlocksCTM()
 	{
 		super();

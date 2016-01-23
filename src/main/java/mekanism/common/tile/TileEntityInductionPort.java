@@ -107,12 +107,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		return EnumSet.noneOf(EnumFacing.class);
 	}
 	
-	@Override
-	public boolean canUpdate()
-	{
-		return true;
-	}
-	
 	@Method(modid = "IC2")
 	public void register()
 	{

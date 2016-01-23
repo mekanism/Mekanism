@@ -46,8 +46,13 @@ import ic2.api.item.ISpecialElectricItem;
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
  * 6: Wind Generator
- * 7: Turbine Rod
+ * 7: Turbine Rotor
  * 8: Rotational Complex
+ * 9: Pressure Disperser
+ * 10: Electromagnetic Coil
+ * 11: Turbine Casing
+ * 12: Turbine Valve
+ * 13: Turbine Vent
  * @author AidanBrady
  *
  */
@@ -65,7 +70,20 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
-		setMaxStackSize(1);
+	}
+	
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		GeneratorType type = GeneratorType.getFromMetadata(stack.getItemDamage());
+		
+		if(type.maxEnergy == -1)
+		{
+			return 64;
+		}
+		else {
+			return 1;
+		}
 	}
 
 	@Override
@@ -97,7 +115,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.getFromMetadata(itemstack.getItemDamage());
 		
-		if(type != GeneratorType.TURBINE_ROD && type != GeneratorType.ROTATIONAL_COMPLEX)
+		if(type.maxEnergy > -1)
 		{
 			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 			{

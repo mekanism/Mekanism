@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
+import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
@@ -18,9 +19,11 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
@@ -281,6 +284,27 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	}
 	
 	@Override
+	public boolean onActivate(EntityPlayer player)
+	{
+		if(!player.isSneaking() && structure != null)
+		{
+			if(!BlockBasic.manageInventory(player, this))
+			{
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				player.openGui(Mekanism.instance, 18, worldObj, xCoord, yCoord, zCoord);
+			}
+			else {
+				player.inventory.markDirty();
+				sendPacketToRenderer();
+			}
+
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
 	protected SynchronizedTankData getNewStructure()
 	{
 		return new SynchronizedTankData();
@@ -361,7 +385,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			
 			if(dataStream.readInt() == 1)
 			{
-				structure.fluidStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
+				structure.fluidStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
 			}
 			else {
 				structure.fluidStored = null;

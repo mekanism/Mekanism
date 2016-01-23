@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -15,7 +16,7 @@ import net.minecraft.util.EnumFacing;
 public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
 	/** The multiblock nodes that have already been iterated over. */
-	public Set<TileEntityMultiblock<T>> iteratedNodes = new HashSet<TileEntityMultiblock<T>>();
+	public Set<TileEntity> iteratedNodes = new HashSet<TileEntity>();
 	
 	public Set<Coord4D> innerNodes = new HashSet<Coord4D>();
 
@@ -34,7 +35,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 * Recursively loops through each node connected to the given TileEntity.
 	 * @param tile - the TileEntity to loop over
 	 */
-	public void loopThrough(TileEntityMultiblock<T> tile)
+	public void loopThrough(TileEntity tile)
 	{
 		World worldObj = tile.getWorldObj();
 
@@ -157,7 +158,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 								break;
 							}
 							else {
-								innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.getDimensionId()));
+								if(!isAir(origX+x, origY+y, origZ+z))
+								{
+									innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.getDimensionId()));
+								}
 							}
 
 							volume++;
@@ -199,7 +203,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 					if(structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(Coord4D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
 					{
-						if(isInteriorValid(structure))
+						if(canForm(structure))
 						{
 							structureFound = structure;
 							return;
@@ -214,19 +218,20 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			TileEntity tileEntity = Coord4D.get(tile).offset(side).getTileEntity(tile.getWorldObj());
+			Coord4D coord = Coord4D.get(tile).offset(side);
+			TileEntity tileEntity = coord.getTileEntity(tile.getWorldObj());
 
-			if(MultiblockManager.areEqual(tileEntity, pointer))
+			if(isViableNode(coord.xCoord, coord.yCoord, coord.zCoord))
 			{
 				if(!iteratedNodes.contains(tileEntity))
 				{
-					loopThrough((TileEntityMultiblock<T>)tileEntity);
+					loopThrough(tileEntity);
 				}
 			}
 		}
 	}
 	
-	public boolean isInteriorValid(T structure)
+	protected boolean canForm(T structure)
 	{
 		return true;
 	}
@@ -288,6 +293,14 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	private boolean isViableNode(int x, int y, int z)
 	{
 		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		
+		if(tile instanceof IStructuralMultiblock)
+		{
+			if(((IStructuralMultiblock)tile).canInterface(pointer))
+			{
+				return true;
+			}
+		}
 		
 		if(MultiblockManager.areEqual(tile, pointer))
 		{
@@ -381,6 +394,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 	
 	public void onStructureDestroyed(T structure) {}
+	
+	public void killInnerNode(Coord4D coord) {}
 
 	/**
 	 * Runs the protocol and updates all nodes that make a part of the multiblock.
@@ -391,13 +406,25 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		if(structureFound != null)
 		{
-			for(TileEntityMultiblock<T> tileEntity : iteratedNodes)
+			for(TileEntity tileEntity : iteratedNodes)
 			{
 				if(!structureFound.locations.contains(Coord4D.get(tileEntity)))
 				{
 					for(TileEntity tile : iteratedNodes)
 					{
-						((TileEntityMultiblock<T>)tile).structure = null;
+						if(tile instanceof TileEntityMultiblock)
+						{
+							((TileEntityMultiblock<T>)tile).structure = null;
+						}
+						else if(tile instanceof IStructuralMultiblock)
+						{
+							((IStructuralMultiblock)tile).setController(null);
+						}
+					}
+					
+					for(Coord4D coord : innerNodes)
+					{
+						killInnerNode(coord);
 					}
 
 					return;
@@ -409,11 +436,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
+				TileEntity tileEntity = obj.getTileEntity(pointer.getWorldObj());
 
-				if(tileEntity.cachedID != null)
+				if(tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock<T>)tileEntity).cachedID != null)
 				{
-					idsFound.add(tileEntity.cachedID);
+					idsFound.add(((TileEntityMultiblock<T>)tileEntity).cachedID);
 				}
 			}
 
@@ -451,24 +478,60 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			onFormed();
 			
 			structureFound.inventoryID = idToUse;
+			
+			List<IStructuralMultiblock> structures = new ArrayList<IStructuralMultiblock>();
+			Coord4D toUse = null;
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
+				TileEntity tileEntity = obj.getTileEntity(pointer.getWorldObj());
 
-				tileEntity.structure = (T)structureFound;
+				if(tileEntity instanceof TileEntityMultiblock)
+				{
+					((TileEntityMultiblock<T>)tileEntity).structure = structureFound;
+					
+					if(toUse == null)
+					{
+						toUse = obj.clone();
+					}
+				}
+				else if(tileEntity instanceof IStructuralMultiblock)
+				{
+					structures.add((IStructuralMultiblock)tileEntity);
+				}
+			}
+			
+			//Remove all structural multiblocks from locations, set controllers
+			for(IStructuralMultiblock node : structures)
+			{
+				node.setController(toUse);
+				structureFound.locations.remove(Coord4D.get((TileEntity)node));
 			}
 		}
 		else {
-			for(TileEntityMultiblock<T> tileEntity : iteratedNodes)
+			for(TileEntity tile : iteratedNodes)
 			{
-				if(tileEntity.structure != null && !tileEntity.structure.destroyed)
+				if(tile instanceof TileEntityMultiblock)
 				{
-					onStructureDestroyed(tileEntity.structure);
-					tileEntity.structure.destroyed = true;
+					TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)tile;
+					
+					if(tileEntity.structure != null && !tileEntity.structure.destroyed)
+					{
+						onStructureDestroyed(tileEntity.structure);
+						tileEntity.structure.destroyed = true;
+					}
+					
+					tileEntity.structure = null;
 				}
-				
-				tileEntity.structure = null;
+				else if(tile instanceof IStructuralMultiblock)
+				{
+					((IStructuralMultiblock)tile).setController(null);
+				}
+			}
+			
+			for(Coord4D coord : innerNodes)
+			{
+				killInnerNode(coord);
 			}
 		}
 	}

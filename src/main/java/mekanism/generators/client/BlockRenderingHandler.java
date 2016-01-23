@@ -100,18 +100,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if(block == GeneratorsBlocks.Generator)
-		{
-			int metadata = world.getBlockMetadata(x, y, z);
-
-			if(GeneratorType.getFromMetadata(metadata) == null || !GeneratorType.getFromMetadata(metadata).hasModel)
-			{
-				renderer.renderStandardBlock(block, x, y, z);
-				renderer.setRenderBoundsFromBlock(block);
-				return true;
-			}
-		}
-
+		//Handled by CTMRenderingHandler
 		return false;
 	}
 
