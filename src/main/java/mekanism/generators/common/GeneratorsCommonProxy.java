@@ -27,7 +27,10 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityPressureDisperser;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -73,6 +76,9 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine");
 		GameRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController");
 		GameRegistry.registerTileEntity(TileEntityTurbineRotor.class, "TurbineRod");
+		GameRegistry.registerTileEntity(TileEntityTurbineCasing.class, "TurbineCasing");
+		GameRegistry.registerTileEntity(TileEntityTurbineValve.class, "TurbineValve");
+		GameRegistry.registerTileEntity(TileEntityTurbineVent.class, "TurbineVent");
 	}
 
 	/**

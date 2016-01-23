@@ -33,7 +33,10 @@ import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityPressureDisperser;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -99,12 +102,19 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
 		
 		ctms[10] = new CTMData("ctm/ElectromagneticCoil", this, Arrays.asList(10)).registerIcons(register);
+		ctms[11] = new CTMData("ctm/TurbineCasing", this, Arrays.asList(12, 13)).registerIcons(register);
+		ctms[12] = new CTMData("ctm/TurbineValve", this, Arrays.asList(11, 13)).registerIcons(register);
+		ctms[13] = new CTMData("ctm/TurbineVent", this, Arrays.asList(11, 12)).registerIcons(register);
 		
 		icons[7][0] = register.registerIcon("mekanism:TurbineRod");
 		icons[8][0] = register.registerIcon("mekanism:RotationalComplexSide");
 		icons[8][1] = register.registerIcon("mekanism:RotationalComplexTop");
 		icons[9][0] = register.registerIcon("mekanism:PressureDisperser");
+		
 		icons[10][0] = ctms[10].mainTextureData.icon;
+		icons[11][0] = ctms[10].mainTextureData.icon;
+		icons[12][0] = ctms[10].mainTextureData.icon;
+		icons[13][0] = ctms[10].mainTextureData.icon;
 	}
 	
 	@Override
@@ -123,11 +133,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		if(meta == GeneratorType.TURBINE_ROTOR.meta)
-		{
-			return icons[meta][0];
-		}
-		else if(meta == GeneratorType.ROTATIONAL_COMPLEX.meta)
+		GeneratorType type = GeneratorType.getFromMetadata(meta);
+		
+		if(type == GeneratorType.ROTATIONAL_COMPLEX)
 		{
 			if(side != 0 && side != 1)
 			{
@@ -137,16 +145,13 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 				return icons[meta][1];
 			}
 		}
-		else if(meta == GeneratorType.PRESSURE_DISPERSER.meta)
+		else if(!type.hasModel)
 		{
 			return icons[meta][0];
 		}
-		else if(meta == GeneratorType.ELECTROMAGNETIC_COIL.meta)
-		{
-			return icons[meta][0];
+		else {
+			return BASE_ICON;
 		}
-		
-		return BASE_ICON;
 	}
 	
 	@Override
@@ -504,12 +509,14 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			
 			return false;
 		}
+		
+		int guiId = GeneratorType.getFromMetadata(metadata).guiId;
 
-		if(tileEntity != null)
+		if(guiId != -1 && tileEntity != null)
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(MekanismGenerators.instance, GeneratorType.getFromMetadata(metadata).guiId, world, x, y, z);
+				entityplayer.openGui(MekanismGenerators.instance, guiId, world, x, y, z);
 				return true;
 			}
 		}
@@ -707,7 +714,10 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		TURBINE_ROTOR(7, "TurbineRotor", -1, -1, TileEntityTurbineRotor.class, false),
 		ROTATIONAL_COMPLEX(8, "RotationalComplex", -1, -1, TileEntityRotationalComplex.class, false),
 		PRESSURE_DISPERSER(9, "PressureDisperser", -1, -1, TileEntityPressureDisperser.class, false),
-		ELECTROMAGNETIC_COIL(10, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false);
+		ELECTROMAGNETIC_COIL(10, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false),
+		TURBINE_CASING(11, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false),
+		TURBINE_VALVE(12, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false),
+		TURBINE_VENT(13, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false);
 
 		public int meta;
 		public String name;
