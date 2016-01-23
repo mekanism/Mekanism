@@ -15,7 +15,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -106,12 +105,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		}
 		
 		return EnumSet.noneOf(ForgeDirection.class);
-	}
-	
-	@Override
-	public boolean canUpdate()
-	{
-		return true;
 	}
 	
 	@Method(modid = "IC2")

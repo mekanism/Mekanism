@@ -6,13 +6,14 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
@@ -21,10 +22,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData>
+public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage
 {
-	public int clientCapacity;
-
 	public float prevScale;
 	
 	public TileEntityTurbineCasing() 
@@ -46,7 +45,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		{
 			if(structure != null && clientHasStructure && isRendering)
 			{
-				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/clientCapacity;
+				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/structure.getFluidCapacity();
 
 				if(Math.abs(prevScale - targetScale) > 0.01)
 				{
@@ -84,7 +83,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		if(!player.isSneaking() && structure != null)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			//player.openGui(Mekanism.instance, 49, worldObj, xCoord, yCoord, zCoord);
+			player.openGui(Mekanism.instance, 6, worldObj, xCoord, yCoord, zCoord);
 			
 			return true;
 		}
@@ -92,14 +91,36 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		return false;
 	}
 	
+	@Override
+	public double getEnergy()
+	{
+		return structure != null ? structure.electricityStored : 0;
+	}
+	
+	@Override
+	public double getMaxEnergy() 
+	{
+		return structure.getEnergyCapacity();
+	}
+
+	@Override
+	public void setEnergy(double energy)
+	{
+		if(structure != null)
+		{
+			structure.electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
+			MekanismUtils.saveChunk(this);
+		}
+	}
+	
 	public int getScaledFluidLevel(int i)
 	{
-		if(clientCapacity == 0 || structure.fluidStored == null)
+		if(structure.getFluidCapacity() == 0 || structure.fluidStored == null)
 		{
 			return 0;
 		}
 
-		return structure.fluidStored.amount*i / clientCapacity;
+		return structure.fluidStored.amount*i / structure.getFluidCapacity();
 	}
 	
 	@Override
@@ -109,7 +130,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		
 		if(structure != null)
 		{
-			data.add(structure.getFluidCapacity());
+			data.add(structure.volume);
+			data.add(structure.electricityStored);
 			
 			if(structure.fluidStored != null)
 			{
@@ -132,7 +154,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		
 		if(clientHasStructure)
 		{
-			clientCapacity = dataStream.readInt();
+			structure.volume = dataStream.readInt();
+			structure.electricityStored = dataStream.readDouble();
 			
 			if(dataStream.readInt() == 1)
 			{

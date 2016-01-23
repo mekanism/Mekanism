@@ -2,6 +2,7 @@ package mekanism.generators.common;
 
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
@@ -172,6 +173,8 @@ public class GeneratorsCommonProxy
 				return new ContainerBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
 			case 5:
 				return new ContainerWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
+			case 6:
+				return new ContainerFilter(player.inventory, (TileEntityTurbineCasing)tileEntity);
 			case 10:
 				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:

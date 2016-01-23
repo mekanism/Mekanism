@@ -7,17 +7,20 @@ import net.minecraftforge.fluids.FluidStack;
 public class TurbineCache extends MultiblockCache<SynchronizedTurbineData>
 {
 	public FluidStack fluid;
+	public double electricity;
 	
 	@Override
 	public void apply(SynchronizedTurbineData data)
 	{
 		data.fluidStored = fluid;
+		data.electricityStored = electricity;
 	}
 
 	@Override
 	public void sync(SynchronizedTurbineData data) 
 	{
 		fluid = data.fluidStored;
+		electricity = data.electricityStored;
 	}
 
 	@Override
@@ -27,6 +30,8 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData>
 		{
 			fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
 		}
+		
+		electricity = nbtTags.getDouble("electricity");
 	}
 
 	@Override
@@ -36,5 +41,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData>
 		{
 			nbtTags.setTag("cachedFluid", fluid.writeToNBT(new NBTTagCompound()));
 		}
+		
+		nbtTags.setDouble("electricity", electricity);
 	}
 }

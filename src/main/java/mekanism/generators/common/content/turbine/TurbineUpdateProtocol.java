@@ -255,6 +255,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 		{
 			structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.getFluidCapacity());
 		}
+		
+		structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
 	}
 	
 	public class CoilCounter

@@ -33,7 +33,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick)
 	{
-		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null /* && there is fluid */)
+		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
 		{
 			RenderData data = new RenderData();
 
@@ -43,6 +43,26 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 			data.width = tileEntity.structure.volWidth;
 			
 			bindTexture(MekanismRenderer.getBlocksTexture());
+			
+			if(data.location != null && data.height >= 3 && tileEntity.structure.fluidStored.getFluid() != null)
+			{
+				push();
+
+				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+
+				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+
+				DisplayInteger[] displayList = getListAndRender(data, tileEntity.getWorldObj());
+
+				GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.structure.getFluidCapacity())+0.3F));
+				displayList[getStages(data.height)-1].render();
+
+				MekanismRenderer.glowOff();
+				MekanismRenderer.resetColor();
+
+				pop();
+			}
 		}
 	}
 	
