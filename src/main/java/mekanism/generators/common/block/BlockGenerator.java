@@ -102,9 +102,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
 		
 		ctms[10] = new CTMData("ctm/ElectromagneticCoil", this, Arrays.asList(10)).registerIcons(register);
-		ctms[11] = new CTMData("ctm/TurbineCasing", this, Arrays.asList(12, 13)).registerIcons(register);
-		ctms[12] = new CTMData("ctm/TurbineValve", this, Arrays.asList(11, 13)).registerIcons(register);
-		ctms[13] = new CTMData("ctm/TurbineVent", this, Arrays.asList(11, 12)).registerIcons(register);
+		ctms[11] = new CTMData("ctm/TurbineCasing", this, Arrays.asList(11, 12, 13)).registerIcons(register);
+		ctms[12] = new CTMData("ctm/TurbineValve", this, Arrays.asList(11, 12, 13)).registerIcons(register);
+		ctms[13] = new CTMData("ctm/TurbineVent", this, Arrays.asList(11, 12, 13)).registerIcons(register);
 		
 		icons[7][0] = register.registerIcon("mekanism:TurbineRod");
 		icons[8][0] = register.registerIcon("mekanism:RotationalComplexSide");
@@ -112,9 +112,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		icons[9][0] = register.registerIcon("mekanism:PressureDisperser");
 		
 		icons[10][0] = ctms[10].mainTextureData.icon;
-		icons[11][0] = ctms[10].mainTextureData.icon;
-		icons[12][0] = ctms[10].mainTextureData.icon;
-		icons[13][0] = ctms[10].mainTextureData.icon;
+		icons[11][0] = ctms[11].mainTextureData.icon;
+		icons[12][0] = ctms[12].mainTextureData.icon;
+		icons[13][0] = ctms[13].mainTextureData.icon;
 	}
 	
 	@Override
