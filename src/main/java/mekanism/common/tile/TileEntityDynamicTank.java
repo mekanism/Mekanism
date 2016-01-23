@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
@@ -384,7 +385,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			
 			if(dataStream.readInt() == 1)
 			{
-				structure.fluidStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
+				structure.fluidStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
 			}
 			else {
 				structure.fluidStored = null;

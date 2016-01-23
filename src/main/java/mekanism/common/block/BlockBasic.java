@@ -31,7 +31,6 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntitySolarEvaporationBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarEvaporationValve;
@@ -130,9 +129,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-			if(block == this && tileEntity instanceof TileEntityMultiblock)
+			if(block == this && tileEntity instanceof IMultiblock)
 			{
-				((TileEntityMultiblock)tileEntity).update();
+				((IMultiblock)tileEntity).update();
 			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
@@ -886,9 +885,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-			if(tileEntity instanceof TileEntityMultiblock)
+			if(tileEntity instanceof IMultiblock)
 			{
-				((TileEntityMultiblock)tileEntity).update();
+				((IMultiblock)tileEntity).update();
 			}
 			
 			if(tileEntity instanceof IStructuralMultiblock)

@@ -15,6 +15,7 @@ import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderGasGenerator;
 import mekanism.generators.client.render.RenderHeatGenerator;
+import mekanism.generators.client.render.RenderIndustrialTurbine;
 import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
@@ -41,9 +42,11 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -61,9 +64,9 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine", new RenderWindTurbine());
 		ClientRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController", new RenderReactor());
 		ClientRegistry.registerTileEntity(TileEntityTurbineRotor.class, "TurbineRod", new RenderTurbineRotor());
-		GameRegistry.registerTileEntity(TileEntityTurbineCasing.class, "TurbineCasing"); //TODO turbine render
-		GameRegistry.registerTileEntity(TileEntityTurbineValve.class, "TurbineValve");
-		GameRegistry.registerTileEntity(TileEntityTurbineVent.class, "TurbineVent");
+		ClientRegistry.registerTileEntity(TileEntityTurbineCasing.class, "TurbineCasing", new RenderIndustrialTurbine());
+		ClientRegistry.registerTileEntity(TileEntityTurbineValve.class, "TurbineValve", new RenderIndustrialTurbine());
+		ClientRegistry.registerTileEntity(TileEntityTurbineVent.class, "TurbineVent", new RenderIndustrialTurbine());
 	}
 
 	@Override
@@ -74,6 +77,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		
 		//Register item handler
 		GeneratorsItemRenderer handler = new GeneratorsItemRenderer();
+		
+		MinecraftForge.EVENT_BUS.register(this);
 
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(GeneratorsBlocks.Generator), handler);
 
@@ -112,5 +117,11 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		}
 		
 		return null;
+	}
+	
+	@SubscribeEvent
+	public void onStitch(TextureStitchEvent.Pre event)
+	{
+		RenderIndustrialTurbine.resetDisplayInts();
 	}
 }

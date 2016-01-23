@@ -1,0 +1,128 @@
+package mekanism.generators.client.render;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.tileentity.RenderDynamicTank.RenderData;
+import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+
+import org.lwjgl.opengl.GL11;
+
+public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
+{
+	private static Map<RenderData, DisplayInteger[]> cachedFluids = new HashMap<RenderData, DisplayInteger[]>();
+	
+	private Fluid STEAM = FluidRegistry.getFluid("steam");
+	
+	@Override
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	{
+		renderAModelAt((TileEntityTurbineCasing)tileEntity, x, y, z, partialTick);
+	}
+
+	public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick)
+	{
+		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null /* && there is fluid */)
+		{
+			RenderData data = new RenderData();
+
+			data.location = tileEntity.structure.renderLocation;
+			data.height = tileEntity.structure.lowerVolume/(tileEntity.structure.volLength*tileEntity.structure.volWidth);
+			data.length = tileEntity.structure.volLength;
+			data.width = tileEntity.structure.volWidth;
+			
+			bindTexture(MekanismRenderer.getBlocksTexture());
+		}
+	}
+	
+	private void pop()
+	{
+		GL11.glPopAttrib();
+		GL11.glPopMatrix();
+	}
+
+	private void push()
+	{
+		GL11.glPushMatrix();
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	}
+	
+	private int getStages(int height)
+	{
+		return (height-2)*(TankUpdateProtocol.FLUID_PER_TANK/10);
+	}
+
+	private double getX(int x)
+	{
+		return x - TileEntityRendererDispatcher.staticPlayerX;
+	}
+
+	private double getY(int y)
+	{
+		return y - TileEntityRendererDispatcher.staticPlayerY;
+	}
+
+	private double getZ(int z)
+	{
+		return z - TileEntityRendererDispatcher.staticPlayerZ;
+	}
+	
+	private DisplayInteger[] getListAndRender(RenderData data, World world)
+	{
+		if(cachedFluids.containsKey(data))
+		{
+			return cachedFluids.get(data);
+		}
+
+		Model3D toReturn = new Model3D();
+		toReturn.baseBlock = Blocks.water;
+		toReturn.setTexture(STEAM.getIcon());
+
+		final int stages = getStages(data.height);
+		DisplayInteger[] displays = new DisplayInteger[stages];
+
+		cachedFluids.put(data, displays);
+
+		for(int i = 0; i < stages; i++)
+		{
+			displays[i] = DisplayInteger.createAndStart();
+
+			if(STEAM.getIcon() != null)
+			{
+				toReturn.minX = 0 + .01;
+				toReturn.minY = 0 + .01;
+				toReturn.minZ = 0 + .01;
+
+				toReturn.maxX = data.length - .01;
+				toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
+				toReturn.maxZ = data.width - .01;
+
+				MekanismRenderer.renderObject(toReturn);
+			}
+
+			GL11.glEndList();
+		}
+
+		return displays;
+	}
+	
+	public static void resetDisplayInts()
+	{
+		cachedFluids.clear();
+	}
+}

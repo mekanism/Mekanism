@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -23,6 +24,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData>
 {
+	public static final int FLUID_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
+	
 	public TurbineUpdateProtocol(TileEntityTurbineCasing tileEntity) 
 	{
 		super(tileEntity);
@@ -31,9 +34,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 	@Override
 	protected boolean isValidFrame(int x, int y, int z) 
 	{
-		return false;
-		//return pointer.getWorldObj().getBlock(x, y, z) == GeneratorsBlocks.Generator && 
-		//		GeneratorType.getFromMetadata(pointer.getWorldObj().getBlockMetadata(x, y, z)) == GeneratorType.TURBINE_CASING;
+		return pointer.getWorldObj().getBlock(x, y, z) == GeneratorsBlocks.Generator && 
+				GeneratorType.getFromMetadata(pointer.getWorldObj().getBlockMetadata(x, y, z)) == GeneratorType.TURBINE_CASING;
 	}
 	
 	@Override
@@ -43,7 +45,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 		{
 			return true;
 		}
-		
+
 		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
 		
 		return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex ||
@@ -236,7 +238,23 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 	@Override
 	protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTurbineData> cache, MultiblockCache<SynchronizedTurbineData> merge)
 	{
-		
+		if(((TurbineCache)cache).fluid == null)
+		{
+			((TurbineCache)cache).fluid = ((TurbineCache)merge).fluid;
+		}
+		else if(((TurbineCache)merge).fluid != null && ((TurbineCache)cache).fluid.isFluidEqual(((TurbineCache)merge).fluid))
+		{
+			((TurbineCache)cache).fluid.amount += ((TurbineCache)merge).fluid.amount;
+		}
+	}
+	
+	@Override
+	protected void onFormed()
+	{
+		if(structureFound.fluidStored != null)
+		{
+			structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.getFluidCapacity());
+		}
 	}
 	
 	public class CoilCounter

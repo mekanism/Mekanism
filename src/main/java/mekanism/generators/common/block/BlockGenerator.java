@@ -16,6 +16,7 @@ import mekanism.common.base.ISpecialBounds;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
@@ -169,6 +170,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		if(!world.isRemote)
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			
+			if(tileEntity instanceof IMultiblock)
+			{
+				((IMultiblock)tileEntity).update();
+			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
@@ -215,6 +221,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		if(tileEntity instanceof IBoundingBlock)
 		{
 			((IBoundingBlock)tileEntity).onPlace();
+		}
+		
+		if(!world.isRemote && tileEntity instanceof IMultiblock)
+		{
+			((IMultiblock)tileEntity).update();
 		}
 	}
 
@@ -448,6 +459,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			{
 				return false;
 			}
+		}
+		
+		if(metadata == GeneratorType.TURBINE_CASING.meta || metadata == GeneratorType.TURBINE_VALVE.meta || metadata == GeneratorType.TURBINE_VENT.meta)
+		{
+			return ((IMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
 		}
 		
 		if(metadata == GeneratorType.TURBINE_ROTOR.meta)
