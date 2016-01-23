@@ -159,13 +159,13 @@ public class FrequencyManager
 		
 		if(dataHandler == null)
 		{
-			dataHandler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, name);
+			dataHandler = (FrequencyDataHandler)world.getPerWorldStorage().loadData(FrequencyDataHandler.class, name);
 			
 			if(dataHandler == null)
 			{
 				dataHandler = new FrequencyDataHandler(name);
 				dataHandler.setManager(this);
-				world.perWorldStorage.setData(name, dataHandler);
+				world.getPerWorldStorage().setData(name, dataHandler);
 			}
 			else {
 				dataHandler.setManager(this);
@@ -179,7 +179,7 @@ public class FrequencyManager
 		FrequencyManager manager = new FrequencyManager(freqClass);
 		String name = manager.getName();
 		
-		FrequencyDataHandler handler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, name);
+		FrequencyDataHandler handler = (FrequencyDataHandler)world.getPerWorldStorage().loadData(FrequencyDataHandler.class, name);
 		
 		if(handler == null)
 		{

@@ -48,7 +48,7 @@ public final class TransporterPathfinder
 			ArrayList<Coord4D> ret = new ArrayList<Coord4D>();
 			ret.add(start);
 			
-			if(transportStack.idleDir == EnumFacing.null)
+			if(transportStack.idleDir == null)
 			{
 				EnumFacing newSide = findSide();
 				
@@ -76,7 +76,7 @@ public final class TransporterPathfinder
 					
 					if(newPath != null && TransporterManager.didEmit(transportStack.itemStack, newPath.rejected))
 					{
-						transportStack.idleDir = EnumFacing.null;
+						transportStack.idleDir = null;
 						newPath.setPathType(Path.DEST);
 						
 						return newPath;
@@ -119,7 +119,7 @@ public final class TransporterPathfinder
 		
 		private EnumFacing findSide()
 		{
-			if(transportStack.idleDir == EnumFacing.null)
+			if(transportStack.idleDir == null)
 			{
 				for(EnumFacing side : EnumFacing.VALUES)
 				{
@@ -132,7 +132,7 @@ public final class TransporterPathfinder
 				}
 			}
 			else {
-				for(EnumFacing side : EnumSet.complementOf(EnumSet.of(EnumFacing.null, transportStack.idleDir.getOpposite())))
+				for(EnumFacing side : EnumSet.complementOf(EnumSet.of(transportStack.idleDir.getOpposite())))
 				{
 					TileEntity tile = start.offset(side).getTileEntity(worldObj);
 	
@@ -245,7 +245,7 @@ public final class TransporterPathfinder
 			DestChecker checker = new DestChecker()
 			{
 				@Override
-				public boolean isValid(TransporterStack stack, int dir, TileEntity tile)
+				public boolean isValid(TransporterStack stack, EnumFacing dir, TileEntity tile)
 				{
 					return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, dir, false);
 				}
@@ -427,12 +427,11 @@ public final class TransporterPathfinder
 
 			int blockCount = 0;
 
-			for(int i = 0; i < 6; i++)
+			for(EnumFacing direction : EnumFacing.VALUES)
 			{
-				EnumFacing direction = EnumFacing.getFront(i);
 				Coord4D neighbor = start.offset(direction);
 
-				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
+				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, direction, neighbor.getTileEntity(worldObj))))
 				{
 					blockCount++;
 				}
@@ -459,7 +458,7 @@ public final class TransporterPathfinder
 					}
 				}
 
-				if(currentNode == null && start.distanceTo(currentNode) > maxSearchDistance)
+				if(currentNode == null && start.distanceTo(currentNode) > maxSearchDistance) //TODO: This is definitely a mistake, not sure if should be != null or || though.
 				{
 					break;
 				}
@@ -492,7 +491,7 @@ public final class TransporterPathfinder
 							openSet.add(neighbor);
 						}
 					}
-					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction.ordinal(), neighbor.getTileEntity(worldObj)))
+					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighbor.getTileEntity(worldObj)))
 					{
 						side = direction;
 						results = reconstructPath(navMap, currentNode);
@@ -536,7 +535,7 @@ public final class TransporterPathfinder
 
 		public static class DestChecker
 		{
-			public boolean isValid(TransporterStack stack, int side, TileEntity tile)
+			public boolean isValid(TransporterStack stack, EnumFacing side, TileEntity tile)
 			{
 				return false;
 			}
@@ -550,7 +549,7 @@ public final class TransporterPathfinder
 			DestChecker checker = new DestChecker()
 			{
 				@Override
-				public boolean isValid(TransporterStack stack, int side, TileEntity tile)
+				public boolean isValid(TransporterStack stack, EnumFacing side, TileEntity tile)
 				{
 					return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
 				}

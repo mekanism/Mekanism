@@ -268,7 +268,7 @@ public class PacketHandler
 			byte[] buffer = new byte[input.readInt()];
 			input.readBytes(buffer);
 			
-			return CompressedStreamTools.func_152457_a(buffer, new NBTSizeTracker(2097152L));
+			return CompressedStreamTools.decompress(buffer, new NBTSizeTracker(2097152L));
 		} catch(Exception e) {
 			return null;
 		}

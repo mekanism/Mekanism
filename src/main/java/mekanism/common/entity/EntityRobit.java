@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -105,12 +106,6 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public boolean isAIEnabled()
-	{
-		return true;
-	}
-
-	@Override
 	protected boolean canDespawn()
 	{
 		return false;
@@ -124,11 +119,11 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		super.entityInit();
 
-		dataWatcher.addObject(12, new String("")); /* Electricity */
-		dataWatcher.addObject(13, new String("")); /* Owner */
-		dataWatcher.addObject(14, new Byte((byte)0)); /* Follow */
-		dataWatcher.addObject(15, new String("")); /* Name */
-		dataWatcher.addObject(16, new Byte((byte)0)); /* Drop Pickup */
+		dataWatcher.addObject(12, ""); /* Electricity */
+		dataWatcher.addObject(13, ""); /* Owner */
+		dataWatcher.addObject(14, (byte)0); /* Follow */
+		dataWatcher.addObject(15, ""); /* Name */
+		dataWatcher.addObject(16, (byte)0); /* Drop Pickup */
 	}
 
 	public double getRoundedTravelEnergy()
@@ -258,13 +253,13 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	private void collectItems()
 	{
-		List<EntityItem> items = worldObj.getEntitiesWithinAABB(EntityItem.class, boundingBox.expand(1.5, 1.5, 1.5));
+		List<EntityItem> items = worldObj.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().expand(1.5, 1.5, 1.5));
 
 		if(items != null && !items.isEmpty())
 		{
 			for(EntityItem item : items)
 			{
-				if(item.delayBeforeCanPickup > 0 || item.getEntityItem().getItem() instanceof ItemRobit)
+				if(item.cannotPickup() || item.getEntityItem().getItem() instanceof ItemRobit)
 				{
 					continue;
 				}
@@ -316,7 +311,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			travelToDimension(homeLocation.dimensionId);
 		}
 
-		setPositionAndUpdate(homeLocation.xCoord+0.5, homeLocation.yCoord+0.3, homeLocation.zCoord+0.5);
+		setPositionAndUpdate(homeLocation.getX()+0.5, homeLocation.getY()+0.3, homeLocation.getZ()+0.5);
 
 		motionX = 0;
 		motionY = 0;
@@ -365,11 +360,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public boolean isOnChargepad()
 	{
-		int x = MathHelper.floor_double(posX);
-		int y = MathHelper.floor_double(posY);
-		int z = MathHelper.floor_double(posZ);
+		BlockPos pos = new BlockPos(this);
 
-		if(worldObj.getTileEntity(x, y, z) instanceof TileEntityChargepad)
+		if(worldObj.getTileEntity(pos) instanceof TileEntityChargepad)
 		{
 			return true;
 		}
@@ -410,7 +403,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		ItemRobit item = (ItemRobit)entityItem.getEntityItem().getItem();
 		item.setEnergy(entityItem.getEntityItem(), getEnergy());
-		item.setInventory(getInventory(), entityItem.getEntityItem());
+		item.setInventory(((ISustainedInventory)this).getInventory(), entityItem.getEntityItem());
 		item.setName(entityItem.getEntityItem(), getName());
 
 		float k = 0.05F;
@@ -482,7 +475,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
+			NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < inventory.length)
@@ -507,7 +500,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		float j = getHealth();
 
 		setEnergy(Math.max(0, getEnergy() - (amount*1000)));
-		func_110142_aN().func_94547_a(damageSource, j, amount);
+		getCombatTracker().trackDamage(damageSource, j, amount);
 	}
 
 	@Override
@@ -563,10 +556,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		dataWatcher.updateObject(14, follow ? (byte)1 : (byte)0);
 	}
 
-	public String getName()
-	{
-		return dataWatcher.getWatchableObjectString(15);
-	}
+//	public String getName()
+//	{
+//		return dataWatcher.getWatchableObjectString(15);
+//	}
 
 	public void setName(String name)
 	{
@@ -625,7 +618,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slotID)
+	public ItemStack removeStackFromSlot(int slotID)
 	{
 		if(getStackInSlot(slotID) != null)
 		{
@@ -656,7 +649,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 	
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 	    return true;
 	}
@@ -677,15 +670,39 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory(EntityPlayer player) {}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return true;
+	}
+
+	@Override//TODO
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override//TODO
+	public void setField(int id, int value)
+	{
+
+	}
+
+	@Override//TODO
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override//TODO
+	public void clear()
+	{
+
 	}
 
 	@Override
@@ -729,17 +746,13 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		return tagList;
 	}
 
+/*
 	@Override
     public String getName()
 	{
 		return getName().isEmpty() ? "Robit" : getName();
 	}
-
-	@Override
-	public float getShadowSize()
-	{
-		return 0.25F;
-	}
+*/
 
 	@Override
 	public boolean canBreath()

@@ -25,7 +25,7 @@ public class StackSearcher
 		}
 		else
 		{
-			slots = ((ISidedInventory)theInventory).getSlotsForFace(side.getOpposite().ordinal());
+			slots = ((ISidedInventory)theInventory).getSlotsForFace(side.getOpposite());
 			if(slots != null)
 			{
 				i = slots.length;
@@ -57,7 +57,7 @@ public class StackSearcher
 					{
 						ItemStack toSend = theInventory.getStackInSlot(slotID);
 
-						if(((ISidedInventory)theInventory).canExtractItem(slotID, toSend, side.getOpposite().ordinal()))
+						if(((ISidedInventory)theInventory).canExtractItem(slotID, toSend, side.getOpposite()))
 						{
 							return new InvStack(theInventory, slotID, toSend);
 						}
@@ -101,7 +101,7 @@ public class StackSearcher
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)theInventory;
-			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite().ordinal());
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots != null && slots.length != 0)
 			{
@@ -118,7 +118,7 @@ public class StackSearcher
 						{
 							ItemStack copy = stack.copy();
 
-							if(sidedInventory.canExtractItem(slotID, copy, side.getOpposite().ordinal()))
+							if(sidedInventory.canExtractItem(slotID, copy, side.getOpposite()))
 							{
 								ret.appendStack(slotID, copy);
 							}
@@ -126,7 +126,7 @@ public class StackSearcher
 						else {
 							ItemStack copy = stack.copy();
 
-							if(sidedInventory.canExtractItem(slotID, copy, side.getOpposite().ordinal()))
+							if(sidedInventory.canExtractItem(slotID, copy, side.getOpposite()))
 							{
 								copy.stackSize = max-current;
 								ret.appendStack(slotID, copy);

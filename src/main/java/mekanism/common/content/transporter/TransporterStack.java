@@ -30,7 +30,7 @@ public class TransporterStack
 
 	public boolean initiatedPath = false;
 	
-	public EnumFacing idleDir = EnumFacing.null;
+	public EnumFacing idleDir = null;
 
 	private List<Coord4D> pathToTarget = new ArrayList<Coord4D>();
 
@@ -42,7 +42,7 @@ public class TransporterStack
 
 	public Path pathType;
 
-	public void write(ILogisticalTransporter transporter, ArrayList data)
+	public void write(ILogisticalTransporter transporter, ArrayList<Object> data)
 	{
 		if(color != null)
 		{
@@ -188,7 +188,7 @@ public class TransporterStack
 			return itemStack;
 		}
 
-		idleDir = EnumFacing.null;
+		idleDir = null;
 		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
@@ -204,7 +204,7 @@ public class TransporterStack
 			return itemStack;
 		}
 
-		idleDir = EnumFacing.null;
+		idleDir = null;
 		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
@@ -222,7 +222,7 @@ public class TransporterStack
 		
 		if(newPath.getRight() == Path.HOME)
 		{
-			idleDir = EnumFacing.null;
+			idleDir = null;
 		}
 		
 		setPath(newPath.getLeft(), newPath.getRight());

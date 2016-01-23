@@ -13,7 +13,9 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 
 public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 {
@@ -27,7 +29,8 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 	@Override
 	protected boolean isValidFrame(int x, int y, int z)
 	{
-		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
+		IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
+		return state.getBlock() == MekanismBlocks.BasicBlock && state.getBlock().getMetaFromState(state) == 9; //TODO use actual block state property
 	}
 	
 	@Override
@@ -84,7 +87,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 	{
 		for(Coord4D obj : structure.locations)
 		{
-			if(obj.getTileEntity(pointer.getWorldObj()) instanceof TileEntityDynamicValve)
+			if(obj.getTileEntity(pointer.getWorld()) instanceof TileEntityDynamicValve)
 			{
 				ValveData data = new ValveData();
 				data.location = obj;

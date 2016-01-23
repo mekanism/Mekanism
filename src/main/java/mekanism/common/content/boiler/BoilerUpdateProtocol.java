@@ -13,7 +13,9 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityThermoelectricBoiler;
 import mekanism.common.tile.TileEntityThermoelectricValve;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 
 public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 {
@@ -28,7 +30,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	@Override
 	protected boolean isValidFrame(int x, int y, int z)
 	{
-		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock2 && pointer.getWorldObj().getBlockMetadata(x, y, z) == 1;
+		IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
+		return state.getBlock() == MekanismBlocks.BasicBlock2 && state.getBlock().getMetaFromState(state) == 1;
 	}
 
 	@Override
@@ -98,7 +101,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	{
 		for(Coord4D obj : structure.locations)
 		{
-			if(obj.getTileEntity(pointer.getWorldObj()) instanceof TileEntityThermoelectricValve)
+			if(obj.getTileEntity(pointer.getWorld()) instanceof TileEntityThermoelectricValve)
 			{
 				ValveData data = new ValveData();
 				data.location = obj;

@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -39,15 +40,15 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		ignoreFrustumCheck = true;
 		preventEntitySpawning = true;
 		setPosition(posX + 0.5F, posY + 3F, posZ + 0.5F);
-		yOffset = height / 2.0F;
+//TODO		yOffset = height / 2.0F;
 		setSize(0.25F, 0.25F);
 		motionY = 0.04;
 
-		dataWatcher.addObject(2, new Byte((byte)0)); /* Is latched */
-		dataWatcher.addObject(3, new Integer(0)); /* Latched X */
-		dataWatcher.addObject(4, new Integer(0)); /* Latched Y */
-		dataWatcher.addObject(5, new Integer(0)); /* Latched Z */
-		dataWatcher.addObject(6, new Integer(-1)); /* Latched entity ID */
+		dataWatcher.addObject(2, (byte)0); /* Is latched */
+		dataWatcher.addObject(3, 0); /* Latched X */
+		dataWatcher.addObject(4, 0); /* Latched Y */
+		dataWatcher.addObject(5, 0); /* Latched Z */
+		dataWatcher.addObject(6, -1); /* Latched entity ID */
 	}
 
 	public EntityBalloon(World world, double x, double y, double z, EnumColor c)
@@ -76,11 +77,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		color = c;
 
-		dataWatcher.updateObject(2, new Byte((byte)2)); /* Is latched */
-		dataWatcher.updateObject(3, new Integer(0)); /* Latched X */
-		dataWatcher.updateObject(4, new Integer(0)); /* Latched Y */
-		dataWatcher.updateObject(5, new Integer(0)); /* Latched Z */
-		dataWatcher.updateObject(6, new Integer(entity.getEntityId())); /* Latched entity ID */
+		dataWatcher.updateObject(2, (byte)2); /* Is latched */
+		dataWatcher.updateObject(3, 0); /* Latched X */
+		dataWatcher.updateObject(4, 0); /* Latched Y */
+		dataWatcher.updateObject(5, 0); /* Latched Z */
+		dataWatcher.updateObject(6, entity.getEntityId()); /* Latched entity ID */
 	}
 
 	public EntityBalloon(World world, Coord4D obj, EnumColor c)
@@ -88,7 +89,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		this(world);
 
 		latched = obj;
-		setPosition(latched.xCoord + 0.5F, latched.yCoord + 2.8F, latched.zCoord + 0.5F);
+		setPosition(latched.getX() + 0.5F, latched.getY() + 2.8F, latched.getZ() + 0.5F);
 
 		prevPosX = posX;
 		prevPosY = posY;
@@ -96,11 +97,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		color = c;
 
-		dataWatcher.updateObject(2, new Byte((byte)1)); /* Is latched */
-		dataWatcher.updateObject(3, new Integer(latched != null ? latched.xCoord : 0)); /* Latched X */
-		dataWatcher.updateObject(4, new Integer(latched != null ? latched.yCoord : 0)); /* Latched Y */
-		dataWatcher.updateObject(5, new Integer(latched != null ? latched.zCoord : 0)); /* Latched Z */
-		dataWatcher.updateObject(6, new Integer(-1)); /* Latched entity ID */
+		dataWatcher.updateObject(2, (byte)1); /* Is latched */
+		dataWatcher.updateObject(3, latched != null ? latched.getX() : 0); /* Latched X */
+		dataWatcher.updateObject(4, latched != null ? latched.getY() : 0); /* Latched Y */
+		dataWatcher.updateObject(5, latched != null ? latched.getZ() : 0); /* Latched Z */
+		dataWatcher.updateObject(6, -1); /* Latched entity ID */
 	}
 
 	@Override
@@ -145,9 +146,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			if(ticksExisted == 1)
 			{
 				dataWatcher.updateObject(2, new Byte(latched != null ? (byte)1 : (latchedEntity != null ? (byte)2 : (byte)0))); /* Is latched */
-				dataWatcher.updateObject(3, new Integer(latched != null ? latched.xCoord : 0)); /* Latched X */
-				dataWatcher.updateObject(4, new Integer(latched != null ? latched.yCoord : 0)); /* Latched Y */
-				dataWatcher.updateObject(5, new Integer(latched != null ? latched.zCoord : 0)); /* Latched Z */
+				dataWatcher.updateObject(3, new Integer(latched != null ? latched.getX() : 0)); /* Latched X */
+				dataWatcher.updateObject(4, new Integer(latched != null ? latched.getY() : 0)); /* Latched Y */
+				dataWatcher.updateObject(5, new Integer(latched != null ? latched.getZ() : 0)); /* Latched Z */
 				dataWatcher.updateObject(6, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1)); /* Latched entity ID */
 			}
 		}
@@ -222,15 +223,13 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	private int getFloor(EntityLivingBase entity)
 	{
-		int xPos = MathHelper.floor_double(entity.posX);
-		int yPos = MathHelper.floor_double(entity.posY);
-		int zPos = MathHelper.floor_double(entity.posZ);
+		BlockPos pos = new BlockPos(entity);
 
-		for(int i = yPos; i > 0; i--)
+		for(BlockPos posi = pos; posi.getY() > 0; posi = posi.down())
 		{
-			if(i < 256 && !worldObj.isAirBlock(xPos, i, zPos))
+			if(posi.getY() < 256 && !worldObj.isAirBlock(posi))
 			{
-				return i+1+(entity instanceof EntityPlayer ? 1 : 0);
+				return posi.getY()+1+(entity instanceof EntityPlayer ? 1 : 0);
 			}
 		}
 
@@ -275,7 +274,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	{
 		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
 
-		EntityFX fx = new EntityReddustFX(worldObj, pos.xPos, pos.yPos, pos.zPos, 1, 0, 0, 0);
+		EntityFX fx = new EntityReddustFX.Factory().getEntityFX(0, worldObj, pos.xCoord, pos.yCoord, pos.zCoord, 0, 0, 0);
 		fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
 
 		Minecraft.getMinecraft().effectRenderer.addEffect(fx);
@@ -356,9 +355,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			data.writeByte((byte)1);
 
-			data.writeInt(latched.xCoord);
-			data.writeInt(latched.yCoord);
-			data.writeInt(latched.zCoord);
+			data.writeInt(latched.getX());
+			data.writeInt(latched.getY());
+			data.writeInt(latched.getZ());
 			data.writeInt(latched.dimensionId);
 		}
 		else if(latchedEntity != null)
@@ -419,7 +418,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	@Override
 	public boolean attackEntityFrom(DamageSource dmgSource, float damage)
 	{
-		if(isEntityInvulnerable())
+		if(isEntityInvulnerable(dmgSource))
 		{
 			return false;
 		}

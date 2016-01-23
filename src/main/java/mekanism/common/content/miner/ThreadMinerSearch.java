@@ -11,8 +11,10 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 
 public class ThreadMinerSearch extends Thread
 {
@@ -50,9 +52,9 @@ public class ThreadMinerSearch extends Thread
 
 		for(int i = 0; i < size; i++)
 		{
-			int x = coord.xCoord+i%diameter;
-			int z = coord.zCoord+(i/diameter)%diameter;
-			int y = coord.yCoord+(i/diameter/diameter);
+			int x = coord.getX()+i%diameter;
+			int z = coord.getY()+(i/diameter)%diameter;
+			int y = coord.getZ()+(i/diameter/diameter);
 
 			if(tileEntity.isInvalid())
 			{
@@ -70,17 +72,18 @@ public class ThreadMinerSearch extends Thread
 					continue;
 				}
 	
-				TileEntity tile = tileEntity.getWorld().getTileEntity(x, y, z);
+				TileEntity tile = tileEntity.getWorld().getTileEntity(new BlockPos(x, y, z));
 				
 				if(tile instanceof TileEntityBoundingBlock)
 				{
 					continue;
 				}
+
+				IBlockState state = tileEntity.getWorld().getBlockState(new BlockPos(x, y, z));
+				info.block = state.getBlock();
+				info.meta = state.getBlock().getMetaFromState(state);
 	
-				info.block = tileEntity.getWorld().getBlock(x, y, z);
-				info.meta = tileEntity.getWorld().getBlockMetadata(x, y, z);
-	
-				if(info.block != null && !tileEntity.getWorld().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorld(), x, y, z) >= 0)
+				if(info.block != null && !tileEntity.getWorld().isAirBlock(new BlockPos(x, y, z)) && info.block.getBlockHardness(tileEntity.getWorld(), new BlockPos(x, y, z)) >= 0)
 				{
 					MinerFilter filterFound = null;
 					boolean canFilter = false;

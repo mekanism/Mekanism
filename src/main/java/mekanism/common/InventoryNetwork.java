@@ -60,7 +60,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			
 			for(EnumFacing side : sides)
 			{
-				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.getOpposite().ordinal());
+				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.getOpposite());
 				
 				if(TransporterManager.didEmit(stack, returned))
 				{

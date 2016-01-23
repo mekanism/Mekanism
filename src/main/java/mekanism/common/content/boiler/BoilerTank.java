@@ -29,14 +29,14 @@ public abstract class BoilerTank implements IFluidTank
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(steamBoiler.structure != null && !steamBoiler.getWorldObj().isRemote)
+		if(steamBoiler.structure != null && !steamBoiler.getWorld().isRemote)
 		{
-			if(resource == null || resource.getFluidID() <= 0)
+			if(resource == null || resource.getFluid() == null)
 			{
 				return 0;
 			}
 
-			if(getFluid() == null || getFluid().getFluidID() <= 0)
+			if(getFluid() == null || getFluid().getFluid() == null)
 			{
 				if(resource.amount <= getCapacity())
 				{
@@ -136,9 +136,9 @@ public abstract class BoilerTank implements IFluidTank
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		if(steamBoiler.structure != null && !steamBoiler.getWorldObj().isRemote)
+		if(steamBoiler.structure != null && !steamBoiler.getWorld().isRemote)
 		{
-			if(getFluid() == null || getFluid().getFluidID() <= 0)
+			if(getFluid() == null || getFluid().getFluid() == null)
 			{
 				return null;
 			}

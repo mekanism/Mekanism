@@ -9,6 +9,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
 
@@ -48,16 +50,16 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 		flameVec.rotateYaw(6);
 		
 		Pos3D mergedVec = playerPos.clone().translate(flameVec);
-		setPosition(mergedVec.xPos, mergedVec.yPos, mergedVec.zPos);
+		setPosition(mergedVec.xCoord, mergedVec.yCoord, mergedVec.zCoord);
 		
 		Pos3D motion = new Pos3D(0.4, 0.4, 0.4);
 		motion.multiply(new Pos3D(player.getLookVec()));
 		
 		setHeading(motion);
 		
-		motionX = motion.xPos;
-		motionY = motion.yPos;
-		motionZ = motion.zPos;
+		motionX = motion.xCoord;
+		motionY = motion.yCoord;
+		motionZ = motion.zCoord;
 		
 		owner = player;
         mode = ((ItemFlamethrower)player.getCurrentEquippedItem().getItem()).getMode(player.getCurrentEquippedItem());
@@ -65,10 +67,10 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	
     public void setHeading(Pos3D motion)
     {
-        float d = MathHelper.sqrt_double((motion.xPos * motion.xPos) + (motion.zPos * motion.zPos));
+        float d = MathHelper.sqrt_double((motion.xCoord * motion.xCoord) + (motion.zCoord * motion.zCoord));
         
-        prevRotationYaw = rotationYaw = (float)(Math.atan2(motion.xPos, motion.zPos) * 180.0D / Math.PI);
-        prevRotationPitch = rotationPitch = (float)(Math.atan2(motion.yPos, d) * 180.0D / Math.PI);
+        prevRotationYaw = rotationYaw = (float)(Math.atan2(motion.xCoord, motion.zCoord) * 180.0D / Math.PI);
+        prevRotationPitch = rotationPitch = (float)(Math.atan2(motion.yCoord, d) * 180.0D / Math.PI);
     }
 	
 	@Override
@@ -105,28 +107,28 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	
 	private void calculateVector()
 	{
-		Vec3 localVec = Vec3.createVectorHelper(posX, posY, posZ);
-        Vec3 motionVec = Vec3.createVectorHelper(posX + motionX*2, posY + motionY*2, posZ + motionZ*2);
-        MovingObjectPosition mop = worldObj.func_147447_a(localVec, motionVec, true, false, false);
-        localVec = Vec3.createVectorHelper(posX, posY, posZ);
-        motionVec = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
+		Vec3 localVec = new Vec3(posX, posY, posZ);
+        Vec3 motionVec = new Vec3(posX + motionX*2, posY + motionY*2, posZ + motionZ*2);
+        MovingObjectPosition mop = worldObj.rayTraceBlocks(localVec, motionVec, true, false, false);
+        localVec = new Vec3(posX, posY, posZ);
+        motionVec = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
 
         if(mop != null)
         {
-            motionVec = Vec3.createVectorHelper(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
+            motionVec = new Vec3(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
         }
 
         Entity entity = null;
-        List list = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+        List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
         double entityDist = 0.0D;
         int i;
 
-        for(Entity entity1 : (List<Entity>)list)
+        for(Entity entity1 : list)
         {
             if((entity1 instanceof EntityItem || entity1.canBeCollidedWith()) && entity1 != owner)
             {
                 float boundsScale = 0.3F;
-                AxisAlignedBB newBounds = entity1.boundingBox.expand((double)boundsScale, (double)boundsScale, (double)boundsScale);
+                AxisAlignedBB newBounds = entity1.getEntityBoundingBox().expand((double)boundsScale, (double)boundsScale, (double)boundsScale);
                 MovingObjectPosition movingobjectposition1 = newBounds.calculateIntercept(localVec, motionVec);
 
                 if(movingobjectposition1 != null)
@@ -176,19 +178,19 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
             	}
             }
             else {
-                Block block = worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-                int meta = worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+                IBlockState state = worldObj.getBlockState(mop.getBlockPos());
+				Block block = state.getBlock();
                 boolean fluid = MekanismUtils.isFluid(worldObj, new Coord4D(mop)) || MekanismUtils.isDeadFluid(worldObj, new Coord4D(mop));
                 
-                Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.getDimensionId()).offset(EnumFacing.getFront(mop.sideHit));
+                Coord4D sideCoord = new Coord4D(mop.getBlockPos().offset(mop.sideHit), worldObj.provider.getDimensionId());
                 
                 if(general.aestheticWorldDamage && !fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
                 {
-                	if(mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ)))
+                	if(mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop.getBlockPos())))
                 	{
                 		if(mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !worldObj.isRemote)
                 		{
-                			worldObj.setBlock(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, Blocks.fire);
+                			worldObj.setBlockState(sideCoord, Blocks.fire.getDefaultState());
                 		}
                 	}
                 }
@@ -237,24 +239,25 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 		{
 			if(!worldObj.isRemote)
 			{
-				Block b = block.getBlock(worldObj);
-				int meta = block.getBlockState(worldObj);
+				IBlockState state = block.getBlockState(worldObj);
+				Block b = state.getBlock();
+
 				
 				if(Block.getBlockFromItem(result.getItem()) != Blocks.air)
 				{
-					worldObj.setBlock(block.xCoord, block.yCoord, block.zCoord, Block.getBlockFromItem(result.getItem()), result.getItemDamage(), 3);
+					worldObj.setBlockState(block, Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
 				}
 				else {
-					worldObj.setBlockToAir(block.xCoord, block.yCoord, block.zCoord);
+					worldObj.setBlockToAir(block);
 					
-					EntityItem item = new EntityItem(worldObj, block.xCoord + 0.5, block.yCoord + 0.5, block.zCoord + 0.5, result.copy());
+					EntityItem item = new EntityItem(worldObj, block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5, result.copy());
 					item.motionX = 0;
 					item.motionY = 0;
 					item.motionZ = 0;
 					worldObj.spawnEntityInWorld(item);
 				}
 				
-				worldObj.playAuxSFXAtEntity(null, 2001, block.xCoord, block.yCoord, block.zCoord, Block.getIdFromBlock(b) + (meta << 12));
+				worldObj.playAuxSFXAtEntity(null, 2001, block, Block.getIdFromBlock(b) + (b.getMetaFromState(state) << 12));
 			}
 			
 			spawnParticlesAt(new Pos3D(block).translate(0.5, 0.5, 0.5));
@@ -286,7 +289,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	{
 		for(int i = 0; i < 10; i++)
 		{
-			worldObj.spawnParticle("smoke", pos.xPos + (rand.nextFloat()-0.5), pos.yPos + (rand.nextFloat()-0.5), pos.zPos + (rand.nextFloat()-0.5), 0, 0, 0);
+			worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.xCoord + (rand.nextFloat()-0.5), pos.yCoord + (rand.nextFloat()-0.5), pos.zCoord + (rand.nextFloat()-0.5), 0, 0, 0);
 		}
 	}
 

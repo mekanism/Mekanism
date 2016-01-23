@@ -3,6 +3,7 @@ package mekanism.common.chunkloading;
 import java.util.List;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
@@ -18,7 +19,7 @@ public class ChunkManager implements LoadingCallback
 			int y = ticket.getModData().getInteger("yCoord");
 			int z = ticket.getModData().getInteger("zCoord");
 			
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 			
 			if(tileEntity instanceof IChunkLoader)
 			{

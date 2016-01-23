@@ -23,7 +23,7 @@ public class ContainerRobitSmelting extends Container
 	public ContainerRobitSmelting(InventoryPlayer inventory, EntityRobit entity)
 	{
 		robit = entity;
-		robit.openInventory();
+		robit.openInventory(inventory.player);
 
 		addSlotToContainer(new Slot(entity, 28, 56, 17));
 		addSlotToContainer(new Slot(entity, 29, 56, 53));
@@ -183,6 +183,6 @@ public class ContainerRobitSmelting extends Container
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
-		robit.closeInventory();
+		robit.closeInventory(entityplayer);
 	}
 }
