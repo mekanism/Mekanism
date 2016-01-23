@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
 
@@ -37,9 +38,9 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	public void loopThrough(TileEntity tile)
 	{
-		World worldObj = tile.getWorldObj();
+		World worldObj = tile.getWorld();
 
-		int origX = tile.xCoord, origY = tile.yCoord, origZ = tile.zCoord;
+		int origX = tile.getPos().getX(), origY = tile.getPos().getY(), origZ = tile.getPos().getZ();
 
 		boolean isCorner = true;
 		boolean isHollow = true;
@@ -142,13 +143,13 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 								rightBlocks = false;
 								break;
 							}
-							else if(isFrame(Coord4D.get(tile).translate(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
+							else if(isFrame(Coord4D.get(tile).add(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
 							{
 								rightFrame = false;
 								break;
 							}
 							else {
-								locations.add(Coord4D.get(tile).translate(x, y, z));
+								locations.add(Coord4D.get(tile).add(x, y, z));
 							}
 						}
 						else {
@@ -160,7 +161,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 							else {
 								if(!isAir(origX+x, origY+y, origZ+z))
 								{
-									innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.getDimensionId()));
+									innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorld().provider.getDimensionId()));
 								}
 							}
 
@@ -193,9 +194,9 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
 				structure.volume = volume;
-				structure.renderLocation = Coord4D.get(tile).translate(0, 1, 0);
-				structure.minLocation = Coord4D.get(tile).translate(xmin, ymin, zmin);
-				structure.maxLocation = Coord4D.get(tile).translate(xmax, ymax, zmax);
+				structure.renderLocation = Coord4D.get(tile).add(0, 1, 0);
+				structure.minLocation = Coord4D.get(tile).add(xmin, ymin, zmin);
+				structure.maxLocation = Coord4D.get(tile).add(xmax, ymax, zmax);
 				
 				if(structure.volLength >= 3 && structure.volHeight >= 3 && structure.volWidth >= 3)
 				{
@@ -219,9 +220,9 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			Coord4D coord = Coord4D.get(tile).offset(side);
-			TileEntity tileEntity = coord.getTileEntity(tile.getWorldObj());
+			TileEntity tileEntity = coord.getTileEntity(tile.getWorld());
 
-			if(isViableNode(coord.xCoord, coord.yCoord, coord.zCoord))
+			if(isViableNode(coord.getX(), coord.getY(), coord.getZ()))
 			{
 				if(!iteratedNodes.contains(tileEntity))
 				{
@@ -238,32 +239,32 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 	public EnumFacing getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
-		if(obj.xCoord == xmin)
+		if(obj.getX() == xmin)
 		{
 			return EnumFacing.WEST;
 		}
-		else if(obj.xCoord == xmax)
+		else if(obj.getX() == xmax)
 		{
 			return EnumFacing.EAST;
 		}
-		else if(obj.yCoord == ymin)
+		else if(obj.getY() == ymin)
 		{
 			return EnumFacing.DOWN;
 		}
-		else if(obj.yCoord == ymax)
+		else if(obj.getY() == ymax)
 		{
 			return EnumFacing.UP;
 		}
-		else if(obj.zCoord == zmin)
+		else if(obj.getZ() == zmin)
 		{
 			return EnumFacing.NORTH;
 		}
-		else if(obj.zCoord == zmax)
+		else if(obj.getZ() == zmax)
 		{
 			return EnumFacing.SOUTH;
 		}
 
-		return EnumFacing.null;
+		return null;
 	}
 
 	/**
@@ -275,7 +276,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	protected boolean isAir(int x, int y, int z)
 	{
-		return pointer.getWorldObj().isAirBlock(x, y, z);
+		return pointer.getWorld().isAirBlock(new BlockPos(x, y, z));
 	}
 	
 	protected boolean isValidInnerNode(int x, int y, int z)
@@ -292,7 +293,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	private boolean isViableNode(int x, int y, int z)
 	{
-		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
 		
 		if(tile instanceof IStructuralMultiblock)
 		{
@@ -321,7 +322,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	private boolean isCorrectCorner(Coord4D obj, int xmin, int ymin, int zmin)
 	{
-		if(obj.xCoord == xmin && obj.yCoord == ymin && obj.zCoord == zmin)
+		if(obj.getX() == xmin && obj.getY() == ymin && obj.getZ() == zmin)
 		{
 			return true;
 		}
@@ -342,31 +343,31 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	private boolean isFrame(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
-		if(obj.xCoord == xmin && obj.yCoord == ymin)
+		if(obj.getX() == xmin && obj.getY() == ymin)
 			return true;
-		if(obj.xCoord == xmax && obj.yCoord == ymin)
+		if(obj.getX() == xmax && obj.getY() == ymin)
 			return true;
-		if(obj.xCoord == xmin && obj.yCoord == ymax)
+		if(obj.getX() == xmin && obj.getY() == ymax)
 			return true;
-		if(obj.xCoord == xmax && obj.yCoord == ymax)
-			return true;
-
-		if(obj.xCoord == xmin && obj.zCoord == zmin)
-			return true;
-		if(obj.xCoord == xmax && obj.zCoord == zmin)
-			return true;
-		if(obj.xCoord == xmin && obj.zCoord == zmax)
-			return true;
-		if(obj.xCoord == xmax && obj.zCoord == zmax)
+		if(obj.getX() == xmax && obj.getY() == ymax)
 			return true;
 
-		if(obj.yCoord == ymin && obj.zCoord == zmin)
+		if(obj.getX() == xmin && obj.getZ() == zmin)
 			return true;
-		if(obj.yCoord == ymax && obj.zCoord == zmin)
+		if(obj.getX() == xmax && obj.getZ() == zmin)
 			return true;
-		if(obj.yCoord == ymin && obj.zCoord == zmax)
+		if(obj.getX() == xmin && obj.getZ() == zmax)
 			return true;
-		if(obj.yCoord == ymax && obj.zCoord == zmax)
+		if(obj.getX() == xmax && obj.getZ() == zmax)
+			return true;
+
+		if(obj.getY() == ymin && obj.getZ() == zmin)
+			return true;
+		if(obj.getY() == ymax && obj.getZ() == zmin)
+			return true;
+		if(obj.getY() == ymin && obj.getZ() == zmax)
+			return true;
+		if(obj.getY() == ymax && obj.getZ() == zmax)
 			return true;
 
 		return false;
@@ -414,7 +415,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 					{
 						if(tile instanceof TileEntityMultiblock)
 						{
-							((TileEntityMultiblock<T>)tile).structure = null;
+							((TileEntityMultiblock)tile).structure = null;
 						}
 						else if(tile instanceof IStructuralMultiblock)
 						{
@@ -436,11 +437,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntity tileEntity = obj.getTileEntity(pointer.getWorldObj());
+				TileEntity tileEntity = obj.getTileEntity(pointer.getWorld());
 
-				if(tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock<T>)tileEntity).cachedID != null)
+				if(tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock)tileEntity).cachedID != null)
 				{
-					idsFound.add(((TileEntityMultiblock<T>)tileEntity).cachedID);
+					idsFound.add(((TileEntityMultiblock)tileEntity).cachedID);
 				}
 			}
 
@@ -455,10 +456,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 					{
 						if(cache == null)
 						{
-							cache = getManager().pullInventory(pointer.getWorldObj(), id);
+							cache = getManager().pullInventory(pointer.getWorld(), id);
 						}
 						else {
-							mergeCaches(rejectedItems, cache, getManager().pullInventory(pointer.getWorldObj(), id));
+							mergeCaches(rejectedItems, cache, getManager().pullInventory(pointer.getWorld(), id));
 						}
 						
 						idToUse = id;
@@ -484,7 +485,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntity tileEntity = obj.getTileEntity(pointer.getWorldObj());
+				TileEntity tileEntity = obj.getTileEntity(pointer.getWorld());
 
 				if(tileEntity instanceof TileEntityMultiblock)
 				{
