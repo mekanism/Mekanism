@@ -88,7 +88,7 @@ public class CommonWorldTickHandler
 				return; 
 			}
 			
-			int dimensionId = world.provider.dimensionId;
+			int dimensionId = world.provider.getDimensionId();
 
 			//Credit to E. Beef
 			if(chunkRegenMap.containsKey(dimensionId)) 

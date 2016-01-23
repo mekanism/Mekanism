@@ -9,7 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitterTile;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -19,7 +19,7 @@ public final class PipeUtils
 {
 	public static final FluidTankInfo[] EMPTY = new FluidTankInfo[] {};
 
-	public static boolean isValidAcceptorOnSide(TileEntity tile, ForgeDirection side)
+	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
 		if(tile instanceof ITransmitterTile || !(tile instanceof IFluidHandler))
 			return false;
@@ -54,9 +54,9 @@ public final class PipeUtils
 	{
 		IFluidHandler[] acceptors = new IFluidHandler[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitterTile))
 			{
@@ -74,7 +74,7 @@ public final class PipeUtils
 	 * @param from - the TileEntity to output from
 	 * @return the amount of gas emitted
 	 */
-	public static int emit(List<ForgeDirection> sides, FluidStack stack, TileEntity from)
+	public static int emit(List<EnumFacing> sides, FluidStack stack, TileEntity from)
 	{
 		if(stack == null)
 		{
@@ -88,7 +88,7 @@ public final class PipeUtils
 		{
 			IFluidHandler handler = possibleAcceptors[i];
 			
-			if(handler != null && handler.canFill(ForgeDirection.getOrientation(i).getOpposite(), stack.getFluid()))
+			if(handler != null && handler.canFill(EnumFacing.getFront(i).getOpposite(), stack.getFluid()))
 			{
 				availableAcceptors.add(handler);
 			}
@@ -115,7 +115,7 @@ public final class PipeUtils
 					remaining--;
 				}
 				
-				ForgeDirection dir = ForgeDirection.getOrientation(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
+				EnumFacing dir = EnumFacing.getFront(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
 				toSend -= acceptor.fill(dir, new FluidStack(stack.getFluid(), currentSending), true);
 			}
 		}

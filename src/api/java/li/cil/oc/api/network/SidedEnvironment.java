@@ -3,7 +3,7 @@ package li.cil.oc.api.network;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * This interface is like {@link net.minecraft.inventory.ISidedInventory} is to

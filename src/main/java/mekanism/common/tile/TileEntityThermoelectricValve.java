@@ -5,7 +5,7 @@ import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
 import mekanism.common.util.PipeUtils;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -24,19 +24,19 @@ public class TileEntityThermoelectricValve extends TileEntityThermoelectricBoile
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {waterTank.getInfo(), steamTank.getInfo()} : PipeUtils.EMPTY;
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return waterTank.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(structure != null && structure.steamStored != null)
 		{
@@ -50,7 +50,7 @@ public class TileEntityThermoelectricValve extends TileEntityThermoelectricBoile
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(structure != null)
 		{
@@ -61,13 +61,13 @@ public class TileEntityThermoelectricValve extends TileEntityThermoelectricBoile
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return true;
 	}

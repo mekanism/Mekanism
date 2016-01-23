@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 import java.util.ArrayList;
@@ -191,7 +191,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		int lavaBoost = 0;
 		double netherBoost = 0D;
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			Coord4D coord = Coord4D.get(this).offset(side);
 			
@@ -201,7 +201,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			}
 		}
 
-		if(worldObj.provider.dimensionId == -1)
+		if(worldObj.provider.getDimensionId() == -1)
 		{
 			netherBoost = generators.heatGenerationNether;
 		}
@@ -225,9 +225,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
-		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+		return EnumFacing.getFront(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 
 	/**
@@ -307,9 +307,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(resource.getFluidID() == FluidRegistry.LAVA.getID() && from != ForgeDirection.getOrientation(facing))
+		if(resource.getFluidID() == FluidRegistry.LAVA.getID() && from != EnumFacing.getFront(facing))
 		{
 			return lavaTank.fill(resource, doFill);
 		}
@@ -318,33 +318,33 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return fluid == FluidRegistry.LAVA && from != ForgeDirection.getOrientation(facing);
+		return fluid == FluidRegistry.LAVA && from != EnumFacing.getFront(facing);
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == ForgeDirection.getOrientation(facing))
+		if(from == EnumFacing.getFront(facing))
 		{
 			return PipeUtils.EMPTY;
 		}
@@ -380,7 +380,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side)
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return canConnectHeat(side) ? 0 : 10000;
 	}
@@ -415,13 +415,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side)
+	public boolean canConnectHeat(EnumFacing side)
 	{
-		return side == ForgeDirection.DOWN;
+		return side == EnumFacing.DOWN;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side)
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		if(canConnectHeat(side))
 		{

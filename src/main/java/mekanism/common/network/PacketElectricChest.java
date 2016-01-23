@@ -14,6 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -63,11 +64,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 		else if(message.packetType == ElectricChestPacketType.CLIENT_OPEN)
 		{
 			try {
-				int x = message.coord4D != null ? message.coord4D.xCoord : 0;
-				int y = message.coord4D != null ? message.coord4D.yCoord : 0;
-				int z = message.coord4D != null ? message.coord4D.zCoord : 0;
-
-				Mekanism.proxy.openElectricChest(player, message.guiType, message.windowId, message.isBlock, x, y, z);
+				Mekanism.proxy.openElectricChest(player, message.guiType, message.windowId, message.isBlock, message.coord4D != null ? message.coord4D : BlockPos.ORIGIN);
 			} catch(Exception e) {
 				Mekanism.logger.error("Error while handling electric chest open packet.");
 				e.printStackTrace();
@@ -103,7 +100,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 				{
 					TileEntityElectricChest tileEntity = (TileEntityElectricChest)message.coord4D.getTileEntity(player.worldObj);
 					tileEntity.locked = message.locked;
-					player.worldObj.notifyBlocksOfNeighborChange(message.coord4D.xCoord, message.coord4D.yCoord, message.coord4D.zCoord, tileEntity.getBlockType());
+					player.worldObj.notifyNeighborsOfStateChange(message.coord4D, tileEntity.getBlockType());
 				}
 				else {
 					ItemStack stack = player.getCurrentEquippedItem();
@@ -205,10 +202,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
-						dataStream.writeInt(coord4D.dimensionId);
+						coord4D.write(dataStream);
 					}
 	
 					break;
@@ -218,10 +212,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
-						dataStream.writeInt(coord4D.dimensionId);
+						coord4D.write(dataStream);
 					}
 	
 					break;
@@ -232,10 +223,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
-						dataStream.writeInt(coord4D.dimensionId);
+						coord4D.write(dataStream);
 					}
 	
 					break;
@@ -245,10 +233,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
-						dataStream.writeInt(coord4D.dimensionId);
+						coord4D.write(dataStream);
 					}
 	
 					break;
@@ -267,7 +252,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 
 				if(isBlock)
 				{
-					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+					coord4D = Coord4D.read(dataStream);
 				}
 			}
 			else if(packetType == ElectricChestPacketType.CLIENT_OPEN)
@@ -278,7 +263,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 
 				if(isBlock)
 				{
-					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+					coord4D = Coord4D.read(dataStream);
 				}
 			}
 			else if(packetType == ElectricChestPacketType.PASSWORD)
@@ -288,7 +273,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 
 				if(isBlock)
 				{
-					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+					coord4D = Coord4D.read(dataStream);
 				}
 			}
 			else if(packetType == ElectricChestPacketType.LOCK)
@@ -298,7 +283,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 
 				if(isBlock)
 				{
-					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+					coord4D = Coord4D.read(dataStream);
 				}
 			}
 		}

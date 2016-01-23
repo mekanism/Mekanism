@@ -79,25 +79,21 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	
 			Mekanism.packetHandler.sendTo(new SimpleGuiMessage(obj, id, window), playerMP);
 	
-			playerMP.openContainer = Mekanism.proxy.getServerGui(id, playerMP, world, obj.xCoord, obj.yCoord, obj.zCoord);
+			playerMP.openContainer = Mekanism.proxy.getServerGui(id, playerMP, world, obj);
 			playerMP.openContainer.windowId = window;
-			playerMP.openContainer.addCraftingToCrafters(playerMP);
+			playerMP.openContainer.onCraftGuiOpened(playerMP);
 		}
 	
 		@SideOnly(Side.CLIENT)
 		public static GuiScreen getGui(int id, EntityPlayer player, World world, Coord4D obj)
 		{
-			return (GuiScreen)Mekanism.proxy.getClientGui(id, player, world, obj.xCoord, obj.yCoord, obj.zCoord);
+			return (GuiScreen)Mekanism.proxy.getClientGui(id, player, world, obj);
 		}
 	
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-	
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 	
 			dataStream.writeInt(guiId);
 			dataStream.writeInt(windowId);
@@ -106,7 +102,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 	
 			guiId = dataStream.readInt();
 			windowId = dataStream.readInt();

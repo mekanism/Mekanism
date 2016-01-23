@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.List;
 
@@ -105,14 +105,14 @@ public class ItemBalloon extends ItemMekanism
 				return true;
 			}
 
-			Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
+			Coord4D obj = new Coord4D(x, y, z, world.provider.getDimensionId());
 
 			if(obj.getBlock(world).isReplaceable(world, x, y, z))
 			{
 				obj.yCoord--;
 			}
 			
-			if(!world.isSideSolid(x, y, z, ForgeDirection.UP))
+			if(!world.isSideSolid(x, y, z, EnumFacing.UP))
 			{
 				return true;
 			}
@@ -178,8 +178,8 @@ public class ItemBalloon extends ItemMekanism
 		@Override
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
-			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.dimensionId);
-			ForgeDirection side = ForgeDirection.getOrientation(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
+			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.getDimensionId());
+			EnumFacing side = EnumFacing.getFront(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
 
 			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());
 			boolean latched = false;

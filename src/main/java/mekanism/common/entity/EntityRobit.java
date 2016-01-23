@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
@@ -86,6 +87,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		prevPosX = x;
 		prevPosY = y;
 		prevPosZ = z;
+	}
+
+	@Override
+	public PathNavigateGround getNavigator()
+	{
+		return (PathNavigateGround)navigator;
 	}
 
 	@Override
@@ -304,7 +311,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		setFollowing(false);
 
-		if(worldObj.provider.dimensionId != homeLocation.dimensionId)
+		if(worldObj.provider.getDimensionId() != homeLocation.dimensionId)
 		{
 			travelToDimension(homeLocation.dimensionId);
 		}
@@ -404,7 +411,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		ItemRobit item = (ItemRobit)entityItem.getEntityItem().getItem();
 		item.setEnergy(entityItem.getEntityItem(), getEnergy());
 		item.setInventory(getInventory(), entityItem.getEntityItem());
-		item.setName(entityItem.getEntityItem(), getCommandSenderName());
+		item.setName(entityItem.getEntityItem(), getName());
 
 		float k = 0.05F;
 		entityItem.motionX = 0;
@@ -723,7 +730,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-    public String getCommandSenderName()
+    public String getName()
 	{
 		return getName().isEmpty() ? "Robit" : getName();
 	}

@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import mekanism.api.Coord4D;
 import mekanism.common.util.PipeUtils;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -21,7 +21,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 		{
 			if((master != null) != prevMaster)
 			{
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				for(EnumFacing side : EnumFacing.VALUES)
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
 
@@ -37,14 +37,14 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	}
 	
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		TileEntitySolarEvaporationController controller = getController();
 		return controller == null ? 0 : controller.inputTank.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		TileEntitySolarEvaporationController controller = getController();
 		
@@ -57,7 +57,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		TileEntitySolarEvaporationController controller = getController();
 		
@@ -70,21 +70,21 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		TileEntitySolarEvaporationController controller = getController();
 		return controller != null && controller.hasRecipe(fluid);
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		TileEntitySolarEvaporationController controller = getController();
 		return controller != null && controller.outputTank.getFluidAmount() > 0;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		TileEntitySolarEvaporationController controller = getController();
 		

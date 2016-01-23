@@ -9,6 +9,7 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -58,7 +59,7 @@ public class RobitAIPickup extends EntityAIBase
 			return true;
 		}
 
-		List items = theRobit.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
+		List items = theRobit.worldObj.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
 		Iterator iter = items.iterator();
 		//Cached for slight performance
 		double closestDistance = -1;
@@ -95,7 +96,7 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
+		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.getDimensionId() == theRobit.worldObj.provider.getDimensionId();
 	}
 
 	@Override
@@ -132,16 +133,17 @@ public class RobitAIPickup extends EntityAIBase
 				if(theRobit.getDistanceSqToEntity(closest) >= 144.0D)
 				{
 					int x = MathHelper.floor_double(closest.posX) - 2;
-					int y = MathHelper.floor_double(closest.posZ) - 2;
-					int z = MathHelper.floor_double(closest.boundingBox.minY);
+					int y = MathHelper.floor_double(closest.getEntityBoundingBox().minY);
+					int z = MathHelper.floor_double(closest.posZ) - 2;
 
 					for(int l = 0; l <= 4; ++l)
 					{
 						for(int i1 = 0; i1 <= 4; ++i1)
 						{
-							if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(theWorld, x + l, z - 1, y + i1) && !theWorld.getBlock(x + l, z, y + i1).isNormalCube() && !theWorld.getBlock(x + l, z + 1, y + i1).isNormalCube())
+							BlockPos pos = new BlockPos(x+l, y, z+i1);
+							if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && World.doesBlockHaveSolidTopSurface(theWorld, pos.down()) && !theWorld.getBlockState(pos).getBlock().isNormalCube() && !theWorld.getBlockState(pos.up()).getBlock().isNormalCube())
 							{
-								theRobit.setLocationAndAngles((x + l) + 0.5F, z, (y + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
+								theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
 								thePathfinder.clearPathEntity();
 								return;
 							}

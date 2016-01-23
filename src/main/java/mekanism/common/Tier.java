@@ -2,7 +2,6 @@ package mekanism.common;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.EnumColor;
-import mekanism.common.multipart.TransmitterType;
 import mekanism.common.util.LangUtils;
 import net.minecraft.util.ResourceLocation;
 
@@ -233,6 +232,7 @@ public final class Tier
 	 * @author aidancbrady
 	 *
 	 */
+/*
 	public static enum CableTier
 	{
 		BASIC(3200, TransmitterType.UNIVERSAL_CABLE_BASIC),
@@ -286,11 +286,13 @@ public final class Tier
 		}
 	}
 
-	/**
+	*/
+/**
 	 * The tiers used by Mechanical Pipes and their corresponding values.
 	 * @author unpairedbracket
 	 *
-	 */
+	 *//*
+
 	public static enum PipeTier
 	{
 		BASIC(1000, 100, TransmitterType.MECHANICAL_PIPE_BASIC),
@@ -351,11 +353,13 @@ public final class Tier
 		}
 	}
 	
-	/**
+	*/
+/**
 	 * The tiers used by Pressurized Tubes and their corresponding values.
 	 * @author AidanBrady
 	 *
-	 */
+	 *//*
+
 	public static enum TubeTier
 	{
 		BASIC(256, 64, TransmitterType.PRESSURIZED_TUBE_BASIC),
@@ -416,11 +420,13 @@ public final class Tier
 		}
 	}
 	
-	/**
+	*/
+/**
 	 * The tiers used by Logistical Transporters and their corresponding values.
 	 * @author AidanBrady
 	 *
-	 */
+	 *//*
+
 	public static enum TransporterTier
 	{
 		BASIC(1, 5, TransmitterType.LOGISTICAL_TRANSPORTER_BASIC),
@@ -556,14 +562,17 @@ public final class Tier
 			tier.readConfig(dataStream);
 		}
 	}
-	
+*/
+
 	public static void writeConfig(ByteBuf dataStream)
 	{
+/*
 		for(CableTier tier : CableTier.values())
 		{
 			tier.writeConfig(dataStream);
 		}
-		
+*/
+
 		for(InductionCellTier tier : InductionCellTier.values())
 		{
 			tier.writeConfig(dataStream);
@@ -579,6 +588,7 @@ public final class Tier
 			tier.writeConfig(dataStream);
 		}
 		
+/*
 		for(PipeTier tier : PipeTier.values())
 		{
 			tier.writeConfig(dataStream);
@@ -593,5 +603,6 @@ public final class Tier
 		{
 			tier.writeConfig(dataStream);
 		}
+*/
 	}
 }

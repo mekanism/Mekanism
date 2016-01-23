@@ -7,7 +7,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -35,13 +35,13 @@ public class SharedInventory implements IStrictEnergyStorage, IFluidHandler, IGa
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return storedFluid.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(resource.isFluidEqual(storedFluid.getFluid()))
 		{
@@ -52,61 +52,61 @@ public class SharedInventory implements IStrictEnergyStorage, IFluidHandler, IGa
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		return storedFluid.drain(maxDrain, doDrain);
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		return storedFluid.getFluid() == null || fluid == storedFluid.getFluid().getFluid();
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return storedFluid.getFluid() == null || fluid == storedFluid.getFluid().getFluid();
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		return new FluidTankInfo[]{new FluidTankInfo(storedFluid)};
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		return storedGas.receive(stack, doTransfer);
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(EnumFacing side, GasStack stack)
 	{
 		return receiveGas(side, stack, true);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return storedGas.draw(amount, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(EnumFacing side, int amount)
 	{
 		return drawGas(side, amount, true);
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return storedGas.getGasType() == null || type == storedGas.getGasType();
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return storedGas.getGasType() == null || type == storedGas.getGasType();
 	}

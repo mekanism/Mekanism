@@ -6,16 +6,16 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class StackSearcher
 {
 	public int i;
 	public int[] slots;
 	public IInventory theInventory;
-	public ForgeDirection side;
+	public EnumFacing side;
 
-	public StackSearcher(IInventory inventory, ForgeDirection direction)
+	public StackSearcher(IInventory inventory, EnumFacing direction)
 	{
 		theInventory = InventoryUtils.checkChestInv(inventory);
 		side = direction;
@@ -25,7 +25,7 @@ public class StackSearcher
 		}
 		else
 		{
-			slots = ((ISidedInventory)theInventory).getAccessibleSlotsFromSide(side.getOpposite().ordinal());
+			slots = ((ISidedInventory)theInventory).getSlotsForFace(side.getOpposite().ordinal());
 			if(slots != null)
 			{
 				i = slots.length;
@@ -101,7 +101,7 @@ public class StackSearcher
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)theInventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(side.getOpposite().ordinal());
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite().ordinal());
 
 			if(slots != null && slots.length != 0)
 			{

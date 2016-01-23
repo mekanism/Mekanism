@@ -17,7 +17,7 @@ import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IEnergyWrapper;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -46,14 +46,14 @@ public final class CableUtils
 	 * @param sides - set of sides to check
 	 * @return boolean[] of adjacent connections
 	 */
-	public static boolean[] getConnections(TileEntity tileEntity, Set<ForgeDirection> sides)
+	public static boolean[] getConnections(TileEntity tileEntity, Set<EnumFacing> sides)
 	{
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		Coord4D coord = Coord4D.get(tileEntity);
 
-		for(ForgeDirection side : sides)
+		for(EnumFacing side : sides)
 		{
-			TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorldObj());
+			TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
 
 			connectable[side.ordinal()] = isValidAcceptorOnSide(tileEntity, tile, side);
 			connectable[side.ordinal()] |= isCable(tile);
@@ -68,7 +68,7 @@ public final class CableUtils
 	 * @param side - side to check
 	 * @return boolean whether the acceptor is valid
 	 */
-	public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, ForgeDirection side)
+	public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, EnumFacing side)
 	{
 		if(isCable(tile))
 		{
@@ -92,9 +92,9 @@ public final class CableUtils
 	{
 		TileEntity[] outputters = new TileEntity[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
-			TileEntity outputter = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity outputter = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(isOutputter(outputter, orientation))
 			{
@@ -105,14 +105,14 @@ public final class CableUtils
 		return outputters;
 	}
 
-	public static boolean isOutputter(TileEntity tileEntity, ForgeDirection side)
+	public static boolean isOutputter(TileEntity tileEntity, EnumFacing side)
 	{
 		return (tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite())) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()));
 	}
 
-	public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, ForgeDirection side)
+	public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, EnumFacing side)
 	{
 		if(tileEntity instanceof ITransmitterTile)
 		{
@@ -153,16 +153,16 @@ public final class CableUtils
 
 	public static void emit(IEnergyWrapper emitter)
 	{
-		if(!((TileEntity)emitter).getWorldObj().isRemote && MekanismUtils.canFunction((TileEntity)emitter))
+		if(!((TileEntity)emitter).getWorld().isRemote && MekanismUtils.canFunction((TileEntity)emitter))
 		{
 			double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 
 			if(energyToSend > 0)
 			{
-				List<ForgeDirection> outputtingSides = new ArrayList<ForgeDirection>();
+				List<EnumFacing> outputtingSides = new ArrayList<EnumFacing>();
 				boolean[] connectable = getConnections((TileEntity)emitter, emitter.getOutputtingSides());
 
-				for(ForgeDirection side : emitter.getOutputtingSides())
+				for(EnumFacing side : emitter.getOutputtingSides())
 				{
 					if(connectable[side.ordinal()])
 					{
@@ -191,17 +191,17 @@ public final class CableUtils
 		}
 	}
 
-	private static double emit_do(IEnergyWrapper emitter, List<ForgeDirection> outputtingSides, double totalToSend, boolean tryAgain)
+	private static double emit_do(IEnergyWrapper emitter, List<EnumFacing> outputtingSides, double totalToSend, boolean tryAgain)
 	{
 		double remains = totalToSend%outputtingSides.size();
 		double splitSend = (totalToSend-remains)/outputtingSides.size();
 		double sent = 0;
 
-		List<ForgeDirection> toRemove = new ArrayList<ForgeDirection>();
+		List<EnumFacing> toRemove = new ArrayList<EnumFacing>();
 
-		for(ForgeDirection side : outputtingSides)
+		for(EnumFacing side : outputtingSides)
 		{
-			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).offset(side).getTileEntity(((TileEntity)emitter).getWorldObj());
+			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).offset(side).getTileEntity(((TileEntity)emitter).getWorld());
 			double toSend = splitSend+remains;
 			remains = 0;
 
@@ -214,7 +214,7 @@ public final class CableUtils
 			}
 		}
 
-		for(ForgeDirection side : toRemove)
+		for(EnumFacing side : toRemove)
 		{
 			outputtingSides.remove(side);
 		}
@@ -222,7 +222,7 @@ public final class CableUtils
 		return sent;
 	}
 
-	private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, ForgeDirection side, double currentSending, boolean tryAgain)
+	private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending, boolean tryAgain)
 	{
 		double sent = 0;
 

@@ -18,7 +18,7 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -97,15 +97,15 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return EnumSet.noneOf(EnumFacing.class);
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return EnumSet.of(EnumFacing.getFront(facing));
 	}
 
 	/**

@@ -11,7 +11,7 @@ import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenDesert;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -36,7 +36,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		return new int[] {0};
 	}
@@ -183,9 +183,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(0));
+		return EnumSet.of(EnumFacing.getFront(0));
 	}
 
 	@Override

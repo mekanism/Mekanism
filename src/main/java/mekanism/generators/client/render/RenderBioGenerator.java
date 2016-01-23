@@ -14,7 +14,7 @@ import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -25,7 +25,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 {
 	private ModelBioGenerator model = new ModelBioGenerator();
 
-	private Map<ForgeDirection, DisplayInteger[]> energyDisplays = new HashMap<ForgeDirection, DisplayInteger[]>();
+	private Map<EnumFacing, DisplayInteger[]> energyDisplays = new HashMap<EnumFacing, DisplayInteger[]>();
 
 	private static final int stages = 40;
 
@@ -55,7 +55,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 			MekanismRenderer.glowOn();
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getDisplayList(ForgeDirection.getOrientation(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
+			getDisplayList(EnumFacing.getFront(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
 			MekanismRenderer.glowOff();
 
 			pop();
@@ -63,7 +63,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private DisplayInteger[] getDisplayList(ForgeDirection side)
+	private DisplayInteger[] getDisplayList(EnumFacing side)
 	{
 		if(energyDisplays.containsKey(side))
 		{

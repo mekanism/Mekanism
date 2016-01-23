@@ -1,6 +1,6 @@
 package li.cil.oc.api.internal;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * This interface is implemented by the computer case and robot tile entities

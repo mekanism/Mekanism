@@ -60,27 +60,27 @@ public class ThreadMinerSearch extends Thread
 			}
 
 			try {
-				if(tileEntity.xCoord == x && tileEntity.yCoord == y && tileEntity.zCoord == z)
+				if(tileEntity.getPos().getX() == x && tileEntity.getPos().getY() == y && tileEntity.getPos().getZ() == z)
 				{
 					continue;
 				}
 	
-				if(!tileEntity.getWorldObj().getChunkProvider().chunkExists(x >> 4, z >> 4))
+				if(!tileEntity.getWorld().getChunkProvider().chunkExists(x >> 4, z >> 4))
 				{
 					continue;
 				}
 	
-				TileEntity tile = tileEntity.getWorldObj().getTileEntity(x, y, z);
+				TileEntity tile = tileEntity.getWorld().getTileEntity(x, y, z);
 				
 				if(tile instanceof TileEntityBoundingBlock)
 				{
 					continue;
 				}
 	
-				info.block = tileEntity.getWorldObj().getBlock(x, y, z);
-				info.meta = tileEntity.getWorldObj().getBlockMetadata(x, y, z);
+				info.block = tileEntity.getWorld().getBlock(x, y, z);
+				info.meta = tileEntity.getWorld().getBlockMetadata(x, y, z);
 	
-				if(info.block != null && !tileEntity.getWorldObj().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorldObj(), x, y, z) >= 0)
+				if(info.block != null && !tileEntity.getWorld().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorld(), x, y, z) >= 0)
 				{
 					MinerFilter filterFound = null;
 					boolean canFilter = false;
@@ -113,7 +113,7 @@ public class ThreadMinerSearch extends Thread
 	
 					if(canFilter)
 					{
-						set(i, new Coord4D(x, y, z, tileEntity.getWorldObj().provider.dimensionId));
+						set(i, new Coord4D(x, y, z, tileEntity.getWorld().provider.getDimensionId()));
 						replaceMap.put(i, filterFound);
 						
 						found++;

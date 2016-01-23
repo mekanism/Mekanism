@@ -34,7 +34,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.*;
 
@@ -264,7 +264,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		return new int[] {0};
 	}
@@ -413,7 +413,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
 
-		if(entity.worldObj.provider.dimensionId != coord.dimensionId)
+		if(entity.worldObj.provider.getDimensionId() != coord.dimensionId)
 		{
 			entity.worldObj.removeEntity(entity);
 			entity.isDead = false;
@@ -439,11 +439,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
     public static void alignPlayer(EntityPlayerMP player, Coord4D coord)
     {
-        Coord4D upperCoord = coord.offset(ForgeDirection.UP);
-        ForgeDirection side = null;
+        Coord4D upperCoord = coord.offset(EnumFacing.UP);
+        EnumFacing side = null;
         float yaw = player.rotationYaw;
 
-        for(ForgeDirection iterSide : MekanismUtils.SIDE_DIRS)
+        for(EnumFacing iterSide : MekanismUtils.SIDE_DIRS)
         {
             if(upperCoord.offset(iterSide).isAirBlock(player.worldObj))
             {
@@ -494,7 +494,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		int energyCost = 1000;
 
-		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
+		if(entity.worldObj.provider.getDimensionId() != coords.dimensionId)
 		{
 			energyCost+=10000;
 		}

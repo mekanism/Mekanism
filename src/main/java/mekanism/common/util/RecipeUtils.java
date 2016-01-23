@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeUtils 
@@ -177,7 +178,7 @@ public class RecipeUtils
 
 				if(itemstack != null && MachineType.get(itemstack) != null && MachineType.get(itemstack).supportsUpgrades)
 				{
-					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.stackTagCompound);
+					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.getTagCompound());
 					
 					for(Map.Entry<Upgrade, Integer> entry : stackMap.entrySet())
 					{
@@ -191,12 +192,12 @@ public class RecipeUtils
 				}
 			}
 			
-			if(toReturn.stackTagCompound == null)
+			if(toReturn.getTagCompound() == null)
 			{
 				toReturn.setTagCompound(new NBTTagCompound());
 			}
 			
-			Upgrade.saveMap(upgrades, toReturn.stackTagCompound);
+			Upgrade.saveMap(upgrades, toReturn.getTagCompound());
 		}
 
 		return toReturn;
@@ -223,18 +224,18 @@ public class RecipeUtils
 		}
 		else if(nbtTags.hasKey("itemname"))
 		{
-			Object obj = Item.itemRegistry.getObject(nbtTags.getString("itemname"));
+			Object obj = Item.itemRegistry.getObject(new ResourceLocation(nbtTags.getString("itemname")));
 			
-			if(obj instanceof Item)
+			if(obj != null)
 			{
 				return new ItemStack((Item)obj, amount, meta);
 			}
 		}
 		else if(nbtTags.hasKey("blockname"))
 		{
-			Object obj = Block.blockRegistry.getObject(nbtTags.getString("blockname"));
+			Object obj = Block.blockRegistry.getObject(new ResourceLocation(nbtTags.getString("blockname")));
 			
-			if(obj instanceof Block)
+			if(obj != null)
 			{
 				return new ItemStack((Block)obj, amount, meta);
 			}

@@ -32,24 +32,24 @@ import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_3;
 @ObjectHolder("Mekanism")
 public class MekanismBlocks
 {
-	public static final Block BasicBlock = new BlockBasic(BASIC_BLOCK_1).setBlockName("BasicBlock");
-	public static final Block BasicBlock2 = new BlockBasic(BASIC_BLOCK_2).setBlockName("BasicBlock2");
-	public static final Block MachineBlock = new BlockMachine(MACHINE_BLOCK_1).setBlockName("MachineBlock");
-	public static final Block MachineBlock2 = new BlockMachine(MACHINE_BLOCK_2).setBlockName("MachineBlock2");
-	public static final Block MachineBlock3 = new BlockMachine(MACHINE_BLOCK_3).setBlockName("MachineBlock3");
-	public static final Block OreBlock = new BlockOre().setBlockName("OreBlock");
-	public static final Block ObsidianTNT = new BlockObsidianTNT().setBlockName("ObsidianTNT").setCreativeTab(Mekanism.tabMekanism);
-	public static final Block EnergyCube = new BlockEnergyCube().setBlockName("EnergyCube");
-	public static final Block BoundingBlock = (BlockBounding)new BlockBounding().setBlockName("BoundingBlock");
-	public static final Block GasTank = new BlockGasTank().setBlockName("GasTank");
-	public static final Block CardboardBox = new BlockCardboardBox().setBlockName("CardboardBox");
-	public static final Block PlasticBlock = new BlockPlastic().setBlockName("PlasticBlock");
-	public static final Block SlickPlasticBlock = new BlockPlastic().setBlockName("SlickPlasticBlock");
-	public static final Block GlowPlasticBlock = new BlockPlastic().setBlockName("GlowPlasticBlock");
-	public static final Block ReinforcedPlasticBlock = new BlockPlastic().setBlockName("ReinforcedPlasticBlock");
-	public static final Block RoadPlasticBlock = new BlockPlastic().setBlockName("RoadPlasticBlock");
-	public static final Block PlasticFence = new BlockPlasticFence().setBlockName("PlasticFence");
-	public static final Block SaltBlock = new BlockSalt().setBlockName("SaltBlock");
+	public static final Block BasicBlock = new BlockBasic(BASIC_BLOCK_1).setUnlocalizedName("BasicBlock");
+	public static final Block BasicBlock2 = new BlockBasic(BASIC_BLOCK_2).setUnlocalizedName("BasicBlock2");
+	public static final Block MachineBlock = new BlockMachine(MACHINE_BLOCK_1).setUnlocalizedName("MachineBlock");
+	public static final Block MachineBlock2 = new BlockMachine(MACHINE_BLOCK_2).setUnlocalizedName("MachineBlock2");
+	public static final Block MachineBlock3 = new BlockMachine(MACHINE_BLOCK_3).setUnlocalizedName("MachineBlock3");
+	public static final Block OreBlock = new BlockOre().setUnlocalizedName("OreBlock");
+	public static final Block ObsidianTNT = new BlockObsidianTNT().setUnlocalizedName("ObsidianTNT").setCreativeTab(Mekanism.tabMekanism);
+	public static final Block EnergyCube = new BlockEnergyCube().setUnlocalizedName("EnergyCube");
+	public static final Block BoundingBlock = (BlockBounding)new BlockBounding().setUnlocalizedName("BoundingBlock");
+	public static final Block GasTank = new BlockGasTank().setUnlocalizedName("GasTank");
+	public static final Block CardboardBox = new BlockCardboardBox().setUnlocalizedName("CardboardBox");
+	public static final Block PlasticBlock = new BlockPlastic().setUnlocalizedName("PlasticBlock");
+	public static final Block SlickPlasticBlock = new BlockPlastic().setUnlocalizedName("SlickPlasticBlock");
+	public static final Block GlowPlasticBlock = new BlockPlastic().setUnlocalizedName("GlowPlasticBlock");
+	public static final Block ReinforcedPlasticBlock = new BlockPlastic().setUnlocalizedName("ReinforcedPlasticBlock");
+	public static final Block RoadPlasticBlock = new BlockPlastic().setUnlocalizedName("RoadPlasticBlock");
+	public static final Block PlasticFence = new BlockPlasticFence().setUnlocalizedName("PlasticFence");
+	public static final Block SaltBlock = new BlockSalt().setUnlocalizedName("SaltBlock");
 
 	/**
 	 * Adds and registers all blocks.

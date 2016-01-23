@@ -21,7 +21,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -92,7 +92,7 @@ public class GuiTransporterConfig extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
+			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getFront(i));
 
 			if(color != null)
 			{
@@ -144,7 +144,7 @@ public class GuiTransporterConfig extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
+			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getFront(i));
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{

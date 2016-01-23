@@ -69,7 +69,7 @@ public class GuiElectricChest extends GuiMekanism
 		{
 			if(isBlock)
 			{
-				mc.thePlayer.openGui(Mekanism.instance, 20, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+				mc.thePlayer.openGui(Mekanism.instance, 20, mc.theWorld, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
 			}
 			else {
 				FMLClientHandler.instance().displayGuiScreen(mc.thePlayer, new GuiPasswordModify(mc.thePlayer.getCurrentEquippedItem()));

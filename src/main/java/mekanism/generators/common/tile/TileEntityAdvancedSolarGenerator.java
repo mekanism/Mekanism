@@ -8,7 +8,7 @@ import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, ISalinationSolar
 {
@@ -19,9 +19,9 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return EnumSet.of(EnumFacing.getFront(facing));
 	}
 
 	@Override

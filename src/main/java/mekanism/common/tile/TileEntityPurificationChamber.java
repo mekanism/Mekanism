@@ -18,7 +18,7 @@ import mekanism.common.recipe.machines.PurificationRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe>
 {
@@ -44,7 +44,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(stack.getGas() == GasRegistry.getGas("oxygen"))
 		{
@@ -55,7 +55,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return type == GasRegistry.getGas("oxygen");
 	}
@@ -74,7 +74,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		return true;
 	}

@@ -168,7 +168,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.gasCentrifugeUsage = dataStream.readDouble();
 			usage.heavyWaterElectrolysisUsage = dataStream.readDouble();
 			
-			Tier.readConfig(dataStream);
+			//TODO: Tier.readConfig(dataStream);
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)

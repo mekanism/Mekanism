@@ -14,7 +14,7 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -73,9 +73,9 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 		//Go to bottom rod
 		while(true)
 		{
-			if(isRod(pointer.getFromSide(ForgeDirection.DOWN)))
+			if(isRod(pointer.getFromSide(EnumFacing.DOWN)))
 			{
-				pointer.step(ForgeDirection.DOWN);
+				pointer.step(EnumFacing.DOWN);
 				continue;
 			}
 			
@@ -88,18 +88,18 @@ public class TileEntityTurbineRod extends TileEntityBasicBlock
 			newRods.add(pointer.clone());
 			newBlades += ((TileEntityTurbineRod)pointer.getTileEntity(worldObj)).getHousedBlades();
 			
-			if(isRod(pointer.getFromSide(ForgeDirection.UP)))
+			if(isRod(pointer.getFromSide(EnumFacing.UP)))
 			{
-				pointer.step(ForgeDirection.UP);
+				pointer.step(EnumFacing.UP);
 				continue;
 			}
 			
 			break;
 		}
 		
-		if(isComplex(pointer.getFromSide(ForgeDirection.UP)))
+		if(isComplex(pointer.getFromSide(EnumFacing.UP)))
 		{
-			id = ((TileEntityRotationalComplex)pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj)).multiblockUUID;
+			id = ((TileEntityRotationalComplex)pointer.getFromSide(EnumFacing.UP).getTileEntity(worldObj)).multiblockUUID;
 			complex = true;
 		}
 		

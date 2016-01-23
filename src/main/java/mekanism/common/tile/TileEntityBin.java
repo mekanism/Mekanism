@@ -24,7 +24,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Interface;
 import io.netty.buffer.ByteBuf;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
@@ -191,7 +191,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				if(bottomStack != null && isActive)
 				{
-					TileEntity tile = Coord4D.get(this).offset(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
+					TileEntity tile = Coord4D.get(this).offset(EnumFacing.getFront(0)).getTileEntity(worldObj);
 
 					if(tile instanceof ITransporterTile)
 					{
@@ -457,7 +457,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		if(side == 1)
 		{

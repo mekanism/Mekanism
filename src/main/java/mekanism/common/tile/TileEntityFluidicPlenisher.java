@@ -15,7 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public FluidTank fluidTank = new FluidTank(10000);
 	
-	private static EnumSet<ForgeDirection> dirs = EnumSet.complementOf(EnumSet.of(ForgeDirection.UP, ForgeDirection.UNKNOWN));
+	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP, EnumFacing.null));
 	private static int MAX_NODES = 4000;
 	
 	public TileEntityFluidicPlenisher()
@@ -129,7 +129,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						doPlenish();
 					}
 					else {
-						Coord4D below = Coord4D.get(this).offset(ForgeDirection.DOWN);
+						Coord4D below = Coord4D.get(this).offset(EnumFacing.DOWN);
 						
 						if(canReplace(below, false, false) && getEnergy() >= usage.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
@@ -159,7 +159,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			if(usedNodes.isEmpty())
 			{
-				Coord4D below = Coord4D.get(this).offset(ForgeDirection.DOWN);
+				Coord4D below = Coord4D.get(this).offset(EnumFacing.DOWN);
 				
 				if(!canReplace(below, true, true))
 				{
@@ -190,7 +190,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 
 				}
 				
-				for(ForgeDirection dir : dirs)
+				for(EnumFacing dir : dirs)
 				{
 					Coord4D sideCoord = coord.offset(dir);
 					
@@ -385,9 +385,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
 	}
 
 	@Override
@@ -397,7 +397,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		if(side == 1)
 		{
@@ -413,9 +413,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	public FluidTankInfo[] getTankInfo(EnumFacing direction)
 	{
-		if(direction == ForgeDirection.UP)
+		if(direction == EnumFacing.UP)
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
@@ -442,9 +442,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.UP)
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.UP)
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -453,9 +453,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(from == ForgeDirection.UP && resource.getFluid().canBePlacedInWorld())
+		if(from == EnumFacing.UP && resource.getFluid().canBePlacedInWorld())
 		{
 			return fluidTank.fill(resource, true);
 		}
@@ -464,19 +464,19 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return from == ForgeDirection.UP && fluid.canBePlacedInWorld();
+		return from == EnumFacing.UP && fluid.canBePlacedInWorld();
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return false;
 	}

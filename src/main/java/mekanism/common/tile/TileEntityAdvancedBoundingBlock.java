@@ -16,7 +16,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -157,7 +157,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int slotID)
+	public int[] getSlotsForFace(int slotID)
 	{
 		if(getInv() == null)
 		{
@@ -186,7 +186,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
 	{
 		if(getInv() == null)
 		{
@@ -198,7 +198,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHCore")
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(getInv() == null)
 		{
@@ -210,7 +210,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHCore")
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getInv() == null)
 		{
@@ -222,7 +222,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHCore")
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy(EnumFacing from)
 	{
 		if(getInv() == null)
 		{
@@ -234,7 +234,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHCore")
-	public int getEnergyStored(ForgeDirection from)
+	public int getEnergyStored(EnumFacing from)
 	{
 		if(getInv() == null)
 		{
@@ -246,7 +246,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHCore")
-	public int getMaxEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored(EnumFacing from)
 	{
 		if(getInv() == null)
 		{
@@ -290,7 +290,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
 		if(getInv() == null)
 		{
@@ -301,7 +301,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
+	public boolean canReceiveEnergy(EnumFacing side)
 	{
 		if(getInv() == null)
 		{
@@ -325,7 +325,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "IC2")
-	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
+	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage)
 	{
 		if(getInv() == null)
 		{
@@ -354,7 +354,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 		
-		TileEntity tile = new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		TileEntity tile = new Coord4D(mainX, mainY, mainZ, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
@@ -362,7 +362,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
 	}
 
 	@Override

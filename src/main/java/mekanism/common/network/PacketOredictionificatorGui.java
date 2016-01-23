@@ -19,6 +19,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -49,11 +50,11 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 				try {
 					if(message.packetType == OredictionificatorGuiPacket.CLIENT)
 					{
-						FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.xCoord, message.coord4D.yCoord, message.coord4D.zCoord, -1));
+						FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D, -1));
 					}
 					else if(message.packetType == OredictionificatorGuiPacket.CLIENT_INDEX)
 					{
-						FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.xCoord, message.coord4D.yCoord, message.coord4D.zCoord, message.index));
+						FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D, message.index));
 					}
 
 					player.openContainer.windowId = message.windowId;
@@ -131,7 +132,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 	
 			playerMP.openContainer = container;
 			playerMP.openContainer.windowId = window;
-			playerMP.openContainer.addCraftingToCrafters(playerMP);
+			playerMP.openContainer.onCraftGuiOpened(playerMP);
 	
 			if(guiType == 0)
 			{
@@ -145,25 +146,25 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 		}
 	
 		@SideOnly(Side.CLIENT)
-		public static GuiScreen getGui(OredictionificatorGuiPacket packetType, int type, EntityPlayer player, World world, int x, int y, int z, int index)
+		public static GuiScreen getGui(OredictionificatorGuiPacket packetType, int type, EntityPlayer player, World world, BlockPos pos, int index)
 		{
 			if(type == 0)
 			{
-				return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator)world.getTileEntity(x, y, z));
+				return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator)world.getTileEntity(pos));
 			}
 			else {
 				if(packetType == OredictionificatorGuiPacket.CLIENT)
 				{
 					if(type == 1)
 					{
-						return new GuiOredictionificatorFilter(player, (TileEntityOredictionificator)world.getTileEntity(x, y, z));
+						return new GuiOredictionificatorFilter(player, (TileEntityOredictionificator)world.getTileEntity(pos));
 					}
 				}
 				else if(packetType == OredictionificatorGuiPacket.CLIENT_INDEX)
 				{
 					if(type == 1)
 					{
-						return new GuiOredictionificatorFilter(player, (TileEntityOredictionificator)world.getTileEntity(x, y, z), index);
+						return new GuiOredictionificatorFilter(player, (TileEntityOredictionificator)world.getTileEntity(pos), index);
 					}
 				}
 			}
@@ -176,11 +177,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 		{
 			dataStream.writeInt(packetType.ordinal());
 	
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-	
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 	
 			dataStream.writeInt(guiType);
 	
@@ -200,7 +197,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 		{
 			packetType = OredictionificatorGuiPacket.values()[dataStream.readInt()];
 	
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 	
 			guiType = dataStream.readInt();
 	

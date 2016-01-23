@@ -46,10 +46,7 @@ public class PacketContainerEditMode implements IMessageHandler<ContainerEditMod
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 	
 			dataStream.writeInt(value.ordinal());
 		}

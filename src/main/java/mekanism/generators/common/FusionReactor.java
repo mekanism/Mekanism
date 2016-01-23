@@ -29,7 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -349,7 +349,7 @@ public class FusionReactor implements IFusionReactor
 		
 		if(!controller.getWorldObj().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.dimensionId);
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.getDimensionId());
 		}
 	}
 
@@ -359,7 +359,7 @@ public class FusionReactor implements IFusionReactor
 		updatedThisTick = true;
 
 		Coord4D controllerPosition = Coord4D.get(controller);
-		Coord4D centreOfReactor = controllerPosition.offset(ForgeDirection.DOWN, 2);
+		Coord4D centreOfReactor = controllerPosition.offset(EnumFacing.DOWN, 2);
 
 		unformMultiblock(true);
 
@@ -387,7 +387,7 @@ public class FusionReactor implements IFusionReactor
 		
 		if(!controller.getWorldObj().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.dimensionId);
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.getDimensionId());
 		}
 	}
 
@@ -584,7 +584,7 @@ public class FusionReactor implements IFusionReactor
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side)
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return 100000;
 	}
@@ -611,13 +611,13 @@ public class FusionReactor implements IFusionReactor
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side)
+	public boolean canConnectHeat(EnumFacing side)
 	{
 		return false;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side)
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		return null;
 	}

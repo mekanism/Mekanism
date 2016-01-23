@@ -16,7 +16,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileComponentConfig implements ITileComponent
 {
@@ -61,15 +61,15 @@ public class TileComponentConfig implements ITileComponent
 		canEject.put(type.ordinal(), true);
 	}
 	
-	public EnumSet<ForgeDirection> getSidesForData(TransmissionType type, int facing, int dataIndex)
+	public EnumSet<EnumFacing> getSidesForData(TransmissionType type, int facing, int dataIndex)
 	{
-		EnumSet<ForgeDirection> ret = EnumSet.noneOf(ForgeDirection.class);
+		EnumSet<EnumFacing> ret = EnumSet.noneOf(EnumFacing.class);
 		
 		for(byte b = 0; b < 6; b++)
 		{
 			if(getConfig(type)[b] == dataIndex)
 			{
-				ret.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(b, facing)));
+				ret.add(EnumFacing.getFront(MekanismUtils.getBaseOrientation(b, facing)));
 			}
 		}
 		

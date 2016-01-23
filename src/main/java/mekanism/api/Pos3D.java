@@ -146,7 +146,7 @@ public class Pos3D extends Vec3
 	}
 
 	/**
-	 * Performs the same operation as translate(x, y, z), but by a set amount in a ForgeDirection
+	 * Performs the same operation as translate(x, y, z), but by a set amount in a EnumFacing
 	 */
 	public Pos3D translate(EnumFacing direction, double amount)
 	{
@@ -154,7 +154,7 @@ public class Pos3D extends Vec3
 	}
 
 	/**
-	 * Performs the same operation as translate(x, y, z), but by a set amount in a ForgeDirection
+	 * Performs the same operation as translate(x, y, z), but by a set amount in a EnumFacing
 	 */
 	public Pos3D translateExcludingSide(EnumFacing direction, double amount)
 	{

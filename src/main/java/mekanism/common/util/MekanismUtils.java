@@ -31,6 +31,8 @@ import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityElectricChest;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -41,14 +43,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -69,7 +74,7 @@ import java.util.*;
  */
 public final class MekanismUtils
 {
-	public static final ForgeDirection[] SIDE_DIRS = new ForgeDirection[] {ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST};
+	public static final EnumFacing[] SIDE_DIRS = new EnumFacing[] {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
 
 	public static final Map<String, Class<?>> classesFound = new HashMap<String, Class<?>>();
 
@@ -258,7 +263,7 @@ public final class MekanismUtils
 	public static void doFakeEntityExplosion(EntityPlayer entityplayer)
 	{
 		World world = entityplayer.worldObj;
-		world.spawnParticle("hugeexplosion", entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
+		world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
 		world.playSoundAtEntity(entityplayer, "random.explode", 1.0F, 1.0F);
 	}
 
@@ -271,7 +276,7 @@ public final class MekanismUtils
 	 */
 	public static void doFakeBlockExplosion(World world, int x, int y, int z)
 	{
-		world.spawnParticle("hugeexplosion", x, y, z, 0.0D, 0.0D, 0.0D);
+		world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, x, y, z, 0.0D, 0.0D, 0.0D);
 		world.playSound(x, y, z, "random.explode", 1.0F, 1.0F, true);
 	}
 
@@ -364,14 +369,12 @@ public final class MekanismUtils
 	/**
 	 * Checks if a machine is in it's active state.
 	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param pos
 	 * @return if machine is active
 	 */
-	public static boolean isActive(IBlockAccess world, int x, int y, int z)
+	public static boolean isActive(IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tileEntity = (TileEntity)world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if(tileEntity != null)
 		{
@@ -389,19 +392,10 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return left side
 	 */
-	public static ForgeDirection getLeft(int orientation)
+	@Deprecated
+	public static EnumFacing getLeft(EnumFacing orientation)
 	{
-		switch(orientation)
-		{
-			case 2:
-				return ForgeDirection.EAST;
-			case 3:
-				return ForgeDirection.WEST;
-			case 4:
-				return ForgeDirection.NORTH;
-			default:
-				return ForgeDirection.SOUTH;
-		}
+		return orientation.rotateY();
 	}
 
 	/**
@@ -409,9 +403,10 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return right side
 	 */
-	public static ForgeDirection getRight(int orientation)
+	@Deprecated
+	public static EnumFacing getRight(EnumFacing orientation)
 	{
-		return getLeft(orientation).getOpposite();
+		return orientation.rotateYCCW();
 	}
 
 	/**
@@ -419,9 +414,10 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return opposite side
 	 */
-	public static ForgeDirection getBack(int orientation)
+	@Deprecated
+	public static EnumFacing getBack(EnumFacing orientation)
 	{
-		return ForgeDirection.getOrientation(orientation).getOpposite();
+		return orientation.getOpposite();
 	}
 
 	/**
@@ -461,43 +457,43 @@ public final class MekanismUtils
 	 * @param blockFacing - what orientation the block is facing
 	 * @return machine orientation
 	 */
-	public static int getBaseOrientation(int side, int blockFacing)
+	public static EnumFacing getBaseOrientation(EnumFacing side, EnumFacing blockFacing)
 	{
-		if(blockFacing == 3 || side == 1 || side == 0)
+		if(blockFacing == EnumFacing.SOUTH || side.getAxis() == Axis.Y)
 		{
-			if(side == 2 || side == 3)
+			if(side.getAxis() == Axis.Z)
 			{
-				return ForgeDirection.getOrientation(side).getOpposite().ordinal();
+				return side.getOpposite();
 			}
 
 			return side;
 		}
-		else if(blockFacing == 2)
+		else if(blockFacing == EnumFacing.NORTH)
 		{
-			if(side == 2 || side == 3)
+			if(side.getAxis() == Axis.Z)
 			{
 				return side;
 			}
 
-			return ForgeDirection.getOrientation(side).getOpposite().ordinal();
+			return side.getOpposite();
 		}
-		else if(blockFacing == 4)
+		else if(blockFacing == EnumFacing.WEST)
 		{
-			if(side == 2 || side == 3)
+			if(side.getAxis() == Axis.Z)
 			{
-				return getRight(side).ordinal();
+				return getRight(side);
 			}
 
-			return getLeft(side).ordinal();
+			return getLeft(side);
 		}
-		else if(blockFacing == 5)
+		else if(blockFacing == EnumFacing.EAST)
 		{
-			if(side == 2 || side == 3)
+			if(side.getAxis() == Axis.Z)
 			{
-				return getLeft(side).ordinal();
+				return getLeft(side);
 			}
 
-			return getRight(side).ordinal();
+			return getRight(side);
 		}
 
 		return side;
@@ -625,7 +621,7 @@ public final class MekanismUtils
 	 */
 	public static double getMaxEnergy(ItemStack itemStack, double def)
 	{
-		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.stackTagCompound);
+		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.getTagCompound());
 		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
 		return def * Math.pow(general.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}
@@ -638,20 +634,21 @@ public final class MekanismUtils
 	 */
 	public static boolean isGettingPowered(World world, Coord4D coord)
 	{
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			Coord4D sideCoord = coord.offset(side);
 			
 			if(sideCoord.exists(world) && sideCoord.offset(side).exists(world))
 			{
-				Block block = sideCoord.getBlock(world);
-				boolean weakPower = block.shouldCheckWeakPower(world, coord.xCoord, coord.yCoord, coord.zCoord, side.ordinal());
+				IBlockState blockState = sideCoord.getBlockState(world);
+				Block block = blockState.getBlock();
+				boolean weakPower = block.shouldCheckWeakPower(world, coord, side);
 				
 				if(weakPower && isDirectlyGettingPowered(world, sideCoord))
 				{
 					return true;
 				}
-				else if(!weakPower && block.isProvidingWeakPower(world, sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.ordinal()) > 0)
+				else if(!weakPower && block.getWeakPower(world, sideCoord, blockState, side) > 0)
 				{
 					return true;
 				}
@@ -669,13 +666,13 @@ public final class MekanismUtils
 	 */
 	public static boolean isDirectlyGettingPowered(World world, Coord4D coord)
 	{
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			Coord4D sideCoord = coord.offset(side);
 			
 			if(sideCoord.exists(world))
 			{
-				if(world.isBlockProvidingPowerTo(coord.xCoord, coord.yCoord, coord.zCoord, side.ordinal()) > 0)
+				if(world.getRedstonePower(coord, side) > 0)
 				{
 					return true;
 				}
@@ -692,16 +689,16 @@ public final class MekanismUtils
 	 */
 	public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord)
 	{
-		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing dir : EnumFacing.VALUES)
 		{
 			Coord4D offset = coord.offset(dir);
 
 			if(offset.exists(world))
 			{
 				Block block1 = offset.getBlock(world);
-				block1.onNeighborChange(world, offset.xCoord, offset.yCoord, offset.zCoord, coord.xCoord, coord.yCoord, coord.zCoord);
+				block1.onNeighborChange(world, offset, coord);
 				
-				if(block1.isNormalCube(world, offset.xCoord, offset.yCoord, offset.zCoord))
+				if(block1.isNormalCube(world, offset))
 				{
 					offset = offset.offset(dir);
 					
@@ -709,9 +706,9 @@ public final class MekanismUtils
 					{
 						block1 = offset.getBlock(world);
 
-						if(block1.getWeakChanges(world, offset.xCoord, offset.yCoord, offset.zCoord))
+						if(block1.getWeakChanges(world, offset))
 						{
-							block1.onNeighborChange(world, offset.xCoord, offset.yCoord, offset.zCoord, coord.xCoord, coord.yCoord, coord.zCoord);
+							block1.onNeighborChange(world, offset, coord);
 						}
 					}
 				}
@@ -727,11 +724,11 @@ public final class MekanismUtils
 	 */
 	public static void makeBoundingBlock(World world, Coord4D boundingLocation, Coord4D orig)
 	{
-		world.setBlock(boundingLocation.xCoord, boundingLocation.yCoord, boundingLocation.zCoord, MekanismBlocks.BoundingBlock);
+		world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getDefaultState());
 
 		if(!world.isRemote)
 		{
-			((TileEntityBoundingBlock)boundingLocation.getTileEntity(world)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+			((TileEntityBoundingBlock)boundingLocation.getTileEntity(world)).setMainLocation(orig);
 		}
 	}
 
@@ -743,30 +740,27 @@ public final class MekanismUtils
 	 */
 	public static void makeAdvancedBoundingBlock(World world, Coord4D boundingLocation, Coord4D orig)
 	{
-		world.setBlock(boundingLocation.xCoord, boundingLocation.yCoord, boundingLocation.zCoord, MekanismBlocks.BoundingBlock, 1, 0);
+		world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(1), 0);
 
 		if(!world.isRemote)
 		{
-			((TileEntityAdvancedBoundingBlock)boundingLocation.getTileEntity(world)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+			((TileEntityAdvancedBoundingBlock)boundingLocation.getTileEntity(world)).setMainLocation(orig);
 		}
 	}
 
 	/**
 	 * Updates a block's light value and marks it for a render update.
 	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos
 	 */
-	public static void updateBlock(World world, int x, int y, int z)
+	public static void updateBlock(World world, BlockPos pos)
 	{
-		Coord4D pos = new Coord4D(x, y, z);
-		if(!(pos.getTileEntity(world) instanceof IActiveState) || ((IActiveState)pos.getTileEntity(world)).renderUpdate())
+		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).renderUpdate())
 		{
-			world.func_147479_m(pos.xCoord, pos.yCoord, pos.zCoord);
+			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
 
-		if(!(pos.getTileEntity(world) instanceof IActiveState) || ((IActiveState)pos.getTileEntity(world)).lightUpdate() && client.machineEffects)
+		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).lightUpdate() && client.machineEffects)
 		{
 			updateAllLightTypes(world, pos);
 		}
@@ -777,10 +771,10 @@ public final class MekanismUtils
 	 * @param world - the world to perform the lighting update in
 	 * @param pos - coordinates of the block to update
 	 */
-	public static void updateAllLightTypes(World world, Coord4D pos)
+	public static void updateAllLightTypes(World world, BlockPos pos)
 	{
-		world.updateLightByType(EnumSkyBlock.Block, pos.xCoord, pos.yCoord, pos.zCoord);
-		world.updateLightByType(EnumSkyBlock.Sky, pos.xCoord, pos.yCoord, pos.zCoord);
+		world.checkLightFor(EnumSkyBlock.BLOCK, pos);
+		world.checkLightFor(EnumSkyBlock.SKY, pos);
 	}
 
 	/**
@@ -802,15 +796,15 @@ public final class MekanismUtils
 	 */
 	public static FluidStack getFluid(World world, Coord4D pos, boolean filter)
 	{
-		Block block = pos.getBlock(world);
-		int meta = pos.getBlockState(world);
+		IBlockState state = pos.getBlockState(world);
+		Block block = state.getBlock();
 
 		if(block == null)
 		{
 			return null;
 		}
 
-		if((block == Blocks.water || block == Blocks.flowing_water) && meta == 0)
+		if((block == Blocks.water || block == Blocks.flowing_water) && state.getValue(BlockLiquid.LEVEL) == 0)
 		{
 			if(!filter)
 			{
@@ -820,7 +814,7 @@ public final class MekanismUtils
 				return new FluidStack(FluidRegistry.getFluid("heavywater"), 10);
 			}
 		}
-		else if((block == Blocks.lava || block == Blocks.flowing_lava) && meta == 0)
+		else if((block == Blocks.lava || block == Blocks.flowing_lava) && state.getValue(BlockLiquid.LEVEL) == 0)
 		{
 			return new FluidStack(FluidRegistry.LAVA, FluidContainerRegistry.BUCKET_VOLUME);
 		}
@@ -828,9 +822,9 @@ public final class MekanismUtils
 		{
 			IFluidBlock fluid = (IFluidBlock)block;
 
-			if(meta == 0)
+			if(state.getProperties().containsKey(BlockFluidBase.LEVEL) && state.getValue(BlockFluidBase.LEVEL) == 0)
 			{
-				return fluid.drain(world, pos.xCoord, pos.yCoord, pos.zCoord, false);
+				return fluid.drain(world, pos, false);
 			}
 		}
 
@@ -845,23 +839,15 @@ public final class MekanismUtils
 	 */
 	public static boolean isDeadFluid(World world, Coord4D pos)
 	{
-		Block block = pos.getBlock(world);
-		int meta = pos.getBlockState(world);
+		IBlockState state = pos.getBlockState(world);
+		Block block = state.getBlock();
 
-		if(block == null || meta == 0)
+		if(block == null || block.getMetaFromState(state) == 0)
 		{
 			return false;
 		}
 
-		if((block == Blocks.water || block == Blocks.flowing_water))
-		{
-			return true;
-		}
-		else if((block == Blocks.lava || block == Blocks.flowing_lava))
-		{
-			return true;
-		}
-		else if(block instanceof IFluidBlock)
+		if(block instanceof BlockLiquid || block instanceof IFluidBlock)
 		{
 			return true;
 		}
@@ -917,7 +903,7 @@ public final class MekanismUtils
 
 		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
-		player.openContainer.addCraftingToCrafters(player);
+		player.openContainer.onCraftGuiOpened(player);
 	}
 
 	/**
@@ -1034,12 +1020,12 @@ public final class MekanismUtils
 	 */
 	public static void saveChunk(TileEntity tileEntity)
 	{
-		if(tileEntity == null || tileEntity.isInvalid() || tileEntity.getWorldObj() == null)
+		if(tileEntity == null || tileEntity.isInvalid() || tileEntity.getWorld() == null)
 		{
 			return;
 		}
 
-		tileEntity.getWorldObj().markTileEntityChunkModified(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity);
+		tileEntity.getWorld().markChunkDirty(tileEntity.getPos(), tileEntity);
 	}
 
 	/**
@@ -1096,19 +1082,21 @@ public final class MekanismUtils
 	 */
 	private static Vec3 getHeadVec(EntityPlayer player)
 	{
-		Vec3 vec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
+		double posX = player.posX;
+		double posY = player.posY;
+		double posZ = player.posZ;
 
 		if(!player.worldObj.isRemote)
 		{
-			vec.yCoord += player.getEyeHeight();
+			posY += player.getEyeHeight();
 
 			if(player instanceof EntityPlayerMP && player.isSneaking())
 			{
-				vec.yCoord -= 0.08;
+				posY -= 0.08;
 			}
 		}
 
-		return vec;
+		return new Vec3(posX, posY, posZ);
 	}
 
 	/**
@@ -1230,7 +1218,7 @@ public final class MekanismUtils
 	 */
 	public static String getCoordDisplay(Coord4D obj)
 	{
-		return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
+		return "[" + obj.getX() + ", " + obj.getY() + ", " + obj.getZ() + "]";
 	}
 
 	/**
@@ -1240,7 +1228,7 @@ public final class MekanismUtils
 	 */
 	public static List<String> splitLines(String s)
 	{
-		ArrayList ret = new ArrayList();
+		ArrayList<String> ret = new ArrayList<String>();
 
 		String[] split = s.split("!n");
 		ret.addAll(Arrays.asList(split));
@@ -1295,8 +1283,8 @@ public final class MekanismUtils
 		if((dmgItems[1] != null) && (dmgItems[0].getItem() == dmgItems[1].getItem()) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && dmgItems[0].getItem().isRepairable())
 		{
 			Item theItem = dmgItems[0].getItem();
-			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamageForDisplay();
-			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamageForDisplay();
+			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamage/*TODO:ForDisplay*/();
+			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamage/*TODO:ForDisplay*/();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
 			return new ItemStack(dmgItems[0].getItem(), 1, solve);
@@ -1338,7 +1326,7 @@ public final class MekanismUtils
 	 */
 	public static boolean isOp(EntityPlayerMP player)
 	{
-		return general.opsBypassRestrictions && player.mcServer.getConfigurationManager().func_152596_g(player.getGameProfile());
+		return general.opsBypassRestrictions && player.mcServer.getConfigurationManager().canSendCommands(player.getGameProfile());
 	}
 	
 	/**
@@ -1349,7 +1337,7 @@ public final class MekanismUtils
 	public static String getMod(ItemStack stack)
 	{
 		try {
-			ModContainer mod = GameData.findModOwner(GameData.getItemRegistry().getNameForObject(stack.getItem()));
+			ModContainer mod = null;//TODO:GameData.findModOwner(GameData.getItemRegistry().getNameForObject(stack.getItem()));
 			return mod == null ? "Minecraft" : mod.getName();
 		} catch(Exception e) {
 			return "null";

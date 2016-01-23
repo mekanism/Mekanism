@@ -180,10 +180,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			dataStream.writeInt(packetType.ordinal());
 	
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 			
 			PacketHandler.log("Sending '" + packetType + "' update message from coordinate " + coord4D);
 	
@@ -222,7 +219,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			packetType = PacketType.values()[dataStream.readInt()];
 			
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 
 			if(packetType == PacketType.UPDATE)
 			{

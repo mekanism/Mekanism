@@ -12,6 +12,7 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -207,8 +208,8 @@ public class CommandMekanism extends CommandBase
 
 				if (Mekanism.gameProfile != null)
 				{
-					minecraftserver.getConfigurationManager().func_152605_a(Mekanism.gameProfile);
-					func_152373_a(sender, this, "commands.op.success", new Object[] {"[Mekanism]"});
+					minecraftserver.getConfigurationManager().addOp(Mekanism.gameProfile);
+					notifyOperators(sender, this, "commands.op.success", new Object[] {"[Mekanism]"});
 				}
 			}
 			else if(params[0].equalsIgnoreCase("deop"))
@@ -217,8 +218,8 @@ public class CommandMekanism extends CommandBase
 
 				if (Mekanism.gameProfile != null)
 				{
-					minecraftserver.getConfigurationManager().func_152610_b(Mekanism.gameProfile);
-					func_152373_a(sender, this, "commands.deop.success", new Object[] {"[Mekanism]"});
+					minecraftserver.getConfigurationManager().removeOp(Mekanism.gameProfile);
+					notifyOperators(sender, this, "commands.deop.success", new Object[] {"[Mekanism]"});
 				}
 			}
 			else {
@@ -228,7 +229,7 @@ public class CommandMekanism extends CommandBase
 	}
 
 	@Override
-	public int compareTo(Object obj)
+	public int compareTo(ICommand obj)
 	{
 		return 0;
 	}

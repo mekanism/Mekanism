@@ -38,17 +38,17 @@ public class CommonPlayerTracker
 	@SubscribeEvent
 	public void onPlayerLogoutEvent(PlayerLoggedOutEvent event)
 	{
-		Mekanism.jetpackOn.remove(event.player.getCommandSenderName());
-		Mekanism.gasmaskOn.remove(event.player.getCommandSenderName());
-		Mekanism.flamethrowerActive.remove(event.player.getCommandSenderName());
+		Mekanism.jetpackOn.remove(event.player.getName());
+		Mekanism.gasmaskOn.remove(event.player.getName());
+		Mekanism.flamethrowerActive.remove(event.player.getName());
 	}
 
 	@SubscribeEvent
 	public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event)
 	{
-		Mekanism.jetpackOn.remove(event.player.getCommandSenderName());
-		Mekanism.gasmaskOn.remove(event.player.getCommandSenderName());
-		Mekanism.flamethrowerActive.remove(event.player.getCommandSenderName());
+		Mekanism.jetpackOn.remove(event.player.getName());
+		Mekanism.gasmaskOn.remove(event.player.getName());
+		Mekanism.flamethrowerActive.remove(event.player.getName());
 
 		if(!event.player.worldObj.isRemote)
 		{

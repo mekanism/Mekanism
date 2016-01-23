@@ -9,7 +9,7 @@
 package buildcraft.api.core.render;
 
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /*
  * This interface designates a block as a state machine responsible for culling

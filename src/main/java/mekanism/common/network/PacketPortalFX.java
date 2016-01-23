@@ -7,6 +7,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -24,8 +25,8 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 
 		for(int i = 0; i < 50; i++)
 		{
-			player.worldObj.spawnParticle("portal", message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-			player.worldObj.spawnParticle("portal", message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + 1 + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+			player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.getX() + random.nextFloat(), message.coord4D.getY() + random.nextFloat(), message.coord4D.getZ() + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+			player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.getX() + random.nextFloat(), message.coord4D.getY() + 1 + random.nextFloat(), message.coord4D.getZ() + random.nextFloat(), 0.0F, 0.0F, 0.0F);
 		}
 		
 		return null;
@@ -45,16 +46,13 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 		}
 	
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 		}
 	}
 }

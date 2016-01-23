@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -369,8 +369,8 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 	public boolean buildStructure()
 	{
-		ForgeDirection right = MekanismUtils.getRight(facing);
-		ForgeDirection left = MekanismUtils.getLeft(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
+		EnumFacing left = MekanismUtils.getLeft(facing);
 
 		height = 0;
 		controllerConflict = false;
@@ -378,12 +378,12 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		Coord4D startPoint = Coord4D.get(this);
 		
-		while(startPoint.offset(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
+		while(startPoint.offset(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
 		{
-			startPoint.step(ForgeDirection.UP);
+			startPoint.step(EnumFacing.UP);
 		}
 		
-		Coord4D test = startPoint.offset(ForgeDirection.DOWN).offset(right, 2);
+		Coord4D test = startPoint.offset(EnumFacing.DOWN).offset(right, 2);
 		isLeftOnFace = test.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock;
 		
 		startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
@@ -395,11 +395,11 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 		height = 1;
 		
-		Coord4D middlePointer = startPoint.offset(ForgeDirection.DOWN);
+		Coord4D middlePointer = startPoint.offset(EnumFacing.DOWN);
 		
 		while(scanLowerLayer(middlePointer))
 		{
-			middlePointer = middlePointer.offset(ForgeDirection.DOWN);
+			middlePointer = middlePointer.offset(EnumFacing.DOWN);
 		}
 		
 		if(height < 3 || height > 18)
@@ -417,8 +417,8 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 	public boolean scanTopLayer(Coord4D current)
 	{
-		ForgeDirection right = MekanismUtils.getRight(facing);
-		ForgeDirection back = MekanismUtils.getBack(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
+		EnumFacing back = MekanismUtils.getBack(facing);
 
 		for(int x = 0; x < 4; x++)
 		{
@@ -435,7 +435,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 					{
 						continue;
 					}
-					else if(pointer.offset(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
+					else if(pointer.offset(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
 					{
 						return false;
 					}
@@ -449,7 +449,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 						}
 					}
 					else {
-						if(pointer.offset(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
+						if(pointer.offset(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
 						{
 							return false;
 						}
@@ -490,8 +490,8 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 	public boolean scanLowerLayer(Coord4D current)
 	{
-		ForgeDirection right = MekanismUtils.getRight(facing);
-		ForgeDirection back = MekanismUtils.getBack(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
+		EnumFacing back = MekanismUtils.getBack(facing);
 		
 		boolean foundCenter = false;
 
@@ -597,7 +597,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			return null;
 		}
 		
-		ForgeDirection right = MekanismUtils.getRight(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
 		Coord4D startPoint = Coord4D.get(this).offset(right);
 		startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
 		

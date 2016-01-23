@@ -34,7 +34,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -152,7 +152,7 @@ public class MekanismRenderer
 	
 	public static void loadDynamicTextures(ResourceLocationRegister register, String name, ResourceLocation[] textures, DefIcon... defaults)
 	{
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			String tex = "mekanism:" + name + simpleSides[side.ordinal()];
 			String texOn = tex + "On";
@@ -259,12 +259,12 @@ public class MekanismRenderer
 	    	maxZ = zPos;
 	    }
 		
-		public void setSideRender(ForgeDirection side, boolean value)
+		public void setSideRender(EnumFacing side, boolean value)
 		{
 			renderSides[side.ordinal()] = value;
 		}
 		
-		public boolean shouldSideRender(ForgeDirection side)
+		public boolean shouldSideRender(EnumFacing side)
 		{
 			return renderSides[side.ordinal()];
 		}
@@ -308,32 +308,32 @@ public class MekanismRenderer
 
 		Tessellator.instance.startDrawingQuads();
 
-		if(object.shouldSideRender(ForgeDirection.DOWN))
+		if(object.shouldSideRender(EnumFacing.DOWN))
 		{
 			renderBlocks.renderFaceYNeg(null, 0, 0, 0, object.getBlockTextureFromSide(0));
 		}
 
-		if(object.shouldSideRender(ForgeDirection.UP))
+		if(object.shouldSideRender(EnumFacing.UP))
 		{
 			renderBlocks.renderFaceYPos(null, 0, 0, 0, object.getBlockTextureFromSide(1));
 		}
 
-		if(object.shouldSideRender(ForgeDirection.NORTH))
+		if(object.shouldSideRender(EnumFacing.NORTH))
 		{
 			renderBlocks.renderFaceZNeg(null, 0, 0, 0, object.getBlockTextureFromSide(2));
 		}
 
-		if(object.shouldSideRender(ForgeDirection.SOUTH))
+		if(object.shouldSideRender(EnumFacing.SOUTH))
 		{
 			renderBlocks.renderFaceZPos(null, 0, 0, 0, object.getBlockTextureFromSide(3));
 		}
 
-		if(object.shouldSideRender(ForgeDirection.WEST))
+		if(object.shouldSideRender(EnumFacing.WEST))
 		{
 			renderBlocks.renderFaceXNeg(null, 0, 0, 0, object.getBlockTextureFromSide(4));
 		}
 
-		if(object.shouldSideRender(ForgeDirection.EAST))
+		if(object.shouldSideRender(EnumFacing.EAST))
 		{
 			renderBlocks.renderFaceXPos(null, 0, 0, 0, object.getBlockTextureFromSide(5));
 		}

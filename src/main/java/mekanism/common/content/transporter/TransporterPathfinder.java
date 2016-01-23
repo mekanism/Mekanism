@@ -22,7 +22,7 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -48,9 +48,9 @@ public final class TransporterPathfinder
 			ArrayList<Coord4D> ret = new ArrayList<Coord4D>();
 			ret.add(start);
 			
-			if(transportStack.idleDir == ForgeDirection.UNKNOWN)
+			if(transportStack.idleDir == EnumFacing.null)
 			{
-				ForgeDirection newSide = findSide();
+				EnumFacing newSide = findSide();
 				
 				if(newSide == null)
 				{
@@ -76,13 +76,13 @@ public final class TransporterPathfinder
 					
 					if(newPath != null && TransporterManager.didEmit(transportStack.itemStack, newPath.rejected))
 					{
-						transportStack.idleDir = ForgeDirection.UNKNOWN;
+						transportStack.idleDir = EnumFacing.null;
 						newPath.setPathType(Path.DEST);
 						
 						return newPath;
 					}
 					else {
-						ForgeDirection newSide = findSide();
+						EnumFacing newSide = findSide();
 						
 						if(newSide == null)
 						{
@@ -98,7 +98,7 @@ public final class TransporterPathfinder
 			}
 		}
 		
-		private void loopSide(List<Coord4D> list, ForgeDirection side)
+		private void loopSide(List<Coord4D> list, EnumFacing side)
 		{
 			int count = 1;
 			
@@ -117,11 +117,11 @@ public final class TransporterPathfinder
 			}
 		}
 		
-		private ForgeDirection findSide()
+		private EnumFacing findSide()
 		{
-			if(transportStack.idleDir == ForgeDirection.UNKNOWN)
+			if(transportStack.idleDir == EnumFacing.null)
 			{
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				for(EnumFacing side : EnumFacing.VALUES)
 				{
 					TileEntity tile = start.offset(side).getTileEntity(worldObj);
 	
@@ -132,7 +132,7 @@ public final class TransporterPathfinder
 				}
 			}
 			else {
-				for(ForgeDirection side : EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN, transportStack.idleDir.getOpposite())))
+				for(EnumFacing side : EnumSet.complementOf(EnumSet.of(EnumFacing.null, transportStack.idleDir.getOpposite())))
 				{
 					TileEntity tile = start.offset(side).getTileEntity(worldObj);
 	
@@ -286,7 +286,7 @@ public final class TransporterPathfinder
 		return true;
 	}
 	
-	public static Destination getPath(DestChecker checker, EnumSet<ForgeDirection> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack, ItemStack rejects, int min)
+	public static Destination getPath(DestChecker checker, EnumSet<EnumFacing> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack, ItemStack rejects, int min)
 	{
 		List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
 		
@@ -390,7 +390,7 @@ public final class TransporterPathfinder
 
 		public double finalScore;
 		
-		public ForgeDirection side;
+		public EnumFacing side;
 
 		public ArrayList<Coord4D> results;
 
@@ -429,7 +429,7 @@ public final class TransporterPathfinder
 
 			for(int i = 0; i < 6; i++)
 			{
-				ForgeDirection direction = ForgeDirection.getOrientation(i);
+				EnumFacing direction = EnumFacing.getFront(i);
 				Coord4D neighbor = start.offset(direction);
 
 				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
@@ -467,7 +467,7 @@ public final class TransporterPathfinder
 				openSet.remove(currentNode);
 				closedSet.add(currentNode);
 
-				for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+				for(EnumFacing direction : EnumFacing.VALUES)
 				{
 					Coord4D neighbor = currentNode.offset(direction);
 

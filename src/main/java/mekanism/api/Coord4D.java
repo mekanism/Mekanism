@@ -177,9 +177,7 @@ public class Coord4D extends BlockPos
 	 */
 	public void write(ByteBuf dataStream)
 	{
-		dataStream.writeInt(getX());
-		dataStream.writeInt(getY());
-		dataStream.writeInt(getZ());
+		dataStream.writeLong(toLong());
 		dataStream.writeInt(dimensionId);
 	}
 
@@ -266,7 +264,7 @@ public class Coord4D extends BlockPos
 	 */
 	public static Coord4D read(ByteBuf dataStream)
 	{
-		return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		return new Coord4D(BlockPos.fromLong(dataStream.readLong()), dataStream.readInt());
 	}
 
 	/**
@@ -279,10 +277,10 @@ public class Coord4D extends BlockPos
 		return vec.getX() == 0 && vec.getY() == 0 && vec.getZ() == 0 ? this : new Coord4D(this.getX() - vec.getX(), this.getY() - vec.getY(), this.getZ() - vec.getZ());	}
 
 	/**
-	 * A method used to find the ForgeDirection represented by the distance of the defined Coord4D. Most likely won't have many
+	 * A method used to find the EnumFacing represented by the distance of the defined Coord4D. Most likely won't have many
 	 * applicable uses.
 	 * @param other - Coord4D to find the side difference of
-	 * @return ForgeDirection representing the side the defined relative Coord4D is on to this
+	 * @return EnumFacing representing the side the defined relative Coord4D is on to this
 	 */
 	public EnumFacing sideDifference(Coord4D other)
 	{

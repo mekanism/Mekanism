@@ -13,7 +13,7 @@ import mekanism.common.content.teleportation.SharedInventoryManager;
 import mekanism.common.util.CableUtils;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -25,7 +25,7 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 {
 	public SharedInventory sharedInventory;
 
-	public static final EnumSet<ForgeDirection> nothing = EnumSet.noneOf(ForgeDirection.class);
+	public static final EnumSet<EnumFacing> nothing = EnumSet.noneOf(EnumFacing.class);
 
 	public TileEntityEntangledBlock()
 	{
@@ -73,15 +73,15 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return sharedInventory == null ? nothing : EnumSet.of(ForgeDirection.UP);
+		return sharedInventory == null ? nothing : EnumSet.of(EnumFacing.UP);
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return sharedInventory == null ? nothing : EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN, ForgeDirection.UP));
+		return sharedInventory == null ? nothing : EnumSet.complementOf(EnumSet.of(EnumFacing.null, EnumFacing.UP));
 	}
 
 	@Override
@@ -112,13 +112,13 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return sharedInventory == null ? 0 : sharedInventory.fill(from, resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(sharedInventory == null)
 		{
@@ -128,7 +128,7 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(sharedInventory == null)
 		{
@@ -138,61 +138,61 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		return sharedInventory == null ? false : sharedInventory.canFill(from, fluid);
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return sharedInventory == null ? false : sharedInventory.canDrain(from, fluid);
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		return sharedInventory == null ? new FluidTankInfo[0] : sharedInventory.getTankInfo(from);
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		return sharedInventory == null ? 0 : sharedInventory.receiveGas(side, stack, doTransfer);
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(EnumFacing side, GasStack stack)
 	{
 		return receiveGas(side, stack, true);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return sharedInventory == null ? null : sharedInventory.drawGas(side, amount, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(EnumFacing side, int amount)
 	{
 		return drawGas(side, amount, true);
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return sharedInventory == null ? false : sharedInventory.canReceiveGas(side, type);
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return sharedInventory == null ? false : sharedInventory.canDrawGas(side, type);
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		return sharedInventory == null ? false : true;
 	}

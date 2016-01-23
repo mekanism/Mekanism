@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -17,7 +16,7 @@ import mekanism.common.content.transporter.TransporterManager;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwork>
@@ -49,7 +48,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 				continue;
 			}
 			
-			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
 			IInventory acceptor = (IInventory)coord.getTileEntity(getWorld());
 			
 			if(sides == null || sides.isEmpty())
@@ -59,7 +58,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			
 			AcceptorData data = null;
 			
-			for(ForgeDirection side : sides)
+			for(EnumFacing side : sides)
 			{
 				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.getOpposite().ordinal());
 				
@@ -88,9 +87,9 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	{
 		public Coord4D location;
 		public ItemStack rejected;
-		public EnumSet<ForgeDirection> sides = EnumSet.noneOf(ForgeDirection.class);
+		public EnumSet<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
 		
-		public AcceptorData(Coord4D coord, ItemStack stack, ForgeDirection side)
+		public AcceptorData(Coord4D coord, ItemStack stack, EnumFacing side)
 		{
 			location = coord;
 			rejected = stack;

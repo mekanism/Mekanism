@@ -120,7 +120,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			if(dataWatcher.getWatchableObjectByte(2) == 1)
 			{
-				latched = new Coord4D(dataWatcher.getWatchableObjectInt(3), dataWatcher.getWatchableObjectInt(4), dataWatcher.getWatchableObjectInt(5), worldObj.provider.dimensionId);
+				latched = new Coord4D(dataWatcher.getWatchableObjectInt(3), dataWatcher.getWatchableObjectInt(4), dataWatcher.getWatchableObjectInt(5), worldObj.provider.getDimensionId());
 			}
 			else {
 				latched = null;

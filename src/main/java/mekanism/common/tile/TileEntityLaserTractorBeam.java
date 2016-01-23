@@ -19,7 +19,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor
 {
@@ -41,7 +41,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	}
 
 	@Override
-	public void receiveLaserEnergy(double energy, ForgeDirection side)
+	public void receiveLaserEnergy(double energy, EnumFacing side)
 	{
 		setEnergy(getEnergy() + energy);
 	}
@@ -59,7 +59,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 		{
 			if(on)
 			{
-				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), lastFired, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaserClient(this, EnumFacing.getFront(facing), lastFired, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -99,7 +99,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
+				LaserInfo info = LaserManager.fireLaser(this, EnumFacing.getFront(facing), firing, worldObj);
 				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -187,7 +187,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 		return false;
 	}
 
-	public int[] getAccessibleSlotsFromSide(int p_94128_1_)
+	public int[] getSlotsForFace(int p_94128_1_)
 	{
 		return availableSlotIDs;
 	}

@@ -18,7 +18,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.List;
 
@@ -180,7 +180,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 int meta = worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
                 boolean fluid = MekanismUtils.isFluid(worldObj, new Coord4D(mop)) || MekanismUtils.isDeadFluid(worldObj, new Coord4D(mop));
                 
-                Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId).offset(ForgeDirection.getOrientation(mop.sideHit));
+                Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.getDimensionId()).offset(EnumFacing.getFront(mop.sideHit));
                 
                 if(general.aestheticWorldDamage && !fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
                 {

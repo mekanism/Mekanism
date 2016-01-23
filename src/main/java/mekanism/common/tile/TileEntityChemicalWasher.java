@@ -22,7 +22,7 @@ import mekanism.common.util.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 import java.util.ArrayList;
@@ -364,7 +364,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		return i != 0 && i != 1;
 	}
 
-	public GasTank getTank(ForgeDirection side)
+	public GasTank getTank(EnumFacing side)
 	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
@@ -411,13 +411,13 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		return getTank(side) != null;
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		if(getTank(side) == inputTank)
         {
@@ -447,7 +447,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
@@ -458,13 +458,13 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(EnumFacing side, GasStack stack)
 	{
 		return receiveGas(side, stack, true);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
 		{
@@ -475,13 +475,13 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(EnumFacing side, int amount)
 	{
 		return drawGas(side, amount, true);
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return getTank(side) == outputTank ? getTank(side).canDraw(type) : false;
 	}
@@ -517,7 +517,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		if(side == MekanismUtils.getLeft(facing).ordinal())
 		{
@@ -536,7 +536,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		if(canFill(from, resource.getFluid()))
 		{
@@ -547,33 +547,33 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return from == ForgeDirection.UP && fluid == FluidRegistry.WATER;
+		return from == EnumFacing.UP && fluid == FluidRegistry.WATER;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == ForgeDirection.UP)
+		if(from == EnumFacing.UP)
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}

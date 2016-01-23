@@ -15,8 +15,8 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -164,14 +164,14 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			for(EnergyAcceptorWrapper acceptor : availableAcceptors)
 			{
 				double currentSending = sending+remaining;
-				EnumSet<ForgeDirection> sides = acceptorDirections.get(acceptor.coord);
+				EnumSet<EnumFacing> sides = acceptorDirections.get(acceptor.coord);
 
 				if(sides == null || sides.isEmpty())
 				{
 					continue;
 				}
 
-				for(ForgeDirection side : sides)
+				for(EnumFacing side : sides)
 				{
 					double prev = sent;
 
@@ -200,7 +200,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{
-			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
 
 			if(sides == null || sides.isEmpty())
 			{
@@ -212,7 +212,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
 			if(acceptor != null)
 			{
-				for(ForgeDirection side : sides)
+				for(EnumFacing side : sides)
 				{
 					if(acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side))
 					{

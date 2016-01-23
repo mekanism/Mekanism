@@ -28,7 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.biome.BiomeGenDesert;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager
 {
@@ -121,13 +121,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).offset(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), outputTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getFront(facing).getOpposite(), outputTank.getGas().getGas()))
 					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend, true), true);
+						outputTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getFront(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -261,7 +261,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).offset(ForgeDirection.UP), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).offset(EnumFacing.UP), Coord4D.get(this));
 	}
 
 	@Override
@@ -272,7 +272,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer) 
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
@@ -283,13 +283,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(EnumFacing side, GasStack stack)
 	{
 		return receiveGas(side, stack, true);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer) 
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
 		{
@@ -300,27 +300,27 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(EnumFacing side, int amount)
 	{
 		return drawGas(side, amount, true);
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type) 
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return side == ForgeDirection.DOWN && inputTank.canReceive(type);
+		return side == EnumFacing.DOWN && inputTank.canReceive(type);
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type) 
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return side == ForgeDirection.getOrientation(facing) && outputTank.canDraw(type);
+		return side == EnumFacing.getFront(facing) && outputTank.canDraw(type);
 	}
 	
 	@Override
-	public boolean canTubeConnect(ForgeDirection side) 
+	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == ForgeDirection.getOrientation(facing) || side == ForgeDirection.DOWN;
+		return side == EnumFacing.getFront(facing) || side == EnumFacing.DOWN;
 	}
 
 	@Override

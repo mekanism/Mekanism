@@ -58,7 +58,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 		itemNameField.setEnableBackgroundDrawing(false);
 		itemNameField.setMaxStringLength(30);
 		inventorySlots.removeCraftingFromCrafters(this);
-		inventorySlots.addCraftingToCrafters(this);
+		inventorySlots.onCraftGuiOpened(this);
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 import java.util.ArrayList;
@@ -136,12 +136,12 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			TileEntity tileEntity = Coord4D.get(this).offset(ForgeDirection.DOWN).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 
 			if(tileEntity instanceof IFluidHandler)
 			{
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(100, fluidTank.getFluidAmount()));
-				fluidTank.drain(((IFluidHandler)tileEntity).fill(ForgeDirection.UP, toDrain, true), true);
+				fluidTank.drain(((IFluidHandler)tileEntity).fill(EnumFacing.UP, toDrain, true), true);
 			}
 		}
 	}
@@ -277,15 +277,15 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	
 	public int pushUp(FluidStack fluid, boolean doFill)
 	{
-		Coord4D up = Coord4D.get(this).offset(ForgeDirection.UP);
+		Coord4D up = Coord4D.get(this).offset(EnumFacing.UP);
 		
 		if(up.getTileEntity(worldObj) instanceof TileEntityPortableTank)
 		{
 			IFluidHandler handler = (IFluidHandler)up.getTileEntity(worldObj);
 			
-			if(handler.canFill(ForgeDirection.DOWN, fluid.getFluid()))
+			if(handler.canFill(EnumFacing.DOWN, fluid.getFluid()))
 			{
-				return handler.fill(ForgeDirection.DOWN, fluid, doFill);
+				return handler.fill(EnumFacing.DOWN, fluid, doFill);
 			}
 		}
 		
@@ -320,7 +320,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		if(side == 0)
 		{
@@ -399,7 +399,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		int needed = fluidTank.getCapacity()-fluidTank.getFluidAmount();
 		
-		Coord4D top = Coord4D.get(this).offset(ForgeDirection.UP);
+		Coord4D top = Coord4D.get(this).offset(EnumFacing.UP);
 		
 		if(top.getTileEntity(worldObj) instanceof TileEntityPortableTank)
 		{
@@ -487,7 +487,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		if(resource != null && canFill(from, resource.getFluid()))
 		{
@@ -498,7 +498,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 				filled += pushUp(new FluidStack(resource.getFluid(), resource.amount-filled), doFill);
 			}
 			
-			if(filled > 0 && from == ForgeDirection.UP)
+			if(filled > 0 && from == EnumFacing.UP)
 			{
 				if(valve == 0)
 				{
@@ -516,7 +516,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(resource != null && canDrain(from, resource.getFluid()))
 		{
@@ -527,7 +527,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(canDrain(from, null))
 		{
@@ -538,11 +538,11 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if(from == ForgeDirection.DOWN)
+		if(from == EnumFacing.DOWN)
 		{
-			TileEntity tile = Coord4D.get(this).offset(ForgeDirection.DOWN).getTileEntity(worldObj);
+			TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 			
 			if(isActive && !(tile instanceof TileEntityPortableTank))
 			{
@@ -554,7 +554,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		if(fluidTank != null)
 		{
@@ -562,7 +562,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			{
 				if(isActive)
 				{
-					return from != ForgeDirection.DOWN;
+					return from != EnumFacing.DOWN;
 				}
 				
 				return true;
@@ -573,7 +573,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		return new FluidTankInfo[] {fluidTank.getInfo()};
 	}

@@ -29,7 +29,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.List;
 import java.util.Random;
@@ -166,7 +166,7 @@ public class BlockEnergyCube extends BlockContainer
                     ((IToolWrench) tool).wrenchUsed(entityplayer, x, y, z);
                 }
 
-				int change = ForgeDirection.ROTATION_MATRIX[side][tileEntity.facing];
+				int change = EnumFacing.ROTATION_MATRIX[side][tileEntity.facing];
 
 				tileEntity.setFacing((short)change);
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
@@ -280,22 +280,22 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
 	{
 		return true;
 	}
 
 	@Override
-	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
-		ForgeDirection[] valid = new ForgeDirection[6];
+		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.VALUES)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{
@@ -308,7 +308,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		

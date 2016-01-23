@@ -8,7 +8,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
@@ -109,10 +109,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	public void onPlace()
 	{
 		Coord4D pos = Coord4D.get(this);
-		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(ForgeDirection.UP, 1), pos);
-		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(ForgeDirection.UP, 2), pos);
-		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(ForgeDirection.UP, 3), pos);
-		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(ForgeDirection.UP, 4), pos);
+		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(EnumFacing.UP, 1), pos);
+		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(EnumFacing.UP, 2), pos);
+		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(EnumFacing.UP, 3), pos);
+		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(EnumFacing.UP, 4), pos);
 	}
 
 	@Override

@@ -138,7 +138,7 @@ public class BinRecipe implements IRecipe
 
 						ItemStack testRemove = inv.removeStack();
 
-						bin.stackTagCompound.setInteger("newCount", size-(testRemove != null ? testRemove.stackSize : 0));
+						bin.getTagCompound().setInteger("newCount", size-(testRemove != null ? testRemove.stackSize : 0));
 					}
 				}
 			}

@@ -32,7 +32,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IUpgradeTile, ISustainedData, ITankManager
 {
@@ -178,7 +178,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		if(side == MekanismUtils.getLeft(facing).ordinal())
 		{
@@ -333,7 +333,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		return side == MekanismUtils.getRight(facing);
 	}

@@ -7,8 +7,8 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.util.LangUtils;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -144,7 +144,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			for(IFluidHandler acceptor : availableAcceptors)
 			{
 				int currentSending = sending;
-				EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+				EnumSet<EnumFacing> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
 
 				if(remaining > 0)
 				{
@@ -152,13 +152,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					remaining--;
 				}
 
-				for(ForgeDirection side : sides)
+				for(EnumFacing side : sides)
 				{
 					int prev = fluidSent;
 
 					if(acceptor != null && fluidToSend != null)
 					{
-						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.getFluidID(), currentSending), doTransfer);
+						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.getFluid(), currentSending), doTransfer);
 					}
 
 					if(fluidSent > prev)
@@ -287,7 +287,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{
-			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
 			TileEntity tile = coord.getTileEntity(getWorld());
 
 			if(sides == null || sides.isEmpty())
@@ -297,7 +297,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			
 			IFluidHandler acceptor = (IFluidHandler)tile;
 
-			for(ForgeDirection side : sides)
+			for(EnumFacing side : sides)
 			{
 				if(acceptor != null && acceptor.canFill(side, fluidToSend.getFluid()))
 				{

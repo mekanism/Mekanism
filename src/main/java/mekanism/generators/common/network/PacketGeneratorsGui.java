@@ -81,7 +81,7 @@ public class PacketGeneratorsGui implements IMessageHandler<GeneratorsGuiMessage
 
 			playerMP.openContainer = MekanismGenerators.proxy.getServerGui(id, playerMP, world, obj.xCoord, obj.yCoord, obj.zCoord);
 			playerMP.openContainer.windowId = window;
-			playerMP.openContainer.addCraftingToCrafters(playerMP);
+			playerMP.openContainer.onCraftGuiOpened(playerMP);
 		}
 
 		@SideOnly(Side.CLIENT)

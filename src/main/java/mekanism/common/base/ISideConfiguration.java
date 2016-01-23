@@ -2,6 +2,8 @@ package mekanism.common.base;
 
 import mekanism.common.tile.component.TileComponentConfig;
 
+import net.minecraft.util.EnumFacing;
+
 /**
  * Implement this if your TileEntity is capable of being modified by a Configurator in it's 'modify' mode.
  * @author AidanBrady
@@ -19,7 +21,7 @@ public interface ISideConfiguration
 	 * Gets this machine's current orientation.
 	 * @return machine's current orientation
 	 */
-	public int getOrientation();
+	public EnumFacing getOrientation();
 
 	/**
 	 * Gets this machine's ejector.

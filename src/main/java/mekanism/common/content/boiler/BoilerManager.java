@@ -36,7 +36,7 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
 
             for(Coord4D obj : entry.getValue().locations)
             {
-                if(obj.dimensionId == world.provider.dimensionId && obj.exists(world))
+                if(obj.dimensionId == world.provider.getDimensionId() && obj.exists(world))
                 {
                     TileEntity tileEntity = obj.getTileEntity(world);
 

@@ -3,7 +3,7 @@ package ic2.api;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Represents the 6 possible directions along the axis of a block.

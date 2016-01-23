@@ -16,7 +16,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -30,7 +30,7 @@ public class TransporterStack
 
 	public boolean initiatedPath = false;
 	
-	public ForgeDirection idleDir = ForgeDirection.UNKNOWN;
+	public EnumFacing idleDir = EnumFacing.null;
 
 	private List<Coord4D> pathToTarget = new ArrayList<Coord4D>();
 
@@ -125,7 +125,7 @@ public class TransporterStack
 
 		progress = nbtTags.getInteger("progress");
 		originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
-		idleDir = ForgeDirection.values()[nbtTags.getInteger("idleDir")];
+		idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
 
 		if(nbtTags.hasKey("homeLocation"))
 		{
@@ -188,7 +188,7 @@ public class TransporterStack
 			return itemStack;
 		}
 
-		idleDir = ForgeDirection.UNKNOWN;
+		idleDir = EnumFacing.null;
 		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
@@ -204,7 +204,7 @@ public class TransporterStack
 			return itemStack;
 		}
 
-		idleDir = ForgeDirection.UNKNOWN;
+		idleDir = EnumFacing.null;
 		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
@@ -222,7 +222,7 @@ public class TransporterStack
 		
 		if(newPath.getRight() == Path.HOME)
 		{
-			idleDir = ForgeDirection.UNKNOWN;
+			idleDir = EnumFacing.null;
 		}
 		
 		setPath(newPath.getLeft(), newPath.getRight());
@@ -302,7 +302,7 @@ public class TransporterStack
 		return 0;
 	}
 
-	public boolean canInsertToTransporter(TileEntity tileEntity, ForgeDirection from)
+	public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from)
 	{
 		if(!(tileEntity instanceof ITransporterTile))
 		{
@@ -319,7 +319,7 @@ public class TransporterStack
 		return transporter.getColor() == color || transporter.getColor() == null;
 	}
 
-	public boolean canInsertToTransporter(ILogisticalTransporter transporter, ForgeDirection side)
+	public boolean canInsertToTransporter(ILogisticalTransporter transporter, EnumFacing side)
 	{
 		if(!transporter.canConnectMutual(side))
 		{

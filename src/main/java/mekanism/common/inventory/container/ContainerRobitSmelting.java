@@ -52,9 +52,9 @@ public class ContainerRobitSmelting extends Container
 	}
 
 	@Override
-	public void addCraftingToCrafters(ICrafting icrafting)
+	public void onCraftGuiOpened(ICrafting icrafting)
 	{
-		super.addCraftingToCrafters(icrafting);
+		super.onCraftGuiOpened(icrafting);
 		icrafting.sendProgressBarUpdate(this, 0, robit.furnaceCookTime);
 		icrafting.sendProgressBarUpdate(this, 1, robit.furnaceBurnTime);
 		icrafting.sendProgressBarUpdate(this, 2, robit.currentItemBurnTime);

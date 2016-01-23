@@ -17,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -104,7 +104,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 					sendStructure = true;
 				}
 
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				for(EnumFacing side : EnumFacing.VALUES)
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
 

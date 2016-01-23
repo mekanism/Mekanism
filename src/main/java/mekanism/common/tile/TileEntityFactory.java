@@ -48,7 +48,7 @@ import mekanism.common.util.StatUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -373,7 +373,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 	
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
 		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
 	}
@@ -874,7 +874,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
@@ -960,7 +960,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack.getGas()))
 		{
@@ -971,13 +971,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(EnumFacing side, GasStack stack)
 	{
 		return receiveGas(side, stack, true);
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		if(configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0))
 		{
@@ -988,7 +988,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		if(recipeType.canTubeConnect(side))
 		{
@@ -999,19 +999,19 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return null;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(EnumFacing side, int amount)
 	{
 		return drawGas(side, amount, true);
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return false;
 	}

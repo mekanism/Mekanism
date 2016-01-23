@@ -9,7 +9,7 @@ import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -52,7 +52,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side)
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return 100;
 	}
@@ -102,20 +102,20 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side)
+	public boolean canConnectHeat(EnumFacing side)
 	{
 		return false;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side)
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		return null;
 	}
 
 	public static class ValveData
 	{
-		public ForgeDirection side;
+		public EnumFacing side;
 		public Coord4D location;
 		public boolean serverFluid;
 

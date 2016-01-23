@@ -47,7 +47,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -524,7 +524,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        else {
 	            if(pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 	            {
-	            	Coord4D coord = new Coord4D(pos.blockX, pos.blockY, pos.blockZ, world.provider.dimensionId);
+	            	Coord4D coord = new Coord4D(pos.blockX, pos.blockY, pos.blockZ, world.provider.getDimensionId());
 	
 	                if(!world.canMineBlock(entityplayer, coord.xCoord, coord.yCoord, coord.zCoord))
 	                {
@@ -570,7 +570,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        				return itemstack;
 	        			}
 	        			
-	        			Coord4D trans = coord.offset(ForgeDirection.getOrientation(pos.sideHit));
+	        			Coord4D trans = coord.offset(EnumFacing.getFront(pos.sideHit));
 
 	                    if(!entityplayer.canPlayerEdit(trans.xCoord, trans.yCoord, trans.zCoord, pos.sideHit, itemstack))
 	                    {

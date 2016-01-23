@@ -169,7 +169,7 @@ public class CommonPlayerTickHandler
 	
 	public static boolean isFlamethrowerOn(EntityPlayer player)
 	{
-		if(Mekanism.flamethrowerActive.contains(player.getCommandSenderName()))
+		if(Mekanism.flamethrowerActive.contains(player.getName()))
 		{
 			if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
 			{

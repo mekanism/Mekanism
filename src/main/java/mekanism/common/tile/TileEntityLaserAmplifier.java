@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.ArrayList;
 
@@ -50,7 +50,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public void receiveLaserEnergy(double energy, ForgeDirection side)
+	public void receiveLaserEnergy(double energy, EnumFacing side)
 	{
 		setEnergy(getEnergy() + energy);
 	}
@@ -68,7 +68,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		{
 			if(on)
 			{
-				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), lastFired, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaserClient(this, EnumFacing.getFront(facing), lastFired, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -120,7 +120,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
+				LaserInfo info = LaserManager.fireLaser(this, EnumFacing.getFront(facing), firing, worldObj);
 				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -299,7 +299,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public boolean canOutputTo(ForgeDirection side)
+	public boolean canOutputTo(EnumFacing side)
 	{
 		return true;
 	}

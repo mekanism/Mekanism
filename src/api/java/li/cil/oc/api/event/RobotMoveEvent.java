@@ -2,7 +2,7 @@ package li.cil.oc.api.event;
 
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import li.cil.oc.api.internal.Agent;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public abstract class RobotMoveEvent extends RobotEvent {
     /**

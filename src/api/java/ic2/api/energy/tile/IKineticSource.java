@@ -1,6 +1,6 @@
 package ic2.api.energy.tile;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public interface IKineticSource {
 	/*

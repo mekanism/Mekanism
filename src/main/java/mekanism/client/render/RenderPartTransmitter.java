@@ -39,7 +39,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
@@ -76,8 +76,8 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 
 	private ModelTransporterBox modelBox = new ModelTransporterBox();
 
-	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
-	private HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>>();
+	private HashMap<EnumFacing, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<EnumFacing, HashMap<Fluid, DisplayInteger[]>>();
+	private HashMap<EnumFacing, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<EnumFacing, HashMap<Integer, DisplayInteger>>();
 
 	private Minecraft mc = Minecraft.getMinecraft();
 
@@ -147,7 +147,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		CCRenderState.reset();
 		CCRenderState.startDrawing();
 		
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			renderSide(side, type, false);
 		}
@@ -157,7 +157,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		CCRenderState.reset();
 		CCRenderState.startDrawing();
 		
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			renderSide(side, type, true);
 		}
@@ -223,7 +223,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 				if(obj.equals(Coord4D.get(transporter.tile())))
 				{
 					int mode = ((PartDiversionTransporter)transporter).modes[pos.sideHit];
-					ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);
+					EnumFacing side = EnumFacing.getFront(pos.sideHit);
 
 					pushTransporter();
 
@@ -258,7 +258,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			renderEnergySide(side, cable);
 		}
@@ -282,7 +282,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			renderHeatSide(side, transmitter);
 		}
@@ -342,7 +342,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 
 			boolean gas = fluid.isGaseous();
 
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALUES)
 			{
 				if(pipe.getConnectionType(side) == ConnectionType.NORMAL)
 				{
@@ -370,7 +370,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 				}
 			}
 
-			DisplayInteger[] displayLists = getListAndRender(ForgeDirection.UNKNOWN, fluid);
+			DisplayInteger[] displayLists = getListAndRender(EnumFacing.null, fluid);
 
 			if(displayLists != null)
 			{
@@ -391,7 +391,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		}
 	}
 
-	private DisplayInteger[] getListAndRender(ForgeDirection side, Fluid fluid)
+	private DisplayInteger[] getListAndRender(EnumFacing side, Fluid fluid)
 	{
 		if(side == null || fluid == null || fluid.getIcon() == null)
 		{
@@ -528,7 +528,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			renderGasSide(side, tube);
 		}
@@ -550,13 +550,13 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		CCRenderState.hasColour = true;
 		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			renderSide(side, transmitter, pass);
 		}
 	}
 
-	public void renderSide(ForgeDirection side, PartSidedPipe transmitter, int pass)
+	public void renderSide(EnumFacing side, PartSidedPipe transmitter, int pass)
 	{
 		if(pass == 1)
 		{
@@ -590,34 +590,34 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		}
 	}
 
-	public void renderSide(ForgeDirection side, TransmitterType type, boolean opaque)
+	public void renderSide(EnumFacing side, TransmitterType type, boolean opaque)
 	{
-		boolean out = side == ForgeDirection.UP || side == ForgeDirection.DOWN;
+		boolean out = side == EnumFacing.UP || side == EnumFacing.DOWN;
 
 		IIcon renderIcon = out ? type.getSideIcon(opaque) : type.getCenterIcon(opaque);
 
 		renderPart(renderIcon, getItemModel(side, type), 0, 0, 0, null);
 	}
 
-	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
+	public void renderEnergySide(EnumFacing side, PartUniversalCable cable)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 
-	public void renderHeatSide(ForgeDirection side, PartHeatTransmitter cable)
+	public void renderHeatSide(EnumFacing side, PartHeatTransmitter cable)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.getTransmitter().temperature, cable.getBaseColour()));
 	}
 
-	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)
+	public void renderFluidInOut(EnumFacing side, PartMechanicalPipe pipe)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(pipe.getTransmitter().getTransmitterNetwork().refFluid.getIcon(), pipe.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
 	}
 
-	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
+	public void renderGasSide(EnumFacing side, PartPressurizedTube tube)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(tube.getTransmitter().getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
@@ -645,10 +645,10 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		}
 	}
 
-	public CCModel getItemModel(ForgeDirection side, TransmitterType type)
+	public CCModel getItemModel(EnumFacing side, TransmitterType type)
 	{
 		String name = side.name().toLowerCase();
-		boolean out = side == ForgeDirection.UP || side == ForgeDirection.DOWN;
+		boolean out = side == EnumFacing.UP || side == EnumFacing.DOWN;
 		name += out ? "NORMAL" : "NONE";
 		
 		if(type.getSize() == Size.SMALL)
@@ -694,7 +694,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		MekanismRenderer.blendOn();
 	}
 
-	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, int mode)
+	private DisplayInteger getOverlayDisplay(World world, EnumFacing side, int mode)
 	{
 		if(cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode))
 		{

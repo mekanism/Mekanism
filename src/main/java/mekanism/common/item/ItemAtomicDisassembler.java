@@ -23,7 +23,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 
@@ -105,7 +105,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			}
 
 			ItemStack stack = new ItemStack(block, 1, meta);
-			Coord4D orig = new Coord4D(x, y, z, player.worldObj.provider.dimensionId);
+			Coord4D orig = new Coord4D(x, y, z, player.worldObj.provider.getDimensionId());
 
 			List<String> names = MekanismUtils.getOreDictName(stack);
 
@@ -121,7 +121,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			if(getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode)
 			{
-				Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(x, y, z, player.worldObj.provider.dimensionId)).calc();
+				Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(x, y, z, player.worldObj.provider.getDimensionId())).calc();
 
 				for(Coord4D coord : found)
 				{
@@ -350,7 +350,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			found.add(pointer);
 
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALUES)
 			{
 				Coord4D coord = pointer.offset(side);
 

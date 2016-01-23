@@ -48,7 +48,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					Mekanism.proxy.handleTeleporterUpdate(message);
 					break;
 				case SET_FREQ:
-					FrequencyManager manager1 = getManager(message.frequency.isPublic() ? null : player.getCommandSenderName(), world);
+					FrequencyManager manager1 = getManager(message.frequency.isPublic() ? null : player.getName(), world);
 					Frequency toUse = null;
 					
 					for(Frequency freq : manager1.getFrequencies())
@@ -62,7 +62,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					
 					if(toUse == null)
 					{
-						toUse = new Frequency(message.frequency.name, player.getCommandSenderName()).setPublic(message.frequency.isPublic());
+						toUse = new Frequency(message.frequency.name, player.getName()).setPublic(message.frequency.isPublic());
 						manager1.addFrequency(toUse);
 					}
 					
@@ -70,12 +70,12 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					
 					break;
 				case DEL_FREQ:
-					FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getCommandSenderName(), world);
-					manager.remove(message.frequency.name, player.getCommandSenderName());
+					FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getName(), world);
+					manager.remove(message.frequency.name, player.getName());
 					
 					break;
 				case TELEPORT:
-					FrequencyManager manager2 = getManager(message.frequency.isPublic() ? null : player.getCommandSenderName(), world);
+					FrequencyManager manager2 = getManager(message.frequency.isPublic() ? null : player.getName(), world);
 					Frequency found = null;
 					
 					for(Frequency freq : manager2.getFrequencies())
@@ -139,7 +139,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 		
 		List<Frequency> privateFreqs = new ArrayList<Frequency>();
 		
-		for(Frequency f : getManager(player.getCommandSenderName(), world).getFrequencies())
+		for(Frequency f : getManager(player.getName(), world).getFrequencies())
 		{
 			privateFreqs.add(f);
 		}
@@ -148,7 +148,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 		
 		if(given != null)
 		{
-			FrequencyManager manager = given.isPublic() ? getManager(null, world) : getManager(player.getCommandSenderName(), world);
+			FrequencyManager manager = given.isPublic() ? getManager(null, world) : getManager(player.getName(), world);
 			boolean found = false;
 			
 			for(Frequency iterFreq : manager.getFrequencies())

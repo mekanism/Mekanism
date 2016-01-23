@@ -238,7 +238,7 @@ public class FrequencyManager
 			{
 				Coord4D coord = iter.next();
 				
-				if(coord.dimensionId == world.provider.dimensionId)
+				if(coord.dimensionId == world.provider.getDimensionId())
 				{
 					if(!coord.exists(world))
 					{

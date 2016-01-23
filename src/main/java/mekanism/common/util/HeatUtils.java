@@ -6,7 +6,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class HeatUtils
 {
@@ -14,7 +14,7 @@ public class HeatUtils
 	{
 		double heatTransferred[] = new double[] {0,0};
 		
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			IHeatTransfer sink = source.getAdjacent(side);
 			

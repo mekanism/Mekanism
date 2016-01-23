@@ -12,7 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -48,7 +48,7 @@ public class BlockPlasticFence extends BlockFence
 
     }
 
-    public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
+    public boolean recolourBlock(World world, int x, int y, int z, EnumFacing side, int colour)
     {
         int meta = world.getBlockMetadata(x, y, z);
         

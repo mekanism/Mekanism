@@ -21,7 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -142,9 +142,9 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.DOWN, ForgeDirection.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.DOWN, EnumFacing.getFront(facing).getOpposite());
 	}
 
 	@Override

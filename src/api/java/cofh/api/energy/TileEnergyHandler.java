@@ -2,7 +2,7 @@ package cofh.api.energy;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Reference implementation of {@link IEnergyHandler}. Use/extend this or implement your own.

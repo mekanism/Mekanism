@@ -22,7 +22,7 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.HeatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -39,7 +39,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 	public float prevWaterScale;
 	public float prevSteamScale;
 
-	public ForgeDirection innerSide;
+	public EnumFacing innerSide;
 
 	public double temperature;
 	public double heatToAbsorb;
@@ -381,7 +381,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 			{
 				ValveData data = new ValveData();
 				data.location = Coord4D.read(dataStream);
-				data.side = ForgeDirection.getOrientation(dataStream.readInt());
+				data.side = EnumFacing.getFront(dataStream.readInt());
 				int viewingTicks = 0;
 
 				if(dataStream.readBoolean())
@@ -464,7 +464,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side)
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return 50;
 	}
@@ -491,13 +491,13 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side)
+	public boolean canConnectHeat(EnumFacing side)
 	{
 		return structure == null || !isInnerSide(side);
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side)
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		if(structure != null && isInnerSide(side))
 		{
@@ -515,7 +515,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 		return null;
 	}
 
-	public boolean isInnerSide(ForgeDirection side)
+	public boolean isInnerSide(EnumFacing side)
 	{
 		if(innerSide != null)
 		{

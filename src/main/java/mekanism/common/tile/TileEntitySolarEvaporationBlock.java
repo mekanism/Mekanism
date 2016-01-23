@@ -7,7 +7,7 @@ import mekanism.api.Coord4D;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 {
@@ -128,7 +128,7 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 			
 			iterated.add(pos);
 			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALUES)
 			{
 				Coord4D coord = pos.offset(side);
 				

@@ -2,7 +2,7 @@ package mekanism.generators.common.tile.reactor;
 
 import mekanism.api.lasers.ILaserReceptor;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock implements ILaserReceptor
 {
@@ -13,7 +13,7 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
 	}
 
 	@Override
-	public void receiveLaserEnergy(double energy, ForgeDirection side)
+	public void receiveLaserEnergy(double energy, EnumFacing side)
 	{
 		if(getReactor() != null)
 		{

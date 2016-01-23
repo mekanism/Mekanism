@@ -33,7 +33,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
 			if(!player.worldObj.isRemote)
 			{
-				Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.dimensionId);
+				Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimensionId());
 			}
 		}
 		else if(message.packetType == JetpackPacket.MODE)

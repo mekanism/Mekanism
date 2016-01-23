@@ -10,7 +10,7 @@ import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
@@ -157,7 +157,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 								break;
 							}
 							else {
-								innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.dimensionId));
+								innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.getDimensionId()));
 							}
 
 							volume++;
@@ -212,7 +212,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		innerNodes.clear();
 		iteratedNodes.add(tile);
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			TileEntity tileEntity = Coord4D.get(tile).offset(side).getTileEntity(tile.getWorldObj());
 
@@ -231,34 +231,34 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		return true;
 	}
 
-	public ForgeDirection getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+	public EnumFacing getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
 		if(obj.xCoord == xmin)
 		{
-			return ForgeDirection.WEST;
+			return EnumFacing.WEST;
 		}
 		else if(obj.xCoord == xmax)
 		{
-			return ForgeDirection.EAST;
+			return EnumFacing.EAST;
 		}
 		else if(obj.yCoord == ymin)
 		{
-			return ForgeDirection.DOWN;
+			return EnumFacing.DOWN;
 		}
 		else if(obj.yCoord == ymax)
 		{
-			return ForgeDirection.UP;
+			return EnumFacing.UP;
 		}
 		else if(obj.zCoord == zmin)
 		{
-			return ForgeDirection.NORTH;
+			return EnumFacing.NORTH;
 		}
 		else if(obj.zCoord == zmax)
 		{
-			return ForgeDirection.SOUTH;
+			return EnumFacing.SOUTH;
 		}
 
-		return ForgeDirection.UNKNOWN;
+		return EnumFacing.null;
 	}
 
 	/**

@@ -15,7 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -98,18 +98,18 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		EnumSet set = EnumSet.allOf(ForgeDirection.class);
+		EnumSet set = EnumSet.allOf(EnumFacing.class);
 		set.removeAll(getOutputtingSides());
 
 		return set;
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return EnumSet.of(EnumFacing.getFront(facing));
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		return side <= 1 ? new int[] {0} : new int[] {1};
 	}

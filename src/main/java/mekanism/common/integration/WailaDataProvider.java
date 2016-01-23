@@ -63,7 +63,7 @@ public class WailaDataProvider implements IWailaDataProvider
 		else if(tile instanceof TileEntityBoundingBlock)
 		{
 			TileEntityBoundingBlock bound = (TileEntityBoundingBlock)tile;
-			Coord4D coord = new Coord4D(bound.mainX, bound.mainY, bound.mainZ, tile.getWorldObj().provider.dimensionId);
+			Coord4D coord = new Coord4D(bound.mainX, bound.mainY, bound.mainZ, tile.getWorldObj().provider.getDimensionId());
 			
 			if(bound.receivedCoords && coord.getTileEntity(tile.getWorldObj()) instanceof IInventory)
 			{

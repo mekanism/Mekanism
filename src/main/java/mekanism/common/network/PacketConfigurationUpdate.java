@@ -19,7 +19,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -74,7 +74,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			}
 			else if(message.packetType == ConfigurationPacket.INPUT_COLOR)
 			{
-				ForgeDirection side = ForgeDirection.getOrientation(message.inputSide);
+				EnumFacing side = EnumFacing.getFront(message.inputSide);
 
 				if(message.clickType == 0)
 				{
@@ -153,12 +153,8 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 		public void toBytes(ByteBuf dataStream)
 		{
 			dataStream.writeInt(packetType.ordinal());
-	
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-	
-			dataStream.writeInt(coord4D.dimensionId);
+
+			coord4D.write(dataStream);
 	
 			if(packetType != ConfigurationPacket.EJECT && packetType != ConfigurationPacket.STRICT_INPUT)
 			{
@@ -187,7 +183,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 		{
 			packetType = ConfigurationPacket.values()[dataStream.readInt()];
 	
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 	
 			if(packetType == ConfigurationPacket.EJECT)
 			{

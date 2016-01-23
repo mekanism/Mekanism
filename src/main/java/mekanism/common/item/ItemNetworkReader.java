@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class ItemNetworkReader extends ItemEnergized
 {
@@ -72,7 +72,7 @@ public class ItemNetworkReader extends ItemEnergized
 					
 					Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
 					
-					for(ForgeDirection iterSide : ForgeDirection.VALID_DIRECTIONS)
+					for(EnumFacing iterSide : EnumFacing.VALUES)
 					{
 						Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
 						

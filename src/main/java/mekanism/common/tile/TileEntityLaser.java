@@ -21,7 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IActiveState
 {
@@ -47,7 +47,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 		{
 			if(isActive)
 			{
-				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaserClient(this, EnumFacing.getFront(facing), usage.laserUsage, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -79,7 +79,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 			{
 				setActive(true);
 				
-				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				LaserInfo info = LaserManager.fireLaser(this, EnumFacing.getFront(facing), usage.laserUsage, worldObj);
 				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -116,9 +116,9 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 	}
 	
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
 	}
 	
 	@Override

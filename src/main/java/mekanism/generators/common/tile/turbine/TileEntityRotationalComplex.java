@@ -13,7 +13,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityRotationalComplex extends TileEntityBasicBlock
 {
@@ -85,7 +85,7 @@ public class TileEntityRotationalComplex extends TileEntityBasicBlock
 	{
 		multiblockUUID = id;
 		
-		Coord4D coord = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
+		Coord4D coord = Coord4D.get(this).getFromSide(EnumFacing.DOWN);
 		TileEntity tile = coord.getTileEntity(worldObj);
 		
 		if(tile instanceof TileEntityTurbineRod)

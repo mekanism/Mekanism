@@ -138,7 +138,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		if(side == 0 || !canAccess())
 		{

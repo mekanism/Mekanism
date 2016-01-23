@@ -463,7 +463,7 @@ public class GuiTeleporter extends GuiMekanism
 	
 	private String getOwner()
 	{
-		return tileEntity != null ? tileEntity.owner : entityPlayer.getCommandSenderName();
+		return tileEntity != null ? tileEntity.owner : entityPlayer.getName();
 	}
 	
 	private byte getStatus()

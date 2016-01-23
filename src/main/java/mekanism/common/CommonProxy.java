@@ -352,7 +352,7 @@ public class CommonProxy
 		usage.gasCentrifugeUsage = Mekanism.configuration.get("usage", "GasCentrifugeUsage", 100D).getDouble();
 		usage.heavyWaterElectrolysisUsage = Mekanism.configuration.get("usage", "HeavyWaterElectrolysisUsage", 800D).getDouble();
 
-		Tier.loadConfig();
+//TODO:		Tier.loadConfig();
 		
 		if(Mekanism.configuration.hasChanged())
 		{

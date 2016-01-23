@@ -28,7 +28,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,8 +53,8 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	{
 		if(this == GeneratorsBlocks.Reactor)
 		{
-			ctms[0][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOff").registerIcons(register);
-			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOn").registerIcons(register);
+			ctms[0][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(EnumFacing.UP, "ctm/ReactorControllerOff").registerIcons(register);
+			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(EnumFacing.UP, "ctm/ReactorControllerOn").registerIcons(register);
 			ctms[1][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
 			ctms[2][0] = new CTMData("ctm/ReactorNeutronCapture", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
 			ctms[3][0] = new CTMData("ctm/ReactorPort", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
@@ -309,7 +309,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).offset(ForgeDirection.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).offset(EnumFacing.getFront(side).getOpposite());
 		
 		if(this == GeneratorsBlocks.ReactorGlass)
 		{
@@ -343,7 +343,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
     }
 	
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
 	{
 		ReactorBlockType type = ReactorBlockType.get(this, world.getBlockMetadata(x, y, z));
 

@@ -30,7 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -173,8 +173,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 			}
 			else if(getState(stack) == ConfiguratorMode.ROTATE) //Rotate
 			{
-				ForgeDirection axis = ForgeDirection.getOrientation(side);
-				List<ForgeDirection> l = Arrays.asList(block.getValidRotations(world, x, y, z));
+				EnumFacing axis = EnumFacing.getFront(side);
+				List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, x, y, z));
 
 				if(!player.isSneaking() && l.contains(axis))
 				{

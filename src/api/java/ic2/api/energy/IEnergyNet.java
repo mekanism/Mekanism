@@ -3,7 +3,7 @@ package ic2.api.energy;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Interface representing the methods provided by the global EnergyNet class.

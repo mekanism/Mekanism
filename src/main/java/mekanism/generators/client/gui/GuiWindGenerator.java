@@ -65,7 +65,7 @@ public class GuiWindGenerator extends GuiMekanism
 
 		int size = 44;
 
-		if(!tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
+		if(!tileEntity.getWorld().canBlockSeeTheSky(tileEntity.getPos().getX(), tileEntity.getPos().getY()+4, tileEntity.getPos().getZ()))
 		{
 			size += 9;
 			fontRendererObj.drawString(EnumColor.DARK_RED + LangUtils.localize("gui.skyBlocked"), 51, size, 0x00CD00);

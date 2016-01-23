@@ -152,7 +152,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 	
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(int side)
 	{
 		if(side == MekanismUtils.getLeft(facing).ordinal())
 		{

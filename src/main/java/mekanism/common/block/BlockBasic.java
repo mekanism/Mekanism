@@ -43,7 +43,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -483,7 +483,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 					}
 
-					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][bin.facing];
+					int change = EnumFacing.ROTATION_MATRIX[EnumFacing.UP.ordinal()][bin.facing];
 
 					bin.setFacing((short)change);
 					world.notifyBlocksOfNeighborChange(x, y, z, this);
@@ -571,7 +571,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
 	{
 		return !(blockType == BasicBlock.BASIC_BLOCK_1 && world.getBlockMetadata(x, y, z) == 10);
 	}
@@ -991,7 +991,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).offset(ForgeDirection.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).offset(EnumFacing.getFront(side).getOpposite());
 		
 		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getBlockState(world) == 10)
 		{
@@ -1003,16 +1003,16 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
-		ForgeDirection[] valid = new ForgeDirection[6];
+		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.VALUES)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{
@@ -1025,7 +1025,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		

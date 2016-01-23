@@ -1,6 +1,6 @@
 package li.cil.oc.api.network;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * This is an extended version of {@link li.cil.oc.api.network.SimpleComponent}

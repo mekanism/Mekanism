@@ -56,10 +56,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 			
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 			
@@ -75,7 +72,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 			
 			storedBuffer = dataStream.copy();
 		}
