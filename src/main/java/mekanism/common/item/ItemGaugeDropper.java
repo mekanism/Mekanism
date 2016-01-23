@@ -103,14 +103,14 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 
 	private FluidStack getFluid_do(ItemStack container) 
 	{
-		if(container.stackTagCompound == null)
+		if(container.getTagCompound() == null)
 		{
 			return null;
 		}
 
-		if(container.stackTagCompound.hasKey("fluidStack"))
+		if(container.getTagCompound().hasKey("fluidStack"))
 		{
-			return FluidStack.loadFluidStackFromNBT(container.stackTagCompound.getCompoundTag("fluidStack"));
+			return FluidStack.loadFluidStackFromNBT(container.getTagCompound().getCompoundTag("fluidStack"));
 		}
 		
 		return null;
@@ -125,17 +125,17 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	
 	public void setFluid(ItemStack container, FluidStack stack)
 	{
-		if(container.stackTagCompound == null)
+		if(container.getTagCompound() == null)
 		{
 			container.setTagCompound(new NBTTagCompound());
 		}
 		
 		if(stack == null || stack.amount == 0 || stack.getFluidID() == 0)
 		{
-			container.stackTagCompound.removeTag("fluidStack");
+			container.getTagCompound().removeTag("fluidStack");
 		}
 		else {
-			container.stackTagCompound.setTag("fluidStack", stack.writeToNBT(new NBTTagCompound()));
+			container.getTagCompound().setTag("fluidStack", stack.writeToNBT(new NBTTagCompound()));
 		}
 		
 		updateDamage(container);
@@ -251,12 +251,12 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 
 	private GasStack getGas_do(ItemStack itemstack) 
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return null;
 		}
 
-		return GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("gasStack"));
+		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("gasStack"));
 	}
 	
 	@Override
@@ -269,20 +269,20 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack) 
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.stackTagCompound.removeTag("gasStack");
+			itemstack.getTagCompound().removeTag("gasStack");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.stackTagCompound.setTag("gasStack", gasStack.write(new NBTTagCompound()));
+			itemstack.getTagCompound().setTag("gasStack", gasStack.write(new NBTTagCompound()));
 		}
 		
 		updateDamage(itemstack);

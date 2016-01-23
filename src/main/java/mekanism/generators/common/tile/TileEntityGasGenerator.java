@@ -309,16 +309,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	{
 		if(fuelTank != null)
 		{
-			itemStack.stackTagCompound.setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		if(itemStack.stackTagCompound.hasKey("fuelTank"))
+		if(itemStack.getTagCompound().hasKey("fuelTank"))
 		{
-			fuelTank.read(itemStack.stackTagCompound.getCompoundTag("fuelTank"));
+			fuelTank.read(itemStack.getTagCompound().getCompoundTag("fuelTank"));
 			
 			boolean isTankEmpty = (fuelTank.getGas() == null);
 			//Update energy output based on any existing fuel in tank

@@ -220,24 +220,24 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 	public void setState(ItemStack itemstack, ConfiguratorMode state)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setInteger("state", state.ordinal());
+		itemstack.getTagCompound().setInteger("state", state.ordinal());
 	}
 
 	public ConfiguratorMode getState(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return ConfiguratorMode.CONFIGURATE_ITEMS;
 		}
 
-		if(itemstack.stackTagCompound.getTag("state") != null)
+		if(itemstack.getTagCompound().getTag("state") != null)
 		{
-			return ConfiguratorMode.values()[itemstack.stackTagCompound.getInteger("state")];
+			return ConfiguratorMode.values()[itemstack.getTagCompound().getInteger("state")];
 		}
 
 		return ConfiguratorMode.CONFIGURATE_ITEMS;

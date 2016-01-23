@@ -96,22 +96,22 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	
 	public BaseTier getTier(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return BaseTier.BASIC;
 		}
 
-		return BaseTier.values()[itemstack.stackTagCompound.getInteger("tier")];
+		return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
 	}
 
 	public void setTier(ItemStack itemstack, BaseTier tier)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setInteger("tier", tier.ordinal());
+		itemstack.getTagCompound().setInteger("tier", tier.ordinal());
 	}
 
 	@Override
@@ -168,7 +168,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return stack.getItemDamage() == 6 && stack.stackTagCompound != null && stack.stackTagCompound.hasKey("newCount");
+		return stack.getItemDamage() == 6 && stack.getTagCompound() != null && stack.getTagCompound().hasKey("newCount");
 	}
 
 	@Override
@@ -182,7 +182,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			}
 		}
 
-		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
+		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("newCount"))
 		{
 			return true;
 		}
@@ -195,13 +195,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
-			if(stack.getItemDamage() != 6 || stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
+			if(stack.getItemDamage() != 6 || stack.getTagCompound() == null || !stack.getTagCompound().hasKey("newCount"))
 			{
 				return null;
 			}
 
             ItemStack ret = stack.copy();
-            ret.stackTagCompound.setInteger("itemCount", stack.stackTagCompound.getInteger("newCount"));
+            ret.getTagCompound().setInteger("itemCount", stack.getTagCompound().getInteger("newCount"));
 
             return ret;
 		}
@@ -218,7 +218,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 		{
 			if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 			{
-				if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
+				if(stack.getItemDamage() == 6 && stack.getTagCompound() != null)
 				{
 					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(x, y, z);
 					InventoryBin inv = new InventoryBin(stack);
@@ -358,12 +358,12 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
 		{
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return 0;
 			}
 	
-			return itemStack.stackTagCompound.getDouble("energyStored");
+			return itemStack.getTagCompound().getDouble("energyStored");
 		}
 		
 		return 0;
@@ -374,12 +374,12 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
 		{
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 	
-			itemStack.stackTagCompound.setDouble("energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
+			itemStack.getTagCompound().setDouble("energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
 		}
 	}
 

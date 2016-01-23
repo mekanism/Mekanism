@@ -305,12 +305,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public void writeSustainedData(ItemStack itemStack)
 	{
-		itemStack.stackTagCompound.setInteger("fluidStored", bioFuelSlot.fluidStored);
+		itemStack.getTagCompound().setInteger("fluidStored", bioFuelSlot.fluidStored);
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		bioFuelSlot.setFluid(itemStack.stackTagCompound.getInteger("fluidStored"));
+		bioFuelSlot.setFluid(itemStack.getTagCompound().getInteger("fluidStored"));
 	}
 }

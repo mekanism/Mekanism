@@ -328,20 +328,20 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		if(inputTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("inputTank", inputTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("inputTank", inputTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 	
 	@Override
 	public void readSustainedData(ItemStack itemStack)
 	{
-		inputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("inputTank")));
-		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
+		inputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("inputTank")));
+		outputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("outputTank")));
 	}
 
 	@Override

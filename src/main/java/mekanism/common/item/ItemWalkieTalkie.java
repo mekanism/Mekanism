@@ -65,48 +65,48 @@ public class ItemWalkieTalkie extends ItemMekanism
 
 	public void setOn(ItemStack itemStack, boolean on)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setBoolean("on", on);
+		itemStack.getTagCompound().setBoolean("on", on);
 	}
 
 	public boolean getOn(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return false;
 		}
 
-		return itemStack.stackTagCompound.getBoolean("on");
+		return itemStack.getTagCompound().getBoolean("on");
 	}
 
 	public void setChannel(ItemStack itemStack, int channel)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setInteger("channel", channel);
+		itemStack.getTagCompound().setInteger("channel", channel);
 	}
 
 	public int getChannel(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 1;
 		}
 
-		int channel = itemStack.stackTagCompound.getInteger("channel");
+		int channel = itemStack.getTagCompound().getInteger("channel");
 
 		if(channel == 0)
 		{
 			setChannel(itemStack, 1);
 		}
 
-		return itemStack.stackTagCompound.getInteger("channel");
+		return itemStack.getTagCompound().getInteger("channel");
 	}
 }

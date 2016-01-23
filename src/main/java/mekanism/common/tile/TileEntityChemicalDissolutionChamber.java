@@ -456,20 +456,20 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		if(injectTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("injectTank", injectTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("injectTank", injectTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		injectTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("injectTank")));
-		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
+		injectTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("injectTank")));
+		outputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("outputTank")));
 	}
 
 	@Override

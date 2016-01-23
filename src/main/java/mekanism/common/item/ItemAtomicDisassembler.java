@@ -277,12 +277,12 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public int getMode(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		return itemStack.stackTagCompound.getInteger("mode");
+		return itemStack.getTagCompound().getInteger("mode");
 	}
 
 	public String getModeName(ItemStack itemStack)
@@ -308,12 +308,12 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public void toggleMode(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setInteger("mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
+		itemStack.getTagCompound().setInteger("mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
 	}
 
 	@Override

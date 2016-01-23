@@ -114,12 +114,12 @@ public class ItemElectricBow extends ItemEnergized
 	 */
 	public void setFireState(ItemStack itemstack, boolean state)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setBoolean("fireState", state);
+		itemstack.getTagCompound().setBoolean("fireState", state);
 	}
 
 	/**
@@ -129,16 +129,16 @@ public class ItemElectricBow extends ItemEnergized
 	 */
 	public boolean getFireState(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return false;
 		}
 
 		boolean state = false;
 
-		if(itemstack.stackTagCompound.getTag("fireState") != null)
+		if(itemstack.getTagCompound().getTag("fireState") != null)
 		{
-			state = itemstack.stackTagCompound.getBoolean("fireState");
+			state = itemstack.getTagCompound().getBoolean("fireState");
 		}
 
 		return state;

@@ -146,12 +146,12 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
+		double electricityStored = itemStack.getTagCompound().getDouble("electricity");
 		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
 
 		return electricityStored;
@@ -160,13 +160,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+		itemStack.getTagCompound().setDouble("electricity", electricityStored);
 		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
 	}
 

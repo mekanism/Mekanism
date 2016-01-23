@@ -142,22 +142,22 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 	public void setBlockData(ItemStack itemstack, BlockData data)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setTag("blockData", data.write(new NBTTagCompound()));
+		itemstack.getTagCompound().setTag("blockData", data.write(new NBTTagCompound()));
 	}
 
 	public BlockData getBlockData(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("blockData"))
+		if(itemstack.getTagCompound() == null || !itemstack.getTagCompound().hasKey("blockData"))
 		{
 			return null;
 		}
 
-		return BlockData.read(itemstack.stackTagCompound.getCompoundTag("blockData"));
+		return BlockData.read(itemstack.getTagCompound().getCompoundTag("blockData"));
 	}
 
 	@SubscribeEvent

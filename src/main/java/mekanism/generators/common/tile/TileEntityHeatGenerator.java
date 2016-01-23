@@ -357,14 +357,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(lavaTank.getFluid() != null)
 		{
-			itemStack.stackTagCompound.setTag("lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("lavaTank")));
+		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("lavaTank")));
 	}
 
 	@Override

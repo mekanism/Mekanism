@@ -562,20 +562,20 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			itemStack.stackTagCompound.setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 		
 		if(gasTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("gasTank", gasTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("gasTank", gasTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 	
 	@Override
 	public void readSustainedData(ItemStack itemStack)
 	{
-		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank")));
-		gasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("gasTank")));
+		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank")));
+		gasTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("gasTank")));
 	}
 
 	@Override

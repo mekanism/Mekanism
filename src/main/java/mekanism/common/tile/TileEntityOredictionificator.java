@@ -368,7 +368,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public void writeSustainedData(ItemStack itemStack) 
 	{
-		itemStack.stackTagCompound.setBoolean("hasOredictionificatorConfig", true);
+		itemStack.getTagCompound().setBoolean("hasOredictionificatorConfig", true);
 
 		NBTTagList filterTags = new NBTTagList();
 
@@ -381,18 +381,18 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 		if(filterTags.tagCount() != 0)
 		{
-			itemStack.stackTagCompound.setTag("filters", filterTags);
+			itemStack.getTagCompound().setTag("filters", filterTags);
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		if(itemStack.stackTagCompound.hasKey("hasOredictionificatorConfig"))
+		if(itemStack.getTagCompound().hasKey("hasOredictionificatorConfig"))
 		{
-			if(itemStack.stackTagCompound.hasKey("filters"))
+			if(itemStack.getTagCompound().hasKey("filters"))
 			{
-				NBTTagList tagList = itemStack.stackTagCompound.getTagList("filters", NBT.TAG_COMPOUND);
+				NBTTagList tagList = itemStack.getTagCompound().getTagList("filters", NBT.TAG_COMPOUND);
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{

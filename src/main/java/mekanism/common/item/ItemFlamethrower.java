@@ -112,12 +112,12 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
+		GasStack stored = GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
 
 		if(stored == null)
 		{
@@ -139,7 +139,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
@@ -147,14 +147,14 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 		if(stack == null || stack.amount == 0)
 		{
 			itemstack.setItemDamage(100);
-			itemstack.stackTagCompound.removeTag("stored");
+			itemstack.getTagCompound().removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
+			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 
@@ -186,22 +186,22 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 
     public FlamethrowerMode getMode(ItemStack stack)
     {
-        if(stack.stackTagCompound == null)
+        if(stack.getTagCompound() == null)
         {
             return FlamethrowerMode.COMBAT;
         }
 
-        return FlamethrowerMode.values()[stack.stackTagCompound.getInteger("mode")];
+        return FlamethrowerMode.values()[stack.getTagCompound().getInteger("mode")];
     }
 
     public void setMode(ItemStack stack, FlamethrowerMode mode)
     {
-        if(stack.stackTagCompound == null)
+        if(stack.getTagCompound() == null)
         {
             stack.setTagCompound(new NBTTagCompound());
         }
 
-        stack.stackTagCompound.setInteger("mode", mode.ordinal());
+        stack.getTagCompound().setInteger("mode", mode.ordinal());
     }
 
     public static enum FlamethrowerMode

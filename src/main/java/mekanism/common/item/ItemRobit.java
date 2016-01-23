@@ -79,22 +79,22 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 
 	public void setName(ItemStack itemstack, String name)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setString("name", name);
+		itemstack.getTagCompound().setString("name", name);
 	}
 
 	public String getName(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return "Robit";
 		}
 
-		String name = itemstack.stackTagCompound.getString("name");
+		String name = itemstack.getTagCompound().getString("name");
 
 		return name.equals("") ? "Robit" : name;
 	}
@@ -106,12 +106,12 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
-			itemStack.stackTagCompound.setTag("Items", nbtTags);
+			itemStack.getTagCompound().setTag("Items", nbtTags);
 		}
 	}
 
@@ -122,12 +122,12 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items", 10);
+			return itemStack.getTagCompound().getTagList("Items", 10);
 		}
 
 		return null;

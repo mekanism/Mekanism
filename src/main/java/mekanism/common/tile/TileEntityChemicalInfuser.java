@@ -501,26 +501,26 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		if(leftTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("leftTank", leftTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("leftTank", leftTank.getGas().write(new NBTTagCompound()));
 		}
 
 		if(rightTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("rightTank", rightTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("rightTank", rightTank.getGas().write(new NBTTagCompound()));
 		}
 
 		if(centerTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("centerTank", centerTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("centerTank", centerTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		leftTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("leftTank")));
-		rightTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("rightTank")));
-		centerTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("centerTank")));
+		leftTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("leftTank")));
+		rightTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("rightTank")));
+		centerTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("centerTank")));
 	}
 	
 	@Override

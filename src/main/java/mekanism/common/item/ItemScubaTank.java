@@ -144,12 +144,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	public boolean getFlowing(ItemStack stack)
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			return false;
 		}
 
-		return stack.stackTagCompound.getBoolean("flowing");
+		return stack.getTagCompound().getBoolean("flowing");
 	}
 	
 	public String getFlowingStr(ItemStack stack)
@@ -161,12 +161,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	public void setFlowing(ItemStack stack, boolean flowing)
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 
-		stack.stackTagCompound.setBoolean("flowing", flowing);
+		stack.getTagCompound().setBoolean("flowing", flowing);
 	}
 
 	@Override
@@ -184,12 +184,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
+		GasStack stored = GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
 
 		if(stored == null)
 		{
@@ -205,7 +205,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
@@ -213,14 +213,14 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		if(stack == null || stack.amount == 0)
 		{
 			itemstack.setItemDamage(100);
-			itemstack.stackTagCompound.removeTag("stored");
+			itemstack.getTagCompound().removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
+			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 	

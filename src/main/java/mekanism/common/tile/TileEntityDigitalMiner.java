@@ -1404,15 +1404,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public void writeSustainedData(ItemStack itemStack) 
 	{
-		itemStack.stackTagCompound.setBoolean("hasMinerConfig", true);
+		itemStack.getTagCompound().setBoolean("hasMinerConfig", true);
 
-		itemStack.stackTagCompound.setInteger("radius", radius);
-		itemStack.stackTagCompound.setInteger("minY", minY);
-		itemStack.stackTagCompound.setInteger("maxY", maxY);
-		itemStack.stackTagCompound.setBoolean("doEject", doEject);
-		itemStack.stackTagCompound.setBoolean("doPull", doPull);
-		itemStack.stackTagCompound.setBoolean("silkTouch", silkTouch);
-		itemStack.stackTagCompound.setBoolean("inverse", inverse);
+		itemStack.getTagCompound().setInteger("radius", radius);
+		itemStack.getTagCompound().setInteger("minY", minY);
+		itemStack.getTagCompound().setInteger("maxY", maxY);
+		itemStack.getTagCompound().setBoolean("doEject", doEject);
+		itemStack.getTagCompound().setBoolean("doPull", doPull);
+		itemStack.getTagCompound().setBoolean("silkTouch", silkTouch);
+		itemStack.getTagCompound().setBoolean("inverse", inverse);
 
 		NBTTagList filterTags = new NBTTagList();
 
@@ -1423,26 +1423,26 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(filterTags.tagCount() != 0)
 		{
-			itemStack.stackTagCompound.setTag("filters", filterTags);
+			itemStack.getTagCompound().setTag("filters", filterTags);
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound.hasKey("hasMinerConfig"))
+		if(itemStack.getTagCompound().hasKey("hasMinerConfig"))
 		{
-			radius = itemStack.stackTagCompound.getInteger("radius");
-			minY = itemStack.stackTagCompound.getInteger("minY");
-			maxY = itemStack.stackTagCompound.getInteger("maxY");
-			doEject = itemStack.stackTagCompound.getBoolean("doEject");
-			doPull = itemStack.stackTagCompound.getBoolean("doPull");
-			silkTouch = itemStack.stackTagCompound.getBoolean("silkTouch");
-			inverse = itemStack.stackTagCompound.getBoolean("inverse");
+			radius = itemStack.getTagCompound().getInteger("radius");
+			minY = itemStack.getTagCompound().getInteger("minY");
+			maxY = itemStack.getTagCompound().getInteger("maxY");
+			doEject = itemStack.getTagCompound().getBoolean("doEject");
+			doPull = itemStack.getTagCompound().getBoolean("doPull");
+			silkTouch = itemStack.getTagCompound().getBoolean("silkTouch");
+			inverse = itemStack.getTagCompound().getBoolean("inverse");
 
-			if(itemStack.stackTagCompound.hasKey("filters"))
+			if(itemStack.getTagCompound().hasKey("filters"))
 			{
-				NBTTagList tagList = itemStack.stackTagCompound.getTagList("filters", NBT.TAG_COMPOUND);
+				NBTTagList tagList = itemStack.getTagCompound().getTagList("filters", NBT.TAG_COMPOUND);
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{

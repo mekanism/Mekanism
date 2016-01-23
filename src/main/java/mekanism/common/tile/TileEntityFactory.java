@@ -285,14 +285,14 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						
 						ItemStack returnStack = getMachineStack();
 						
-						if(returnStack.stackTagCompound == null)
+						if(returnStack.getTagCompound() == null)
 						{
 							returnStack.setTagCompound(new NBTTagCompound());
 						}
 						
-						upgradeComponent.write(returnStack.stackTagCompound);
+						upgradeComponent.write(returnStack.getTagCompound());
 						upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-						upgradeComponent.read(inventory[2].stackTagCompound);
+						upgradeComponent.read(inventory[2].getTagCompound());
 
 						inventory[2] = null;
 						inventory[3] = returnStack;

@@ -913,21 +913,21 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
 		if(tileEntity instanceof IUpgradeTile)
 		{
-			((IUpgradeTile)tileEntity).getComponent().write(itemStack.stackTagCompound);
+			((IUpgradeTile)tileEntity).getComponent().write(itemStack.getTagCompound());
 		}
 
 		if(tileEntity instanceof ISideConfiguration)
 		{
 			ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-			config.getConfig().write(itemStack.stackTagCompound);
+			config.getConfig().write(itemStack.getTagCompound());
 		}
 		
 		if(tileEntity instanceof ISustainedData)
@@ -938,7 +938,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		if(tileEntity instanceof IRedstoneControl)
 		{
 			IRedstoneControl control = (IRedstoneControl)tileEntity;
-			itemStack.stackTagCompound.setInteger("controlType", control.getControlType().ordinal());
+			itemStack.getTagCompound().setInteger("controlType", control.getControlType().ordinal());
 		}
 
 		if(tileEntity instanceof IStrictEnergyStorage)

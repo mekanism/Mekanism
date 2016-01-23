@@ -97,22 +97,22 @@ public class InventoryBin
 
 	public int getItemCount()
 	{
-		if(bin.stackTagCompound == null)
+		if(bin.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		return bin.stackTagCompound.getInteger("itemCount");
+		return bin.getTagCompound().getInteger("itemCount");
 	}
 
 	public void setItemCount(int count)
 	{
-		if(bin.stackTagCompound == null)
+		if(bin.getTagCompound() == null)
 		{
 			bin.setTagCompound(new NBTTagCompound());
 		}
 
-		bin.stackTagCompound.setInteger("itemCount", Math.max(0, count));
+		bin.getTagCompound().setInteger("itemCount", Math.max(0, count));
 
 		if(getItemCount() == 0)
 		{
@@ -122,29 +122,29 @@ public class InventoryBin
 
 	public ItemStack getItemType()
 	{
-		if(bin.stackTagCompound == null || getItemCount() == 0)
+		if(bin.getTagCompound() == null || getItemCount() == 0)
 		{
 			return null;
 		}
 
-		return ItemStack.loadItemStackFromNBT(bin.stackTagCompound.getCompoundTag("storedItem"));
+		return ItemStack.loadItemStackFromNBT(bin.getTagCompound().getCompoundTag("storedItem"));
 	}
 
 	public void setItemType(ItemStack stack)
 	{
-		if(bin.stackTagCompound == null)
+		if(bin.getTagCompound() == null)
 		{
 			bin.setTagCompound(new NBTTagCompound());
 		}
 
 		if(stack == null)
 		{
-			bin.stackTagCompound.removeTag("storedItem");
+			bin.getTagCompound().removeTag("storedItem");
 			return;
 		}
 
 		ItemStack ret = StackUtils.size(stack, 1);
 
-		bin.stackTagCompound.setTag("storedItem", StackUtils.size(stack, 1).writeToNBT(new NBTTagCompound()));
+		bin.getTagCompound().setTag("storedItem", StackUtils.size(stack, 1).writeToNBT(new NBTTagCompound()));
 	}
 }

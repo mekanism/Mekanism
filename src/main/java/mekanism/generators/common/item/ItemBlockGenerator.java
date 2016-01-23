@@ -205,7 +205,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			
 			if(tileEntity instanceof ISustainedData)
 			{
-				if(stack.stackTagCompound != null)
+				if(stack.getTagCompound() != null)
 				{
 					((ISustainedData)tileEntity).readSustainedData(stack);
 				}
@@ -274,12 +274,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
-			itemStack.stackTagCompound.setTag("Items", nbtTags);
+			itemStack.getTagCompound().setTag("Items", nbtTags);
 		}
 	}
 
@@ -290,12 +290,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items", 10);
+			return itemStack.getTagCompound().getTagList("Items", 10);
 		}
 
 		return null;
@@ -313,12 +313,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
-			itemStack.stackTagCompound.setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
@@ -329,14 +329,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 
-			if(itemStack.stackTagCompound.hasKey("fluidTank"))
+			if(itemStack.getTagCompound().hasKey("fluidTank"))
 			{
-				return FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank"));
+				return FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank"));
 			}
 		}
 
@@ -352,24 +352,24 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		return itemStack.stackTagCompound.getDouble("electricity");
+		return itemStack.getTagCompound().getDouble("electricity");
 	}
 
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+		itemStack.getTagCompound().setDouble("electricity", electricityStored);
 	}
 
 	@Override
