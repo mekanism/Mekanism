@@ -1,9 +1,10 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.Mekanism;
@@ -11,8 +12,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityDynamicTank;
-
+import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -21,8 +21,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IMessage>
 {
@@ -36,9 +34,9 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
 
-			if(tileEntity instanceof TileEntityDynamicTank)
+			if(tileEntity instanceof TileEntityMultiblock)
 			{
-				((TileEntityDynamicTank)tileEntity).sendStructure = true;
+				((TileEntityMultiblock)tileEntity).sendStructure = true;
 			}
 
 			if(tileEntity instanceof ITransmitterTile)
