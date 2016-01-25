@@ -36,7 +36,7 @@ public class ContainerUpgradeManagement extends Container
 		}
 
 		((TileEntityContainerBlock)tileEntity).open(inventory.player);
-		((TileEntityContainerBlock)tileEntity).openInventory();
+		((TileEntityContainerBlock)tileEntity).openInventory(inventory.player);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class ContainerUpgradeManagement extends Container
 		super.onContainerClosed(entityplayer);
 
 		((TileEntityContainerBlock)tileEntity).close(entityplayer);
-		((TileEntityContainerBlock)tileEntity).closeInventory();
+		((TileEntityContainerBlock)tileEntity).closeInventory(entityplayer);
 	}
 
 	@Override

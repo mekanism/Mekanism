@@ -16,7 +16,7 @@ public class ContainerNull extends Container
 		if(tileEntity != null)
 		{
 			tileEntity.open(player);
-			tileEntity.openInventory();
+			tileEntity.openInventory(player);
 		}
 	}
 	
@@ -35,7 +35,7 @@ public class ContainerNull extends Container
 		if(tileEntity != null)
 		{
 			tileEntity.close(entityplayer);
-			tileEntity.closeInventory();
+			tileEntity.closeInventory(entityplayer);
 		}
 	}
 

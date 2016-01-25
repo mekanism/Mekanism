@@ -119,7 +119,7 @@ public class HashList<T> implements Iterable<T>
 	}
 
 	@Override
-	public Iterator iterator()
+	public Iterator<T> iterator()
 	{
 		return list.iterator();
 	}

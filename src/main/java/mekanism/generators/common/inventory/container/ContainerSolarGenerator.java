@@ -33,7 +33,7 @@ public class ContainerSolarGenerator extends Container
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
 
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 		tileEntity.open(inventory.player);
 	}
 

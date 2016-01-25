@@ -395,15 +395,15 @@ public class CommonProxy implements IGuiProvider
 	public void doMultiblockSparkle(TileEntityMultiblock<?> tileEntity) {}
 
 	@Override
-	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
 		return null;
 	}
 
 	@Override
-	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		switch(ID)
 		{

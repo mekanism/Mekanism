@@ -41,7 +41,7 @@ public class ContainerElectrolyticSeparator extends Container
 			addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
 		}
 
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 		tileEntity.open(inventory.player);
 	}
 
@@ -50,7 +50,7 @@ public class ContainerElectrolyticSeparator extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 		tileEntity.close(entityplayer);
 	}
 

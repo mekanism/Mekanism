@@ -2,6 +2,7 @@ package mekanism.common.base;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public interface IGuiProvider 
@@ -11,22 +12,18 @@ public interface IGuiProvider
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI
 	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
+	 * @param pos - gui's position
 	 * @return the Container of the GUI
 	 */
-	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z);
+	public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos);
 	
 	/**
 	 * Get the actual interface for a GUI. Client-only.
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI
 	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
+	 * @param pos - gui's position
 	 * @return the GuiScreen of the GUI
 	 */
-	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z);
+	public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos);
 }
