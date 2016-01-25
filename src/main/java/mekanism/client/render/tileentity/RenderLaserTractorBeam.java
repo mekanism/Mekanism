@@ -23,7 +23,7 @@ public class RenderLaserTractorBeam extends TileEntitySpecialRenderer<TileEntity
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserTractorBeam.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 0:
 				GL11.glTranslatef(0.0F, -2.0F, 0.0F);

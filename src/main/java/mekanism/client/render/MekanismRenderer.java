@@ -24,10 +24,14 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.client.renderer.texture.ResourceLocation;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -48,14 +52,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
 {
-	private static RenderBlocks renderBlocks = new RenderBlocks();
+	//private static RenderBlocks renderBlocks = new RenderBlocks();
 	
-	public static ResourceLocation[] colors = new ResourceLocation[256];
+	public static TextureAtlasSprite[] colors = new TextureAtlasSprite[256];
 	
-	public static ResourceLocation energyIcon;
-	public static ResourceLocation heatIcon;
+	public static TextureAtlasSprite energyIcon;
+	public static TextureAtlasSprite heatIcon;
 	
-	public static Map<TransmissionType, ResourceLocation> overlays = new HashMap<TransmissionType, ResourceLocation>();
+	public static Map<TransmissionType, TextureAtlasSprite> overlays = new HashMap<TransmissionType, TextureAtlasSprite>();
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -87,27 +91,27 @@ public class MekanismRenderer
 				overlays.put(type, event.map.registerSprite(new ResourceLocation("mekanism:overlay/" + type.getTransmission() + "Overlay")));
 			}
 			
-			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
-			heatIcon = event.map.registerIcon("mekanism:LiquidHeat");
+			energyIcon = event.map.registerSprite("mekanism:LiquidEnergy");
+			heatIcon = event.map.registerSprite("mekanism:LiquidHeat");
 			
-			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
-			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
-			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
-			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:LiquidChlorine"));
-			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurDioxide"));
-			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
-			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
-			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
-			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
-			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
-			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:LiquidEthene"));
-			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:LiquidBrine"));
-			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:LiquidSodium"));
-			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:LiquidDeuterium"));
-			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:LiquidTritium"));
-			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:LiquidDT"));
-			GasRegistry.getGas("steam").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
-			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:LiquidLithium"));
+			GasRegistry.getGas("hydrogen").setIcon(event.map.registerSprite("mekanism:LiquidHydrogen"));
+			GasRegistry.getGas("oxygen").setIcon(event.map.registerSprite("mekanism:LiquidOxygen"));
+			GasRegistry.getGas("water").setIcon(event.map.registerSprite("mekanism:LiquidSteam"));
+			GasRegistry.getGas("chlorine").setIcon(event.map.registerSprite("mekanism:LiquidChlorine"));
+			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerSprite("mekanism:LiquidSulfurDioxide"));
+			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerSprite("mekanism:LiquidSulfurTrioxide"));
+			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerSprite("mekanism:LiquidSulfuricAcid"));
+			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerSprite("mekanism:LiquidHydrogenChloride"));
+			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerSprite("mekanism:LiquidOsmium"));
+			GasRegistry.getGas("liquidStone").setIcon(event.map.registerSprite("mekanism:LiquidStone"));
+			GasRegistry.getGas("ethene").setIcon(event.map.registerSprite("mekanism:LiquidEthene"));
+			GasRegistry.getGas("brine").setIcon(event.map.registerSprite("mekanism:LiquidBrine"));
+			GasRegistry.getGas("sodium").setIcon(event.map.registerSprite("mekanism:LiquidSodium"));
+			GasRegistry.getGas("deuterium").setIcon(event.map.registerSprite("mekanism:LiquidDeuterium"));
+			GasRegistry.getGas("tritium").setIcon(event.map.registerSprite("mekanism:LiquidTritium"));
+			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerSprite("mekanism:LiquidDT"));
+			GasRegistry.getGas("steam").setIcon(event.map.registerSprite("mekanism:LiquidSteam"));
+			GasRegistry.getGas("lithium").setIcon(event.map.registerSprite("mekanism:LiquidLithium"));
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
@@ -115,16 +119,16 @@ public class MekanismRenderer
 				{
 					if(gas.getUnlocalizedName().contains("clean"))
 					{
-						gas.setIcon(event.map.registerIcon("mekanism:LiquidCleanOre"));
+						gas.setIcon(event.map.registerSprite("mekanism:LiquidCleanOre"));
 					}
 					else {
-						gas.setIcon(event.map.registerIcon("mekanism:LiquidOre"));
+						gas.setIcon(event.map.registerSprite("mekanism:LiquidOre"));
 					}
 				}
 			}
 
-			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
-			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:LiquidHeavyWater"));
+			FluidRegistry.getFluid("brine").setIcons(event.map.registerSprite("mekanism:LiquidBrine"));
+			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerSprite("mekanism:LiquidHeavyWater"));
 
 			if(RenderPartTransmitter.getInstance() != null)
 			{
@@ -150,20 +154,20 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static void loadDynamicTextures(ResourceLocationRegister register, String name, ResourceLocation[] textures, DefIcon... defaults)
+	public static void loadDynamicTextures(TextureMap register, String name, TextureAtlasSprite[] textures, DefIcon... defaults)
 	{
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			String tex = "mekanism:" + name + simpleSides[side.ordinal()];
-			String texOn = tex + "On";
+			ResourceLocation tex = new ResourceLocation("mekanism:" + name + simpleSides[side.ordinal()]);
+			ResourceLocation texOn = new ResourceLocation(tex.toString() + "On");
 			
-			if(blockIconExists(tex))
+			if(blockIconExists(tex.toString()))
 			{
-				textures[side.ordinal()] = register.registerIcon(tex);
+				textures[side.ordinal()] = register.registerSprite(tex);
 				
-				if(blockIconExists(texOn))
+				if(blockIconExists(texOn.toString()))
 				{
-					textures[side.ordinal()+6] = register.registerIcon(texOn);
+					textures[side.ordinal()+6] = register.registerSprite(texOn);
 				}
 				else {
 					boolean found = false;
@@ -179,7 +183,7 @@ public class MekanismRenderer
 					
 					if(!found)
 					{
-						textures[side.ordinal()+6] = register.registerIcon(tex);
+						textures[side.ordinal()+6] = register.registerSprite(tex);
 					}
 				}
 			}
@@ -202,11 +206,11 @@ public class MekanismRenderer
 	
 	public static class DefIcon
 	{
-		public ResourceLocation defIcon;
+		public TextureAtlasSprite defIcon;
 		
 		public List<Integer> icons = new ArrayList<Integer>();
 		
-		public DefIcon(ResourceLocation icon, int... is)
+		public DefIcon(TextureAtlasSprite icon, int... is)
 		{
 			defIcon = icon;
 			
@@ -216,12 +220,12 @@ public class MekanismRenderer
 			}
 		}
 		
-		public static DefIcon getAll(ResourceLocation icon)
+		public static DefIcon getAll(TextureAtlasSprite icon)
 		{
 			return new DefIcon(icon, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 		}
 		
-		public static DefIcon getActivePair(ResourceLocation icon, int... is)
+		public static DefIcon getActivePair(TextureAtlasSprite icon, int... is)
 		{
 			DefIcon ret = new DefIcon(icon, is);
 			
@@ -634,15 +638,15 @@ public class MekanismRenderer
     public static TextureMap getTextureMap(int type)
     {
     	try {
-    		List l = (List)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, ObfuscatedNames.TextureManager_listTickables);
+    		List<ITickable> l = (List<ITickable>)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, ObfuscatedNames.TextureManager_listTickables);
     		
-    		for(Object obj : l)
+    		for(ITickable t : l)
     		{
-    			if(obj instanceof TextureMap)
+    			if(t instanceof TextureMap)
     			{
-    				if(((TextureMap)obj).getTextureType() == type)
+    				if(((TextureMap)t).getTextureType() == type)
     				{
-    					return (TextureMap)obj;
+    					return (TextureMap)t;
     				}
     			}
     		}
@@ -666,23 +670,18 @@ public class MekanismRenderer
     	int zLevel = 0;
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((par1 + 0), (par2 + par6), zLevel, ((par3 + 0) * f), ((par4 + par6) * f1));
-        tessellator.addVertexWithUV((par1 + par5), (par2 + par6), zLevel, ((par3 + par5) * f), ((par4 + par6) * f1));
-        tessellator.addVertexWithUV((par1 + par5), (par2 + 0), zLevel, ((par3 + par5) * f), ((par4 + 0) * f1));
-        tessellator.addVertexWithUV((par1 + 0), (par2 + 0), zLevel, ((par3 + 0) * f), ((par4 + 0) * f1));
-        tessellator.draw();
+        WorldRenderer worldRenderer = Tessellator.getInstance().getWorldRenderer();
+        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        worldRenderer.pos((par1 + 0), (par2 + par6), zLevel).tex(((par3 + 0) * f), ((par4 + par6) * f1)).endVertex();
+        worldRenderer.pos((par1 + par5), (par2 + par6), zLevel).tex(((par3 + par5) * f), ((par4 + par6) * f1)).endVertex();
+        worldRenderer.pos((par1 + par5), (par2 + 0), zLevel).tex(((par3 + par5) * f), ((par4 + 0) * f1)).endVertex();
+        worldRenderer.pos((par1 + 0), (par2 + 0), zLevel).tex(((par3 + 0) * f), ((par4 + 0) * f1)).endVertex();
+        worldRenderer.finishDrawing();
     }
     
     public static ResourceLocation getBlocksTexture()
     {
     	return TextureMap.locationBlocksTexture;
-    }
-    
-    public static ResourceLocation getItemsTexture()
-    {
-    	return TextureMap.locationItemsTexture;
     }
     
     public static interface ICustomBlockIcon

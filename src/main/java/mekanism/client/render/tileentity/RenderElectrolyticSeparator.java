@@ -24,7 +24,7 @@ public class RenderElectrolyticSeparator extends TileEntitySpecialRenderer<TileE
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparator.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 2: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;

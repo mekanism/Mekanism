@@ -37,7 +37,7 @@ public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer<TileE
 		GL11.glScalef(0.5F, 0.5F, 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
 		
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
@@ -45,7 +45,7 @@ public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer<TileE
 			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 		}
 		
-		model.renderAll();
+		//TODO model.renderAll();
 		GL11.glPopMatrix();
 	}
 }

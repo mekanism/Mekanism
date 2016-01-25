@@ -38,7 +38,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.leftTank.getStored()/tileEntity.leftTank.getMaxGas());
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getListAndRender(EnumFacing.getFront(tileEntity.facing), tileEntity.leftTank.getGas().getGas()).render();
+			getListAndRender(tileEntity.facing, tileEntity.leftTank.getGas().getGas()).render();
 			GL11.glColor4f(1, 1, 1, 1);
 
 			pop();
@@ -48,7 +48,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 		{
 			push();
 
-			switch(EnumFacing.getFront(tileEntity.facing))
+			switch(tileEntity.facing)
 			{
 				case NORTH:
 					GL11.glTranslatef(-0.4375F, 0, 0);
@@ -67,7 +67,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.rightTank.getStored()/tileEntity.rightTank.getMaxGas());
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getListAndRender(EnumFacing.getFront(tileEntity.facing), tileEntity.rightTank.getGas().getGas()).render();
+			getListAndRender(tileEntity.facing, tileEntity.rightTank.getGas().getGas()).render();
 			GL11.glColor4f(1, 1, 1, 1);
 
 			pop();
@@ -86,7 +86,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalInfuser.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;

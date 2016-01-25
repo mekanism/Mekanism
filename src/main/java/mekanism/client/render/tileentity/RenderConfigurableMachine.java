@@ -57,7 +57,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			{
 				if(bp.equals(configurable.getPos()))
 				{
-					EnumColor color = configurable.getConfig().getOutput(type, pos.sideHit.getIndex()/*TODO change to take EnumFacing*/, configurable.getOrientation()).color;
+					EnumColor color = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation()).color;
 	
 					push();
 	
@@ -101,13 +101,13 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		{
 			return cachedOverlays.get(side).get(type);
 		}
-
+/*
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.stone;
 		toReturn.setTexture(MekanismRenderer.overlays.get(type));
-
+*/
 		DisplayInteger display = DisplayInteger.createAndStart();
-
+/*
 		if(cachedOverlays.containsKey(side))
 		{
 			cachedOverlays.get(side).put(type, display);
@@ -193,6 +193,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		}
 
 		MekanismRenderer.renderObject(toReturn);
+*/
 		display.endList();
 
 		return display;

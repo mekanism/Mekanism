@@ -21,7 +21,7 @@ public class RenderChemicalWasher extends TileEntitySpecialRenderer<TileEntityCh
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalWasher.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;

@@ -1,22 +1,14 @@
 package mekanism.common.block;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.DefIcon;
-import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
-import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
@@ -40,8 +32,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -88,13 +80,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
+public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockIcon
 {
-	public IIcon[][] icons = new IIcon[16][16];
-
-	public CTMData[][] ctms = new CTMData[16][4];
+//	public CTMData[][] ctms = new CTMData[16][4];
 	
-	public static String ICON_BASE = "mekanism:SteelCasing";
+//	public static String ICON_BASE = "mekanism:SteelCasing";
 
 	public BasicBlock blockType;
 
@@ -107,6 +97,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		blockType = type;
 	}
 	
+/*
 	@Override
 	public IIcon getIcon(ItemStack stack, int side)
 	{
@@ -121,6 +112,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		
 		return getIcon(side, stack.getItemDamage());
 	}
+*/
 
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
@@ -129,14 +121,14 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 
-			if(block == this && tileEntity instanceof IMultiblock)
+			if(neighborBlock == this && tileEntity instanceof IMultiblock)
 			{
 				((IMultiblock)tileEntity).update();
 			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(neighborBlock);
 			}
 			
 			if(tileEntity instanceof IStructuralMultiblock)
@@ -146,6 +138,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		}
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
@@ -292,16 +285,17 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				return icons[meta][0];
 		}
 	}
+*/
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
 	{
 		switch(blockType)
 		{
@@ -349,9 +343,10 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, BlockPos pos)
+	public boolean canCreatureSpawn(IBlockAccess world, BlockPos pos, SpawnPlacementType type)
 	{
-		int meta = world.getBlockMetadata(pos);
+		IBlockState state = world.getBlockState(pos);
+		int meta = state.getBlock().getMetaFromState(state);
 
 		switch(blockType)
 		{
@@ -380,7 +375,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 							}
 						}
 					default:
-						return super.canCreatureSpawn(type, world, pos);
+						return super.canCreatureSpawn(world, pos, type);
 				}
 			case BASIC_BLOCK_2:
 				switch(meta)
@@ -406,26 +401,27 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 							}
 						}
 					default:
-						return super.canCreatureSpawn(type, world, pos);
+						return super.canCreatureSpawn(world, pos, type);
 				}
 			default:
-				return super.canCreatureSpawn(type, world, pos);
+				return super.canCreatureSpawn(world, pos, type);
 		}
 	}
 
 	@Override
 	public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
 	{
-		int meta = world.getBlockMetadata(pos);
+		IBlockState state = world.getBlockState(pos);
+		int meta = state.getBlock().getMetaFromState(state);
 
 		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(!world.isRemote && meta == 6)
 			{
 				TileEntityBin bin = (TileEntityBin)world.getTileEntity(pos);
-				MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
+				MovingObjectPosition mop = MekanismUtils.rayTrace(world, player);
 
-				if(pos != null && pos.sideHit == bin.facing)
+				if(mop != null && mop.sideHit == bin.facing)
 				{
 					if(bin.bottomStack != null)
 					{
@@ -443,9 +439,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		int metadata = world.getBlockMetadata(pos);
+		int metadata = state.getBlock().getMetaFromState(state);
 
 		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
@@ -461,7 +457,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			{
 				if(entityplayer.isSneaking())
 				{
-					entityplayer.openGui(Mekanism.instance, 1, world, pos);
+					entityplayer.openGui(Mekanism.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
 					return true;
 				}
 			}
@@ -470,7 +466,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			{
 				if(!entityplayer.isSneaking())
 				{
-					entityplayer.openGui(Mekanism.instance, 33, world, pos);
+					entityplayer.openGui(Mekanism.instance, 33, world, pos.getX(), pos.getY(), pos.getZ());
 					return true;
 				}
 			}
@@ -498,10 +494,10 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
 					}
 
-					int change = EnumFacing.ROTATION_MATRIX[EnumFacing.UP.ordinal()][bin.facing];
+					int change = bin.facing.rotateY().ordinal();
 
 					bin.setFacing((short)change);
-					world.notifyBlocksOfNeighborChange(pos, this);
+					world.notifyNeighborsOfStateChange(pos, this);
 					return true;
 				}
 
@@ -534,7 +530,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 								bin.addTicks = 5;
 							}
 
-							((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
+							((EntityPlayerMP)entityplayer).sendContainerToPlayer(entityplayer.openContainer);
 						}
 					}
 				}
@@ -569,7 +565,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@Override
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		return !(blockType == BasicBlock.BASIC_BLOCK_1 && world.getBlockMetadata(pos) == 10);
+		IBlockState state = world.getBlockState(pos);
+		return !(blockType == BasicBlock.BASIC_BLOCK_1 && state.getBlock().getMetaFromState(state) == 10);
 	}
 
 	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -694,12 +691,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public boolean renderAsNormalBlock()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
@@ -708,14 +699,15 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@Override
 	public int getRenderType()
 	{
-		return Mekanism.proxy.CTM_RENDER_ID;
+		return 3;
 	}
 
 	@Override
 	public int getLightValue(IBlockAccess world, BlockPos pos)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
-		int metadata = world.getBlockMetadata(pos);
+		IBlockState state = world.getBlockState(pos);
+		int metadata = state.getBlock().getMetaFromState(state);
 
 		if(tileEntity instanceof IActiveState)
 		{
@@ -742,8 +734,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public boolean hasTileEntity(int metadata)
+	public boolean hasTileEntity(IBlockState state)
 	{
+		int metadata = state.getBlock().getMetaFromState(state);
 		switch(blockType)
 		{
 			case BASIC_BLOCK_1:
@@ -778,7 +771,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 	
 	@Override
-	public void onBlockAdded(World world, BlockPos pos)
+	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 
@@ -792,8 +785,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata)
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
+		int metadata = state.getBlock().getMetaFromState(state);
 		switch(blockType)
 		{
 			case BASIC_BLOCK_1:
@@ -836,13 +830,13 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
 		if(world.getTileEntity(pos) instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-			int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-			int height = Math.round(entityliving.rotationPitch);
+			int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+			int height = Math.round(placer.rotationPitch);
 			int change = 3;
 
 			if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
@@ -869,7 +863,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			}
 
 			tileEntity.setFacing((short)change);
-			tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos);
+			tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
 
 			if(tileEntity instanceof IBoundingBlock)
 			{
@@ -877,9 +871,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			}
 		}
 
-		world.func_147479_m(pos);
-		world.updateLightByType(EnumSkyBlock.Block, pos);
-	    world.updateLightByType(EnumSkyBlock.Sky, pos);
+		world.markBlockRangeForRenderUpdate(pos, pos.add(1,1,1));
+		world.checkLightFor(EnumSkyBlock.BLOCK, pos);
+	    world.checkLightFor(EnumSkyBlock.SKY, pos);
 
 		if(!world.isRemote && world.getTileEntity(pos) != null)
 		{
@@ -900,7 +894,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
 	{
-		ItemStack ret = new ItemStack(this, 1, world.getBlockMetadata(pos));
+		IBlockState state = world.getBlockState(pos);
+		ItemStack ret = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
 		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
@@ -988,6 +983,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		return itemStack;
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, int side)
@@ -1002,6 +998,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			return super.shouldSideBeRendered(world, pos, side);
 		}
 	}
+*/
 
 	@Override
 	public EnumFacing[] getValidRotations(World world, BlockPos pos)
@@ -1044,6 +1041,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		return false;
 	}
 
+/*
 	@Override
 	public CTMData getCTMData(IBlockAccess world, BlockPos pos, int meta)
 	{
@@ -1068,12 +1066,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 
 		return ctms[meta][0];
 	}
-	
-	@Override
-	public boolean shouldRenderBlock(IBlockAccess world, BlockPos pos, int meta)
-	{
-		return true;
-	}
+*/
 
 	public static enum BasicBlock
 	{

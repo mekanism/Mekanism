@@ -25,7 +25,7 @@ public class RenderLogisticalSorter extends TileEntitySpecialRenderer<TileEntity
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter" + (tileEntity.isActive ? "On" : "") + ".png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 0:
 			{

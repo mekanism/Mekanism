@@ -26,7 +26,7 @@ public class RenderLaserAmplifier extends TileEntitySpecialRenderer<TileEntityLa
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserAmplifier.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 0:
 				GL11.glTranslatef(0.0F, -2.0F, 0.0F);

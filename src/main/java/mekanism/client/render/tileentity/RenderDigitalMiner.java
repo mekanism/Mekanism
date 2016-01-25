@@ -26,7 +26,7 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer<TileEntityDigi
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner" + (tileEntity.isActive ? "On" : "") + ".png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 2: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;

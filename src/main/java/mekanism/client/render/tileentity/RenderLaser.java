@@ -25,7 +25,7 @@ public class RenderLaser extends TileEntitySpecialRenderer<TileEntityLaser>
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Laser.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 0:
 				GL11.glTranslatef(0.0F, -2.0F, 0.0F);

@@ -4,10 +4,8 @@ import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -26,7 +24,7 @@ public class RenderRotaryCondensentrator extends TileEntitySpecialRenderer<TileE
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RotaryCondensentrator.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 2: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;

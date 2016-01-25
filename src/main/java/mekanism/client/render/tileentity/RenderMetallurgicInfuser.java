@@ -26,7 +26,7 @@ public class RenderMetallurgicInfuser extends TileEntitySpecialRenderer<TileEnti
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;

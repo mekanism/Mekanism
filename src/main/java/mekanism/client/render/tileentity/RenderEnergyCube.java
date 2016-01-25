@@ -30,7 +30,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tileEntity.tier.getBaseTier().getName() + ".png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
 			case 0:
 				GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
