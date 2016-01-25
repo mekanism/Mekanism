@@ -85,7 +85,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -98,8 +99,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -250,9 +251,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(entityliving.rotationPitch);
 		int change = 3;
@@ -310,7 +311,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		}
 
 		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
+		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos);
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
@@ -319,25 +320,25 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	public void breakBlock(World world, BlockPos pos, Block block, int meta)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
 			((IBoundingBlock)tileEntity).onBreak();
 		}
 
-		super.breakBlock(world, x, y, z, block, meta);
+		super.breakBlock(world, pos, block, meta);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random random)
+	public void randomDisplayTick(World world, BlockPos pos, Random random)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
-		if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
+		if(MekanismUtils.isActive(world, pos) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
 		{
 			float xRandom = (float)x + 0.5F;
 			float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -376,11 +377,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	public int getLightValue(IBlockAccess world, BlockPos pos)
 	{
 		if(general.enableAmbientLighting)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 	
 			if(tileEntity instanceof IActiveState)
 			{
@@ -437,10 +438,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+	public IIcon getIcon(IBlockAccess world, BlockPos pos, int side)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		int meta = world.getBlockMetadata(pos);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
 		switch(blockType)
 		{
@@ -453,13 +454,13 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					case 3:
 					case 9:
 					case 10:
-						boolean active = MekanismUtils.isActive(world, x, y, z);
+						boolean active = MekanismUtils.isActive(world, pos);
 						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					case 5:
 					case 6:
 					case 7:
 						TileEntityFactory factory = (TileEntityFactory)tileEntity;
-						active = MekanismUtils.isActive(world, x, y, z);
+						active = MekanismUtils.isActive(world, pos);
 						
 						return factoryIcons[factory.tier.ordinal()][factory.recipeType.ordinal()][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					default:
@@ -470,7 +471,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				{
 					case 3:
 					case 5:
-						boolean active = MekanismUtils.isActive(world, x, y, z);
+						boolean active = MekanismUtils.isActive(world, pos);
 						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					default:
 						return icons[meta][0];
@@ -479,7 +480,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				switch(meta)
 				{
 					case 3:
-						boolean active = MekanismUtils.isActive(world, x, y, z);
+						boolean active = MekanismUtils.isActive(world, pos);
 						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					default:
 						return icons[meta][0];
@@ -543,7 +544,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float posX, float posY, float posZ)
+	public boolean onBlockActivated(World world, BlockPos pos, EntityPlayer entityplayer, int side, float posX, float posY, float posZ)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
@@ -555,24 +556,24 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			return true;
 		}
 
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
-		int metadata = world.getBlockMetadata(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		int metadata = world.getBlockMetadata(pos);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
 			Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
+			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
 				if(entityplayer.isSneaking() && MachineType.get(blockType, metadata) != MachineType.ELECTRIC_CHEST)
 				{
-					dismantleBlock(world, x, y, z, false);
+					dismantleBlock(world, pos, false);
 					return true;
 				}
 
 				if(MekanismUtils.isBCWrench(tool))
 				{
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					((IToolWrench)tool).wrenchUsed(entityplayer, pos);
 				}
 
 				int change = EnumFacing.ROTATION_MATRIX[EnumFacing.UP.ordinal()][tileEntity.facing];
@@ -595,7 +596,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				}
 
 				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				world.notifyBlocksOfNeighborChange(pos, this);
 				return true;
 			}
 		}
@@ -636,7 +637,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 						}
 					} 
 					else {
-						entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						entityplayer.openGui(Mekanism.instance, type.guiId, world, pos);
 					}
 					
 					return true;
@@ -655,7 +656,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 						
 						if(teleporter.owner.equals(entityplayer.getName()) || MekanismUtils.isOp((EntityPlayerMP)entityplayer))
 						{
-							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos);
 						}
 						else {
 							entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.teleporter.noAccess")));
@@ -666,7 +667,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				default:
 					if(!entityplayer.isSneaking() && type.guiId != -1)
 					{
-						entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						entityplayer.openGui(Mekanism.instance, type.guiId, world, pos);
 						return true;
 					}
 					
@@ -707,7 +708,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 	
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
 		return null;
 	}
@@ -719,49 +720,49 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getBlockHardness(World world, BlockPos pos)
 	{
-		if(MachineType.get(blockType, world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
+		if(MachineType.get(blockType, world.getBlockMetadata(pos)) != MachineType.ELECTRIC_CHEST)
 		{
 			return blockHardness;
 		}
 		else {
-			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
+			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(pos);
 			return tileEntity.canAccess() ? 3.5F : -1;
 		}
 	}
 	
 	@Override
-	public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
+	public float getExplosionResistance(Entity entity, World world, BlockPos pos, double explosionX, double explosionY, double explosionZ)
     {
-		if(MachineType.get(blockType, world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
+		if(MachineType.get(blockType, world.getBlockMetadata(pos)) != MachineType.ELECTRIC_CHEST)
 		{
 			return blockResistance;
 		}
 		else {
-			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
+			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(pos);
 			return tileEntity.canAccess() ? 3.5F : -1;
 		}
     }
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z, player));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return world.setBlockToAir(pos);
 	}
 	
 	private boolean manageInventory(EntityPlayer player, TileEntityPortableTank tileEntity)
@@ -875,11 +876,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
@@ -908,10 +909,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
-		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(pos));
 
 		if(itemStack.getTagCompound() == null)
 		{
@@ -982,9 +983,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 	
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
+	public void onBlockAdded(World world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if(!world.isRemote)
 		{
@@ -996,9 +997,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+	public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, int side)
 	{
-		MachineType type = MachineType.get(blockType, world.getBlockMetadata(x, y, z));
+		MachineType type = MachineType.get(blockType, world.getBlockMetadata(pos));
 
 		switch(type)
 		{
@@ -1009,11 +1010,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		}
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
+		ItemStack itemStack = getPickBlock(null, world, pos, null);
 
-		world.setBlockToAir(x, y, z);
+		world.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
@@ -1022,7 +1023,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -1031,9 +1032,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
 	{
-		MachineType type = MachineType.get(blockType, world.getBlockMetadata(x, y, z));
+		MachineType type = MachineType.get(blockType, world.getBlockMetadata(pos));
 
 		switch(type)
 		{
@@ -1050,20 +1051,20 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, BlockPos pos)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityChargepad)
+		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
 		{
 			return null;
 		}
 
-		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+		return super.getCollisionBoundingBoxFromPool(world, pos);
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
+	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		MachineType type = MachineType.get(blockType, world.getBlockMetadata(x, y, z));
+		MachineType type = MachineType.get(blockType, world.getBlockMetadata(pos));
 
 		switch(type)
 		{
@@ -1349,9 +1350,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
@@ -1371,9 +1372,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
@@ -1390,9 +1391,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 	
 	@Override
-	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+	public int isProvidingWeakPower(IBlockAccess world, BlockPos pos, int side)
     {
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if(tile instanceof TileEntityLaserAmplifier)
 		{
@@ -1403,9 +1404,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
     }
 	
 	@Override
-	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
+	public CTMData getCTMData(IBlockAccess world, BlockPos pos, int meta)
 	{
-		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
+		if(ctms[meta][1] != null && MekanismUtils.isActive(world, pos))
 		{
 			return ctms[meta][1];
 		}
@@ -1414,7 +1415,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 	
 	@Override
-	public boolean shouldRenderBlock(IBlockAccess world, int x, int y, int z, int meta)
+	public boolean shouldRenderBlock(IBlockAccess world, BlockPos pos, int meta)
 	{
 		return !MachineType.get(this, meta).hasModel;
 	}

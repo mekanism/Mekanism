@@ -6,11 +6,11 @@ import mekanism.common.Mekanism;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,8 +24,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class BlockOre extends Block
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public BlockOre()
 	{
 		super(Material.rock);
@@ -34,6 +32,7 @@ public class BlockOre extends Block
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
@@ -42,23 +41,17 @@ public class BlockOre extends Block
 		icons[1] = register.registerIcon("mekanism:CopperOre");
 		icons[2] = register.registerIcon("mekanism:TinOre");
 	}
+*/
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
+	public int damageDropped(IBlockState state)
 	{
-		return icons[meta];
-	}
-
-	@Override
-	public int damageDropped(int i)
-	{
-		return i;
+		return getMetaFromState(state);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
 	{
 		list.add(new ItemStack(item, 1, 0));
 		list.add(new ItemStack(item, 1, 1));

@@ -17,7 +17,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -25,6 +26,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -54,33 +57,35 @@ public class BlockEnergyCube extends BlockContainer
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register) 
 	{
 		blockIcon = register.registerIcon(BlockBasic.ICON_BASE);
 	}
+*/
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(neighborBlock);
 			}
 		}
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
-		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		int height = Math.round(entityliving.rotationPitch);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		int side = MathHelper.floor_double((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int height = Math.round(placer.rotationPitch);
 		int change = 3;
 
 		if(height >= 65)
@@ -102,7 +107,7 @@ public class BlockEnergyCube extends BlockContainer
 		}
 
 		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
+		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
 	}
 
 	@Override
@@ -112,14 +117,14 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
 		return null;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
 	{
 		for(EnergyCubeTier tier : EnergyCubeTier.values())
 		{
@@ -135,7 +140,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float f1, float f2, float f3)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
@@ -147,29 +152,32 @@ public class BlockEnergyCube extends BlockContainer
 			return true;
 		}
 
-		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
+		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
 			Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
+			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
 				if(entityplayer.isSneaking())
 				{
-					dismantleBlock(world, x, y, z, false);
+					dismantleBlock(world, pos, false);
 					return true;
 				}
 
 				if(MekanismUtils.isBCWrench(tool))
                 {
-                    ((IToolWrench) tool).wrenchUsed(entityplayer, x, y, z);
+                    ((IToolWrench) tool).wrenchUsed(entityplayer, pos);
                 }
 
-				int change = EnumFacing.ROTATION_MATRIX[side][tileEntity.facing];
+				EnumFacing rotated = tileEntity.facing.rotateAround(side.getAxis());
+				rotated = side.getAxisDirection() == AxisDirection.POSITIVE ? rotated : rotated.getOpposite();
+
+				int change = rotated.ordinal();
 
 				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				world.notifyNeighborsOfStateChange(pos, this);
 				return true;
 			}
 		}
@@ -178,7 +186,7 @@ public class BlockEnergyCube extends BlockContainer
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(Mekanism.instance, 8, world, x, y, z);
+				entityplayer.openGui(Mekanism.instance, 8, world, pos.getX(), pos.getY(), pos.getZ());
 				return true;
 			}
 		}
@@ -187,7 +195,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -196,23 +204,17 @@ public class BlockEnergyCube extends BlockContainer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z, player));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos, player));
 			world.spawnEntityInWorld(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return world.setBlockToAir(pos);
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		return new TileEntityEnergyCube();
-	}
-
-	@Override
-	public boolean renderAsNormalBlock()
-	{
-		return false;
 	}
 
 	@Override
@@ -228,9 +230,9 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
 	{
-		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
+		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
 
 		IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
@@ -245,11 +247,11 @@ public class BlockEnergyCube extends BlockContainer
 		return itemStack;
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
+		ItemStack itemStack = getPickBlock(null, world, pos, null);
 
-		world.setBlockToAir(x, y, z);
+		world.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
@@ -258,7 +260,7 @@ public class BlockEnergyCube extends BlockContainer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -273,22 +275,22 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
+	public int getComparatorInputOverride(World world, BlockPos pos)
 	{
-		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
+		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
 		return tileEntity.getRedstoneLevel();
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
+	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		return true;
 	}
 
 	@Override
-	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
@@ -308,9 +310,9 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{

@@ -7,9 +7,12 @@ import mekanism.common.Mekanism;
 
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -20,13 +23,13 @@ public class BlockPlasticFence extends BlockFence
 {
 	public BlockPlasticFence()
 	{
-		super("mekanism:PlasticFence", Material.clay);
+		super(Material.clay);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
+    public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
     {
         for(int i = 0; i < EnumColor.DYES.length; i++)
         {
@@ -35,35 +38,22 @@ public class BlockPlasticFence extends BlockFence
     }
 
     @Override
-    public int colorMultiplier(IBlockAccess world, int x, int y, int z)
+    public int colorMultiplier(IBlockAccess world, BlockPos pos, int renderPass)
     {
-        return getRenderColor(world.getBlockMetadata(x, y, z));
+        return getRenderColor(world.getBlockState(pos));
     }
 
     @Override
-    public int getRenderColor(int meta)
+    public int getRenderColor(IBlockState state)
     {
-        EnumColor colour = EnumColor.DYES[meta];
+        EnumColor colour = EnumColor.DYES[getMetaFromState(state)];
         return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
 
     }
 
-    public boolean recolourBlock(World world, int x, int y, int z, EnumFacing side, int colour)
-    {
-        int meta = world.getBlockMetadata(x, y, z);
-        
-        if(meta != (15 - colour))
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
-            return true;
-        }
-        
-        return false;
-    }
-
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
 	}
 }

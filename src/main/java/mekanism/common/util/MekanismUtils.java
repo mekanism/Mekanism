@@ -737,13 +737,13 @@ public final class MekanismUtils
 	 * @param boundingLocation - coordinates of bounding block
 	 * @param orig - original block
 	 */
-	public static void makeAdvancedBoundingBlock(World world, Coord4D boundingLocation, Coord4D orig)
+	public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig)
 	{
 		world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(1), 0);
 
 		if(!world.isRemote)
 		{
-			((TileEntityAdvancedBoundingBlock)boundingLocation.getTileEntity(world)).setMainLocation(orig);
+			((TileEntityAdvancedBoundingBlock)world.getTileEntity(boundingLocation)).setMainLocation(orig);
 		}
 	}
 

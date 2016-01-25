@@ -9,11 +9,14 @@ import mekanism.common.MekanismBlocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -35,6 +38,7 @@ public class BlockPlastic extends Block
 		}
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
@@ -60,29 +64,30 @@ public class BlockPlastic extends Block
 			blockIcon = register.registerIcon("mekanism:RoadPlasticBlock");
 		}
 	}
+*/
 
 	@Override
-	public void onEntityWalking(World world, int x, int y, int z, Entity e)
+	public Vec3 modifyAcceleration(World world, BlockPos pos, Entity e, Vec3 motion)
 	{
 		if(this == MekanismBlocks.RoadPlasticBlock)
 		{
 			double boost = 1.6;
 
-			double a = Math.atan2(e.motionX, e.motionZ);
-			e.motionX += Math.sin(a) * boost * slipperiness;
-			e.motionZ += Math.cos(a) * boost * slipperiness;
+			double a = Math.atan2(motion.xCoord, motion.zCoord);
+			return new Vec3(motion.xCoord + Math.sin(a) * boost * slipperiness, motion.yCoord, motion.zCoord + Math.cos(a) * boost * slipperiness);
 		}
+		return motion;
 	}
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
 	{
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
@@ -91,15 +96,15 @@ public class BlockPlastic extends Block
 	}
 
 	@Override
-	public int colorMultiplier(IBlockAccess world, int x, int y, int z)
+	public int colorMultiplier(IBlockAccess world, BlockPos pos, int renderPass)
 	{
-		return getRenderColor(world.getBlockMetadata(x, y, z));
+		return getRenderColor(world.getBlockState(pos));
 	}
 
 	@Override
-	public int getRenderColor(int meta)
+	public int getRenderColor(IBlockState state)
 	{
-		EnumColor colour = EnumColor.DYES[meta];
+		EnumColor colour = EnumColor.DYES[getMetaFromState(state)];
 		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
 	}
 
@@ -112,25 +117,5 @@ public class BlockPlastic extends Block
 		}
 
 		return 0;
-	}
-
-	@Override
-	public boolean recolourBlock(World world, int x, int y, int z, EnumFacing side, int colour)
-	{
-		int meta = world.getBlockMetadata(x, y, z);
-		
-		if(meta != (15 - colour))
-		{
-			world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
-			return true;
-		}
-		
-		return false;
-	}
-
-	@Override
-	public int getRenderType()
-	{
-		return Mekanism.proxy.PLASTIC_RENDER_ID;
 	}
 }
