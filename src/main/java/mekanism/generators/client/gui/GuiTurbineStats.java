@@ -34,16 +34,16 @@ public class GuiTurbineStats extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		String stats = LangUtils.localize("gui.matrixStats");
+		String stats = LangUtils.localize("gui.turbineStats");
 		String limiting = EnumColor.DARK_RED + " (" + LangUtils.localize("gui.limiting") + ")";
 		
 		fontRendererObj.drawString(stats, (xSize/2)-(fontRendererObj.getStringWidth(stats)/2), 6, 0x404040);
 		
 		fontRendererObj.drawString(LangUtils.localize("gui.tankVolume") + ": " + tileEntity.structure.lowerVolume, 8, 26, 0x404040);
 		
-		boolean dispersersLimiting = tileEntity.structure.clientDispersers*TileEntityTurbineCasing.DISPERSER_GAS_FLOW < 
+		boolean dispersersLimiting = tileEntity.structure.lowerVolume*tileEntity.structure.clientDispersers*TileEntityTurbineCasing.DISPERSER_GAS_FLOW < 
 				tileEntity.structure.vents*TileEntityTurbineCasing.VENT_GAS_FLOW;
-		boolean ventsLimiting = tileEntity.structure.clientDispersers*TileEntityTurbineCasing.DISPERSER_GAS_FLOW > 
+		boolean ventsLimiting = tileEntity.structure.lowerVolume*tileEntity.structure.clientDispersers*TileEntityTurbineCasing.DISPERSER_GAS_FLOW > 
 				tileEntity.structure.vents*TileEntityTurbineCasing.VENT_GAS_FLOW;
 		
 		fontRendererObj.drawString(LangUtils.localize("gui.steamFlow"), 8, 40, 0x797979);

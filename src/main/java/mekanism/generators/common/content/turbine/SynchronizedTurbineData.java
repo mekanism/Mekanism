@@ -37,7 +37,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 	
 	public double getEnergyCapacity()
 	{
-		return volume*16000000; //16 MJ energy capacity per volume
+		return volume*16000000D; //16 MJ energy capacity per volume
 	}
 	
 	public boolean needsRenderUpdate()

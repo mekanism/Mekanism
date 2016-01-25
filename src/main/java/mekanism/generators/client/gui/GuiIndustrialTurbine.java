@@ -56,7 +56,7 @@ public class GuiIndustrialTurbine extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 5, 0x404040);
 		
 		double energyMultiplier = TileEntityTurbineCasing.ENERGY_PER_STEAM*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*TileEntityTurbineCasing.BLADE_TO_COIL_RATIO);
 		
