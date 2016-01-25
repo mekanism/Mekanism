@@ -1,8 +1,5 @@
 package mcp.mobius.waila.api;
 
-import static mcp.mobius.waila.api.SpecialChars.RENDER;
-import static mcp.mobius.waila.api.SpecialChars.WailaStyle;
-
 import java.util.regex.Pattern;
 
 public class SpecialChars {

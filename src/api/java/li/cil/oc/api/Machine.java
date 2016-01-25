@@ -10,7 +10,7 @@ import java.util.Collections;
  * This API is intended for people who would like to implement custom computer
  * blocks or anything else hosting a computer.
  * <p/>
- * It also allows registering new {@link Architecture}s,
+ * It also allows registering new {@link li.cil.oc.api.machine.Architecture}s,
  * which are implementations of specific languages (e.g. assembler). The built-
  * in ones are available as static fields in this class.
  * <p/>
@@ -18,7 +18,7 @@ import java.util.Collections;
  * convenience feature to make architectures usable via the built-in CPUs.
  * <p/>
  * Note that these methods should <em>not</em> be called in the pre-init phase,
- * since the {@link API#machine} may not have been initialized
+ * since the {@link li.cil.oc.api.API#machine} may not have been initialized
  * at that time. Only start calling these methods in the init phase or later.
  */
 public final class Machine {

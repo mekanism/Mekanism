@@ -57,7 +57,7 @@ public interface Value extends Persistable {
      *                  the call.
      * @param arguments the arguments passed to the method.
      * @return the result of the call.
-     * @throws RuntimeException if this value is not callable.
+     * @throws java.lang.RuntimeException if this value is not callable.
      */
     Object[] call(Context context, Arguments arguments);
 

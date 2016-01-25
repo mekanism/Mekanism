@@ -7,15 +7,15 @@ import java.lang.annotation.Target;
 
 /**
  * This interface can be used to easily convert tile entities to components,
- * without having to implement {@link Environment}
+ * without having to implement {@link li.cil.oc.api.network.Environment}
  * themselves. The simple implementation will provide no access to OC's internal
  * component network, since you won't have access to the node representing the
  * tile entity. Use this only for simple cases, where you want to expose a
  * couple of methods to the programs running computers.
  * <p/>
  * This is an interface instead of an annotation, to allow stripping via the
- * ever so handy {@link net.minecraftforge.fml.common.Optional} annotation, meaning there
- * will be no strong dependency on OpenComputers.
+ * ever so handy {@link net.minecraftforge.fml.common.Optional} annotation,
+ * meaning there will be no strong dependency on OpenComputers.
  * <p/>
  * Classes implementing this interface will be expanded with the methods
  * required for them to function as native block components (say, like the

@@ -47,7 +47,7 @@ public interface Component extends Node {
      * Note that this cannot be higher / more visible than the reachability of
      * the node. Trying to set it to a higher value will generate an exception.
      *
-     * @throws IllegalArgumentException if the specified value is
+     * @throws java.lang.IllegalArgumentException if the specified value is
      *                                            more visible than the node's
      *                                            reachability.
      */

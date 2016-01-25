@@ -25,7 +25,7 @@ public interface EnvironmentAware {
      * <p/>
      * Note that for block drivers this is called for any type of item stack.
      * <p/>
-     * For item drivers this is only called if {@link Item#worksWith(ItemStack)}
+     * For item drivers this is only called if {@link Item#worksWith(net.minecraft.item.ItemStack)}
      * returns <tt>true</tt>.
      *
      * @param stack the item stack representing a block or item to get the

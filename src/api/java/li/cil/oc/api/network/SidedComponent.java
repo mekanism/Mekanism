@@ -22,5 +22,5 @@ public interface SidedComponent {
      * @param side the side to check for.
      * @return whether the component may be connected to from the specified side.
      */
-    boolean canConnectNode(ForgeDirection side);
+    boolean canConnectNode(EnumFacing side);
 }

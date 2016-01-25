@@ -67,7 +67,7 @@ public interface Machine extends ManagedEnvironment, Context {
      * The maximum number of components this machine can currently support.
      * <p/>
      * This is automatically recomputed based on the hosts internal components
-     * whenever the host calls {@link Machine#onHostChanged()}.
+     * whenever the host calls {@link li.cil.oc.api.machine.Machine#onHostChanged()}.
      *
      * @return the maximum number of components supported.
      */
@@ -211,7 +211,7 @@ public interface Machine extends ManagedEnvironment, Context {
     /**
      * Get a list of all methods and their annotations of the specified object.
      * <p/>
-     * The specified object can be either a {@link Value}
+     * The specified object can be either a {@link li.cil.oc.api.machine.Value}
      * or a {@link li.cil.oc.api.network.Environment}. This is useful for
      * custom architectures, to allow providing a list of callback methods to
      * evaluated programs.

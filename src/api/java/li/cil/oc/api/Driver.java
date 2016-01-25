@@ -5,6 +5,7 @@ import li.cil.oc.api.driver.Converter;
 import li.cil.oc.api.driver.EnvironmentHost;
 import li.cil.oc.api.driver.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Collection;
@@ -19,7 +20,7 @@ import java.util.Collection;
  * needed in that case.
  * <p/>
  * Note that these methods should <em>not</em> be called in the pre-init phase,
- * since the {@link API#driver} may not have been initialized
+ * since the {@link li.cil.oc.api.API#driver} may not have been initialized
  * at that time. Only start calling these methods in the init phase or later.
  *
  * @see Network
@@ -83,17 +84,15 @@ public final class Driver {
      * Note that several drivers for a single block can exist. Because of this
      * block drivers are always encapsulated in a 'compound' driver, which is
      * what will be returned here. In other words, you should will <em>not</em>
-     * get actual instances of drivers registered via {@link #add(Block)}.
+     * get actual instances of drivers registered via {@link #add(li.cil.oc.api.driver.Block)}.
      *
      * @param world the world containing the block.
-     * @param x     the X coordinate of the block.
-     * @param y     the Y coordinate of the block.
-     * @param z     the Z coordinate of the block.
+     * @param pos   the position of the block.
      * @return a driver for the block, or <tt>null</tt> if there is none.
      */
-    public static Block driverFor(World world, int x, int y, int z) {
+    public static Block driverFor(World world, BlockPos pos) {
         if (API.driver != null)
-            return API.driver.driverFor(world, x, y, z);
+            return API.driver.driverFor(world, pos);
         return null;
     }
 

@@ -14,7 +14,7 @@ import net.minecraft.inventory.IInventory;
  * </pre>
  * <p/>
  * Server racks <em>do not</em> serve as environment for the computer nodes of
- * servers. That's what the {@link Server}s are for.
+ * servers. That's what the {@link li.cil.oc.api.internal.Server}s are for.
  * <p/>
  * The only purpose is to allow identifying tile entities as server racks
  * via the API, i.e. without having to link against internal classes. This
@@ -22,12 +22,12 @@ import net.minecraft.inventory.IInventory;
  */
 public interface ServerRack extends Environment, SidedEnvironment, Rotatable, IInventory {
     /**
-     * The machine currently hosted by the server in the specified slot.
+     * The server in the specified slot.
      * <p/>
-     * This can be <tt>null</tt>, for example when there is no CPU installed
-     * in the server in that slot, or there is no server in that slot.
+     * This can be <tt>null</tt>, for example when there is no server installed
+     * in that slot.
      *
-     * @return the machine currently hosted in the specified slot.
+     * @return the server currently hosted in the specified slot.
      */
     Server server(int slot);
 

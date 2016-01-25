@@ -17,7 +17,7 @@ import li.cil.oc.api.network.ManagedEnvironment;
  * and set the visibility to the desired value.
  * <p/>
  * Note that these methods should <em>not</em> be called in the pre-init phase,
- * since the {@link API#fileSystem} may not have been initialized
+ * since the {@link li.cil.oc.api.API#fileSystem} may not have been initialized
  * at that time. Only start calling these methods in the init phase or later.
  */
 public final class FileSystem {
@@ -104,24 +104,6 @@ public final class FileSystem {
     public static li.cil.oc.api.fs.FileSystem fromMemory(final long capacity) {
         if (API.fileSystem != null)
             return API.fileSystem.fromMemory(capacity);
-        return null;
-    }
-
-    /**
-     * Creates a new file system based on a ComputerCraft mount.
-     * <p/>
-     * This supports read-only and writable mounts from either CC 1.5x or
-     * CC 1.6x. The argument is kept untyped to avoid having the OC API
-     * depend on the CC API.
-     * <p/>
-     * If the passed type is unsupported, this will throw an exception.
-     *
-     * @param mount the mount to wrap with a file system.
-     * @return a file system wrapping the specified mount.
-     */
-    public static li.cil.oc.api.fs.FileSystem fromComputerCraft(final Object mount) {
-        if (API.fileSystem != null)
-            return API.fileSystem.fromComputerCraft(mount);
         return null;
     }
 

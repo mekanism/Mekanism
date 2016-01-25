@@ -1,7 +1,6 @@
 package mcp.mobius.waila.api;
 
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.*;
 
 
 public interface IWailaTooltipRenderer {

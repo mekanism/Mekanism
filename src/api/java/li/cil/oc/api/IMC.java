@@ -1,9 +1,9 @@
 package li.cil.oc.api;
 
-import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -226,7 +226,7 @@ public final class IMC {
      * <p/>
      * Signature of callbacks must be:
      * <pre>
-     * boolean callback(EntityPlayer player, int x, int y, int z, boolean changeDurability)
+     * boolean callback(EntityPlayer player, BlockPos pos, boolean changeDurability)
      * </pre>
      * <p/>
      * Callbacks must be declared as <tt>packagePath.className.methodName</tt>.
@@ -236,6 +236,29 @@ public final class IMC {
      */
     public static void registerWrenchTool(String callback) {
         FMLInterModComms.sendMessage(MOD_ID, "registerWrenchTool", callback);
+    }
+
+    /**
+     * Register a callback for checking if an item is a wrench.
+     * <p/>
+     * This is used to determine whether certain item stacks are wrench items,
+     * which is used, for example, when "itemizing" a drone.
+     * <p/>
+     * The returned value must <tt>true</tt> if the item stack is a wrench,
+     * <tt>false</tt> otherwise.
+     * <p/>
+     * Signature of callbacks must be:
+     * <pre>
+     * boolean callback(ItemStack stack)
+     * </pre>
+     * <p/>
+     * Callbacks must be declared as <tt>packagePath.className.methodName</tt>.
+     * For example: <tt>com.example.Integration.callbackMethod</tt>.
+     *
+     * @param callback the callback to register as a wrench tool tester.
+     */
+    public static void registerWrenchToolCheck(String callback) {
+        FMLInterModComms.sendMessage(MOD_ID, "registerWrenchToolCheck", callback);
     }
 
     /**

@@ -55,19 +55,7 @@ public interface IWailaRegistrar {
 	
 	/* The block decorators */
 	public void registerDecorator (IWailaBlockDecorator decorator, Class block);
-	public void registerDecorator (IWailaFMPDecorator decorator,   String name);	
-	
-	/* Selective NBT key syncing. Will register a key to sync over the network for the given class (block, te or ent).  
-	 * Accept * as a ending wildcard 
-	 * registerNBTKey("bob.*", MyBlock.class)
-	 * registerNBTKey("data.life", MyEntity.class) 
-	 * registerNBTKey("*", MyTileEntity.class) will reproduce the full tag syncing from 1.4.5 
-	 * 
-	 * This registration method is deprecated in favor to registerNBTProvider.
-	 * It will be removed in MC 1.8 !!!
-	 * */
-	@Deprecated
-	public void registerSyncedNBTKey(String key, Class target);
+	public void registerDecorator (IWailaFMPDecorator decorator,   String name);
 	
 	public void registerTooltipRenderer(String name, IWailaTooltipRenderer renderer);
 	

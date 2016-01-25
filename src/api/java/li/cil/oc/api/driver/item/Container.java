@@ -22,7 +22,7 @@ public interface Container extends Item {
      *
      * @param stack the item stack to get the provided slot type for.
      * @return the slot type provided by that dynamic slot upgrade.
-     * @see Slot
+     * @see li.cil.oc.api.driver.item.Slot
      */
     String providedSlot(ItemStack stack);
 

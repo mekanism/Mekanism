@@ -1,23 +1,23 @@
 package mekanism.common;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-
-import mekanism.api.Coord4D;
-import mekanism.client.render.block.TextureSubmap;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map.Entry;
+//
+//import mekanism.api.Coord4D;
+//import mekanism.client.render.block.TextureSubmap;
+//
+//import net.minecraft.block.Block;
+//import net.minecraft.client.renderer.texture.IIconRegister;
+//import net.minecraft.util.EnumFacing;
+//import net.minecraft.util.IIcon;
+//import net.minecraft.world.IBlockAccess;
+//import net.minecraft.util.EnumFacing;
+//import net.minecraftforge.fml.relauncher.Side;
+//import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CTMData
-{
+{/*
 	public CTMTextureData mainTextureData;
 
 	public HashMap<Block, List<Integer>> acceptableBlockMetas = new HashMap<Block, List<Integer>>();
@@ -137,4 +137,4 @@ public class CTMData
 		
 		return !valid;
 	}
-}
+*/}

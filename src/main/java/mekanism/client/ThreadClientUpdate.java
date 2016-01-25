@@ -10,7 +10,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import mekanism.api.EnumColor;
-import mekanism.client.gui.GuiCredits;
+//import mekanism.client.gui.GuiCredits;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
@@ -54,7 +54,7 @@ public class ThreadClientUpdate extends Thread
 			prepareForDownload();
 			download.createNewFile();
 
-			GuiCredits.updateInfo("Downloading...");
+			//TODO GuiCredits.updateInfo("Downloading...");
 
 			FileOutputStream outputStream = new FileOutputStream(download.getAbsolutePath());
 			InputStream stream = zipUrl.openStream();
@@ -89,12 +89,12 @@ public class ThreadClientUpdate extends Thread
 			deleteTemp();
 
 			hasUpdated = true;
-			GuiCredits.updateInfo("Update installed, reboot Minecraft for changes.");
+			//TODO GuiCredits.updateInfo("Update installed, reboot Minecraft for changes.");
 			Mekanism.logger.info("Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
 
 			finalize();
 		} catch(Throwable t) {
-			GuiCredits.updateInfo(EnumColor.DARK_RED + "Error updating.");
+			//TODO GuiCredits.updateInfo(EnumColor.DARK_RED + "Error updating.");
 			hasUpdated = true;
 			Mekanism.logger.error("Error while finishing update thread: " + t.getMessage());
 			t.printStackTrace();

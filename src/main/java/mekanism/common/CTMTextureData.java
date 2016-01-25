@@ -1,12 +1,13 @@
 package mekanism.common;
 
-import mekanism.client.render.block.TextureSubmap;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+//import mekanism.client.render.block.TextureSubmap;
+//
+//import net.minecraft.client.renderer.texture.IIconRegister;
+//import net.minecraft.util.IIcon;
 
 public class CTMTextureData
 {
+/*
 	public IIcon icon;
 
 	public TextureSubmap submap;
@@ -28,4 +29,5 @@ public class CTMTextureData
 	}
 
 
+*/
 }

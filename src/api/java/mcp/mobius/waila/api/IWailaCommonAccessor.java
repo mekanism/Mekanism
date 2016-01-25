@@ -6,10 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 
 /**
  * The Accessor is used to get some basic data out of the game without having to request direct access to the game engine.<br>
@@ -27,11 +28,11 @@ public interface IWailaCommonAccessor {
 	int          		 getMetadata();
 	TileEntity           getTileEntity();
 	Entity               getEntity();
-	MovingObjectPosition getPosition();
+	BlockPos 			 getPosition();
 	Vec3                 getRenderingPosition();
 	NBTTagCompound       getNBTData();
 	int                  getNBTInteger(NBTTagCompound tag, String keyname);
 	double               getPartialFrame();
-	ForgeDirection       getSide();
+	EnumFacing			 getSide();
 	ItemStack            getStack();
 }

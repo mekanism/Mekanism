@@ -32,7 +32,7 @@ public interface Keyboard extends Environment, Persistable {
     /**
      * Contract interface that has to implemented for usability check overrides.
      *
-     * @see #setUsableOverride(UsabilityChecker)
+     * @see #setUsableOverride(li.cil.oc.api.component.Keyboard.UsabilityChecker)
      */
     interface UsabilityChecker {
         /**

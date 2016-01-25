@@ -1,10 +1,8 @@
 package mcp.mobius.waila.api;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Map.Entry;
 
 public interface ITaggedList<E, T> extends List<E> {
 	public boolean add(E e, T tag);

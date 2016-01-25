@@ -1,14 +1,16 @@
 package mcp.mobius.waila.api;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 
 /**
  * The Accessor is used to get some basic data out of the game without having to request direct access to the game engine.<br>
@@ -19,19 +21,19 @@ import net.minecraft.util.EnumFacing;
  */
 
 public interface IWailaDataAccessor{
-		
 	World        		 getWorld();
 	EntityPlayer 		 getPlayer();
 	Block        		 getBlock();
-	int          		 getBlockID();
-	String               getBlockQualifiedName();
-	int          		 getMetadata();
+	//int          		 getBlockID();
+	int                  getMetadata();
+	IBlockState    		 getBlockState();
 	TileEntity           getTileEntity();
-	MovingObjectPosition getPosition();
+	MovingObjectPosition getMOP();
+	BlockPos             getPosition();
 	Vec3                 getRenderingPosition();
 	NBTTagCompound       getNBTData();
 	int                  getNBTInteger(NBTTagCompound tag, String keyname);
 	double               getPartialFrame();
-	ForgeDirection       getSide();
+	EnumFacing           getSide();
 	ItemStack            getStack();
 }

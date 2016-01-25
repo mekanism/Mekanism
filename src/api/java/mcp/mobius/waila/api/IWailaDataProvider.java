@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -74,10 +75,8 @@ public interface IWailaDataProvider{
 	 * @param te The TileEntity targeted for synchronization.
 	 * @param tag Current synchronization tag (might have been processed by other providers and might be processed by other providers).
 	 * @param world TileEntity's World.
-	 * @param x X position of the TileEntity.
-	 * @param y Y position of the TileEntity.
-	 * @param z Z position of the TileEntity.
+	 * @param pos Position of the TileEntity.
 	 * @return Modified input NBTTagCompound tag.
 	 */
-	NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z);
+	NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos);
 }

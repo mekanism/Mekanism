@@ -1,8 +1,8 @@
 package mcp.mobius.waila.api;
 
-import java.util.LinkedHashMap;
-
 import net.minecraft.item.ItemStack;
+
+import java.util.LinkedHashMap;
 
 public interface IWailaSummaryProvider {
 	/* This interface is used to control the display data in the description screen */
