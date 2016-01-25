@@ -13,7 +13,6 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,14 +31,14 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	public ItemScubaTank()
 	{
-		super(EnumHelper.addArmorMaterial("SCUBATANK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
+		super(EnumHelper.addArmorMaterial("SCUBATANK", "scubatank", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
 		setCreativeTab(Mekanism.tabMekanism);
 		setMaxDamage(100);
 		setNoRepair();
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		GasStack gasStack = getGas(itemstack);
 
@@ -239,7 +238,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
@@ -250,8 +249,4 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		setGas(filled, new GasStack(GasRegistry.getGas("oxygen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
 }

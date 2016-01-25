@@ -22,12 +22,15 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -121,14 +124,14 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
+	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining)
 	{
-		return metaBlock.getIcon(2, i);
+		return null; //TODO: IDONTKNOWHOWTODOTHIS
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock && itemstack.getItemDamage() == 6)
 		{
@@ -171,6 +174,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 		return stack.getItemDamage() == 6 && stack.getTagCompound() != null && stack.getTagCompound().hasKey("newCount");
 	}
 
+/*
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
@@ -189,6 +193,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 
 		return false;
 	}
+*/
 
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
@@ -210,9 +215,9 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState metadata)
 	{
-		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, metadata);
 
 		if(place)
 		{
@@ -220,7 +225,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			{
 				if(stack.getItemDamage() == 6 && stack.getTagCompound() != null)
 				{
-					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(x, y, z);
+					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(pos);
 					InventoryBin inv = new InventoryBin(stack);
 
 					if(inv.getItemType() != null)
@@ -235,7 +240,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			{
 				if(stack.getItemDamage() == 3)
 				{
-					TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+					TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(pos);
 					tileEntity.tier = InductionCellTier.values()[getTier(stack).ordinal()];
 					
 					if(!world.isRemote)
@@ -245,7 +250,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 				}
 				else if(stack.getItemDamage() == 4)
 				{
-					TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+					TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(pos);
 					tileEntity.tier = InductionProviderTier.values()[getTier(stack).ordinal()];
 					
 					if(!world.isRemote)
@@ -255,7 +260,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 				}
 			}
 			
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 			
 			if(tileEntity instanceof IStrictEnergyStorage && !(tileEntity instanceof TileEntityMultiblock<?>))
 			{

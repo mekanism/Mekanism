@@ -23,7 +23,7 @@ public class ItemElectricBow extends ItemEnergized
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 		
@@ -93,7 +93,7 @@ public class ItemElectricBow extends ItemEnergized
 	@Override
 	public EnumAction getItemUseAction(ItemStack itemstack)
 	{
-		return EnumAction.bow;
+		return EnumAction.BOW;
 	}
 
 	@Override

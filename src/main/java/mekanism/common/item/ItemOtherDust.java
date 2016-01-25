@@ -2,17 +2,13 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 public class ItemOtherDust extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[256];
-	
-	public static String[] subtypes = {"Diamond", "Steel", "Lead", 
+	public static String[] subtypes = {"Diamond", "Steel", "Lead",
 									  "Sulfur", "Lithium", "RefinedObsidian",
 									  "Obsidian"};
 	
@@ -22,6 +18,7 @@ public class ItemOtherDust extends ItemMekanism
 		setHasSubtypes(true);
 	}
 	
+/*
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
@@ -36,9 +33,10 @@ public class ItemOtherDust extends ItemMekanism
 	{
 		return icons[meta];
 	}
+*/
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> itemList)
 	{
 		for(int counter = 0; counter < subtypes.length; counter++)
 		{

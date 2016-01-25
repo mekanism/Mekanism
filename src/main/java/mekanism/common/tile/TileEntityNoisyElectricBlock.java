@@ -68,7 +68,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public float getPitch()
+	public float getFrequency()
 	{
 		return 1F;
 	}

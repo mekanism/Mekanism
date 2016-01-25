@@ -12,7 +12,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -37,7 +36,7 @@ public class ItemBlockOre extends ItemBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
@@ -54,11 +53,13 @@ public class ItemBlockOre extends ItemBlock
 		return i;
 	}
 
+/*
 	@Override
 	public IIcon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
+*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)

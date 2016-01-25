@@ -61,15 +61,15 @@ public class TileComponentConfig implements ITileComponent
 		canEject.put(type.ordinal(), true);
 	}
 	
-	public EnumSet<EnumFacing> getSidesForData(TransmissionType type, int facing, int dataIndex)
+	public EnumSet<EnumFacing> getSidesForData(TransmissionType type, EnumFacing facing, int dataIndex)
 	{
 		EnumSet<EnumFacing> ret = EnumSet.noneOf(EnumFacing.class);
 		
-		for(byte b = 0; b < 6; b++)
+		for(EnumFacing f : EnumFacing.VALUES)
 		{
-			if(getConfig(type)[b] == dataIndex)
+			if(getConfig(type)[f.ordinal()] == dataIndex)
 			{
-				ret.add(EnumFacing.getFront(MekanismUtils.getBaseOrientation(b, facing)));
+				ret.add(MekanismUtils.getBaseOrientation(f, facing));
 			}
 		}
 		
@@ -131,9 +131,9 @@ public class TileComponentConfig implements ITileComponent
 		return sideConfigs.get(type.ordinal());
 	}
 	
-	public SideData getOutput(TransmissionType type, int side, int facing)
+	public SideData getOutput(TransmissionType type, EnumFacing side, EnumFacing facing)
 	{
-		return getOutputs(type).get(getConfig(type)[MekanismUtils.getBaseOrientation(side, facing)]);
+		return getOutputs(type).get(getConfig(type)[MekanismUtils.getBaseOrientation(side, facing).ordinal()]);
 	}
 	
 	public SideData getOutput(TransmissionType type, int side)

@@ -12,7 +12,6 @@ import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -45,16 +44,18 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	public ItemFreeRunners()
 	{
-		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
+		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", "frictionboots", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) {}
+*/
 
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
@@ -78,7 +79,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 	}
@@ -91,7 +92,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
 	{
 		ItemStack discharged = new ItemStack(this);
 		discharged.setItemDamage(100);

@@ -9,6 +9,7 @@ import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -16,7 +17,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -41,7 +43,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
 
@@ -64,20 +66,15 @@ public class ItemBlockCardboardBox extends ItemBlock
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		return metaBlock.getIcon(2, i);
-	}
-
-	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-	{
-		if(!player.isSneaking() && !world.isAirBlock(x, y, z) && stack.getItemDamage() == 0)
+		if(!player.isSneaking() && !world.isAirBlock(pos) && stack.getItemDamage() == 0)
 		{
-			Block block = world.getBlock(x, y, z);
-			int meta = world.getBlockMetadata(x, y, z);
+			IBlockState state = world.getBlockState(pos);
+			Block block = state.getBlock();
+			int meta = block.getMetaFromState(state);
 
-			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta) && block.getBlockHardness(world, x, y, z) != -1)
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta) && block.getBlockHardness(world, pos) != -1)
 			{
 				BlockData data = new BlockData();
 				data.block = block;
@@ -85,9 +82,9 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				isMonitoring = true;
 
-				if(world.getTileEntity(x, y, z) != null)
+				if(world.getTileEntity(pos) != null)
 				{
-					TileEntity tile = world.getTileEntity(x, y, z);
+					TileEntity tile = world.getTileEntity(pos);
 					NBTTagCompound tag = new NBTTagCompound();
 
 					tile.writeToNBT(tag);
@@ -99,11 +96,11 @@ public class ItemBlockCardboardBox extends ItemBlock
 					stack.stackSize--;
 				}
 
-				world.setBlock(x, y, z, MekanismBlocks.CardboardBox, 1, 3);
+				world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1), 3);
 
 				isMonitoring = false;
 
-				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 
 				if(tileEntity != null)
 				{
@@ -118,18 +115,18 @@ public class ItemBlockCardboardBox extends ItemBlock
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
 		if(world.isRemote)
 		{
 			return true;
 		}
 
-		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
 
 		if(place)
 		{
-			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 
 			if(tileEntity != null)
 			{

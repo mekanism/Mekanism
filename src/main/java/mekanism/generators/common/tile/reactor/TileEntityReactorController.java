@@ -366,7 +366,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public float getPitch()
+	public float getFrequency()
 	{
 		return 1F;
 	}

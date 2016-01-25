@@ -1,20 +1,12 @@
 package mekanism.common.item;
 
-import java.util.List;
-
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 public class ItemControlCircuit extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public ItemControlCircuit()
 	{
 		super();
@@ -22,6 +14,7 @@ public class ItemControlCircuit extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
@@ -51,6 +44,7 @@ public class ItemControlCircuit extends ItemMekanism
 			}
 		}
 	}
+*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)

@@ -4,16 +4,12 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 public class ItemHDPE extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public ItemHDPE()
 	{
 		super();
@@ -21,6 +17,7 @@ public class ItemHDPE extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
@@ -35,9 +32,10 @@ public class ItemHDPE extends ItemMekanism
 	{
 		return icons[meta];
 	}
+*/
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> itemList)
 	{
 		for(int counter = 0; counter < PlasticItem.values().length; counter++)
 		{

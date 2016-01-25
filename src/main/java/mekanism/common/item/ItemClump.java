@@ -1,24 +1,17 @@
 package mekanism.common.item;
 
-import java.util.List;
-
 import mekanism.common.Resource;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 public class ItemClump extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public ItemClump()
 	{
 		super();
 		setHasSubtypes(true);
 	}
 
+/*
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
@@ -42,6 +35,7 @@ public class ItemClump extends ItemMekanism
 			itemList.add(new ItemStack(this, 1, counter));
 		}
 	}
+*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)

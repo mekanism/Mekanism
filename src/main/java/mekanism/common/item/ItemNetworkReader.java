@@ -14,6 +14,7 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -28,11 +29,11 @@ public class ItemNetworkReader extends ItemEnergized
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 			boolean drain = !player.capabilities.isCreativeMode;
 
 			if(getEnergy(stack) >= ENERGY_PER_USE)

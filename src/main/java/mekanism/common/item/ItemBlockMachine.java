@@ -32,6 +32,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -43,6 +44,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -153,7 +156,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		MachineType type = MachineType.get(itemstack);
 
@@ -226,7 +229,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 	
 	@Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 		MachineType type = MachineType.get(stack);
 		
@@ -235,11 +238,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			return false;
 		}
 		
-		return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
+		return super.onItemUse(stack, player, world, pos, side, hitX, hitY, hitZ);
     }
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
 		boolean place = true;
 		
@@ -247,15 +250,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		if(type == MachineType.DIGITAL_MINER)
 		{
-			for(int xPos = x-1; xPos <= x+1; xPos++)
+			for(int xPos = -1; xPos <= +1; xPos++)
 			{
-				for(int yPos = y; yPos <= y+1; yPos++)
+				for(int yPos = 0; yPos <= +1; yPos++)
 				{
-					for(int zPos = z-1; zPos <= z+1; zPos++)
+					for(int zPos = -1; zPos <= +1; zPos++)
 					{
-						Block b = world.getBlock(xPos, yPos, zPos);
+						BlockPos pos1 = pos.add(xPos, yPos, zPos);
+						Block b = world.getBlockState(pos1).getBlock();
 
-						if(yPos > 255 || !b.isReplaceable(world, xPos, yPos, zPos))
+						if(yPos > 255 || !b.isReplaceable(world, pos1))
 						{
 							place = false;
 						}
@@ -265,15 +269,15 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		}
 		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
 		{
-			if(y+1 > 255 || !world.getBlock(x, y+1, z).isReplaceable(world, x, y+1, z))
+			if(pos.getY()+1 > 255 || !world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()))
 			{
 				place = false;
 			}
 		}
 
-		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
+		if(place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state))
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
 			if(tileEntity instanceof IUpgradeTile)
 			{
@@ -316,7 +320,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				factory.recipeType = recipeType;
 				factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 				factory.secondaryEnergyPerTick = factory.getSecondaryEnergyPerTick(recipeType);
-				world.notifyBlocksOfNeighborChange(x, y, z, tileEntity.getBlockType());
+				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType());
 			}
 
 			if(tileEntity instanceof ISustainedTank)
@@ -452,37 +456,37 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		return false;
 	}
 
-    public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, int x, int y, int z)
+    public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, BlockPos pos)
     {
         if(getFluidStack(itemstack) == null || !getFluidStack(itemstack).getFluid().canBePlacedInWorld())
         {
             return false;
         }
         else {
-            Material material = world.getBlock(x, y, z).getMaterial();
+            Material material = world.getBlockState(pos).getBlock().getMaterial();
             boolean flag = !material.isSolid();
 
-            if(!world.isAirBlock(x, y, z) && !flag)
+            if(!world.isAirBlock(pos) && !flag)
             {
                 return false;
             }
             else {
-                if(world.provider.isHellWorld && getFluidStack(itemstack).getFluid() == FluidRegistry.WATER)
+                if(world.provider.doesWaterVaporize() && getFluidStack(itemstack).getFluid() == FluidRegistry.WATER)
                 {
-                    world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                    world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
                     for(int l = 0; l < 8; l++)
                     {
-                        world.spawnParticle("largesmoke", x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
                     }
                 }
                 else {
                     if(!world.isRemote && flag && !material.isLiquid())
                     {
-                        world.func_147480_a(x, y, z, true);
+                        //TODO: world.breakBlock(pos, true);
                     }
                     
-                    world.setBlock(x, y, z, MekanismUtils.getFlowingBlock(getFluidStack(itemstack).getFluid()), 0, 3);
+                    world.setBlockState(pos, MekanismUtils.getFlowingBlock(getFluidStack(itemstack).getFluid()).getDefaultState(), 3);
                 }
 
                 return true;
@@ -524,16 +528,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        else {
 	            if(pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 	            {
-	            	Coord4D coord = new Coord4D(pos.blockX, pos.blockY, pos.blockZ, world.provider.getDimensionId());
+	            	Coord4D coord = new Coord4D(pos.getBlockPos(), world.provider.getDimensionId());
 	
-	                if(!world.canMineBlock(entityplayer, coord.xCoord, coord.yCoord, coord.zCoord))
+	                if(!world.provider.canMineBlock(entityplayer, coord))
 	                {
 	                    return itemstack;
 	                }
 	
 	                if(!entityplayer.isSneaking())
 	                {
-	                    if(!entityplayer.canPlayerEdit(coord.xCoord, coord.yCoord, coord.zCoord, pos.sideHit, itemstack))
+	                    if(!entityplayer.canPlayerEdit(coord, pos.sideHit, itemstack))
 	                    {
 	                        return itemstack;
 	                    }
@@ -559,7 +563,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	                			setFluidStack(newStack, itemstack);
 	                		}
 	                		
-	                		world.setBlockToAir(coord.xCoord, coord.yCoord, coord.zCoord);
+	                		world.setBlockToAir(coord);
 	                    }
 	                }
 	                else {
@@ -570,14 +574,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        				return itemstack;
 	        			}
 	        			
-	        			Coord4D trans = coord.offset(EnumFacing.getFront(pos.sideHit));
+	        			Coord4D trans = coord.offset(pos.sideHit);
 
-	                    if(!entityplayer.canPlayerEdit(trans.xCoord, trans.yCoord, trans.zCoord, pos.sideHit, itemstack))
+	                    if(!entityplayer.canPlayerEdit(trans, pos.sideHit, itemstack))
 	                    {
 	                        return itemstack;
 	                    }
 
-	                    if(tryPlaceContainedLiquid(world, itemstack, trans.xCoord, trans.yCoord, trans.zCoord) && !entityplayer.capabilities.isCreativeMode)
+	                    if(tryPlaceContainedLiquid(world, itemstack, trans) && !entityplayer.capabilities.isCreativeMode)
 	                    {
 	                    	FluidStack newStack = stored.copy();
 	                    	newStack.amount -= FluidContainerRegistry.BUCKET_VOLUME;
@@ -662,7 +666,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 			
-			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluidID() == 0)
+			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null)
 			{
 				itemStack.getTagCompound().removeTag("fluidTank");
 			}

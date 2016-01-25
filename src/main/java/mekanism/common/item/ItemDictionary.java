@@ -7,9 +7,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class ItemDictionary extends ItemMekanism
@@ -21,17 +24,18 @@ public class ItemDictionary extends ItemMekanism
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(!player.isSneaking())
 		{
-			Block block = world.getBlock(x, y, z);
+			IBlockState state = world.getBlockState(pos);
+			Block block = state.getBlock();
 
 			if(block != null)
 			{
 				if(world.isRemote)
 				{
-					ItemStack testStack = new ItemStack(block, 1, world.getBlockMetadata(x, y, z));
+					ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
 					List<String> names = MekanismUtils.getOreDictName(testStack);
 
 					if(!names.isEmpty())

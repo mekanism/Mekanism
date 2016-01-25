@@ -15,7 +15,7 @@ public interface ISoundSource
 	public float getVolume();
 
 	@SideOnly(Side.CLIENT)
-	public float getPitch();
+	public float getFrequency();
 
 	@SideOnly(Side.CLIENT)
 	public Pos3D getSoundPosition();

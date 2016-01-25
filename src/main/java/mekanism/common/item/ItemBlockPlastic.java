@@ -7,7 +7,6 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 
 public class ItemBlockPlastic extends ItemBlock
@@ -27,11 +26,13 @@ public class ItemBlockPlastic extends ItemBlock
 		return i;
 	}
 
+/*
 	@Override
 	public IIcon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
+*/
 
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)

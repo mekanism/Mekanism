@@ -28,6 +28,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -54,19 +55,19 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 		list.add(EnumColor.PINK + LangUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(!world.isRemote)
 		{
-			Block block = world.getBlock(x, y, z);
-			TileEntity tile = world.getTileEntity(x, y, z);
+			Block block = world.getBlockState(pos).getBlock();
+			TileEntity tile = world.getTileEntity(pos);
 
 			if(getState(stack).isConfigurating()) //Configurate
 			{
@@ -144,7 +145,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									}
 
 									slotStack.stackSize -= j;
-									EntityItem item = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, new ItemStack(slotStack.getItem(), j, slotStack.getItemDamage()));
+									EntityItem item = new EntityItem(world, pos.getX() + xRandom, pos.getY() + yRandom, pos.getZ() + zRandom, new ItemStack(slotStack.getItem(), j, slotStack.getItemDamage()));
 
 									if(slotStack.hasTagCompound())
 									{
@@ -173,16 +174,15 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 			}
 			else if(getState(stack) == ConfiguratorMode.ROTATE) //Rotate
 			{
-				EnumFacing axis = EnumFacing.getFront(side);
-				List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, x, y, z));
+				List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, pos));
 
-				if(!player.isSneaking() && l.contains(axis))
+				if(!player.isSneaking() && l.contains(side))
 				{
-					block.rotateBlock(world, x, y, z, axis);
+					block.rotateBlock(world, pos, side);
 				}
-				else if(player.isSneaking() && l.contains(axis.getOpposite()))
+				else if(player.isSneaking() && l.contains(side.getOpposite()))
 				{
-					block.rotateBlock(world, x, y, z, axis.getOpposite());
+					block.rotateBlock(world, pos, side.getOpposite());
 				}
 
 				return true;
@@ -251,35 +251,35 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 	@Override
 	@Method(modid = "BuildCraft")
-	public boolean canWrench(EntityPlayer player, int x, int y, int z)
+	public boolean canWrench(EntityPlayer player, BlockPos pos)
 	{
-		return canUseWrench(player, x, y, z);
+		return canUseWrench(player, pos);
 	}
 
 	@Override
 	@Method(modid = "BuildCraft")
-	public void wrenchUsed(EntityPlayer player, int x, int y, int z) {}
+	public void wrenchUsed(EntityPlayer player, BlockPos pos) {}
 
 	@Override
-	public boolean canUseWrench(EntityPlayer player, int x, int y, int z)
+	public boolean canUseWrench(EntityPlayer player, BlockPos pos)
 	{
 		return getState(player.getCurrentEquippedItem()) == ConfiguratorMode.WRENCH;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
+	public boolean doesSneakBypassUse(World world, BlockPos pos, EntityPlayer player)
 	{
 		return getState(player.getCurrentEquippedItem()) == ConfiguratorMode.WRENCH;
 	}
 
 	@Override
-	public boolean isUsable(ItemStack item, EntityLivingBase user, int x, int y, int z) 
+	public boolean isUsable(ItemStack item, EntityLivingBase user, BlockPos pos)
 	{
-		return user instanceof EntityPlayer && canUseWrench((EntityPlayer)user, x, y, z);
+		return user instanceof EntityPlayer && canUseWrench((EntityPlayer)user, pos);
 	}
 
 	@Override
-	public void toolUsed(ItemStack item, EntityLivingBase user, int x, int y, int z) {}
+	public void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos) {}
 	
 	public static enum ConfiguratorMode
 	{

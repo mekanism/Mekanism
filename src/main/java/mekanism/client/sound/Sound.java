@@ -148,7 +148,7 @@ public class Sound implements ISound
 	}
 
 	@Override
-	public float getPitch() 
+	public float getFrequency()
 	{
 		return pitch;
 	}

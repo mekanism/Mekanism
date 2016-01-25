@@ -2,17 +2,13 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 public class ItemIngot extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[256];
-
-	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", 
+	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze",
 										"Glowstone", "Steel", "Copper", 
 										"Tin"};
 
@@ -22,6 +18,7 @@ public class ItemIngot extends ItemMekanism
 		setHasSubtypes(true);
 	}
 
+/*
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
@@ -36,9 +33,10 @@ public class ItemIngot extends ItemMekanism
 	{
 		return icons[meta];
 	}
+*/
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> itemList)
 	{
 		for(int counter = 0; counter <= 6; counter++)
 		{

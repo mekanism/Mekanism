@@ -355,10 +355,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			data.writeByte((byte)1);
 
-			data.writeInt(latched.getX());
-			data.writeInt(latched.getY());
-			data.writeInt(latched.getZ());
-			data.writeInt(latched.dimensionId);
+			latched.write(data);
 		}
 		else if(latchedEntity != null)
 		{

@@ -9,7 +9,6 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -31,7 +30,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	}
 	
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		GasStack gasStack = getGas(itemstack);
 
@@ -46,10 +45,12 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
         list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 	
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) {}
-	
+*/
+
 	public void useGas(ItemStack stack)
 	{
 		setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount - 1));
@@ -167,7 +168,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);

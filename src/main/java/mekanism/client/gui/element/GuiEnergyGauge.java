@@ -6,9 +6,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
 
 public class GuiEnergyGauge extends GuiGauge
 {

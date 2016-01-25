@@ -24,12 +24,12 @@ public class TileSound extends Sound implements IResettableSound
 
 	public TileSound(IHasSound source, ISoundSource values)
 	{
-		this(source, values.getSoundLocation(), values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xCoord, values.getSoundPosition().yCoord, values.getSoundPosition().zCoord);
+		this(source, values.getSoundLocation(), values.getVolume(), values.getFrequency(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xCoord, values.getSoundPosition().yCoord, values.getSoundPosition().zCoord);
 	}
 
 	public TileSound(IHasSound source, ISoundSource values, ResourceLocation location)
 	{
-		this(source, location, values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xCoord, values.getSoundPosition().yCoord, values.getSoundPosition().zCoord);
+		this(source, location, values.getVolume(), values.getFrequency(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xCoord, values.getSoundPosition().yCoord, values.getSoundPosition().zCoord);
 	}
 
 	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z)

@@ -13,12 +13,13 @@ import mekanism.api.util.ListUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -37,16 +38,13 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register) {}
-
-	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
 		return block != Blocks.bedrock;
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
@@ -70,15 +68,15 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack itemstack, Block block, int meta)
+	public float getDigSpeed(ItemStack itemstack, IBlockState state)
 	{
 		return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack itemstack, World world, Block block, int x, int y, int z, EntityLivingBase entityliving)
+	public boolean onBlockDestroyed(ItemStack itemstack, World world, Block block, BlockPos pos, EntityLivingBase entityliving)
 	{
-		if(block.getBlockHardness(world, x, y, z) != 0.0D)
+		if(block.getBlockHardness(world, pos) != 0.0D)
 		{
 			setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
 		}
@@ -90,22 +88,23 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
+	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
 	{
-		super.onBlockStartBreak(itemstack, x, y, z, player);
+		super.onBlockStartBreak(itemstack, pos, player);
 
 		if(!player.worldObj.isRemote)
 		{
-			Block block = player.worldObj.getBlock(x, y, z);
-			int meta = player.worldObj.getBlockMetadata(x, y, z);
-			
+			IBlockState state = player.worldObj.getBlockState(pos);
+			Block block = state.getBlock();
+			int meta = block.getMetaFromState(state);
+
 			if(block == Blocks.lit_redstone_ore)
 			{
 				block = Blocks.redstone_ore;
 			}
 
 			ItemStack stack = new ItemStack(block, 1, meta);
-			Coord4D orig = new Coord4D(x, y, z, player.worldObj.provider.getDimensionId());
+			Coord4D orig = new Coord4D(pos, player.worldObj.provider.getDimensionId());
 
 			List<String> names = MekanismUtils.getOreDictName(stack);
 
@@ -121,7 +120,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			if(getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode)
 			{
-				Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(x, y, z, player.worldObj.provider.getDimensionId())).calc();
+				Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(pos, player.worldObj.provider.getDimensionId())).calc();
 
 				for(Coord4D coord : found)
 				{
@@ -132,11 +131,11 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 					Block block2 = coord.getBlock(player.worldObj);
 
-					block2.onBlockDestroyedByPlayer(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, meta);
-					player.worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, meta << 12);
-					player.worldObj.setBlockToAir(coord.xCoord, coord.yCoord, coord.zCoord);
-					block2.breakBlock(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, block, meta);
-					block2.dropBlockAsItem(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, meta, 0);
+					block2.onBlockDestroyedByPlayer(player.worldObj, coord, state);
+					player.worldObj.playAuxSFXAtEntity(null, 2001, coord, meta << 12);
+					player.worldObj.setBlockToAir(coord);
+					block2.breakBlock(player.worldObj, coord, state);
+					block2.dropBlockAsItem(player.worldObj, coord, state, 0);
 
 					setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
 				}
@@ -165,13 +164,13 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(!player.isSneaking())
 		{
-			if(!useHoe(stack, player, world, x, y, z, side))
+			if(!useHoe(stack, player, world, pos, side))
 			{
-				if(world.getBlock(x, y, z) != Blocks.farmland)
+				if(world.getBlockState(pos).getBlock() != Blocks.farmland)
 				{
 					return false;
 				}
@@ -180,21 +179,21 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			switch(getEfficiency(stack))
 			{
 				case 20:
-					for(int x1 = x-1; x1 <= x+1; x1++)
+					for(int x1 = -1; x1 <= +1; x1++)
 					{
-						for(int z1 = z-1; z1 <= z+1; z1++)
+						for(int z1 = -1; z1 <= +1; z1++)
 						{
-							useHoe(stack, player, world, x1, y, z1, side);
+							useHoe(stack, player, world, pos.add(x1, 0, z1), side);
 						}
 					}
 
 					break;
 				case 128:
-					for(int x1 = x-2; x1 <= x+2; x1++)
+					for(int x1 = -2; x1 <= +2; x1++)
 					{
-						for(int z1 = z-2; z1 <= z+2; z1++)
+						for(int z1 = -2; z1 <= +2; z1++)
 						{
-							useHoe(stack, player, world, x1, y, z1, side);
+							useHoe(stack, player, world, pos.add(x1, 0, z1), side);
 						}
 					}
 
@@ -207,14 +206,14 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		return false;
 	}
 
-	private boolean useHoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side)
+	private boolean useHoe(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side)
 	{
-		if(!player.canPlayerEdit(x, y, z, side, stack) || (!player.capabilities.isCreativeMode && getEnergy(stack) < HOE_USAGE))
+		if(!player.canPlayerEdit(pos, side, stack) || (!player.capabilities.isCreativeMode && getEnergy(stack) < HOE_USAGE))
 		{
 			return false;
 		}
 		else {
-			UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
+			UseHoeEvent event = new UseHoeEvent(player, stack, world, pos);
 
 			if(MinecraftForge.EVENT_BUS.post(event))
 			{
@@ -227,20 +226,20 @@ public class ItemAtomicDisassembler extends ItemEnergized
 				return true;
 			}
 
-			Block block1 = world.getBlock(x, y, z);
-			boolean air = world.isAirBlock(x, y + 1, z);
+			Block block1 = world.getBlockState(pos).getBlock();
+			boolean air = block1.isAir(world, pos.up());
 
-			if(side != 0 && air && (block1 == Blocks.grass || block1 == Blocks.dirt))
+			if(side != EnumFacing.DOWN && air && (block1 == Blocks.grass || block1 == Blocks.dirt))
 			{
 				Block farm = Blocks.farmland;
-				world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, farm.stepSound.getStepResourcePath(), (farm.stepSound.getVolume() + 1.0F) / 2.0F, farm.stepSound.getPitch() * 0.8F);
+				world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, farm.stepSound.getStepSound(), (farm.stepSound.getVolume() + 1.0F) / 2.0F, farm.stepSound.getFrequency() * 0.8F);
 
 				if(world.isRemote)
 				{
 					return true;
 				}
 				else {
-					world.setBlock(x, y, z, farm);
+					world.setBlockState(pos, farm.getDefaultState());
 					
 					if(!player.capabilities.isCreativeMode)
 					{
@@ -354,7 +353,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			{
 				Coord4D coord = pointer.offset(side);
 
-				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getBlockState(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getBlockState(world) % 4 == stack.getItemDamage() % 4)))
+				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getBlockMeta(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4)))
 				{
 					loop(coord);
 				}

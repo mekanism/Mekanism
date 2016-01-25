@@ -4,17 +4,13 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class ItemWalkieTalkie extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public ItemWalkieTalkie()
 	{
 		super();
@@ -22,7 +18,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
@@ -30,6 +26,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 		list.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(itemstack));
 	}
 
+/*
 	@Override
 	public IIcon getIconIndex(ItemStack itemStack)
 	{
@@ -51,6 +48,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 			icons[i] = register.registerIcon("mekanism:WalkieTalkie_ch" + i);
 		}
 	}
+*/
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player)

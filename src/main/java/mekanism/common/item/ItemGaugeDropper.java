@@ -13,6 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -62,13 +64,13 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	}
 	
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
 	{
 		list.add(getEmptyItem());
 	}
 	
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking() && !world.isRemote)
 		{
@@ -82,7 +84,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	}
 	
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		GasStack gasStack = getGas(itemstack);
 		FluidStack fluidStack = getFluid(itemstack);
@@ -130,7 +132,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 			container.setTagCompound(new NBTTagCompound());
 		}
 		
-		if(stack == null || stack.amount == 0 || stack.getFluidID() == 0)
+		if(stack == null || stack.amount == 0 || stack.getFluid() == null)
 		{
 			container.getTagCompound().removeTag("fluidStack");
 		}

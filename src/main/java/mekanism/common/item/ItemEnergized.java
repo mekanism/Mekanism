@@ -41,7 +41,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 	}
@@ -54,7 +54,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
 	{
 		ItemStack discharged = new ItemStack(this);
 		discharged.setItemDamage(100);

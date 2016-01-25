@@ -5,7 +5,6 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemArmor;
@@ -21,13 +20,15 @@ public class ItemGasMask extends ItemArmor
 {
 	public ItemGasMask()
 	{
-		super(EnumHelper.addArmorMaterial("GASMASK", 0, new int[] {0, 0, 0, 0}, 0), 0, 0);
+		super(EnumHelper.addArmorMaterial("GASMASK", "gasmask", 0, new int[] {0, 0, 0, 0}, 0), 0, 0);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) {}
+*/
 
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)

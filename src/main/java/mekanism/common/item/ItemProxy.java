@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -22,11 +21,13 @@ public class ItemProxy extends Item
 		return getSavedItem(stack);
 	}
 
+/*
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
 		return stack.getTagCompound() == null || !stack.getTagCompound().getBoolean("hasStack");
 	}
+*/
 
 	@Override
 	public boolean hasContainerItem(ItemStack itemStack)
@@ -66,9 +67,6 @@ public class ItemProxy extends Item
 
 		return null;
 	}
-
-	@Override
-	public void registerIcons(IIconRegister register) {}
 
 	@Override
 	public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)

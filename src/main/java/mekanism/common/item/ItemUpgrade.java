@@ -27,7 +27,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{

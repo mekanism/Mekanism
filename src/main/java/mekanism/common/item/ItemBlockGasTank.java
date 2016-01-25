@@ -14,6 +14,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +23,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -54,25 +56,19 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
-	{
-		return metaBlock.getIcon(2, i);
-	}
-
-	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		return getUnlocalizedName() + "." + "GasTank";
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
-		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
 
 		if(place)
 		{
-			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 			tileEntity.gasTank.setGas(getGas(stack));
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -82,7 +78,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		GasStack gasStack = getGas(itemstack);
 
@@ -161,7 +157,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);

@@ -32,7 +32,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public FluidTank fluidTank = new FluidTank(10000);
 	
-	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP, EnumFacing.null));
+	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
 	private static int MAX_NODES = 4000;
 	
 	public TileEntityFluidicPlenisher()

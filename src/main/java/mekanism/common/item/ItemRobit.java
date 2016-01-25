@@ -8,12 +8,13 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,11 +28,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
@@ -40,9 +37,9 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float posX, float posY, float posZ)
+	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, BlockPos pos, EnumFacing side, float posX, float posY, float posZ)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if(tileEntity instanceof TileEntityChargepad)
 		{
@@ -51,7 +48,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 			{
 				if(!world.isRemote)
 				{
-					EntityRobit robit = new EntityRobit(world, x+0.5, y+0.1, z+0.5);
+					EntityRobit robit = new EntityRobit(world, pos.getX()+0.5, pos.getY()+0.1, pos.getZ()+0.5);
 
 					robit.setHome(Coord4D.get(chargepad));
 					robit.setEnergy(getEnergy(itemstack));

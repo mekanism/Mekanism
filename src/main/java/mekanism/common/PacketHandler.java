@@ -73,6 +73,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -204,74 +205,32 @@ public class PacketHandler
 	
 	public static void writeString(ByteBuf output, String s)
 	{
-		output.writeInt(s.getBytes().length);
-		output.writeBytes(s.getBytes());
+		ByteBufUtils.writeUTF8String(output, s);
 	}
 	
 	public static String readString(ByteBuf input)
 	{
-		return new String(input.readBytes(input.readInt()).array());
+		return ByteBufUtils.readUTF8String(input);
 	}
 	
 	public static void writeStack(ByteBuf output, ItemStack stack)
 	{
-		output.writeInt(stack != null ? Item.getIdFromItem(stack.getItem()) : -1);
-		
-		if(stack != null)
-		{
-			output.writeInt(stack.stackSize);
-			output.writeInt(stack.getItemDamage());
-			
-			if(stack.getTagCompound() != null && stack.getItem().getShareTag())
-			{
-				output.writeBoolean(true);
-				writeNBT(output, stack.getTagCompound());
-			}
-			else {
-				output.writeBoolean(false);
-			}
-		}
+		ByteBufUtils.writeItemStack(output, stack);
 	}
 	
 	public static ItemStack readStack(ByteBuf input)
 	{
-		int id = input.readInt();
-		
-		if(id >= 0)
-		{
-			ItemStack stack = new ItemStack(Item.getItemById(id), input.readInt(), input.readInt());
-			
-			if(input.readBoolean())
-			{
-				stack.setTagCompound(readNBT(input));
-			}
-			
-			return stack;
-		}
-		
-		return null;
+		return ByteBufUtils.readItemStack(input);
 	}
 	
 	public static void writeNBT(ByteBuf output, NBTTagCompound nbtTags)
 	{
-		try {
-			byte[] buffer = CompressedStreamTools.compress(nbtTags);
-			
-			output.writeInt(buffer.length);
-			output.writeBytes(buffer);
-		} catch(Exception e) {}
+		ByteBufUtils.writeTag(output, nbtTags);
 	}
 	
 	public static NBTTagCompound readNBT(ByteBuf input)
 	{
-		try {
-			byte[] buffer = new byte[input.readInt()];
-			input.readBytes(buffer);
-			
-			return CompressedStreamTools.decompress(buffer, new NBTSizeTracker(2097152L));
-		} catch(Exception e) {
-			return null;
-		}
+		return ByteBufUtils.readTag(input);
 	}
 	
 	public static void log(String log)

@@ -503,10 +503,11 @@ public final class MekanismUtils
 	 * Increments the output type of a machine's side.
 	 * @param config - configurable machine
 	 * @param type - the TransmissionType to modify
-	 * @param side - side to increment output of
+	 * @param direction - side to increment output of
 	 */
-	public static void incrementOutput(ISideConfiguration config, TransmissionType type, int side)
+	public static void incrementOutput(ISideConfiguration config, TransmissionType type, EnumFacing direction)
 	{
+		int side = direction.ordinal();
 		int max = config.getConfig().getOutputs(type).size()-1;
 		int current = config.getConfig().getOutputs(type).indexOf(config.getConfig().getOutputs(type).get(config.getConfig().getConfig(type)[side]));
 
@@ -528,10 +529,11 @@ public final class MekanismUtils
 	 * Decrements the output type of a machine's side.
 	 * @param config - configurable machine
 	 * @param type - the TransmissionType to modify
-	 * @param side - side to increment output of
+	 * @param direction - side to increment output of
 	 */
-	public static void decrementOutput(ISideConfiguration config, TransmissionType type, int side)
+	public static void decrementOutput(ISideConfiguration config, TransmissionType type, EnumFacing direction)
 	{
+		int side = direction.ordinal();
 		int max = config.getConfig().getOutputs(type).size()-1;
 		int current = config.getConfig().getOutputs(type).indexOf(config.getConfig().getOutputs(type).get(config.getConfig().getConfig(type)[side]));
 
@@ -1416,12 +1418,10 @@ public final class MekanismUtils
 	/**
 	 * Whether or not the player has a usable wrench for a block at the coordinates given.
 	 * @param player - the player using the wrench
-	 * @param x - the x coordinate of the block being wrenched
-	 * @param y - the y coordinate of the block being wrenched
-	 * @param z - the z coordinate of the block being wrenched
+	 * @param pos - the coordinate of the block being wrenched
 	 * @return if the player can use the wrench
 	 */
-	public static boolean hasUsableWrench(EntityPlayer player, int x, int y, int z)
+	public static boolean hasUsableWrench(EntityPlayer player, BlockPos pos)
 	{
 		ItemStack tool = player.getCurrentEquippedItem();
 		
@@ -1430,17 +1430,17 @@ public final class MekanismUtils
 			return false;
 		}
 		
-		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(player, x, y, z))
+		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(player, pos))
 		{
 			return true;
 		}
 		
-		if(isBCWrench(tool.getItem()) && ((IToolWrench)tool.getItem()).canWrench(player, x, y, z))
+		if(isBCWrench(tool.getItem()) && ((IToolWrench)tool.getItem()).canWrench(player, pos))
 		{
 			return true;
 		}
 		
-		if(isCoFHHammer(tool.getItem()) && ((IToolHammer)tool.getItem()).isUsable(tool, player, x, y, z))
+		if(isCoFHHammer(tool.getItem()) && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
 		{
 			return true;
 		}

@@ -144,6 +144,12 @@ public class Coord4D extends BlockPos
 		return world.getBlockState(this).getBlock();
 	}
 
+	public int getBlockMeta(IBlockAccess world)
+	{
+		IBlockState state = getBlockState(world);
+		return state == null ? 0 : state.getBlock().getMetaFromState(state);
+	}
+
 	/**
 	 * Writes this Coord4D's data to an NBTTagCompound.
 	 * @param nbtTags - tag compound to write to
