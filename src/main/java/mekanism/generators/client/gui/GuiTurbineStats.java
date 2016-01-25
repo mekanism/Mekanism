@@ -48,14 +48,14 @@ public class GuiTurbineStats extends GuiMekanism
 		
 		fontRendererObj.drawString(LangUtils.localize("gui.steamFlow"), 8, 40, 0x797979);
 		fontRendererObj.drawString(LangUtils.localize("gui.dispersers") + ": " + tileEntity.structure.clientDispersers + (dispersersLimiting ? limiting : ""), 14, 49, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.vents") + ": " + tileEntity.structure.vents + (ventsLimiting ? limiting : ""), 8, 58, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.vents") + ": " + tileEntity.structure.vents + (ventsLimiting ? limiting : ""), 14, 58, 0x404040);
 		
 		boolean bladesLimiting = tileEntity.structure.coils*4 > tileEntity.structure.blades;
 		boolean coilsLimiting = tileEntity.structure.coils*4 < tileEntity.structure.blades;
 		
-		fontRendererObj.drawString(LangUtils.localize("gui.generation"), 8, 72, 0x797979);
+		fontRendererObj.drawString(LangUtils.localize("gui.production"), 8, 72, 0x797979);
 		fontRendererObj.drawString(LangUtils.localize("gui.blades") + ": " + tileEntity.structure.blades + (bladesLimiting ? limiting : ""), 14, 81, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.coils") + ": " + tileEntity.structure.coils + (bladesLimiting ? limiting : ""), 8, 90, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.coils") + ": " + tileEntity.structure.coils + (coilsLimiting ? limiting : ""), 14, 90, 0x404040);
 		
 		double energyMultiplier = TileEntityTurbineCasing.ENERGY_PER_STEAM*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*TileEntityTurbineCasing.BLADE_TO_COIL_RATIO);
 		double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*TileEntityTurbineCasing.DISPERSER_GAS_FLOW);		

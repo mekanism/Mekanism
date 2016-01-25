@@ -13,6 +13,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
@@ -118,6 +119,12 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 				}
 			}
 		}
+	}
+	
+	@Override
+	public String getInventoryName()
+	{
+		return LangUtils.localize("gui.industrialTurbine");
 	}
 	
 	@Override

@@ -107,6 +107,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	
 			dataStream.writeInt(coord4D.dimensionId);
 	
+			dataStream.writeInt(guiHandler);
 			dataStream.writeInt(guiId);
 			dataStream.writeInt(windowId);
 		}
@@ -116,6 +117,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 		{
 			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	
+			guiHandler = dataStream.readInt();
 			guiId = dataStream.readInt();
 			windowId = dataStream.readInt();
 		}

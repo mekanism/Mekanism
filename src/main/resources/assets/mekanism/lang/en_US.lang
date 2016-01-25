@@ -486,7 +486,7 @@ gui.moveUp=Move Up
 gui.moveDown=Move Down
 gui.flowRate=Flow rate
 gui.maxFlow=Max flow
-gui.tankVolume=Tank volume
+gui.tankVolume=Tank Volume
 gui.steamFlow=Steam Flow
 gui.production=Production
 gui.blades=Blades
@@ -496,6 +496,7 @@ gui.vents=Vents
 gui.maxProduction=Max Production
 gui.limiting=Limiting
 gui.steamInput=Steam Input
+gui.capacity=Capacity
 
 gui.reactor.injectionRate=Injection Rate
 
