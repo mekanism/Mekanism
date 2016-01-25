@@ -21,7 +21,7 @@ public interface ICullable {
 	//They are used to effectively cull obstructed sides while processing facades.
 	//Make sure your implementation is correct otherwise expect FPS drop
 	
-	void setRenderSide(ForgeDirection side, boolean render);
+	void setRenderSide(EnumFacing side, boolean render);
 	
 	void setRenderAllSides();
 	

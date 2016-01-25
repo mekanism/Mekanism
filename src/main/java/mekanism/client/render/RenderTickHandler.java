@@ -20,6 +20,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -139,16 +140,16 @@ public class RenderTickHandler
 						mRight.translate(rRight);
 
 						Pos3D v = playerPos.clone().translate(vLeft);
-						spawnAndSetParticle("flame", world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
-						spawnAndSetParticle("smoke", world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
 
 						v = playerPos.clone().translate(vRight);
-						spawnAndSetParticle("flame", world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
-						spawnAndSetParticle("smoke", world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
 
 						v = playerPos.clone().translate(vCenter);
-						spawnAndSetParticle("flame", world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
-						spawnAndSetParticle("smoke", world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
 					}
 				}
 				
@@ -197,7 +198,7 @@ public class RenderTickHandler
 								
 								Pos3D mergedVec = playerPos.translate(flameVec);
 								
-								spawnAndSetParticle("flame", world, mergedVec.xCoord, mergedVec.yCoord, mergedVec.zCoord, flameMotion.xCoord, flameMotion.yCoord, flameMotion.zCoord);
+								spawnAndSetParticle(EnumParticleTypes.FLAME, world, mergedVec.xCoord, mergedVec.yCoord, mergedVec.zCoord, flameMotion.xCoord, flameMotion.yCoord, flameMotion.zCoord);
 							}
 						}
 					}
@@ -206,15 +207,15 @@ public class RenderTickHandler
 		}
 	}
 
-	public void spawnAndSetParticle(String s, World world, double x, double y, double z, double velX, double velY, double velZ)
+	public void spawnAndSetParticle(EnumParticleTypes s, World world, double x, double y, double z, double velX, double velY, double velZ)
 	{
 		EntityFX fx = null;
 
-		if(s.equals("flame"))
+		if(s.equals(EnumParticleTypes.FLAME))
 		{
 			fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
 		}
-		else if(s.equals("smoke"))
+		else if(s.equals(EnumParticleTypes.SMOKE_NORMAL))
 		{
 			fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
 		}

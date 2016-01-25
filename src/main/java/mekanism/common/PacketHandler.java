@@ -72,6 +72,7 @@ import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -169,6 +170,10 @@ public class PacketHandler
 				else if(data instanceof Byte)
 				{
 					output.writeByte((Byte)data);
+				}
+				else if(data instanceof EnumFacing)
+				{
+					output.writeInt(((EnumFacing)data).ordinal());
 				}
 				else if(data instanceof ItemStack)
 				{

@@ -16,30 +16,30 @@ import net.minecraft.util.EnumFacing;
 
 public class Position implements ISerializable {
 	public double x, y, z;
-	public ForgeDirection orientation;
+	public EnumFacing orientation;
 
 	public Position() {
 		x = 0;
 		y = 0;
 		z = 0;
-		orientation = ForgeDirection.UNKNOWN;
+		orientation = null;
 	}
 
 	public Position(double ci, double cj, double ck) {
 		x = ci;
 		y = cj;
 		z = ck;
-		orientation = ForgeDirection.UNKNOWN;
+		orientation = null;
 	}
 
-	public Position(double ci, double cj, double ck, ForgeDirection corientation) {
+	public Position(double ci, double cj, double ck, EnumFacing corientation) {
 		x = ci;
 		y = cj;
 		z = ck;
 		orientation = corientation;
 
 		if (orientation == null) {
-			orientation = ForgeDirection.UNKNOWN;
+			orientation = null;
 		}
 	}
 
@@ -55,17 +55,17 @@ public class Position implements ISerializable {
 	}
 
 	public Position(TileEntity tile) {
-		x = tile.xCoord;
-		y = tile.yCoord;
-		z = tile.zCoord;
-		orientation = ForgeDirection.UNKNOWN;
+		x = tile.getPos().getX();
+		y = tile.getPos().getY();
+		z = tile.getPos().getZ();
+		orientation = null;
 	}
 
 	public Position(BlockIndex index) {
 		x = index.x;
 		y = index.y;
 		z = index.z;
-		orientation = ForgeDirection.UNKNOWN;
+		orientation = null;
 	}
 
 	public void moveRight(double step) {
@@ -137,7 +137,7 @@ public class Position implements ISerializable {
 
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		if (orientation == null) {
-			orientation = ForgeDirection.UNKNOWN;
+			orientation = null;
 		}
 
 		nbttagcompound.setDouble("i", x);
@@ -150,7 +150,7 @@ public class Position implements ISerializable {
 		x = nbttagcompound.getDouble("i");
 		y = nbttagcompound.getDouble("j");
 		z = nbttagcompound.getDouble("k");
-		orientation = ForgeDirection.values() [nbttagcompound.getByte("orientation")];
+		orientation = EnumFacing.VALUES [nbttagcompound.getByte("orientation")];
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class Position implements ISerializable {
 		x = stream.readDouble();
 		y = stream.readDouble();
 		z = stream.readDouble();
-		orientation = ForgeDirection.getOrientation(stream.readByte());
+		orientation = EnumFacing.getFront(stream.readByte());
 	}
 
 	@Override

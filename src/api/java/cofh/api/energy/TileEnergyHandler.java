@@ -30,34 +30,34 @@ public class TileEnergyHandler extends TileEntity implements IEnergyHandler {
 
 	/* IEnergyConnection */
 	@Override
-	public boolean canConnectEnergy(ForgeDirection from) {
+	public boolean canConnectEnergy(EnumFacing from) {
 
 		return true;
 	}
 
 	/* IEnergyReceiver */
 	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
 
 		return storage.receiveEnergy(maxReceive, simulate);
 	}
 
 	/* IEnergyProvider */
 	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
 
 		return storage.extractEnergy(maxExtract, simulate);
 	}
 
 	/* IEnergyReceiver and IEnergyProvider */
 	@Override
-	public int getEnergyStored(ForgeDirection from) {
+	public int getEnergyStored(EnumFacing from) {
 
 		return storage.getEnergyStored();
 	}
 
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from) {
+	public int getMaxEnergyStored(EnumFacing from) {
 
 		return storage.getMaxEnergyStored();
 	}

@@ -343,7 +343,7 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	// energy net interface >>
 
 	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction) {
+	public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction) {
 		return true;
 	}
 

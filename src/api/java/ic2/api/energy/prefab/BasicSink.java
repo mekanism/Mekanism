@@ -340,7 +340,7 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	// energy net interface >>
 
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) {
+	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction) {
 		return true;
 	}
 
@@ -350,7 +350,7 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	}
 
 	@Override
-	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage) {
+	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
 		energyStored += amount;
 
 		return 0;

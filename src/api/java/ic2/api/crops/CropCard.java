@@ -1,11 +1,9 @@
 package ic2.api.crops;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -142,37 +140,6 @@ public abstract class CropCard {
 	 * Currently only used for texture allocation.
 	 */
 	public abstract int maxSize();
-
-	/**
-	 * Instantiate your Icons here.
-	 *
-	 * This method will get called by IC2, don't call it yourself.
-	 *
-	 * It's highly recommended to use your own assert domain here, e.g. yourmod:crop/* instead of
-	 * ic2:crop/*, which will then read assets/yourmod/textures/blocks/crop/*.png.
-	 */
-	@SideOnly(Side.CLIENT)
-	public void registerSprites(IIconRegister iconRegister) {
-		textures = new IIcon[maxSize()];
-
-		for (int i = 1; i <= textures.length; i++) {
-			// ic2:crop/blockCrop.NAME.n is the legacy name for backwards compatiblity
-			textures[i - 1] = iconRegister.registerIcon("ic2:crop/blockCrop."+name()+"."+i);
-		}
-	}
-
-	/**
-	 * Sprite the crop is meant to be rendered with.
-	 *
-	 * @param crop reference to ICropTile
-	 * @return 0-255, representing the sprite index on the crop's spritesheet.
-	 */
-	@SideOnly(Side.CLIENT)
-	public IIcon getSprite(ICropTile crop) {
-		if (crop.getSize() <= 0 || crop.getSize() > textures.length) return null;
-
-		return textures[crop.getSize() - 1];
-	}
 
 	/**
 	 * Amount of growth points needed to increase the plant's size.
@@ -425,9 +392,6 @@ public abstract class CropCard {
 			return "unknown";
 		}
 	}
-
-	@SideOnly(Side.CLIENT)
-	protected IIcon textures[];
 
 	private final String modId; // TODO: make owner abstract, remove modId auto detection
 }

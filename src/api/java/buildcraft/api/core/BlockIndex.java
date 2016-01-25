@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -29,6 +30,12 @@ public class BlockIndex implements Comparable<BlockIndex> {
 	/**
 	 * Creates an index for a block located on x, y. z
 	 */
+	public BlockIndex(BlockPos pos) {
+		this.x = pos.getX();
+		this.y = pos.getY();
+		this.z = pos.getZ();
+	}
+
 	public BlockIndex(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
@@ -48,7 +55,7 @@ public class BlockIndex implements Comparable<BlockIndex> {
 	}
 
 	public BlockIndex(TileEntity entity) {
-		this(entity.xCoord, entity.yCoord, entity.zCoord);
+		this(entity.getPos());
 	}
 
 	/**
@@ -80,7 +87,7 @@ public class BlockIndex implements Comparable<BlockIndex> {
 	}
 
 	public Block getBlock(World world) {
-		return world.getBlock(x, y, z);
+		return world.getBlockState(new BlockPos(x, y, z)).getBlock();
 	}
 
 	@Override

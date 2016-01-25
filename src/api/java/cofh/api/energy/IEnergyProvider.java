@@ -23,16 +23,16 @@ public interface IEnergyProvider extends IEnergyConnection {
 	 *            If TRUE, the extraction will only be simulated.
 	 * @return Amount of energy that was (or would have been, if simulated) extracted.
 	 */
-	int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate);
+	int extractEnergy(EnumFacing from, int maxExtract, boolean simulate);
 
 	/**
 	 * Returns the amount of energy currently stored.
 	 */
-	int getEnergyStored(ForgeDirection from);
+	int getEnergyStored(EnumFacing from);
 
 	/**
 	 * Returns the maximum amount of energy that can be stored.
 	 */
-	int getMaxEnergyStored(ForgeDirection from);
+	int getMaxEnergyStored(EnumFacing from);
 
 }

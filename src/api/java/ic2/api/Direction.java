@@ -1,6 +1,7 @@
 package ic2.api;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraft.util.EnumFacing;
@@ -40,8 +41,8 @@ public enum Direction {
 		return directions[(side + 2) % 6];
 	}
 
-	public static Direction fromForgeDirection(ForgeDirection dir) {
-		if (dir == ForgeDirection.UNKNOWN) return null;
+	public static Direction fromEnumFacing(EnumFacing dir) {
+		if (dir == null) return null;
 
 		return fromSideValue(dir.ordinal());
 	}
@@ -53,7 +54,7 @@ public enum Direction {
 	 * @return Adjacent tile entity or null if none exists
 	 */
 	public TileEntity applyToTileEntity(TileEntity te) {
-		return applyTo(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+		return applyTo(te.getWorld(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
 	}
 
 	/**
@@ -65,14 +66,12 @@ public enum Direction {
 	 * @param z Z coordinate to check from
 	 * @return Adjacent tile entity or null if none exists
 	 */
-	public TileEntity applyTo(World world, int x, int y, int z) {
-		int coords[] = { x, y, z };
+	public TileEntity applyTo(World world, BlockPos pos) {
 
-		coords[ordinal() / 2] += getSign();
 
-		if (world != null && world.blockExists(coords[0], coords[1], coords[2])) {
+		if (world != null && world.blockExists(pos)) {
 			try {
-				return world.getTileEntity(coords[0], coords[1], coords[2]);
+				return world.getTileEntity(pos);
 			} catch (Exception e) {
 				throw new RuntimeException("error getting TileEntity at dim "+world.provider.dimensionId+" "+coords[0]+"/"+coords[1]+"/"+coords[2]);
 			}
@@ -108,8 +107,8 @@ public enum Direction {
 		return (ordinal() % 2) * 2 - 1;
 	}
 
-	public ForgeDirection toForgeDirection() {
-		return ForgeDirection.getOrientation(toSideValue());
+	public EnumFacing toEnumFacing() {
+		return EnumFacing.getOrientation(toSideValue());
 	}
 
 	public static final Direction[] directions = Direction.values();

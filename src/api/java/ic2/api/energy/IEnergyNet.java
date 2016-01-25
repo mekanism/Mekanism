@@ -1,6 +1,7 @@
 package ic2.api.energy;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraft.util.EnumFacing;
@@ -25,7 +26,7 @@ public interface IEnergyNet {
 	 * @param z z-coordinate
 	 * @return tile entity registered to the energy net or null if none is registered
 	 */
-	TileEntity getTileEntity(World world, int x, int y, int z);
+	TileEntity getTileEntity(World world, BlockPos pos);
 
 	/**
 	 * Get the EnergyNet-registered neighbor tile entity at the specified position.
@@ -34,7 +35,7 @@ public interface IEnergyNet {
 	 * @param dir direction the neighbor is to be found
 	 * @return neighbor tile entity registered to the energy net or null if none is registered
 	 */
-	TileEntity getNeighbor(TileEntity te, ForgeDirection dir);
+	TileEntity getNeighbor(TileEntity te, EnumFacing dir);
 
 	/**
 	 * determine how much energy has been emitted by the EnergyEmitter specified

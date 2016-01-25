@@ -1,8 +1,8 @@
 package mekanism.client.sound;
 
-import mekanism.api.Pos3D;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -18,7 +18,7 @@ public interface ISoundSource
 	public float getFrequency();
 
 	@SideOnly(Side.CLIENT)
-	public Pos3D getSoundPosition();
+	public Vec3 getSoundPosition();
 
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRepeat();

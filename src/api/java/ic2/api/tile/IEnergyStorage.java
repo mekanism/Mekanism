@@ -57,5 +57,5 @@ public interface IEnergyStorage {
 	 * @param side side the teleporter is draining energy from
 	 * @return Whether the block is teleporter compatible
 	 */
-	public boolean isTeleporterCompatible(ForgeDirection side);
+	public boolean isTeleporterCompatible(EnumFacing side);
 }

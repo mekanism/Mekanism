@@ -11,6 +11,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.integration.IComputerIntegration;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -18,11 +19,11 @@ import net.minecraft.item.ItemStack;
 })
 public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyHandler, IComputerIntegration, IFilterAccess
 {
-	public int[] getBoundSlots(Coord4D location, int side);
+	public int[] getBoundSlots(Coord4D location, EnumFacing side);
 
 	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack);
 
-	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, int j);
+	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, EnumFacing side);
 
 	public void onPower();
 

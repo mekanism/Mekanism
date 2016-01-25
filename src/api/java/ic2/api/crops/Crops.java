@@ -2,7 +2,6 @@ package ic2.api.crops;
 
 import java.util.Collection;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -130,14 +129,6 @@ public abstract class Crops {
 	 * @return Base seed or null if none found
 	 */
 	public abstract BaseSeed getBaseSeed(ItemStack stack);
-
-	/**
-	 * Execute registerSprites for all registered crop cards.
-	 *
-	 * This method will get called by IC2, don't call it yourself.
-	 */
-	@SideOnly(Side.CLIENT)
-	public abstract void startSpriteRegistration(IIconRegister iconRegister);
 
 	/**
 	 * Returns the ID for the given crop.

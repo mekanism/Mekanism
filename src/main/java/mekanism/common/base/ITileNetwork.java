@@ -22,5 +22,5 @@ public interface ITileNetwork
 	 * @param data - list of data
 	 * @return ArrayList
 	 */
-	public ArrayList getNetworkedData(ArrayList data);
+	public ArrayList getNetworkedData(ArrayList<Object> data);
 }
