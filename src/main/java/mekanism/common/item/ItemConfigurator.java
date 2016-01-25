@@ -21,6 +21,7 @@ import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -259,6 +260,15 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	@Override
 	@Method(modid = "BuildCraft")
 	public void wrenchUsed(EntityPlayer player, BlockPos pos) {}
+
+	@Override
+	public boolean canWrench(EntityPlayer player, Entity entity)
+	{
+		return false;
+	}
+
+	@Override
+	public void wrenchUsed(EntityPlayer player, Entity entity) {}
 
 	@Override
 	public boolean canUseWrench(EntityPlayer player, BlockPos pos)

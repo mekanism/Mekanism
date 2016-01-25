@@ -82,7 +82,7 @@ public final class MinerVisualRenderer
 		
 		toReturn.setBlockBounds(rel.getX() + 0.4, rel.getY() + 0.4, rel.getZ() + 0.4, rel.getX() + 0.6, rel.getY() + 0.6, rel.getZ() + 0.6);
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
+		//toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
 		
 		return toReturn;
 	}

@@ -27,7 +27,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.ITickable;
-import net.minecraft.client.renderer.texture.ResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -76,10 +75,13 @@ public class MekanismRenderer
 		MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
 	}
 	
+/*
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
-		if(event.map.getGlTextureId()/*TODO Is this right?*/ == 0)
+		if(event.map.getGlTextureId()*/
+/*TODO Is this right?*//*
+ == 0)
 		{
 			for(EnumColor color : EnumColor.values())
 			{
@@ -140,7 +142,8 @@ public class MekanismRenderer
 			RenderPortableTank.resetDisplayInts();
 		}
 	}
-	
+*/
+
 	public static boolean blockIconExists(String texture) //Credit to CoFHCore
 	{
 		String[] split = texture.split(":");
@@ -301,6 +304,7 @@ public class MekanismRenderer
 			return;
 		}
 		
+/*
         renderBlocks.renderMaxX = object.maxX;
         renderBlocks.renderMinX = object.minX;
         renderBlocks.renderMaxY = object.maxY;
@@ -343,6 +347,7 @@ public class MekanismRenderer
 		}
 		
 		Tessellator.instance.draw();
+*/
 	}
 	
 	public static void color(EnumColor color)
@@ -365,7 +370,7 @@ public class MekanismRenderer
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
-	public static ResourceLocation getColorIcon(EnumColor color)
+	public static TextureAtlasSprite getColorIcon(EnumColor color)
 	{
 		return colors[color.ordinal()];
 	}
@@ -442,6 +447,7 @@ public class MekanismRenderer
      */
     public static void renderItem(ItemStack item)
     {
+/*
 		ResourceLocation icon = item.getItem().getIconIndex(item);
 		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
 
@@ -470,8 +476,10 @@ public class MekanismRenderer
         RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+*/
     }
     
+/*
     public static void prepareItemRender(RenderBlocks renderer, int metadata, Block block)
     {
     	if(!(block instanceof ISpecialBounds) || ((ISpecialBounds)block).doDefaultBoundSetting(metadata))
@@ -545,13 +553,15 @@ public class MekanismRenderer
     	}
     }
     
-	/**
+	*/
+/**
 	 * Cleaned-up snip of RenderBlocks.renderBlockAsItem() -- used for rendering an item as an entity,
 	 * in a player's inventory, and in a player's hand.
 	 * @param renderer - RenderBlocks renderer to render the item with
 	 * @param metadata - block/item metadata
 	 * @param block - block to render
-	 */
+	 *//*
+
 	public static void renderItem(RenderBlocks renderer, int metadata, Block block)
 	{
 		prepareItemRender(renderer, metadata, block);
@@ -586,7 +596,8 @@ public class MekanismRenderer
         
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
-	
+*/
+
 	public static void colorFluid(Fluid fluid)
 	{
 	    int color = fluid.getColor();
@@ -635,6 +646,7 @@ public class MekanismRenderer
     	}
     }
     
+/*
     public static TextureMap getTextureMap(int type)
     {
     	try {
@@ -654,7 +666,8 @@ public class MekanismRenderer
     	
     	return null;
     }
-    
+*/
+
     public static float getPartialTick()
     {
     	try {

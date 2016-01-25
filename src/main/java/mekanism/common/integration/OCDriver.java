@@ -27,9 +27,9 @@ public class OCDriver extends DriverTileEntity
     }
 
     @Override
-    public ManagedEnvironment createEnvironment(World world, int x, int y, int z)
+    public ManagedEnvironment createEnvironment(World world, BlockPos pos)
     {
-        TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+        TileEntity tile = world.getTileEntity(pos);
 
         if(tile instanceof IComputerIntegration)
         {
