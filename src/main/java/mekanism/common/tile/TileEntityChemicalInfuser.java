@@ -37,6 +37,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.IChatComponent;
 
 public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager
 {
@@ -87,7 +89,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -143,13 +145,13 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			{
 				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getFront(facing).getOpposite(), centerTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(facing.getOpposite(), centerTank.getGas().getGas()))
 					{
-						centerTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getFront(facing).getOpposite(), toSend, true), true);
+						centerTank.draw(((IGasHandler)tileEntity).receiveGas(facing.getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -245,16 +247,16 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		}
 
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(clientEnergyUsed);
 
 		if(leftTank.getGas() != null)
@@ -332,7 +334,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		{
 			return rightTank;
 		}
-		else if(side == EnumFacing.getFront(facing))
+		else if(side == facing)
 		{
 			return centerTank;
 		}
@@ -347,7 +349,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -375,13 +377,13 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == EnumFacing.getFront(facing);
+		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == facing;
 	}
 
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return getTank(side) != null && getTank(side) != centerTank ? getTank(side).canReceive(type) : false;
+		return (getTank(side) != null && getTank(side) != centerTank) && getTank(side).canReceive(type);
 	}
 
 	@Override
@@ -440,22 +442,18 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return getTank(side) != null && getTank(side) == centerTank ? getTank(side).canDraw(type) : false;
+		return (getTank(side) != null && getTank(side) == centerTank) && getTank(side).canDraw(type);
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 3)
-		{
-			return ChargeUtils.canBeDischarged(itemstack);
-		}
+		return slotID == 3 && ChargeUtils.canBeDischarged(itemstack);
 
-		return false;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 0 || slotID == 2)
 		{
@@ -474,9 +472,9 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
+		if(side == MekanismUtils.getLeft(facing))
 		{
 			return new int[] {0};
 		}
@@ -484,11 +482,11 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		{
 			return new int[] {1};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(facing))
 		{
 			return new int[] {2};
 		}
-		else if(side == 0 || side == 1)
+		else if(side.getAxis() == Axis.Y)
 		{
 			return new int[3];
 		}

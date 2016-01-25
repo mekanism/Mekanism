@@ -21,7 +21,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fluids.*;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.ArrayList;
 
@@ -73,7 +75,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+					MekanismUtils.updateBlock(worldObj, getPos());
 				}
 			}
 			
@@ -293,7 +295,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -311,22 +313,18 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 0)
-		{
-			return FluidContainerRegistry.isContainer(itemstack);
-		}
+		return slotID == 0 && FluidContainerRegistry.isContainer(itemstack);
 
-		return false;
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 0)
+		if(side == EnumFacing.DOWN)
 		{
 			return new int[] {1};
 		}
-		else if(side == 1)
+		else if(side == EnumFacing.UP)
 		{
 			return new int[] {0};
 		}
@@ -373,7 +371,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		
 		if(valve > 0)
 		{
-			valveFluid = FluidRegistry.getFluid(dataStream.readInt());
+			valveFluid = FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream));
 		}
 		else {
 			valveFluid = null;
@@ -381,7 +379,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		
 		if(dataStream.readInt() == 1)
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
 		}
 		else {
 			fluidTank.setFluid(null);
@@ -391,7 +389,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 	
@@ -410,23 +408,23 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
 		data.add(valve);
-		data.add(editMode.ordinal());
+		data.add(editMode);
 		
 		if(valve > 0)
 		{
-			data.add(valveFluid.getID());
+			data.add(valveFluid.getName());
 		}
 		
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().getFluidID());
+			data.add(fluidTank.getFluid().getFluid().getName());
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
@@ -443,7 +441,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -469,19 +467,19 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 	
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(!worldObj.isRemote)
 		{
 			setActive(!getActive());
-			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+			worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "random.click", 0.3F, 1);
 		}
 		
 		return true;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return false;
 	}
@@ -560,12 +558,8 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		{
 			if(fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == fluid)
 			{
-				if(isActive)
-				{
-					return from != EnumFacing.DOWN;
-				}
-				
-				return true;
+				return !(isActive && from == EnumFacing.DOWN);
+
 			}
 		}
 		

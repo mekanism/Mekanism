@@ -42,6 +42,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration
 {
@@ -202,7 +203,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						activeType = fluid.getFluid();
 						recurringNodes.add(wrapper.clone());
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper, hasFilter()), true);
-						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
+						worldObj.setBlockToAir(wrapper);
 					}
 
 					return true;
@@ -225,7 +226,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						setEnergy(getEnergy() - usage.electricPumpUsage);
 						activeType = fluid.getFluid();
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper, hasFilter()), true);
-						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
+						worldObj.setBlockToAir(wrapper);
 					}
 
 					return true;
@@ -251,7 +252,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 								activeType = fluid.getFluid();
 								recurringNodes.add(side);
 								fluidTank.fill(MekanismUtils.getFluid(worldObj, side, hasFilter()), true);
-								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
+								worldObj.setBlockToAir(side);
 							}
 
 							return true;
@@ -279,7 +280,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(dataStream.readInt() == 1)
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
 		}
 		else {
 			fluidTank.setFluid(null);
@@ -287,32 +288,27 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().getFluidID());
+			data.add(fluidTank.getFluid().getFluid().getName());
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
 			data.add(0);
 		}
 		
-		data.add(controlType.ordinal());
+		data.add(controlType);
 
 		return data;
-	}
-
-	public int getScaledFluidLevel(int i)
-	{
-		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / 10000 : 0;
 	}
 
 	@Override
@@ -373,7 +369,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				recurringNodes.add(Coord4D.read((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				recurringNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -398,7 +394,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -415,7 +411,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
+		return EnumSet.of(facing.getOpposite());
 	}
 
 	@Override
@@ -425,13 +421,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 1)
+		if(side == EnumFacing.UP)
 		{
 			return new int[] {0};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {1};
 		}
@@ -443,7 +439,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing direction)
 	{
-		if(direction == EnumFacing.getFront(1))
+		if(direction == EnumFacing.UP)
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
@@ -510,7 +506,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		reset();
 
@@ -520,7 +516,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return false;
 	}

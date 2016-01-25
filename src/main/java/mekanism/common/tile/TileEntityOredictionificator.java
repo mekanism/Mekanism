@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -152,13 +153,13 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 	
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
+		if(side == MekanismUtils.getLeft(facing))
 		{
 			return new int[] {0};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(facing))
 		{
 			return new int[] {1};
 		}
@@ -168,7 +169,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return slotID == 1;
 	}
@@ -176,12 +177,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 0)
-		{
-			return getResult(itemstack) != null;
-		}
+		return slotID == 0 && getResult(itemstack) != null;
 
-		return false;
 	}
 	
 	@Override
@@ -219,7 +216,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(OredictionificatorFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -264,13 +261,13 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(0);
 
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(didProcess);
 
 		data.add(filters.size());
@@ -283,20 +280,20 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		return data;
 	}
 
-	public ArrayList getGenericPacket(ArrayList data)
+	public ArrayList getGenericPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(1);
 
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(didProcess);
 
 		return data;
 
 	}
 
-	public ArrayList getFilterPacket(ArrayList data)
+	public ArrayList getFilterPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -313,11 +310,11 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 	
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
 		if(!worldObj.isRemote)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}
 	}
 	
@@ -354,7 +351,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(OredictionificatorFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -396,7 +393,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{
-					filters.add(OredictionificatorFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+					filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 				}
 			}
 		}
@@ -437,7 +434,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			index = nbtTags.getInteger("index");
 		}
 
-		public void write(ArrayList data)
+		public void write(ArrayList<Object> data)
 		{
 			data.add(filter);
 			data.add(index);

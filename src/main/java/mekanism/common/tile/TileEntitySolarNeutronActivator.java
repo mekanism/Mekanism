@@ -69,7 +69,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 		
@@ -97,7 +97,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			
 			SolarNeutronRecipe recipe = getRecipe();
 
-			boolean sky =  ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord);
+			boolean sky =  ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.getHasNoSky() && worldObj.canSeeSky(getPos().up());
 			
 			if(worldObj.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this))
 			{
@@ -121,13 +121,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getFront(facing).getOpposite(), outputTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(facing.getOpposite(), outputTank.getGas().getGas()))
 					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getFront(facing).getOpposite(), toSend, true), true);
+						outputTank.draw(((IGasHandler)tileEntity).receiveGas(facing.getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -136,7 +136,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert;
+		return worldObj.provider.getBiomeGenForCoords(getPos()) instanceof BiomeGenDesert;
 	}
 	
 	public SolarNeutronRecipe getRecipe()
@@ -191,17 +191,17 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			outputTank.setGas(null);
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
 		data.add(recipeTicks);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 
 		if(inputTank.getGas() != null)
 		{
@@ -267,8 +267,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlockToAir(getPos().up());
+		worldObj.setBlockToAir(getPos());
 	}
 
 	@Override
@@ -314,13 +314,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return side == EnumFacing.getFront(facing) && outputTank.canDraw(type);
+		return side == facing && outputTank.canDraw(type);
 	}
 	
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == EnumFacing.getFront(facing) || side == EnumFacing.DOWN;
+		return side == facing || side == EnumFacing.DOWN;
 	}
 
 	@Override
@@ -376,7 +376,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;

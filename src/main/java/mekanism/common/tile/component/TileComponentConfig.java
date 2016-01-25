@@ -136,9 +136,9 @@ public class TileComponentConfig implements ITileComponent
 		return getOutputs(type).get(getConfig(type)[MekanismUtils.getBaseOrientation(side, facing).ordinal()]);
 	}
 	
-	public SideData getOutput(TransmissionType type, int side)
+	public SideData getOutput(TransmissionType type, EnumFacing side)
 	{
-		return getOutputs(type).get(getConfig(type)[side]);
+		return getOutputs(type).get(getConfig(type)[side.ordinal()]);
 	}
 	
 	public boolean supports(TransmissionType type)
@@ -157,10 +157,10 @@ public class TileComponentConfig implements ITileComponent
 			for(TransmissionType type : transmissions)
 			{
 				try {//TODO remove soon
-					if(nbtTags.getByteArray("config" + type.ordinal()).length > 0)
+					if(nbtTags.getByteArray("config" + type).length > 0)
 					{
-						sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
-						ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type.ordinal()));
+						sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type));
+						ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type));
 					}
 				} catch(Exception e) {
 					try {
@@ -211,21 +211,21 @@ public class TileComponentConfig implements ITileComponent
 	{
 		for(TransmissionType type : transmissions)
 		{
-			nbtTags.setByteArray("config" + type.ordinal(), sideConfigs.get(type.ordinal()));
-			nbtTags.setBoolean("ejecting" + type.ordinal(), ejecting.get(type.ordinal()));
+			nbtTags.setByteArray("config" + type, sideConfigs.get(type.ordinal()));
+			nbtTags.setBoolean("ejecting" + type, ejecting.get(type.ordinal()));
 		}
 		
 		nbtTags.setBoolean("sideDataStored", true);
 	}
 
 	@Override
-	public void write(ArrayList data) 
+	public void write(ArrayList<Object> data)
 	{
 		data.add(transmissions.size());
 		
 		for(TransmissionType type : transmissions)
 		{
-			data.add(type.ordinal());
+			data.add(type);
 		}
 		
 		for(TransmissionType type : transmissions)

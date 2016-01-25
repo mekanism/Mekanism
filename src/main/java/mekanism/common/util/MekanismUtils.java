@@ -392,7 +392,6 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return left side
 	 */
-	@Deprecated
 	public static EnumFacing getLeft(EnumFacing orientation)
 	{
 		return orientation.rotateY();
@@ -403,7 +402,6 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return right side
 	 */
-	@Deprecated
 	public static EnumFacing getRight(EnumFacing orientation)
 	{
 		return orientation.rotateYCCW();
@@ -414,7 +412,6 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return opposite side
 	 */
-	@Deprecated
 	public static EnumFacing getBack(EnumFacing orientation)
 	{
 		return orientation.getOpposite();

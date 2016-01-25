@@ -67,13 +67,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		{
 			GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), output));
 
-			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
 
 			if(tileEntity instanceof IGasHandler)
 			{
-				if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getFront(facing).getOpposite(), gasTank.getGas().getGas()))
+				if(((IGasHandler)tileEntity).canReceiveGas(facing.getOpposite(), gasTank.getGas().getGas()))
 				{
-					gasTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getFront(facing).getOpposite(), toSend, true), true);
+					gasTank.draw(((IGasHandler)tileEntity).receiveGas(facing.getOpposite(), toSend, true), true);
 				}
 			}
 		}
@@ -101,7 +101,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -132,9 +132,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return side == 1 ? new int[]{0} : new int[]{1};
+		return side == EnumFacing.UP ? new int[]{0} : new int[]{1};
 	}
 
 	@Override
@@ -170,12 +170,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		if(side != EnumFacing.getFront(facing))
-		{
-			return gasTank.canReceive(type);
-		}
+		return side != facing && gasTank.canReceive(type);
 
-		return false;
 	}
 
 	@Override
@@ -187,7 +183,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
 			if(type == 0)
 			{
-				int index = (dumping.ordinal() + 1)%dumping.values().length;
+				int index = (dumping.ordinal() + 1)%GasMode.values().length;
 				dumping = GasMode.values()[index];
 			}
 
@@ -212,7 +208,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		dumping = GasMode.values()[dataStream.readInt()];
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -237,7 +233,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -251,8 +247,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			data.add(false);
 		}
 
-		data.add(dumping.ordinal());
-		data.add(controlType.ordinal());
+		data.add(dumping);
+		data.add(controlType);
 
 		return data;
 	}

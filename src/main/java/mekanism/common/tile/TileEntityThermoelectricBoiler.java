@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,9 +24,12 @@ import mekanism.common.util.HeatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<SynchronizedBoilerData> implements IFluidContainerManager, IHeatTransfer
 {
@@ -298,7 +302,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -306,13 +310,13 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 		{
 			data.add(structure.volume*BoilerUpdateProtocol.WATER_PER_TANK);
 			data.add(structure.volume*BoilerUpdateProtocol.STEAM_PER_TANK);
-			data.add(structure.editMode.ordinal());
+			data.add(structure.editMode);
 		}
 
 		if(structure != null && structure.waterStored != null)
 		{
 			data.add(1);
-			data.add(structure.waterStored.getFluidID());
+			data.add(structure.waterStored.getFluid().getName());
 			data.add(structure.waterStored.amount);
 		}
 		else {
@@ -322,7 +326,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 		if(structure != null && structure.steamStored != null)
 		{
 			data.add(1);
-			data.add(structure.steamStored.getFluidID());
+			data.add(structure.steamStored.getFluid().getName());
 			data.add(structure.steamStored.amount);
 		}
 		else {
@@ -337,7 +341,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 			{
 				valveData.location.write(data);
 
-				data.add(valveData.side.ordinal());
+				data.add(valveData.side);
 				data.add(valveData.serverFluid);
 			}
 		}
@@ -359,7 +363,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 
 		if(dataStream.readInt() == 1)
 		{
-			structure.waterStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
+			structure.waterStored = FluidRegistry.getFluidStack(ByteBufUtils.readUTF8String(dataStream), dataStream.readInt());
 		}
 		else {
 			structure.waterStored = null;
@@ -367,7 +371,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 
 		if(dataStream.readInt() == 1)
 		{
-			structure.steamStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
+			structure.steamStored = FluidRegistry.getFluidStack(ByteBufUtils.readUTF8String(dataStream), dataStream.readInt());
 		}
 		else {
 			structure.steamStored = null;
@@ -407,26 +411,6 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 				}
 			}
 		}
-	}
-
-	public int getScaledWaterLevel(int i)
-	{
-		if(clientWaterCapacity == 0 || structure.waterStored == null)
-		{
-			return 0;
-		}
-
-		return structure.waterStored.amount*i / clientWaterCapacity;
-	}
-
-	public int getScaledSteamLevel(int i)
-	{
-		if(clientSteamCapacity == 0 || structure.steamStored == null)
-		{
-			return 0;
-		}
-
-		return structure.steamStored.amount*i / clientSteamCapacity;
 	}
 
 	@Override
@@ -522,7 +506,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 			return side == innerSide;
 		}
 
-		if(!Coord4D.get(this).offset(side).getBlock(worldObj).isAir(worldObj, xCoord, yCoord, zCoord))
+		if(!Coord4D.get(this).offset(side).getBlock(worldObj).isAir(worldObj, getPos().offset(side)))
 		{
 			return false;
 		}
@@ -532,20 +516,14 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 			return false;
 		}
 
-		switch(side)
+		switch(side.getAxis())
 		{
-			case DOWN:
-				return yCoord == structure.maxLocation.yCoord;
-			case UP:
-				return yCoord == structure.minLocation.yCoord;
-			case NORTH:
-				return zCoord == structure.maxLocation.zCoord;
-			case SOUTH:
-				return zCoord == structure.minLocation.zCoord;
-			case WEST:
-				return xCoord == structure.maxLocation.xCoord;
-			case EAST:
-				return xCoord == structure.minLocation.xCoord;
+			case Y:
+				return getPos().getY() == structure.maxLocation.getY();
+			case Z:
+				return getPos().getZ() == structure.maxLocation.getZ();
+			case X:
+				return getPos().getX() == structure.maxLocation.getX();
 			default:
 				return false;
 		}

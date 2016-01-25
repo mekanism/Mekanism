@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -63,7 +64,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		
 		if(!worldObj.isRemote)
 		{
-			if(structure != null && mode == true)
+			if(structure != null && mode)
 			{
 				double prev = getEnergy();
 				CableUtils.emit(this);
@@ -75,10 +76,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		if(structure != null && mode == true)
+		if(structure != null && mode)
 		{
-			EnumSet set = EnumSet.allOf(EnumFacing.class);
-			set.remove(EnumFacing.null);
+			EnumSet<EnumFacing> set = EnumSet.allOf(EnumFacing.class);
 			
 			for(EnumFacing side : EnumFacing.VALUES)
 			{
@@ -97,11 +97,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		if(structure != null && mode == false)
+		if(structure != null && !mode)
 		{
-			EnumSet set = EnumSet.allOf(EnumFacing.class);
-			set.remove(EnumFacing.null);
-			return set;
+			return EnumSet.allOf(EnumFacing.class);
 		}
 		
 		return EnumSet.noneOf(EnumFacing.class);
@@ -112,7 +110,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
 			
 			if(registered != this)
 			{
@@ -134,7 +132,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
@@ -161,11 +159,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		
 		mode = dataStream.readBoolean();
 		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -430,7 +428,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side) 
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(!worldObj.isRemote)
 		{
@@ -446,7 +444,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side) 
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return false;
 	}

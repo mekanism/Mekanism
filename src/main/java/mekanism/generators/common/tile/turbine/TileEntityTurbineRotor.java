@@ -15,8 +15,8 @@ import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityTurbineRotor extends TileEntityBasicBlock
 {
@@ -34,13 +34,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	
 	public float rotationLower;
 	public float rotationUpper;
-	
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
-	}
-	
+
 	@Override
 	public void onNeighborChange(Block block)
 	{
@@ -73,9 +67,9 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		//Go to bottom rotor
 		while(true)
 		{
-			if(isRotor(pointer.getFromSide(EnumFacing.DOWN)))
+			if(isRotor(pointer.offset(EnumFacing.DOWN)))
 			{
-				pointer.step(EnumFacing.DOWN);
+				pointer = pointer.offset(EnumFacing.DOWN);
 				continue;
 			}
 			
@@ -88,18 +82,18 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 			newRotors.add(pointer.clone());
 			newBlades += ((TileEntityTurbineRotor)pointer.getTileEntity(worldObj)).getHousedBlades();
 			
-			if(isRotor(pointer.getFromSide(EnumFacing.UP)))
+			if(isRotor(pointer.offset(EnumFacing.UP)))
 			{
-				pointer.step(EnumFacing.UP);
+				pointer = pointer.offset(EnumFacing.UP);
 				continue;
 			}
 			
 			break;
 		}
 		
-		if(isComplex(pointer.getFromSide(EnumFacing.UP)))
+		if(isComplex(pointer.offset(EnumFacing.UP)))
 		{
-			id = ((TileEntityRotationalComplex)pointer.getFromSide(EnumFacing.UP).getTileEntity(worldObj)).multiblockUUID;
+			id = ((TileEntityRotationalComplex)pointer.offset(EnumFacing.UP).getTileEntity(worldObj)).multiblockUUID;
 			complex = true;
 		}
 		
@@ -225,7 +219,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

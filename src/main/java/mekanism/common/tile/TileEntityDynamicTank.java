@@ -291,7 +291,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			if(!BlockBasic.manageInventory(player, this))
 			{
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				player.openGui(Mekanism.instance, 18, worldObj, xCoord, yCoord, zCoord);
+				player.openGui(Mekanism.instance, 18, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
 			}
 			else {
 				player.inventory.markDirty();
@@ -329,19 +329,19 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
 		if(structure != null)
 		{
 			data.add(structure.volume*TankUpdateProtocol.FLUID_PER_TANK);
-			data.add(structure.editMode.ordinal());
+			data.add(structure.editMode);
 			
 			if(structure.fluidStored != null)
 			{
 				data.add(1);
-				data.add(structure.fluidStored.getFluidID());
+				data.add(structure.fluidStored.getFluid().getName());
 				data.add(structure.fluidStored.amount);
 			}
 			else {
@@ -365,7 +365,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 				for(ValveData valveData : toSend)
 				{
 					valveData.location.write(data);
-					data.add(valveData.side.ordinal());
+					data.add(valveData.side);
 				}
 			}
 		}

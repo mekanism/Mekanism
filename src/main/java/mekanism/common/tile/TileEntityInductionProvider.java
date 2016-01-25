@@ -16,12 +16,6 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	@Override
 	public void onUpdate() {}
 	
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
-	}
-	
 	public String getName()
 	{
 		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".InductionProvider" + tier.getBaseTier().getName() + ".name");
@@ -34,13 +28,13 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 
 		super.handlePacketData(dataStream);
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier.ordinal());
+		data.add(tier);
 
 		super.getNetworkedData(data);
 

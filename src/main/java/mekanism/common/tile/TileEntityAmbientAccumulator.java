@@ -13,7 +13,9 @@ import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 
 import io.netty.buffer.ByteBuf;
 
@@ -94,7 +96,7 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		if(collectedGas.getGasType() != null)
 		{

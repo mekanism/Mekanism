@@ -28,12 +28,6 @@ public class TileEntityRotationalComplex extends TileEntityBasicBlock
 	public void onUpdate() {}
 	
 	@Override
-	public boolean canUpdate()
-	{
-		return false;
-	}
-	
-	@Override
 	public void onAdded()
 	{
 		super.onAdded();

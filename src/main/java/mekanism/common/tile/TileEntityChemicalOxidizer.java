@@ -32,7 +32,10 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.IChatComponent;
 
 public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IUpgradeTile, ISustainedData, ITankManager
 {
@@ -84,7 +87,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -167,7 +170,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -178,17 +181,17 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
+		if(side == MekanismUtils.getLeft(facing))
 		{
 			return new int[] {0};
 		}
-		else if(side == 0 || side == 1)
+		else if(side.getAxis() == Axis.Y)
 		{
 			return new int[] {1};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(facing))
 		{
 			return new int[] {2};
 		}
@@ -247,7 +250,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			gasTank.setGas(null);
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -256,7 +259,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(operatingTicks);
 
 		if(gasTank.getGas() != null)

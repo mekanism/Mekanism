@@ -108,7 +108,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -120,7 +120,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 
@@ -194,7 +194,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 4)
 		{
@@ -334,19 +334,19 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
 		data.add(operatingTicks);
 		data.add(infuseStored.amount);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 
 		if(infuseStored.type != null)
 		{
@@ -394,7 +394,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
@@ -412,7 +412,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -432,7 +432,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public int getOrientation()
+	public EnumFacing getOrientation()
 	{
 		return facing;
 	}

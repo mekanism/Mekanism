@@ -84,10 +84,10 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	
 	public void upgrade(RecipeType type)
 	{
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5, 3);
+		worldObj.setBlockToAir(getPos());
+		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 		
-		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
 		
 		//Basic
 		factory.facing = facing;
@@ -357,7 +357,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 3)
 		{

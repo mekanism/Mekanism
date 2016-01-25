@@ -17,6 +17,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -135,7 +136,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
-								worldObj.setBlock(below.xCoord, below.yCoord, below.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+								worldObj.setBlockState(below, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 								
 								setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
@@ -183,7 +184,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				if(canReplace(coord, true, false))
 				{
-					worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+					worldObj.setBlockState(coord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 
 					setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
@@ -217,7 +218,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public int getActiveY()
 	{
-		return yCoord-1;
+		return getPos().down().getY();
 	}
 	
 	public boolean canReplace(Coord4D coord, boolean checkNodes, boolean isPathfinding)
@@ -237,7 +238,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			return isPathfinding;
 		}
 		
-		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.xCoord, coord.yCoord, coord.zCoord);
+		return coord.getBlock(worldObj).isReplaceable(worldObj, coord);
 	}
 	
 	@Override
@@ -249,17 +250,17 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 
 		if(dataStream.readInt() == 1)
 		{
-			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
 		}
 		else {
 			fluidTank.setFluid(null);
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -268,7 +269,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().getFluidID());
+			data.add(fluidTank.getFluid().getFluid().getName());
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
@@ -370,7 +371,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -387,7 +388,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
+		return EnumSet.of(facing.getOpposite());
 	}
 
 	@Override
@@ -397,13 +398,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 1)
+		if(side == EnumFacing.UP)
 		{
 			return new int[] {0};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {1};
 		}
@@ -482,7 +483,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 	
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		activeNodes.clear();
 		usedNodes.clear();
@@ -494,7 +495,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return false;
 	}

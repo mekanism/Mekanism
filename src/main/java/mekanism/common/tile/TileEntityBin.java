@@ -24,13 +24,16 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.common.Optional.Interface;
 import io.netty.buffer.ByteBuf;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 @Interface(iface = "powercrystals.minefactoryreloaded.api.IDeepStorageUnit", modid = "MineFactoryReloaded")
-public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable
+public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable, ITickable
 {
 	public boolean isActive;
 
@@ -206,7 +209,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 					}
 					else if(tile instanceof IInventory)
 					{
-						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, 0, false));
+						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, EnumFacing.DOWN, false));
 					}
 
 					delayTicks = 10;
@@ -260,7 +263,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -291,7 +294,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			itemType = null;
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -332,7 +335,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slotID)
+	public ItemStack removeStackFromSlot(int slotID)
 	{
 		return getStackInSlot(slotID);
 	}
@@ -384,7 +387,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		if(!worldObj.isRemote)
 		{
 			MekanismUtils.saveChunk(this);
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 			prevCount = getItemCount();
 			sortStacks();
 		}
@@ -427,9 +430,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return true;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentText(getName());
 	}
 
 	@Override
@@ -445,25 +454,49 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory(EntityPlayer player) {}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return i == 1 ? isValid(itemstack) : false;
+		return i == 1 && isValid(itemstack);
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int getField(int id)
 	{
-		if(side == 1)
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		//TODO
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		if(side == EnumFacing.UP)
 		{
 			return new int[] {1};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {0};
 		}
@@ -472,15 +505,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing side)
 	{
 		return isItemValidForSlot(i, itemstack);
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing side)
 	{
-		return i == 0 ? isValid(itemstack) : false;
+		return i == 0 && isValid(itemstack);
 	}
 
 	@Override
@@ -496,7 +529,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			clientActive = active;
 		}
@@ -561,15 +594,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		setActive(!getActive());
-		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "random.click", 0.3F, 1);
 		return true;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return false;
 	}

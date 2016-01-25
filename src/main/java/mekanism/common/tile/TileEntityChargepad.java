@@ -21,7 +21,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.IChatComponent;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -54,7 +57,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 		if(!worldObj.isRemote)
 		{
 			isActive = false;
-			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 0.2, zCoord + 1));
+			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX() + 1, getPos().getY() + 0.2, getPos().getZ() + 1));
 
 			for(EntityLivingBase entity : entities)
 			{
@@ -106,13 +109,13 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 			if(prevActive != isActive)
 			{
-				worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.1, zCoord + 0.5, "random.click", 0.3F, isActive ? 0.6F : 0.5F);
+				worldObj.playSoundEffect(getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, "random.click", 0.3F, isActive ? 0.6F : 0.5F);
 				setActive(isActive);
 			}
 		}
 		else if(isActive)
 		{
-			worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
+			worldObj.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX()+random.nextDouble(), getPos().getY()+0.15, getPos().getZ()+random.nextDouble(), 0, 0, 0);
 		}
 	}
 
@@ -144,7 +147,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.DOWN, EnumFacing.getFront(facing).getOpposite());
+		return EnumSet.of(EnumFacing.DOWN, facing.getOpposite());
 	}
 
 	@Override
@@ -160,7 +163,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 		if(prevActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}
 
 		prevActive = active;
@@ -187,11 +190,11 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	{
 		super.handlePacketData(dataStream);
 		isActive = dataStream.readBoolean();
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		data.add(isActive);

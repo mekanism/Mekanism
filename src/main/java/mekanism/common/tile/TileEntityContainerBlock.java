@@ -9,9 +9,13 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory
+public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory, ITickable
 {
 	/** The inventory slot itemstacks used by this block. */
 	public ItemStack[] inventory;
@@ -117,7 +121,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slotID)
+	public ItemStack removeStackFromSlot(int slotID)
 	{
 		if(getStackInSlot(slotID) != null)
 		{
@@ -160,13 +164,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory(EntityPlayer player) {}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return true;
 	}
@@ -178,19 +182,19 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public boolean canInsertItem(int slotID, ItemStack itemstack, int side)
+	public boolean canInsertItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return isItemValidForSlot(slotID, itemstack);
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return InventoryUtils.EMPTY;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return true;
 	}
@@ -245,4 +249,31 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	public void recalculateUpgradables(Upgrade upgradeType) {}
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		//TODO
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentText(getName());
+	}
 }

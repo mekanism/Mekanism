@@ -27,7 +27,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fluids.*;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +100,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
             if(updateDelay == 0 && clientActive != isActive)
             {
                 isActive = clientActive;
-                MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+                MekanismUtils.updateBlock(worldObj, getPos());
             }
         }
 
@@ -109,7 +112,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
                 if(updateDelay == 0 && clientActive != isActive)
                 {
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
                 }
             }
 
@@ -208,7 +211,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 						}
 					}
 				}
-				else if(dumpLeft == GasMode.DUMPING)
+				else
 				{
 					leftTank.draw(dumpAmount, true);
 					
@@ -239,7 +242,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 						}
 					}
 				}
-				else if(dumpRight == GasMode.DUMPING)
+				else
 				{
 					rightTank.draw(dumpAmount, true);
 					
@@ -259,7 +262,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				clientDumpLeft = dumpedLeft;
 				clientDumpRight = dumpedRight;
 				
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 			}
 
             prevEnergy = getEnergy();
@@ -338,35 +341,35 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		if(type == 0)
 		{
-			EnumFacing side = EnumFacing.getFront(facing);
+			EnumFacing side = facing;
 
-			double x = xCoord + (side.offsetX == 0 ? 0.5 : Math.max(side.offsetX, 0));
-			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
+			double x = getPos().getX() + (side.getAxis() != Axis.X ? 0.5 : Math.max(side.getFrontOffsetX(), 0));
+			double z = getPos().getZ() + (side.getAxis() != Axis.Z ? 0.5 : Math.max(side.getFrontOffsetZ(), 0));
 
-			worldObj.spawnParticle("smoke", x, yCoord + 0.5, z, 0.0D, 0.0D, 0.0D);
+			worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, getPos().getY() + 0.5, z, 0.0D, 0.0D, 0.0D);
 		}
 		else if(type == 1)
 		{
 			switch(facing)
 			{
-				case 3:
-					worldObj.spawnParticle("smoke", xCoord+0.9, yCoord+1, zCoord+0.75, 0.0D, 0.0D, 0.0D);
+				case SOUTH:
+					worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, getPos().getX()+0.9, getPos().getY()+1, getPos().getZ()+0.75, 0.0D, 0.0D, 0.0D);
 					break;
-				case 4:
-					worldObj.spawnParticle("smoke", xCoord+0.25, yCoord+1, zCoord+0.9, 0.0D, 0.0D, 0.0D);
+				case WEST:
+					worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, getPos().getX()+0.25, getPos().getY()+1, getPos().getZ()+0.9, 0.0D, 0.0D, 0.0D);
 					break;
-				case 2:
-					worldObj.spawnParticle("smoke", xCoord+0.1, yCoord+1, zCoord+0.25, 0.0D, 0.0D, 0.0D);
+				case NORTH:
+					worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, getPos().getX()+0.1, getPos().getY()+1, getPos().getZ()+0.25, 0.0D, 0.0D, 0.0D);
 					break;
-				case 5:
-					worldObj.spawnParticle("smoke", xCoord+0.75, yCoord+1, zCoord+0.1, 0.0D, 0.0D, 0.0D);
+				case EAST:
+					worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, getPos().getX()+0.75, getPos().getY()+1, getPos().getZ()+0.1, 0.0D, 0.0D, 0.0D);
 					break;
 			}
 		}
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 3)
 		{
@@ -409,13 +412,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(EnumFacing.getFront(side) == MekanismUtils.getRight(facing))
+		if(side == MekanismUtils.getRight(facing))
 		{
 			return new int[] {3};
 		}
-		else if(side == facing || EnumFacing.getFront(side) == EnumFacing.getFront(facing).getOpposite())
+		else if(side == facing || side == facing.getOpposite())
 		{
 			return new int[] {1, 2};
 		}
@@ -446,7 +449,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		
 		if(dataStream.readBoolean())
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
 		}
 		else {
 			fluidTank.setFluid(null);
@@ -480,19 +483,19 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         {
             updateDelay = MekanismConfig.general.UPDATE_DELAY;
             isActive = clientActive;
-            MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+            MekanismUtils.updateBlock(worldObj, getPos());
         }
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(fluidTank.getFluid().getFluid().getID());
+			data.add(fluidTank.getFluid().getFluid().getName());
 			data.add(fluidTank.getFluidAmount());
 		}
 		else {
@@ -519,9 +522,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			data.add(false);
 		}
 
-        data.add(controlType.ordinal());
-		data.add(dumpLeft.ordinal());
-		data.add(dumpRight.ordinal());
+        data.add(controlType);
+		data.add(dumpLeft);
+		data.add(dumpRight);
 		data.add(clientDumpLeft);
 		data.add(clientDumpRight);
 		data.add(isActive);
@@ -768,7 +771,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
         if(clientActive != active && updateDelay == 0)
         {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
             updateDelay = 10;
             clientActive = active;

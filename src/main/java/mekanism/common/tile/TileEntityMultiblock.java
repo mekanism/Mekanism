@@ -96,7 +96,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				update();
 			}
 
-			if(prevStructure != (structure != null))
+			if(prevStructure == (structure == null))
 			{
 				if(structure != null && !getSynchronizedData().hasRenderer)
 				{
@@ -111,11 +111,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 					if(!obj.isAirBlock(worldObj) && (obj.getTileEntity(worldObj) == null || obj.getTileEntity(worldObj).getClass() != getClass()))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
 					}
 				}
 
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 			}
 
 			prevStructure = structure != null;
@@ -158,7 +158,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
 				}
 			}
 		}
@@ -173,7 +173,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public abstract MultiblockManager<T> getManager();
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 

@@ -14,6 +14,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.EnumFacing;
 
@@ -109,7 +110,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(EnumFacing.getFront(facing));
+		return EnumSet.of(facing);
 	}
 
 	@Override
@@ -125,13 +126,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return side <= 1 ? new int[] {0} : new int[] {1};
+		return side.getAxis() == Axis.Y ? new int[] {0} : new int[] {1};
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -180,17 +181,17 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier.ordinal());
+		data.add(tier);
 
 		super.getNetworkedData(data);
 
-		data.add(controlType.ordinal());
+		data.add(controlType);
 
 		return data;
 	}

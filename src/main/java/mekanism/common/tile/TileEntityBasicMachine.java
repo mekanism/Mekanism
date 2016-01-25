@@ -97,7 +97,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -109,7 +109,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 		}
@@ -155,26 +155,25 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(operatingTicks);
 		data.add(isActive);
 		data.add(ticksRequired);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 
 		return data;
 	}
 
 	/**
 	 * Gets the scaled progress level for the GUI.
-	 * @return
 	 */
 	public double getScaledProgress()
 	{
@@ -194,7 +193,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -228,7 +227,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
@@ -240,7 +239,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	}
 
 	@Override
-	public int getOrientation()
+	public EnumFacing getOrientation()
 	{
 		return facing;
 	}

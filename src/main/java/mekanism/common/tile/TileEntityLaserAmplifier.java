@@ -68,8 +68,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		{
 			if(on)
 			{
-				MovingObjectPosition mop = LaserManager.fireLaserClient(this, EnumFacing.getFront(facing), lastFired, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				MovingObjectPosition mop = LaserManager.fireLaserClient(this, facing, lastFired, worldObj);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -81,7 +81,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
 
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
@@ -117,11 +117,11 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				{
 					on = true;
 					lastFired = firing;
-					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				LaserInfo info = LaserManager.fireLaser(this, EnumFacing.getFront(facing), firing, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
+				LaserInfo info = LaserManager.fireLaser(this, facing, firing, worldObj);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -133,7 +133,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
 					
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
@@ -155,7 +155,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			{
 				on = false;
 				diggingProgress = 0;
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), Coord4D.get(this).getTargetPoint(50D));
 			}
 			
 			if(!entityDetection)
@@ -165,7 +165,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			
 			if(emittingRedstone != prevRedstone)
 			{
-				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
 			}
 		}
 	}
@@ -193,7 +193,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -203,7 +203,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		data.add(time);
 		data.add(collectedEnergy);
 		data.add(lastFired);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(emittingRedstone);
 		data.add(entityDetection);
 

@@ -8,7 +8,7 @@ import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityStructuralGlass extends TileEntity implements IStructuralMultiblock
 {
@@ -81,9 +81,9 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 			
 			iterated.add(pos);
 			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALUES)
 			{
-				Coord4D coord = pos.getFromSide(side);
+				Coord4D coord = pos.offset(side);
 				TileEntity tile = coord.getTileEntity(worldObj);
 				
 				if(!iterated.contains(coord))

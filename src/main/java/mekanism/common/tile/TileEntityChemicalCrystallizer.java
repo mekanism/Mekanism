@@ -24,9 +24,12 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 
 import java.util.ArrayList;
+
 
 public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, IUpgradeTile, ISustainedData, ITankManager
 {
@@ -103,7 +106,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -115,7 +118,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 
@@ -207,17 +210,17 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		}
 
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
 		data.add(operatingTicks);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 
 		if(inputTank.getGas() != null)
 		{
@@ -276,7 +279,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -304,13 +307,13 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0);
+		return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0);
 	}
 
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0) && inputTank.canReceive(type) &&
+		return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && inputTank.canReceive(type) &&
                 RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.containsRecipe(type);
 	}
 
@@ -385,7 +388,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 0)
 		{
@@ -404,7 +407,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
@@ -416,7 +419,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public int getOrientation()
+	public EnumFacing getOrientation()
 	{
 		return facing;
 	}

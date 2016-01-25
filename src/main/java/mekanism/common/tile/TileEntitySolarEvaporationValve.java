@@ -19,7 +19,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 		
 		if(!worldObj.isRemote)
 		{
-			if((master != null) != prevMaster)
+			if((master == null) == prevMaster)
 			{
 				for(EnumFacing side : EnumFacing.VALUES)
 				{
@@ -27,7 +27,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 
 					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
 					}
 				}
 			}

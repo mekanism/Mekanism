@@ -24,6 +24,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
@@ -31,9 +33,9 @@ import net.minecraftforge.fml.common.Optional.Method;
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler
 {
 	/** The direction this block is facing. */
-	public int facing;
+	public EnumFacing facing;
 
-	public int clientFacing;
+	public EnumFacing clientFacing;
 
 	public HashSet<EntityPlayer> openedThisTick = new HashSet<EntityPlayer>();
 
@@ -50,8 +52,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 	public List<ITileComponent> components = new ArrayList<ITileComponent>();
 
-	@Override
-	public void updateEntity()
+	public void update()
 	{
 		if(!worldObj.isRemote && general.destroyDisabledBlocks)
 		{
@@ -60,7 +61,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			if(type != null && !type.isEnabled())
 			{
 				Mekanism.logger.info("[Mekanism] Destroying machine of type '" + type.name + "' at coords " + Coord4D.get(this) + " as according to config.");
-				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+				worldObj.setBlockToAir(getPos());
 				return;
 			}
 		}
@@ -108,13 +109,13 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		facing = dataStream.readInt();
+		facing = EnumFacing.getFront(dataStream.readInt());
 		redstone = dataStream.readBoolean();
 
 		if(clientFacing != facing)
 		{
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+			MekanismUtils.updateBlock(worldObj, getPos());
+			worldObj.notifyNeighborsOfStateChange(getPos(), worldObj.getBlockState(getPos()).getBlock());
 			clientFacing = facing;
 		}
 
@@ -125,7 +126,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		data.add(facing);
 		data.add(redstone);
@@ -159,7 +160,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	{
 		super.readFromNBT(nbtTags);
 
-		facing = nbtTags.getInteger("facing");
+		facing = EnumFacing.getFront(nbtTags.getInteger("facing"));
 		redstone = nbtTags.getBoolean("redstone");
 
 		for(ITileComponent component : components)
@@ -173,7 +174,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("facing", facing);
+		nbtTags.setInteger("facing", facing.ordinal());
 		nbtTags.setBoolean("redstone", redstone);
 
 		for(ITileComponent component : components)
@@ -193,7 +194,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Method(modid = "IC2")
 	public short getFacing()
 	{
-		return (short)facing;
+		return (short)facing.ordinal();
 	}
 
 	@Override
@@ -201,12 +202,12 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	{
 		if(canSetFacing(direction))
 		{
-			facing = direction;
+			facing = EnumFacing.getFront(direction);
 		}
 
 		if(!(facing == clientFacing || worldObj.isRemote))
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 			markDirty();
 			clientFacing = facing;
 		}
@@ -240,7 +241,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Method(modid = "IC2")
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
-		return getBlockType().getPickBlock(null, worldObj, xCoord, yCoord, zCoord, entityPlayer);
+		return getBlockType().getPickBlock(null, worldObj, getPos(), entityPlayer);
 	}
 
 	public boolean isPowered()
@@ -265,12 +266,12 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	
 	private void updatePower()
 	{
-		boolean power = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+		boolean power = worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0;
 
 		if(redstone != power)
 		{
 			redstone = power;
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		
 			onPowerChange();
 		}

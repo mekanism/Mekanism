@@ -21,7 +21,9 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe>
 {
@@ -67,7 +69,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		if(configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0))
+		if(configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0))
 		{
 			return isValidGas(type);
 		}
@@ -97,7 +99,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0);
+		return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0);
 	}
 
 	@Override

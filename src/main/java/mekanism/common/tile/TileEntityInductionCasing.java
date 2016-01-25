@@ -62,8 +62,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		if(!player.isSneaking() && structure != null)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			player.openGui(Mekanism.instance, 49, worldObj, xCoord, yCoord, zCoord);
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+			player.openGui(Mekanism.instance, 49, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
 			
 			return true;
 		}
@@ -72,7 +72,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	}
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

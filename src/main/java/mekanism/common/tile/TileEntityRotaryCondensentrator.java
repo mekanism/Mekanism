@@ -38,11 +38,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile, IUpgradeInfoHandler, ITankManager
 {
@@ -96,7 +98,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+					MekanismUtils.updateBlock(worldObj, getPos());
 				}
 			}
 		}
@@ -326,32 +328,20 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public boolean isValidGas(GasStack g)
 	{
-		if(g == null)
-		{
-			return false;
-		}
+		return g != null && g.getGas().hasFluid();
 
-		return g.getGas().hasFluid();
 	}
 
 	public boolean gasEquals(GasStack gas, FluidStack fluid)
 	{
-		if(fluid == null || gas == null || !gas.getGas().hasFluid())
-		{
-			return false;
-		}
+		return fluid != null && gas != null && gas.getGas().hasFluid() && gas.getGas().getFluid() == fluid.getFluid();
 
-		return gas.getGas().getFluid() == fluid.getFluid();
 	}
 
 	public boolean isValidFluid(FluidStack f)
 	{
-		if(f == null)
-		{
-			return false;
-		}
+		return f != null && GasRegistry.getGas(f.getFluid()) != null;
 
-		return GasRegistry.getGas(f.getFluid()) != null;
 	}
 
 	@Override
@@ -368,7 +358,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
 			}
 
 			return;
@@ -383,7 +373,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 		if(dataStream.readBoolean())
 		{
-			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
 		}
 		else {
 			fluidTank.setFluid(null);
@@ -398,23 +388,23 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		}
 
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(mode);
 		data.add(isActive);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(clientEnergyUsed);
 
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(fluidTank.getFluid().getFluidID());
+			data.add(fluidTank.getFluid().getFluid().getName());
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
@@ -473,16 +463,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		return i != 0 && i != 1;
 	}
 
-	public int getScaledFluidLevel(int i)
-	{
-		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / MAX_FLUID : 0;
-	}
-
-	public int getScaledGasLevel(int i)
-	{
-		return gasTank.getGas() != null ? gasTank.getStored()*i / MAX_FLUID : 0;
-	}
-
 	@Override
 	public void setActive(boolean active)
 	{
@@ -490,7 +470,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -548,13 +528,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return mode == 1 && side == MekanismUtils.getLeft(facing) ? gasTank.canDraw(type) : false;
+		return (mode == 1 && side == MekanismUtils.getLeft(facing)) && gasTank.canDraw(type);
 	}
 
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return mode == 0 && side == MekanismUtils.getLeft(facing) ? gasTank.canReceive(type) : false;
+		return (mode == 0 && side == MekanismUtils.getLeft(facing)) && gasTank.canReceive(type);
 	}
 	
 	@Override

@@ -49,6 +49,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -153,10 +154,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	
 	public void upgrade()
 	{
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5+tier.ordinal()+1, 3);
+		worldObj.setBlockToAir(getPos());
+		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5+ tier.ordinal()+1), 3);
 		
-		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
 		
 		//Basic
 		factory.facing = facing;
@@ -235,7 +236,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -243,7 +244,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			if(ticker == 1)
 			{
-				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
 			}
 
 			if(updateDelay > 0)
@@ -302,7 +303,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 						secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
-						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+						worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
 
 						MekanismUtils.saveChunk(this);
 					}
@@ -501,7 +502,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -602,22 +603,14 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
 
-			if(recipe == null)
-			{
-				return false;
-			}
+			return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 
-			return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 		}
 
 		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
 
-		if(recipe == null)
-		{
-			return false;
-		}
+		return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot);
 
-		return recipe.canOperate(inventory, inputSlot, outputSlot);
 	}
 
 	public void operate(int inputSlot, int outputSlot)
@@ -692,13 +685,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 		
 		if(upgraded)
 		{
 			markDirty();
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 			upgraded = false;
 		}
 	}
@@ -750,14 +743,14 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(recipeType.ordinal());
+		data.add(recipeType);
 		data.add(recipeTicks);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(sorting);
 		data.add(upgraded);
 		data.add(progress);
@@ -860,7 +853,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -874,7 +867,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
@@ -892,7 +885,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int getOrientation()
+	public EnumFacing getOrientation()
 	{
 		return facing;
 	}
@@ -979,7 +972,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		if(configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0))
+		if(configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0))
 		{
 			return recipeType.canReceiveGas(side, type);
 		}
@@ -992,7 +985,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	{
 		if(recipeType.canTubeConnect(side))
 		{
-			return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0);
+			return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0);
 		}
 		
 		return false;

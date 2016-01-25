@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraft.util.EnumFacing;
 
@@ -75,8 +76,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			if(MekanismUtils.canFunction(this) && delayTicks == 0)
 			{
-				TileEntity back = Coord4D.get(this).offset(EnumFacing.getFront(facing).getOpposite()).getTileEntity(worldObj);
-				TileEntity front = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
+				TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
+				TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
 
 				if(back instanceof IInventory && (front instanceof ITransporterTile || front instanceof IInventory))
 				{
@@ -89,7 +90,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					for(TransporterFilter filter : filters)
 					{
 						inner:
-						for(StackSearcher search = new StackSearcher(inventory, EnumFacing.getFront(facing).getOpposite()); search.i >= 0;)
+						for(StackSearcher search = new StackSearcher(inventory, facing.getOpposite()); search.i >= 0;)
 						{
 							InvStack invStack = filter.getStackFromInventory(search);
 
@@ -128,7 +129,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 					if(!sentItems && autoEject)
 					{
-						InvStack invStack = InventoryUtils.takeTopStack(inventory, EnumFacing.getFront(facing).getOpposite().ordinal(), new FirstFinder());
+						InvStack invStack = InventoryUtils.takeTopStack(inventory, facing.getOpposite(), new FirstFinder());
 						
 						if(invStack != null && invStack.getStack() != null)
 						{
@@ -254,7 +255,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -297,14 +298,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				// Move filter up
 				int filterIndex = dataStream.readInt();
 				filters.swap( filterIndex, filterIndex - 1 );
-				openInventory();
+				for(EntityPlayer player : playersUsing) openInventory(player); //TODO ?
 			}
 			else if(type == 4)
 			{
 				// Move filter down
 				int filterIndex = dataStream.readInt();
 				filters.swap( filterIndex, filterIndex + 1 );
-				openInventory();
+				for(EntityPlayer player : playersUsing) openInventory(player);
 			}
 			return;
 		}
@@ -340,7 +341,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				filters.add(TransporterFilter.readFromPacket(dataStream));
 			}
 
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 		else if(type == 1)
 		{
@@ -360,7 +361,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			autoEject = dataStream.readBoolean();
 			roundRobin = dataStream.readBoolean();
 
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 		else if(type == 2)
 		{
@@ -376,14 +377,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(0);
 
 		data.add(isActive);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 
 		if(color != null)
 		{
@@ -406,14 +407,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		return data;
 	}
 
-	public ArrayList getGenericPacket(ArrayList data)
+	public ArrayList getGenericPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(1);
 
 		data.add(isActive);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 
 		if(color != null)
 		{
@@ -430,7 +431,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	}
 
-	public ArrayList getFilterPacket(ArrayList data)
+	public ArrayList getFilterPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -448,11 +449,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean canSendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).offset(EnumFacing.getFront(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
 
 		if(back instanceof IInventory)
 		{
-			return InventoryUtils.canInsert(back, null, stack, EnumFacing.getFront(facing).getOpposite().ordinal(), true);
+			return InventoryUtils.canInsert(back, null, stack, facing.getOpposite(), true);
 		}
 
 		return false;
@@ -460,23 +461,23 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean hasInventory()
 	{
-		return Coord4D.get(this).offset(EnumFacing.getFront(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
+		return Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj) instanceof IInventory;
 	}
 
 	public ItemStack sendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).offset(EnumFacing.getFront(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
 
 		if(back instanceof IInventory)
 		{
-			return InventoryUtils.putStackInInventory((IInventory)back, stack, EnumFacing.getFront(facing).getOpposite().ordinal(), true);
+			return InventoryUtils.putStackInInventory((IInventory)back, stack, facing.getOpposite(), true);
 		}
 
 		return stack;
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return false;
 	}
@@ -494,9 +495,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == EnumFacing.getFront(facing).ordinal() || side == EnumFacing.getFront(facing).getOpposite().ordinal())
+		if(side == facing || side == facing.getOpposite())
 		{
 			return new int[] {0};
 		}
@@ -505,11 +506,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
 		if(!worldObj.isRemote)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}
 	}
 
@@ -538,11 +539,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			if(active)
 			{
-				worldObj.playSoundEffect(xCoord, yCoord, zCoord, "mekanism:etc.Click", 0.3F, 1);
+				worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mekanism:etc.Click", 0.3F, 1);
 			}
 
 			clientActive = active;
@@ -632,7 +633,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -690,7 +691,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{
-					filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+					filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 				}
 			}
 		}

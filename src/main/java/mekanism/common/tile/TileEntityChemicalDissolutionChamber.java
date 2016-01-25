@@ -35,7 +35,9 @@ import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager
 {
@@ -92,7 +94,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -104,7 +106,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 
@@ -189,7 +191,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -200,17 +202,17 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal() || side == 1)
+		if(side == MekanismUtils.getLeft(facing) || side == EnumFacing.UP)
 		{
 			return new int[] {1};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {0};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(facing))
 		{
 			return new int[] {2};
 		}
@@ -282,16 +284,16 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			outputTank.setGas(null);
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(operatingTicks);
 
 		if(injectTank.getGas() != null)

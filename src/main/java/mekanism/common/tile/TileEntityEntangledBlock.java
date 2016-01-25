@@ -14,6 +14,7 @@ import mekanism.common.util.CableUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -65,7 +66,7 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		data.add(getEnergy());
@@ -81,7 +82,7 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return sharedInventory == null ? nothing : EnumSet.complementOf(EnumSet.of(EnumFacing.null, EnumFacing.UP));
+		return sharedInventory == null ? nothing : EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
 	}
 
 	@Override
@@ -140,13 +141,13 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return sharedInventory == null ? false : sharedInventory.canFill(from, fluid);
+		return sharedInventory != null && sharedInventory.canFill(from, fluid);
 	}
 
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return sharedInventory == null ? false : sharedInventory.canDrain(from, fluid);
+		return sharedInventory != null && sharedInventory.canDrain(from, fluid);
 	}
 
 	@Override
@@ -182,18 +183,18 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return sharedInventory == null ? false : sharedInventory.canReceiveGas(side, type);
+		return sharedInventory != null && sharedInventory.canReceiveGas(side, type);
 	}
 
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return sharedInventory == null ? false : sharedInventory.canDrawGas(side, type);
+		return sharedInventory != null && sharedInventory.canDrawGas(side, type);
 	}
 
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return sharedInventory == null ? false : true;
+		return sharedInventory != null;
 	}
 }

@@ -22,7 +22,10 @@ import mekanism.common.util.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fluids.*;
 
 import java.util.ArrayList;
@@ -80,7 +83,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -287,7 +290,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			outputTank.setGas(null);
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -296,7 +299,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(controlType.ordinal());
+		data.add(controlType);
 		data.add(clientEnergyUsed);
 
 		if(fluidTank.getFluid() != null)
@@ -483,7 +486,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return getTank(side) == outputTank ? getTank(side).canDraw(type) : false;
+		return getTank(side) == outputTank && getTank(side).canDraw(type);
 	}
 
 	@Override
@@ -502,7 +505,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -517,17 +520,17 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
+		if(side == MekanismUtils.getLeft(facing))
 		{
 			return new int[] {0};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(facing))
 		{
 			return new int[] {1};
 		}
-		else if(side == 0 || side == 1)
+		else if(side.getAxis() == Axis.Y)
 		{
 			return new int[2];
 		}

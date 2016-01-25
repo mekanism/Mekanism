@@ -199,7 +199,7 @@ public class TileComponentUpgrade implements ITileComponent
 		
 		for(Map.Entry<Upgrade, Integer> entry : upgrades.entrySet())
 		{
-			data.add(entry.getKey().ordinal());
+			data.add(entry.getKey());
 			data.add(entry.getValue());
 		}
 		

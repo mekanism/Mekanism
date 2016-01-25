@@ -59,8 +59,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 		{
 			if(on)
 			{
-				MovingObjectPosition mop = LaserManager.fireLaserClient(this, EnumFacing.getFront(facing), lastFired, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				MovingObjectPosition mop = LaserManager.fireLaserClient(this, facing, lastFired, worldObj);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -72,7 +72,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += lastFired;
@@ -96,11 +96,11 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 				{
 					on = true;
 					lastFired = firing;
-					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				LaserInfo info = LaserManager.fireLaser(this, EnumFacing.getFront(facing), firing, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
+				LaserInfo info = LaserManager.fireLaser(this, facing, firing, worldObj);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -112,7 +112,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += firing;
@@ -132,7 +132,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 			{
 				on = false;
 				diggingProgress = 0;
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), Coord4D.get(this).getTargetPoint(50D));
 			}
 		}
 	}
@@ -174,26 +174,28 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 	public void dropItem(ItemStack stack)
 	{
-		EntityItem item = new EntityItem(worldObj, xCoord + 0.5, yCoord + 1, zCoord + 0.5, stack);
+		EntityItem item = new EntityItem(worldObj, getPos().getX() + 0.5, getPos().getY() + 1, getPos().getZ() + 0.5, stack);
 		item.motionX = worldObj.rand.nextGaussian() * 0.05;
 		item.motionY = worldObj.rand.nextGaussian() * 0.05 + 0.2;
 		item.motionZ = worldObj.rand.nextGaussian() * 0.05;
-		item.delayBeforeCanPickup = 10;
+		item.setPickupDelay(10);
 		worldObj.spawnEntityInWorld(item);
 	}
 
-	public boolean canInsertItem(int p_102007_1_, ItemStack p_102007_2_, int p_102007_3_)
+	@Override
+	public boolean canInsertItem(int i, ItemStack itemStack, EnumFacing side)
 	{
 		return false;
 	}
 
-	public int[] getSlotsForFace(int p_94128_1_)
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return availableSlotIDs;
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -214,8 +216,6 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 			on = dataStream.readBoolean();
 			collectedEnergy = dataStream.readDouble();
 			lastFired = dataStream.readDouble();
-
-			return;
 		}
 	}
 }

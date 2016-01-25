@@ -29,8 +29,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -121,7 +123,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			{
 				if(Math.abs((float)inputTank.getFluidAmount()/inputTank.getCapacity()-prevScale) > 0.01)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 					prevScale = (float)inputTank.getFluidAmount()/inputTank.getCapacity();
 				}
 			}
@@ -151,12 +153,8 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	public boolean hasRecipe(Fluid fluid)
 	{
-		if(fluid == null)
-		{
-			return false;
-		}
-		
-		return Recipe.SOLAR_EVAPORATION_PLANT.containsRecipe(fluid);
+		return fluid != null && Recipe.SOLAR_EVAPORATION_PLANT.containsRecipe(fluid);
+
 	}
 	
 	protected void refresh()
@@ -199,13 +197,9 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		{
 			return false;
 		}
-		
-		if(recipe != null && recipe.canOperate(inputTank, outputTank))
-		{
-			return true;
-		}
-		
-		return false;
+
+		return recipe != null && recipe.canOperate(inputTank, outputTank);
+
 	}
 	
 	private void manageBuckets()
@@ -340,7 +334,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	{
 		if(!temperatureSet)
 		{
-			biomeTemp = worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature(xCoord, yCoord, zCoord);
+			biomeTemp = worldObj.getBiomeGenForCoordsBody(getPos()).getFloatTemperature(getPos());
 			temperatureSet = true;
 		}
 		
@@ -380,7 +374,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		while(startPoint.offset(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
 		{
-			startPoint.step(EnumFacing.UP);
+			startPoint = startPoint.offset(EnumFacing.UP);
 		}
 		
 		Coord4D test = startPoint.offset(EnumFacing.DOWN).offset(right, 2);
@@ -575,16 +569,6 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		}
 	}
 	
-	public int getScaledInputLevel(int i)
-	{
-		return getMaxFluid() > 0 ? (inputTank.getFluid() != null ? inputTank.getFluid().amount*i / getMaxFluid() : 0) : 0;
-	}
-	
-	public int getScaledOutputLevel(int i)
-	{
-		return outputTank.getFluid() != null ? outputTank.getFluid().amount*i / MAX_OUTPUT : 0;
-	}
-	
 	public int getScaledTempLevel(int i)
 	{
 		return (int)(getMaxTemperature() == 0 ? 0 : getTemperature()*i/getMaxTemperature());
@@ -601,8 +585,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		Coord4D startPoint = Coord4D.get(this).offset(right);
 		startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
 		
-		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing));
-		startPoint.translate(0, -(height-2), 0);
+		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing)).add(0, -(height-2), 0);
 		
 		return startPoint;
 	}
@@ -614,7 +597,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		if(dataStream.readBoolean())
 		{
-			inputTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			inputTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
 		}
 		else {
 			inputTank.setFluid(null);
@@ -622,7 +605,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		if(dataStream.readBoolean())
 		{
-			outputTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			outputTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
 		}
 		else {
 			outputTank.setFluid(null);
@@ -641,7 +624,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		if(structured != prev)
 		{
 			inputTank.setCapacity(getMaxFluid());
-			worldObj.func_147479_m(xCoord, yCoord, zCoord);
+			worldObj.markBlockRangeForRenderUpdate(getPos(), getPos().add(1,1,1));
 			
 			if(structured)
 			{
@@ -655,18 +638,18 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			}
 		}
 		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
 		if(inputTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(inputTank.getFluid().getFluidID());
+			data.add(inputTank.getFluid().getFluid().getName());
 			data.add(inputTank.getFluid().amount);
 		}
 		else {
@@ -676,7 +659,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		if(outputTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(outputTank.getFluid().getFluidID());
+			data.add(outputTank.getFluid().getFluid().getName());
 			data.add(outputTank.getFluid().amount);
 		}
 		else {

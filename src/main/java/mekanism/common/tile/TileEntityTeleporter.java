@@ -18,6 +18,8 @@ import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -29,6 +31,7 @@ import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -88,9 +91,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 				
 				if(ticket != null)
 				{
-					ticket.getModData().setInteger("xCoord", xCoord);
-					ticket.getModData().setInteger("yCoord", yCoord);
-					ticket.getModData().setInteger("zCoord", zCoord);
+					ticket.getModData().setInteger("xCoord", getPos().getX());
+					ticket.getModData().setInteger("yCoord", getPos().getY());
+					ticket.getModData().setInteger("zCoord", getPos().getZ());
 					
 					forceChunks(ticket);
 				}
@@ -153,7 +156,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public void setFrequency(String name, boolean publicFreq)
 	{
-		if(name.equals(frequency))
+		if(name.equals(frequency.name))
 		{
 			return;
 		}
@@ -264,7 +267,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return new int[] {0};
 	}
@@ -282,7 +285,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public void resetBounds()
 	{
-		teleportBounds = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+3, zCoord+1);
+		teleportBounds = new AxisAlignedBB(getPos(), getPos().add(1, 3, 1));
 	}
 
 	/**
@@ -374,29 +377,26 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			WorldServer oldWorld = player.mcServer.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
 			WorldServer newWorld = player.mcServer.worldServerForDimension(player.dimension);
-			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
+			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
 			oldWorld.removePlayerEntityDangerously(player);
 			player.isDead = false;
 
 			if(player.isEntityAlive())
 			{
 				newWorld.spawnEntityInWorld(player);
-				player.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+				player.setLocationAndAngles(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, player.rotationYaw, player.rotationPitch);
 				newWorld.updateEntityWithOptionalForce(player, false);
 				player.setWorld(newWorld);
 			}
 
-			player.mcServer.getConfigurationManager().func_72375_a(player, oldWorld);
-			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.mcServer.getConfigurationManager().preparePlayer(player, oldWorld);
+			player.playerNetServerHandler.setPlayerLocation(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, player.rotationYaw, player.rotationPitch);
 			player.theItemInWorldManager.setWorld(newWorld);
 			player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
 			player.mcServer.getConfigurationManager().syncPlayerInventory(player);
-			
-			Iterator iterator = player.getActivePotionEffects().iterator();
 
-			while(iterator.hasNext())
+			for(PotionEffect potioneffect : player.getActivePotionEffects())
 			{
-				PotionEffect potioneffect = (PotionEffect)iterator.next();
 				player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potioneffect));
 			}
 
@@ -405,7 +405,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, id, coord.dimensionId);
 		}
 		else {
-			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.playerNetServerHandler.setPlayerLocation(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, player.rotationYaw, player.rotationPitch);
 		}
 	}
 
@@ -419,7 +419,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			entity.isDead = false;
 
 			world.spawnEntityInWorld(entity);
-			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			entity.setLocationAndAngles(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, entity.rotationYaw, entity.rotationPitch);
 			world.updateEntityWithOptionalForce(entity, false);
 			entity.setWorld(world);
 			world.resetUpdateEntityTick();
@@ -428,7 +428,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 			if(e != null)
 			{
-				e.copyDataFrom(entity, true);
+				e.copyDataFromOld(entity/*, true*/);
 				world.spawnEntityInWorld(e);
 				teleporter.didTeleport.add(e);
 			}
@@ -499,7 +499,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			energyCost+=10000;
 		}
 
-		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
+		int distance = (int)entity.getDistance(coords.getX(), coords.getY(), coords.getZ());
 		energyCost+=(distance*10);
 
 		return energyCost;
@@ -507,22 +507,23 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public boolean hasFrame()
 	{
-		if(isFrame(xCoord-1, yCoord, zCoord) && isFrame(xCoord+1, yCoord, zCoord)
-				&& isFrame(xCoord-1, yCoord+1, zCoord) && isFrame(xCoord+1, yCoord+1, zCoord)
-				&& isFrame(xCoord-1, yCoord+2, zCoord) && isFrame(xCoord+1, yCoord+2, zCoord)
-				&& isFrame(xCoord-1, yCoord+3, zCoord) && isFrame(xCoord+1, yCoord+3, zCoord)
-				&& isFrame(xCoord, yCoord+3, zCoord)) {return true;}
-		if(isFrame(xCoord, yCoord, zCoord-1) && isFrame(xCoord, yCoord, zCoord+1)
-				&& isFrame(xCoord, yCoord+1, zCoord-1) && isFrame(xCoord, yCoord+1, zCoord+1)
-				&& isFrame(xCoord, yCoord+2, zCoord-1) && isFrame(xCoord, yCoord+2, zCoord+1)
-				&& isFrame(xCoord, yCoord+3, zCoord-1) && isFrame(xCoord, yCoord+3, zCoord+1)
-				&& isFrame(xCoord, yCoord+3, zCoord)) {return true;}
+		if(isFrame(getPos().getX()-1, getPos().getY(), getPos().getZ()) && isFrame(getPos().getX()+1, getPos().getY(), getPos().getZ())
+				&& isFrame(getPos().getX()-1, getPos().getY()+1, getPos().getZ()) && isFrame(getPos().getX()+1, getPos().getY()+1, getPos().getZ())
+				&& isFrame(getPos().getX()-1, getPos().getY()+2, getPos().getZ()) && isFrame(getPos().getX()+1, getPos().getY()+2, getPos().getZ())
+				&& isFrame(getPos().getX()-1, getPos().getY()+3, getPos().getZ()) && isFrame(getPos().getX()+1, getPos().getY()+3, getPos().getZ())
+				&& isFrame(getPos().getX(), getPos().getY()+3, getPos().getZ())) {return true;}
+		if(isFrame(getPos().getX(), getPos().getY(), getPos().getZ()-1) && isFrame(getPos().getX(), getPos().getY(), getPos().getZ()+1)
+				&& isFrame(getPos().getX(), getPos().getY()+1, getPos().getZ()-1) && isFrame(getPos().getX(), getPos().getY()+1, getPos().getZ()+1)
+				&& isFrame(getPos().getX(), getPos().getY()+2, getPos().getZ()-1) && isFrame(getPos().getX(), getPos().getY()+2, getPos().getZ()+1)
+				&& isFrame(getPos().getX(), getPos().getY()+3, getPos().getZ()-1) && isFrame(getPos().getX(), getPos().getY()+3, getPos().getZ()+1)
+				&& isFrame(getPos().getX(), getPos().getY()+3, getPos().getZ())) {return true;}
 		return false;
 	}
 
 	public boolean isFrame(int x, int y, int z)
 	{
-		return worldObj.getBlock(x, y, z) == MekanismBlocks.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
+		IBlockState state = worldObj.getBlockState(new BlockPos(x, y, z));
+		return state.getBlock() == MekanismBlocks.BasicBlock && state.getBlock().getMetaFromState(state) == 7;
 	}
 
 	@Override
@@ -630,7 +631,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -681,7 +682,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return ChargeUtils.canBeOutputted(itemstack, false);
 	}

@@ -179,7 +179,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -355,7 +355,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		SideData data = configComponent.getOutput(TransmissionType.FLUID, from.ordinal(), facing);
+		SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
 		
 		if(data.hasSlot(0))
 		{
@@ -374,7 +374,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		SideData data = configComponent.getOutput(TransmissionType.FLUID, from.ordinal(), facing);
+		SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
 		
 		return data.getFluidTankInfo(this);
 	}
@@ -416,19 +416,19 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(1) && inputGasTank.canReceive(type);
+		return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(1) && inputGasTank.canReceive(type);
 	}
 
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(2) && outputGasTank.canDraw(type);
+		return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(2) && outputGasTank.canDraw(type);
 	}
 
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(1, 2);
+		return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(1, 2);
 	}
 
 	@Override

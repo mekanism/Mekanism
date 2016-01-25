@@ -19,6 +19,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 import java.util.ArrayList;
 
@@ -57,10 +58,10 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	
 	public void upgrade(RecipeType type)
 	{
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5, 3);
+		worldObj.setBlockToAir(getPos());
+		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 		
-		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
 		
 		//Basic
 		factory.facing = facing;
@@ -208,7 +209,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{

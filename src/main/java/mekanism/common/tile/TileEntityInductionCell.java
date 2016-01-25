@@ -19,12 +19,6 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	@Override
 	public void onUpdate() {}
 	
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
-	}
-	
 	public String getName()
 	{
 		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".InductionCell" + tier.getBaseTier().getName() + ".name");
@@ -39,13 +33,13 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 		
 		electricityStored = dataStream.readDouble();
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
-		data.add(tier.ordinal());
+		data.add(tier);
 
 		super.getNetworkedData(data);
 		

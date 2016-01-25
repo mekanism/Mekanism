@@ -53,7 +53,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
 			
 			if(registered != this)
 			{
@@ -75,7 +75,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
@@ -139,7 +139,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -392,7 +392,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
-		if(!(getConsumingSides().contains(side) || side == EnumFacing.null))
+		if(!(getConsumingSides().contains(side) || side == null))
 		{
 			return 0;
 		}

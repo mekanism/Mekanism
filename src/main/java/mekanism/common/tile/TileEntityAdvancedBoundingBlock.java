@@ -1,6 +1,8 @@
 package mekanism.common.tile;
 
 import cofh.api.energy.IEnergyHandler;
+
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -13,10 +15,13 @@ import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -58,14 +63,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i)
+	public ItemStack removeStackFromSlot(int i)
 	{
 		if(getInv() == null)
 		{
 			return null;
 		}
 
-		return getInv().getStackInSlotOnClosing(i);
+		return getInv().removeStackFromSlot(i);
 	}
 
 	@Override
@@ -91,14 +96,20 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
 
-		return getInv().hasCustomInventoryName();
+		return getInv().hasCustomName();
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentText(getName());
 	}
 
 	@Override
@@ -124,25 +135,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 
-		getInv().openInventory();
+		getInv().openInventory(player);
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 
-		getInv().closeInventory();
+		getInv().closeInventory(player);
 	}
 
 	@Override
@@ -157,31 +168,55 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public int[] getSlotsForFace(int slotID)
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		//TODO
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		if(getInv() == null)
 		{
 			return InventoryUtils.EMPTY;
 		}
 
-		return getInv().getBoundSlots(Coord4D.get(this), slotID);
+		return getInv().getBoundSlots(Coord4D.get(this), side);
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing side)
 	{
 		return isItemValidForSlot(i, itemstack);
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing side)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
 
-		return getInv().canBoundExtract(Coord4D.get(this), i, itemstack, j);
+		return getInv().canBoundExtract(Coord4D.get(this), i, itemstack, side);
 	}
 
 	@Override
@@ -354,15 +389,15 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 		
-		TileEntity tile = new Coord4D(mainX, mainY, mainZ, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
+		TileEntity tile = new Coord4D(mainPos, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
-			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+			worldObj.setBlockToAir(mainPos);
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)new Coord4D(mainPos, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
 	}
 
 	@Override
