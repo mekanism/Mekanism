@@ -1,4 +1,4 @@
-package mekanism.generators.client.gui;
+package mekanism.generators.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
@@ -16,13 +16,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
-public class GuiHeatTab extends GuiElement
+public class GuiStatTab extends GuiElement
 {
 	TileEntity tileEntity;
 
-	public GuiHeatTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
+	public GuiStatTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiHeatTab.png"), gui, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiStatsTab.png"), gui, def);
 
 		tileEntity = tile;
 	}
@@ -30,7 +30,7 @@ public class GuiHeatTab extends GuiElement
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
+		return new Rectangle4i(guiWidth - 26, guiHeight + 62, 26, 26);
 	}
 
 	@Override
@@ -38,14 +38,14 @@ public class GuiHeatTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 62, 0, 0, 26, 26);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
+		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 66 && yAxis <= 84)
 		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 66, 26, 0, 18, 18);
 		}
 		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 18, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 66, 26, 18, 18, 18);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -56,9 +56,9 @@ public class GuiHeatTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
+		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 66 && yAxis <= 84)
 		{
-			displayTooltip(LangUtils.localize("gui.heat"), xAxis, yAxis);
+			displayTooltip(LangUtils.localize("gui.stats"), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -72,9 +72,9 @@ public class GuiHeatTab extends GuiElement
 	{
 		if(button == 0)
 		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
+			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 66 && yAxis <= 84)
 			{
-				MekanismGenerators.packetHandler.sendToServer(new GeneratorsGuiMessage(Coord4D.get(tileEntity), 11));
+				MekanismGenerators.packetHandler.sendToServer(new GeneratorsGuiMessage(Coord4D.get(tileEntity), 13));
 				SoundHandler.playSound("gui.button.press");
 			}
 		}

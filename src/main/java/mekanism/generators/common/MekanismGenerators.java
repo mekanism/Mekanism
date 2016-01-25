@@ -17,6 +17,7 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.MekanismUtils;
@@ -72,6 +73,9 @@ public class MekanismGenerators implements IModule
 		Mekanism.modulesLoaded.add(this);
 
 		packetHandler.initialize();
+		
+		//Register this module's GUI handler in the simple packet protocol
+		PacketSimpleGui.handlers.add(1, proxy);
 		
 		//Set up the GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());

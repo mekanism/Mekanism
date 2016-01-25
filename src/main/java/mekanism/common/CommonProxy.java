@@ -12,6 +12,7 @@ import mekanism.api.Pos3D;
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.api.util.UnitDisplayUtils.TempType;
 import mekanism.client.SparkleAnimation.INodeChecker;
+import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
@@ -130,7 +131,7 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
  * @author AidanBrady
  *
  */
-public class CommonProxy
+public class CommonProxy implements IGuiProvider
 {
 	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
@@ -392,31 +393,13 @@ public class CommonProxy
 	 */
 	public void doMultiblockSparkle(TileEntityMultiblock<?> tileEntity) {}
 
-	/**
-	 * Get the actual interface for a GUI. Client-only.
-	 * @param ID - gui ID
-	 * @param player - player that opened the GUI
-	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
-	 * @return the GuiScreen of the GUI
-	 */
+	@Override
 	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		return null;
 	}
 
-	/**
-	 * Get the container for a GUI. Common.
-	 * @param ID - gui ID
-	 * @param player - player that opened the GUI
-	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
-	 * @return the Container of the GUI
-	 */
+	@Override
 	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getTileEntity(x, y, z);

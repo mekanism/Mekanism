@@ -2,7 +2,7 @@ package mekanism.generators.common;
 
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerFilter;
+import mekanism.common.base.IGuiProvider;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
@@ -44,7 +44,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-public class GeneratorsCommonProxy
+public class GeneratorsCommonProxy implements IGuiProvider
 {
 	public static int GENERATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
@@ -132,31 +132,13 @@ public class GeneratorsCommonProxy
 		generators.windGenerationMaxY = Math.max(minY + 1, maxY);
 	}
 
-	/**
-	 * Get the actual interface for a GUI. Client-only.
-	 * @param ID - gui ID
-	 * @param player - player that opened the GUI
-	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
-	 * @return the GuiScreen of the GUI
-	 */
+	@Override
 	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		return null;
 	}
 
-	/**
-	 * Get the container for a GUI. Common.
-	 * @param ID - gui ID
-	 * @param player - player that opened the GUI
-	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
-	 * @return the Container of the GUI
-	 */
+	@Override
 	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
@@ -174,7 +156,8 @@ public class GeneratorsCommonProxy
 			case 5:
 				return new ContainerWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
 			case 6:
-				return new ContainerFilter(player.inventory, (TileEntityTurbineCasing)tileEntity);
+			case 7:
+				return new ContainerNull(player, (TileEntityTurbineCasing)tileEntity);
 			case 10:
 				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:

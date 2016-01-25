@@ -1,7 +1,8 @@
-package mekanism.client.gui.element;
+package mekanism.generators.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
@@ -15,19 +16,21 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiTransporterConfigTab extends GuiElement
+public class GuiTurbineTab extends GuiElement
 {
-	public TileEntity tileEntity;
-	public int yPos;
+	private TileEntity tileEntity;
+	private TurbineTab tabType;
+	private int yPos;
 
-	public GuiTransporterConfigTab(IGuiWrapper gui, int y, TileEntity tile, ResourceLocation def)
+	public GuiTurbineTab(IGuiWrapper gui, TileEntity tile, TurbineTab type, int y, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTransporterConfigTab.png"), gui, def);
+		super(type.getResource(), gui, def);
 
-		yPos = y;
 		tileEntity = tile;
+		tabType = type;
+		yPos = y;
 	}
-	
+
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
@@ -59,7 +62,7 @@ public class GuiTransporterConfigTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
 		{
-			displayTooltip(LangUtils.localize("gui.configuration.transporter"), xAxis, yAxis);
+			displayTooltip(tabType.getDesc(), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -75,9 +78,41 @@ public class GuiTransporterConfigTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
 			{
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 51));
-                SoundHandler.playSound("gui.button.press");
+				tabType.openGui(tileEntity);
+				SoundHandler.playSound("gui.button.press");
 			}
+		}
+	}
+	
+	public static enum TurbineTab
+	{
+		MAIN("GuiGasesTab.png", 6, "gui.main"),
+		STAT("GuiStatsTab.png", 7, "gui.stats");
+		
+		private String path;
+		private int guiId;
+		private String desc;
+		
+		private TurbineTab(String s, int id, String s1)
+		{
+			path = s;
+			guiId = id;
+			desc = s1;
+		}
+		
+		public ResourceLocation getResource()
+		{
+			return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, path);
+		}
+		
+		public void openGui(TileEntity tile)
+		{
+			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 1, guiId));
+		}
+		
+		public String getDesc()
+		{
+			return LangUtils.localize(desc);
 		}
 	}
 }

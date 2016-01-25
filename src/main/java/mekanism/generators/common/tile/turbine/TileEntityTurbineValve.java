@@ -359,7 +359,14 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		return fluidTank.fill(resource, doFill);
+		int filled = fluidTank.fill(resource, doFill);
+		
+		if(structure != null && doFill)
+		{
+			structure.lastSteamInput += filled;
+		}
+		
+		return filled;
 	}
 
 	@Override
