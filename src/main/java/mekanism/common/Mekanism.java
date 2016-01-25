@@ -960,12 +960,12 @@ public class Mekanism
 		
 		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(MekanismItems.Ingot, 1, 0));
 		OreDictionary.registerOre("ingotOsmium", new ItemStack(MekanismItems.Ingot, 1, 1));
-        //OreDictionary.registerOre("ingotRefinedOsmium", new ItemStack(MekanismItems.Ingot, 1,2)); // only for mekanism
-        OreDictionary.registerOre("ingotBronze", new ItemStack(MekanismItems.Ingot, 1, 3));
-		OreDictionary.registerOre("ingotRefinedGlowstone", new ItemStack(MekanismItems.Ingot, 1, 4));
-		OreDictionary.registerOre("ingotSteel", new ItemStack(MekanismItems.Ingot, 1, 5));
-		OreDictionary.registerOre("ingotCopper", new ItemStack(MekanismItems.Ingot, 1, 6)); // was missing
-		OreDictionary.registerOre("ingotTin", new ItemStack(MekanismItems.Ingot, 1, 7));
+        	OreDictionary.registerOre("ingotBronze", new ItemStack(MekanismItems.Ingot, 1, 2));
+		OreDictionary.registerOre("ingotRefinedGlowstone", new ItemStack(MekanismItems.Ingot, 1, 3));
+		OreDictionary.registerOre("ingotSteel", new ItemStack(MekanismItems.Ingot, 1, 4));
+		OreDictionary.registerOre("ingotCopper", new ItemStack(MekanismItems.Ingot, 1, 5)); // was missing
+		OreDictionary.registerOre("ingotTin", new ItemStack(MekanismItems.Ingot, 1, 6));
+		OreDictionary.registerOre("ingotRefinedOsmium", new ItemStack(MekanismItems.Ingot, 1,7));
 		
 		OreDictionary.registerOre("blockOsmium", new ItemStack(MekanismBlocks.BasicBlock, 1, 0));
 		OreDictionary.registerOre("blockBronze", new ItemStack(MekanismBlocks.BasicBlock, 1, 1));
