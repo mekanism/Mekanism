@@ -72,6 +72,8 @@ public class GuiIndustrialTurbine extends GuiMekanism
 		{
 			drawCreativeTabHoveringText(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
 		}
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
 	@Override
