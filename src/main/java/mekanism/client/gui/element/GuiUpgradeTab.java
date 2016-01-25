@@ -70,7 +70,7 @@ public class GuiUpgradeTab extends GuiElement
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 			{
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 43));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 43));
 	            SoundHandler.playSound("gui.button.press");
 			}
 		}

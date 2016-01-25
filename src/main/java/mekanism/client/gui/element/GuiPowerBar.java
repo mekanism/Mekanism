@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -19,10 +19,10 @@ public class GuiPowerBar extends GuiElement
 	private int height = 56;
 	private int innerOffsetY = 2;
 
-	private TileEntityElectricBlock tileEntity;
+	private IStrictEnergyStorage tileEntity;
 	private IPowerInfoHandler handler;
 
-	public GuiPowerBar(IGuiWrapper gui, TileEntityElectricBlock tile, ResourceLocation def, int x, int y)
+	public GuiPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
 		

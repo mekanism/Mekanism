@@ -1,7 +1,8 @@
-package mekanism.client.gui.element;
+package mekanism.generators.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
@@ -11,17 +12,17 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import codechicken.lib.vec.Rectangle4i;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiMatrixTab extends GuiElement
+public class GuiTurbineTab extends GuiElement
 {
 	private TileEntity tileEntity;
-	private MatrixTab tabType;
+	private TurbineTab tabType;
 	private int yPos;
 
-	public GuiMatrixTab(IGuiWrapper gui, TileEntity tile, MatrixTab type, int y, ResourceLocation def)
+	public GuiTurbineTab(IGuiWrapper gui, TileEntity tile, TurbineTab type, int y, ResourceLocation def)
 	{
 		super(type.getResource(), gui, def);
 
@@ -83,16 +84,16 @@ public class GuiMatrixTab extends GuiElement
 		}
 	}
 	
-	public static enum MatrixTab
+	public static enum TurbineTab
 	{
-		MAIN("GuiEnergyTab.png", 49, "gui.main"),
-		STAT("GuiStatsTab.png", 50, "gui.stats");
+		MAIN("GuiGasesTab.png", 6, "gui.main"),
+		STAT("GuiStatsTab.png", 7, "gui.stats");
 		
 		private String path;
 		private int guiId;
 		private String desc;
 		
-		private MatrixTab(String s, int id, String s1)
+		private TurbineTab(String s, int id, String s1)
 		{
 			path = s;
 			guiId = id;
@@ -106,7 +107,7 @@ public class GuiMatrixTab extends GuiElement
 		
 		public void openGui(TileEntity tile)
 		{
-			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 1, guiId));
 		}
 		
 		public String getDesc()

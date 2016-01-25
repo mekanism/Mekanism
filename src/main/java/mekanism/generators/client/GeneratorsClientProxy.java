@@ -11,6 +11,7 @@ import mekanism.generators.client.gui.GuiReactorHeat;
 import mekanism.generators.client.gui.GuiReactorLogicAdapter;
 import mekanism.generators.client.gui.GuiReactorStats;
 import mekanism.generators.client.gui.GuiSolarGenerator;
+import mekanism.generators.client.gui.GuiTurbineStats;
 import mekanism.generators.client.gui.GuiWindGenerator;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
@@ -105,6 +106,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 				return new GuiWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
 			case 6:
 				return new GuiIndustrialTurbine(player.inventory, (TileEntityTurbineCasing)tileEntity);
+			case 7:
+				return new GuiTurbineStats(player.inventory, (TileEntityTurbineCasing)tileEntity);
 			case 10:
 				return new GuiReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:

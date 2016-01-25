@@ -302,7 +302,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			{
 				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), guiId));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
 			}
 			
 			if(selectedType != null && xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69)

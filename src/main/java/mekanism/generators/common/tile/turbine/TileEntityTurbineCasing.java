@@ -13,17 +13,24 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage
 {
+	public static final double DISPERSER_GAS_FLOW = 640;
+	public static final double VENT_GAS_FLOW = 16000;
+	public static final double ENERGY_PER_STEAM = 10;
+	public static final double BLADE_TO_COIL_RATIO = 4;
+	
 	public float prevScale;
 	
 	public TileEntityTurbineCasing() 
@@ -58,6 +65,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		{
 			if(structure != null)
 			{
+				structure.lastSteamInput = 0;
+				
 				if(structure.fluidStored != null && structure.fluidStored.amount <= 0)
 				{
 					structure.fluidStored = null;
@@ -66,6 +75,41 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 				
 				if(isRendering)
 				{
+					int stored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
+					double proportion = (double)stored/(double)structure.getFluidCapacity();
+					double flowRate = 0;
+					
+					if(stored > 0 && structure.electricityStored < structure.getEnergyCapacity())
+					{
+						double energyMultiplier = ENERGY_PER_STEAM*Math.min(structure.blades, structure.coils*BLADE_TO_COIL_RATIO);
+						double rate = structure.lowerVolume*(structure.getDispersers()*DISPERSER_GAS_FLOW)*proportion;
+						double origRate = rate;
+						
+						rate = Math.min(Math.min(stored, rate), structure.vents*VENT_GAS_FLOW);
+						rate = Math.min(rate, (getMaxEnergy()-getEnergy())/energyMultiplier);
+						
+						flowRate = proportion*(rate/origRate);
+						setEnergy(getEnergy()+((int)rate)*energyMultiplier);
+						
+						structure.fluidStored.amount -= rate;
+						structure.clientFlow = (int)rate;
+						
+						if(structure.fluidStored.amount == 0)
+						{
+							structure.fluidStored = null;
+						}
+					}
+					else {
+						structure.clientFlow = 0;
+					}
+					
+					TileEntity tile = structure.complex.getTileEntity(worldObj);
+					
+					if(tile instanceof TileEntityRotationalComplex)
+					{
+						((TileEntityRotationalComplex)tile).setRotation((float)flowRate);
+					}
+					
 					if(structure.needsRenderUpdate())
 					{
 						sendPacketToRenderer();
@@ -78,12 +122,18 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	}
 	
 	@Override
+	public String getInventoryName()
+	{
+		return LangUtils.localize("gui.industrialTurbine");
+	}
+	
+	@Override
 	public boolean onActivate(EntityPlayer player)
 	{
 		if(!player.isSneaking() && structure != null)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			player.openGui(Mekanism.instance, 6, worldObj, xCoord, yCoord, zCoord);
+			player.openGui(MekanismGenerators.instance, 6, worldObj, xCoord, yCoord, zCoord);
 			
 			return true;
 		}
@@ -131,7 +181,14 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		if(structure != null)
 		{
 			data.add(structure.volume);
+			data.add(structure.lowerVolume);
+			data.add(structure.vents);
+			data.add(structure.blades);
+			data.add(structure.coils);
+			data.add(structure.getDispersers());
 			data.add(structure.electricityStored);
+			data.add(structure.clientFlow);
+			data.add(structure.lastSteamInput);
 			
 			if(structure.fluidStored != null)
 			{
@@ -155,7 +212,14 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		if(clientHasStructure)
 		{
 			structure.volume = dataStream.readInt();
+			structure.lowerVolume = dataStream.readInt();
+			structure.vents = dataStream.readInt();
+			structure.blades = dataStream.readInt();
+			structure.coils = dataStream.readInt();
+			structure.clientDispersers = dataStream.readInt();
 			structure.electricityStored = dataStream.readDouble();
+			structure.clientFlow = dataStream.readInt();
+			structure.lastSteamInput = dataStream.readInt();
 			
 			if(dataStream.readInt() == 1)
 			{

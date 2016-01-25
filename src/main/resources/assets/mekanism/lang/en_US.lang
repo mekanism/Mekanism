@@ -440,6 +440,7 @@ gui.formed=Formed
 gui.incomplete=Incomplete
 gui.inductionMatrix=Induction Matrix
 gui.matrixStats=Matrix Statistics
+gui.turbineStats=Turbine Statistics
 gui.main=Main
 gui.outputting=Outputting
 gui.receiving=Receiving
@@ -483,6 +484,19 @@ gui.redstoneOutputMode=Redstone mode
 gui.entityDetection=Entity Detection
 gui.moveUp=Move Up
 gui.moveDown=Move Down
+gui.flowRate=Flow rate
+gui.maxFlow=Max flow
+gui.tankVolume=Tank Volume
+gui.steamFlow=Steam Flow
+gui.production=Production
+gui.blades=Blades
+gui.coils=Coils
+gui.dispersers=Dispersers
+gui.vents=Vents
+gui.maxProduction=Max Production
+gui.limiting=Limiting
+gui.steamInput=Steam Input
+gui.capacity=Capacity
 
 gui.reactor.injectionRate=Injection Rate
 

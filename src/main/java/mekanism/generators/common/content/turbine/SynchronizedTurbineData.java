@@ -1,5 +1,6 @@
 package mekanism.generators.common.content.turbine;
 
+import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -16,6 +17,18 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 	public int coils;
 	
 	public int lowerVolume;
+	
+	public Coord4D complex;
+	
+	public int lastSteamInput;
+	
+	public int clientDispersers;
+	public int clientFlow;
+	
+	public int getDispersers()
+	{
+		return (volLength-2)*(volWidth-2) - 1;
+	}
 	
 	public int getFluidCapacity()
 	{

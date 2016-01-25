@@ -1,4 +1,4 @@
-package mekanism.generators.client.gui;
+package mekanism.generators.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;

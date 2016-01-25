@@ -209,6 +209,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				structure.lowerVolume = structure.volLength*structure.volWidth*turbineHeight;
 				
 				((TileEntityRotationalComplex)complex.getTileEntity(pointer.getWorldObj())).setMultiblock(structure.inventoryID);
+				structure.complex = complex;
 				
 				return true;
 			}

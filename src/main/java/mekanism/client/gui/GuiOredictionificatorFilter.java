@@ -277,13 +277,13 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 					Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
 
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 52));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 			}
 		}
 		else if(guibutton.id == 1)
 		{
 			Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 52));
+			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 		}
 	}
 	
@@ -310,7 +310,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 52));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 			}
 			
 			if(xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60)

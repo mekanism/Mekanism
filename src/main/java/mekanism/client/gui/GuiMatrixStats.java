@@ -2,10 +2,10 @@ package mekanism.client.gui;
 
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.gui.element.GuiEnergyGauge;
-import mekanism.client.gui.element.GuiMatrixTab;
-import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
+import mekanism.client.gui.element.GuiMatrixTab;
 import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
+import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityInductionCasing;
@@ -28,7 +28,7 @@ public class GuiMatrixStats extends GuiMekanism
 	{
 		super(tentity, new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, 6, MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png")));
+		guiElements.add(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, 6, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
 		guiElements.add(new GuiEnergyGauge(new IEnergyInfoHandler()
 		{
 			@Override
@@ -36,7 +36,7 @@ public class GuiMatrixStats extends GuiMekanism
 			{
 				return tileEntity;
 			}
-		}, GuiEnergyGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png"), 6, 13));
+		}, GuiEnergyGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 6, 13));
 		guiElements.add(new GuiRateBar(this, new IRateInfoHandler()
 		{
 			@Override
@@ -50,7 +50,7 @@ public class GuiMatrixStats extends GuiMekanism
 			{
 				return tileEntity.structure.lastInput/tileEntity.structure.transferCap;
 			}
-		}, MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png"), 30, 13));
+		}, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 30, 13));
 		guiElements.add(new GuiRateBar(this, new IRateInfoHandler()
 		{
 			@Override
@@ -64,7 +64,7 @@ public class GuiMatrixStats extends GuiMekanism
 			{
 				return tileEntity.structure.lastOutput/tileEntity.structure.transferCap;
 			}
-		}, MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png"), 38, 13));
+		}, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 38, 13));
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class GuiMatrixStats extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiMatrixStats.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
