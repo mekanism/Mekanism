@@ -487,6 +487,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 	{
 		temperature += invHeatCapacity * heatToAbsorb;
 		heatToAbsorb = 0;
+		
 		return temperature;
 	}
 
@@ -503,9 +504,9 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 		{
 			return structure;
 		}
-		else
-		{
+		else {
 			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+			
 			if(adj instanceof IHeatTransfer)
 			{
 				return (IHeatTransfer)adj;
