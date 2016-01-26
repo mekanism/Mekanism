@@ -64,6 +64,17 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 	}
 	
 	@Override
+	public void onStructureDestroyed(SynchronizedTurbineData structure) 
+	{
+		TileEntity tile = structure.complex.getTileEntity(pointer.getWorldObj());
+		
+		if(tile instanceof TileEntityRotationalComplex)
+		{
+			((TileEntityRotationalComplex)tile).setMultiblock(null);
+		}
+	}
+	
+	@Override
 	protected boolean canForm(SynchronizedTurbineData structure)
 	{
 		if(structure.volLength % 2 == 1 && structure.volWidth % 2 == 1)
@@ -207,8 +218,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				}
 				
 				structure.lowerVolume = structure.volLength*structure.volWidth*turbineHeight;
-				
-				((TileEntityRotationalComplex)complex.getTileEntity(pointer.getWorldObj())).setMultiblock(structure.inventoryID);
 				structure.complex = complex;
 				
 				return true;
@@ -247,6 +256,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 		{
 			((TurbineCache)cache).fluid.amount += ((TurbineCache)merge).fluid.amount;
 		}
+		
+		((TurbineCache)cache).electricity += ((TurbineCache)merge).electricity;
 	}
 	
 	@Override
@@ -258,6 +269,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 		}
 		
 		structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
+		
+		((TileEntityRotationalComplex)structureFound.complex.getTileEntity(pointer.getWorldObj())).setMultiblock(structureFound.inventoryID);
 	}
 	
 	public class CoilCounter

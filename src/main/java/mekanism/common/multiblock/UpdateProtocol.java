@@ -473,10 +473,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			//TODO perhaps drop from pointer?
 
 			cache.apply((T)structureFound);
-
-			onFormed();
 			
 			structureFound.inventoryID = idToUse;
+			
+			onFormed();
 			
 			List<IStructuralMultiblock> structures = new ArrayList<IStructuralMultiblock>();
 			Coord4D toUse = null;

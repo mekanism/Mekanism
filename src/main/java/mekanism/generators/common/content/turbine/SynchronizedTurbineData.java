@@ -21,6 +21,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 	public Coord4D complex;
 	
 	public int lastSteamInput;
+	public int newSteamInput;
 	
 	public int clientDispersers;
 	public int clientFlow;

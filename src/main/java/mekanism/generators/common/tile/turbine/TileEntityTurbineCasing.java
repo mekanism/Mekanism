@@ -65,8 +65,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		{
 			if(structure != null)
 			{
-				structure.lastSteamInput = 0;
-				
 				if(structure.fluidStored != null && structure.fluidStored.amount <= 0)
 				{
 					structure.fluidStored = null;
@@ -75,20 +73,24 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 				
 				if(isRendering)
 				{
+					structure.lastSteamInput = structure.newSteamInput;
+					structure.newSteamInput = 0;
+					
 					int stored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
 					double proportion = (double)stored/(double)structure.getFluidCapacity();
 					double flowRate = 0;
 					
-					if(stored > 0 && structure.electricityStored < structure.getEnergyCapacity())
+					if(stored > 0 && getEnergy() < structure.getEnergyCapacity())
 					{
 						double energyMultiplier = ENERGY_PER_STEAM*Math.min(structure.blades, structure.coils*BLADE_TO_COIL_RATIO);
-						double rate = structure.lowerVolume*(structure.getDispersers()*DISPERSER_GAS_FLOW)*proportion;
+						double rate = structure.lowerVolume*(structure.getDispersers()*DISPERSER_GAS_FLOW);						
+						rate = Math.min(rate, structure.vents*VENT_GAS_FLOW);
+						
 						double origRate = rate;
 						
-						rate = Math.min(Math.min(stored, rate), structure.vents*VENT_GAS_FLOW);
-						rate = Math.min(rate, (getMaxEnergy()-getEnergy())/energyMultiplier);
+						rate = Math.min(Math.min(stored, rate), (getMaxEnergy()-getEnergy())/energyMultiplier)*proportion;
 						
-						flowRate = proportion*(rate/origRate);
+						flowRate = rate/origRate;
 						setEnergy(getEnergy()+((int)rate)*energyMultiplier);
 						
 						structure.fluidStored.amount -= rate;
@@ -199,6 +201,11 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			else {
 				data.add(0);
 			}
+			
+			if(isRendering)
+			{
+				structure.complex.write(data);
+			}
 		}
 
 		return data;
@@ -227,6 +234,11 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			}
 			else {
 				structure.fluidStored = null;
+			}
+			
+			if(isRendering)
+			{
+				structure.complex = Coord4D.read(dataStream);
 			}
 		}
 	}
