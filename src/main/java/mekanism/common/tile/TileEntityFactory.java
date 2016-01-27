@@ -33,7 +33,8 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.SoundWrapper;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
@@ -49,7 +50,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -117,7 +117,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public TileEntityFactory()
 	{
-		this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
+		this(FactoryTier.BASIC, BlockStateMachine.MachineType.BASIC_FACTORY);
 		
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 
@@ -142,7 +142,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
-		super("null", machine.name, machine.baseEnergy);
+		super("null", machine.machineName, machine.baseEnergy);
 
 		tier = type;
 		inventory = new ItemStack[5+type.processes*2];

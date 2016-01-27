@@ -21,7 +21,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
@@ -35,9 +35,7 @@ import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager
 {
@@ -80,7 +78,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public TileEntityChemicalDissolutionChamber()
 	{
-		super("machine.dissolution", "ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
+		super("machine.dissolution", "ChemicalDissolutionChamber", BlockStateMachine.MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 

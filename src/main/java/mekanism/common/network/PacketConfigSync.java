@@ -8,7 +8,8 @@ import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.base.IModule;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -63,9 +64,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.maxScubaGas);
 			dataStream.writeInt(general.maxFlamethrowerGas);
 			
-			for(MachineType type : MachineType.getValidMachines())
+			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
-				dataStream.writeBoolean(machines.isEnabled(type.name));
+				dataStream.writeBoolean(machines.isEnabled(type.machineName));
 			}
 	
 			dataStream.writeDouble(usage.enrichmentChamberUsage);
@@ -140,9 +141,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.maxScubaGas = dataStream.readInt();
 			general.maxFlamethrowerGas = dataStream.readInt();
 			
-			for(MachineType type : MachineType.getValidMachines())
+			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
-				machines.setEntry(type.name, dataStream.readBoolean());
+				machines.setEntry(type.machineName, dataStream.readBoolean());
 			}
 	
 			usage.enrichmentChamberUsage = dataStream.readDouble();

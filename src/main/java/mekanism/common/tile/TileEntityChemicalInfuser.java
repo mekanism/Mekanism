@@ -23,7 +23,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
@@ -38,7 +38,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.IChatComponent;
 
 public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager
 {
@@ -73,7 +72,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 	public TileEntityChemicalInfuser()
 	{
-		super("machine.cheminfuser", "ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
+		super("machine.cheminfuser", "ChemicalInfuser", BlockStateMachine.MachineType.CHEMICAL_INFUSER.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 

@@ -4,7 +4,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.util.StackUtils;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.inputs.*;
 import mekanism.common.recipe.machines.*;
 import mekanism.common.recipe.outputs.*;
@@ -503,25 +503,25 @@ public final class RecipeHandler
 
 	public static enum Recipe
 	{
-		ENERGIZED_SMELTER(MachineType.ENERGIZED_SMELTER.name, ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class),
-		ENRICHMENT_CHAMBER(MachineType.ENRICHMENT_CHAMBER.name, ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class),
-		OSMIUM_COMPRESSOR(MachineType.OSMIUM_COMPRESSOR.name, AdvancedMachineInput.class, ItemStackOutput.class, OsmiumCompressorRecipe.class),
-		COMBINER(MachineType.COMBINER.name, AdvancedMachineInput.class, ItemStackOutput.class, CombinerRecipe.class),
-		CRUSHER(MachineType.CRUSHER.name, ItemStackInput.class, ItemStackOutput.class, CrusherRecipe.class),
-		PURIFICATION_CHAMBER(MachineType.PURIFICATION_CHAMBER.name, AdvancedMachineInput.class, ItemStackOutput.class, PurificationRecipe.class),
-		METALLURGIC_INFUSER(MachineType.METALLURGIC_INFUSER.name, InfusionInput.class, ItemStackOutput.class, MetallurgicInfuserRecipe.class),
-		CHEMICAL_INFUSER(MachineType.CHEMICAL_INFUSER.name, ChemicalPairInput.class, GasOutput.class, ChemicalInfuserRecipe.class),
-		CHEMICAL_OXIDIZER(MachineType.CHEMICAL_OXIDIZER.name, ItemStackInput.class, GasOutput.class, OxidationRecipe.class),
-		CHEMICAL_INJECTION_CHAMBER(MachineType.CHEMICAL_INJECTION_CHAMBER.name, AdvancedMachineInput.class, ItemStackOutput.class, InjectionRecipe.class),
-		ELECTROLYTIC_SEPARATOR(MachineType.ELECTROLYTIC_SEPARATOR.name, FluidInput.class, ChemicalPairOutput.class, SeparatorRecipe.class),
-		PRECISION_SAWMILL(MachineType.PRECISION_SAWMILL.name, ItemStackInput.class, ChanceOutput.class, SawmillRecipe.class),
-		CHEMICAL_DISSOLUTION_CHAMBER(MachineType.CHEMICAL_DISSOLUTION_CHAMBER.name, ItemStackInput.class, GasOutput.class, DissolutionRecipe.class),
-		CHEMICAL_WASHER(MachineType.CHEMICAL_WASHER.name, GasInput.class, GasOutput.class, WasherRecipe.class),
-		CHEMICAL_CRYSTALLIZER(MachineType.CHEMICAL_CRYSTALLIZER.name, GasInput.class, ItemStackOutput.class, CrystallizerRecipe.class),
-		PRESSURIZED_REACTION_CHAMBER(MachineType.PRESSURIZED_REACTION_CHAMBER.name, PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class),
-		AMBIENT_ACCUMULATOR(MachineType.AMBIENT_ACCUMULATOR.name, IntegerInput.class, GasOutput.class, AmbientGasRecipe.class),
+		ENERGIZED_SMELTER(MachineType.ENERGIZED_SMELTER.machineName, ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class),
+		ENRICHMENT_CHAMBER(MachineType.ENRICHMENT_CHAMBER.machineName, ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class),
+		OSMIUM_COMPRESSOR(MachineType.OSMIUM_COMPRESSOR.machineName, AdvancedMachineInput.class, ItemStackOutput.class, OsmiumCompressorRecipe.class),
+		COMBINER(MachineType.COMBINER.machineName, AdvancedMachineInput.class, ItemStackOutput.class, CombinerRecipe.class),
+		CRUSHER(MachineType.CRUSHER.machineName, ItemStackInput.class, ItemStackOutput.class, CrusherRecipe.class),
+		PURIFICATION_CHAMBER(MachineType.PURIFICATION_CHAMBER.machineName, AdvancedMachineInput.class, ItemStackOutput.class, PurificationRecipe.class),
+		METALLURGIC_INFUSER(MachineType.METALLURGIC_INFUSER.machineName, InfusionInput.class, ItemStackOutput.class, MetallurgicInfuserRecipe.class),
+		CHEMICAL_INFUSER(MachineType.CHEMICAL_INFUSER.machineName, ChemicalPairInput.class, GasOutput.class, ChemicalInfuserRecipe.class),
+		CHEMICAL_OXIDIZER(MachineType.CHEMICAL_OXIDIZER.machineName, ItemStackInput.class, GasOutput.class, OxidationRecipe.class),
+		CHEMICAL_INJECTION_CHAMBER(MachineType.CHEMICAL_INJECTION_CHAMBER.machineName, AdvancedMachineInput.class, ItemStackOutput.class, InjectionRecipe.class),
+		ELECTROLYTIC_SEPARATOR(MachineType.ELECTROLYTIC_SEPARATOR.machineName, FluidInput.class, ChemicalPairOutput.class, SeparatorRecipe.class),
+		PRECISION_SAWMILL(MachineType.PRECISION_SAWMILL.machineName, ItemStackInput.class, ChanceOutput.class, SawmillRecipe.class),
+		CHEMICAL_DISSOLUTION_CHAMBER(MachineType.CHEMICAL_DISSOLUTION_CHAMBER.machineName, ItemStackInput.class, GasOutput.class, DissolutionRecipe.class),
+		CHEMICAL_WASHER(MachineType.CHEMICAL_WASHER.machineName, GasInput.class, GasOutput.class, WasherRecipe.class),
+		CHEMICAL_CRYSTALLIZER(MachineType.CHEMICAL_CRYSTALLIZER.machineName, GasInput.class, ItemStackOutput.class, CrystallizerRecipe.class),
+		PRESSURIZED_REACTION_CHAMBER(MachineType.PRESSURIZED_REACTION_CHAMBER.machineName, PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class),
+		AMBIENT_ACCUMULATOR(MachineType.AMBIENT_ACCUMULATOR.machineName, IntegerInput.class, GasOutput.class, AmbientGasRecipe.class),
 		SOLAR_EVAPORATION_PLANT("SolarEvaporationPlant", FluidInput.class, FluidOutput.class, SolarEvaporationRecipe.class),
-		SOLAR_NEUTRON_ACTIVATOR(MachineType.SOLAR_NEUTRON_ACTIVATOR.name, GasInput.class, GasOutput.class, SolarNeutronRecipe.class);
+		SOLAR_NEUTRON_ACTIVATOR(MachineType.SOLAR_NEUTRON_ACTIVATOR.machineName, GasInput.class, GasOutput.class, SolarNeutronRecipe.class);
 
 		private HashMap recipes;
 		private String recipeName;

@@ -21,12 +21,15 @@ public class RenderMetallurgicInfuser extends TileEntitySpecialRenderer<TileEnti
 	@Override
 	public void renderTileEntityAt(TileEntityMetallurgicInfuser tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
+/*
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
 
-		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
+		switch(tileEntity.facing.ordinal())
+TODO: switch the enum
+
 		{
 			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
@@ -39,5 +42,6 @@ public class RenderMetallurgicInfuser extends TileEntitySpecialRenderer<TileEnti
 		GL11.glPopMatrix();
 
 		MekanismRenderer.machineRenderer.renderTileEntityAt(tileEntity, x, y, z, partialTick, destroyStage);
+*/
 	}
 }

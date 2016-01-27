@@ -12,7 +12,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -22,10 +22,8 @@ import mekanism.common.util.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fluids.*;
 
 import java.util.ArrayList;
@@ -67,7 +65,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 	public TileEntityChemicalWasher()
 	{
-		super("machine.washer", "ChemicalWasher", MachineType.CHEMICAL_WASHER.baseEnergy);
+		super("machine.washer", "ChemicalWasher", BlockStateMachine.MachineType.CHEMICAL_WASHER.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 

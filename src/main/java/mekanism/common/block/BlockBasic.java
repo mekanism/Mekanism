@@ -10,6 +10,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlock;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
@@ -30,6 +34,9 @@ import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
@@ -80,23 +87,57 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockIcon
+public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockIcon
 {
 //	public CTMData[][] ctms = new CTMData[16][4];
 	
 //	public static String ICON_BASE = "mekanism:SteelCasing";
 
-	public BasicBlock blockType;
-
-	public BlockBasic(BasicBlock type)
+	public BlockBasic()
 	{
 		super(Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		blockType = type;
 	}
-	
+
+	public static BlockBasic getBlockBasic(BasicBlock block)
+	{
+		return new BlockBasic() {
+			@Override
+			public BasicBlock getBasicBlock()
+			{
+				return block;
+			}
+		};
+	}
+
+	public abstract BasicBlock getBasicBlock();
+
+	public BlockState createBlockState()
+	{
+		return new BlockStateBasic(this, getProperty());
+	}
+
+	public PropertyEnum<BasicBlockType> getProperty()
+	{
+		return getBasicBlock().getProperty();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		BasicBlockType type = BasicBlockType.getBlockType(getBasicBlock(), meta&0xF);
+
+		return this.getDefaultState().withProperty(getProperty(), type);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		BasicBlockType type = state.getValue(getProperty());
+		return type.meta;
+	}
 /*
 	@Override
 	public IIcon getIcon(ItemStack stack, int side)
@@ -297,7 +338,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
 	{
-		switch(blockType)
+		switch(getBasicBlock())
 		{
 			case BASIC_BLOCK_1:
 				for(int i = 0; i < 16; i++)
@@ -348,7 +389,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 		IBlockState state = world.getBlockState(pos);
 		int meta = state.getBlock().getMetaFromState(state);
 
-		switch(blockType)
+		switch(getBasicBlock())
 		{
 			case BASIC_BLOCK_1:
 				switch(meta)
@@ -414,7 +455,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 		IBlockState state = world.getBlockState(pos);
 		int meta = state.getBlock().getMetaFromState(state);
 
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(!world.isRemote && meta == 6)
 			{
@@ -443,7 +484,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 	{
 		int metadata = state.getBlock().getMetaFromState(state);
 
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(metadata != 6)
 			{
@@ -546,7 +587,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 				return ((IStructuralMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
 			}
 		}
-		else if(blockType == BasicBlock.BASIC_BLOCK_2)
+		else if(getBasicBlock() == BasicBlock.BASIC_BLOCK_2)
 		{
 			if(world.isRemote)
 			{
@@ -566,7 +607,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = world.getBlockState(pos);
-		return !(blockType == BasicBlock.BASIC_BLOCK_1 && state.getBlock().getMetaFromState(state) == 10);
+		return !(getBasicBlock() == BasicBlock.BASIC_BLOCK_1 && state.getBlock().getMetaFromState(state) == 10);
 	}
 
 	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -717,7 +758,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 			}
 		}
 
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1)
 		{
 			switch(metadata)
 			{
@@ -737,7 +778,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 	public boolean hasTileEntity(IBlockState state)
 	{
 		int metadata = state.getBlock().getMetaFromState(state);
-		switch(blockType)
+		switch(getBasicBlock())
 		{
 			case BASIC_BLOCK_1:
 				switch(metadata)
@@ -788,7 +829,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		int metadata = state.getBlock().getMetaFromState(state);
-		switch(blockType)
+		switch(getBasicBlock())
 		{
 			case BASIC_BLOCK_1:
 				switch(metadata)
@@ -897,7 +938,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 		IBlockState state = world.getBlockState(pos);
 		ItemStack ret = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(ret.getItemDamage() == 6)
 			{
@@ -912,7 +953,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 				}
 			}
 		}
-		else if(blockType == BasicBlock.BASIC_BLOCK_2)
+		else if(getBasicBlock() == BasicBlock.BASIC_BLOCK_2)
 		{
 			if(ret.getItemDamage() == 3)
 			{
@@ -990,7 +1031,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 	{
 		Coord4D obj = new Coord4D(pos).offset(EnumFacing.getFront(side).getOpposite());
 		
-		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getBlockState(world) == 10)
+		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1 && obj.getBlockState(world) == 10)
 		{
 			return ctms[10][0].shouldRenderSide(world, pos, side);
 		}
@@ -1050,7 +1091,7 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 			return ctms[meta][1];
 		}
 
-		if(blockType == BasicBlock.BASIC_BLOCK_2)
+		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_2)
 		{
 			if(meta == 3)
 			{
@@ -1067,10 +1108,4 @@ public class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockI
 		return ctms[meta][0];
 	}
 */
-
-	public static enum BasicBlock
-	{
-		BASIC_BLOCK_1,
-		BASIC_BLOCK_2;
-	}
 }

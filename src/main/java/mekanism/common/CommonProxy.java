@@ -14,7 +14,8 @@ import mekanism.api.util.UnitDisplayUtils.TempType;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -121,7 +122,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -325,9 +325,9 @@ public class CommonProxy implements IGuiProvider
 		general.enableAmbientLighting = Mekanism.configuration.get("general", "EnableAmbientLighting", true).getBoolean();
 		general.ambientLightingLevel = Mekanism.configuration.get("general", "AmbientLightingLevel", 15).getInt();
 		
-		for(MachineType type : MachineType.getValidMachines())
+		for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 		{
-			machines.setEntry(type.name, Mekanism.configuration.get("machines", type.name + "Enabled", true).getBoolean());
+			machines.setEntry(type.machineName, Mekanism.configuration.get("machines", type.machineName + "Enabled", true).getBoolean());
 		}
 		
 		usage.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble();
@@ -553,9 +553,9 @@ public class CommonProxy implements IGuiProvider
 	
 	public void updateConfigRecipes()
 	{
-		for(MachineType type : MachineType.getValidMachines())
+		for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 		{
-			if(machines.isEnabled(type.name))
+			if(machines.isEnabled(type.machineName))
 			{
 				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
 				CraftingManager.getInstance().getRecipeList().addAll(type.getRecipes());
@@ -576,7 +576,7 @@ public class CommonProxy implements IGuiProvider
 			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
 		}
 		
-		MachineType.updateAllUsages();
+		BlockStateMachine.MachineType.updateAllUsages();
 		
 		updateConfigRecipes();
 

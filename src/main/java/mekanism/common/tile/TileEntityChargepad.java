@@ -11,7 +11,7 @@ import mekanism.api.Range4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -21,10 +21,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.IChatComponent;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,7 +43,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 	public TileEntityChargepad()
 	{
-		super("machine.chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
+		super("machine.chargepad", "Chargepad", BlockStateMachine.MachineType.CHARGEPAD.baseEnergy);
 		inventory = new ItemStack[0];
 	}
 

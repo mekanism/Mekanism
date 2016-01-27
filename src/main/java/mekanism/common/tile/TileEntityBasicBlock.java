@@ -14,7 +14,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -25,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
@@ -56,11 +56,11 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	{
 		if(!worldObj.isRemote && general.destroyDisabledBlocks)
 		{
-			MachineType type = MachineType.get(getBlockType(), getBlockMetadata());
+			MachineType type = BlockStateMachine.MachineType.get(getBlockType(), getBlockMetadata());
 			
 			if(type != null && !type.isEnabled())
 			{
-				Mekanism.logger.info("[Mekanism] Destroying machine of type '" + type.name + "' at coords " + Coord4D.get(this) + " as according to config.");
+				Mekanism.logger.info("[Mekanism] Destroying machine of type '" + type.machineName + "' at coords " + Coord4D.get(this) + " as according to config.");
 				worldObj.setBlockToAir(getPos());
 				return;
 			}

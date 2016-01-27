@@ -11,7 +11,7 @@ import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.*;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -104,7 +104,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileEntityDigitalMiner()
 	{
-		super("DigitalMiner", MachineType.DIGITAL_MINER.baseEnergy);
+		super("DigitalMiner", BlockStateMachine.MachineType.DIGITAL_MINER.baseEnergy);
 		inventory = new ItemStack[29];
 		radius = 10;
 	}

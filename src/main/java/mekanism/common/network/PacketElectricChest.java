@@ -5,7 +5,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IElectricChest;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -45,7 +45,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 				else {
 					ItemStack stack = player.getCurrentEquippedItem();
 
-					if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+					if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 					{
 						if(message.useEnergy)
 						{
@@ -82,7 +82,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 				else {
 					ItemStack stack = player.getCurrentEquippedItem();
 
-					if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+					if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 					{
 						((IElectricChest)stack.getItem()).setPassword(stack, message.password);
 						((IElectricChest)stack.getItem()).setAuthenticated(stack, true);
@@ -105,7 +105,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 				else {
 					ItemStack stack = player.getCurrentEquippedItem();
 
-					if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+					if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 					{
 						((IElectricChest)stack.getItem()).setLocked(stack, message.locked);
 					}

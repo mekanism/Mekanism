@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.Map;
 
 import mekanism.api.MekanismConfig.usage;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
 
@@ -14,7 +14,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<Enric
 {
 	public TileEntityEnrichmentChamber()
 	{
-		super("enrichment", "EnrichmentChamber", usage.enrichmentChamberUsage, 200, MachineType.ENRICHMENT_CHAMBER.baseEnergy);
+		super("enrichment", "EnrichmentChamber", usage.enrichmentChamberUsage, 200, BlockStateMachine.MachineType.ENRICHMENT_CHAMBER.baseEnergy);
 	}
 
 	@Override

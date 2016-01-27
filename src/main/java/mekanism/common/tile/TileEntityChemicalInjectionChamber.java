@@ -8,28 +8,24 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.SideData;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe>
 {
 	public TileEntityChemicalInjectionChamber()
 	{
-		super("injection", "ChemicalInjectionChamber", usage.chemicalInjectionChamberUsage, 1, 200, MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
+		super("injection", "ChemicalInjectionChamber", usage.chemicalInjectionChamberUsage, 1, 200, BlockStateMachine.MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
 		
 		configComponent.addSupported(TransmissionType.GAS);
 		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));

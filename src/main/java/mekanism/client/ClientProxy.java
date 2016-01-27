@@ -95,21 +95,18 @@ import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import mekanism.common.base.IElectricChest;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryElectricChest;
-import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
-import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
@@ -126,14 +123,12 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntityElectricChest;
-import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
-import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
@@ -160,13 +155,16 @@ import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -236,7 +234,7 @@ public class ClientProxy extends CommonProxy
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
-				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+				if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 				{
 					InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);
 					//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
@@ -253,7 +251,7 @@ public class ClientProxy extends CommonProxy
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
-				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+				if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 				{
 					//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
 				}
@@ -268,7 +266,7 @@ public class ClientProxy extends CommonProxy
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
-				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+				if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 				{
 					//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
 				}
@@ -402,8 +400,68 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new PlasticRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new CTMRenderingHandler());
 */
+//		registerItemRender(MekanismItems.PartTransmitter);
+		registerItemRender(MekanismItems.ElectricBow);
+		registerItemRender(MekanismItems.Dust);
+		registerItemRender(MekanismItems.Ingot);
+		registerItemRender(MekanismItems.EnergyTablet);
+		registerItemRender(MekanismItems.SpeedUpgrade);
+		registerItemRender(MekanismItems.EnergyUpgrade);
+		registerItemRender(MekanismItems.FilterUpgrade);
+		registerItemRender(MekanismItems.GasUpgrade);
+		registerItemRender(MekanismItems.Robit);
+		registerItemRender(MekanismItems.AtomicDisassembler);
+		registerItemRender(MekanismItems.EnrichedAlloy);
+		registerItemRender(MekanismItems.ReinforcedAlloy);
+		registerItemRender(MekanismItems.AtomicAlloy);
+		registerItemRender(MekanismItems.ItemProxy);
+		registerItemRender(MekanismItems.ControlCircuit);
+		registerItemRender(MekanismItems.EnrichedIron);
+		registerItemRender(MekanismItems.CompressedCarbon);
+		registerItemRender(MekanismItems.CompressedRedstone);
+		registerItemRender(MekanismItems.CompressedDiamond);
+		registerItemRender(MekanismItems.CompressedObsidian);
+		registerItemRender(MekanismItems.PortableTeleporter);
+		registerItemRender(MekanismItems.TeleportationCore);
+		registerItemRender(MekanismItems.Clump);
+		registerItemRender(MekanismItems.DirtyDust);
+		registerItemRender(MekanismItems.Configurator);
+		registerItemRender(MekanismItems.NetworkReader);
+		registerItemRender(MekanismItems.WalkieTalkie);
+		registerItemRender(MekanismItems.Jetpack);
+		registerItemRender(MekanismItems.Dictionary);
+		registerItemRender(MekanismItems.GasMask);
+		registerItemRender(MekanismItems.ScubaTank);
+		registerItemRender(MekanismItems.Balloon);
+		registerItemRender(MekanismItems.Shard);
+		registerItemRender(MekanismItems.ElectrolyticCore);
+		registerItemRender(MekanismItems.Sawdust);
+		registerItemRender(MekanismItems.Salt);
+		registerItemRender(MekanismItems.BrineBucket);
+		registerItemRender(MekanismItems.LithiumBucket);
+		registerItemRender(MekanismItems.HeavyWaterBucket);
+		registerItemRender(MekanismItems.Crystal);
+		registerItemRender(MekanismItems.FreeRunners);
+		registerItemRender(MekanismItems.ArmoredJetpack);
+		registerItemRender(MekanismItems.FilterCard);
+		registerItemRender(MekanismItems.SeismicReader);
+		registerItemRender(MekanismItems.Substrate);
+		registerItemRender(MekanismItems.Polyethene);
+		registerItemRender(MekanismItems.BioFuel);
+//		registerItemRender(MekanismItems.GlowPanel);
+		registerItemRender(MekanismItems.Flamethrower);
+		registerItemRender(MekanismItems.GaugeDropper);
+		registerItemRender(MekanismItems.FactoryInstaller);
+		registerItemRender(MekanismItems.OtherDust);
+
+		MekanismBlocks.registerRender();
 
 		Mekanism.logger.info("Render registrations complete.");
+	}
+
+	public void registerItemRender(Item item)
+	{
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 
 	@Override

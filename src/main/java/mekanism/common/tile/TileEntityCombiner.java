@@ -6,7 +6,7 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CombinerRecipe;
 
@@ -14,14 +14,12 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
 
 public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<CombinerRecipe>
 {
 	public TileEntityCombiner()
 	{
-		super("combiner", "Combiner", usage.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
+		super("combiner", "Combiner", usage.combinerUsage, 1, 200, BlockStateMachine.MachineType.COMBINER.baseEnergy);
 	}
 
 	@Override

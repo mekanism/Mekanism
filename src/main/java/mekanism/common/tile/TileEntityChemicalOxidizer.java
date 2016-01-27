@@ -20,7 +20,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
@@ -32,10 +32,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.IChatComponent;
 
 public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IUpgradeTile, ISustainedData, ITankManager
 {
@@ -71,7 +69,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 	public TileEntityChemicalOxidizer()
 	{
-		super("machine.oxidizer", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
+		super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 

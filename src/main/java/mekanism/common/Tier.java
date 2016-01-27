@@ -3,6 +3,8 @@ package mekanism.common;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
+
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -58,7 +60,7 @@ public final class Tier
 	 * @author aidancbrady
 	 *
 	 */
-	public static enum EnergyCubeTier
+	public static enum EnergyCubeTier implements IStringSerializable
 	{
 		BASIC(2000000, 800),
 		ADVANCED(8000000, 3200),
@@ -112,6 +114,12 @@ public final class Tier
 		{
 			baseMaxEnergy = maxEnergy = max;
 			baseOutput = output = out;
+		}
+
+		@Override
+		public String getName()
+		{
+			return name().toLowerCase();
 		}
 	}
 	

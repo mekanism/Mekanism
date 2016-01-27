@@ -11,7 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.util.StackUtils;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.item.*;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemJetpack.JetpackMode;
@@ -91,7 +91,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			{
 				ItemBlockMachine machine = (ItemBlockMachine)item;
 
-				if(MachineType.get(toolStack) == MachineType.PORTABLE_TANK)
+				if(BlockStateMachine.MachineType.get(toolStack) == BlockStateMachine.MachineType.PORTABLE_TANK)
 				{
 					machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
 					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(machine.getBucketMode(toolStack)));

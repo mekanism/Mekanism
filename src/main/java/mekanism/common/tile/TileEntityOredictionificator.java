@@ -9,20 +9,14 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.IFilterAccess;
 import mekanism.api.Range4D;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.InfusionInput;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,7 +42,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	
 	public TileEntityOredictionificator()
 	{
-		super(MachineType.OREDICTIONIFICATOR.name);
+		super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.machineName);
 		
 		inventory = new ItemStack[2];
 		doAutoSync = false;

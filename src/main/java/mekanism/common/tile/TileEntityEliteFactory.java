@@ -4,7 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -14,7 +14,7 @@ public class TileEntityEliteFactory extends TileEntityFactory
 {
 	public TileEntityEliteFactory()
 	{
-		super(FactoryTier.ELITE, MachineType.ELITE_FACTORY);
+		super(FactoryTier.ELITE, BlockStateMachine.MachineType.ELITE_FACTORY);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 		

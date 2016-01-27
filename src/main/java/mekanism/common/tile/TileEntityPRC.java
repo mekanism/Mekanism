@@ -9,7 +9,7 @@ import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.PressurizedInput;
@@ -40,7 +40,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 	public TileEntityPRC()
 	{
-		super("prc", MachineType.PRESSURIZED_REACTION_CHAMBER.name, new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
+		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.machineName, new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 		

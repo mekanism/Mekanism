@@ -6,9 +6,8 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 
 import net.minecraft.item.ItemStack;
@@ -18,7 +17,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 {
 	public TileEntityOsmiumCompressor()
 	{
-		super("compressor", "OsmiumCompressor", usage.osmiumCompressorUsage, 1, 200, MachineType.OSMIUM_COMPRESSOR.baseEnergy);
+		super("compressor", "OsmiumCompressor", usage.osmiumCompressorUsage, 1, 200, BlockStateMachine.MachineType.OSMIUM_COMPRESSOR.baseEnergy);
 	}
 
 	@Override

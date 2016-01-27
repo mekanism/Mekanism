@@ -6,7 +6,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.base.ISustainedTank;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,7 +38,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public TileEntityFluidicPlenisher()
 	{
-		super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.baseEnergy);
+		super("FluidicPlenisher", BlockStateMachine.MachineType.FLUIDIC_PLENISHER.baseEnergy);
 		inventory = new ItemStack[3];
 	}
 	

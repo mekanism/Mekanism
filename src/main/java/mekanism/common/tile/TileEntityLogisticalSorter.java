@@ -8,7 +8,7 @@ import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.*;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.content.transporter.*;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraft.util.EnumFacing;
 
@@ -55,7 +54,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public TileEntityLogisticalSorter()
 	{
-		super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.baseEnergy);
+		super("LogisticalSorter", BlockStateMachine.MachineType.LOGISTICAL_SORTER.baseEnergy);
 		inventory = new ItemStack[1];
 		doAutoSync = false;
 	}

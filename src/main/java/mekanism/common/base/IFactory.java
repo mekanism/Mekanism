@@ -5,7 +5,8 @@ import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.StackUtils;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -43,13 +44,13 @@ public interface IFactory
 
 	public static enum RecipeType
 	{
-		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, false, Recipe.ENERGIZED_SMELTER),
-		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER.getStack(), false, false, Recipe.ENRICHMENT_CHAMBER),
-		CRUSHING("Crushing", "crusher", MachineType.CRUSHER.getStack(), false, false, Recipe.CRUSHER),
-		COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, false, Recipe.OSMIUM_COMPRESSOR),
-		COMBINING("Combining", "combiner", MachineType.COMBINER.getStack(), true, false, Recipe.COMBINER),
-		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, true, Recipe.PURIFICATION_CHAMBER),
-		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER);
+		SMELTING("Smelting", "smelter", BlockStateMachine.MachineType.ENERGIZED_SMELTER.getStack(), false, false, Recipe.ENERGIZED_SMELTER),
+		ENRICHING("Enriching", "enrichment", BlockStateMachine.MachineType.ENRICHMENT_CHAMBER.getStack(), false, false, Recipe.ENRICHMENT_CHAMBER),
+		CRUSHING("Crushing", "crusher", BlockStateMachine.MachineType.CRUSHER.getStack(), false, false, Recipe.CRUSHER),
+		COMPRESSING("Compressing", "compressor", BlockStateMachine.MachineType.OSMIUM_COMPRESSOR.getStack(), true, false, Recipe.OSMIUM_COMPRESSOR),
+		COMBINING("Combining", "combiner", BlockStateMachine.MachineType.COMBINER.getStack(), true, false, Recipe.COMBINER),
+		PURIFYING("Purifying", "purifier", BlockStateMachine.MachineType.PURIFICATION_CHAMBER.getStack(), true, true, Recipe.PURIFICATION_CHAMBER),
+		INJECTING("Injecting", "injection", BlockStateMachine.MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER);
 
 		private String name;
 		private ResourceLocation sound;
@@ -168,7 +169,7 @@ public interface IFactory
 		{
 			if(cacheTile == null)
 			{
-				MachineType type = MachineType.get(Block.getBlockFromItem(getStack().getItem()), getStack().getItemDamage());
+				MachineType type = BlockStateMachine.MachineType.get(Block.getBlockFromItem(getStack().getItem()), getStack().getItemDamage());
 				cacheTile = (TileEntityAdvancedElectricMachine)type.create();
 			}
 

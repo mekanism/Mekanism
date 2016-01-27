@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.*;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
@@ -84,7 +84,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public TileEntityElectrolyticSeparator()
 	{
-		super("ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
+		super("ElectrolyticSeparator", BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 

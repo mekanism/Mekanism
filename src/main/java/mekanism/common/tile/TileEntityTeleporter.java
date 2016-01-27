@@ -9,7 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -69,7 +69,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public TileEntityTeleporter()
 	{
-		super("Teleporter", MachineType.TELEPORTER.baseEnergy);
+		super("Teleporter", BlockStateMachine.MachineType.TELEPORTER.baseEnergy);
 		inventory = new ItemStack[1];
 	}
 

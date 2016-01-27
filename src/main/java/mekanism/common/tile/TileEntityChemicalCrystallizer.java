@@ -11,7 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.*;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -24,9 +24,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 
 import java.util.ArrayList;
 
@@ -70,7 +68,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 	public TileEntityChemicalCrystallizer()
 	{
-		super("machine.crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
+		super("machine.crystallizer", "ChemicalCrystallizer", BlockStateMachine.MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 		

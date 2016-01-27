@@ -11,7 +11,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.recipe.ShapelessMekanismRecipe;
@@ -104,7 +104,7 @@ public class RecipeUtils
 	
 	private static boolean isFactory(ItemStack stack)
 	{
-		return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
+		return BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.BASIC_FACTORY || BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ADVANCED_FACTORY || BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELITE_FACTORY;
 	}
 	
 	public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn)
@@ -168,7 +168,7 @@ public class RecipeUtils
 			}
 		}
 
-		if(MachineType.get(toReturn) != null && MachineType.get(toReturn).supportsUpgrades)
+		if(BlockStateMachine.MachineType.get(toReturn) != null && BlockStateMachine.MachineType.get(toReturn).supportsUpgrades)
 		{
 			Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
 
@@ -176,7 +176,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && MachineType.get(itemstack) != null && MachineType.get(itemstack).supportsUpgrades)
+				if(itemstack != null && BlockStateMachine.MachineType.get(itemstack) != null && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades)
 				{
 					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.getTagCompound());
 					
