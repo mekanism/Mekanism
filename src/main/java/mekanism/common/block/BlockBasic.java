@@ -150,9 +150,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[14][1] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationControllerOn").registerIcons(register);
 				ctms[15][0] = new CTMData("ctm/SolarEvaporationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 
-                ctms[16][0] = new CTMData("ctm/GirdlerSulfidProcessingBlock", this, Arrays.asList(16, 17)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/GirdlerSulfidProcessingController").registerIcons(register);
-                ctms[16][1] = new CTMData("ctm/GirdlerSulfidProcessingBlock", this, Arrays.asList(16, 17)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/GirdlerSulfidProcessingControllerOn").registerIcons(register);
-                ctms[17][0] = new CTMData("ctm/GirdlerSulfidProcessingValve", this, Arrays.asList(17, 16)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+                ctms[16][0] = new CTMData("ctm/GirdlerSulfidProcessorBlock", this, Arrays.asList(16, 17)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/GirdlerSulfidProcessorController").registerIcons(register);
+                ctms[16][1] = new CTMData("ctm/GirdlerSulfidProcessorBlock", this, Arrays.asList(16, 17)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/GirdlerSulfidProcessorControllerOn").registerIcons(register);
+                ctms[17][0] = new CTMData("ctm/GirdlerSulfidProcessorValve", this, Arrays.asList(17, 16)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 
 				icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
 				icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
@@ -202,7 +202,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 
-                ctms[5][0] = new CTMData("ctm/GirdlerSulfidProcessingBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(16, 17)).registerIcons(register);
+                ctms[5][0] = new CTMData("ctm/GirdlerSulfidProcessorBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(16, 17)).registerIcons(register);
 				
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 
@@ -508,7 +508,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
             {
                 if(!entityplayer.isSneaking())
                 {
-                    entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
+                    entityplayer.openGui(Mekanism.instance, 34, world, x, y, z);
                     return true;
                 }
             }

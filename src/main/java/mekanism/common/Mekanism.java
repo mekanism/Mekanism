@@ -420,7 +420,7 @@ public class Mekanism
                 "CCC", "CTC", "CCC", Character.valueOf('C'), "ingotCopper", Character.valueOf('T'), new ItemStack(MekanismBlocks.BasicBlock, 1, 9)
         }));
         CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 5), new Object[] {
-                "iii", "ODO", "iii", Character.valueOf('O'), new ItemStack(MekanismBlocks.BasicBlock, 1, 0), Character.valueOf('i'), new ItemStack(MekanismItems.Ingot, 1, 2), Character.valueOf('D'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 0)
+                "iii", "ODO", "iii", Character.valueOf('O'), new ItemStack(MekanismBlocks.BasicBlock, 1, 0), Character.valueOf('i'), new ItemStack(MekanismItems.Ingot, 1, 7), Character.valueOf('D'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 0)
         }));
 
         CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 16), new Object[] {
@@ -816,7 +816,7 @@ public class Mekanism
         RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt, 1, 2));
         RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, new ItemStack(MekanismItems.EnrichedAlloy), new ItemStack(MekanismItems.ReinforcedAlloy));
         RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("OBSIDIAN"), 10, new ItemStack(MekanismItems.ReinforcedAlloy), new ItemStack(MekanismItems.AtomicAlloy));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, new ItemStack(MekanismItems.Ingot, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 2));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, new ItemStack(MekanismItems.Ingot, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 7));
         
         //Chemical Infuser Recipes
         RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
@@ -838,13 +838,14 @@ public class Mekanism
         //Girdler Sulfid Processor Recipe//
 
         //Phase 1
-        RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfid", 10), FluidRegistry.getFluidStack("enrichedwater", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfid", 10));
-        RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwater", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfid", 10), FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidsnd", 10));
+        RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidGas", 10), FluidRegistry.getFluidStack("enrichedwater", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidGas", 10));
+        RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwater", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidGas", 10), FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidsnd", 10));
 
         //Phase 2
         RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwater", 100), FluidRegistry.getFluidStack("enricheddihydrogensulfidsnd", 100), FluidRegistry.getFluidStack("enrichedwatersnd", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidsnd", 10));
         RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwatersnd", 100), FluidRegistry.getFluidStack("enricheddihydrogensulfidsnd", 100), FluidRegistry.getFluidStack("enrichedwater", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 10));
 
+		//Phase 3
         RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwatersnd", 1000), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 1000), FluidRegistry.getFluidStack("enrichedwaterrd", 1), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 1));
         RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwaterrd", 1000), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 1000), FluidRegistry.getFluidStack("enrichedwatersnd", 1), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 1));
         //GSP Recipe-End//
@@ -854,7 +855,7 @@ public class Mekanism
 		RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(GasRegistry.getGas("brine"), 15), new ItemStack(MekanismItems.Salt));
 
         //Chemical Washer Recipes for Gsp
-        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 10), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidGas"), 10));
+        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 10), new GasStack(GasRegistry.getGas("dihydrogensulfidGas"), 10));
 
 
 		//T4 Processing Recipes
@@ -960,7 +961,7 @@ public class Mekanism
 		
 		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(MekanismItems.Ingot, 1, 0));
 		OreDictionary.registerOre("ingotOsmium", new ItemStack(MekanismItems.Ingot, 1, 1));
-        	OreDictionary.registerOre("ingotBronze", new ItemStack(MekanismItems.Ingot, 1, 2));
+		OreDictionary.registerOre("ingotBronze", new ItemStack(MekanismItems.Ingot, 1, 2));
 		OreDictionary.registerOre("ingotRefinedGlowstone", new ItemStack(MekanismItems.Ingot, 1, 3));
 		OreDictionary.registerOre("ingotSteel", new ItemStack(MekanismItems.Ingot, 1, 4));
 		OreDictionary.registerOre("ingotCopper", new ItemStack(MekanismItems.Ingot, 1, 5)); // was missing
@@ -1180,7 +1181,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("steam")).registerFluid();
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 
-        GasRegistry.register(new Gas("dihydrogensulfidGas")).registerFluid();
+        GasRegistry.register(new Gas("enricheddihydrogensulfidGas")).registerFluid();
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
 
@@ -1189,7 +1190,7 @@ public class Mekanism
         FluidRegistry.registerFluid(new Fluid("enrichedwaterrd"));
         FluidRegistry.registerFluid(new Fluid("dihydrogensulfid"));
 
-        FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfid"));
+        //FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfid"));
         FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfidsnd"));
         FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfidrd"));
 		

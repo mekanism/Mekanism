@@ -268,9 +268,8 @@ gas.chlorine=Chlorine
 gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
-gas.dihydrogensulfid=Dihydrogensulfid
+gas.enricheddihydrogensulfidGas=Enriched Dihydrogensulfid
 
-gas.enricheddihydrogensulfid=Enriched Dihydrogenoxid
 gas.enricheddihydrogensulfidsnd=Enriched Dihydrogenoxid II
 gas.enricheddihydrogensulfidrd=Enriched Dihydrogenoxid III
 
@@ -316,9 +315,9 @@ fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
 fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
 
-fluid.enricheddihydrogensulfid=Liquid Enriched Dihydrogenoxid
-fluid.enricheddihydrogensulfidsnd=Liquid Enriched Dihydrogenoxid II
-fluid.enricheddihydrogensulfidrd=Liquid Enriched Dihydrogenoxid III
+fluid.enricheddihydrogensulfidGas=Liquid Enriched Dihydrogensulfid
+fluid.enricheddihydrogensulfidsnd=Liquid Enriched Dihydrogensulfid II
+fluid.enricheddihydrogensulfidrd=Liquid Enriched Dihydrogensulfid III
 
 fluid.hydrogenChloride=Liquid Hydrogen Chloride
 fluid.brine=Brine

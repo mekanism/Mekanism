@@ -110,6 +110,7 @@ public class MekanismRenderer
 			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:LiquidDT"));
 			GasRegistry.getGas("steam").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
 			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:LiquidLithium"));
+			GasRegistry.getGas("enricheddihydrogensulfidGas").setIcon(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfid"));
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
@@ -127,6 +128,14 @@ public class MekanismRenderer
 
 			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
 			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:LiquidHeavyWater"));
+
+            FluidRegistry.getFluid("enrichedwater").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedWater"));
+            FluidRegistry.getFluid("enrichedwatersnd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedWaterSnd"));
+            FluidRegistry.getFluid("enrichedwaterrd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedWaterRd"));
+
+            //FluidRegistry.getFluid("enricheddihydrogensulfid").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfid")); //obsolet
+            FluidRegistry.getFluid("enricheddihydrogensulfidsnd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfidSnd"));
+            FluidRegistry.getFluid("enricheddihydrogensulfidrd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfidRd"));
 
 			if(RenderPartTransmitter.getInstance() != null)
 			{

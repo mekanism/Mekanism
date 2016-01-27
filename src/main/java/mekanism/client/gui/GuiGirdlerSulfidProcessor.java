@@ -40,7 +40,7 @@ public class GuiGirdlerSulfidProcessor extends GuiMekanism
             @Override
             public FluidTank getTank()
             {
-                return tileEntity.inputTank;
+                return tileEntity.inputTankSnd;
             }
         }, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGirdlerSulfidProcessorController.png"), 27, 13));
 
@@ -58,7 +58,7 @@ public class GuiGirdlerSulfidProcessor extends GuiMekanism
             @Override
             public FluidTank getTank()
             {
-                return tileEntity.outputTank;
+                return tileEntity.outputTankSnd;
             }
         }, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGirdlerSulfidProcessorController.png"), 131, 13));
 	}

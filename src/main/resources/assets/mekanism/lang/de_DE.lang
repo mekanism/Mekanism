@@ -264,9 +264,8 @@ gas.chlorine=Chlor
 gas.sulfurDioxideGas=Schwefeldioxid
 gas.sulfurTrioxideGas=Schwefeltrioxid
 gas.sulfuricAcid=Schwefelsäure
-gas.dihydrogensulfidGas=Schwefelwasserstoff
+gas.enricheddihydrogensulfidGas=Angereicherter Schwefelwasserstoff
 
-gas.enrichedDihydrogenSulfid=Angereicherter Schwefelwasserstoff I
 gas.enrichedDihydrogenSulfidSnd=Angereicherter Schwefelwasserstoff II
 gas.enrichedDihydrogenSulfidRd=Angereicherter Schwefelwasserstoff III
 
@@ -311,7 +310,7 @@ fluid.sulfurDioxideGas=Flüssiges Schwefeldioxid
 fluid.sulfurTrioxideGas=Flüssiges Schwefeltrioxid
 fluid.sulfuricAcid=Flüssige Schwefelsäure
 
-fluid.dihydrogensulfid=Flüssiger Schwefelwasserstoff
+fluid.enricheddihydrogensulfidGas=Angereicherter flüssiger Schwefelwasserstoff
 fluid.hydrogenChloride=Flüssiger Chlorwasserstoff
 
 fluid.enrichedDihydrogenSulfid=Angereicherter flüssiger Schwefelwasserstoff I
