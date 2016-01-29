@@ -30,7 +30,7 @@ public class TileEntityEliteFactory extends TileEntityFactory
 		configComponent.fillConfig(TransmissionType.GAS, 1);
 		configComponent.setCanEject(TransmissionType.GAS, false);
 		
-		configComponent.setInputEnergyConfig();
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		upgradeComponent = new TileComponentUpgrade(this, 0);
 		ejectorComponent = new TileComponentEjector(this);

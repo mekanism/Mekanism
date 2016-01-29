@@ -1,11 +1,13 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
@@ -21,9 +23,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
-
-import java.util.ArrayList;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager
 {
@@ -152,13 +159,13 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		{
 			if(inventory[0].getItem() instanceof IFluidContainerItem)
 			{
-				if(editMode == ContainerEditMode.FILL)
+				if(editMode == ContainerEditMode.FILL && fluidTank.getFluidAmount() > 0)
 				{
 					int prev = fluidTank.getFluidAmount();
 					
 					fluidTank.drain(FluidContainerUtils.insertFluid(fluidTank, inventory[0]), true);
 					
-					if(prev == fluidTank.getFluidAmount() || fluidTank.getFluidAmount() == 0)
+					if(prev == fluidTank.getFluidAmount())
 					{
 						if(inventory[1] == null)
 						{
@@ -295,17 +302,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
-		if(slotID == 1)
-		{
-			return (itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) == null);
-		}
-		else if(slotID == 0)
-		{
-			return (itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
-					((IGasItem)itemstack.getItem()).getGas(itemstack).amount == ((IGasItem)itemstack.getItem()).getMaxGas(itemstack));
-		}
-
-		return false;
+		return slotID == 1;
 	}
 
 	@Override
@@ -313,7 +310,23 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(slotID == 0)
 		{
-			return FluidContainerRegistry.isContainer(itemstack);
+			if(itemstack.getItem() instanceof IFluidContainerItem)
+			{
+				return true;
+			}
+			else if(FluidContainerRegistry.isFilledContainer(itemstack))
+			{
+				FluidStack stack = FluidContainerRegistry.getFluidForFilledItem(itemstack);
+				
+				if(fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(stack))
+				{
+					return editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH;
+				}
+			}
+			else if(FluidContainerRegistry.isEmptyContainer(itemstack))
+			{
+				return editMode == ContainerEditMode.FILL || editMode == ContainerEditMode.BOTH;
+			}
 		}
 
 		return false;

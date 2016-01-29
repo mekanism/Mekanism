@@ -780,6 +780,10 @@ sideData.Gas=Gas
 sideData.Extra=Extra
 sideData.Infuse=Infuse
 sideData.Fluid=Fluid
+sideData.Fill=Fill
+sideData.Empty=Empty
+sideData.Charge=Charge
+sideData.Discharge=Discharge
 
 //Redstone control
 control.disabled=Disabled

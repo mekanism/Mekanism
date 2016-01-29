@@ -107,6 +107,7 @@ import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -638,6 +639,24 @@ public class CommonProxy implements IGuiProvider
 	public EntityPlayer getPlayer(MessageContext context)
 	{
 		return context.getServerHandler().playerEntity;
+	}
+	
+	public int getGuiId(Block block, int metadata)
+	{
+		if(MachineType.get(block, metadata) != null)
+		{
+			return MachineType.get(block, metadata).guiId;
+		}
+		else if(block == MekanismBlocks.GasTank)
+		{
+			return 10;
+		}
+		else if(block == MekanismBlocks.EnergyCube)
+		{
+			return 8;
+		}
+		
+		return -1;
 	}
 
 	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy) {}
