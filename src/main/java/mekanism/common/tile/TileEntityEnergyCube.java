@@ -79,7 +79,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 			ChargeUtils.charge(0, this);
 			ChargeUtils.discharge(1, this);
 	
-			if(MekanismUtils.canFunction(this))
+			if(MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY))
 			{
 				CableUtils.emit(this);
 			}

@@ -115,6 +115,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			
 			if(fluidTank.getFluidAmount() != prevAmount)
 			{
+				MekanismUtils.saveChunk(this);
 				needsPacket = true;
 			}
 			

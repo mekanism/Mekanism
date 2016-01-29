@@ -84,41 +84,45 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public void onUpdate()
 	{
-		if(inventory[0] != null && gasTank.getGas() != null)
-		{
-			gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
-		}
-
-		if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
-		{
-			gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
-		}
-
-		if(!worldObj.isRemote && gasTank.getGas() != null && MekanismUtils.canFunction(this) && dumping != GasMode.DUMPING)
-		{
-			GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), output));
-			gasTank.draw(GasTransmission.emit(new ArrayList(configComponent.getSidesForData(TransmissionType.GAS, facing, 2).clone()), toSend, this), true);
-		}
-
-		if(!worldObj.isRemote && dumping == GasMode.DUMPING)
-		{
-			gasTank.draw(8, true);
-		}
-
-		if(!worldObj.isRemote && dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < output)
-		{
-			gasTank.draw(output-gasTank.getNeeded(), true);
-		}
-		
 		if(!worldObj.isRemote)
 		{
+			if(inventory[0] != null && gasTank.getGas() != null)
+			{
+				gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
+			}
+	
+			if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
+			{
+				gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
+			}
+	
+			if(gasTank.getGas() != null && MekanismUtils.canFunction(this) && dumping != GasMode.DUMPING)
+			{
+				if(configComponent.isEjecting(TransmissionType.GAS))
+				{
+					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), output));
+					gasTank.draw(GasTransmission.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, facing, 2)), true);
+				}
+			}
+	
+			if(dumping == GasMode.DUMPING)
+			{
+				gasTank.draw(8, true);
+			}
+	
+			if(dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < output)
+			{
+				gasTank.draw(output-gasTank.getNeeded(), true);
+			}
+			
 			int newGasAmount = gasTank.getStored();
 			
 			if(newGasAmount != currentGasAmount)
 			{
-				markDirty();
-				currentGasAmount = newGasAmount;
+				MekanismUtils.saveChunk(this);
 			}
+			
+			currentGasAmount = newGasAmount;
 		}
 	}
 

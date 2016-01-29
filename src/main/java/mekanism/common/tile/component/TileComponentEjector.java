@@ -15,7 +15,6 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.base.IEjector;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
@@ -121,7 +120,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				if(tank.getStored() > 0)
 				{
 					GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
-					int emit = GasTransmission.emit(outputSides, toEmit, tileEntity);
+					int emit = GasTransmission.emit(toEmit, tileEntity, outputSides);
 					tank.draw(emit, true);
 				}
 			}
@@ -146,7 +145,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public List<ForgeDirection> getOutputSides(TransmissionType type, SideData data)
 	{
 		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
-
 		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
 
 		for(int i = 0; i < configurable.getConfig().getConfig(type).length; i++)
