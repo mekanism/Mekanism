@@ -54,15 +54,15 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 						net.refGas = null;
 						net.buffer = null;
 					}
-				} else
-				{
+				} 
+				else {
 					if(net.buffer != null)
 					{
 						if(buffer == null)
 						{
 							buffer = net.buffer.copy();
-						} else
-						{
+						} 
+						else {
 							if(buffer.isGasEqual(net.buffer))
 							{
 								buffer.amount += net.buffer.amount;

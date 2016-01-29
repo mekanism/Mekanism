@@ -266,6 +266,9 @@ public class CommonProxy implements IGuiProvider
 		general.maxJetpackGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxJetpackGas", 24000).getInt();
 		general.maxScubaGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxScubaGas", 24000).getInt();
 		general.maxFlamethrowerGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxFlamethrowerGas", 24000).getInt();
+		general.maxPumpRange = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxPumpRange", 80).getInt();
+		general.pumpWaterSources = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PumpWaterSources", false).getBoolean();
+		general.maxPlenisherNodes = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxPlenisherNodes", 4000).getInt();
 		
 		general.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false).getBoolean();
 		general.blacklistRF = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistRFPower", false).getBoolean();

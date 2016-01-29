@@ -1,14 +1,10 @@
 package mekanism.common.multipart;
 
-import codechicken.lib.vec.Vector3;
-import cofh.api.energy.IEnergyHandler;
-import cofh.api.energy.IEnergyProvider;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.energy.tile.IEnergySource;
+
+import java.util.Collection;
+import java.util.List;
+
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
@@ -19,6 +15,8 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Tier;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -27,9 +25,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.Collection;
-import java.util.List;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.vec.Vector3;
+import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyProvider;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @InterfaceList({
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
@@ -184,7 +189,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 
 	public static void registerIcons(IIconRegister register)
 	{
-		cableIcons.registerCenterIcons(register, new String[]{"UniversalCableBasic", "UniversalCableAdvanced",
+		cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
 				"UniversalCableElite", "UniversalCableUltimate"});
 		cableIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
 				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
@@ -396,5 +401,37 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		}
 
 		return connectionMapContainsSide(currentAcceptorConnections, side) ? EnergyAcceptorWrapper.get(cachedAcceptors[side.ordinal()]) : null;
+	}
+
+	@Override
+	public boolean upgrade(int tierOrdinal)
+	{
+		if(tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal()+1)
+		{
+			tier = CableTier.values()[tier.ordinal()+1];
+			
+			markDirtyTransmitters();
+			sendDesc = true;
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void readDesc(MCDataInput packet)
+	{
+		tier = CableTier.values()[packet.readInt()];
+		
+		super.readDesc(packet);
+	}
+
+	@Override
+	public void writeDesc(MCDataOutput packet)
+	{
+		packet.writeInt(tier.ordinal());
+		
+		super.writeDesc(packet);
 	}
 }

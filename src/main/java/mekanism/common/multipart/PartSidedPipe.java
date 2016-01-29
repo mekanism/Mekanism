@@ -633,7 +633,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			
 			currentTransmitterConnections = setConnectionBit(currentTransmitterConnections, possibleTransmitter, side);
 			currentAcceptorConnections = setConnectionBit(currentAcceptorConnections, possibleAcceptor, side);
-
 		}
 	}
 
@@ -679,6 +678,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			boolean prevPowered = redstonePowered;
 			refreshConnections();
+			
 			if(prevPowered != redstonePowered)
 			{
 				markDirtyTransmitters();
@@ -690,8 +690,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void onPartChanged(TMultiPart part)
 	{
 		super.onPartChanged(part);
+		
 		byte transmittersBefore = currentTransmitterConnections;
 		refreshConnections();
+		
 		if(transmittersBefore != currentTransmitterConnections)
 		{
 			markDirtyTransmitters();

@@ -56,6 +56,9 @@ public class MekanismConfig
 		public static int maxJetpackGas;
 		public static int maxScubaGas;
 		public static int maxFlamethrowerGas;
+		public static int maxPumpRange;
+		public static boolean pumpWaterSources;
+		public static int maxPlenisherNodes;
 	}
 
 	public static class client

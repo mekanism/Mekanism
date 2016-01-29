@@ -1,14 +1,28 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
+import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IComputerIntegration;
-import mekanism.common.util.*;
+import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,14 +30,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
-
-public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank
+public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank, IUpgradeTile
 {
 	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
 	public Set<Coord4D> usedNodes = new HashSet<Coord4D>();
@@ -32,13 +47,27 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public FluidTank fluidTank = new FluidTank(10000);
 	
+	/** How much energy this machine consumes per-tick. */
+	public double BASE_ENERGY_PER_TICK = usage.fluidicPlenisherUsage;
+
+	public double energyPerTick = BASE_ENERGY_PER_TICK;
+
+	/** How many ticks it takes to run an operation. */
+	public int BASE_TICKS_REQUIRED = 20;
+
+	public int ticksRequired = BASE_TICKS_REQUIRED;
+	
+	/** How many ticks this machine has been operating for. */
+	public int operatingTicks;
+	
 	private static EnumSet<ForgeDirection> dirs = EnumSet.complementOf(EnumSet.of(ForgeDirection.UP, ForgeDirection.UNKNOWN));
-	private static int MAX_NODES = 4000;
+	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
 	
 	public TileEntityFluidicPlenisher()
 	{
 		super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.baseEnergy);
-		inventory = new ItemStack[3];
+		inventory = new ItemStack[4];
 	}
 	
 	@Override
@@ -120,10 +149,18 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				}
 			}
 			
-			if(getEnergy() >= usage.fluidicPlenisherUsage && worldObj.getWorldTime() % 10 == 0 && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
+			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid().getFluid().canBePlacedInWorld())
 			{
-				if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
+				if(!finishedCalc)
 				{
+					setEnergy(getEnergy() - energyPerTick);
+				}
+				
+				if((operatingTicks + 1) < ticksRequired)
+				{
+					operatingTicks++;
+				} 
+				else {
 					if(!finishedCalc)
 					{
 						doPlenish();
@@ -131,17 +168,19 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 					else {
 						Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
 						
-						if(canReplace(below, false, false) && getEnergy() >= usage.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
+						if(canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
 								worldObj.setBlock(below.xCoord, below.yCoord, below.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
 								
-								setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
+								setEnergy(getEnergy() - energyPerTick);
 								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 							}
 						}
 					}
+					
+					operatingTicks = 0;
 				}
 			}
 		}
@@ -149,7 +188,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	private void doPlenish()
 	{
-		if(usedNodes.size() >= MAX_NODES)
+		if(usedNodes.size() >= general.maxPlenisherNodes)
 		{
 			finishedCalc = true;
 			return;
@@ -185,9 +224,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				{
 					worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
 
-					setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-
 				}
 				
 				for(ForgeDirection dir : dirs)
@@ -213,11 +250,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			activeNodes.remove(coord);
 			usedNodes.add(coord);
 		}
-	}
-	
-	public int getActiveY()
-	{
-		return yCoord-1;
 	}
 	
 	public boolean canReplace(Coord4D coord, boolean checkNodes, boolean isPathfinding)
@@ -283,6 +315,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	{
 		super.writeToNBT(nbtTags);
 		
+		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setBoolean("finishedCalc", finishedCalc);
 
 		if(fluidTank.getFluid() != null)
@@ -322,6 +355,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	{
 		super.readFromNBT(nbtTags);
 		
+		operatingTicks = nbtTags.getInteger("operatingTicks");
 		finishedCalc = nbtTags.getBoolean("finishedCalc");
 
 		if(nbtTags.hasKey("fluidTank"))
@@ -522,4 +556,27 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
                 throw new NoSuchMethodException();
         }
     }
+	
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
+	}
+	
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
+		}
+	}
 }
