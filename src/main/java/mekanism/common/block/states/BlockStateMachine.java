@@ -402,11 +402,21 @@ public class BlockStateMachine extends BlockStateFacing
 			BlockMachine block = (BlockMachine)state.getBlock();
 			MachineType type = state.getValue(block.getProperty());
 			StringBuilder builder = new StringBuilder();
+			if(type.hasActiveTexture())
+			{
+				builder.append(activeProperty.getName());
+				builder.append("=");
+				builder.append(state.getValue(activeProperty));
+			}
 			if(type.hasRotations())
 			{
 				EnumFacing facing = state.getValue(facingProperty);
 				if(type.canRotateTo(facing))
 				{
+					if(builder.length() > 0)
+					{
+						builder.append(",");
+					}
 					builder.append(facingProperty.getName());
 					builder.append("=");
 					builder.append(facing.getName());
@@ -415,15 +425,6 @@ public class BlockStateMachine extends BlockStateFacing
 				{
 					return new ModelResourceLocation("builtin/missing", "missing");
 				}
-			}
-			if(type.hasActiveTexture())
-			{
-				String active = state.getValue(activeProperty) ? "active" : "inactive";
-				if(builder.length() > 0)
-				{
-					builder.append(",");
-				}
-				builder.append(active);
 			}
 
 			if(builder.length() == 0)

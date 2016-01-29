@@ -74,6 +74,8 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEntangledBlock;
+import mekanism.common.tile.TileEntityLaser;
+import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntitySolarEvaporationBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationValve;
 import mekanism.common.tile.TileEntityThermoelectricBoiler;
@@ -1084,6 +1086,8 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityEntangledBlock.class, "EntangledBlock");
 		GameRegistry.registerTileEntity(TileEntityThermoelectricBoiler.class, "ThermoelectricBoiler");
 		GameRegistry.registerTileEntity(TileEntityThermoelectricValve.class, "ThermoelectricValve");
+		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
+		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();

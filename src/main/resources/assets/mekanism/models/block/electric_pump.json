@@ -1,0 +1,164 @@
+{
+    "elements": [
+        {
+            "__comment": "Ring1",
+            "from": [4, 10, 4],
+            "to": [12, 11, 12],
+            "faces": {
+                "down":  {"uv": [4, 8.75, 6, 10.75], "texture": "#all"},
+                "up":    {"uv": [2, 8.75, 4, 10.75], "texture": "#all"},
+                "north": {"uv": [2, 10.75, 4, 11], "texture": "#all"},
+                "south": {"uv": [6, 10.75, 8, 11], "texture": "#all"},
+                "west":  {"uv": [4, 10.75, 6, 11], "texture": "#all"},
+                "east":  {"uv": [0, 10.75, 2, 11], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Axil2",
+            "from": [6, 4, 3.5],
+            "to": [10, 6, 15.5],
+            "faces": {
+                "down":  {"uv": [4, 0, 5, 3], "texture": "#all"},
+                "up":    {"uv": [3, 0, 4, 3], "texture": "#all"},
+                "north": {"uv": [3, 3, 4, 3.5], "texture": "#all"},
+                "south": {"uv": [7, 3, 8, 3.5], "texture": "#all"},
+                "west":  {"uv": [4, 3, 7, 3.5], "texture": "#all"},
+                "east":  {"uv": [0, 3, 3, 3.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Panel1",
+            "from": [5, 2, 5],
+            "to": [11, 8, 6],
+            "faces": {
+                "down":  {"uv": [1.75, 3.75, 3.25, 4], "texture": "#all"},
+                "up":    {"uv": [0.25, 3.75, 1.75, 4], "texture": "#all"},
+                "north": {"uv": [0.25, 4, 1.75, 5.5], "texture": "#all"},
+                "south": {"uv": [2, 4, 3.5, 5.5], "texture": "#all"},
+                "west":  {"uv": [1.75, 4, 2, 5.5], "texture": "#all"},
+                "east":  {"uv": [0, 4, 0.25, 5.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Ring3",
+            "from": [4, 14, 4],
+            "to": [12, 15, 12],
+            "faces": {
+                "down":  {"uv": [4, 8.75, 6, 10.75], "texture": "#all"},
+                "up":    {"uv": [2, 8.75, 4, 10.75], "texture": "#all"},
+                "north": {"uv": [2, 10.75, 4, 11], "texture": "#all"},
+                "south": {"uv": [6, 10.75, 8, 11], "texture": "#all"},
+                "west":  {"uv": [4, 10.75, 6, 11], "texture": "#all"},
+                "east":  {"uv": [0, 10.75, 2, 11], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Body",
+            "from": [5, 4, 5],
+            "to": [11, 14, 11],
+            "faces": {
+                "down":  {"uv": [10.5, 4.25, 12, 5.75], "texture": "#all"},
+                "up":    {"uv": [9, 4.25, 10.5, 5.75], "texture": "#all"},
+                "north": {"uv": [9, 5.75, 10.5, 8.25], "texture": "#all"},
+                "south": {"uv": [12, 5.75, 13.5, 8.25], "texture": "#all"},
+                "west":  {"uv": [10.5, 5.75, 12, 8.25], "texture": "#all"},
+                "east":  {"uv": [7.5, 5.75, 9, 8.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "PumpHead",
+            "from": [5, 1, 5],
+            "to": [11, 4, 11],
+            "faces": {
+                "down":  {"uv": [11.25, 0, 12.75, 1.5], "texture": "#all"},
+                "up":    {"uv": [9.75, 0, 11.25, 1.5], "texture": "#all"},
+                "north": {"uv": [9.75, 1.5, 11.25, 2.25], "texture": "#all"},
+                "south": {"uv": [12.75, 1.5, 14.25, 2.25], "texture": "#all"},
+                "west":  {"uv": [11.25, 1.5, 12.75, 2.25], "texture": "#all"},
+                "east":  {"uv": [8.25, 1.5, 9.75, 2.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Ring2",
+            "from": [4, 12, 4],
+            "to": [12, 13, 12],
+            "faces": {
+                "down":  {"uv": [4, 8.75, 6, 10.75], "texture": "#all"},
+                "up":    {"uv": [2, 8.75, 4, 10.75], "texture": "#all"},
+                "north": {"uv": [2, 10.75, 4, 11], "texture": "#all"},
+                "south": {"uv": [6, 10.75, 8, 11], "texture": "#all"},
+                "west":  {"uv": [4, 10.75, 6, 11], "texture": "#all"},
+                "east":  {"uv": [0, 10.75, 2, 11], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Plug",
+            "from": [5, 4, 15],
+            "to": [11, 10, 16],
+            "faces": {
+                "down":  {"uv": [1.75, 11.25, 3.25, 11.5], "texture": "#all"},
+                "up":    {"uv": [0.25, 11.25, 1.75, 11.5], "texture": "#all"},
+                "north": {"uv": [0.25, 11.5, 1.75, 13], "texture": "#all"},
+                "south": {"uv": [2, 11.5, 3.5, 13], "texture": "#all"},
+                "west":  {"uv": [1.75, 11.5, 2, 13], "texture": "#all"},
+                "east":  {"uv": [0, 11.5, 0.25, 13], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Connector",
+            "from": [6, 8, 10.5],
+            "to": [10, 9, 15.5],
+            "faces": {
+                "down":  {"uv": [10.5, 2.5, 11.5, 3.75], "texture": "#all"},
+                "up":    {"uv": [9.5, 2.5, 10.5, 3.75], "texture": "#all"},
+                "north": {"uv": [9.5, 3.75, 10.5, 4], "texture": "#all"},
+                "south": {"uv": [11.75, 3.75, 12.75, 4], "texture": "#all"},
+                "west":  {"uv": [10.5, 3.75, 11.75, 4], "texture": "#all"},
+                "east":  {"uv": [8.25, 3.75, 9.5, 4], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Panel3",
+            "from": [10, 2, 5],
+            "to": [11, 8, 11],
+            "faces": {
+                "down":  {"uv": [5.5, 3.75, 5.75, 5.25], "texture": "#all"},
+                "up":    {"uv": [5.25, 3.75, 5.5, 5.25], "texture": "#all"},
+                "north": {"uv": [5.25, 5.25, 5.5, 6.75], "texture": "#all"},
+                "south": {"uv": [7, 5.25, 7.25, 6.75], "texture": "#all"},
+                "west":  {"uv": [5.5, 5.25, 7, 6.75], "texture": "#all"},
+                "east":  {"uv": [3.75, 5.25, 5.25, 6.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Panel2",
+            "from": [5, 2, 5],
+            "to": [6, 8, 11],
+            "faces": {
+                "down":  {"uv": [5.5, 3.75, 5.75, 5.25], "texture": "#all"},
+                "up":    {"uv": [5.25, 3.75, 5.5, 5.25], "texture": "#all"},
+                "north": {"uv": [5.25, 5.25, 5.5, 6.75], "texture": "#all"},
+                "south": {"uv": [7, 5.25, 7.25, 6.75], "texture": "#all"},
+                "west":  {"uv": [5.5, 5.25, 7, 6.75], "texture": "#all"},
+                "east":  {"uv": [3.75, 5.25, 5.25, 6.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Axil",
+            "from": [3.5, 4, 6],
+            "to": [12.5, 6, 10],
+            "faces": {
+                "down":  {"uv": [3.25, 7, 5.5, 8], "texture": "#all"},
+                "up":    {"uv": [1, 7, 3.25, 8], "texture": "#all"},
+                "north": {"uv": [1, 8, 3.25, 8.5], "texture": "#all"},
+                "south": {"uv": [4.25, 8, 6.5, 8.5], "texture": "#all"},
+                "west":  {"uv": [3.25, 8, 4.25, 8.5], "texture": "#all"},
+                "east":  {"uv": [0, 8, 1, 8.5], "texture": "#all"}
+            }
+        }
+    ],
+    "textures": {
+        "all": "...",
+        "particle": "..."
+    }
+}

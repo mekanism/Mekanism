@@ -1,0 +1,307 @@
+{
+    "elements": [
+        {
+            "__comment": "AxleTRight",
+            "from": [8.5, 7.5, 1],
+            "to": [9.5, 8.5, 9],
+            "faces": {
+                "down":  {"uv": [2.25, 6.25, 2.5, 8.25], "texture": "#all"},
+                "up":    {"uv": [2, 6.25, 2.25, 8.25], "texture": "#all"},
+                "north": {"uv": [2, 8.25, 2.25, 8.5], "texture": "#all"},
+                "south": {"uv": [4.25, 8.25, 4.5, 8.5], "texture": "#all"},
+                "west":  {"uv": [2.25, 8.25, 4.25, 8.5], "texture": "#all"},
+                "east":  {"uv": [0, 8.25, 2, 8.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "AxleTLeft",
+            "from": [5.5, 7.5, 1],
+            "to": [6.5, 8.5, 9],
+            "faces": {
+                "down":  {"uv": [2.25, 6.25, 2.5, 8.25], "texture": "#all"},
+                "up":    {"uv": [2, 6.25, 2.25, 8.25], "texture": "#all"},
+                "north": {"uv": [2, 8.25, 2.25, 8.5], "texture": "#all"},
+                "south": {"uv": [4.25, 8.25, 4.5, 8.5], "texture": "#all"},
+                "west":  {"uv": [2.25, 8.25, 4.25, 8.5], "texture": "#all"},
+                "east":  {"uv": [0, 8.25, 2, 8.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Axle",
+            "from": [5.5, 4, 1.5],
+            "to": [9.5, 8, 8.5],
+            "faces": {
+                "down":  {"uv": [10.75, 3, 11.75, 4.75], "texture": "#all"},
+                "up":    {"uv": [9.75, 3, 10.75, 4.75], "texture": "#all"},
+                "north": {"uv": [9.75, 4.75, 10.75, 5.75], "texture": "#all"},
+                "south": {"uv": [12.5, 4.75, 13.5, 5.75], "texture": "#all"},
+                "west":  {"uv": [10.75, 4.75, 12.5, 5.75], "texture": "#all"},
+                "east":  {"uv": [8, 4.75, 9.75, 5.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "GraspRod",
+            "from": [7, 7, 7],
+            "to": [8, 10, 8],
+            "faces": {
+                "down":  {"uv": [5.25, 4.75, 5.5, 5], "texture": "#all"},
+                "up":    {"uv": [5, 4.75, 5.25, 5], "texture": "#all"},
+                "north": {"uv": [5, 5, 5.25, 5.75], "texture": "#all"},
+                "south": {"uv": [5.5, 5, 5.75, 5.75], "texture": "#all"},
+                "west":  {"uv": [5.25, 5, 5.5, 5.75], "texture": "#all"},
+                "east":  {"uv": [4.75, 5, 5, 5.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "LargeBarrelDecor",
+            "from": [6, 5, 12],
+            "to": [9, 8, 18],
+            "faces": {
+                "down":  {"uv": [2.25, 12, 3, 13.5], "texture": "#all"},
+                "up":    {"uv": [1.5, 12, 2.25, 13.5], "texture": "#all"},
+                "north": {"uv": [1.5, 13.5, 2.25, 14.25], "texture": "#all"},
+                "south": {"uv": [3.75, 13.5, 4.5, 14.25], "texture": "#all"},
+                "west":  {"uv": [2.25, 13.5, 3.75, 14.25], "texture": "#all"},
+                "east":  {"uv": [0, 13.5, 1.5, 14.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "AxleBRight",
+            "from": [8.5, 3.5, 1],
+            "to": [9.5, 4.5, 9],
+            "faces": {
+                "down":  {"uv": [2.25, 6.25, 2.5, 8.25], "texture": "#all"},
+                "up":    {"uv": [2, 6.25, 2.25, 8.25], "texture": "#all"},
+                "north": {"uv": [2, 8.25, 2.25, 8.5], "texture": "#all"},
+                "south": {"uv": [4.25, 8.25, 4.5, 8.5], "texture": "#all"},
+                "west":  {"uv": [2.25, 8.25, 4.25, 8.5], "texture": "#all"},
+                "east":  {"uv": [0, 8.25, 2, 8.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Hydrogen",
+            "from": [9.5, 4, 2.5],
+            "to": [12.5, 7, 12.5],
+            "faces": {
+                "down":  {"uv": [3.25, 0, 4, 2.5], "texture": "#all"},
+                "up":    {"uv": [2.5, 0, 3.25, 2.5], "texture": "#all"},
+                "north": {"uv": [2.5, 2.5, 3.25, 3.25], "texture": "#all"},
+                "south": {"uv": [5.75, 2.5, 6.5, 3.25], "texture": "#all"},
+                "west":  {"uv": [3.25, 2.5, 5.75, 3.25], "texture": "#all"},
+                "east":  {"uv": [0, 2.5, 2.5, 3.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Flame",
+            "from": [7, 2.5, 27],
+            "to": [8, 3.5, 29],
+            "faces": {
+                "down":  {"uv": [10.25, 0, 10.5, 0.5], "texture": "#all"},
+                "up":    {"uv": [10, 0, 10.25, 0.5], "texture": "#all"},
+                "north": {"uv": [10, 0.5, 10.25, 0.75], "texture": "#all"},
+                "south": {"uv": [10.75, 0.5, 11, 0.75], "texture": "#all"},
+                "west":  {"uv": [10.25, 0.5, 10.75, 0.75], "texture": "#all"},
+                "east":  {"uv": [9.5, 0.5, 10, 0.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Ring",
+            "from": [5, 3, 9],
+            "to": [10, 9, 13],
+            "faces": {
+                "down":  {"uv": [2.25, 3.5, 3.5, 4.5], "texture": "#all"},
+                "up":    {"uv": [1, 3.5, 2.25, 4.5], "texture": "#all"},
+                "north": {"uv": [1, 4.5, 2.25, 6], "texture": "#all"},
+                "south": {"uv": [3.25, 4.5, 4.5, 6], "texture": "#all"},
+                "west":  {"uv": [2.25, 4.5, 3.25, 6], "texture": "#all"},
+                "east":  {"uv": [0, 4.5, 1, 6], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "RingButtom",
+            "from": [6, 2.5, 9.5],
+            "to": [9, 3.5, 12.5],
+            "faces": {
+                "down":  {"uv": [6.25, 3.5, 7, 4.25], "texture": "#all"},
+                "up":    {"uv": [5.5, 3.5, 6.25, 4.25], "texture": "#all"},
+                "north": {"uv": [5.5, 4.25, 6.25, 4.5], "texture": "#all"},
+                "south": {"uv": [7, 4.25, 7.75, 4.5], "texture": "#all"},
+                "west":  {"uv": [6.25, 4.25, 7, 4.5], "texture": "#all"},
+                "east":  {"uv": [4.75, 4.25, 5.5, 4.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "FlameStrut",
+            "from": [6.533333, 3.5, 25],
+            "to": [8.533333, 4.5, 28],
+            "faces": {
+                "down":  {"uv": [8, 0, 8.5, 0.75], "texture": "#all"},
+                "up":    {"uv": [7.5, 0, 8, 0.75], "texture": "#all"},
+                "north": {"uv": [7.5, 0.75, 8, 1], "texture": "#all"},
+                "south": {"uv": [8.75, 0.75, 9.25, 1], "texture": "#all"},
+                "west":  {"uv": [8, 0.75, 8.75, 1], "texture": "#all"},
+                "east":  {"uv": [6.75, 0.75, 7.5, 1], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "LargeBarrel",
+            "from": [6.5, 4, 12],
+            "to": [8.5, 7, 19],
+            "faces": {
+                "down":  {"uv": [7, 12, 7.5, 13.75], "texture": "#all"},
+                "up":    {"uv": [6.5, 12, 7, 13.75], "texture": "#all"},
+                "north": {"uv": [6.5, 13.75, 7, 14.5], "texture": "#all"},
+                "south": {"uv": [8.75, 13.75, 9.25, 14.5], "texture": "#all"},
+                "west":  {"uv": [7, 13.75, 8.75, 14.5], "texture": "#all"},
+                "east":  {"uv": [4.75, 13.75, 6.5, 14.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "SupportCentre",
+            "from": [6.5, 9.6, 14.6],
+            "to": [8.5, 10.6, 20.6],
+            "faces": {
+                "down":  {"uv": [2, 10, 2.5, 11.5], "texture": "#all"},
+                "up":    {"uv": [1.5, 10, 2, 11.5], "texture": "#all"},
+                "north": {"uv": [1.5, 11.5, 2, 11.75], "texture": "#all"},
+                "south": {"uv": [3.5, 11.5, 4, 11.75], "texture": "#all"},
+                "west":  {"uv": [2, 11.5, 3.5, 11.75], "texture": "#all"},
+                "east":  {"uv": [0, 11.5, 1.5, 11.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Barrel",
+            "from": [6.5, 4.5, 19],
+            "to": [8.5, 6.5, 27],
+            "faces": {
+                "down":  {"uv": [7.25, 7.5, 7.75, 9.5], "texture": "#all"},
+                "up":    {"uv": [6.75, 7.5, 7.25, 9.5], "texture": "#all"},
+                "north": {"uv": [6.75, 9.5, 7.25, 10], "texture": "#all"},
+                "south": {"uv": [9.25, 9.5, 9.75, 10], "texture": "#all"},
+                "west":  {"uv": [7.25, 9.5, 9.25, 10], "texture": "#all"},
+                "east":  {"uv": [4.75, 9.5, 6.75, 10], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "RingTop",
+            "from": [6, 8.5, 9.466667],
+            "to": [9, 9.5, 12.466667],
+            "faces": {
+                "down":  {"uv": [6.25, 3.5, 7, 4.25], "texture": "#all"},
+                "up":    {"uv": [5.5, 3.5, 6.25, 4.25], "texture": "#all"},
+                "north": {"uv": [5.5, 4.25, 6.25, 4.5], "texture": "#all"},
+                "south": {"uv": [7, 4.25, 7.75, 4.5], "texture": "#all"},
+                "west":  {"uv": [6.25, 4.25, 7, 4.5], "texture": "#all"},
+                "east":  {"uv": [4.75, 4.25, 5.5, 4.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "AxleBLeft",
+            "from": [5.5, 3.5, 1],
+            "to": [6.5, 4.5, 9],
+            "faces": {
+                "down":  {"uv": [2.25, 6.25, 2.5, 8.25], "texture": "#all"},
+                "up":    {"uv": [2, 6.25, 2.25, 8.25], "texture": "#all"},
+                "north": {"uv": [2, 8.25, 2.25, 8.5], "texture": "#all"},
+                "south": {"uv": [4.25, 8.25, 4.5, 8.5], "texture": "#all"},
+                "west":  {"uv": [2.25, 8.25, 4.25, 8.5], "texture": "#all"},
+                "east":  {"uv": [0, 8.25, 2, 8.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "LargeBarrelDecor2",
+            "from": [5.5, 5, 12],
+            "to": [9.5, 7, 16],
+            "faces": {
+                "down":  {"uv": [6.25, 10.25, 7.25, 11.25], "texture": "#all"},
+                "up":    {"uv": [5.25, 10.25, 6.25, 11.25], "texture": "#all"},
+                "north": {"uv": [5.25, 11.25, 6.25, 11.75], "texture": "#all"},
+                "south": {"uv": [7.25, 11.25, 8.25, 11.75], "texture": "#all"},
+                "west":  {"uv": [6.25, 11.25, 7.25, 11.75], "texture": "#all"},
+                "east":  {"uv": [4.25, 11.25, 5.25, 11.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "SupportFront",
+            "from": [7, 8.9, 20.5],
+            "to": [8, 9.9, 24.5],
+            "faces": {
+                "down":  {"uv": [6, 6, 6.25, 7], "texture": "#all"},
+                "up":    {"uv": [5.75, 6, 6, 7], "texture": "#all"},
+                "north": {"uv": [5.75, 7, 6, 7.25], "texture": "#all"},
+                "south": {"uv": [7, 7, 7.25, 7.25], "texture": "#all"},
+                "west":  {"uv": [6, 7, 7, 7.25], "texture": "#all"},
+                "east":  {"uv": [4.75, 7, 5.75, 7.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Grasp",
+            "from": [6.5, 9, 6.9],
+            "to": [8.5, 10, 7.9],
+            "faces": {
+                "down":  {"uv": [6.75, 4.75, 7.25, 5], "texture": "#all"},
+                "up":    {"uv": [6.25, 4.75, 6.75, 5], "texture": "#all"},
+                "north": {"uv": [6.25, 5, 6.75, 5.25], "texture": "#all"},
+                "south": {"uv": [7, 5, 7.5, 5.25], "texture": "#all"},
+                "west":  {"uv": [6.75, 5, 7, 5.25], "texture": "#all"},
+                "east":  {"uv": [6, 5, 6.25, 5.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "HydrogenDecor",
+            "from": [9.5, 6.33333, 3.066667],
+            "to": [12.5, 7.33333, 8.066667],
+            "faces": {
+                "down":  {"uv": [8.75, 1.25, 9.5, 2.5], "texture": "#all"},
+                "up":    {"uv": [8, 1.25, 8.75, 2.5], "texture": "#all"},
+                "north": {"uv": [8, 2.5, 8.75, 2.75], "texture": "#all"},
+                "south": {"uv": [10, 2.5, 10.75, 2.75], "texture": "#all"},
+                "west":  {"uv": [8.75, 2.5, 10, 2.75], "texture": "#all"},
+                "east":  {"uv": [6.75, 2.5, 8, 2.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "BarrelRing2",
+            "from": [6, 4, 25],
+            "to": [9, 7, 26],
+            "faces": {
+                "down":  {"uv": [8.5, 6.25, 9.25, 6.5], "texture": "#all"},
+                "up":    {"uv": [7.75, 6.25, 8.5, 6.5], "texture": "#all"},
+                "north": {"uv": [7.75, 6.5, 8.5, 7.25], "texture": "#all"},
+                "south": {"uv": [8.75, 6.5, 9.5, 7.25], "texture": "#all"},
+                "west":  {"uv": [8.5, 6.5, 8.75, 7.25], "texture": "#all"},
+                "east":  {"uv": [7.5, 6.5, 7.75, 7.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "SupportRear",
+            "from": [6, 8, 12],
+            "to": [9, 9, 15],
+            "faces": {
+                "down":  {"uv": [1.5, 8.75, 2.25, 9.5], "texture": "#all"},
+                "up":    {"uv": [0.75, 8.75, 1.5, 9.5], "texture": "#all"},
+                "north": {"uv": [0.75, 9.5, 1.5, 9.75], "texture": "#all"},
+                "south": {"uv": [2.25, 9.5, 3, 9.75], "texture": "#all"},
+                "west":  {"uv": [1.5, 9.5, 2.25, 9.75], "texture": "#all"},
+                "east":  {"uv": [0, 9.5, 0.75, 9.75], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "BarrelRing",
+            "from": [6, 4, 21],
+            "to": [9, 7, 22],
+            "faces": {
+                "down":  {"uv": [8.5, 6.25, 9.25, 6.5], "texture": "#all"},
+                "up":    {"uv": [7.75, 6.25, 8.5, 6.5], "texture": "#all"},
+                "north": {"uv": [7.75, 6.5, 8.5, 7.25], "texture": "#all"},
+                "south": {"uv": [8.75, 6.5, 9.5, 7.25], "texture": "#all"},
+                "west":  {"uv": [8.5, 6.5, 8.75, 7.25], "texture": "#all"},
+                "east":  {"uv": [7.5, 6.5, 7.75, 7.25], "texture": "#all"}
+            }
+        }
+    ],
+    "textures": {
+        "all": "...",
+        "particle": "..."
+    }
+}

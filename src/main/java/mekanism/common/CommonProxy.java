@@ -157,7 +157,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory");
 		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
 		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
-		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
+		//GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
@@ -168,7 +168,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter");
 		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
 		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");
-		GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
+		//GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
 		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
 		GameRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer");
@@ -184,7 +184,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
 		GameRegistry.registerTileEntity(TileEntityPortableTank.class, "PortableTank");
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
-		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
+		//GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
 		GameRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam");
 		GameRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator");

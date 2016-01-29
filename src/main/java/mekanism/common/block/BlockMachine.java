@@ -24,6 +24,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -172,6 +173,24 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		MachineType type = state.getValue(getProperty());
 		return type.meta;
 	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
+		{
+			state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).facing);
+		}
+		if(tile instanceof IActiveState)
+		{
+			state = state.withProperty(BlockStateMachine.activeProperty, ((IActiveState)tile).getActive());
+		}
+		return state;
+	}
+
+
+
 /*
 	@Override
 	@SideOnly(Side.CLIENT)

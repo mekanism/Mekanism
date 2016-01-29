@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:metallurgic_infuser"
+    "model": "mekanism:digital_miner"
   },
   "variants": {
     "normal": [{}],
@@ -11,6 +11,10 @@
       "east":  {"y": 90},
       "west":  {"y": -90}
       },
+    "active": {
+      "true": {},
+      "false": {}
+    },
     "inventory": [{}]
   }
 }

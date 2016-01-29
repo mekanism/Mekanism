@@ -18,7 +18,7 @@ import io.netty.buffer.ByteBuf;
 
 public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 {
-	public BlockPos mainPos;
+	public BlockPos mainPos = BlockPos.ORIGIN;
 	
 	public boolean receivedCoords;
 
