@@ -5,14 +5,17 @@ import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.StackUtils;
+import mekanism.common.InfuseStorage;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
+import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
@@ -49,7 +52,8 @@ public interface IFactory
 		COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, false, Recipe.OSMIUM_COMPRESSOR),
 		COMBINING("Combining", "combiner", MachineType.COMBINER.getStack(), true, false, Recipe.COMBINER),
 		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, true, Recipe.PURIFICATION_CHAMBER),
-		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER);
+		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
+		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER.getStack(), false, false, Recipe.METALLURGIC_INFUSER);
 
 		private String name;
 		private ResourceLocation sound;
@@ -78,12 +82,26 @@ public interface IFactory
 		{
 			return getRecipe(new AdvancedMachineInput(input, gas));
 		}
+		
+		public MetallurgicInfuserRecipe getRecipe(InfusionInput input)
+		{
+			return RecipeHandler.getMetallurgicInfuserRecipe(input);
+		}
+		
+		public MetallurgicInfuserRecipe getRecipe(ItemStack input, InfuseStorage storage)
+		{
+			return getRecipe(new InfusionInput(storage, input));
+		}
 
-		public MachineRecipe getAnyRecipe(ItemStack slotStack, Gas gasType)
+		public MachineRecipe getAnyRecipe(ItemStack slotStack, Gas gasType, InfuseStorage infuse)
 		{
 			if(usesFuel())
 			{
 				return getRecipe(slotStack, gasType);
+			}
+			else if(this == INFUSING)
+			{
+				return getRecipe(slotStack, infuse);
 			}
 			
 			return getRecipe(slotStack);

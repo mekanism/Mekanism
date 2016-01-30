@@ -134,8 +134,9 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 		float f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
 		if(ticksPassed < 20) f = 0.0F;
 
+		int display = (int)(52F*f);
 		changeTexture(MekanismRenderer.getBlocksTexture());
-		drawTexturedRectFromIcon(2, 2, type.icon, 4, (int)(52F*f));
+		drawTexturedRectFromIcon(2, 2+52-display, type.icon, 4, display);
 	}
 
 	@Override
