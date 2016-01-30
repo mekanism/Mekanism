@@ -131,6 +131,11 @@ public class MekanismConfig
 
 		public static int windGenerationMinY;
 		public static int windGenerationMaxY;
+		
+		public static int turbineBladesPerCoil;
+		public static double turbineBaseEnergyPerSteam;
+		public static double turbineVentGasFlow;
+		public static double turbineDisperserGasFlow;
 	}
 
 	public static class tools

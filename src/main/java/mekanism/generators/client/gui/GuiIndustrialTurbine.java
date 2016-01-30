@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import mekanism.api.MekanismConfig.generators;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRateBar;
@@ -42,8 +43,8 @@ public class GuiIndustrialTurbine extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*TileEntityTurbineCasing.DISPERSER_GAS_FLOW);		
-				rate = Math.min(rate, tileEntity.structure.vents*TileEntityTurbineCasing.VENT_GAS_FLOW);
+				double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow);		
+				rate = Math.min(rate, tileEntity.structure.vents*generators.turbineVentGasFlow);
 				
 				return (double)tileEntity.structure.lastSteamInput/rate;
 			}
@@ -58,10 +59,10 @@ public class GuiIndustrialTurbine extends GuiMekanism
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 5, 0x404040);
 		
-		double energyMultiplier = TileEntityTurbineCasing.ENERGY_PER_STEAM*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*TileEntityTurbineCasing.BLADE_TO_COIL_RATIO);
+		double energyMultiplier = generators.turbineBaseEnergyPerSteam*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
 		
-		double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*TileEntityTurbineCasing.DISPERSER_GAS_FLOW);		
-		rate = Math.min(rate, tileEntity.structure.vents*TileEntityTurbineCasing.VENT_GAS_FLOW);
+		double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow);		
+		rate = Math.min(rate, tileEntity.structure.vents*generators.turbineVentGasFlow);
 		
 		renderScaledText(LangUtils.localize("gui.production") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow*energyMultiplier), 53, 26, 0x00CD00, 106);
 		renderScaledText(LangUtils.localize("gui.flowRate") + ": " + tileEntity.structure.clientFlow + " mB/t", 53, 35, 0x00CD00, 106);
