@@ -5,7 +5,6 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.common.CTMData;
-import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -159,11 +158,6 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
 	{
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-		{
-			return false;
-		}
-
 		if(world.isRemote)
 		{
 			return true;

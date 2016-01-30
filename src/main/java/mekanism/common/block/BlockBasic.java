@@ -11,7 +11,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DefIcon;
 import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
 import mekanism.common.CTMData;
-import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
@@ -449,14 +448,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 
 		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
-			if(metadata != 6)
-			{
-				if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-				{
-					return false;
-				}
-			}
-
 			if(metadata == 2)
 			{
 				if(entityplayer.isSneaking())
