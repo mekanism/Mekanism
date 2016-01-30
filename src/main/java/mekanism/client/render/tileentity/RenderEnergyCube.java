@@ -25,12 +25,15 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 	@Override
 	public void renderTileEntityAt(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
+/*
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tileEntity.tier.getBaseTier().getName() + ".png"));
 
-		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
+		switch(tileEntity.facing.ordinal()) */
+/*TODO: switch the enum*//*
+
 		{
 			case 0:
 				GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
@@ -49,6 +52,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		model.render(0.0625F);
 		GL11.glPopMatrix();
+*/
 
 		if(tileEntity.getEnergy()/tileEntity.getMaxEnergy() > 0.1)
 		{

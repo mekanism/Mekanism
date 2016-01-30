@@ -418,6 +418,7 @@ public class Coord4D extends BlockPos
 				) && !(obj instanceof Coord4D && ((Coord4D)obj).dimensionId != dimensionId);
 	}
 
+/*
 	@Override
 	public int hashCode()
 	{
@@ -428,4 +429,5 @@ public class Coord4D extends BlockPos
 		code = 31 * code + dimensionId;
 		return code;
 	}
+*/
 }
