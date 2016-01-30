@@ -17,6 +17,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderTurbineRotor extends TileEntitySpecialRenderer
 {
+	public static boolean internalRender = false;
+	
 	private ModelTurbine model = new ModelTurbine();
 	
 	private static final float BASE_SPEED = 512F;
@@ -29,6 +31,11 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 
 	private void renderAModelAt(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick)
 	{
+		if(tileEntity.multiblockUUID != null && !internalRender)
+		{
+			return;
+		}
+		
 		GL11.glPushMatrix();
 		
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Turbine.png"));

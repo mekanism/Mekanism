@@ -1,10 +1,10 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelGasTank;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,5 +35,7 @@ public class RenderGasTank extends TileEntitySpecialRenderer<TileEntityGasTank>
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		model.render(0.0625F);
 		GL11.glPopMatrix();
+		
+		//TODOMekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);
 	}
 }

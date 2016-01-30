@@ -19,7 +19,7 @@ public class TileEntityRotationalComplex extends TileEntityBasicBlock
 {
 	public static Map<String, Float> clientRotationMap = new HashMap<String, Float>();
 	
-	public static final float ROTATION_THRESHOLD = 0.01F;
+	public static final float ROTATION_THRESHOLD = 0.001F;
 	
 	public String multiblockUUID;
 	public float rotation;
@@ -28,15 +28,9 @@ public class TileEntityRotationalComplex extends TileEntityBasicBlock
 	public void onUpdate() {}
 	
 	@Override
-	public void onAdded()
+	public boolean canUpdate()
 	{
-		super.onAdded();
-		
-		if(!worldObj.isRemote)
-		{
-			setMultiblock("asdf");
-			setRotation(1F);
-		}
+		return false;
 	}
 	
 	@Override

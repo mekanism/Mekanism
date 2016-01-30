@@ -83,7 +83,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		configComponent.setConfig(TransmissionType.GAS, new byte[] {0, 0, 0, 0, 1, 0});
 		configComponent.setCanEject(TransmissionType.GAS, false);
 		
-		configComponent.setInputEnergyConfig();
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 		
 		inventory = new ItemStack[4];
 		

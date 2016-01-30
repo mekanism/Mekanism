@@ -75,5 +75,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
 			GL11.glPopMatrix();
 		}
+		
+		//MekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);
 	}
 }

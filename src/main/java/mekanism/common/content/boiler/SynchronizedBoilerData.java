@@ -72,7 +72,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	@Override
 	public double applyTemperatureChange()
 	{
-
 		if(temperature < 100 + IHeatTransfer.AMBIENT_TEMP)
 		{
 			double temperatureDeficit = 100 + IHeatTransfer.AMBIENT_TEMP - temperature;
@@ -81,23 +80,26 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 			heatToAbsorb -= heatProvided;
 			temperature += heatProvided / (volume * heatCapacity * 16);
 		}
+		
 		if(temperature >= 100 + IHeatTransfer.AMBIENT_TEMP && waterStored != null)
 		{
 			int amountToBoil = (int)Math.floor(heatToAbsorb / enthalpyOfVaporization);
 			amountToBoil = Math.min(amountToBoil, waterStored.amount);
 			waterStored.amount -= amountToBoil;
+			
 			if(steamStored == null)
 			{
 				steamStored = new FluidStack(FluidRegistry.getFluid("steam"), amountToBoil);
 			}
-			else
-			{
+			else {
 				steamStored.amount += amountToBoil;
 			}
 
 			heatToAbsorb -= amountToBoil * enthalpyOfVaporization;
 		}
+		
 		heatToAbsorb *= 0.8;
+		
 		return temperature;
 	}
 

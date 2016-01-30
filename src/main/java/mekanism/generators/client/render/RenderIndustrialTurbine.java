@@ -3,17 +3,20 @@ package mekanism.generators.client.render;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.tileentity.RenderDynamicTank.RenderData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -33,58 +36,79 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick)
 	{
-		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
+		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null)
 		{
-			RenderData data = new RenderData();
-
-			data.location = tileEntity.structure.renderLocation;
-			data.height = tileEntity.structure.lowerVolume/(tileEntity.structure.volLength*tileEntity.structure.volWidth);
-			data.length = tileEntity.structure.volLength;
-			data.width = tileEntity.structure.volWidth;
+			RenderTurbineRotor.internalRender = true;
+			Coord4D coord = tileEntity.structure.complex;
 			
-			bindTexture(MekanismRenderer.getBlocksTexture());
-			
-			if(data.location != null && data.height >= 3 && tileEntity.structure.fluidStored.getFluid() != null)
+			while(true)
 			{
-				push();
-
-				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
-
-				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
-
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.getWorldObj());
-
-				GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.structure.getFluidCapacity())+0.3F));
-				displayList[getStages(data.height)-1].render();
-
-				MekanismRenderer.glowOff();
-				MekanismRenderer.resetColor();
-
-				pop();
+				coord = coord.getFromSide(ForgeDirection.DOWN);
+				TileEntity tile = coord.getTileEntity(tileEntity.getWorldObj());
+				
+				if(!(tile instanceof TileEntityTurbineRotor))
+				{
+					break;
+				}
+				
+				TileEntityRendererDispatcher.instance.renderTileEntity(tile, partialTick);
+			}
+			
+			RenderTurbineRotor.internalRender = false;
+			
+			if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
+			{
+				RenderData data = new RenderData();
+	
+				data.location = tileEntity.structure.renderLocation;
+				data.height = tileEntity.structure.lowerVolume/(tileEntity.structure.volLength*tileEntity.structure.volWidth);
+				data.length = tileEntity.structure.volLength;
+				data.width = tileEntity.structure.volWidth;
+				
+				bindTexture(MekanismRenderer.getBlocksTexture());
+				
+				if(data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null)
+				{
+					push();
+	
+					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					
+					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+					MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+	
+					DisplayInteger[] displayList = getListAndRender(data, tileEntity.getWorldObj());
+	
+					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.structure.getFluidCapacity())+0.3F));
+					displayList[getStages(data.height+1)-1].render();
+	
+					MekanismRenderer.glowOff();
+					MekanismRenderer.resetColor();
+	
+					pop();
+				}
 			}
 		}
 	}
 	
 	private void pop()
 	{
-		GL11.glPopAttrib();
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 	}
 
 	private void push()
 	{
 		GL11.glPushMatrix();
-		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+		
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	private int getStages(int height)
 	{
-		return (height-2)*(TankUpdateProtocol.FLUID_PER_TANK/10);
+		return TankUpdateProtocol.FLUID_PER_TANK/10;
 	}
 
 	private double getX(int x)
@@ -129,7 +153,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 				toReturn.minZ = 0 + .01;
 
 				toReturn.maxX = data.length - .01;
-				toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
+				toReturn.maxY = ((float)i/(float)stages)*(data.height+1) - .01;
 				toReturn.maxZ = data.width - .01;
 
 				MekanismRenderer.renderObject(toReturn);

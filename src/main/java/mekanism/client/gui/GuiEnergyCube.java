@@ -5,23 +5,26 @@ import java.util.List;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiEnergyGauge;
-import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
+import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSideConfigurationTab;
+import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiEnergyCube extends GuiMekanism
@@ -33,6 +36,8 @@ public class GuiEnergyCube extends GuiMekanism
 		super(tentity, new ContainerEnergyCube(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
+		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
+		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
 		guiElements.add(new GuiEnergyGauge(new IEnergyInfoHandler()
 		{
 			@Override
@@ -51,8 +56,8 @@ public class GuiEnergyCube extends GuiMekanism
 						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 16, 34).with(SlotOverlay.MINUS));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 142, 34).with(SlotOverlay.PLUS));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 16, 34).with(SlotOverlay.MINUS));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 142, 34).with(SlotOverlay.PLUS));
 	}
 
 	@Override

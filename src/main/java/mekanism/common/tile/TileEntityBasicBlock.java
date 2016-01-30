@@ -81,7 +81,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -128,7 +128,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(facing);
+		data.add(facing == null ? -1 : facing.ordinal());
 		data.add(redstone);
 
 		for(ITileComponent component : components)
@@ -174,7 +174,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("facing", facing.ordinal());
+		nbtTags.setInteger("facing", facing == null ? -1 : facing.ordinal());
 		nbtTags.setBoolean("redstone", redstone);
 
 		for(ITileComponent component : components)

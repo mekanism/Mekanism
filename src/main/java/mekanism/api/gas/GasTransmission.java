@@ -2,6 +2,7 @@ package mekanism.api.gas;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,16 +21,11 @@ import net.minecraft.util.EnumFacing;
  */
 public final class GasTransmission
 {
-	/**
-	 * Gets all the acceptors around a tile entity.
-	 * @param tileEntity - center tile entity
-	 * @return array of IGasAcceptors
-	 */
-	public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity)
+	public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity, Collection<EnumFacing> sides)
 	{
 		IGasHandler[] acceptors = new IGasHandler[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALUES)
+		for(EnumFacing orientation : sides)
 		{
 			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
@@ -40,6 +36,16 @@ public final class GasTransmission
 		}
 
 		return acceptors;
+	}
+	
+	/**
+	 * Gets all the acceptors around a tile entity.
+	 * @param tileEntity - center tile entity
+	 * @return array of IGasAcceptors
+	 */
+	public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity)
+	{
+		return getConnectedAcceptors(tileEntity, Arrays.asList(EnumFacing.VALUES));
 	}
 
 	/**
@@ -125,12 +131,12 @@ public final class GasTransmission
 	
 	/**
 	 * Emits gas from a central block by splitting the received stack among the sides given.
-	 * @param sides - the list of sides to output from
 	 * @param stack - the stack to output
 	 * @param from - the TileEntity to output from
+	 * @param sides - the list of sides to output from
 	 * @return the amount of gas emitted
 	 */
-	public static int emit(List<EnumFacing> sides, GasStack stack, TileEntity from)
+	public static int emit(GasStack stack, TileEntity from, Collection<EnumFacing> sides)
 	{
 		if(stack == null)
 		{
@@ -138,7 +144,7 @@ public final class GasTransmission
 		}
 		
 		List<IGasHandler> availableAcceptors = new ArrayList<IGasHandler>();
-		IGasHandler[] possibleAcceptors = getConnectedAcceptors(from);
+		IGasHandler[] possibleAcceptors = getConnectedAcceptors(from, sides);
 		
 		for(int i = 0; i < possibleAcceptors.length; i++)
 		{

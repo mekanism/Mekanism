@@ -60,7 +60,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		configComponent.addOutput(TransmissionType.GAS, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
 		configComponent.setConfig(TransmissionType.GAS, new byte[] {0, 0, 0, 0, 1, 2});
 		
-		configComponent.setInputEnergyConfig();
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = new ItemStack[4];
 

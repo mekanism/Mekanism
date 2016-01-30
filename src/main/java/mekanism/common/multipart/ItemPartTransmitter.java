@@ -64,14 +64,6 @@ public class ItemPartTransmitter extends JItemMultiPart
 					networks.add(((ITransmitterTile)tile).getTransmitter().getTransmitterNetwork());
 				}
 			}
-
-			if(networks.size() > 0)
-			{
-				/*if(!networks.iterator().next().canMerge(networks))
-				{
-					return null;
-				}*/
-			}
 		}
 
 		return PartTransmitter.getPartType(TransmitterType.values()[getDamage(stack)]);

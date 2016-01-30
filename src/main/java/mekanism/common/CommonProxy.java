@@ -108,6 +108,7 @@ import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -267,6 +268,9 @@ public class CommonProxy implements IGuiProvider
 		general.maxJetpackGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxJetpackGas", 24000).getInt();
 		general.maxScubaGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxScubaGas", 24000).getInt();
 		general.maxFlamethrowerGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxFlamethrowerGas", 24000).getInt();
+		general.maxPumpRange = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxPumpRange", 80).getInt();
+		general.pumpWaterSources = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PumpWaterSources", false).getBoolean();
+		general.maxPlenisherNodes = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxPlenisherNodes", 4000).getInt();
 		
 		general.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false).getBoolean();
 		general.blacklistRF = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistRFPower", false).getBoolean();
@@ -636,6 +640,24 @@ public class CommonProxy implements IGuiProvider
 	public EntityPlayer getPlayer(MessageContext context)
 	{
 		return context.getServerHandler().playerEntity;
+	}
+	
+	public int getGuiId(Block block, int metadata)
+	{
+		if(MachineType.get(block, metadata) != null)
+		{
+			return MachineType.get(block, metadata).guiId;
+		}
+		else if(block == MekanismBlocks.GasTank)
+		{
+			return 10;
+		}
+		else if(block == MekanismBlocks.EnergyCube)
+		{
+			return 8;
+		}
+		
+		return -1;
 	}
 
 	public void renderLaser(World world, Pos3D from, Pos3D to, EnumFacing direction, double energy) {}

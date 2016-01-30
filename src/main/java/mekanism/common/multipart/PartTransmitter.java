@@ -1,15 +1,22 @@
 package mekanism.common.multipart;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+
+import mekanism.api.Coord4D;
+import mekanism.api.IAlloyInteraction;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.Collection;
-
-public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements ITransmitterTile<A, N>
+public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements ITransmitterTile<A, N>, IAlloyInteraction
 {
 	public MultipartTransmitter<A, N> transmitterDelegate;
 
@@ -78,12 +85,6 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	}
 
 	@Override
-	public void onNeighborTileChanged(int side, boolean weak)
-	{
-		super.onNeighborTileChanged(side, weak);
-	}
-
-	@Override
 	public void markDirtyTransmitters()
 	{
 		super.markDirtyTransmitters();
@@ -115,6 +116,71 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		}
 		
 		return connectionMapContainsSide(currentAcceptorConnections, side) ? (A)cachedAcceptors[side.ordinal()] : null;
+	}
+	
+	@Override
+	public void onAlloyInteraction(EntityPlayer player, int tierOrdinal) 
+	{
+		if(getTransmitter().hasTransmitterNetwork())
+		{
+			int upgraded = 0;
+			Object[] array = ((LinkedHashSet)getTransmitter().getTransmitterNetwork().transmitters.clone()).toArray();
+			
+			Arrays.sort(array, new Comparator() {
+				@Override
+				public int compare(Object o1, Object o2) 
+				{
+					if(o1 instanceof IGridTransmitter && o2 instanceof IGridTransmitter)
+					{
+						Coord4D thisCoord = Coord4D.get(tile());
+						
+						Coord4D o1Coord = ((IGridTransmitter)o1).coord();
+						Coord4D o2Coord = ((IGridTransmitter)o2).coord();
+						
+						return o1Coord.distanceTo(thisCoord) > o2Coord.distanceTo(thisCoord) ? 1 : 
+							(o1Coord.distanceTo(thisCoord) < o2Coord.distanceTo(thisCoord) ? -1 : 0);
+					}
+					
+					return 0;
+				}
+			});
+			
+			for(Object iter : array)
+			{
+				if(iter instanceof MultipartTransmitter)
+				{
+					PartTransmitter t = ((MultipartTransmitter)iter).containingPart;
+					
+					if(t.upgrade(tierOrdinal))
+					{
+						upgraded++;
+						
+						if(upgraded == 8)
+						{
+							break;
+						}
+					}
+				}
+			}
+			
+			if(upgraded > 0)
+			{
+				if(!player.capabilities.isCreativeMode)
+				{
+					player.getCurrentEquippedItem().stackSize--;
+					
+					if(player.getCurrentEquippedItem().stackSize == 0)
+					{
+						player.setCurrentItemOrArmor(0, null);
+					}
+				}
+			}
+		}
+	}
+	
+	public boolean upgrade(int tierOrdinal)
+	{
+		return false;
 	}
 
 	public abstract int getCapacity();

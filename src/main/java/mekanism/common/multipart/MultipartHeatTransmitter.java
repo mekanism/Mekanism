@@ -3,11 +3,8 @@ package mekanism.common.multipart;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.HeatNetwork;
 import mekanism.common.util.HeatUtils;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourRGBA;
 
 /**
@@ -61,11 +58,13 @@ public class MultipartHeatTransmitter extends MultipartTransmitter<IHeatTransfer
 	{
 		temperature += material.inverseHeatCapacity * heatToAbsorb;
 		heatToAbsorb = 0;
+		
 		if(Math.abs(temperature - clientTemperature) > (temperature / 100))
 		{
 			clientTemperature = temperature;
 			getPart().sendTemp();
 		}
+		
 		return temperature;
 	}
 
@@ -81,11 +80,13 @@ public class MultipartHeatTransmitter extends MultipartTransmitter<IHeatTransfer
 		if(getPart().connectionMapContainsSide(getPart().getAllCurrentConnections(), side))
 		{
 			TileEntity adj = coord().offset(side).getTileEntity(world());
+			
 			if(adj instanceof IHeatTransfer)
 			{
 				return (IHeatTransfer)adj;
 			}
 		}
+		
 		return null;
 	}
 

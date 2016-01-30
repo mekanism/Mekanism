@@ -47,7 +47,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
 
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
-		configComponent.setInputEnergyConfig();
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = new ItemStack[4];
 

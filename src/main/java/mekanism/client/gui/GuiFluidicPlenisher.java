@@ -1,12 +1,13 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerFluidicPlenisher;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.LangUtils;
@@ -15,10 +16,11 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiFluidicPlenisher extends GuiMekanism
@@ -43,7 +45,7 @@ public class GuiFluidicPlenisher extends GuiMekanism
 				return tileEntity.fluidTank;
 			}
 		}, GuiGauge.Type.STANDARD, this, guiLocation, 6, 13));
-
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, guiLocation));
 	}
 
 	@Override

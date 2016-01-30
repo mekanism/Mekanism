@@ -363,7 +363,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		
 		if(structure != null && doFill)
 		{
-			structure.lastSteamInput += filled;
+			structure.newSteamInput += filled;
 		}
 		
 		return filled;

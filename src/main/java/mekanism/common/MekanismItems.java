@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemClump;
@@ -43,9 +44,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("Mekanism")
 public class MekanismItems
 {
-	public static final Item EnrichedAlloy = new ItemMekanism().setUnlocalizedName("EnrichedAlloy");
-	public static final Item ReinforcedAlloy = new ItemMekanism().setUnlocalizedName("ReinforcedAlloy");
-	public static final Item AtomicAlloy = new ItemMekanism().setUnlocalizedName("AtomicAlloy");
+	public static final Item EnrichedAlloy = new ItemAlloy().setUnlocalizedName("EnrichedAlloy");
+	public static final Item ReinforcedAlloy = new ItemAlloy().setUnlocalizedName("ReinforcedAlloy");
+	public static final Item AtomicAlloy = new ItemAlloy().setUnlocalizedName("AtomicAlloy");
 	public static final Item TeleportationCore = new ItemMekanism().setUnlocalizedName("TeleportationCore");
 	public static final Item ElectrolyticCore = new ItemMekanism().setUnlocalizedName("ElectrolyticCore");
 	public static final Item Substrate = new ItemMekanism().setUnlocalizedName("Substrate");
