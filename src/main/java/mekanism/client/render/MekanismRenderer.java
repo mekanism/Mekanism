@@ -10,6 +10,8 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
+import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
@@ -127,6 +129,11 @@ public class MekanismRenderer
 
 			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
 			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:LiquidHeavyWater"));
+			
+			for(InfuseType type : InfuseRegistry.getInfuseMap().values())
+			{
+				type.setIcon(event.map.registerIcon(type.textureLocation));
+			}
 
 			if(RenderPartTransmitter.getInstance() != null)
 			{

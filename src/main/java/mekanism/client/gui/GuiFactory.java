@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.gas.GasStack;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
@@ -19,6 +18,7 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.IIcon;
 
 import org.lwjgl.opengl.GL11;
 
@@ -92,48 +92,30 @@ public class GuiFactory extends GuiMekanism
 		displayInt = tileEntity.getScaledEnergyLevel(52);
 		drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
 
-		if(tileEntity.tier == FactoryTier.BASIC)
+		int xOffset = tileEntity.tier == FactoryTier.BASIC ? 59 : (tileEntity.tier == FactoryTier.ADVANCED ? 
+			39 : 33);
+		int xDistance = tileEntity.tier == FactoryTier.BASIC ? 38 : (tileEntity.tier == FactoryTier.ADVANCED ? 
+			26 : 19);
+		
+		for(int i = 0; i < tileEntity.tier.processes; i++)
 		{
-			for(int i = 0; i < tileEntity.tier.processes; i++)
-			{
-				int xPos = 59 + (i*38);
+			int xPos = xOffset + (i*xDistance);
 
-				displayInt = tileEntity.getScaledProgress(20, i);
-				drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
-			}
-		}
-		else if(tileEntity.tier == FactoryTier.ADVANCED)
-		{
-			for(int i = 0; i < tileEntity.tier.processes; i++)
-			{
-				int xPos = 39 + (i*26);
-
-				displayInt = tileEntity.getScaledProgress(20, i);
-				drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
-			}
-		}
-		else if(tileEntity.tier == FactoryTier.ELITE)
-		{
-			for(int i = 0; i < tileEntity.tier.processes; i++)
-			{
-				int xPos = 33 + (i*19);
-
-				displayInt = tileEntity.getScaledProgress(20, i);
-				drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
-			}
+			displayInt = tileEntity.getScaledProgress(20, i);
+			drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
 		}
 
 		if(tileEntity.getScaledGasLevel(160) > 0)
 		{
-			displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas());
+			displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas().getGas().getIcon());
 		}
 		
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
-	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas)
+	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, IIcon icon)
 	{
-		if(gas == null)
+		if(icon == null)
 		{
 			return;
 		}
@@ -142,6 +124,6 @@ public class GuiFactory extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, gas.getGas().getIcon(), sizeX, sizeY);
+		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, icon, sizeX, sizeY);
 	}
 }
