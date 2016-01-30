@@ -235,7 +235,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		factory.infuseStored.type = infuseStored.type;
 
 		factory.inventory[5] = inventory[2];
-		factory.inventory[1] = inventory[1];
+		factory.inventory[1] = inventory[4];
 		factory.inventory[5+3] = inventory[3];
 		factory.inventory[0] = inventory[0];
 		factory.inventory[4] = inventory[1];
