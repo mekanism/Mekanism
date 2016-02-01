@@ -10,6 +10,8 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
+import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;

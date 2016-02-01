@@ -1,5 +1,7 @@
 package mekanism.api.infuse;
 
+import mekanism.common.Resource;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -13,29 +15,29 @@ public final class InfuseType
 	/** The name of this infusion */
 	public String name;
 
-	/** The location of this infuse's GUI texture */
-	public ResourceLocation texture;
-
-	/** The infuse's GUI texture X offset. */
-	public int texX;
-
-	/** The infuse's GUI texture Y offset. */
-	public int texY;
+	/** This infuse GUI's icon */
+	public ResourceLocation icon;
+	
+	/** The location of this infuse GUI's icon */
+	public String textureLocation;
 
 	/** The unlocalized name of this type. */
 	public String unlocalizedName;
 
-	public InfuseType(String s, ResourceLocation location, int x, int y)
+	public InfuseType(String s, String tex)
 	{
 		name = s;
-		texture = location;
-		texX = x;
-		texY = y;
+		textureLocation = tex;
+	}
+	
+	public void setIcon(ResourceLocation i)
+	{
+		icon = i;
 	}
 
 	public InfuseType setUnlocalizedName(String name)
 	{
-		unlocalizedName = name;
+		unlocalizedName = "infuse." + name;
 
 		return this;
 	}

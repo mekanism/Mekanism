@@ -1,8 +1,9 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.gas.GasStack;
+import mekanism.api.Coord4D;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
@@ -13,13 +14,21 @@ import mekanism.client.gui.element.GuiSortingTab;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.sound.SoundHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.ContainerFactory;
+import mekanism.common.item.ItemGaugeDropper;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -69,7 +78,14 @@ public class GuiFactory extends GuiMekanism
 
 		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)
 		{
-			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : LangUtils.localize("gui.none"), xAxis, yAxis);
+			if(tileEntity.recipeType.usesFuel())
+			{
+				drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : LangUtils.localize("gui.none"), xAxis, yAxis);
+			}
+			else if(tileEntity.recipeType == RecipeType.INFUSING)
+			{
+				drawCreativeTabHoveringText(tileEntity.infuseStored.type != null ? tileEntity.infuseStored.type.getLocalizedName() + ": " + tileEntity.infuseStored.amount : LangUtils.localize("gui.empty"), xAxis, yAxis);
+			}
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -92,48 +108,40 @@ public class GuiFactory extends GuiMekanism
 		displayInt = tileEntity.getScaledEnergyLevel(52);
 		drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
 
-		if(tileEntity.tier == FactoryTier.BASIC)
+		int xOffset = tileEntity.tier == FactoryTier.BASIC ? 59 : (tileEntity.tier == FactoryTier.ADVANCED ? 
+			39 : 33);
+		int xDistance = tileEntity.tier == FactoryTier.BASIC ? 38 : (tileEntity.tier == FactoryTier.ADVANCED ? 
+			26 : 19);
+		
+		for(int i = 0; i < tileEntity.tier.processes; i++)
 		{
-			for(int i = 0; i < tileEntity.tier.processes; i++)
-			{
-				int xPos = 59 + (i*38);
+			int xPos = xOffset + (i*xDistance);
 
-				displayInt = tileEntity.getScaledProgress(20, i);
-				drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
-			}
-		}
-		else if(tileEntity.tier == FactoryTier.ADVANCED)
-		{
-			for(int i = 0; i < tileEntity.tier.processes; i++)
-			{
-				int xPos = 39 + (i*26);
-
-				displayInt = tileEntity.getScaledProgress(20, i);
-				drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
-			}
-		}
-		else if(tileEntity.tier == FactoryTier.ELITE)
-		{
-			for(int i = 0; i < tileEntity.tier.processes; i++)
-			{
-				int xPos = 33 + (i*19);
-
-				displayInt = tileEntity.getScaledProgress(20, i);
-				drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
-			}
+			displayInt = tileEntity.getScaledProgress(20, i);
+			drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
 		}
 
-		if(tileEntity.getScaledGasLevel(160) > 0)
+		if(tileEntity.recipeType.usesFuel())
 		{
-			displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas());
+			if(tileEntity.getScaledGasLevel(160) > 0)
+			{
+				displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas().getGas().getIcon());
+			}
+		}
+		else if(tileEntity.recipeType == RecipeType.INFUSING)
+		{
+			if(tileEntity.getScaledInfuseLevel(160) > 0)
+			{
+				displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.type.icon);
+			}
 		}
 		
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
-	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas)
+	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, IIcon icon)
 	{
-		if(gas == null)
+		if(icon == null)
 		{
 			return;
 		}
@@ -142,6 +150,32 @@ public class GuiFactory extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, gas.getGas().getIcon(), sizeX, sizeY);
+		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, icon, sizeX, sizeY);
+	}
+	
+	@Override
+	protected void mouseClicked(int x, int y, int button)
+	{
+		super.mouseClicked(x, y, button);
+
+		if(button == 0 || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		{
+			int xAxis = (x - (width - xSize) / 2);
+			int yAxis = (y - (height - ySize) / 2);
+
+			if(xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83)
+			{
+				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				
+				if(stack != null && stack.getItem() instanceof ItemGaugeDropper)
+				{
+					ArrayList data = new ArrayList();
+					data.add(1);
+	
+					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+					SoundHandler.playSound("gui.button.press");
+				}
+			}
+		}
 	}
 }

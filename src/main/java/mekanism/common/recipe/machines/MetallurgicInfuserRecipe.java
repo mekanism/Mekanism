@@ -3,7 +3,6 @@ package mekanism.common.recipe.machines;
 import mekanism.common.InfuseStorage;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-
 import net.minecraft.item.ItemStack;
 
 public class MetallurgicInfuserRecipe extends MachineRecipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe>
@@ -18,9 +17,9 @@ public class MetallurgicInfuserRecipe extends MachineRecipe<InfusionInput, ItemS
 		this(input, new ItemStackOutput(output));
 	}
 
-	public boolean canOperate(ItemStack[] inventory, InfuseStorage infuse)
+	public boolean canOperate(ItemStack[] inventory, int inputIndex, int outputIndex, InfuseStorage infuse)
 	{
-		return getInput().use(inventory, 2, infuse, false) && getOutput().applyOutputs(inventory, 3, false);
+		return getInput().use(inventory, inputIndex, infuse, false) && getOutput().applyOutputs(inventory, outputIndex, false);
 	}
 
 	@Override
@@ -29,11 +28,11 @@ public class MetallurgicInfuserRecipe extends MachineRecipe<InfusionInput, ItemS
 		return new MetallurgicInfuserRecipe(getInput(), getOutput());
 	}
 
-	public void output(ItemStack[] inventory, InfuseStorage infuseStored)
+	public void output(ItemStack[] inventory, int inputIndex, int outputIndex, InfuseStorage infuseStored)
 	{
-		if(getInput().use(inventory, 2, infuseStored, true))
+		if(getInput().use(inventory, inputIndex, infuseStored, true))
 		{
-			getOutput().applyOutputs(inventory, 3, true);
+			getOutput().applyOutputs(inventory, outputIndex, true);
 		}
 	}
 }

@@ -5,7 +5,6 @@ import java.util.Random;
 
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
@@ -486,14 +485,6 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 
 		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1)
 		{
-			if(metadata != 6)
-			{
-				if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-				{
-					return false;
-				}
-			}
-
 			if(metadata == 2)
 			{
 				if(entityplayer.isSneaking())

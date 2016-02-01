@@ -9,15 +9,16 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
@@ -100,9 +101,9 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 
 		if(tileEntity.infuseStored.type != null)
 		{
+			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
 			int displayInt = tileEntity.getScaledInfuseLevel(52);
-			mc.renderEngine.bindTexture(tileEntity.infuseStored.type.texture);
-			drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.infuseStored.type.texX, tileEntity.infuseStored.type.texY + 52 - displayInt, 4, displayInt);
+			drawTexturedRectFromIcon(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.infuseStored.type.icon, 4, displayInt);
 		}
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

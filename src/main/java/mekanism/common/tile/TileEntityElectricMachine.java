@@ -1,10 +1,16 @@
 package mekanism.common.tile;
 
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.*;
+import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
@@ -20,8 +26,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-
-import java.util.ArrayList;
 
 public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ItemStackOutput, RECIPE>
 {
@@ -73,7 +77,6 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		
 		//Electric
 		factory.electricityStored = electricityStored;
-		factory.ic2Registered = ic2Registered;
 		
 		//Noisy
 		factory.soundURL = soundURL;
@@ -105,7 +108,6 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		factory.upgraded = true;
 		
 		factory.markDirty();
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
 	}
 
 	@Override

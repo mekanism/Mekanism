@@ -15,11 +15,13 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IEjector;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
@@ -193,6 +195,61 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		}
 	}
 	
+	public void upgrade(RecipeType type)
+	{
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5, 3);
+		
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		
+		//Basic
+		factory.facing = facing;
+		factory.clientFacing = clientFacing;
+		factory.ticker = ticker;
+		factory.redstone = redstone;
+		factory.redstoneLastTick = redstoneLastTick;
+		factory.doAutoSync = doAutoSync;
+		
+		//Electric
+		factory.electricityStored = electricityStored;
+		
+		//Noisy
+		factory.soundURL = soundURL;
+		
+		//Machine
+		factory.progress[0] = operatingTicks;
+		factory.clientActive = clientActive;
+		factory.isActive = isActive;
+		factory.updateDelay = updateDelay;
+		factory.controlType = controlType;
+		factory.prevEnergy = prevEnergy;
+		factory.upgradeComponent.readFrom(upgradeComponent);
+		factory.upgradeComponent.setUpgradeSlot(0);
+		factory.ejectorComponent.readFrom(ejectorComponent);
+		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		factory.recipeType = type;
+		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
+		
+		//Infuser
+		factory.infuseStored.amount = infuseStored.amount;
+		factory.infuseStored.type = infuseStored.type;
+
+		factory.inventory[5] = inventory[2];
+		factory.inventory[1] = inventory[4];
+		factory.inventory[5+3] = inventory[3];
+		factory.inventory[0] = inventory[0];
+		factory.inventory[4] = inventory[1];
+		
+		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
+		{
+			factory.recalculateUpgradables(upgrade);
+		}
+		
+		factory.upgraded = true;
+		
+		factory.markDirty();
+	}
+	
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
@@ -265,7 +322,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 	public void operate(MetallurgicInfuserRecipe recipe)
 	{
-		recipe.output(inventory, infuseStored);
+		recipe.output(inventory, 2, 3, infuseStored);
 
 		markDirty();
 		ejectorComponent.outputItems();
@@ -273,7 +330,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 	public boolean canOperate(MetallurgicInfuserRecipe recipe)
 	{
-		return recipe != null && recipe.canOperate(inventory, infuseStored);
+		return recipe != null && recipe.canOperate(inventory, 2, 3, infuseStored);
 	}
 
 	public int getScaledInfuseLevel(int i)

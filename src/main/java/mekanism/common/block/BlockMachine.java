@@ -9,7 +9,6 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
@@ -564,11 +563,6 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-		{
-			return false;
-		}
-
 		if(world.isRemote)
 		{
 			return true;

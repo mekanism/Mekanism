@@ -1,6 +1,9 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,13 +15,14 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiPowerBar;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.util.LangUtils;
@@ -31,8 +35,6 @@ import org.lwjgl.opengl.GL11;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 {
@@ -132,8 +134,9 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 		float f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
 		if(ticksPassed < 20) f = 0.0F;
 
-		changeTexture(type.texture);
-		drawProgressBar(2, 2, type.texX, type.texY, 4, 52, f, 3);
+		int display = (int)(52F*f);
+		changeTexture(MekanismRenderer.getBlocksTexture());
+		drawTexturedRectFromIcon(2, 2+52-display, type.icon, 4, display);
 	}
 
 	@Override

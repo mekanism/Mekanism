@@ -4,7 +4,6 @@ import buildcraft.api.tools.IToolWrench;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -32,10 +31,10 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
-
-import java.util.List;
-import java.util.Random;
+import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple energy cube block IDs.
@@ -142,11 +141,6 @@ public class BlockEnergyCube extends BlockContainer
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-		{
-			return false;
-		}
-
 		if(world.isRemote)
 		{
 			return true;

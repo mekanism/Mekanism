@@ -18,12 +18,16 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.infuse.InfuseObject;
+import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.StackUtils;
 import mekanism.client.HolidayManager;
+import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Upgrade;
@@ -37,8 +41,12 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -60,6 +68,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	/** An int[] used to track all current operations' progress. */
 	public int[] progress;
+	
+	public int BASE_MAX_INFUSE = 1000;
+	
+	public int maxInfuse = BASE_MAX_INFUSE;
 
 	/** How many ticks it takes, by default, to run an operation. */
 	public int BASE_TICKS_REQUIRED = 200;
@@ -95,6 +107,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	/** This machine's recipe type. */
 	public RecipeType recipeType = RecipeType.SMELTING;
+	
+	/** The amount of infuse this machine has stored. */
+	public InfuseStorage infuseStored = new InfuseStorage();
 
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
@@ -150,6 +165,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		isActive = false;
 
 		gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS*tier.processes);
+		maxInfuse = BASE_MAX_INFUSE*tier.processes;
 	}
 	
 	public void upgrade()
@@ -169,7 +185,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		
 		//Electric
 		factory.electricityStored = electricityStored;
-		factory.ic2Registered = ic2Registered;
 		
 		//Noisy
 		factory.soundURL = soundURL;
@@ -368,6 +383,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 					setActive(false);
 				}
 			}
+			
+			if(infuseStored.amount <= 0)
+			{
+				infuseStored.amount = 0;
+				infuseStored.type = null;
+			}
 
 			prevEnergy = getEnergy();
 		}
@@ -464,33 +485,58 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public void handleSecondaryFuel()
 	{
-		if(inventory[4] != null && recipeType.usesFuel() && gasTank.getNeeded() > 0)
+		if(inventory[4] != null)
 		{
-			if(inventory[4].getItem() instanceof IGasItem)
+			if(recipeType.usesFuel() && gasTank.getNeeded() > 0)
 			{
-				GasStack gas = ((IGasItem)inventory[4].getItem()).getGas(inventory[4]);
-
-				if(gas != null && recipeType.isValidGas(gas.getGas()))
+				if(inventory[4].getItem() instanceof IGasItem)
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[4], gasTank.getGasType(), gasTank.getNeeded());
-					gasTank.receive(removed, true);
+					GasStack gas = ((IGasItem)inventory[4].getItem()).getGas(inventory[4]);
+	
+					if(gas != null && recipeType.isValidGas(gas.getGas()))
+					{
+						GasStack removed = GasTransmission.removeGas(inventory[4], gasTank.getGasType(), gasTank.getNeeded());
+						gasTank.receive(removed, true);
+					}
+	
+					return;
 				}
-
-				return;
-			}
-
-			GasStack stack = recipeType.getItemGas(inventory[4]);
-			int gasNeeded = gasTank.getNeeded();
-
-			if(stack != null && stack.amount <= gasNeeded)
-			{
-				gasTank.receive(stack, true);
-
-				inventory[4].stackSize--;
-
-				if(inventory[4].stackSize == 0)
+	
+				GasStack stack = recipeType.getItemGas(inventory[4]);
+				int gasNeeded = gasTank.getNeeded();
+	
+				if(stack != null && stack.amount <= gasNeeded)
 				{
-					inventory[4] = null;
+					gasTank.receive(stack, true);
+	
+					inventory[4].stackSize--;
+	
+					if(inventory[4].stackSize == 0)
+					{
+						inventory[4] = null;
+					}
+				}
+			}
+			else if(recipeType == RecipeType.INFUSING)
+			{
+				if(InfuseRegistry.getObject(inventory[4]) != null)
+				{
+					InfuseObject infuse = InfuseRegistry.getObject(inventory[4]);
+
+					if(infuseStored.type == null || infuseStored.type == infuse.type)
+					{
+						if(infuseStored.amount + infuse.stored <= maxInfuse)
+						{
+							infuseStored.amount += infuse.stored;
+							infuseStored.type = infuse.type;
+							inventory[4].stackSize--;
+
+							if(inventory[4].stackSize <= 0)
+							{
+								inventory[4] = null;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -535,7 +581,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 			else if(slotID >= 5 && slotID <= 7)
 			{
-				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType()) != null;
+				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType(), infuseStored) != null;
 			}
 		}
 		else if(tier == FactoryTier.ADVANCED)
@@ -546,7 +592,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 			else if(slotID >= 5 && slotID <= 9)
 			{
-				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType()) != null;
+				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType(), infuseStored) != null;
 			}
 		}
 		else if(tier == FactoryTier.ELITE)
@@ -557,7 +603,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 			else if(slotID >= 5 && slotID <= 11)
 			{
-				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType()) != null;
+				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType(), infuseStored) != null;
 			}
 		}
 
@@ -571,7 +617,31 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		}
 		else if(slotID == 4)
 		{
-			return recipeType.getItemGas(itemstack) != null;
+			if(recipeType.usesFuel())
+			{
+				return recipeType.getItemGas(itemstack) != null;
+			}
+			else if(recipeType == RecipeType.INFUSING)
+			{
+				if(infuseStored.type != null)
+				{
+					if(RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null)
+					{
+						return true;
+					}
+				}
+				else {
+					for(Object obj : Recipe.METALLURGIC_INFUSER.get().keySet())
+					{
+						InfusionInput input = (InfusionInput)obj;
+						
+						if(input.inputStack.isItemEqual(itemstack))
+						{
+							return true;
+						}
+					}
+				}
+			}
 		}
 
 		return false;
@@ -580,6 +650,11 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public int getScaledProgress(int i, int process)
 	{
 		return progress[process]*i / ticksRequired;
+	}
+	
+	public int getScaledInfuseLevel(int i)
+	{
+		return infuseStored.amount * i / maxInfuse;
 	}
 
 	public int getScaledGasLevel(int i)
@@ -606,6 +681,19 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 
 		}
+		
+		if(recipeType == RecipeType.INFUSING)
+		{
+			InfusionInput input = new InfusionInput(infuseStored, inventory[inputSlot]);
+			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
+			
+			if(recipe == null)
+			{
+				return false;
+			}
+			
+			return recipe.canOperate(inventory, inputSlot, outputSlot, infuseStored);
+		}
 
 		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
 
@@ -625,6 +713,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
 
 			recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
+		}
+		else if(recipeType == RecipeType.INFUSING)
+		{
+			InfusionInput input = new InfusionInput(infuseStored, inventory[inputSlot]);
+			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
+			
+			recipe.output(inventory, inputSlot, outputSlot, infuseStored);
 		}
 		else {
 			BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
@@ -647,6 +742,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			{
 				sorting = !sorting;
 			}
+			else if(type == 1)
+			{
+				gasTank.setGas(null);
+				infuseStored.amount = 0;
+				infuseStored.type = null;
+			}
 
 			return;
 		}
@@ -667,6 +768,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		sorting = dataStream.readBoolean();
 		upgraded = dataStream.readBoolean();
+		infuseStored.amount = dataStream.readInt();
+		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
 
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -714,6 +817,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		recipeTicks = nbtTags.getInteger("recipeTicks");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		sorting = nbtTags.getBoolean("sorting");
+		infuseStored.amount = nbtTags.getInteger("infuseStored");
+		infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
 
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -733,6 +838,15 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		nbtTags.setInteger("recipeTicks", recipeTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setBoolean("sorting", sorting);
+		nbtTags.setInteger("infuseStored", infuseStored.amount);
+		
+		if(infuseStored.type != null)
+		{
+			nbtTags.setString("type", infuseStored.type.name);
+		}
+		else {
+			nbtTags.setString("type", "null");
+		}
 
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -753,6 +867,16 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		data.add(controlType);
 		data.add(sorting);
 		data.add(upgraded);
+		data.add(infuseStored.amount);
+		
+		if(infuseStored.type != null)
+		{
+			data.add(infuseStored.type.name);
+		}
+		else {
+			data.add("null");
+		}
+		
 		data.add(progress);
 
 		if(gasTank.getGas() != null)

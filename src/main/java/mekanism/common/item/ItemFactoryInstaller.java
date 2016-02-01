@@ -7,6 +7,7 @@ import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -91,6 +92,17 @@ public class ItemFactoryInstaller extends ItemMekanism
 				else if(tile instanceof TileEntityAdvancedElectricMachine)
 				{
 					((TileEntityAdvancedElectricMachine)tile).upgrade(type);
+					
+					if(!player.capabilities.isCreativeMode)
+					{
+						stack.stackSize = 0;
+					}
+					
+					return true;
+				}
+				else if(tile instanceof TileEntityMetallurgicInfuser)
+				{
+					((TileEntityMetallurgicInfuser)tile).upgrade(type);
 					
 					if(!player.capabilities.isCreativeMode)
 					{
