@@ -2,6 +2,7 @@ package mekanism.api.infuse;
 
 import mekanism.common.Resource;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -17,6 +18,8 @@ public final class InfuseType
 
 	/** This infuse GUI's icon */
 	public ResourceLocation icon;
+
+	public TextureAtlasSprite sprite;
 	
 	/** The location of this infuse GUI's icon */
 	public String textureLocation;

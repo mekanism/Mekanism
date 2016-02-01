@@ -81,6 +81,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
+import scala.tools.nsc.Global.Run;
+
 /**
  * Mekanism packet handler. As always, use packets sparingly!
  * @author AidanBrady
@@ -200,6 +202,10 @@ public class PacketHandler
 				else if(data instanceof ArrayList)
 				{
 					encode(((ArrayList)data).toArray(), output);
+				}
+				else
+				{
+					throw new RuntimeException("Un-encodable data passed to encode(): " + data);
 				}
 			}
 		} catch(Exception e) {

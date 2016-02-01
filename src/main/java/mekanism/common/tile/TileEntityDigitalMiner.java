@@ -651,7 +651,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -867,7 +867,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(running);
 		data.add(silkTouch);
 		data.add(numPowering);
-		data.add(searcher.state);
+		data.add(searcher.state.ordinal());
 		
 		if(searcher.state == State.SEARCHING)
 		{
@@ -877,7 +877,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(getSize());
 		}
 
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(inverse);
 		
 		if(missingStack != null)
@@ -945,7 +945,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(running);
 		data.add(silkTouch);
 		data.add(numPowering);
-		data.add(searcher.state);
+		data.add(searcher.state.ordinal());
 
 		if(searcher.state == State.SEARCHING)
 		{
@@ -955,7 +955,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(getSize());
 		}
 
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(inverse);
 		
 		if(missingStack != null)

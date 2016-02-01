@@ -47,7 +47,7 @@ public abstract class TransporterFilter
 		}
 	}
 
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		if(color != null)
 		{

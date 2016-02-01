@@ -61,7 +61,7 @@ public class MItemStackFilter extends MinerFilter
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(0);
 		

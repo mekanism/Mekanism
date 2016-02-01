@@ -1,10 +1,12 @@
 package mekanism.common.block;
 
+import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -24,6 +26,26 @@ public class BlockBounding extends Block
 		super(Material.iron);
 		setHardness(3.5F);
 		setResistance(8F);
+	}
+
+	public BlockState createBlockState()
+	{
+		return new BlockStateBounding(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		boolean isAdvanced = meta > 0;
+
+		return this.getDefaultState().withProperty(BlockStateBounding.advancedProperty, isAdvanced);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		boolean isAdvanced = state.getValue(BlockStateBounding.advancedProperty);
+		return isAdvanced ? 1 : 0;
 	}
 
 /*
@@ -115,15 +137,13 @@ public class BlockBounding extends Block
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		if(getMetaFromState(state) == 0)
-		{
-			return new TileEntityBoundingBlock();
-		}
-		else if(getMetaFromState(state) == 1)
+		if(state.getValue(BlockStateBounding.advancedProperty))
 		{
 			return new TileEntityAdvancedBoundingBlock();
 		}
-
-		return null;
+		else
+		{
+			return new TileEntityBoundingBlock();
+		}
 	}
 }

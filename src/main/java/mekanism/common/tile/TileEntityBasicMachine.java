@@ -167,7 +167,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		data.add(operatingTicks);
 		data.add(isActive);
 		data.add(ticksRequired);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 
 		return data;
 	}

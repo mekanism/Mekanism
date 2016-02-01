@@ -12,7 +12,7 @@ import net.minecraft.block.properties.PropertyEnum;
  */
 public class BlockStateEnergyCube extends BlockStateFacing
 {
-	public static final PropertyEnum typeProperty = PropertyEnum.create("tier", Tier.EnergyCubeTier.class);
+	public static final PropertyEnum<Tier.EnergyCubeTier> typeProperty = PropertyEnum.create("tier", Tier.EnergyCubeTier.class);
 
 	public BlockStateEnergyCube(BlockEnergyCube block)
 	{

@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
@@ -111,6 +112,8 @@ public class MekanismBlocks
 			mesher.register(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), "inventory"));
 		}
 
+		mesher.register(Item.getItemFromBlock(EnergyCube), 0, new ModelResourceLocation("mekanism:energy_cube", "inventory"));
+
 		ModelBakery.registerItemVariants(Item.getItemFromBlock(MachineBlock),
 				new ResourceLocation("mekanism", "enrichment_chamber"),
 				new ResourceLocation("mekanism", "osmium_compressor"),
@@ -120,7 +123,7 @@ public class MekanismBlocks
 				new ResourceLocation("mekanism", "basic_factory"),
 				new ResourceLocation("mekanism", "advanced_factory"),
 				new ResourceLocation("mekanism", "elite_factory"),
-				new ResourceLocation("mekanism", "metallurgic_infuser"),
+				//new ResourceLocation("mekanism", "metallurgic_infuser"),
 				new ResourceLocation("mekanism", "purification_chamber"),
 				new ResourceLocation("mekanism", "energized_smelter"),
 				new ResourceLocation("mekanism", "teleporter"),

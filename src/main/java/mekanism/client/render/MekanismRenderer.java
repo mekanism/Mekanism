@@ -50,10 +50,18 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.google.common.collect.Maps;
+
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
 {
 	//private static RenderBlocks renderBlocks = new RenderBlocks();
+
+	public enum FluidType
+	{
+		STILL,
+		FLOWING;
+	}
 	
 	public static TextureAtlasSprite[] colors = new TextureAtlasSprite[256];
 	
@@ -76,75 +84,132 @@ public class MekanismRenderer
 	{
 		MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
 	}
+
+	public static TextureAtlasSprite missingIcon;
+
+	public static Map<FluidType, Map<Fluid, TextureAtlasSprite>> textureMap = new HashMap<FluidType, Map<Fluid, TextureAtlasSprite>>();
 	
-/*
+
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
-		if(event.map.getGlTextureId()*/
-/*TODO Is this right?*//*
- == 0)
+/*
+		if(event.map.locationBlocksTexture)
 		{
-			for(EnumColor color : EnumColor.values())
-			{
-				colors[color.ordinal()] = event.map.registerSprite(new ResourceLocation("mekanism:overlay/overlay_" + color.unlocalizedName));
-			}
-			
-			for(TransmissionType type : TransmissionType.values())
-			{
-				overlays.put(type, event.map.registerSprite(new ResourceLocation("mekanism:overlay/" + type.getTransmission() + "Overlay")));
-			}
-			
-			energyIcon = event.map.registerSprite("mekanism:LiquidEnergy");
-			heatIcon = event.map.registerSprite("mekanism:LiquidHeat");
-			
-			GasRegistry.getGas("hydrogen").setIcon(event.map.registerSprite("mekanism:LiquidHydrogen"));
-			GasRegistry.getGas("oxygen").setIcon(event.map.registerSprite("mekanism:LiquidOxygen"));
-			GasRegistry.getGas("water").setIcon(event.map.registerSprite("mekanism:LiquidSteam"));
-			GasRegistry.getGas("chlorine").setIcon(event.map.registerSprite("mekanism:LiquidChlorine"));
-			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerSprite("mekanism:LiquidSulfurDioxide"));
-			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerSprite("mekanism:LiquidSulfurTrioxide"));
-			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerSprite("mekanism:LiquidSulfuricAcid"));
-			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerSprite("mekanism:LiquidHydrogenChloride"));
-			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerSprite("mekanism:LiquidOsmium"));
-			GasRegistry.getGas("liquidStone").setIcon(event.map.registerSprite("mekanism:LiquidStone"));
-			GasRegistry.getGas("ethene").setIcon(event.map.registerSprite("mekanism:LiquidEthene"));
-			GasRegistry.getGas("brine").setIcon(event.map.registerSprite("mekanism:LiquidBrine"));
-			GasRegistry.getGas("sodium").setIcon(event.map.registerSprite("mekanism:LiquidSodium"));
-			GasRegistry.getGas("deuterium").setIcon(event.map.registerSprite("mekanism:LiquidDeuterium"));
-			GasRegistry.getGas("tritium").setIcon(event.map.registerSprite("mekanism:LiquidTritium"));
-			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerSprite("mekanism:LiquidDT"));
-			GasRegistry.getGas("steam").setIcon(event.map.registerSprite("mekanism:LiquidSteam"));
-			GasRegistry.getGas("lithium").setIcon(event.map.registerSprite("mekanism:LiquidLithium"));
 
-			for(Gas gas : GasRegistry.getRegisteredGasses())
+*/
+		initFluidTextures(event.map);
+
+		for(EnumColor color : EnumColor.values())
+		{
+			colors[color.ordinal()] = event.map.registerSprite(new ResourceLocation("mekanism:overlay/overlay_" + color.unlocalizedName));
+		}
+
+		for(TransmissionType type : TransmissionType.values())
+		{
+			overlays.put(type, event.map.registerSprite(new ResourceLocation("mekanism:overlay/" + type.getTransmission() + "Overlay")));
+		}
+
+		energyIcon = event.map.registerSprite(new ResourceLocation("mekanism:LiquidEnergy"));
+		heatIcon = event.map.registerSprite(new ResourceLocation("mekanism:LiquidHeat"));
+
+		GasRegistry.getGas("hydrogen").setIcon(event.map, "mekanism:LiquidHydrogen");
+		GasRegistry.getGas("oxygen").setIcon(event.map,"mekanism:LiquidOxygen");
+		GasRegistry.getGas("water").setIcon(event.map,"mekanism:LiquidSteam");
+		GasRegistry.getGas("chlorine").setIcon(event.map,"mekanism:LiquidChlorine");
+		GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map,"mekanism:LiquidSulfurDioxide");
+		GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map,"mekanism:LiquidSulfurTrioxide");
+		GasRegistry.getGas("sulfuricAcid").setIcon(event.map,"mekanism:LiquidSulfuricAcid");
+		GasRegistry.getGas("hydrogenChloride").setIcon(event.map,"mekanism:LiquidHydrogenChloride");
+		GasRegistry.getGas("liquidOsmium").setIcon(event.map,"mekanism:LiquidOsmium");
+		GasRegistry.getGas("liquidStone").setIcon(event.map,"mekanism:LiquidStone");
+		GasRegistry.getGas("ethene").setIcon(event.map,"mekanism:LiquidEthene");
+		GasRegistry.getGas("brine").setIcon(event.map,"mekanism:LiquidBrine");
+		GasRegistry.getGas("sodium").setIcon(event.map,"mekanism:LiquidSodium");
+		GasRegistry.getGas("deuterium").setIcon(event.map,"mekanism:LiquidDeuterium");
+		GasRegistry.getGas("tritium").setIcon(event.map,"mekanism:LiquidTritium");
+		GasRegistry.getGas("fusionFuelDT").setIcon(event.map,"mekanism:LiquidDT");
+		GasRegistry.getGas("steam").setIcon(event.map,"mekanism:LiquidSteam");
+		GasRegistry.getGas("lithium").setIcon(event.map,"mekanism:LiquidLithium");
+
+		for(Gas gas : GasRegistry.getRegisteredGasses())
+		{
+			if(gas instanceof OreGas)
 			{
-				if(gas instanceof OreGas)
+				if(gas.getUnlocalizedName().contains("clean"))
 				{
-					if(gas.getUnlocalizedName().contains("clean"))
-					{
-						gas.setIcon(event.map.registerSprite("mekanism:LiquidCleanOre"));
-					}
-					else {
-						gas.setIcon(event.map.registerSprite("mekanism:LiquidOre"));
-					}
+					gas.setIcon(event.map,"mekanism:LiquidCleanOre");
+				}
+				else {
+					gas.setIcon(event.map,"mekanism:LiquidOre");
 				}
 			}
+		}
 
-			FluidRegistry.getFluid("brine").setIcons(event.map.registerSprite("mekanism:LiquidBrine"));
-			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerSprite("mekanism:LiquidHeavyWater"));
+/*
+		if(RenderPartTransmitter.getInstance() != null)
+		{
+			RenderPartTransmitter.getInstance().resetDisplayInts();
+		}
+*/
 
-			if(RenderPartTransmitter.getInstance() != null)
-			{
-				RenderPartTransmitter.getInstance().resetDisplayInts();
+		RenderDynamicTank.resetDisplayInts();
+		RenderSalinationController.resetDisplayInts();
+		RenderPortableTank.resetDisplayInts();
+/*
+		}
+*/
+	}
+
+	public static void initFluidTextures(TextureMap map) {
+		missingIcon = map.getMissingSprite();
+
+		textureMap.clear();
+
+		for (FluidType type : FluidType.values()) {
+			textureMap.put(type, new HashMap<Fluid, TextureAtlasSprite>());
+		}
+
+		for (Fluid fluid : FluidRegistry.getRegisteredFluids().values()) {
+			// TextureAtlasSprite toUse = null;
+
+			if (fluid.getFlowing() != null) {
+				String flow = fluid.getFlowing().toString();
+				TextureAtlasSprite sprite;
+				if (map.getTextureExtry(flow) != null) {
+					sprite = map.getTextureExtry(flow);
+				} else {
+					sprite = map.registerSprite(fluid.getStill());
+				}
+				// toUse = sprite;
+				textureMap.get(FluidType.FLOWING).put(fluid, sprite);
 			}
-			
-			RenderDynamicTank.resetDisplayInts();
-			RenderSalinationController.resetDisplayInts();
-			RenderPortableTank.resetDisplayInts();
+
+			if (fluid.getStill() != null) {
+				String still = fluid.getStill().toString();
+				TextureAtlasSprite sprite;
+				if (map.getTextureExtry(still) != null) {
+					sprite = map.getTextureExtry(still);
+				} else {
+					sprite = map.registerSprite(fluid.getStill());
+				}
+				// toUse = sprite;
+				textureMap.get(FluidType.STILL).put(fluid, sprite);
+			}
+			// if (toUse != null) {
+			// textureMap.get(FluidType.FROZEN).put(fluid, toUse);
+			// }
 		}
 	}
-*/
+
+
+	public static TextureAtlasSprite getFluidTexture(Fluid fluid, FluidType type) {
+		if (fluid == null || type == null) {
+			return missingIcon;
+		}
+		Map<Fluid, TextureAtlasSprite> map = textureMap.get(type);
+		return map.containsKey(fluid) ? map.get(fluid) : missingIcon;
+	}
 
 	public static boolean blockIconExists(String texture) //Credit to CoFHCore
 	{

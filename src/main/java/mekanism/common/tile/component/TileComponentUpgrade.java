@@ -193,13 +193,13 @@ public class TileComponentUpgrade implements ITileComponent
 	}
 	
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(upgrades.size());
 		
 		for(Map.Entry<Upgrade, Integer> entry : upgrades.entrySet())
 		{
-			data.add(entry.getKey());
+			data.add(entry.getKey().ordinal());
 			data.add(entry.getValue());
 		}
 		

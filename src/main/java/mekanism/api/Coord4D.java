@@ -169,7 +169,7 @@ public class Coord4D extends BlockPos
 	 * Writes this Coord4D's data to an ArrayList for packet transfer.
 	 * @param data - the ArrayList to add the data to
 	 */
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(getX());
 		data.add(getY());

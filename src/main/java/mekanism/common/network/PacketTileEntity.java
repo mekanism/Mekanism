@@ -41,13 +41,13 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 	{
 		public Coord4D coord4D;
 	
-		public ArrayList parameters;
+		public ArrayList<Object> parameters;
 		
 		public ByteBuf storedBuffer = null;
 		
 		public TileEntityMessage() {}
 	
-		public TileEntityMessage(Coord4D coord, ArrayList params)
+		public TileEntityMessage(Coord4D coord, ArrayList<Object> params)
 		{
 			coord4D = coord;
 			parameters = params;

@@ -46,7 +46,7 @@ public class MModIDFilter extends MinerFilter
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(3);
 		

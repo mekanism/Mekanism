@@ -1,5 +1,10 @@
 package mekanism.api.gas;
 
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -19,7 +24,9 @@ public class Gas
 
 	private Fluid fluid;
 
-	private ResourceLocation icon;
+	private ResourceLocation iconLocation;
+
+	private TextureAtlasSprite sprite;
 
 	private boolean visible = true;
 
@@ -40,7 +47,7 @@ public class Gas
 	public Gas(Fluid f)
 	{
 		unlocalizedName = name = f.getName();
-		icon = f.getStill();
+		iconLocation = f.getStill();
 		fluid = f;
 		from_fluid = true;
 	}
@@ -115,8 +122,22 @@ public class Gas
 		{
 			return this.getFluid().getStill();
 		}
-		
-		return icon;
+
+		return iconLocation;
+	}
+
+	/**
+	 * Gets the Sprite associated with this Gas.
+	 * @return associated IIcon
+	 */
+	public TextureAtlasSprite getSprite()
+	{
+		if(from_fluid)
+		{
+			return MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
+		}
+
+		return sprite;
 	}
 
 	/**
@@ -124,16 +145,11 @@ public class Gas
 	 * @param i - IIcon to associate with this Gas
 	 * @return this Gas object
 	 */
-	public Gas setIcon(ResourceLocation i)
+	public Gas setIcon(TextureMap map, String location)
 	{
-		icon = i;
+		iconLocation = new ResourceLocation(location);
 
-/*
-		if(hasFluid())
-		{
-			fluid.setIcons(getIcon());
-		}
-*/
+		sprite = map.registerSprite(iconLocation);
 
 		from_fluid = false;
 		

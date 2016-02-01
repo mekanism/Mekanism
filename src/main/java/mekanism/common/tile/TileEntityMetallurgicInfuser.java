@@ -197,10 +197,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	
 	public void upgrade(RecipeType type)
 	{
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5, 3);
+		worldObj.setBlockToAir(getPos());
+		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 		
-		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
 		
 		//Basic
 		factory.facing = facing;

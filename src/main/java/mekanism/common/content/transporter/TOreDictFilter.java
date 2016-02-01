@@ -52,7 +52,7 @@ public class TOreDictFilter extends TransporterFilter
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(1);
 

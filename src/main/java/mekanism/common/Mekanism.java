@@ -29,6 +29,7 @@ import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
+import mekanism.client.model.item.EnergyCubeItemModel;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.Tier.BaseTier;
@@ -83,6 +84,9 @@ import mekanism.common.tile.TileEntityThermoelectricValve;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
+
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -95,6 +99,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -103,6 +108,8 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -1459,5 +1466,17 @@ public class Mekanism
 			proxy.loadConfiguration();
 			proxy.onConfigSync(false);
 		}
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void registerModels(ModelBakeEvent event) {
+		ModelResourceLocation mrl = new ModelResourceLocation("mekanism:energy_cube", "inventory");
+		IBakedModel b = event.modelRegistry.getObject(new ModelResourceLocation("mekanism:EnergyCube", "facing=north,tier=basic"));
+		IBakedModel a = event.modelRegistry.getObject(new ModelResourceLocation("mekanism:EnergyCube", "facing=north,tier=advanced"));
+		IBakedModel e = event.modelRegistry.getObject(new ModelResourceLocation("mekanism:EnergyCube", "facing=north,tier=elite"));
+		IBakedModel u = event.modelRegistry.getObject(new ModelResourceLocation("mekanism:EnergyCube", "facing=north,tier=ultimate"));
+		IBakedModel c = event.modelRegistry.getObject(new ModelResourceLocation("mekanism:EnergyCube", "facing=north,tier=creative"));
+		event.modelRegistry.putObject(mrl, new EnergyCubeItemModel(new IBakedModel[]{b, a, e, u, c}));
 	}
 }

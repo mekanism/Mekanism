@@ -1,5 +1,8 @@
 package mekanism.common.block;
 
+import java.util.List;
+import java.util.Random;
+
 import buildcraft.api.tools.IToolWrench;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -9,6 +12,8 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.block.states.BlockStateEnergyCube;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
@@ -17,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,15 +32,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple energy cube block IDs.
@@ -54,6 +57,45 @@ public class BlockEnergyCube extends BlockContainer
 		setHardness(2F);
 		setResistance(4F);
 		setCreativeTab(Mekanism.tabMekanism);
+	}
+
+	@Override
+	public BlockState createBlockState()
+	{
+		return new BlockStateEnergyCube(this);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return 0;
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return getDefaultState();
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if(tile instanceof TileEntityEnergyCube)
+		{
+			TileEntityEnergyCube cube = (TileEntityEnergyCube)tile;
+			if(cube.facing != null)
+			{
+				state = state.withProperty(BlockStateFacing.facingProperty, cube.facing);
+			}
+
+			if(cube.tier != null)
+			{
+				state = state.withProperty(BlockStateEnergyCube.typeProperty, cube.tier);
+			}
+		}
+
+		return state;
 	}
 
 /*
@@ -220,7 +262,7 @@ public class BlockEnergyCube extends BlockContainer
 	@Override
 	public int getRenderType()
 	{
-		return -1;
+		return 3;
 	}
 
 	@Override

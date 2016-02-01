@@ -206,7 +206,7 @@ public class TileComponentConfig implements ITileComponent
 		
 		for(TransmissionType type : transmissions)
 		{
-			data.add(type);
+			data.add(type.ordinal());
 		}
 		
 		for(TransmissionType type : transmissions)

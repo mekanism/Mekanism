@@ -163,7 +163,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	{
 		MachineType type = MachineType.get(getMachineBlock(), meta&0xF);
 
-		return this.getDefaultState().withProperty(getProperty(), type);
+		return getDefaultState().withProperty(getProperty(), type);
 	}
 
 	@Override

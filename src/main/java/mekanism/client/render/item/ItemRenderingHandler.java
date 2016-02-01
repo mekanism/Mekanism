@@ -1,77 +1,12 @@
 package mekanism.client.render.item;
 
-import mekanism.api.EnumColor;
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.client.ClientProxy;
-import mekanism.client.MekanismClient;
-import mekanism.client.model.ModelArmoredJetpack;
-import mekanism.client.model.ModelAtomicDisassembler;
-import mekanism.client.model.ModelEnergyCube;
-import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.model.ModelFlamethrower;
-import mekanism.client.model.ModelFreeRunners;
-import mekanism.client.model.ModelGasMask;
-import mekanism.client.model.ModelGasTank;
-import mekanism.client.model.ModelJetpack;
-import mekanism.client.model.ModelObsidianTNT;
-import mekanism.client.model.ModelPortableTank;
-import mekanism.client.model.ModelRobit;
-import mekanism.client.model.ModelScubaTank;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.RenderGlowPanel;
-import mekanism.client.render.RenderPartTransmitter;
-import mekanism.client.render.entity.RenderBalloon;
-import mekanism.client.render.tileentity.RenderBin;
-import mekanism.client.render.tileentity.RenderPortableTank;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismItems;
-import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.base.IEnergyCube;
-import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.inventory.InventoryBin;
-import mekanism.common.item.ItemAtomicDisassembler;
-import mekanism.common.item.ItemBalloon;
-import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemFlamethrower;
-import mekanism.common.item.ItemFreeRunners;
-import mekanism.common.item.ItemGasMask;
-import mekanism.common.item.ItemRobit;
-import mekanism.common.item.ItemScubaTank;
-import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.multipart.ItemGlowPanel;
-import mekanism.common.multipart.ItemPartTransmitter;
-import mekanism.common.multipart.TransmitterType;
-import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityPortableTank;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-
-import org.lwjgl.opengl.GL11;
-
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ItemRenderingHandler implements IItemRenderer
+public class ItemRenderingHandler// implements IItemRenderer
 {
+	/*
 	public ModelRobit robit = new ModelRobit();
 	public ModelChest electricChest = new ModelChest();
 	public ModelEnergyCube energyCube = new ModelEnergyCube();
@@ -173,7 +108,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 
-			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()*/ == null)
+			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()* / == null)
 			{
 				return;
 			}
@@ -223,7 +158,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
 				GL11.glDisable(GL11.GL_LIGHTING);
 
-				renderItem.renderItemAndEffectIntoGUI(binRenderer.func_147498_b()/*getFontRenderer()*/, renderEngine, itemStack, 0, 0);
+				renderItem.renderItemAndEffectIntoGUI(binRenderer.func_147498_b()/*getFontRenderer()* /, renderEngine, itemStack, 0, 0);
 
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
@@ -537,4 +472,5 @@ public class ItemRenderingHandler implements IItemRenderer
 			}
 		}
 	}
+				*/
 }

@@ -109,7 +109,7 @@ public class Frequency
 		publicFreq = nbtTags.getBoolean("publicFreq");
 	}
 
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(name);
 		data.add(owner);
