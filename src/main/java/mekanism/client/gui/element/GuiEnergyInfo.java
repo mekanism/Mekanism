@@ -1,14 +1,18 @@
 package mekanism.client.gui.element;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
+import codechicken.lib.vec.Rectangle4i;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiEnergyInfo extends GuiElement
@@ -48,7 +52,15 @@ public class GuiEnergyInfo extends GuiElement
 	{
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
 		{
-			displayTooltips(infoHandler.getInfo(), xAxis, yAxis);
+			List<String> info = new ArrayList<String>();
+			
+			for(String s : infoHandler.getInfo())
+			{
+				info.add(s);
+			}
+			
+			info.add(LangUtils.localize("gui.energyType") + ": " + general.activeType);
+			displayTooltips(info, xAxis, yAxis);
 		}
 	}
 
@@ -56,5 +68,11 @@ public class GuiEnergyInfo extends GuiElement
 	public void preMouseClicked(int xAxis, int yAxis, int button) {}
 
 	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button) {}
+	public void mouseClicked(int xAxis, int yAxis, int button) 
+	{
+		if(button == 0)
+		{
+			general.activeType = EnergyType.values()[(general.activeType.ordinal()+1)%EnergyType.values().length];
+		}
+	}
 }
