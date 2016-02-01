@@ -1,7 +1,12 @@
 package mekanism.generators.client.gui;
 
+import java.util.List;
+
 import mekanism.api.MekanismConfig.generators;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
@@ -49,6 +54,18 @@ public class GuiIndustrialTurbine extends GuiMekanism
 				return (double)tileEntity.structure.lastSteamInput/rate;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 40, 13));
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
+		{
+			@Override
+			public List<String> getInfo()
+			{
+				double energyMultiplier = generators.turbineBaseEnergyPerSteam*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
+				
+				return ListUtils.asList(
+						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow*energyMultiplier) + "/t");
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
 	}
 	
 	@Override

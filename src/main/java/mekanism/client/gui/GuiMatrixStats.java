@@ -1,8 +1,14 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.MekanismConfig.generators;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiEnergyGauge;
+import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiMatrixTab;
 import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
 import mekanism.client.gui.element.GuiRateBar;
@@ -65,6 +71,17 @@ public class GuiMatrixStats extends GuiMekanism
 				return tileEntity.structure.lastOutput/tileEntity.structure.transferCap;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 38, 13));
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
+		{
+			@Override
+			public List<String> getInfo()
+			{
+				return ListUtils.asList(
+						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t",
+						LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t");
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
 	}
 
 	@Override

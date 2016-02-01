@@ -1,9 +1,15 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.util.ListUtils;
+import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -45,6 +51,15 @@ public class GuiFluidicPlenisher extends GuiMekanism
 				return tileEntity.fluidTank;
 			}
 		}, GuiGauge.Type.STANDARD, this, guiLocation, 6, 13));
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+			@Override
+			public List<String> getInfo()
+			{
+				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
+				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+			}
+		}, this, guiLocation));
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, guiLocation));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, guiLocation));
 	}
 
