@@ -26,6 +26,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int button)
+	protected void mouseClicked(int x, int y, int button) throws IOException
 	{
 		super.mouseClicked(x, y, button);
 

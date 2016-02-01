@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -132,7 +134,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(currentType, i);
+			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.getFront(i));
 
 			if(data.color != EnumColor.GREY)
 			{
@@ -175,7 +177,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(currentType, i);
+			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.getFront(i));
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
@@ -198,14 +200,14 @@ public class GuiSideConfiguration extends GuiMekanism
 
 		TileEntity tile = (TileEntity)configurable;
 
-		if(tile == null || mc.theWorld.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord) == null)
+		if(tile == null || mc.theWorld.getTileEntity(tile.getPos()) == null)
 		{
 			mc.displayGuiScreen(null);
 		}
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 

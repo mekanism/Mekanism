@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -120,10 +121,10 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 
 		if(isNew)
 		{
-			((GuiButton)buttonList.get(1)).enabled = false;
+			buttonList.get(1).enabled = false;
 		}
 
-		filterText = new GuiTextField(fontRendererObj, guiWidth + 33, guiHeight + 48, 96, 12);
+		filterText = new GuiTextField(2, fontRendererObj, guiWidth + 33, guiHeight + 48, 96, 12);
 		filterText.setMaxStringLength(TileEntityOredictionificator.MAX_LENGTH);
 		filterText.setFocused(true);
 		
@@ -151,7 +152,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 45, 19);
+				itemRender.renderItemAndEffectIntoGUI(renderStack, 45, 19);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
@@ -236,7 +237,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	}
 	
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!filterText.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -256,7 +257,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 		
@@ -296,7 +297,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	}
 	
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 

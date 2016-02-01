@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -93,13 +94,13 @@ public class GuiMOreDictFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		oreDictText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
+		oreDictText = new GuiTextField(2, fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
 		oreDictText.setMaxStringLength(TransporterFilter.MAX_LENGTH);
 		oreDictText.setFocused(true);
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!oreDictText.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -119,7 +120,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -169,7 +170,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 12, 19);
+				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
@@ -179,7 +180,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.replaceStack, 149, 19);
+			itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -290,7 +291,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 

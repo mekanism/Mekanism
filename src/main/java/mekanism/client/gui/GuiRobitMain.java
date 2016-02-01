@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
@@ -73,13 +75,13 @@ public class GuiRobitMain extends GuiMekanism
 		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, LangUtils.localize("gui.confirm")));
 		confirmName.visible = displayNameChange;
 
-		nameChangeField = new GuiTextField(fontRendererObj, guiWidth + 48, guiHeight + 21, 80, 12);
+		nameChangeField = new GuiTextField(1, fontRendererObj, guiWidth + 48, guiHeight + 21, 80, 12);
 		nameChangeField.setMaxStringLength(12);
 		nameChangeField.setFocused(true);
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!displayNameChange)
 		{
@@ -253,7 +255,7 @@ public class GuiRobitMain extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 

@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerDictionary;
@@ -42,7 +44,7 @@ public class GuiDictionary extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemType, 6, 6);
+			itemRender.renderItemAndEffectIntoGUI(itemType, 6, 6);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -87,7 +89,7 @@ public class GuiDictionary extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
@@ -100,7 +102,7 @@ public class GuiDictionary extends GuiMekanism
 
 				for(int i = 0; i < inventorySlots.inventorySlots.size(); i++)
 				{
-					Slot slot = (Slot)inventorySlots.inventorySlots.get(i);
+					Slot slot = inventorySlots.inventorySlots.get(i);
 
 					if(isMouseOverSlot(slot, mouseX, mouseY))
 					{

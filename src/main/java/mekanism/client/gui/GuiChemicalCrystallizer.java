@@ -131,7 +131,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 131, 14);
+				itemRender.renderItemAndEffectIntoGUI(renderStack, 131, 14);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}

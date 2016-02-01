@@ -4,14 +4,17 @@ import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.LangUtils;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
@@ -90,14 +93,14 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	}
 
 	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		if(dummy)
 		{
-			return dummyType.getIcon();
+			return MekanismRenderer.getFluidTexture(dummyType, FluidType.STILL);
 		}
 		
-		return infoHandler.getTank().getFluid().getFluid().getIcon();
+		return MekanismRenderer.getFluidTexture(infoHandler.getTank().getFluid().getFluid(), FluidType.STILL);
 	}
 
 	@Override

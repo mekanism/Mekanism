@@ -10,6 +10,13 @@ import mekanism.api.Coord4D;
 //import mekanism.client.gui.GuiMMaterialFilter;
 //import mekanism.client.gui.GuiMModIDFilter;
 //import mekanism.client.gui.GuiMOreDictFilter;
+import mekanism.client.gui.GuiDigitalMiner;
+import mekanism.client.gui.GuiDigitalMinerConfig;
+import mekanism.client.gui.GuiMFilterSelect;
+import mekanism.client.gui.GuiMItemStackFilter;
+import mekanism.client.gui.GuiMMaterialFilter;
+import mekanism.client.gui.GuiMModIDFilter;
+import mekanism.client.gui.GuiMOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
@@ -165,7 +172,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 	
 		@SideOnly(Side.CLIENT)
 		public static GuiScreen getGui(MinerGuiPacket packetType, int type, EntityPlayer player, World world, BlockPos pos, int index)
-		{/*TODO
+		{
 			if(type == 0)
 			{
 				return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner)world.getTileEntity(pos));
@@ -217,7 +224,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 						return new GuiMModIDFilter(player, (TileEntityDigitalMiner)world.getTileEntity(pos), index);
 					}
 				}
-			}*/
+			}
 	
 			return null;
 		}

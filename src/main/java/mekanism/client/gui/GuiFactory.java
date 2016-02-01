@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +25,10 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -125,21 +127,21 @@ public class GuiFactory extends GuiMekanism
 		{
 			if(tileEntity.getScaledGasLevel(160) > 0)
 			{
-				displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas().getGas().getIcon());
+				displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas().getGas().getSprite());
 			}
 		}
 		else if(tileEntity.recipeType == RecipeType.INFUSING)
 		{
 			if(tileEntity.getScaledInfuseLevel(160) > 0)
 			{
-				displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.type.icon);
+				displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.type.sprite);
 			}
 		}
 		
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
-	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, IIcon icon)
+	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, TextureAtlasSprite icon)
 	{
 		if(icon == null)
 		{
@@ -150,11 +152,11 @@ public class GuiFactory extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, icon, sizeX, sizeY);
+		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, icon, sizeX, sizeY);
 	}
 	
 	@Override
-	protected void mouseClicked(int x, int y, int button)
+	protected void mouseClicked(int x, int y, int button) throws IOException
 	{
 		super.mouseClicked(x, y, button);
 

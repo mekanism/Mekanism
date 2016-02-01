@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,20 +105,20 @@ public class GuiDigitalMiner extends GuiMekanism
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
 		if(guibutton.id == 0)
 		{
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<Object>();
 			data.add(3);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 		}
 		else if(guibutton.id == 1)
 		{
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<Object>();
 			data.add(4);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -186,8 +187,8 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 			
-			itemRender.renderIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tileEntity.missingStack, 144, 27);
+			//TODO itemRender.renderIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
+			itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);
 			
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
@@ -289,7 +290,7 @@ public class GuiDigitalMiner extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -302,7 +303,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
                 SoundHandler.playSound("gui.button.press");
 
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<Object>();
 				data.add(0);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -312,7 +313,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
                 SoundHandler.playSound("gui.button.press");
 
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<Object>();
 				data.add(1);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -322,7 +323,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
                 SoundHandler.playSound("gui.button.press");
 
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<Object>();
 				data.add(5);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -332,7 +333,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
                 SoundHandler.playSound("gui.button.press");
 
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<Object>();
 				data.add(9);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

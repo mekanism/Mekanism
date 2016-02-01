@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -125,7 +124,7 @@ public abstract class GuiElement
 	
 	public void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {}
 
-	public void mouseMovedOrUp(int x, int y, int type) {}
+	public void mouseReleased(int x, int y, int type) {}
 	
 	public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
 
@@ -136,4 +135,16 @@ public abstract class GuiElement
 	public abstract void preMouseClicked(int xAxis, int yAxis, int button);
 
 	public abstract void mouseClicked(int xAxis, int yAxis, int button);
+
+	public static class Rectangle4i
+	{
+		public int x, y, width, height;
+		public Rectangle4i(int x, int y, int width, int height)
+		{
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+		}
+	}
 }

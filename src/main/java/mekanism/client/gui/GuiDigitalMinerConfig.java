@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -198,7 +199,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -342,9 +343,9 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int x, int y, int type)
+	protected void mouseReleased(int x, int y, int type)
 	{
-		super.mouseMovedOrUp(x, y, type);
+		super.mouseReleased(x, y, type);
 
 		if(type == 0 && isDragging)
 		{
@@ -357,7 +358,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	 * Handles mouse input.
 	 */
 	@Override
-	public void handleMouseInput()
+	public void handleMouseInput() throws IOException
 	{
 		super.handleMouseInput();
 		
@@ -406,21 +407,21 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		String prevMin = minField != null ? minField.getText() : "";
 		String prevMax = maxField != null ? maxField.getText() : "";
 
-		radiusField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 67, 26, 11);
+		radiusField = new GuiTextField(1, fontRendererObj, guiWidth + 12, guiHeight + 67, 26, 11);
 		radiusField.setMaxStringLength(2);
 		radiusField.setText(prevRad);
 
-		minField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 92, 26, 11);
+		minField = new GuiTextField(2, fontRendererObj, guiWidth + 12, guiHeight + 92, 26, 11);
 		minField.setMaxStringLength(3);
 		minField.setText(prevMin);
 
-		maxField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 117, 26, 11);
+		maxField = new GuiTextField(3, fontRendererObj, guiWidth + 12, guiHeight + 117, 26, 11);
 		maxField.setMaxStringLength(3);
 		maxField.setText(prevMax);
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -464,7 +465,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
@@ -485,7 +486,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						try {
 							GL11.glPushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
 							GL11.glPopMatrix();
 						} catch(Exception e) {}
@@ -501,7 +502,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(itemFilter.materialItem, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
@@ -522,7 +523,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						try {
 							GL11.glPushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), modIDStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(modIDStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
 							GL11.glPopMatrix();
 						} catch(Exception e) {}
@@ -647,7 +648,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE)
 		{

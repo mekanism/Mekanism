@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -7,9 +8,11 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,8 +43,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public GuiSeismicReader(World world, Coord4D coord, ItemStack stack)
 	{
-		pos = coord;
-		pos.yCoord = Math.min(255, pos.yCoord);
+		pos = new Coord4D(coord.getX(), Math.min(255, coord.getY()), coord.getZ());
 		worldObj = world;
 
 		itemStack = stack;
@@ -130,7 +132,7 @@ public class GuiSeismicReader extends GuiScreen
 					GL11.glScalef(0.8f, 0.8f, 0.8f);
 				}
 				
-				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, this.mc.getTextureManager(), stack, 0, 0);
+				itemRender.renderItemAndEffectIntoGUI(stack, 0, 0);
 				GL11.glPopMatrix();
 			}
 		}
@@ -224,17 +226,18 @@ public class GuiSeismicReader extends GuiScreen
 
 	public void calculate()
 	{
-		for(int y = 0; y < pos.yCoord; y++)
+		for(BlockPos p = new BlockPos(pos.getX(), 0, pos.getZ()); p.getY() < pos.getY(); p = p.up())
 		{
-			Block block = worldObj.getBlock(pos.xCoord, y, pos.zCoord);
-			int metadata = worldObj.getBlockMetadata(pos.xCoord, y, pos.zCoord);
+			IBlockState state = worldObj.getBlockState(p);
+			Block block = state.getBlock();
+			int metadata = block.getMetaFromState(state);
 			
 			blockList.add(Pair.of(metadata, block));
 		}
 	}
 
 	@Override
-	protected void mouseClicked(int xPos, int yPos, int buttonClicked)
+	protected void mouseClicked(int xPos, int yPos, int buttonClicked) throws IOException
 	{
 		super.mouseClicked(xPos, yPos, buttonClicked);
 

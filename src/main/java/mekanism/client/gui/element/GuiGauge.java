@@ -10,11 +10,11 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
 
 public abstract class GuiGauge<T> extends GuiElement
 {
@@ -52,7 +52,7 @@ public abstract class GuiGauge<T> extends GuiElement
 
 	public abstract int getScaledLevel();
 
-	public abstract IIcon getIcon();
+	public abstract TextureAtlasSprite getIcon();
 
 	public abstract String getTooltipText();
 

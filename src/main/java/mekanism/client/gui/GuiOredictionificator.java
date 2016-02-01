@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class GuiOredictionificator extends GuiMekanism
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -129,7 +130,7 @@ public class GuiOredictionificator extends GuiMekanism
 				{
 					GL11.glPushMatrix();
 					GL11.glEnable(GL11.GL_LIGHTING);
-					itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), stack, 13, yStart + 3);
+					itemRender.renderItemAndEffectIntoGUI(stack, 13, yStart + 3);
 					GL11.glDisable(GL11.GL_LIGHTING);
 					GL11.glPopMatrix();
 				}
@@ -178,7 +179,7 @@ public class GuiOredictionificator extends GuiMekanism
 	}
 	
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -232,9 +233,9 @@ public class GuiOredictionificator extends GuiMekanism
 	}
 	
 	@Override
-	protected void mouseMovedOrUp(int x, int y, int type)
+	protected void mouseReleased(int x, int y, int type)
 	{
-		super.mouseMovedOrUp(x, y, type);
+		super.mouseReleased(x, y, type);
 
 		if(type == 0 && isDragging)
 		{

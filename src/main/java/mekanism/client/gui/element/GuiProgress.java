@@ -6,7 +6,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Rectangle4i;
+
 
 @SideOnly(Side.CLIENT)
 public class GuiProgress extends GuiElement

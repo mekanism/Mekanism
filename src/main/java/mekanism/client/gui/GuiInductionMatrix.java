@@ -88,7 +88,7 @@ public class GuiInductionMatrix extends GuiMekanism
 			}
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-			drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, 16 - (16 - renderRemaining));
+			drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, 16 - (16 - renderRemaining));
 			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)

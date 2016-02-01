@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
@@ -53,7 +55,7 @@ public class GuiPasswordEnter extends GuiScreen
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		passwordField.mouseClicked(mouseX, mouseY, button);
@@ -70,13 +72,13 @@ public class GuiPasswordEnter extends GuiScreen
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, LangUtils.localize("gui.open")));
 
-		passwordField = new GuiTextField(fontRendererObj, guiWidth + 45, guiHeight + 50, 80, 12);
+		passwordField = new GuiTextField(1, fontRendererObj, guiWidth + 45, guiHeight + 50, 80, 12);
 		passwordField.setMaxStringLength(12);
 		passwordField.setFocused(true);
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		super.keyTyped(c, i);
 

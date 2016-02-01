@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -66,7 +67,7 @@ public class GuiEntangledBlock extends GuiMekanism
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -74,7 +75,7 @@ public class GuiEntangledBlock extends GuiMekanism
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!frequencyField.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -123,7 +124,7 @@ public class GuiEntangledBlock extends GuiMekanism
 
 		String prevFreq = frequencyField != null ? frequencyField.getText() : "";
 
-		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 55, 96, 11);
+		frequencyField = new GuiTextField(0, fontRendererObj, guiWidth + 75, guiHeight + 55, 96, 11);
 		frequencyField.setText(prevFreq);
 	}
 }

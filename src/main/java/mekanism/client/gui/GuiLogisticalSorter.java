@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -215,7 +216,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int mouseBtn)
+	public void mouseClicked(int mouseX, int mouseY, int mouseBtn) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, mouseBtn);
 
@@ -362,9 +363,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
+	protected void mouseReleased(int mouseX, int mouseY, int type)
 	{
-		super.mouseMovedOrUp(mouseX, mouseY, type);
+		super.mouseReleased(mouseX, mouseY, type);
 
 		if(type == 0 && isDragging)
 		{
@@ -377,7 +378,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	 * Handles mouse input.
 	 */
 	@Override
-	public void handleMouseInput()
+	public void handleMouseInput() throws IOException
 	{
 		super.handleMouseInput();
 		
@@ -422,7 +423,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -469,7 +470,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
@@ -491,7 +492,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 						try {
 							GL11.glPushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
 							GL11.glPopMatrix();
 						} catch(final Exception e) {}
@@ -508,7 +509,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(itemFilter.materialItem, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
@@ -530,7 +531,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 						try {
 							GL11.glPushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), modIDStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(modIDStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
 							GL11.glPopMatrix();
 						} catch(final Exception e) {}
@@ -569,7 +570,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRender.renderIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
+			//TODO itemRender.renderIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();

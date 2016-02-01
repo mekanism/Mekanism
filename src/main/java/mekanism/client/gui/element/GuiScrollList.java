@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.vec.Rectangle4i;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -233,9 +233,9 @@ public class GuiScrollList extends GuiElement
 	}
 
 	@Override
-	public void mouseMovedOrUp(int xAxis, int yAxis, int type)
+	public void mouseReleased(int xAxis, int yAxis, int type)
 	{
-		super.mouseMovedOrUp(xAxis, yAxis, type);
+		super.mouseReleased(xAxis, yAxis, type);
 
 		if(type == 0)
 		{

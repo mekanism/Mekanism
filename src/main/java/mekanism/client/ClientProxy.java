@@ -58,6 +58,55 @@ import mekanism.client.entity.EntityLaser;
 //import mekanism.client.gui.GuiTeleporter;
 //import mekanism.client.gui.GuiTransporterConfig;
 //import mekanism.client.gui.GuiUpgradeManagement;
+import mekanism.client.gui.GuiAmbientAccumulator;
+import mekanism.client.gui.GuiChemicalCrystallizer;
+import mekanism.client.gui.GuiChemicalDissolutionChamber;
+import mekanism.client.gui.GuiChemicalInfuser;
+import mekanism.client.gui.GuiChemicalInjectionChamber;
+import mekanism.client.gui.GuiChemicalOxidizer;
+import mekanism.client.gui.GuiChemicalWasher;
+import mekanism.client.gui.GuiCombiner;
+import mekanism.client.gui.GuiCredits;
+import mekanism.client.gui.GuiCrusher;
+import mekanism.client.gui.GuiDictionary;
+import mekanism.client.gui.GuiDigitalMiner;
+import mekanism.client.gui.GuiDynamicTank;
+import mekanism.client.gui.GuiElectricPump;
+import mekanism.client.gui.GuiElectrolyticSeparator;
+import mekanism.client.gui.GuiEnergizedSmelter;
+import mekanism.client.gui.GuiEnergyCube;
+import mekanism.client.gui.GuiEnrichmentChamber;
+import mekanism.client.gui.GuiEntangledBlock;
+import mekanism.client.gui.GuiFactory;
+import mekanism.client.gui.GuiFluidicPlenisher;
+import mekanism.client.gui.GuiGasTank;
+import mekanism.client.gui.GuiInductionMatrix;
+import mekanism.client.gui.GuiLaserAmplifier;
+import mekanism.client.gui.GuiLaserTractorBeam;
+import mekanism.client.gui.GuiMatrixStats;
+import mekanism.client.gui.GuiMetallurgicInfuser;
+import mekanism.client.gui.GuiOredictionificator;
+import mekanism.client.gui.GuiOsmiumCompressor;
+import mekanism.client.gui.GuiPRC;
+import mekanism.client.gui.GuiPasswordEnter;
+import mekanism.client.gui.GuiPasswordModify;
+import mekanism.client.gui.GuiPortableTank;
+import mekanism.client.gui.GuiPrecisionSawmill;
+import mekanism.client.gui.GuiPurificationChamber;
+import mekanism.client.gui.GuiRobitCrafting;
+import mekanism.client.gui.GuiRobitInventory;
+import mekanism.client.gui.GuiRobitMain;
+import mekanism.client.gui.GuiRobitRepair;
+import mekanism.client.gui.GuiRobitSmelting;
+import mekanism.client.gui.GuiRotaryCondensentrator;
+import mekanism.client.gui.GuiSeismicReader;
+import mekanism.client.gui.GuiSeismicVibrator;
+import mekanism.client.gui.GuiSideConfiguration;
+import mekanism.client.gui.GuiSolarEvaporationController;
+import mekanism.client.gui.GuiSolarNeutronActivator;
+import mekanism.client.gui.GuiTeleporter;
+import mekanism.client.gui.GuiTransporterConfig;
+import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.entity.RenderBalloon;
@@ -95,6 +144,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.IElectricChest;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -102,8 +153,11 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryElectricChest;
+import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
+import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
@@ -120,12 +174,14 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
+import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
@@ -466,7 +522,7 @@ public class ClientProxy extends CommonProxy
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 
-		/*switch(ID)
+		switch(ID)
 		{
 			case 0:
 				return new GuiDictionary(player.inventory);
@@ -593,7 +649,7 @@ public class ClientProxy extends CommonProxy
 				return new GuiTransporterConfig(player, (ISideConfiguration)tileEntity);
 			case 52:
 				return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator)tileEntity);
-		}*/
+		}
 		
 		return null;
 	}

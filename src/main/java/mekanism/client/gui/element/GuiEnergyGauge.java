@@ -6,6 +6,8 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiEnergyGauge extends GuiGauge
@@ -38,7 +40,7 @@ public class GuiEnergyGauge extends GuiGauge
 	}
 
 	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		return MekanismRenderer.energyIcon;
 	}

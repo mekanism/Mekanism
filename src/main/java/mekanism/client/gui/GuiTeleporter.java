@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,7 +146,7 @@ public class GuiTeleporter extends GuiMekanism
 			teleportButton = new GuiButton(4, guiWidth + 42, guiHeight + 140, 92, 20, LangUtils.localize("gui.teleport"));
 		}
 		
-		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
+		frequencyField = new GuiTextField(5, fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
 		frequencyField.setMaxStringLength(MAX_LENGTH);
 		frequencyField.setEnableBackgroundDrawing(false);
 		
@@ -275,7 +276,7 @@ public class GuiTeleporter extends GuiMekanism
 	}
 	
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		
@@ -298,7 +299,7 @@ public class GuiTeleporter extends GuiMekanism
 	}
 	
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!frequencyField.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -323,7 +324,7 @@ public class GuiTeleporter extends GuiMekanism
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 

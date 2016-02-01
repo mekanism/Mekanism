@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,14 +104,14 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 		{
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
 			int displayInt = tileEntity.getScaledInfuseLevel(52);
-			drawTexturedRectFromIcon(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.infuseStored.type.icon, 4, displayInt);
+			drawTexturedRectFromIcon(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.infuseStored.type.sprite, 4, displayInt);
 		}
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int button)
+	protected void mouseClicked(int x, int y, int button) throws IOException
 	{
 		super.mouseClicked(x, y, button);
 
