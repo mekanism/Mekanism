@@ -663,4 +663,9 @@ public class CommonProxy implements IGuiProvider
 	}
 
 	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy) {}
+	
+	public Object getFontRenderer()
+	{
+		return null;
+	}
 }

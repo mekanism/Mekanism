@@ -34,7 +34,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
 		}
 		else {
-			list.addAll(MekanismUtils.splitLines(getUpgradeType(itemstack).getDescription()));
+			list.addAll(MekanismUtils.splitTooltip(getUpgradeType(itemstack).getDescription(), itemstack));
 		}
 	}
 	

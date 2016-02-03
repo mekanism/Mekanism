@@ -170,6 +170,7 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -638,5 +639,11 @@ public class ClientProxy extends CommonProxy
 	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy)
 	{
 		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction, energy));
+	}
+	
+	@Override
+	public FontRenderer getFontRenderer()
+	{
+		return Minecraft.getMinecraft().fontRenderer;
 	}
 }

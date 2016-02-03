@@ -137,11 +137,17 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 				list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
 			else {
-				list.addAll(MekanismUtils.splitLines(type.getDescription()));
+				list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
 			}
 		}
 		else {
-			list.addAll(MekanismUtils.splitLines(type.getDescription()));
+			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
+			{
+				list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
+			}
+			else {
+				list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
+			}
 		}
 	}
 
