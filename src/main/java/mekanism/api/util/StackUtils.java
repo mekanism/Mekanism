@@ -59,6 +59,11 @@ public final class StackUtils
 		{
 			return check == wild;
 		}
+		
+		if (OreDictionary.WILDCARD_VALUE == null)
+		{
+			return false;
+		}
 		return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
 	}
 
