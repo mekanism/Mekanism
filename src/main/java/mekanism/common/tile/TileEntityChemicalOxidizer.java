@@ -69,7 +69,9 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	public TileEntityChemicalOxidizer()
 	{
 		super("machine.oxidizer", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
+		
 		inventory = new ItemStack[4];
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
 	@Override

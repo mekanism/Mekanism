@@ -106,7 +106,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 				int outputNeeded = outputTank.getCapacity()-outputTank.getFluidAmount();
 				int inputStored = inputTank.getFluidAmount();
 				
-				double tempMult = Math.max(0, getTemperature())*general.evaporationTempMultiplier.getDouble();
+				double tempMult = Math.max(0, getTemperature())*general.evaporationTempMultiplier;
 				double inputToUse = (tempMult*recipe.recipeInput.ingredient.amount)*((float)height/(float)MAX_HEIGHT);
 				inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
 				
@@ -328,21 +328,19 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			temperatureSet = true;
 		}
 		
-		tempToAdd += getActiveSolars()*general.evaporationSolarMultiplier.getDouble();
+		tempToAdd += getActiveSolars()*general.evaporationSolarMultiplier;
 		temperature += tempToAdd/(float)height;
 		
 		float biome = biomeTemp-0.5F;
 		float base = biome > 0 ? biome*20 : biomeTemp*40;
-		float incr = (float)Math.sqrt(Math.abs(temperature-base))*(float)general.evaporationHeatDissipation.getDouble();
+		float incr = (float)Math.sqrt(Math.abs(temperature-base))*(float)general.evaporationHeatDissipation;
 		
 		if(temperature > base)
 		{
 			incr = -incr;
 		}
 		
-		System.out.println(incr + " " + biome + " " + base);
-		
-		temperature = (float)Math.min(general.evaporationMaxTemp.getDouble(), temperature + incr/(float)height);
+		temperature = (float)Math.min(general.evaporationMaxTemp, temperature + incr/(float)height);
 		
 		tempToAdd = 0;
 		
@@ -594,7 +592,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	public int getScaledTempLevel(int i)
 	{
-		return (int)(i*Math.min(1, getTemperature()/general.evaporationMaxTemp.getDouble()));
+		return (int)(i*Math.min(1, getTemperature()/general.evaporationMaxTemp));
 	}
 	
 	public Coord4D getRenderLocation()

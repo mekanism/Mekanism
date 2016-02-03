@@ -83,6 +83,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		secondaryEnergyPerTick = secondaryPerTick;
 
 		upgradeComponent = upgradeableSecondaryEfficiency() ? new TileComponentAdvancedUpgrade(this, 4) : new TileComponentUpgrade(this, 4);
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}

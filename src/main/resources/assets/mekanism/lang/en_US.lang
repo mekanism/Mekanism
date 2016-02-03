@@ -11,6 +11,7 @@ item.EnergyTablet.name=Energy Tablet
 item.SpeedUpgrade.name=Speed Upgrade
 item.EnergyUpgrade.name=Energy Upgrade
 item.FilterUpgrade.name=Filter Upgrade
+item.MufflingUpgrade.name=Muffling Upgrade
 item.GasUpgrade.name=Gas Upgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
@@ -355,6 +356,8 @@ upgrade.filter=Filter
 upgrade.filter.desc=A filter that separates !nheavy water from regular water.
 upgrade.gas=Gas
 upgrade.gas.desc=Increases the efficiency !nof gas-using machinery.
+upgrade.muffling=Muffling
+upgrade.muffling.desc=Reduces noise generated !nby machinery.
 
 //Key description text
 key.mode=Item Mode Switch
@@ -380,8 +383,6 @@ mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their ene
 mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
 
 //Gui text
-gui.removeSpeedUpgrade=Remove speed upgrade
-gui.removeEnergyUpgrade=Remove energy upgrade
 gui.condensentrating=Condensentrating
 gui.decondensentrating=Decondensentrating
 gui.power=Power

@@ -77,6 +77,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int baseTicksRequired, double maxEnergy)
 	{
 		super("machine." + soundPath, name, maxEnergy);
+		
 		BASE_ENERGY_PER_TICK = perTick;
 		energyPerTick = perTick;
 		BASE_TICKS_REQUIRED = baseTicksRequired;

@@ -1,5 +1,9 @@
 package mekanism.common.tile;
 
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -15,22 +19,15 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
-
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import io.netty.buffer.ByteBuf;
-
-import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
 
 public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 {
@@ -208,7 +205,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
-		return 0.4F;
+		return 0.4F*super.getVolume();
 	}
 
 	@Override

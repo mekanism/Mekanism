@@ -20,7 +20,8 @@ public enum Upgrade
 	SPEED("speed", 8, EnumColor.RED),
 	ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),
 	FILTER("filter", 1, EnumColor.DARK_AQUA),
-	GAS("gas", 8, EnumColor.YELLOW);
+	GAS("gas", 8, EnumColor.YELLOW),
+	MUFFLING("muffling", 4, EnumColor.DARK_GREY);
 	
 	private String name;
 	private int maxStack;
@@ -68,6 +69,8 @@ public enum Upgrade
 				return new ItemStack(MekanismItems.EnergyUpgrade);
 			case FILTER:
 				return new ItemStack(MekanismItems.FilterUpgrade);
+			case MUFFLING:
+				return new ItemStack(MekanismItems.MufflingUpgrade);
 			case GAS:
 				return new ItemStack(MekanismItems.GasUpgrade);
 		}
@@ -138,11 +141,6 @@ public enum Upgrade
 					Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
 					upgrades.put(upgrade, compound.getInteger("amount"));
 				}
-			}
-			else if(nbtTags.hasKey("energyMultiplier") && nbtTags.hasKey("speedMultiplier")) //TODO remove soon
-			{
-				upgrades.put(Upgrade.ENERGY, nbtTags.getInteger("energyMultiplier"));
-				upgrades.put(Upgrade.SPEED, nbtTags.getInteger("speedMultiplier"));
 			}
 		}
 		

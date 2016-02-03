@@ -17,9 +17,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -79,7 +79,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	public TileEntityChemicalDissolutionChamber()
 	{
 		super("machine.dissolution", "ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
+		
 		inventory = new ItemStack[5];
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
 	@Override

@@ -100,6 +100,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		inventory = new ItemStack[5];
 		
 		upgradeComponent = new TileComponentUpgrade(this, 0);
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
