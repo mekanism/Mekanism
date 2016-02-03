@@ -53,7 +53,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	public float biomeTemp = 0;
 	public float temperature = 0;
-	public float tempToAdd = 0;
+	public float heatToAbsorb = 0;
 	
 	public float lastGain = 0;
 	
@@ -328,8 +328,8 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			temperatureSet = true;
 		}
 		
-		tempToAdd += getActiveSolars()*general.evaporationSolarMultiplier;
-		temperature += tempToAdd/(float)height;
+		heatToAbsorb += getActiveSolars()*general.evaporationSolarMultiplier;
+		temperature += heatToAbsorb/(float)height;
 		
 		float biome = biomeTemp-0.5F;
 		float base = biome > 0 ? biome*20 : biomeTemp*40;
@@ -342,7 +342,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		temperature = (float)Math.min(general.evaporationMaxTemp, temperature + incr/(float)height);
 		
-		tempToAdd = 0;
+		heatToAbsorb = 0;
 		
 		MekanismUtils.saveChunk(this);
 	}

@@ -180,6 +180,10 @@ item.MultipartTransmitter.EliteLogisticalTransporter.name=Elite Logistical Trans
 item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimate Logistical Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
 item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
+item.MultipartTransmitter.BasicThermodynamicConductor.name=Basic Thermodynamic Conductor
+item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Advanced Thermodynamic Conductor
+item.MultipartTransmitter.EliteThermodynamicConductor.name=Elite Thermodynamic Conductor
+item.MultipartTransmitter.UltimateThermodynamicConductor.name=Ultimate Thermodynamic Conductor
 
 //Glow Panel
 item.GlowPanel.name=Glow Panel
@@ -684,6 +688,7 @@ tooltip.insufficientFuel=Insufficient Fuel
 tooltip.readyForReaction=Ready for Reaction
 tooltip.speed=Speed
 tooltip.and=and
+tooltip.heat=Heat
 
 tooltip.portableTank.bucketMode=Bucket Mode
 

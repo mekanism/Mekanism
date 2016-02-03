@@ -1,9 +1,13 @@
 package mekanism.common.tile;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
@@ -13,6 +17,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -35,10 +40,11 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-import java.util.*;
-
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler
 {
 	private MinecraftServer server = MinecraftServer.getServer();
 
@@ -139,6 +145,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		}
 
 		ChargeUtils.discharge(0, this);
+	}
+	
+	@Override
+	public Frequency getFrequency()
+	{
+		return frequency;
 	}
 	
 	public Coord4D getClosest()

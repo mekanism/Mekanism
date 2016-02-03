@@ -10,14 +10,13 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.multipart.MultipartTransporter;
 import mekanism.common.multipart.PartDiversionTransporter;
-import mekanism.common.multipart.PartHeatTransmitter;
 import mekanism.common.multipart.PartLogisticalTransporter;
 import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartPressurizedTube;
 import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
+import mekanism.common.multipart.PartThermodynamicConductor;
 import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.multipart.TransmitterType.Size;
@@ -271,7 +270,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		pop();
 	}
 
-	public void renderContents(PartHeatTransmitter transmitter, Vector3 pos)
+	public void renderContents(PartThermodynamicConductor transmitter, Vector3 pos)
 	{
 		push();
 		CCRenderState.reset();
@@ -602,10 +601,10 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 
-	public void renderHeatSide(ForgeDirection side, PartHeatTransmitter cable)
+	public void renderHeatSide(ForgeDirection side, PartThermodynamicConductor cable)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.getTransmitter().temperature, cable.getBaseColour()));
+		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
 	}
 
 	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)
@@ -664,7 +663,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		PartMechanicalPipe.registerIcons(register);
 		PartPressurizedTube.registerIcons(register);
 		PartLogisticalTransporter.registerIcons(register);
-		PartHeatTransmitter.registerIcons(register);
+		PartThermodynamicConductor.registerIcons(register);
 	}
 
 	@Override
