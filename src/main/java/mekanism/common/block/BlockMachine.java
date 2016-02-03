@@ -377,7 +377,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(general.enableAmbientLighting)
+		if(client.enableAmbientLighting)
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 	
@@ -385,7 +385,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 				{
-					return general.ambientLightingLevel;
+					return client.ambientLightingLevel;
 				}
 			}
 		}

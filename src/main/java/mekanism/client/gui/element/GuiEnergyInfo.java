@@ -59,7 +59,7 @@ public class GuiEnergyInfo extends GuiElement
 				info.add(s);
 			}
 			
-			info.add(LangUtils.localize("gui.energyType") + ": " + general.activeType);
+			info.add(LangUtils.localize("gui.unit") + ": " + general.activeType);
 			displayTooltips(info, xAxis, yAxis);
 		}
 	}

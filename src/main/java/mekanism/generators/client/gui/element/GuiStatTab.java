@@ -4,16 +4,16 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import codechicken.lib.vec.Rectangle4i;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiStatTab extends GuiElement
@@ -74,7 +74,7 @@ public class GuiStatTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 66 && yAxis <= 84)
 			{
-				MekanismGenerators.packetHandler.sendToServer(new GeneratorsGuiMessage(Coord4D.get(tileEntity), 13));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 13));
 				SoundHandler.playSound("gui.button.press");
 			}
 		}

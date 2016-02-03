@@ -212,6 +212,8 @@ public class ClientProxy extends CommonProxy
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
 		client.renderCTM = Mekanism.configuration.get("client", "CTMRenderer", true).getBoolean();
+		client.enableAmbientLighting = Mekanism.configuration.get("general", "EnableAmbientLighting", true).getBoolean();
+		client.ambientLightingLevel = Mekanism.configuration.get("general", "AmbientLightingLevel", 15).getInt();
 
 		if(Mekanism.configuration.hasChanged())
 		{

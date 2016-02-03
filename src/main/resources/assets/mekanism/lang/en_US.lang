@@ -497,7 +497,8 @@ gui.maxProduction=Max Production
 gui.limiting=Limiting
 gui.steamInput=Steam Input
 gui.capacity=Capacity
-gui.energyType=Energy Type
+gui.unit=Unit
+gui.temp=Temp
 
 gui.reactor.injectionRate=Injection Rate
 
