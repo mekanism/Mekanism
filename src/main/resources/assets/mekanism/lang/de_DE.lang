@@ -264,10 +264,14 @@ gas.chlorine=Chlor
 gas.sulfurDioxideGas=Schwefeldioxid
 gas.sulfurTrioxideGas=Schwefeltrioxid
 gas.sulfuricAcid=Schwefelsäure
-gas.enricheddihydrogensulfidGas=Angereicherter Schwefelwasserstoff
 
-gas.enrichedDihydrogenSulfidSnd=Angereicherter Schwefelwasserstoff II
-gas.enrichedDihydrogenSulfidRd=Angereicherter Schwefelwasserstoff III
+gas.enricheddihydrogensulfidGas=Angereicherter Schwefelwasserstoff I
+gas.enricheddihydrogensulfidsnd=Angereicherter Schwefelwasserstoff II
+gas.enricheddihydrogensulfidrd=Angereicherter Schwefelwasserstoff III
+
+gas.enrichedwater=Angereichertes Wasser I
+gas.enrichedwatersnd=Angereichertes Wasser II
+gas.enrichedwaterrd=Angereichertes Wasser II
 
 gas.hydrogenChloride=Chlorwasserstoff
 gas.liquidOsmium=Flüssiges Osmium
@@ -309,21 +313,19 @@ fluid.chlorine=Flüssiges Chlor
 fluid.sulfurDioxideGas=Flüssiges Schwefeldioxid
 fluid.sulfurTrioxideGas=Flüssiges Schwefeltrioxid
 fluid.sulfuricAcid=Flüssige Schwefelsäure
-
-fluid.enricheddihydrogensulfidGas=Angereicherter flüssiger Schwefelwasserstoff
 fluid.hydrogenChloride=Flüssiger Chlorwasserstoff
 
-fluid.enrichedDihydrogenSulfid=Angereicherter flüssiger Schwefelwasserstoff I
-fluid.enrichedDihydrogenSulfidSnd=Angereicherter flüssiger Schwefelwasserstoff II
-fluid.enrichedDihydrogenSulfidRd=Angereicherter flüssiger Schwefelwasserstoff III
+fluid.enricheddihydrogensulfidGas=Angereicherter flüssiger Schwefelwasserstoff I
+fluid.enricheddihydrogensulfidsnd=Angereicherter flüssiger Schwefelwasserstoff II
+fluid.enricheddihydrogensulfidrd=Angereicherter flüssiger Schwefelwasserstoff III
 
 fluid.brine=Salzwasser
 fluid.ethene=Flüssigethylen
 fluid.sodium=Flüssignatrium
 
-fluid.enrichedWater=Angereichertes Wasser
-fluid.enrichedWaterSnd=Angereichertes Wasser II
-fluid.enrichedWaterRd=Angereichertes Wasser II
+fluid.enrichedwater=Angereichertes Wasser I
+fluid.enrichedwatersnd=Angereichertes Wasser II
+fluid.enrichedwaterrd=Angereichertes Wasser II
 
 fluid.heavyWater=Schweres Wasser
 fluid.lithium=Flüssiges Lithium

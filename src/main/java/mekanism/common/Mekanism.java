@@ -419,6 +419,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 0), new Object[]{
                 "CCC", "CTC", "CCC", Character.valueOf('C'), "ingotCopper", Character.valueOf('T'), new ItemStack(MekanismBlocks.BasicBlock, 1, 9)
         }));
+
+        /* WIP
+
         CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 5), new Object[] {
                 "iii", "ODO", "iii", Character.valueOf('O'), new ItemStack(MekanismBlocks.BasicBlock, 1, 0), Character.valueOf('i'), new ItemStack(MekanismItems.Ingot, 1, 7), Character.valueOf('D'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 0)
         }));
@@ -429,6 +432,8 @@ public class Mekanism
         CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 17), new Object[] {
                 "ITI", "CBC", "ITI", Character.valueOf('I'), "ingotCopper", Character.valueOf('T'), new ItemStack(MekanismBlocks.BasicBlock, 1, 15), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED), Character.valueOf('B'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8)
         }));
+        */
+
 		MachineType.CHEMICAL_DISSOLUTION_CHAMBER.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 6), new Object[] {
 			"CGC", "EAE", "CGC", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('A'), MekanismItems.AtomicAlloy, Character.valueOf('E'), MekanismItems.EnrichedAlloy
 		}));
@@ -835,8 +840,9 @@ public class Mekanism
 		RecipeHandler.addSolarEvaporationRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("brine", 1));
 		RecipeHandler.addSolarEvaporationRecipe(FluidRegistry.getFluidStack("brine", 10), FluidRegistry.getFluidStack("lithium", 1));
 
-        //Girdler Sulfid Processor Recipe//
 
+        //Girdler Sulfid Processor Recipes//
+        /* WIP
         //Phase 1
         RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidGas", 10), FluidRegistry.getFluidStack("enrichedwater", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidGas", 10));
         RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwater", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidGas", 10), FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("enricheddihydrogensulfidsnd", 10));
@@ -848,14 +854,27 @@ public class Mekanism
 		//Phase 3
         RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwatersnd", 1000), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 1000), FluidRegistry.getFluidStack("enrichedwaterrd", 1), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 1));
         RecipeHandler.addGirdlerSulfidProcessorRecipe(FluidRegistry.getFluidStack("enrichedwaterrd", 1000), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 1000), FluidRegistry.getFluidStack("enrichedwatersnd", 1), FluidRegistry.getFluidStack("enricheddihydrogensulfidrd", 1));
-        //GSP Recipe-End//
+        */
+
+        RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidGas"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidsnd"), 1));
+        RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidsnd"), 2), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidrd"), 2));
+
+        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("enricheddihydrogensulfidGas"), 1), new GasStack(GasRegistry.getGas("enrichedwater"), 1));
+        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("enricheddihydrogensulfidsnd"), 1), new GasStack(GasRegistry.getGas("enrichedwatersnd"), 1));
+        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("enricheddihydrogensulfidrd"), 1), new GasStack(GasRegistry.getGas("enrichedwaterrd"), 1));
+
+        RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("enrichedwater", 1000), 2 * usage.heavyWaterElectrolysisUsage, new GasStack(GasRegistry.getGas("deuterium"), 1), new GasStack(GasRegistry.getGas("oxygen"), 100));
+        RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("enrichedwatersnd", 100), 3 * usage.heavyWaterElectrolysisUsage, new GasStack(GasRegistry.getGas("deuterium"), 1), new GasStack(GasRegistry.getGas("oxygen"), 10));
+        RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("enrichedwaterrd", 10), 4 * usage.heavyWaterElectrolysisUsage, new GasStack(GasRegistry.getGas("deuterium"), 1), new GasStack(GasRegistry.getGas("oxygen"), 1));
+        //GSP Recipes-End//
+
 		
 		//Chemical Crystallizer Recipes
 		RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(GasRegistry.getGas("lithium"), 100), new ItemStack(MekanismItems.OtherDust, 1, 4));
 		RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(GasRegistry.getGas("brine"), 15), new ItemStack(MekanismItems.Salt));
 
         //Chemical Washer Recipes for Gsp
-        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 10), new GasStack(GasRegistry.getGas("dihydrogensulfidGas"), 10));
+        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidGas"), 1));
 
 
 		//T4 Processing Recipes
@@ -1181,18 +1200,17 @@ public class Mekanism
 		GasRegistry.register(new Gas("steam")).registerFluid();
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 
+
+        GasRegistry.register(new Gas("enrichedwater")).registerFluid();
+        GasRegistry.register(new Gas("enrichedwatersnd")).registerFluid();
+        GasRegistry.register(new Gas("enrichedwaterrd")).registerFluid();
+        GasRegistry.register(new Gas("dihydrogensulfid")).registerFluid();
+
         GasRegistry.register(new Gas("enricheddihydrogensulfidGas")).registerFluid();
+        GasRegistry.register(new Gas("enricheddihydrogensulfidsnd")).registerFluid();
+        GasRegistry.register(new Gas("enricheddihydrogensulfidrd")).registerFluid();
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
-
-        FluidRegistry.registerFluid(new Fluid("enrichedwater"));
-        FluidRegistry.registerFluid(new Fluid("enrichedwatersnd"));
-        FluidRegistry.registerFluid(new Fluid("enrichedwaterrd"));
-        FluidRegistry.registerFluid(new Fluid("dihydrogensulfid"));
-
-        //FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfid"));
-        FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfidsnd"));
-        FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfidrd"));
 		
 		for(Resource resource : Resource.values())
 		{

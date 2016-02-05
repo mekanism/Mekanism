@@ -160,9 +160,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[3][0] = register.registerIcon("mekanism:CoalBlock");
 				icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
 				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
-				
+
 				MekanismRenderer.loadDynamicTextures(register, "Bin", icons[6], DefIcon.getActivePair(register.registerIcon("mekanism:BinSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinTop"), 0), new DefIcon(register.registerIcon("mekanism:BinTopOn"), 6));
+                        new DefIcon(register.registerIcon("mekanism:BinTop"), 0), new DefIcon(register.registerIcon("mekanism:BinTopOn"), 6));
 				
 				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
@@ -183,6 +183,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
                 icons[16][2] = ctms[16][0].mainTextureData.icon;
 
                 icons[17][0] = ctms[17][0].mainTextureData.icon;
+
 				break;
 			case BASIC_BLOCK_2:
 				ctms[0][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
@@ -203,7 +204,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 
                 ctms[5][0] = new CTMData("ctm/GirdlerSulfidProcessorBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(16, 17)).registerIcons(register);
-				
+
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
@@ -260,6 +261,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
                             return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
                         }
                         else {
+                            // debuging
+
+                            Mekanism.logger.info(icons[meta][2].toString());
                             return icons[meta][2];
                         }
 					default:
@@ -1132,6 +1136,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	public static enum BasicBlock
 	{
 		BASIC_BLOCK_1,
-		BASIC_BLOCK_2;
+		BASIC_BLOCK_2
 	}
 }

@@ -91,7 +91,7 @@ public class MekanismRenderer
 			
 			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
 			heatIcon = event.map.registerIcon("mekanism:LiquidHeat");
-			
+
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
 			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
@@ -111,6 +111,11 @@ public class MekanismRenderer
 			GasRegistry.getGas("steam").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
 			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:LiquidLithium"));
 			GasRegistry.getGas("enricheddihydrogensulfidGas").setIcon(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfid"));
+            GasRegistry.getGas("enricheddihydrogensulfidsnd").setIcon(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfidSnd"));
+            GasRegistry.getGas("enricheddihydrogensulfidrd").setIcon(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfidRd"));
+            GasRegistry.getGas("enrichedwater").setIcon(event.map.registerIcon("mekanism:LiquidEnrichedWater"));
+            GasRegistry.getGas("enrichedwatersnd").setIcon(event.map.registerIcon("mekanism:LiquidEnrichedWaterSnd"));
+            GasRegistry.getGas("enrichedwaterrd").setIcon(event.map.registerIcon("mekanism:LiquidEnrichedWaterRd"));
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
@@ -133,7 +138,7 @@ public class MekanismRenderer
             FluidRegistry.getFluid("enrichedwatersnd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedWaterSnd"));
             FluidRegistry.getFluid("enrichedwaterrd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedWaterRd"));
 
-            //FluidRegistry.getFluid("enricheddihydrogensulfid").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfid")); //obsolet
+            //FluidRegistry.getFluid("enricheddihydrogensulfidGas").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfid")); //obsolet
             FluidRegistry.getFluid("enricheddihydrogensulfidsnd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfidSnd"));
             FluidRegistry.getFluid("enricheddihydrogensulfidrd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfidRd"));
 
