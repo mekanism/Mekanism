@@ -138,7 +138,6 @@ public class MekanismRenderer
             FluidRegistry.getFluid("enrichedwatersnd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedWaterSnd"));
             FluidRegistry.getFluid("enrichedwaterrd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedWaterRd"));
 
-            //FluidRegistry.getFluid("enricheddihydrogensulfidGas").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfid")); //obsolet
             FluidRegistry.getFluid("enricheddihydrogensulfidsnd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfidSnd"));
             FluidRegistry.getFluid("enricheddihydrogensulfidrd").setIcons(event.map.registerIcon("mekanism:LiquidEnrichedDihydrogenSulfidRd"));
 

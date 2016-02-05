@@ -9,6 +9,7 @@ import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.energy.tile.IEnergySource;
+import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
@@ -18,6 +19,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.util.CableUtils;
@@ -42,6 +44,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 
 	public double currentPower = 0;
 	public double lastWrite = 0;
+
+    private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 
 	public EnergyStack buffer = new EnergyStack(0);
 
@@ -183,11 +187,18 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	public static void registerIcons(IIconRegister register)
-	{
-		cableIcons.registerCenterIcons(register, new String[]{"UniversalCableBasic", "UniversalCableAdvanced",
-				"UniversalCableElite", "UniversalCableUltimate"});
-		cableIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
-				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
+    {
+        if (!PartUniversalCable.opaque) {
+            cableIcons.registerCenterIcons(register, new String[]{"UniversalCableBasic", "UniversalCableAdvanced",
+                "UniversalCableElite", "UniversalCableUltimate"});
+            cableIcons.registerSideIcons(register, new String[]{"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
+                "SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
+        } else {
+            cableIcons.registerCenterIcons(register, new String[]{"UniversalCableBasicOpaque", "UniversalCableAdvancedOpaque",
+                    "UniversalCableEliteOpaque", "UniversalCableUltimateOpaque"});
+            cableIcons.registerSideIcons(register, new String[]{"SmallTransmitterVerticalBasicOpaque", "SmallTransmitterVerticalAdvancedOpaque", "SmallTransmitterVerticalEliteOpaque", "SmallTransmitterVerticalUltimateOpaque",
+                    "SmallTransmitterHorizontalBasicOpaque", "SmallTransmitterHorizontalAdvancedOpaque", "SmallTransmitterHorizontalEliteOpaque", "SmallTransmitterHorizontalUltimateOpaque"});
+        }
 	}
 
 	@Override

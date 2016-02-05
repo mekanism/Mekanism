@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
@@ -46,6 +47,8 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(8, 16);
 
+    private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
+
 	public int pullDelay = 0;
 
 	public PartLogisticalTransporter(TransporterTier transporterTier)
@@ -79,12 +82,23 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 
 	public static void registerIcons(IIconRegister register)
 	{
-		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporterBasic", "LogisticalTransporterAdvanced", "LogisticalTransporterElite", "LogisticalTransporterUltimate", "RestrictiveTransporter", 
-				"DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
-		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVerticalBasic", "LogisticalTransporterVerticalAdvanced", "LogisticalTransporterVerticalElite", "LogisticalTransporterVerticalUltimate", 
-				"LogisticalTransporterHorizontalBasic", "LogisticalTransporterHorizontalAdvanced", "LogisticalTransporterHorizontalElite", "LogisticalTransporterHorizontalUltimate", "RestrictiveTransporterVertical", 
-				"RestrictiveTransporterHorizontal", "LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored",
-				"DiversionTransporterVertical", "DiversionTransporterHorizontal"});
+        if (!PartLogisticalTransporter.opaque)
+        {
+            transporterIcons.registerCenterIcons(register, new String[]{"LogisticalTransporterBasic", "LogisticalTransporterAdvanced", "LogisticalTransporterElite", "LogisticalTransporterUltimate", "RestrictiveTransporter",
+                    "DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
+            transporterIcons.registerSideIcons(register, new String[]{"LogisticalTransporterVerticalBasic", "LogisticalTransporterVerticalAdvanced", "LogisticalTransporterVerticalElite", "LogisticalTransporterVerticalUltimate",
+                    "LogisticalTransporterHorizontalBasic", "LogisticalTransporterHorizontalAdvanced", "LogisticalTransporterHorizontalElite", "LogisticalTransporterHorizontalUltimate", "RestrictiveTransporterVertical",
+                    "RestrictiveTransporterHorizontal", "LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored",
+                    "DiversionTransporterVertical", "DiversionTransporterHorizontal"});
+        } else {
+            transporterIcons.registerCenterIcons(register, new String[]{"LogisticalTransporterBasicOpaque", "LogisticalTransporterAdvancedOpaque", "LogisticalTransporterEliteOpaque", "LogisticalTransporterUltimateOpaque", "RestrictiveTransporterOpaque",
+                    "DiversionTransporterOpaque", "LogisticalTransporterGlassOpaque", "LogisticalTransporterGlassColoredOpaque"});
+            transporterIcons.registerSideIcons(register, new String[]{"LogisticalTransporterVerticalBasicOpaque", "LogisticalTransporterVerticalAdvancedOpaque", "LogisticalTransporterVerticalEliteOpaque", "LogisticalTransporterVerticalUltimateOpaque",
+                    "LogisticalTransporterHorizontalBasicOpaque", "LogisticalTransporterHorizontalAdvancedOpaque", "LogisticalTransporterHorizontalEliteOpaque", "LogisticalTransporterHorizontalUltimateOpaque", "RestrictiveTransporterVerticalOpaque",
+                    "RestrictiveTransporterHorizontalOpaque", "LogisticalTransporterVerticalGlassOpaque", "LogisticalTransporterVerticalGlassColoredOpaque", "LogisticalTransporterHorizontalGlassOpaque", "LogisticalTransporterHorizontalGlassColoredOpaque",
+                    "DiversionTransporterVerticalOpaque", "DiversionTransporterHorizontalOpaque"});
+        }
+
 	}
 
 	@Override
@@ -124,18 +138,21 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	public IIcon getCenterIcon(boolean opaque)
 	{
+        //opaque = PartLogisticalTransporter.opaque;
 		return transporterIcons.getCenterIcon(opaque ? tier.ordinal() : (getTransmitter().color != null ? 7 : 6));
 	}
 
 	@Override
 	public IIcon getSideIcon(boolean opaque)
 	{
+        //opaque = PartLogisticalTransporter.opaque;
 		return transporterIcons.getSideIcon(opaque ? tier.ordinal() : (getTransmitter().color != null ? 11 : 10));
 	}
 
 	@Override
 	public IIcon getSideIconRotated(boolean opaque)
 	{
+        //opaque = PartLogisticalTransporter.opaque;
 		return transporterIcons.getSideIcon(opaque ? 4+tier.ordinal() : (getTransmitter().color != null ? 13 : 12));
 	}
 

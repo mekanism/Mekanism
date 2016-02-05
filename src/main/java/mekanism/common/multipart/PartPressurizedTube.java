@@ -3,9 +3,11 @@ package mekanism.common.multipart;
 import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.api.MekanismConfig;
 import mekanism.api.gas.*;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.TubeTier;
 import mekanism.common.util.MekanismUtils;
@@ -28,7 +30,9 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	public GasTank buffer = new GasTank(getCapacity());
 
 	public GasStack lastWrite;
-	
+
+    private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
+
 	public PartPressurizedTube(Tier.TubeTier tubeTier)
 	{
 		super();
@@ -166,11 +170,17 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		return "mekanism:pressurized_tube_" + tier.name().toLowerCase();
 	}
 
-	public static void registerIcons(IIconRegister register)
-	{
-		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
-		tubeIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
-				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
+	public static void registerIcons(IIconRegister register) {
+        if (!PartPressurizedTube.opaque)
+        {
+            tubeIcons.registerCenterIcons(register, new String[]{"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
+            tubeIcons.registerSideIcons(register, new String[]{"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
+                "SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
+        } else {
+            tubeIcons.registerCenterIcons(register, new String[]{"PressurizedTubeBasicOpaque", "PressurizedTubeAdvancedOpaque", "PressurizedTubeEliteOpaque", "PressurizedTubeUltimateOpaque"});
+            tubeIcons.registerSideIcons(register, new String[]{"SmallTransmitterVerticalBasicOpaque", "SmallTransmitterVerticalAdvancedOpaque", "SmallTransmitterVerticalEliteOpaque", "SmallTransmitterVerticalUltimateOpaque",
+                    "SmallTransmitterHorizontalBasicOpaque", "SmallTransmitterHorizontalAdvancedOpaque", "SmallTransmitterHorizontalEliteOpaque", "SmallTransmitterHorizontalUltimateOpaque"});
+        }
 	}
 
 	@Override
