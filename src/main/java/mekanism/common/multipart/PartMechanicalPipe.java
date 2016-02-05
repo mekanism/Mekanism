@@ -229,7 +229,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0)
+		if(pass == 0 && !opaque)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

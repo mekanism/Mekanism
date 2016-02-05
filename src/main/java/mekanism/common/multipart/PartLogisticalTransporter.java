@@ -104,11 +104,10 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
-	{
-		if(pass == 0)
-		{
-			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
-		}
+    {
+        if (pass == 0 && !opaque) {
+            RenderPartTransmitter.getInstance().renderContents(this, f, pos);
+        }
 	}
 	
 	@Override

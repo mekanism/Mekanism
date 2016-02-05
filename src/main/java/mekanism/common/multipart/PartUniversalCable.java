@@ -241,7 +241,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if(pass == 0 && client.fancyUniversalCableRender)
+		if(pass == 0 && client.fancyUniversalCableRender || pass == 0 && !opaque)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}
