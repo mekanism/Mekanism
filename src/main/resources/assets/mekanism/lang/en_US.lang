@@ -270,8 +270,8 @@ gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
 
 gas.enricheddihydrogensulfidGas=Enriched Dihydrogensulfid I
-gas.enricheddihydrogensulfidsnd=Enriched Dihydrogenoxid II
-gas.enricheddihydrogensulfidrd=Enriched Dihydrogenoxid III
+gas.enricheddihydrogensulfidsnd=Enriched Dihydrogensulfid II
+gas.enricheddihydrogensulfidrd=Enriched Dihydrogensulfid III
 
 gas.enrichedwater=Enriched Water I (g)
 gas.enrichedwatersnd=Enriched Water II (g)
