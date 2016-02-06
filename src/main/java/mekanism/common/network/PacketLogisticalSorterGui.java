@@ -1,12 +1,6 @@
 package mekanism.common.network;
 
 import mekanism.api.Coord4D;
-//import mekanism.client.gui.GuiLogisticalSorter;
-//import mekanism.client.gui.GuiTFilterSelect;
-//import mekanism.client.gui.GuiTItemStackFilter;
-//import mekanism.client.gui.GuiTMaterialFilter;
-//import mekanism.client.gui.GuiTModIDFilter;
-//import mekanism.client.gui.GuiTOreDictFilter;
 import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiTFilterSelect;
 import mekanism.client.gui.GuiTItemStackFilter;

@@ -5,8 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-//import mekanism.client.gui.GuiOredictionificator;
-//import mekanism.client.gui.GuiOredictionificatorFilter;
+import mekanism.client.gui.GuiOredictionificator;
+import mekanism.client.gui.GuiOredictionificatorFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -147,7 +147,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 	
 		@SideOnly(Side.CLIENT)
 		public static GuiScreen getGui(OredictionificatorGuiPacket packetType, int type, EntityPlayer player, World world, BlockPos pos, int index)
-		{/*TODO
+		{
 			if(type == 0)
 			{
 				return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator)world.getTileEntity(pos));
@@ -167,7 +167,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 						return new GuiOredictionificatorFilter(player, (TileEntityOredictionificator)world.getTileEntity(pos), index);
 					}
 				}
-			}*/
+			}
 	
 			return null;
 		}

@@ -3,13 +3,6 @@ package mekanism.common.network;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-//import mekanism.client.gui.GuiDigitalMiner;
-//import mekanism.client.gui.GuiDigitalMinerConfig;
-//import mekanism.client.gui.GuiMFilterSelect;
-//import mekanism.client.gui.GuiMItemStackFilter;
-//import mekanism.client.gui.GuiMMaterialFilter;
-//import mekanism.client.gui.GuiMModIDFilter;
-//import mekanism.client.gui.GuiMOreDictFilter;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
 import mekanism.client.gui.GuiMFilterSelect;

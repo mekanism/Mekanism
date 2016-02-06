@@ -8,56 +8,6 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.EntityLaser;
-//import mekanism.client.gui.GuiAmbientAccumulator;
-//import mekanism.client.gui.GuiChemicalCrystallizer;
-//import mekanism.client.gui.GuiChemicalDissolutionChamber;
-//import mekanism.client.gui.GuiChemicalInfuser;
-//import mekanism.client.gui.GuiChemicalInjectionChamber;
-//import mekanism.client.gui.GuiChemicalOxidizer;
-//import mekanism.client.gui.GuiChemicalWasher;
-//import mekanism.client.gui.GuiCombiner;
-//import mekanism.client.gui.GuiCredits;
-//import mekanism.client.gui.GuiCrusher;
-//import mekanism.client.gui.GuiDictionary;
-//import mekanism.client.gui.GuiDigitalMiner;
-//import mekanism.client.gui.GuiDynamicTank;
-//import mekanism.client.gui.GuiElectricChest;
-//import mekanism.client.gui.GuiElectricPump;
-//import mekanism.client.gui.GuiElectrolyticSeparator;
-//import mekanism.client.gui.GuiEnergizedSmelter;
-//import mekanism.client.gui.GuiEnergyCube;
-//import mekanism.client.gui.GuiEnrichmentChamber;
-//import mekanism.client.gui.GuiEntangledBlock;
-//import mekanism.client.gui.GuiFactory;
-//import mekanism.client.gui.GuiFluidicPlenisher;
-//import mekanism.client.gui.GuiGasTank;
-//import mekanism.client.gui.GuiInductionMatrix;
-//import mekanism.client.gui.GuiLaserAmplifier;
-//import mekanism.client.gui.GuiLaserTractorBeam;
-//import mekanism.client.gui.GuiMatrixStats;
-//import mekanism.client.gui.GuiMetallurgicInfuser;
-//import mekanism.client.gui.GuiOredictionificator;
-//import mekanism.client.gui.GuiOsmiumCompressor;
-//import mekanism.client.gui.GuiPRC;
-//import mekanism.client.gui.GuiPasswordEnter;
-//import mekanism.client.gui.GuiPasswordModify;
-//import mekanism.client.gui.GuiPortableTank;
-//import mekanism.client.gui.GuiPrecisionSawmill;
-//import mekanism.client.gui.GuiPurificationChamber;
-//import mekanism.client.gui.GuiRobitCrafting;
-//import mekanism.client.gui.GuiRobitInventory;
-//import mekanism.client.gui.GuiRobitMain;
-//import mekanism.client.gui.GuiRobitRepair;
-//import mekanism.client.gui.GuiRobitSmelting;
-//import mekanism.client.gui.GuiRotaryCondensentrator;
-//import mekanism.client.gui.GuiSeismicReader;
-//import mekanism.client.gui.GuiSeismicVibrator;
-//import mekanism.client.gui.GuiSideConfiguration;
-//import mekanism.client.gui.GuiSolarEvaporationController;
-//import mekanism.client.gui.GuiSolarNeutronActivator;
-//import mekanism.client.gui.GuiTeleporter;
-//import mekanism.client.gui.GuiTransporterConfig;
-//import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.gui.GuiAmbientAccumulator;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
@@ -71,6 +21,7 @@ import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDictionary;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDynamicTank;
+import mekanism.client.gui.GuiElectricChest;
 import mekanism.client.gui.GuiElectricPump;
 import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiEnergizedSmelter;
@@ -281,7 +232,7 @@ public class ClientProxy extends CommonProxy
 		{
 			if(isBlock)
 			{
-				//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, tileEntity));
+				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, tileEntity));
 				entityplayer.openContainer.windowId = windowId;
 			}
 			else {
@@ -290,7 +241,7 @@ public class ClientProxy extends CommonProxy
 				if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 				{
 					InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);
-					//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
+					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
 					entityplayer.openContainer.windowId = windowId;
 				}
 			}
@@ -299,14 +250,14 @@ public class ClientProxy extends CommonProxy
 		{
 			if(isBlock)
 			{
-				//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(tileEntity));
+				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(tileEntity));
 			}
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
 				if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 				{
-					//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
+					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
 				}
 			}
 		}
@@ -314,14 +265,14 @@ public class ClientProxy extends CommonProxy
 		{
 			if(isBlock)
 			{
-				//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(tileEntity));
+				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(tileEntity));
 			}
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
 				if(stack != null && stack.getItem() instanceof IElectricChest && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELECTRIC_CHEST)
 				{
-					//TODO FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
+					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
 				}
 			}
 		}
@@ -659,7 +610,7 @@ public class ClientProxy extends CommonProxy
 	{
 		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
 		
-		/*if(screen instanceof GuiTeleporter && ((GuiTeleporter)screen).itemStack != null)
+		if(screen instanceof GuiTeleporter && ((GuiTeleporter)screen).itemStack != null)
 		{
 			GuiTeleporter teleporter = (GuiTeleporter)screen;
 			
@@ -669,7 +620,7 @@ public class ClientProxy extends CommonProxy
 			teleporter.clientPrivateCache = message.privateCache;
 			
 			teleporter.updateButtons();
-		}*/
+		}
 	}
 	
 	@Override
