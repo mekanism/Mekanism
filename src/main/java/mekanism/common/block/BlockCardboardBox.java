@@ -107,7 +107,6 @@ public class BlockCardboardBox extends BlockContainer
 				if(data.block != null)
 				{
 					data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), entityplayer, new ItemStack(data.block, 1, data.meta));
-					//TODO: data.block.onPostBlockPlaced(world, pos, data.meta);
 				}
 
 				float motion = 0.7F;

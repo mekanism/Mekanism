@@ -113,14 +113,13 @@ public class ClientTickHandler
 				initHoliday = true;
 			}
 
-			for(EntityPlayer entityPlayer : (List<EntityPlayer>)mc.theWorld.playerEntities)
+			for(EntityPlayer entityPlayer : mc.theWorld.playerEntities)
 			{
 				if(entityPlayer instanceof AbstractClientPlayer)
 				{
 					AbstractClientPlayer player = (AbstractClientPlayer)entityPlayer;
 
-					if(player != null)
-					{
+/*TODO I don't think this is possible any more.
 						if(StringUtils.stripControlCodes(player.getName()).equals("mikeacttck"))
 						{
 							CapeBufferDownload download = mikeDownload.get(player.getName());
@@ -181,7 +180,7 @@ public class ClientTickHandler
 								//TODO player.skinAvailable(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
 							}
 						}
-					}
+*/
 				}
 			}
 

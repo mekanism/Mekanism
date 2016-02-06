@@ -754,7 +754,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<Object>())), (EntityPlayerMP)player);
 			}
 
 			return;
@@ -930,7 +930,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return data;
 	}
 
-	public ArrayList getGenericPacket(ArrayList<Object> data)
+	public ArrayList<Object> getGenericPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
