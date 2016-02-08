@@ -4,7 +4,7 @@
     "model": "mekanism:machine",
     "textures": {
       "sides": "mekanism:blocks/SteelCasing",
-      "front": "mekanism:blocks/EnrichmentChamberFront"
+      "front": "mekanism:blocks/ChemicalInjectionChamberFront"
     }
   },
   "variants": {
@@ -15,7 +15,7 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/EnrichmentChamberFrontOn"}},
+      "true": {"textures": {"front": "mekanism:blocks/ChemicalInjectionChamberFrontOn"}},
       "false": {}
     },
     "inventory": [{}]
