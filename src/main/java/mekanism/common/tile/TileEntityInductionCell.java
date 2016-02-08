@@ -37,9 +37,9 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier);
+		data.add(tier.ordinal());
 
 		super.getNetworkedData(data);
 		

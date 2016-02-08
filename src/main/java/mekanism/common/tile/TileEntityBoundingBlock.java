@@ -107,7 +107,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		data.add(mainPos.getX());
 		data.add(mainPos.getY());

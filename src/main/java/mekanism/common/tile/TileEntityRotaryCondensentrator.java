@@ -392,13 +392,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(mode);
 		data.add(isActive);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(clientEnergyUsed);
 
 		if(fluidTank.getFluid() != null)

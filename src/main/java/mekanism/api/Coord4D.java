@@ -227,7 +227,7 @@ public class Coord4D extends BlockPos
 	 */
 	public Coord4D offset(EnumFacing facing, int n)
 	{
-		return n == 0 ? this : new Coord4D(this.getX() + facing.getFrontOffsetX() * n, this.getY() + facing.getFrontOffsetY() * n, this.getZ() + facing.getFrontOffsetZ() * n);
+		return (facing == null || n == 0) ? this : new Coord4D(this.getX() + facing.getFrontOffsetX() * n, this.getY() + facing.getFrontOffsetY() * n, this.getZ() + facing.getFrontOffsetZ() * n);
 	}
 
 	public ItemStack getStack(IBlockAccess world)

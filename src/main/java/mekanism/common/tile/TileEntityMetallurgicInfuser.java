@@ -404,14 +404,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
 		data.add(operatingTicks);
 		data.add(infuseStored.amount);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 
 		if(infuseStored.type != null)
 		{

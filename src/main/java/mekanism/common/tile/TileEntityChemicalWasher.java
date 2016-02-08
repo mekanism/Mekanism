@@ -313,12 +313,12 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(clientEnergyUsed);
 
 		if(fluidTank.getFluid() != null)

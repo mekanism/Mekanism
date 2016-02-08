@@ -71,13 +71,17 @@ public class BlockStateBasic extends BlockStateFacing
 		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, Predicates.<EnumFacing>alwaysFalse(), false),
 		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, Predicates.<EnumFacing>alwaysFalse(), false),
 		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, Predicates.<EnumFacing>alwaysFalse(), false),
-		DYNAMIC_GLASS(BasicBlock.BASIC_BLOCK_1, 10, Predicates.<EnumFacing>alwaysFalse(), false),
+		STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, Predicates.<EnumFacing>alwaysFalse(), false),
 		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, Predicates.<EnumFacing>alwaysFalse(), false),
 		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, Predicates.<EnumFacing>alwaysFalse(), false),
 		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, Predicates.<EnumFacing>alwaysFalse(), false),
-		SALINATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, Plane.HORIZONTAL, false),
-		SALINATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, Predicates.<EnumFacing>alwaysFalse(), false),
-		SALINATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, Predicates.<EnumFacing>alwaysFalse(), false);
+		SOLAR_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, Plane.HORIZONTAL, false),
+		SOLAR_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, Predicates.<EnumFacing>alwaysFalse(), false),
+		SOLAR_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, Predicates.<EnumFacing>alwaysFalse(), false),
+		INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, Predicates.<EnumFacing>alwaysFalse(), false),
+		INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, Predicates.<EnumFacing>alwaysFalse(), false),
+		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, Predicates.<EnumFacing>alwaysFalse(), false),
+		INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, Predicates.<EnumFacing>alwaysFalse(), false);
 
 		public BasicBlock blockType;
 		public int meta;

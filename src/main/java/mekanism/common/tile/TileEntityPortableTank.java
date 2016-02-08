@@ -428,13 +428,13 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
 		data.add(valve);
-		data.add(editMode);
+		data.add(editMode.ordinal());
 		
 		if(valve > 0)
 		{

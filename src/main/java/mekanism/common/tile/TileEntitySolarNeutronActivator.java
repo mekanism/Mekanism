@@ -195,13 +195,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
 		data.add(recipeTicks);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 
 		if(inputTank.getGas() != null)
 		{

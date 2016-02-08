@@ -251,12 +251,12 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(clientEnergyUsed);
 
 		if(leftTank.getGas() != null)

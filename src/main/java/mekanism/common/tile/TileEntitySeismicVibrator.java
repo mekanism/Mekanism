@@ -133,12 +133,12 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	}
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		
 		return data;
 	}

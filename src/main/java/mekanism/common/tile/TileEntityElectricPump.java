@@ -337,7 +337,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -351,7 +351,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			data.add(0);
 		}
 		
-		data.add(controlType);
+		data.add(controlType.ordinal());
 
 		return data;
 	}

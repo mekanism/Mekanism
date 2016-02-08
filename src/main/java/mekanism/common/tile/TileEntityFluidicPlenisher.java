@@ -70,7 +70,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	public TileEntityFluidicPlenisher()
 	{
 		super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.baseEnergy);
-		inventory = new ItemStack[3];
+		inventory = new ItemStack[4];
 	}
 	
 	@Override
@@ -294,7 +294,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

@@ -394,7 +394,6 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				switch(meta)
 				{
 					case 9:
-					case 10:
 					case 11:
 						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(pos);
 

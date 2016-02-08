@@ -3,12 +3,17 @@ package mekanism.common.block;
 import java.util.List;
 
 import mekanism.common.Mekanism;
+import mekanism.common.block.states.BlockStateOre;
+import mekanism.common.block.states.BlockStateOre.EnumOreType;
+import mekanism.common.block.states.BlockStatePlastic;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -32,16 +37,23 @@ public class BlockOre extends Block
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
-/*
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	protected BlockState createBlockState()
 	{
-		icons[0] = register.registerIcon("mekanism:OsmiumOre");
-		icons[1] = register.registerIcon("mekanism:CopperOre");
-		icons[2] = register.registerIcon("mekanism:TinOre");
+		return new BlockStateOre(this);
 	}
-*/
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return state.getValue(BlockStateOre.typeProperty).ordinal();
+	}
 
 	@Override
 	public int damageDropped(IBlockState state)
@@ -53,8 +65,9 @@ public class BlockOre extends Block
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
 	{
-		list.add(new ItemStack(item, 1, 0));
-		list.add(new ItemStack(item, 1, 1));
-		list.add(new ItemStack(item, 1, 2));
+		for(EnumOreType ore : EnumOreType.values())
+		{
+			list.add(new ItemStack(item, 1, ore.ordinal()));
+		}
 	}
 }

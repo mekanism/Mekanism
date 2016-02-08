@@ -13,8 +13,8 @@ import net.minecraft.util.IStringSerializable;
 
 public class BlockStatePlastic extends BlockState
 {
-	public static PropertyEnum colorProperty = PropertyEnum.create("color", EnumDyeColor.class);
-	public static PropertyEnum typeProperty = PropertyEnum.create("type", PlasticBlockType.class);
+	public static PropertyEnum<EnumDyeColor> colorProperty = PropertyEnum.create("color", EnumDyeColor.class);
+	public static PropertyEnum<PlasticBlockType> typeProperty = PropertyEnum.create("type", PlasticBlockType.class);
 
 	public BlockStatePlastic(BlockPlastic block)
 	{

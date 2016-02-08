@@ -66,7 +66,7 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		data.add(getEnergy());

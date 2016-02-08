@@ -17,6 +17,7 @@ import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -59,11 +60,11 @@ public class MekanismBlocks
 	public static final Block BoundingBlock = (BlockBounding)new BlockBounding().setUnlocalizedName("BoundingBlock");
 	public static final Block GasTank = new BlockGasTank().setUnlocalizedName("GasTank");
 	public static final Block CardboardBox = new BlockCardboardBox().setUnlocalizedName("CardboardBox");
-	public static final Block PlasticBlock = new BlockPlastic().setUnlocalizedName("PlasticBlock");
-	public static final Block SlickPlasticBlock = new BlockPlastic().setUnlocalizedName("SlickPlasticBlock");
-	public static final Block GlowPlasticBlock = new BlockPlastic().setUnlocalizedName("GlowPlasticBlock");
-	public static final Block ReinforcedPlasticBlock = new BlockPlastic().setUnlocalizedName("ReinforcedPlasticBlock");
-	public static final Block RoadPlasticBlock = new BlockPlastic().setUnlocalizedName("RoadPlasticBlock");
+	public static final Block PlasticBlock = new BlockPlastic(PlasticBlockType.PLASTIC).setUnlocalizedName("PlasticBlock");
+	public static final Block SlickPlasticBlock = new BlockPlastic(PlasticBlockType.SLICK).setUnlocalizedName("SlickPlasticBlock");
+	public static final Block GlowPlasticBlock = new BlockPlastic(PlasticBlockType.GLOW).setUnlocalizedName("GlowPlasticBlock");
+	public static final Block ReinforcedPlasticBlock = new BlockPlastic(PlasticBlockType.REINFORCED).setUnlocalizedName("ReinforcedPlasticBlock");
+	public static final Block RoadPlasticBlock = new BlockPlastic(PlasticBlockType.ROAD).setUnlocalizedName("RoadPlasticBlock");
 	public static final Block PlasticFence = new BlockPlasticFence().setUnlocalizedName("PlasticFence");
 	public static final Block SaltBlock = new BlockSalt().setUnlocalizedName("SaltBlock");
 
@@ -123,7 +124,7 @@ public class MekanismBlocks
 				new ResourceLocation("mekanism", "basic_factory"),
 				new ResourceLocation("mekanism", "advanced_factory"),
 				new ResourceLocation("mekanism", "elite_factory"),
-				//new ResourceLocation("mekanism", "metallurgic_infuser"),
+				new ResourceLocation("mekanism", "metallurgic_infuser"),
 				new ResourceLocation("mekanism", "purification_chamber"),
 				new ResourceLocation("mekanism", "energized_smelter"),
 				new ResourceLocation("mekanism", "teleporter"),

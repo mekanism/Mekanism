@@ -255,13 +255,13 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(0);
 
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(didProcess);
 
 		data.add(filters.size());
@@ -280,7 +280,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 		data.add(1);
 
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(didProcess);
 
 		return data;

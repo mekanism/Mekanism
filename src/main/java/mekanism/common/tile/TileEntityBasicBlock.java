@@ -126,7 +126,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		data.add(facing == null ? -1 : facing.ordinal());
 		data.add(redstone);

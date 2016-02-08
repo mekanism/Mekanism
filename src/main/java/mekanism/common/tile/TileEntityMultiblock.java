@@ -173,7 +173,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public abstract MultiblockManager<T> getManager();
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 

@@ -93,11 +93,6 @@ public class MekanismRenderer
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
-/*
-		if(event.map.locationBlocksTexture)
-		{
-
-*/
 		initFluidTextures(event.map);
 
 		for(EnumColor color : EnumColor.values())
@@ -156,9 +151,6 @@ public class MekanismRenderer
 		RenderDynamicTank.resetDisplayInts();
 		RenderSalinationController.resetDisplayInts();
 		RenderPortableTank.resetDisplayInts();
-/*
-		}
-*/
 	}
 
 	public static void initFluidTextures(TextureMap map) {

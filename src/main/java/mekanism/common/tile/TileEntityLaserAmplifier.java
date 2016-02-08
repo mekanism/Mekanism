@@ -193,7 +193,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -203,7 +203,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		data.add(time);
 		data.add(collectedEnergy);
 		data.add(lastFired);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(emittingRedstone);
 		data.add(entityDetection);
 

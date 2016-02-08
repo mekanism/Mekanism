@@ -3,40 +3,64 @@ package mekanism.common.block;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.block.states.BlockStatePlastic;
+import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockPlastic extends Block
 {
-	public BlockPlastic()
+	public PlasticBlockType type;
+	public BlockPlastic(PlasticBlockType blockType)
 	{
 		super(Material.wood);
-		setHardness(this == MekanismBlocks.ReinforcedPlasticBlock ? 50F : 5F);
-		setResistance(this == MekanismBlocks.ReinforcedPlasticBlock ? 2000F : 10F);
+		type = blockType;
+		setHardness(type == PlasticBlockType.REINFORCED ? 50F : 5F);
+		setResistance(type == PlasticBlockType.REINFORCED ? 2000F : 10F);
 		setCreativeTab(Mekanism.tabMekanism);
 		
-		if(this == MekanismBlocks.SlickPlasticBlock)
+		if(type == PlasticBlockType.SLICK)
 		{
 			slipperiness = 0.98F;
 		}
+
+		setDefaultState(blockState.getBaseState().withProperty(BlockStatePlastic.typeProperty, type));
 	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStatePlastic(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState().withProperty(BlockStatePlastic.colorProperty, EnumDyeColor.byMetadata(meta));
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return state.getValue(BlockStatePlastic.colorProperty).getMetadata();
+	}
+
 
 /*
 	@Override
@@ -69,7 +93,7 @@ public class BlockPlastic extends Block
 	@Override
 	public Vec3 modifyAcceleration(World world, BlockPos pos, Entity e, Vec3 motion)
 	{
-		if(this == MekanismBlocks.RoadPlasticBlock)
+		if(type == PlasticBlockType.ROAD)
 		{
 			double boost = 1.6;
 
@@ -111,7 +135,7 @@ public class BlockPlastic extends Block
 	@Override
 	public int getLightValue()
 	{
-		if(this == MekanismBlocks.GlowPlasticBlock)
+		if(type == PlasticBlockType.GLOW)
 		{
 			return 10;
 		}

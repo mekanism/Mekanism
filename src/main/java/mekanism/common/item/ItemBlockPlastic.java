@@ -5,6 +5,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -37,7 +38,8 @@ public class ItemBlockPlastic extends ItemBlock
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
-		EnumColor colour = EnumColor.DYES[stack.getItemDamage()&15];
+		EnumDyeColor dyeColour = EnumDyeColor.byMetadata(stack.getItemDamage()&15);
+		EnumColor colour = EnumColor.DYES[dyeColour.getDyeDamage()];
 		String colourName;
 
         if(StatCollector.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
@@ -57,9 +59,8 @@ public class ItemBlockPlastic extends ItemBlock
 	}
 
 	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack stack, int par2)
+	public int getColorFromItemStack(ItemStack stack, int renderPass)
 	{
-		EnumColor colour = EnumColor.DYES[stack.getItemDamage()&15];
-		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
+		return this.metaBlock.getRenderColor(this.metaBlock.getStateFromMeta(stack.getMetadata()));
 	}
 }

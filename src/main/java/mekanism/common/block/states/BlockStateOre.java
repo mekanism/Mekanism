@@ -12,7 +12,7 @@ import net.minecraft.util.IStringSerializable;
  */
 public class BlockStateOre extends BlockState
 {
-	public static final PropertyEnum typeProperty = PropertyEnum.create("type", EnumOreType.class);
+	public static final PropertyEnum<EnumOreType> typeProperty = PropertyEnum.create("type", EnumOreType.class);
 
 	public BlockStateOre(BlockOre block)
 	{

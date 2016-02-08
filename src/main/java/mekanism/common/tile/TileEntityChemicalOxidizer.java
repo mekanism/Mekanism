@@ -254,12 +254,12 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 		data.add(operatingTicks);
 
 		if(gasTank.getGas() != null)

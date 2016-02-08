@@ -488,7 +488,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -522,9 +522,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			data.add(false);
 		}
 
-        data.add(controlType);
-		data.add(dumpLeft);
-		data.add(dumpRight);
+        data.add(controlType.ordinal());
+		data.add(dumpLeft.ordinal());
+		data.add(dumpRight.ordinal());
 		data.add(clientDumpLeft);
 		data.add(clientDumpRight);
 		data.add(isActive);

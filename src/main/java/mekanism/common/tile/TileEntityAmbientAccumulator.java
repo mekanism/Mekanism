@@ -96,7 +96,7 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		if(collectedGas.getGasType() != null)
 		{

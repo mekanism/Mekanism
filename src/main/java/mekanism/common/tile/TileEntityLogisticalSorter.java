@@ -376,14 +376,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(0);
 
 		data.add(isActive);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 
 		if(color != null)
 		{
@@ -413,7 +413,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		data.add(1);
 
 		data.add(isActive);
-		data.add(controlType);
+		data.add(controlType.ordinal());
 
 		if(color != null)
 		{

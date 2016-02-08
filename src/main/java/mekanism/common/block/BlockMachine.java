@@ -302,6 +302,9 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 			}
 		}
 
+		tileEntity.setFacing((short)change);
+		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
+
 		if(tileEntity instanceof TileEntityLogisticalSorter)
 		{
 			TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter)tileEntity;
@@ -314,7 +317,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 
 					if(tile instanceof IInventory)
 					{
-						change = dir.getOpposite().ordinal();
+						tileEntity.setFacing((short)dir.getOpposite().ordinal());
 						break;
 					}
 				}
@@ -325,9 +328,6 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 			TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
 			teleporter.owner = placer.getName();
 		}
-
-		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
 
 		if(tileEntity instanceof IBoundingBlock)
 		{

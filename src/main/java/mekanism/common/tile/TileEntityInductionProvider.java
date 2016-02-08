@@ -32,9 +32,9 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier);
+		data.add(tier.ordinal());
 
 		super.getNetworkedData(data);
 

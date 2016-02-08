@@ -195,7 +195,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
