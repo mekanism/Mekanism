@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.CTMData;
@@ -231,7 +232,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(general.enableAmbientLighting)
+		if(client.enableAmbientLighting)
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
@@ -239,7 +240,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 				{
-					return general.ambientLightingLevel;
+					return client.ambientLightingLevel;
 				}
 			}
 		}

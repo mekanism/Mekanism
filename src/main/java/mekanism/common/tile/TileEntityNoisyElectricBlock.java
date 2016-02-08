@@ -4,8 +4,10 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.Pos3D;
 import mekanism.client.HolidayManager;
 import mekanism.client.sound.ISoundSource;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.SoundWrapper;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
@@ -64,6 +66,11 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
+		if(this instanceof IUpgradeTile && ((IUpgradeTile)this).getComponent().supports(Upgrade.MUFFLING))
+		{
+			return 1F - (float)((IUpgradeTile)this).getComponent().getUpgrades(Upgrade.MUFFLING)/(float)Upgrade.MUFFLING.getMax();
+		}
+		
 		return 1F;
 	}
 

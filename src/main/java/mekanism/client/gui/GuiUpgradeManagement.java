@@ -18,10 +18,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiUpgradeManagement extends GuiMekanism
@@ -126,7 +127,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			
 			if(xAxis >= xPos && xAxis <= xPos+58 && yAxis >= yPos && yAxis <= yPos+12)
 			{
-				drawHoveringText(MekanismUtils.splitLines(upgrade.getDescription()), xAxis, yAxis);
+				drawHoveringText(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
 			}
 		}
 

@@ -32,6 +32,7 @@ public class GuiReactorController extends GuiMekanism
 	{
 		super(new ContainerReactorController(inventory, tentity));
 		tileEntity = tentity;
+		
 		if(tileEntity.isFormed())
 		{
 			guiElements.add(new GuiEnergyInfo(new IInfoHandler()

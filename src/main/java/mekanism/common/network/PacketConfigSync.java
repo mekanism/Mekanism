@@ -30,7 +30,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeBoolean(general.updateNotifications);
 			dataStream.writeBoolean(general.controlCircuitOreDict);
 			dataStream.writeBoolean(general.logPackets);
 			dataStream.writeBoolean(general.dynamicTankEasterEgg);
@@ -63,6 +62,13 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.maxJetpackGas);
 			dataStream.writeInt(general.maxScubaGas);
 			dataStream.writeInt(general.maxFlamethrowerGas);
+			dataStream.writeInt(general.maxPumpRange);
+			dataStream.writeBoolean(general.pumpWaterSources);
+			dataStream.writeInt(general.maxPlenisherNodes);
+			dataStream.writeDouble(general.evaporationHeatDissipation);
+			dataStream.writeDouble(general.evaporationTempMultiplier);
+			dataStream.writeDouble(general.evaporationSolarMultiplier);
+			dataStream.writeDouble(general.evaporationMaxTemp);
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
@@ -107,7 +113,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			general.updateNotifications = dataStream.readBoolean();
 			general.controlCircuitOreDict = dataStream.readBoolean();
 			general.logPackets = dataStream.readBoolean();
 			general.dynamicTankEasterEgg = dataStream.readBoolean();
@@ -140,6 +145,13 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.maxJetpackGas = dataStream.readInt();
 			general.maxScubaGas = dataStream.readInt();
 			general.maxFlamethrowerGas = dataStream.readInt();
+			general.maxPumpRange = dataStream.readInt();
+			general.pumpWaterSources = dataStream.readBoolean();
+			general.maxPlenisherNodes = dataStream.readInt();
+			general.evaporationHeatDissipation = dataStream.readDouble();
+			general.evaporationTempMultiplier = dataStream.readDouble();
+			general.evaporationSolarMultiplier = dataStream.readDouble();
+			general.evaporationMaxTemp = dataStream.readDouble();
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{

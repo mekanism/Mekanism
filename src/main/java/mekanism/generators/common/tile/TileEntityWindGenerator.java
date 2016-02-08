@@ -68,7 +68,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
-		return 1.5F;
+		return 1.5F*super.getVolume();
 	}
 
     private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};

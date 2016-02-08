@@ -1,14 +1,15 @@
 package mekanism.generators.common.tile.reactor;
 
-import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.ArrayList;
+import dan200.computercraft.api.lua.LuaException;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration
 {

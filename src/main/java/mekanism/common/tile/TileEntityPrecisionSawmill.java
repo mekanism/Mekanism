@@ -30,6 +30,6 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillR
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
-		return 0.7F;
+		return 0.7F*super.getVolume();
 	}
 }

@@ -64,6 +64,7 @@ public class MekanismItems
 	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED).setUnlocalizedName("SpeedUpgrade");
 	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY).setUnlocalizedName("EnergyUpgrade");
 	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER).setUnlocalizedName("FilterUpgrade");
+	public static final Item MufflingUpgrade = new ItemUpgrade(Upgrade.MUFFLING).setUnlocalizedName("MufflingUpgrade");
 	public static final Item GasUpgrade = new ItemUpgrade(Upgrade.GAS).setUnlocalizedName("GasUpgrade");
 	public static final Item FactoryInstaller = new ItemFactoryInstaller().setUnlocalizedName("FactoryInstaller");
 	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
@@ -113,6 +114,7 @@ public class MekanismItems
 		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
 		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
 		GameRegistry.registerItem(FilterUpgrade, "FilterUpgrade");
+		GameRegistry.registerItem(MufflingUpgrade, "MufflingUpgrade");
 		GameRegistry.registerItem(GasUpgrade, "GasUpgrade");
 		GameRegistry.registerItem(Robit, "Robit");
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");

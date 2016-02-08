@@ -24,7 +24,10 @@ public enum TransmitterType
 	LOGISTICAL_TRANSPORTER_ULTIMATE("UltimateLogisticalTransporter", BaseTier.ULTIMATE, Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 3, 3, 6, 10),
 	RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", BaseTier.BASIC, Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, false, 4, 8),
 	DIVERSION_TRANSPORTER("DiversionTransporter", BaseTier.BASIC, Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 5, 14, 6, 10),
-	HEAT_TRANSMITTER("HeatTransmitter", BaseTier.BASIC, Size.SMALL, TransmissionType.HEAT, PartHeatTransmitter.heatIcons, false, 0, 0);
+	THERMODYNAMIC_CONDUCTOR_BASIC("BasicThermodynamicConductor", BaseTier.BASIC, Size.SMALL, TransmissionType.HEAT, PartThermodynamicConductor.conductorIcons, false, 0, 0),
+	THERMODYNAMIC_CONDUCTOR_ADVANCED("AdvancedThermodynamicConductor", BaseTier.ADVANCED, Size.SMALL, TransmissionType.HEAT, PartThermodynamicConductor.conductorIcons, false, 1, 1),
+	THERMODYNAMIC_CONDUCTOR_ELITE("EliteThermodynamicConductor", BaseTier.ELITE, Size.SMALL, TransmissionType.HEAT, PartThermodynamicConductor.conductorIcons, false, 2, 2),
+	THERMODYNAMIC_CONDUCTOR_ULTIMATE("UltimateThermodynamicConductor", BaseTier.ULTIMATE, Size.SMALL, TransmissionType.HEAT, PartThermodynamicConductor.conductorIcons, false, 3, 3);
 
 	private String unlocalizedName;
 	private Size size;

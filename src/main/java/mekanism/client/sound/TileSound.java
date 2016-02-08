@@ -82,6 +82,11 @@ public class TileSound extends Sound implements IResettableSound
 	@Override
 	public void update() 
 	{
+		if(source instanceof ISoundSource)
+		{
+			baseVolume = ((ISoundSource)source).getVolume();
+		}
+		
 		if(!beginFadeOut) 
 		{
 			if(ticks < fadeIn)

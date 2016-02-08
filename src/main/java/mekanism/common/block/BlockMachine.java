@@ -394,7 +394,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	@Override
 	public int getLightValue(IBlockAccess world, BlockPos pos)
 	{
-		if(general.enableAmbientLighting)
+		if(client.enableAmbientLighting)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 	
@@ -402,7 +402,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 				{
-					return general.ambientLightingLevel;
+					return client.ambientLightingLevel;
 				}
 			}
 		}

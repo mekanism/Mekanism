@@ -1,18 +1,15 @@
 package mekanism.client.gui;
 
-import mekanism.api.gas.GasStack;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.gui.element.GuiGauge;
 import mekanism.common.inventory.container.ContainerSolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
@@ -57,8 +54,8 @@ public class GuiSolarEvaporationController extends GuiMekanism
 
 		fontRendererObj.drawString(getStruct(), 50, 21, 0x00CD00);
 		fontRendererObj.drawString(LangUtils.localize("gui.height") + ": " + tileEntity.height, 50, 30, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.mult") + ": " + getTempMult(), 50, 39, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.max") + ": " + getMaxTemp(), 50, 48, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.temp") + ": " + getTemp(), 50, 39, 0x00CD00);
+		renderScaledText(LangUtils.localize("gui.production") + ": " + Math.round(tileEntity.lastGain*100D)/100D + " mB/t", 50, 48, 0x00CD00, 76);
 
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
@@ -97,23 +94,9 @@ public class GuiSolarEvaporationController extends GuiMekanism
 
 	private String getTemp()
 	{
-		float temp = tileEntity.getTemperature()*200;
+		float temp = tileEntity.getTemperature();
 
 		return MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.AMBIENT);
-	}
-
-	private String getMaxTemp()
-	{
-		float temp = tileEntity.getMaxTemperature()*200;
-
-		return MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.AMBIENT);
-	}
-
-	private String getTempMult()
-	{
-		float temp = (float)Math.round((tileEntity.getTempMultiplier())*10)/10F;
-
-		return temp + "x";
 	}
 
 	@Override

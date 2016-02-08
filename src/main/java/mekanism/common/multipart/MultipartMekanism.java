@@ -1,21 +1,18 @@
 package mekanism.common.multipart;
 
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_1;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_2;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.BlockMachine.MachineType;
-
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
-
-import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_1;
-import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_2;
+import net.minecraft.fml.common.event.FMLInterModComms;
 
 public class MultipartMekanism implements IPartFactory
 {
@@ -36,7 +33,9 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:logistical_transporter_basic", "mekanism:logistical_transporter_advanced", 
 				"mekanism:logistical_transporter_elite", "mekanism:logistical_transporter_ultimate", 
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter", 
-				"mekanism:heat_transmitter", "mekanism:glow_panel"});
+				"mekanism:thermodynamic_conductor_basic", "mekanism:thermodynamic_conductor_advanced",
+				"mekanism:thermodynamic_conductor_elite", "mekanism:thermodynamic_conductor_ultimate",
+				"mekanism:glow_panel"});
 
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.IConfigurable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.energy.IStrictEnergyAcceptor");
@@ -136,9 +135,21 @@ public class MultipartMekanism implements IPartFactory
 		{
 			return new PartDiversionTransporter();
 		}
-		else if(name.equals("mekanism:heat_transmitter"))
+		else if(name.equals("mekanism:thermodynamic_conductor_basic"))
 		{
-			return new PartHeatTransmitter();
+			return new PartThermodynamicConductor(Tier.ConductorTier.BASIC);
+		}
+		else if(name.equals("mekanism:thermodynamic_conductor_advanced"))
+		{
+			return new PartThermodynamicConductor(Tier.ConductorTier.ADVANCED);
+		}
+		else if(name.equals("mekanism:thermodynamic_conductor_elite"))
+		{
+			return new PartThermodynamicConductor(Tier.ConductorTier.ELITE);
+		}
+		else if(name.equals("mekanism:thermodynamic_conductor_ultimate"))
+		{
+			return new PartThermodynamicConductor(Tier.ConductorTier.ULTIMATE);
 		}
 		else if(name.equals("mekanism:glow_panel"))
 		{

@@ -45,9 +45,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "9.0.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
-	/** Mekanism Generators Packet Pipeline */
-	public static GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
-
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
 	public static GeneratorsCommonProxy proxy;
 	
@@ -71,8 +68,6 @@ public class MekanismGenerators implements IModule
 	{
 		//Add this module to the core list
 		Mekanism.modulesLoaded.add(this);
-
-		packetHandler.initialize();
 		
 		//Register this module's GUI handler in the simple packet protocol
 		PacketSimpleGui.handlers.add(1, proxy);
@@ -207,10 +202,17 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(generators.heatGenerationLava);
 		dataStream.writeDouble(generators.heatGenerationNether);
 		dataStream.writeDouble(generators.solarGeneration);
+		
 		dataStream.writeDouble(generators.windGenerationMin);
 		dataStream.writeDouble(generators.windGenerationMax);
+		
 		dataStream.writeInt(generators.windGenerationMinY);
 		dataStream.writeInt(generators.windGenerationMaxY);
+		
+		dataStream.writeInt(generators.turbineBladesPerCoil);
+		dataStream.writeDouble(generators.turbineBaseEnergyPerSteam);
+		dataStream.writeDouble(generators.turbineVentGasFlow);
+		dataStream.writeDouble(generators.turbineDisperserGasFlow);
 	}
 
 	@Override
@@ -222,10 +224,17 @@ public class MekanismGenerators implements IModule
 		generators.heatGenerationLava = dataStream.readDouble();
 		generators.heatGenerationNether = dataStream.readDouble();
 		generators.solarGeneration = dataStream.readDouble();
+		
 		generators.windGenerationMin = dataStream.readDouble();
 		generators.windGenerationMax = dataStream.readDouble();
+		
 		generators.windGenerationMinY = dataStream.readInt();
 		generators.windGenerationMaxY = dataStream.readInt();
+		
+		generators.turbineBladesPerCoil = dataStream.readInt();
+		generators.turbineBaseEnergyPerSteam = dataStream.readDouble();
+		generators.turbineVentGasFlow = dataStream.readDouble();
+		generators.turbineDisperserGasFlow = dataStream.readDouble();
 	}
 
 	@SubscribeEvent

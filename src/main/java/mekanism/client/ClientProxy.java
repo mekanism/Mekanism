@@ -161,6 +161,7 @@ import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -208,6 +209,8 @@ public class ClientProxy extends CommonProxy
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
 		client.renderCTM = Mekanism.configuration.get("client", "CTMRenderer", true).getBoolean();
+		client.enableAmbientLighting = Mekanism.configuration.get("general", "EnableAmbientLighting", true).getBoolean();
+		client.ambientLightingLevel = Mekanism.configuration.get("general", "AmbientLightingLevel", 15).getInt();
 
 		if(Mekanism.configuration.hasChanged())
 		{
@@ -726,5 +729,11 @@ public class ClientProxy extends CommonProxy
 	public void renderLaser(World world, Pos3D from, Pos3D to, EnumFacing direction, double energy)
 	{
 		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction, energy));
+	}
+	
+	@Override
+	public FontRenderer getFontRenderer()
+	{
+		return Minecraft.getMinecraft().fontRendererObj;
 	}
 }

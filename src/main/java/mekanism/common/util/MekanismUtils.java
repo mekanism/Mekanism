@@ -1,10 +1,20 @@
 package mekanism.common.util;
 
-import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.registry.GameData;
 import ic2.api.energy.EnergyNet;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -17,10 +27,24 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.UnitDisplayUtils;
 import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.*;
-import mekanism.common.Tier.*;
-import mekanism.common.base.*;
+import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+import mekanism.common.OreDictCache;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Tier.InductionCellTier;
+import mekanism.common.Tier.InductionProviderTier;
+import mekanism.common.Upgrade;
+import mekanism.common.Version;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.IModule;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -33,6 +57,7 @@ import mekanism.common.tile.TileEntityElectricChest;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -54,18 +79,20 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
+import buildcraft.api.tools.IToolWrench;
+import cofh.api.item.IToolHammer;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -1173,6 +1200,7 @@ public final class MekanismUtils
 	public static String getTemperatureDisplay(double T, TemperatureUnit unit)
 	{
 		double TK = unit.convertToK(T);
+		
 		switch(general.tempUnit)
 		{
 			case K:
@@ -1219,20 +1247,76 @@ public final class MekanismUtils
 	{
 		return "[" + obj.getX() + ", " + obj.getY() + ", " + obj.getZ() + "]";
 	}
-
-	/**
-	 * Splits a string of text into a list of new segments, using the splitter "!n."
-	 * @param s - string to split
-	 * @return split string
-	 */
-	public static List<String> splitLines(String s)
+	
+	@SideOnly(Side.CLIENT)
+	public static List<String> splitTooltip(String s, ItemStack stack)
 	{
-		ArrayList<String> ret = new ArrayList<String>();
-
-		String[] split = s.split("!n");
-		ret.addAll(Arrays.asList(split));
-
-		return ret;
+		s = s.trim();
+		
+		try {
+			FontRenderer renderer = (FontRenderer)Mekanism.proxy.getFontRenderer();
+			
+			if(stack != null && stack.getItem().getFontRenderer(stack) != null)
+			{
+				renderer = stack.getItem().getFontRenderer(stack);
+			}
+			
+			List<String> words = new ArrayList<String>();
+			List<String> lines = new ArrayList<String>();
+			
+			String currentWord = "";
+			
+			for(Character c : s.toCharArray())
+			{
+				if(c.equals(' '))
+				{
+					words.add(currentWord);
+					currentWord = "";
+				}
+				else {
+					currentWord += c;
+				}
+			}
+			
+			if(!currentWord.isEmpty())
+			{
+				words.add(currentWord);
+			}
+			
+			String currentLine = "";
+			
+			for(String word : words)
+			{
+				if(currentLine.isEmpty() || renderer.getStringWidth(currentLine + " " + word) <= 200)
+				{
+					if(currentLine.length() > 0)
+					{
+						currentLine += " ";
+					}
+					
+					currentLine += word;
+					
+					continue;
+				}
+				else {
+					lines.add(currentLine);
+					currentLine = word;
+					
+					continue;
+				}
+			}
+			
+			if(!currentLine.isEmpty())
+			{
+				lines.add(currentLine);
+			}
+			
+			return lines;
+		} catch(Throwable t) {
+			t.printStackTrace();
+		}
+		
+		return new ArrayList<String>();
 	}
 
 	/**

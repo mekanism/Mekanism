@@ -6,7 +6,6 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,6 +26,6 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<Enric
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
-		return 0.3F;
+		return 0.3F*super.getVolume();
 	}
 }

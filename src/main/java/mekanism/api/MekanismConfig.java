@@ -45,8 +45,6 @@ public class MekanismConfig
 		public static boolean blacklistIC2;
 		public static boolean blacklistRF;
 		public static boolean destroyDisabledBlocks;
-		public static boolean enableAmbientLighting;
-		public static int ambientLightingLevel;
 		public static boolean prefilledPortableTanks;
 		public static double armoredJetpackDamageRatio;
 		public static int armoredJetpackDamageMax;
@@ -59,6 +57,10 @@ public class MekanismConfig
 		public static int maxPumpRange;
 		public static boolean pumpWaterSources;
 		public static int maxPlenisherNodes;
+		public static double evaporationHeatDissipation = 0.02;
+		public static double evaporationTempMultiplier = 0.1;
+		public static double evaporationSolarMultiplier = 0.2;
+		public static double evaporationMaxTemp = 3000;
 	}
 
 	public static class client
@@ -72,6 +74,8 @@ public class MekanismConfig
 		public static boolean oldTransmitterRender = false;
 		public static boolean replaceSoundsWhenResuming = true;
 		public static boolean renderCTM = true;
+		public static boolean enableAmbientLighting;
+		public static int ambientLightingLevel;
 	}
 	
 	public static class machines

@@ -40,7 +40,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 {
 	public static final int MAX_OUTPUT = 10000;
 	public static final int MAX_SOLARS = 4;
-	public static final int WARMUP = 10000;
+	public static final int MAX_HEIGHT = 18;
 
 	public FluidTank inputTank = new FluidTank(0);
 	public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
@@ -55,6 +55,9 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	public float biomeTemp = 0;
 	public float temperature = 0;
+	public float heatToAbsorb = 0;
+	
+	public float lastGain = 0;
 	
 	public int height = 0;
 	
@@ -91,7 +94,11 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 				refresh();
 			}
 			
-			updateTemperature();
+			if(structured)
+			{
+				updateTemperature();
+			}
+			
 			manageBuckets();
 			
 			SolarEvaporationRecipe recipe = getRecipe();
@@ -101,7 +108,12 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 				int outputNeeded = outputTank.getCapacity()-outputTank.getFluidAmount();
 				int inputStored = inputTank.getFluidAmount();
 				
-				partialInput += Math.min(inputTank.getFluidAmount(), getTemperature()*recipe.recipeInput.ingredient.amount);
+				double tempMult = Math.max(0, getTemperature())*general.evaporationTempMultiplier;
+				double inputToUse = (tempMult*recipe.recipeInput.ingredient.amount)*((float)height/(float)MAX_HEIGHT);
+				inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
+				
+				lastGain = (float)inputToUse/(float)recipe.recipeInput.ingredient.amount;
+				partialInput += inputToUse;
 				
 				if(partialInput >= 1)
 				{
@@ -117,6 +129,9 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 					outputTank.fill(new FluidStack(recipe.recipeOutput.output.getFluid(), outputInt), true);
 					partialOutput %= 1;
 				}
+			}
+			else {
+				lastGain = 0;
 			}
 			
 			if(structured)
@@ -181,8 +196,6 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 					{
 						inputTank.getFluid().amount = Math.min(inputTank.getFluid().amount, getMaxFluid());
 					}
-					
-					temperature = Math.min(getMaxTemperature(), getTemperature());
 				}
 				else {
 					clearStructure();
@@ -193,7 +206,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 	public boolean canOperate(SolarEvaporationRecipe recipe)
 	{
-		if(!structured || height < 3 || height > 18 || inputTank.getFluid() == null)
+		if(!structured || height < 3 || height > MAX_HEIGHT || inputTank.getFluid() == null)
 		{
 			return false;
 		}
@@ -303,42 +316,34 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	private void updateTemperature()
 	{
-		float max = getMaxTemperature();
-		float incr = (max/WARMUP)*getTempMultiplier();
-		
-		if(getTempMultiplier() == 0)
-		{
-			temperature = Math.max(0, getTemperature()-(max/(WARMUP*16)));
-		}
-		else {
-			temperature = Math.min(max, getTemperature()+incr);
-		}
-	}
-	
-	public float getTemperature()
-	{
-		return temperature;
-	}
-	
-	public float getMaxTemperature()
-	{
-		if(!structured)
-		{
-			return 0;
-		}
-		
-		return 1 + (height-3)*(float)general.solarEvaporationSpeed;
-	}
-	
-	public float getTempMultiplier()
-	{
 		if(!temperatureSet)
 		{
 			biomeTemp = worldObj.getBiomeGenForCoordsBody(getPos()).getFloatTemperature(getPos());
 			temperatureSet = true;
 		}
 		
-		return biomeTemp*((float)getActiveSolars()/MAX_SOLARS);
+		heatToAbsorb += getActiveSolars()*general.evaporationSolarMultiplier;
+		temperature += heatToAbsorb/(float)height;
+		
+		float biome = biomeTemp-0.5F;
+		float base = biome > 0 ? biome*20 : biomeTemp*40;
+		float incr = (float)Math.sqrt(Math.abs(temperature-base))*(float)general.evaporationHeatDissipation;
+		
+		if(temperature > base)
+		{
+			incr = -incr;
+		}
+		
+		temperature = (float)Math.min(general.evaporationMaxTemp, temperature + incr/(float)height);
+		
+		heatToAbsorb = 0;
+		
+		MekanismUtils.saveChunk(this);
+	}
+	
+	public float getTemperature()
+	{
+		return temperature;
 	}
 	
 	public int getActiveSolars()
@@ -396,7 +401,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			middlePointer = middlePointer.offset(EnumFacing.DOWN);
 		}
 		
-		if(height < 3 || height > 18)
+		if(height < 3 || height > MAX_HEIGHT)
 		{
 			height = 0;
 			return false;
@@ -571,7 +576,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	public int getScaledTempLevel(int i)
 	{
-		return (int)(getMaxTemperature() == 0 ? 0 : getTemperature()*i/getMaxTemperature());
+		return (int)(i*Math.min(1, getTemperature()/general.evaporationMaxTemp));
 	}
 	
 	public Coord4D getRenderLocation()
@@ -620,6 +625,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		temperature = dataStream.readFloat();
 		biomeTemp = dataStream.readFloat();
 		isLeftOnFace = dataStream.readBoolean();
+		lastGain = dataStream.readFloat();
 		
 		if(structured != prev)
 		{
@@ -673,6 +679,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		data.add(temperature);
 		data.add(biomeTemp);
 		data.add(isLeftOnFace);
+		data.add(lastGain);
 		
 		return data;
 	}

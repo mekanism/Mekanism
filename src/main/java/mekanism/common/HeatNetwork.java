@@ -1,14 +1,11 @@
 package mekanism.common;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.TransmissionType;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 

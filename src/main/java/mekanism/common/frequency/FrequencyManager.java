@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -247,12 +246,12 @@ public class FrequencyManager
 					else {
 						TileEntity tile = coord.getTileEntity(world);
 						
-						if(!(tile instanceof TileEntityTeleporter))
+						if(!(tile instanceof IFrequencyHandler))
 						{
 							iter.remove();
 						}
 						else {
-							Frequency freq = ((TileEntityTeleporter)tile).frequency;
+							Frequency freq = ((IFrequencyHandler)tile).getFrequency();
 							
 							if(freq == null || !freq.equals(iterFreq))
 							{

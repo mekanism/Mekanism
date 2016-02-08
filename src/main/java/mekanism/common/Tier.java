@@ -495,6 +495,77 @@ public final class Tier
 		}
 	}
 	
+	public static enum ConductorTier
+	{
+		BASIC(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_BASIC),
+		ADVANCED(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ADVANCED),
+		ELITE(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ELITE),
+		ULTIMATE(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ULTIMATE);
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		public double inverseConduction;
+		private double baseConduction;
+		
+		public double inverseHeatCapacity;
+		private double baseHeatCapacity;
+		
+		public double inverseConductionInsulation;
+		private double baseConductionInsulation;
+		
+		public ColourRGBA baseColour;
+		
+		public TransmitterType type;
+
+		private ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour, TransmitterType transmitterType)
+		{
+			baseConduction = inverseConduction = inversek;
+			baseHeatCapacity = inverseHeatCapacity = inverseC;
+			baseConductionInsulation = inverseConductionInsulation = insulationInversek;
+			
+			baseColour = colour;
+			
+			type = transmitterType;
+		}
+		
+		protected void loadConfig()
+		{
+			inverseConduction = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorInverseConduction", baseConduction).getDouble();
+			inverseHeatCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorHeatCapacity", baseHeatCapacity).getDouble();
+			inverseConductionInsulation = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorConductionInsulation", baseConductionInsulation).getDouble();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			inverseConduction = dataStream.readDouble();
+			inverseHeatCapacity = dataStream.readDouble();
+			inverseConductionInsulation = dataStream.readDouble();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeDouble(inverseConduction);
+			dataStream.writeDouble(inverseHeatCapacity);
+			dataStream.writeDouble(inverseConductionInsulation);
+		}
+		
+		public static ConductorTier get(BaseTier tier)
+		{
+			for(ConductorTier transmitter : values())
+			{
+				if(transmitter.getBaseTier() == tier)
+				{
+					return transmitter;
+				}
+			}
+			
+			return BASIC;
+		}
+	}
+	
 	public static void loadConfig()
 	{
 		for(CableTier tier : CableTier.values())
@@ -528,6 +599,11 @@ public final class Tier
 		}
 		
 		for(TransporterTier tier : TransporterTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(ConductorTier tier : ConductorTier.values())
 		{
 			tier.loadConfig();
 		}
@@ -566,6 +642,11 @@ public final class Tier
 		}
 		
 		for(TransporterTier tier : TransporterTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+		
+		for(ConductorTier tier : ConductorTier.values())
 		{
 			tier.readConfig(dataStream);
 		}
@@ -608,6 +689,11 @@ public final class Tier
 		}
 		
 		for(TransporterTier tier : TransporterTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(ConductorTier tier : ConductorTier.values())
 		{
 			tier.writeConfig(dataStream);
 		}
