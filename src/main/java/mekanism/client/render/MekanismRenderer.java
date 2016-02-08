@@ -102,35 +102,35 @@ public class MekanismRenderer
 
 		for(EnumColor color : EnumColor.values())
 		{
-			colors[color.ordinal()] = event.map.registerSprite(new ResourceLocation("mekanism:overlay/overlay_" + color.unlocalizedName));
+			colors[color.ordinal()] = event.map.registerSprite(new ResourceLocation("mekanism:blocks/overlay/overlay_" + color.unlocalizedName));
 		}
 
 		for(TransmissionType type : TransmissionType.values())
 		{
-			overlays.put(type, event.map.registerSprite(new ResourceLocation("mekanism:overlay/" + type.getTransmission() + "Overlay")));
+			overlays.put(type, event.map.registerSprite(new ResourceLocation("mekanism:blocks/overlay/" + type.getTransmission() + "Overlay")));
 		}
 
-		energyIcon = event.map.registerSprite(new ResourceLocation("mekanism:LiquidEnergy"));
-		heatIcon = event.map.registerSprite(new ResourceLocation("mekanism:LiquidHeat"));
+		energyIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/LiquidEnergy"));
+		heatIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/LiquidHeat"));
 
-		GasRegistry.getGas("hydrogen").setIcon(event.map, "mekanism:LiquidHydrogen");
-		GasRegistry.getGas("oxygen").setIcon(event.map,"mekanism:LiquidOxygen");
-		GasRegistry.getGas("water").setIcon(event.map,"mekanism:LiquidSteam");
-		GasRegistry.getGas("chlorine").setIcon(event.map,"mekanism:LiquidChlorine");
-		GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map,"mekanism:LiquidSulfurDioxide");
-		GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map,"mekanism:LiquidSulfurTrioxide");
-		GasRegistry.getGas("sulfuricAcid").setIcon(event.map,"mekanism:LiquidSulfuricAcid");
-		GasRegistry.getGas("hydrogenChloride").setIcon(event.map,"mekanism:LiquidHydrogenChloride");
-		GasRegistry.getGas("liquidOsmium").setIcon(event.map,"mekanism:LiquidOsmium");
-		GasRegistry.getGas("liquidStone").setIcon(event.map,"mekanism:LiquidStone");
-		GasRegistry.getGas("ethene").setIcon(event.map,"mekanism:LiquidEthene");
-		GasRegistry.getGas("brine").setIcon(event.map,"mekanism:LiquidBrine");
-		GasRegistry.getGas("sodium").setIcon(event.map,"mekanism:LiquidSodium");
-		GasRegistry.getGas("deuterium").setIcon(event.map,"mekanism:LiquidDeuterium");
-		GasRegistry.getGas("tritium").setIcon(event.map,"mekanism:LiquidTritium");
-		GasRegistry.getGas("fusionFuelDT").setIcon(event.map,"mekanism:LiquidDT");
-		GasRegistry.getGas("steam").setIcon(event.map,"mekanism:LiquidSteam");
-		GasRegistry.getGas("lithium").setIcon(event.map,"mekanism:LiquidLithium");
+		GasRegistry.getGas("hydrogen").setIcon(event.map, "mekanism:blocks/LiquidHydrogen");
+		GasRegistry.getGas("oxygen").setIcon(event.map,"mekanism:blocks/LiquidOxygen");
+		GasRegistry.getGas("water").setIcon(event.map,"mekanism:blocks/LiquidSteam");
+		GasRegistry.getGas("chlorine").setIcon(event.map,"mekanism:blocks/LiquidChlorine");
+		GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map,"mekanism:blocks/LiquidSulfurDioxide");
+		GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map,"mekanism:blocks/LiquidSulfurTrioxide");
+		GasRegistry.getGas("sulfuricAcid").setIcon(event.map,"mekanism:blocks/LiquidSulfuricAcid");
+		GasRegistry.getGas("hydrogenChloride").setIcon(event.map,"mekanism:blocks/LiquidHydrogenChloride");
+		GasRegistry.getGas("liquidOsmium").setIcon(event.map,"mekanism:blocks/LiquidOsmium");
+		GasRegistry.getGas("liquidStone").setIcon(event.map,"mekanism:blocks/LiquidStone");
+		GasRegistry.getGas("ethene").setIcon(event.map,"mekanism:blocks/LiquidEthene");
+		GasRegistry.getGas("brine").setIcon(event.map,"mekanism:blocks/LiquidBrine");
+		GasRegistry.getGas("sodium").setIcon(event.map,"mekanism:blocks/LiquidSodium");
+		GasRegistry.getGas("deuterium").setIcon(event.map,"mekanism:blocks/LiquidDeuterium");
+		GasRegistry.getGas("tritium").setIcon(event.map,"mekanism:blocks/LiquidTritium");
+		GasRegistry.getGas("fusionFuelDT").setIcon(event.map,"mekanism:blocks/LiquidDT");
+		GasRegistry.getGas("steam").setIcon(event.map,"mekanism:blocks/LiquidSteam");
+		GasRegistry.getGas("lithium").setIcon(event.map,"mekanism:blocks/LiquidLithium");
 
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
@@ -138,10 +138,10 @@ public class MekanismRenderer
 			{
 				if(gas.getUnlocalizedName().contains("clean"))
 				{
-					gas.setIcon(event.map,"mekanism:LiquidCleanOre");
+					gas.setIcon(event.map,"mekanism:blocks/LiquidCleanOre");
 				}
 				else {
-					gas.setIcon(event.map,"mekanism:LiquidOre");
+					gas.setIcon(event.map,"mekanism:blocks/LiquidOre");
 				}
 			}
 		}
@@ -621,7 +621,7 @@ public class MekanismRenderer
     }
     
 	*/
-/**
+/*
 	 * Cleaned-up snip of RenderBlocks.renderBlockAsItem() -- used for rendering an item as an entity,
 	 * in a player's inventory, and in a player's hand.
 	 * @param renderer - RenderBlocks renderer to render the item with
