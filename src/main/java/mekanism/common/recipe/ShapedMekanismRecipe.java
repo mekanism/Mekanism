@@ -1,6 +1,7 @@
 package mekanism.common.recipe;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import mekanism.common.Mekanism;
@@ -212,11 +213,11 @@ public class ShapedMekanismRecipe implements IRecipe
 						return false;
 					}
 				}
-				else if(target instanceof ArrayList)
+				else if(target instanceof Iterable)
 				{
 					boolean matched = false;
 
-					for(ItemStack item : (ArrayList<ItemStack>)target)
+					for(ItemStack item : (Iterable<ItemStack>)target)
 					{
 						matched = matched || RecipeUtils.areItemsEqualForCrafting(item, slot);
 					}
