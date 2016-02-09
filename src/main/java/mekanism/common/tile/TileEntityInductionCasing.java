@@ -160,7 +160,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 			return structure != null ? structure.getEnergy(worldObj) : 0;
 		}
 		else {
-			return structure.clientEnergy;
+			return structure != null ? structure.clientEnergy : 0;
 		}
 	}
 

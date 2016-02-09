@@ -34,6 +34,7 @@ import mekanism.common.tile.TileEntitySolarEvaporationBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarEvaporationValve;
 import mekanism.common.tile.TileEntityStructuralGlass;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -84,6 +85,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:2: Induction Port
  * 1:3: Induction Cell
  * 1:4: Induction Provider
+ * 1:5: Superheating Element
+ * 1:6: Boiler Casing
+ * 1:7: Boiler Valve
  * @author AidanBrady
  *
  */
@@ -196,6 +200,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[4][1] = new CTMData("ctm/InductionProviderAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[5][0] = new CTMData("ctm/SuperheatingElement", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
 				
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
@@ -209,6 +214,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[4][1] = ctms[4][1].mainTextureData.icon;
 				icons[4][2] = ctms[4][2].mainTextureData.icon;
 				icons[4][3] = ctms[4][3].mainTextureData.icon;
+				icons[5][0] = ctms[5][0].mainTextureData.icon;
 				
 				break;
 		}
@@ -255,6 +261,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					case 4:
 						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
 						return icons[meta][tileEntity2.tier.ordinal()];
+					case 5:
+						return icons[meta][0];
 					default:
 						return getIcon(side, meta);
 				}
@@ -312,7 +320,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				
 				break;
 			case BASIC_BLOCK_2:
-				for(int i = 0; i < 5; i++)
+				for(int i = 0; i < 6; i++)
 				{
 					if(i == 3)
 					{
@@ -735,37 +743,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		switch(blockType)
-		{
-			case BASIC_BLOCK_1:
-				switch(metadata)
-				{
-					case 6:
-					case 9:
-					case 10:
-					case 11:
-					case 12:
-					case 14:
-					case 15:
-						return true;
-					default:
-						return false;
-				}
-			case BASIC_BLOCK_2:
-				switch(metadata)
-				{
-					case 0:
-					case 1:
-					case 2:
-					case 3:
-					case 4:
-						return true;
-					default:
-						return false;
-				}
-			default:
-				return false;
-		}
+		BasicType type = BasicType.get(blockType, metadata);
+		
+		return type != null && type.tileEntityClass != null;
 	}
 	
 	@Override
@@ -785,45 +765,12 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		switch(blockType)
+		if(BasicType.get(blockType, metadata) == null)
 		{
-			case BASIC_BLOCK_1:
-				switch(metadata)
-				{
-					case 6:
-						return new TileEntityBin();
-					case 9:
-						return new TileEntityDynamicTank();
-					case 10:
-						return new TileEntityStructuralGlass();
-					case 11:
-						return new TileEntityDynamicValve();
-					case 14:
-						return new TileEntitySolarEvaporationController();
-					case 15:
-						return new TileEntitySolarEvaporationValve();
-					default:
-						return null;
-				}
-			case BASIC_BLOCK_2:
-				switch(metadata)
-				{
-					case 0:
-						return new TileEntitySolarEvaporationBlock();
-					case 1:
-						return new TileEntityInductionCasing();
-					case 2:
-						return new TileEntityInductionPort();
-					case 3:
-						return new TileEntityInductionCell();
-					case 4:
-						return new TileEntityInductionProvider();
-					default:
-						return null;
-				}
-			default:
-				return null;
+			return null;
 		}
+
+		return BasicType.get(blockType, metadata).create();
 	}
 
 	@Override
@@ -1065,10 +1012,116 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	{
 		return true;
 	}
+	
+	public static enum BasicType
+	{
+		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "OsmiumBlock", null, false),
+		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, "BronzeBlock", null, false),
+		REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, "RefinedObsidian", null, false),
+		CHARCOAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, "CharcoalBlock", null, false),
+		REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, "RefinedGlowstone", null, false),
+		STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, "SteelBlock", null, false),
+		BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin.class, true),
+		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, true),
+		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, true),
+		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", TileEntityDynamicTank.class, true),
+		STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", TileEntityStructuralGlass.class, true),
+		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve.class, true),
+		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false),
+		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false),
+		SOLAR_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "SolarEvaporationController", TileEntitySolarEvaporationController.class, true),
+		SOLAR_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "SolarEvaporationValve", TileEntitySolarEvaporationValve.class, true),
+		SOLAR_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "SolarEvaporationBlock", TileEntitySolarEvaporationBlock.class, true),
+		INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing.class, true),
+		INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort.class, true),
+		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", TileEntityInductionCell.class, true),
+		INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", TileEntityInductionProvider.class, true),
+		SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", null, true);
+		//BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 6, "BoilerCasing", TileEntityBoilerCasing.class, true),
+		//BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 7, "BoilerValve", TileEntityBoilerValve.class, true);
+		
+		public BasicBlock typeBlock;
+		public int meta;
+		public String name;
+		public Class<? extends TileEntity> tileEntityClass;
+		public boolean isElectric;
+		public boolean hasDescription;
+
+		private BasicType(BasicBlock block, int i, String s, Class<? extends TileEntity> tileClass, boolean hasDesc)
+		{
+			typeBlock = block;
+			meta = i;
+			name = s;
+			tileEntityClass = tileClass;
+			hasDescription = hasDesc;
+		}
+
+		public static BasicType get(Block block, int meta)
+		{
+			if(block instanceof BlockBasic)
+			{
+				return get(((BlockBasic)block).blockType, meta);
+			}
+
+			return null;
+		}
+
+		public static BasicType get(BasicBlock block, int meta)
+		{
+			for(BasicType type : values())
+			{
+				if(type.meta == meta && type.typeBlock == block)
+				{
+					return type;
+				}
+			}
+
+			return null;
+		}
+
+		public TileEntity create()
+		{
+			try {
+				return tileEntityClass.newInstance();
+			} catch(Exception e) {
+				Mekanism.logger.error("Unable to indirectly create tile entity.");
+				e.printStackTrace();
+				return null;
+			}
+		}
+
+		public String getDescription()
+		{
+			return LangUtils.localize("tooltip." + name);
+		}
+
+		public ItemStack getStack()
+		{
+			return new ItemStack(typeBlock.getBlock(), 1, meta);
+		}
+
+		public static BasicType get(ItemStack stack)
+		{
+			return get(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
+		}
+	}
 
 	public static enum BasicBlock
 	{
 		BASIC_BLOCK_1,
 		BASIC_BLOCK_2;
+		
+		public Block getBlock()
+		{
+			switch(this)
+			{
+				case BASIC_BLOCK_1:
+					return MekanismBlocks.BasicBlock;
+				case BASIC_BLOCK_2:
+					return MekanismBlocks.BasicBlock2;
+				default:
+					return null;
+			}
+		}
 	}
 }

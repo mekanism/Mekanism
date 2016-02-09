@@ -97,6 +97,9 @@ tile.BasicBlock2.InductionProviderBasic.name=Basic Induction Provider
 tile.BasicBlock2.InductionProviderAdvanced.name=Advanced Induction Provider
 tile.BasicBlock2.InductionProviderElite.name=Elite Induction Provider
 tile.BasicBlock2.InductionProviderUltimate.name=Ultimate Induction Provider
+tile.BasicBlock3.SuperheatingElement.name=Superheating Element
+tile.BasicBlock3.BoilerCasing.name=Boiler Casing
+tile.BasicBlock3.BoilerValve.name=Boiler Valve
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
@@ -689,6 +692,7 @@ tooltip.readyForReaction=Ready for Reaction
 tooltip.speed=Speed
 tooltip.and=and
 tooltip.heat=Heat
+tooltip.itemAmount=Item amount
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
@@ -718,6 +722,23 @@ tooltip.flamethrower.modeBump=Flamethrower mode bumped to
 
 tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
 tooltip.seismicReader.noVibrations=Unable to discover any vibrations
+
+tooltip.Bin=A block used to store large quantities of a single type of item.
+tooltip.TeleporterFrame=The frame used to construct the Teleporter multiblock, allowing a portal to be generated within the structure.
+tooltip.SteelCasing=A sturdy, steel-based casing used as a foundation for machinery.
+tooltip.DynamicTank=The casing used in the Dynamic Tank multiblock, a structure capable of storing great amounts of fluid.
+tooltip.StructuralGlass=An advanced, reinforced material of glass that drops when broken and can be used in the structure of any applicable multiblock.
+tooltip.DynamicValve=A valve that can be placed on a Dynamic Tank multiblock, allowing for fluids to be inserted and extracted via external piping.
+tooltip.SolarEvaporationController=The controller for a Solar Evaporation Plant, acting as the master block of the structure. Only one of these should be placed on a multiblock.
+tooltip.SolarEvaporationValve=A valve that can be placed on a Solar Evaporation Plant multiblock, allowing for fluids to be inserted and extracted via external piping.
+tooltip.SolarEvaporationBlock=A copper-alloyed casing used in the structure of a Solar Evaporation Plant, using its advanced material to conduct the great amounts of heat necessary for processing.
+tooltip.InductionCasing=A type of energy-resistant casing used in the creation of an Energized Induction Matrix multiblock.
+tooltip.InductionPort=A port that can be placed on an Energized Induction Matrix multiblock, allowing for energy to be inserted from and output to external cabling.
+tooltip.InductionCell=A highly conductive energy capacitor capable of storing massive amounts of energy in a single block. Housed in an Energized Induction Matrix to expand the multiblock's energy storage.
+tooltip.InductionProvider=An advanced complex of coolant systems, conductors and transformers capable of expanding the Energized Induction Matrix's maximum rate of energy transfer.
+tooltip.SuperheatingElement=A modular, somewhat dangerous radiator that is capable of emitting massive amounts of heat to its surroundings.
+tooltip.BoilerCasing=A pressure-resistant, dense casing used in the creation of a Thermoelectric Boiler multiblock.
+tooltip.BoilerValve=A valve that can be placed on a Thermoelectric Boiler multiblock, allowing for the insertion of energy and water along with the extraction of produced steam.
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into two of their dust counterparts, as well as perform many other operations.
 tooltip.OsmiumCompressor=A fairly advanced machine used to compress osmium into various dusts in order to create their ingot counterparts.
