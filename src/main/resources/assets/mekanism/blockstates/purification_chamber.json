@@ -1,0 +1,24 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/SteelCasing",
+      "front": "mekanism:blocks/PurificationChamberFront"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {"textures": {"front": "mekanism:blocks/PurificationChamberFrontOn"}},
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

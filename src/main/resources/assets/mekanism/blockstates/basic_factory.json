@@ -1,0 +1,26 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/BasicFactorySide",
+      "top": "mekanism:blocks/BasicFactoryTop",
+      "bottom": "mekanism:blocks/BasicFactoryBottom",
+      "front": "mekanism:blocks/BasicFactoryFront"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

@@ -155,7 +155,7 @@ public class MekanismBlocks
 
 		ModelBakery.registerItemVariants(Item.getItemFromBlock(MachineBlock3),
 				new ResourceLocation("mekanism", "entangled_block"),
-				new ResourceLocation("mekanism", "solat_neutron_activator"),
+				new ResourceLocation("mekanism", "solar_neutron_activator"),
 				new ResourceLocation("mekanism", "ambient_accumulator"),
 				new ResourceLocation("mekanism", "oredictionificator")
 		);
