@@ -12,7 +12,6 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
-import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
@@ -21,19 +20,12 @@ import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
-import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
-import mekanism.common.tile.TileEntitySolarEvaporationBlock;
-import mekanism.common.tile.TileEntitySolarEvaporationController;
-import mekanism.common.tile.TileEntitySolarEvaporationValve;
-import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
@@ -83,6 +75,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 1:2: Induction Port
  * 1:3: Induction Cell
  * 1:4: Induction Provider
+ * 1:5: Superheating Element
+ * 1:6: Boiler Casing
+ * 1:7: Boiler Valve
  * @author AidanBrady
  *
  */
@@ -118,7 +113,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 		return new BlockStateBasic(this, getProperty());
 	}
 
-	public PropertyEnum<BasicBlockType> getProperty()
+	public PropertyEnum<BlockStateBasic.BasicBlockType> getProperty()
 	{
 		return getBasicBlock().getProperty();
 	}
@@ -126,7 +121,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		BasicBlockType type = BasicBlockType.getBlockType(getBasicBlock(), meta&0xF);
+		BlockStateBasic.BasicBlockType type = BlockStateBasic.BasicBlockType.get(getBasicBlock(), meta&0xF);
 
 		return this.getDefaultState().withProperty(getProperty(), type);
 	}
@@ -134,7 +129,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		BasicBlockType type = state.getValue(getProperty());
+		BlockStateBasic.BasicBlockType type = state.getValue(getProperty());
 		return type.meta;
 	}
 /*
@@ -230,6 +225,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				ctms[4][1] = new CTMData("ctm/InductionProviderAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[5][0] = new CTMData("ctm/SuperheatingElement", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
 				
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
@@ -243,6 +239,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				icons[4][1] = ctms[4][1].mainTextureData.icon;
 				icons[4][2] = ctms[4][2].mainTextureData.icon;
 				icons[4][3] = ctms[4][3].mainTextureData.icon;
+				icons[5][0] = ctms[5][0].mainTextureData.icon;
 				
 				break;
 		}
@@ -289,6 +286,8 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 					case 4:
 						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(pos);
 						return icons[meta][tileEntity2.tier.ordinal()];
+					case 5:
+						return icons[meta][0];
 					default:
 						return getIcon(side, meta);
 				}
@@ -347,7 +346,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				
 				break;
 			case BASIC_BLOCK_2:
-				for(int i = 0; i < 5; i++)
+				for(int i = 0; i < 6; i++)
 				{
 					if(i == 3)
 					{
@@ -767,38 +766,9 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@Override
 	public boolean hasTileEntity(IBlockState state)
 	{
-		int metadata = state.getBlock().getMetaFromState(state);
-		switch(getBasicBlock())
-		{
-			case BASIC_BLOCK_1:
-				switch(metadata)
-				{
-					case 6:
-					case 9:
-					case 10:
-					case 11:
-					case 12:
-					case 14:
-					case 15:
-						return true;
-					default:
-						return false;
-				}
-			case BASIC_BLOCK_2:
-				switch(metadata)
-				{
-					case 0:
-					case 1:
-					case 2:
-					case 3:
-					case 4:
-						return true;
-					default:
-						return false;
-				}
-			default:
-				return false;
-		}
+		BasicBlockType type = BasicBlockType.get(state);
+		
+		return type != null && type.tileEntityClass != null;
 	}
 	
 	@Override
@@ -818,46 +788,12 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		int metadata = state.getBlock().getMetaFromState(state);
-		switch(getBasicBlock())
+		if(BasicBlockType.get(state) == null)
 		{
-			case BASIC_BLOCK_1:
-				switch(metadata)
-				{
-					case 6:
-						return new TileEntityBin();
-					case 9:
-						return new TileEntityDynamicTank();
-					case 10:
-						return new TileEntityStructuralGlass();
-					case 11:
-						return new TileEntityDynamicValve();
-					case 14:
-						return new TileEntitySolarEvaporationController();
-					case 15:
-						return new TileEntitySolarEvaporationValve();
-					default:
-						return null;
-				}
-			case BASIC_BLOCK_2:
-				switch(metadata)
-				{
-					case 0:
-						return new TileEntitySolarEvaporationBlock();
-					case 1:
-						return new TileEntityInductionCasing();
-					case 2:
-						return new TileEntityInductionPort();
-					case 3:
-						return new TileEntityInductionCell();
-					case 4:
-						return new TileEntityInductionProvider();
-					default:
-						return null;
-				}
-			default:
-				return null;
+			return null;
 		}
+
+		return BasicBlockType.get(state).create();
 	}
 
 	@Override

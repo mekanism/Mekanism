@@ -1,6 +1,5 @@
-package mekanism.generators.common.tile.turbine;
+package mekanism.common.tile;
 
-import mekanism.common.tile.TileEntityBasicBlock;
 
 public class TileEntityPressureDisperser extends TileEntityBasicBlock
 {

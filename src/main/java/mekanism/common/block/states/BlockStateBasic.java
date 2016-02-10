@@ -1,8 +1,9 @@
 package mekanism.common.block.states;
 
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockBasic;
-import mekanism.common.block.BlockMachine;
+import mekanism.common.util.LangUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyBool;
@@ -11,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.IStringSerializable;
@@ -33,7 +35,6 @@ public class BlockStateBasic extends BlockStateFacing
 		BASIC_BLOCK_1,
 		BASIC_BLOCK_2;
 
-		public BlockBasic implBlock;
 		private PropertyEnum<BasicBlockType> predicatedProperty;
 
 		public PropertyEnum<BasicBlockType> getProperty()
@@ -61,52 +62,95 @@ public class BlockStateBasic extends BlockStateFacing
 
 	public static enum BasicBlockType implements IStringSerializable
 	{
-		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, Predicates.<EnumFacing>alwaysFalse(), false),
-		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, Predicates.<EnumFacing>alwaysFalse(), false),
-		REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, Predicates.<EnumFacing>alwaysFalse(), false),
-		COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, Predicates.<EnumFacing>alwaysFalse(), false),
-		REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, Predicates.<EnumFacing>alwaysFalse(), false),
-		STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, Predicates.<EnumFacing>alwaysFalse(), false),
-		BIN(BasicBlock.BASIC_BLOCK_1, 6, Plane.HORIZONTAL, false),
-		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, Predicates.<EnumFacing>alwaysFalse(), false),
-		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, Predicates.<EnumFacing>alwaysFalse(), false),
-		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, Predicates.<EnumFacing>alwaysFalse(), false),
-		STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, Predicates.<EnumFacing>alwaysFalse(), false),
-		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, Predicates.<EnumFacing>alwaysFalse(), false),
-		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, Predicates.<EnumFacing>alwaysFalse(), false),
-		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, Predicates.<EnumFacing>alwaysFalse(), false),
-		SOLAR_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, Plane.HORIZONTAL, false),
-		SOLAR_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, Predicates.<EnumFacing>alwaysFalse(), false),
-		SOLAR_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, Predicates.<EnumFacing>alwaysFalse(), false),
-		INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, Predicates.<EnumFacing>alwaysFalse(), false),
-		INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, Predicates.<EnumFacing>alwaysFalse(), false),
-		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, Predicates.<EnumFacing>alwaysFalse(), false),
-		INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, Predicates.<EnumFacing>alwaysFalse(), false);
+		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "OsmiumBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, "BronzeBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, "RefinedObsidian", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, "CharcoalBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, "RefinedGlowstone", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, "SteelBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", null, false, Plane.HORIZONTAL, false),
+		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		SOLAR_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "SolarEvaporationController", null, false, Plane.HORIZONTAL, false),
+		SOLAR_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "SolarEvaporationValve", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		SOLAR_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "SolarEvaporationBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
+		SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", null, true, Predicates.<EnumFacing>alwaysFalse(), false);
+		//BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 6, "BoilerCasing", TileEntityBoilerCasing.class, true, Predicates.<EnumFacing>alwaysFalse(), false),
+		//BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 7, "BoilerValve", TileEntityBoilerValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false);
 
 		public BasicBlock blockType;
 		public int meta;
+		public String name;
+		public Class<? extends TileEntity> tileEntityClass;
+		public boolean isElectric;
+		public boolean hasDescription;
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 
-		private BasicBlockType(BasicBlock block, int metadata, Predicate<EnumFacing> facingAllowed, boolean activeState)
+		private BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed, boolean activeState)
 		{
 			blockType = block;
 			meta = metadata;
+			name = s;
+			tileEntityClass = tileClass;
+			hasDescription = hasDesc;
 			facingPredicate = facingAllowed;
 			activable = activeState;
 		}
 
-		public static  BasicBlockType getBlockType(BasicBlock blockID, int metadata)
+		public static BasicBlockType get(IBlockState state)
 		{
-			BasicBlockType firstTry = values()[blockID.ordinal() << 4 | metadata];
-			if(firstTry.blockType == blockID && firstTry.meta == metadata)
+			Block b = state.getBlock();
+			int m = b.getMetaFromState(state);
+			return get(b, m);
+		}
+
+		public static BasicBlockType get(ItemStack stack)
+		{
+			return get(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
+		}
+
+		public static BasicBlockType get(Block block, int meta)
+		{
+			if(block instanceof BlockBasic)
+			{
+				return get(((BlockBasic)block).getBasicBlock(), meta);
+			}
+
+			return null;
+		}
+
+		public static  BasicBlockType get(BasicBlock blockType, int metadata)
+		{
+			BasicBlockType firstTry = values()[blockType.ordinal() << 4 | metadata];
+			if(firstTry.blockType == blockType && firstTry.meta == metadata)
 				return firstTry;
 			for(BasicBlockType type : values())
 			{
-				if(type.blockType == blockID && type.meta == metadata)
+				if(type.blockType == blockType && type.meta == metadata)
 					return type;
 			}
 			return null;
+		}
+
+		public TileEntity create()
+		{
+			try {
+				return tileEntityClass.newInstance();
+			} catch(Exception e) {
+				Mekanism.logger.error("Unable to indirectly create tile entity.");
+				e.printStackTrace();
+				return null;
+			}
 		}
 
 		@Override
@@ -115,9 +159,14 @@ public class BlockStateBasic extends BlockStateFacing
 			return name().toLowerCase();
 		}
 
+		public String getDescription()
+		{
+			return LangUtils.localize("tooltip." + name);
+		}
+
 		public ItemStack getStack(int amount)
 		{
-			return new ItemStack(blockType.implBlock, amount, meta);
+			return new ItemStack(blockType.getBlock(), amount, meta);
 		}
 
 		public boolean canRotateTo(EnumFacing side)
