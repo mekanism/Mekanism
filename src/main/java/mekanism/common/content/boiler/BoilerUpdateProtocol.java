@@ -10,8 +10,8 @@ import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
-import mekanism.common.tile.TileEntityThermoelectricBoiler;
-import mekanism.common.tile.TileEntityThermoelectricValve;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 
 import net.minecraft.item.ItemStack;
 
@@ -20,7 +20,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	public static final int WATER_PER_TANK = 16000;
 	public static final int STEAM_PER_TANK = 160000;
 
-	public BoilerUpdateProtocol(TileEntityThermoelectricBoiler tileEntity)
+	public BoilerUpdateProtocol(TileEntityBoilerCasing tileEntity)
 	{
 		super(tileEntity);
 	}
@@ -98,7 +98,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	{
 		for(Coord4D obj : structure.locations)
 		{
-			if(obj.getTileEntity(pointer.getWorldObj()) instanceof TileEntityThermoelectricValve)
+			if(obj.getTileEntity(pointer.getWorldObj()) instanceof TileEntityBoilerValve)
 			{
 				ValveData data = new ValveData();
 				data.location = obj;

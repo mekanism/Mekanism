@@ -60,8 +60,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:3: Induction Cell
  * 1:4: Induction Provider
  * 1:5: Superheating Element
- * 1:6: Boiler Casing
- * 1:7: Boiler Valve
+ * 1:6: Pressure Disperser
+ * 1:7: Boiler Casing
+ * 1:8: Boiler Valve
  * @author AidanBrady
  *
  */
@@ -79,7 +80,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	@Override
 	public int getItemStackLimit(ItemStack stack)
     {
-		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock && stack.getItemDamage() == 6)
+		if(BasicType.get(stack) == BasicType.BIN)
 		{
 			return new InventoryBin(stack).getItemCount() == 0 ? super.getItemStackLimit(stack) : 1;
 		}
@@ -91,6 +92,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 3);
 		setTier(stack, tier.getBaseTier());
+		
 		return stack;
 	}
 	
@@ -98,6 +100,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 4);
 		setTier(stack, tier.getBaseTier());
+		
 		return stack;
 	}
 	
@@ -279,25 +282,21 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		if(BasicType.get(itemstack) != null)
+		BasicType type = BasicType.get(itemstack);
+		
+		if(type != null)
 		{
-			return getUnlocalizedName() + "." + BasicType.get(itemstack).name;
+			String name = getUnlocalizedName() + "." + BasicType.get(itemstack).name;
+			
+			if(type == BasicType.INDUCTION_CELL || type == BasicType.INDUCTION_PROVIDER)
+			{
+				name += getTier(itemstack).getName();
+			}
+			
+			return name;
 		}
 
 		return "null";
-	}
-	
-	@Override
-	public String getItemStackDisplayName(ItemStack itemstack)
-	{
-		BasicType type = BasicType.get(itemstack);
-		
-		if(type == BasicType.INDUCTION_CELL || type == BasicType.INDUCTION_PROVIDER)
-		{
-			return getTier(itemstack).getLocalizedName() + " " + super.getItemStackDisplayName(itemstack);
-		}
-		
-		return super.getItemStackDisplayName(itemstack);
 	}
 	
 	@Override

@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
-public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<SynchronizedBoilerData> implements IFluidContainerManager, IHeatTransfer
+public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IFluidContainerManager, IHeatTransfer
 {
 	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering fluids. */
 	public Map<ValveData, Integer> valveViewing = new HashMap<ValveData, Integer>();
@@ -45,12 +45,12 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 	public double heatToAbsorb;
 	public double invHeatCapacity = 5;
 
-	public TileEntityThermoelectricBoiler()
+	public TileEntityBoilerCasing()
 	{
 		this("SteamBoiler");
 	}
 
-	public TileEntityThermoelectricBoiler(String name)
+	public TileEntityBoilerCasing(String name)
 	{
 		super(name);
 		inventory = new ItemStack[2];
@@ -399,7 +399,7 @@ public class TileEntityThermoelectricBoiler extends TileEntityMultiblock<Synchro
 
 				valveViewing.put(data, viewingTicks);
 
-				TileEntityThermoelectricBoiler tileEntity = (TileEntityThermoelectricBoiler)data.location.getTileEntity(worldObj);
+				TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing)data.location.getTileEntity(worldObj);
 
 				if(tileEntity != null)
 				{

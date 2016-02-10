@@ -75,10 +75,12 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEntangledBlock;
+import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySolarEvaporationBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationValve;
-import mekanism.common.tile.TileEntityThermoelectricBoiler;
-import mekanism.common.tile.TileEntityThermoelectricValve;
+import mekanism.common.tile.TileEntitySuperheatingElement;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
@@ -639,6 +641,9 @@ public class Mekanism
         CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 21), new Object[] {
             "TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 20)
         }));
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 6), new Object[] {
+			"SFS", "FAF", "SFS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('F'), Blocks.iron_bars
+		}));
 		
 		//Plastic stuff
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.Polyethene, 1, 1), new Object[] {
@@ -1074,8 +1079,10 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntitySolarEvaporationValve.class, "SalinationValve");
 		GameRegistry.registerTileEntity(TileEntitySolarEvaporationBlock.class, "SalinationTank");
 		GameRegistry.registerTileEntity(TileEntityEntangledBlock.class, "EntangledBlock");
-		GameRegistry.registerTileEntity(TileEntityThermoelectricBoiler.class, "ThermoelectricBoiler");
-		GameRegistry.registerTileEntity(TileEntityThermoelectricValve.class, "ThermoelectricValve");
+		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
+		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
+		GameRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing");
+		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");
 
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();

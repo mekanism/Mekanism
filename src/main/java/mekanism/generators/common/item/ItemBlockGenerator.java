@@ -48,11 +48,10 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 6: Wind Generator
  * 7: Turbine Rotor
  * 8: Rotational Complex
- * 9: Pressure Disperser
- * 10: Electromagnetic Coil
- * 11: Turbine Casing
- * 12: Turbine Valve
- * 13: Turbine Vent
+ * 9: Electromagnetic Coil
+ * 10: Turbine Casing
+ * 11: Turbine Valve
+ * 12: Turbine Vent
  * @author AidanBrady
  *
  */

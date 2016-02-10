@@ -143,19 +143,16 @@ public class MekanismGenerators implements IModule
 			"SAS", "CAC", "SAS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('C'), "circuitAdvanced"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 9), new Object[] {
-			"SFS", "FAF", "SFS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('F'), Blocks.iron_bars
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 10), new Object[] {
 			"SGS", "GEG", "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "ingotGold", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 4, 11), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 4, 10), new Object[] {
 			" S ", "SOS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('O'), "ingotOsmium"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 12), new Object[] {
-			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 11), Character.valueOf('C'), "circuitAdvanced"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 11), new Object[] {
+			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('C'), "circuitAdvanced"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 13), new Object[] {
-			" I ", "IFI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 11), Character.valueOf('F'), Blocks.iron_bars
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 12), new Object[] {
+			" I ", "IFI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('F'), Blocks.iron_bars
 		}));
 		
 		//Reactor Recipes
