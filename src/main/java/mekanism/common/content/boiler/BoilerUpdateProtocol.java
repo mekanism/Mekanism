@@ -1,19 +1,22 @@
 package mekanism.common.content.boiler;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
-
+import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.tile.TileEntitySuperheatingElement;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 {
@@ -28,7 +31,137 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	@Override
 	protected boolean isValidFrame(int x, int y, int z)
 	{
-		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock2 && pointer.getWorldObj().getBlockMetadata(x, y, z) == 1;
+		return false;
+		//return BasicType.get(pointer.getWorldObj().getBlock(x, y, z), pointer.getWorldObj().getBlockMetadata(x, y, z)) == BasicType.BOILER_CASING;
+	}
+	
+	@Override
+	protected boolean isValidInnerNode(int x, int y, int z)
+	{
+		if(super.isValidInnerNode(x, y, z))
+		{
+			return true;
+		}
+
+		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		
+		return tile instanceof TileEntityPressureDisperser || tile instanceof TileEntitySuperheatingElement;
+	}
+	
+	@Override
+	protected boolean canForm(SynchronizedBoilerData structure)
+	{
+		if(structure.volHeight >= 3)
+		{
+			Set<Coord4D> dispersers = new HashSet<Coord4D>();
+			Set<Coord4D> elements = new HashSet<Coord4D>();
+			
+			for(Coord4D coord : innerNodes)
+			{
+				TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+				
+				if(tile instanceof TileEntityPressureDisperser)
+				{
+					dispersers.add(coord);
+				}
+				else if(tile instanceof TileEntitySuperheatingElement)
+				{
+					elements.add(coord);
+				}
+			}
+			
+			int prevDispersers = dispersers.size();
+			
+			//Ensure at least one disperser exists
+			if(dispersers.size() == 0)
+			{
+				return false;
+			}
+			
+			//Find a single disperser contained within this multiblock
+			Coord4D initDisperser = dispersers.iterator().next();
+			
+			//Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
+			for(int x = structure.renderLocation.xCoord+1; x < structure.renderLocation.xCoord+structure.volLength-1; x++)
+			{
+				for(int z = structure.renderLocation.zCoord+1; z < structure.renderLocation.zCoord+structure.volWidth-1; z++)
+				{
+					TileEntity tile = pointer.getWorldObj().getTileEntity(x, initDisperser.yCoord, z);
+					
+					if(!(tile instanceof TileEntityPressureDisperser))
+					{
+						return false;
+					}
+					
+					dispersers.remove(new Coord4D(x, initDisperser.yCoord, z, pointer.getWorldObj().provider.dimensionId));
+				}
+			}
+			
+			//If there are more dispersers than those on the plane found, the structure is invalid
+			if(dispersers.size() > 0)
+			{
+				return false;
+			}
+			
+			structure.superheatingElements = new NodeCounter(new NodeChecker() {
+				@Override
+				public boolean isValid(Coord4D coord) 
+				{
+					return coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntitySuperheatingElement;
+				}
+			}).calculate(elements.iterator().next());
+			
+			if(elements.size() > structure.superheatingElements)
+			{
+				return false;
+			}
+			
+			Coord4D initAir = null;
+			int totalAir = 0;
+			
+			//Find the first available block in the structure for water storage (including casings)
+			for(int x = structure.renderLocation.xCoord; x < structure.renderLocation.xCoord+structure.volLength; x++)
+			{
+				for(int y = structure.renderLocation.yCoord; y < initDisperser.yCoord; y++)
+				{
+					for(int z = structure.renderLocation.zCoord; z < structure.renderLocation.zCoord+structure.volWidth; z++)
+					{
+						if(pointer.getWorldObj().isAirBlock(x, y, z) || isViableNode(x, y, z))
+						{
+							initAir = new Coord4D(x, y, z, pointer.getWorldObj().provider.dimensionId);
+							totalAir++;
+						}
+					}
+				}
+			}
+			
+			//Some air must exist for the structure to be valid
+			if(initAir == null)
+			{
+				return false;
+			}
+			
+			structure.waterVolume = new NodeCounter(new NodeChecker() {
+				@Override
+				public boolean isValid(Coord4D coord) 
+				{
+					return coord.yCoord < initDisperser.yCoord && (coord.isAirBlock(pointer.getWorldObj()) || isViableNode(coord.xCoord, coord.yCoord, coord.zCoord));
+				}
+			}).calculate(initAir);
+			
+			//Make sure all air blocks are connected
+			if(totalAir > structure.waterVolume)
+			{
+				return false;
+			}
+			
+			int steamHeight = (structure.renderLocation.yCoord+structure.volHeight)-initDisperser.yCoord;
+			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
+			
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -85,11 +218,12 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	{
 		if((structureFound).waterStored != null)
 		{
-			(structureFound).waterStored.amount = Math.min((structureFound).waterStored.amount, structureFound.volume*WATER_PER_TANK);
+			(structureFound).waterStored.amount = Math.min((structureFound).waterStored.amount, structureFound.waterVolume*WATER_PER_TANK);
 		}
+		
 		if((structureFound).steamStored != null)
 		{
-			(structureFound).steamStored.amount = Math.min((structureFound).waterStored.amount, structureFound.volume*STEAM_PER_TANK);
+			(structureFound).steamStored.amount = Math.min((structureFound).steamStored.amount, structureFound.steamVolume*STEAM_PER_TANK);
 		}
 	}
 

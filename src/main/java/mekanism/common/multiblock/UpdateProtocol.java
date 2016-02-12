@@ -289,7 +289,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 * @param z - z coordinate
 	 * @return
 	 */
-	private boolean isViableNode(int x, int y, int z)
+	public boolean isViableNode(int x, int y, int z)
 	{
 		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
 		
@@ -533,5 +533,49 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				killInnerNode(coord);
 			}
 		}
+	}
+	
+	public class NodeCounter
+	{
+		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		
+		public NodeChecker checker;
+		
+		public NodeCounter(NodeChecker c)
+		{
+			checker = c;
+		}
+		
+		public void loop(Coord4D pos)
+		{
+			iterated.add(pos);
+			
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				Coord4D coord = pos.getFromSide(side);
+				
+				if(!iterated.contains(coord) && checker.isValid(coord))
+				{
+					loop(coord);
+				}
+			}
+		}
+		
+		public int calculate(Coord4D coord)
+		{
+			if(!checker.isValid(coord))
+			{
+				return 0;
+			}
+			
+			loop(coord);
+			
+			return iterated.size();
+		}
+	}
+	
+	public static interface NodeChecker
+	{
+		public boolean isValid(Coord4D coord);
 	}
 }

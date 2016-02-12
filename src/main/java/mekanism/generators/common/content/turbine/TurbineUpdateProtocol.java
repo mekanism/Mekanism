@@ -183,11 +183,21 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				}
 				
 				Coord4D startCoord = complex.getFromSide(ForgeDirection.UP);
-				TileEntity startTile = startCoord.getTileEntity(pointer.getWorldObj());
 				
-				if(startTile instanceof TileEntityElectromagneticCoil)
+				if(startCoord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityElectromagneticCoil)
 				{
-					structure.coils = new CoilCounter().calculate((TileEntityElectromagneticCoil)startTile);
+					structure.coils = new NodeCounter(new NodeChecker() {
+						@Override
+						public boolean isValid(Coord4D coord)
+						{
+							return coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityElectromagneticCoil;
+						}
+					}).calculate(startCoord);
+				}
+				
+				if(coils.size() > structure.coils)
+				{
+					return false;
 				}
 				
 				Coord4D turbineCoord = complex.getFromSide(ForgeDirection.DOWN);
@@ -196,11 +206,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				if(turbineTile instanceof TileEntityTurbineRotor)
 				{
 					structure.blades = ((TileEntityTurbineRotor)turbineTile).blades;
-				}
-				
-				if(coils.size() > structure.coils)
-				{
-					return false;
 				}
 				
 				for(Coord4D coord : structure.locations)
@@ -271,36 +276,5 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 		structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
 		
 		((TileEntityRotationalComplex)structureFound.complex.getTileEntity(pointer.getWorldObj())).setMultiblock(structureFound.inventoryID);
-	}
-	
-	public class CoilCounter
-	{
-		public Set<Coord4D> iterated = new HashSet<Coord4D>();
-		
-		public void loop(Coord4D pos)
-		{
-			iterated.add(pos);
-			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				Coord4D coord = pos.getFromSide(side);
-				TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
-				
-				if(!iterated.contains(coord))
-				{
-					if(tile instanceof TileEntityElectromagneticCoil)
-					{
-						loop(coord);
-					}
-				}
-			}
-		}
-		
-		public int calculate(TileEntityElectromagneticCoil tileEntity)
-		{
-			loop(Coord4D.get(tileEntity));
-			
-			return iterated.size();
-		}
 	}
 }
