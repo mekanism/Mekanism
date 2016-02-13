@@ -24,6 +24,8 @@ import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntityInductionCasing;
@@ -160,7 +162,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			case BASIC_BLOCK_1:
 				ctms[7][0] = new CTMData("ctm/TeleporterFrame", this, Arrays.asList(7)).addOtherBlockConnectivities(MekanismBlocks.MachineBlock, Arrays.asList(11)).registerIcons(register);
 				ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
-				ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
+				ctms[10][0] = new CTMData("ctm/StructuralGlass", this, Arrays.asList(10)).registerIcons(register);
 				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
 
 				ctms[14][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationController").registerIcons(register);
@@ -203,6 +205,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[5][0] = new CTMData("ctm/SuperheatingElement", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
+				ctms[7][0] = new CTMData("ctm/BoilerCasing", this, Arrays.asList(7, 8)).registerIcons(register);
+				ctms[8][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(7, 8)).registerIcons(register);
 				
 				icons[6][0] = register.registerIcon("mekanism:PressureDisperser");
 				
@@ -219,6 +223,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[4][2] = ctms[4][2].mainTextureData.icon;
 				icons[4][3] = ctms[4][3].mainTextureData.icon;
 				icons[5][0] = ctms[5][0].mainTextureData.icon;
+				icons[7][0] = ctms[7][0].mainTextureData.icon;
+				icons[8][0] = ctms[8][0].mainTextureData.icon;
 				
 				break;
 		}
@@ -265,8 +271,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					case 4:
 						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
 						return icons[meta][tileEntity2.tier.ordinal()];
-					case 5:
-						return icons[meta][0];
 					default:
 						return getIcon(side, meta);
 				}
@@ -408,26 +412,23 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@Override
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
+		BasicType type = BasicType.get(this, world.getBlockMetadata(x, y, z));
 
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		if(!world.isRemote && type == BasicType.BIN)
 		{
-			if(!world.isRemote && meta == 6)
-			{
-				TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
-				MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
+			TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
+			MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
 
-				if(pos != null && pos.sideHit == bin.facing)
+			if(pos != null && pos.sideHit == bin.facing)
+			{
+				if(bin.bottomStack != null)
 				{
-					if(bin.bottomStack != null)
+					if(!player.isSneaking())
 					{
-						if(!player.isSneaking())
-						{
-							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
-						}
-						else {
-							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
-						}
+						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
+					}
+					else {
+						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
 					}
 				}
 			}
@@ -439,6 +440,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 		BasicType type = BasicType.get(this, metadata);
+		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if(type == BasicType.REFINED_OBSIDIAN)
 		{
@@ -454,7 +456,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			return true;
 		}
 
-		if(type == BasicType.SOLAR_EVAPORATION_CONTROLLER)
+		if(tile instanceof TileEntitySolarEvaporationController)
 		{
 			if(!entityplayer.isSneaking())
 			{
@@ -462,7 +464,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				return true;
 			}
 		}
-		else if(type == BasicType.BIN)
+		else if(tile instanceof TileEntityBin)
 		{
 			TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
 
@@ -525,11 +527,11 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 
 			return true;
 		}
-		else if(type == BasicType.DYNAMIC_TANK || type == BasicType.DYNAMIC_VALVE || type == BasicType.INDUCTION_CASING || type == BasicType.INDUCTION_PORT)
+		else if(tile instanceof IMultiblock)
 		{
 			return ((IMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
 		}
-		else if(type == BasicType.STRUCTURAL_GLASS)
+		else if(tile instanceof IStructuralMultiblock)
 		{
 			return ((IStructuralMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
 		}
@@ -1003,9 +1005,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", TileEntityInductionCell.class, true),
 		INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", TileEntityInductionProvider.class, true),
 		SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", null, true),
-		PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser", TileEntityPressureDisperser.class, true);
-		//BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing.class, true),
-		//BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true);
+		PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser", TileEntityPressureDisperser.class, true),
+		BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing.class, true),
+		BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true);
 		
 		public BasicBlock typeBlock;
 		public int meta;

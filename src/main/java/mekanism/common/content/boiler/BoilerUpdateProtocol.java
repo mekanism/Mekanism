@@ -7,6 +7,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockBasic.BasicType;
 import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -31,8 +32,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	@Override
 	protected boolean isValidFrame(int x, int y, int z)
 	{
-		return false;
-		//return BasicType.get(pointer.getWorldObj().getBlock(x, y, z), pointer.getWorldObj().getBlockMetadata(x, y, z)) == BasicType.BOILER_CASING;
+		return BasicType.get(pointer.getWorldObj().getBlock(x, y, z), pointer.getWorldObj().getBlockMetadata(x, y, z)) == BasicType.BOILER_CASING;
 	}
 	
 	@Override
