@@ -75,14 +75,14 @@ public class ContainerDigitalMiner extends Container
 
 			if(ChargeUtils.canBeDischarged(slotStack))
 			{
-				if(slotID != 27)
+				if(slotID > 27)
 				{
 					if(!mergeItemStack(slotStack, 27, 28, false))
 					{
 						return null;
 					}
 				}
-				else if(slotID == 27)
+				else if(slotID <= 27)
 				{
 					if(!mergeItemStack(slotStack, 28, inventorySlots.size(), true))
 					{
