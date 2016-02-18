@@ -63,8 +63,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 1:3: Induction Cell
  * 1:4: Induction Provider
  * 1:5: Superheating Element
- * 1:6: Boiler Casing
- * 1:7: Boiler Valve
+ * 1:6: Pressure Disperser
+ * 1:7: Boiler Casing
+ * 1:8: Boiler Valve
  * @author AidanBrady
  *
  */
@@ -82,7 +83,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	@Override
 	public int getItemStackLimit(ItemStack stack)
     {
-		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock && stack.getItemDamage() == 6)
+		if(BasicBlockType.get(stack) == BasicBlockType.BIN)
 		{
 			return new InventoryBin(stack).getItemCount() == 0 ? super.getItemStackLimit(stack) : 1;
 		}
@@ -94,6 +95,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 3);
 		setTier(stack, tier.getBaseTier());
+		
 		return stack;
 	}
 	
@@ -101,6 +103,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 4);
 		setTier(stack, tier.getBaseTier());
+		
 		return stack;
 	}
 	
@@ -138,7 +141,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		BasicBlockType type = BasicBlockType.get(itemstack);
 		
@@ -195,7 +198,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
-		if(BasicType.get(stack) != BasicType.BIN)
+		if(BasicBlockType.get(stack) != BasicBlockType.BIN)
 		{
 			return true;
 		}
@@ -284,9 +287,18 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		if(BasicBlockType.get(itemstack) != null)
+		BasicBlockType type = BasicBlockType.get(itemstack);
+		
+		if(type != null)
 		{
-			return getUnlocalizedName() + "." + BasicBlockType.get(itemstack).name;
+			String name = getUnlocalizedName() + "." + BasicBlockType.get(itemstack).name;
+			
+			if(type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
+			{
+				name += getTier(itemstack).getName();
+			}
+			
+			return name;
 		}
 
 		return "null";

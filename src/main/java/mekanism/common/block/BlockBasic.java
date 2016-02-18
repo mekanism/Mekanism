@@ -19,10 +19,14 @@ import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -76,8 +80,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 1:3: Induction Cell
  * 1:4: Induction Provider
  * 1:5: Superheating Element
- * 1:6: Boiler Casing
- * 1:7: Boiler Valve
+ * 1:6: Pressure Disperser
+ * 1:7: Boiler Casing
+ * 1:8: Boiler Valve
  * @author AidanBrady
  *
  */
@@ -183,7 +188,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 			case BASIC_BLOCK_1:
 				ctms[7][0] = new CTMData("ctm/TeleporterFrame", this, Arrays.asList(7)).addOtherBlockConnectivities(MekanismBlocks.MachineBlock, Arrays.asList(11)).registerIcons(register);
 				ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
-				ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
+				ctms[10][0] = new CTMData("ctm/StructuralGlass", this, Arrays.asList(10)).registerIcons(register);
 				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
 
 				ctms[14][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationController").registerIcons(register);
@@ -226,6 +231,10 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[5][0] = new CTMData("ctm/SuperheatingElement", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
+				ctms[7][0] = new CTMData("ctm/BoilerCasing", this, Arrays.asList(7, 8)).registerIcons(register);
+				ctms[8][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(7, 8)).registerIcons(register);
+				
+				icons[6][0] = register.registerIcon("mekanism:PressureDisperser");
 				
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
@@ -240,6 +249,8 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				icons[4][2] = ctms[4][2].mainTextureData.icon;
 				icons[4][3] = ctms[4][3].mainTextureData.icon;
 				icons[5][0] = ctms[5][0].mainTextureData.icon;
+				icons[7][0] = ctms[7][0].mainTextureData.icon;
+				icons[8][0] = ctms[8][0].mainTextureData.icon;
 				
 				break;
 		}
@@ -286,8 +297,6 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 					case 4:
 						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(pos);
 						return icons[meta][tileEntity2.tier.ordinal()];
-					case 5:
-						return icons[meta][0];
 					default:
 						return getIcon(side, meta);
 				}
@@ -336,48 +345,29 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
 	{
-		switch(getBasicBlock())
+		for(BasicBlockType type : BasicBlockType.values())
 		{
-			case BASIC_BLOCK_1:
-				for(int i = 0; i < 16; i++)
+			if(type.blockType == getBasicBlock())
+			{
+				switch(type)
 				{
-					list.add(new ItemStack(item, 1, i));
-				}
-				
-				break;
-			case BASIC_BLOCK_2:
-				for(int i = 0; i < 6; i++)
-				{
-					if(i == 3)
-					{
+					case INDUCTION_CELL:
+					case INDUCTION_PROVIDER:
 						for(BaseTier tier : BaseTier.values())
 						{
 							if(tier.isObtainable())
 							{
-								ItemStack stack = new ItemStack(item, 1, i);
+								ItemStack stack = new ItemStack(item, 1, type.meta);
 								((ItemBlockBasic)stack.getItem()).setTier(stack, tier);
 								list.add(stack);
 							}
 						}
-					}
-					else if(i == 4)
-					{
-						for(BaseTier tier : BaseTier.values())
-						{
-							if(tier.isObtainable())
-							{
-								ItemStack stack = new ItemStack(item, 1, i);
-								((ItemBlockBasic)stack.getItem()).setTier(stack, tier);
-								list.add(stack);
-							}
-						}
-					}
-					else {
-						list.add(new ItemStack(item, 1, i));
-					}
+						
+						break;
+					default:
+						list.add(new ItemStack(item, 1, type.meta));
 				}
-				
-				break;
+			}
 		}
 	}
 
@@ -449,27 +439,23 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@Override
 	public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
 	{
-		IBlockState state = world.getBlockState(pos);
-		int meta = state.getBlock().getMetaFromState(state);
+		BasicBlockType type = BasicBlockType.get(world.getBlockState(pos));
 
-		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1)
+		if(!world.isRemote && type == BasicBlockType.BIN)
 		{
-			if(!world.isRemote && meta == 6)
-			{
-				TileEntityBin bin = (TileEntityBin)world.getTileEntity(pos);
-				MovingObjectPosition mop = MekanismUtils.rayTrace(world, player);
+			TileEntityBin bin = (TileEntityBin)world.getTileEntity(pos);
+			MovingObjectPosition mop = MekanismUtils.rayTrace(world, player);
 
-				if(mop != null && mop.sideHit == bin.facing)
+			if(mop != null && mop.sideHit == bin.facing)
+			{
+				if(bin.bottomStack != null)
 				{
-					if(bin.bottomStack != null)
+					if(!player.isSneaking())
 					{
-						if(!player.isSneaking())
-						{
-							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
-						}
-						else {
-							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
-						}
+						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
+					}
+					else {
+						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
 					}
 				}
 			}
@@ -479,114 +465,101 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		int metadata = state.getBlock().getMetaFromState(state);
+		BasicBlockType type = BasicBlockType.get(state);
+		TileEntity tile = world.getTileEntity(pos);
 
-		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1)
+		if(type == BasicBlockType.REFINED_OBSIDIAN)
 		{
-			if(metadata == 2)
+			if(entityplayer.isSneaking())
 			{
-				if(entityplayer.isSneaking())
-				{
-					entityplayer.openGui(Mekanism.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
-					return true;
-				}
-			}
-
-			if(metadata == 14)
-			{
-				if(!entityplayer.isSneaking())
-				{
-					entityplayer.openGui(Mekanism.instance, 33, world, pos.getX(), pos.getY(), pos.getZ());
-					return true;
-				}
-			}
-
-			if(world.isRemote)
-			{
+				entityplayer.openGui(Mekanism.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
 				return true;
-			}
-
-			if(metadata == 6)
-			{
-				TileEntityBin bin = (TileEntityBin)world.getTileEntity(pos);
-
-				if(entityplayer.getCurrentEquippedItem() != null && MekanismUtils.hasUsableWrench(entityplayer, pos))
-				{
-					Item tool = entityplayer.getCurrentEquippedItem().getItem();
-					if(entityplayer.isSneaking())
-					{
-						dismantleBlock(world, pos, false);
-						return true;
-					}
-
-					if(MekanismUtils.isBCWrench(tool))
-					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
-					}
-
-					int change = bin.facing.rotateY().ordinal();
-
-					bin.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this);
-					return true;
-				}
-
-				if(bin.getItemCount() < bin.MAX_STORAGE)
-				{
-					if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
-					{
-						if(entityplayer.getCurrentEquippedItem() != null)
-						{
-							ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
-							entityplayer.setCurrentItemOrArmor(0, remain);
-							bin.addTicks = 5;
-						}
-					}
-					else if(bin.addTicks > 0 && bin.getItemCount() > 0)
-					{
-						ItemStack[] inv = entityplayer.inventory.mainInventory;
-
-						for(int i = 0; i < inv.length; i++)
-						{
-							if(bin.getItemCount() == bin.MAX_STORAGE)
-							{
-								break;
-							}
-
-							if(inv[i] != null)
-							{
-								ItemStack remain = bin.add(inv[i]);
-								inv[i] = remain;
-								bin.addTicks = 5;
-							}
-
-							((EntityPlayerMP)entityplayer).sendContainerToPlayer(entityplayer.openContainer);
-						}
-					}
-				}
-
-				return true;
-			}
-			else if(metadata == 9 || metadata == 11)
-			{
-				return ((IMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
-			}
-			else if(metadata == 10)
-			{
-				return ((IStructuralMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
 			}
 		}
-		else if(getBasicBlock() == BasicBlock.BASIC_BLOCK_2)
+		
+		if(world.isRemote)
 		{
-			if(world.isRemote)
+			return true;
+		}
+
+		if(tile instanceof TileEntitySolarEvaporationController)
+		{
+			if(!entityplayer.isSneaking())
 			{
+				entityplayer.openGui(Mekanism.instance, 33, world, pos.getX(), pos.getY(), pos.getZ());
 				return true;
 			}
-			
-			if(metadata == 1 || metadata == 2)
+		}
+		else if(tile instanceof TileEntityBin)
+		{
+			TileEntityBin bin = (TileEntityBin)tile;
+
+			if(entityplayer.getCurrentEquippedItem() != null && MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
-				return ((IMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
+				Item tool = entityplayer.getCurrentEquippedItem().getItem();
+				
+				if(entityplayer.isSneaking())
+				{
+					dismantleBlock(world, pos, false);
+					return true;
+				}
+
+				if(MekanismUtils.isBCWrench(tool))
+				{
+					((IToolWrench)tool).wrenchUsed(entityplayer, pos);
+				}
+
+				int change = bin.facing.rotateY().ordinal();
+
+				bin.setFacing((short)change);
+				world.notifyNeighborsOfStateChange(pos, this);
+				
+				return true;
 			}
+
+			if(bin.getItemCount() < bin.MAX_STORAGE)
+			{
+				if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
+				{
+					if(entityplayer.getCurrentEquippedItem() != null)
+					{
+						ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
+						entityplayer.setCurrentItemOrArmor(0, remain);
+						bin.addTicks = 5;
+					}
+				}
+				else if(bin.addTicks > 0 && bin.getItemCount() > 0)
+				{
+					ItemStack[] inv = entityplayer.inventory.mainInventory;
+
+					for(int i = 0; i < inv.length; i++)
+					{
+						if(bin.getItemCount() == bin.MAX_STORAGE)
+						{
+							break;
+						}
+
+						if(inv[i] != null)
+						{
+							ItemStack remain = bin.add(inv[i]);
+							inv[i] = remain;
+							bin.addTicks = 5;
+						}
+
+						((EntityPlayerMP)entityplayer).sendContainerToPlayer(entityplayer.openContainer);
+					}
+				}
+			}
+
+			return true;
+		}
+		else if(tile instanceof IMultiblock)
+		{
+			return ((IMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
+		}
+		else if(tile instanceof IStructuralMultiblock)
+		{
+			return ((IStructuralMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
 		}
 
 		return false;
@@ -595,8 +568,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@Override
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		IBlockState state = world.getBlockState(pos);
-		return !(getBasicBlock() == BasicBlock.BASIC_BLOCK_1 && state.getBlock().getMetaFromState(state) == 10);
+		return BasicBlockType.get(world.getBlockState(pos)) != BasicBlockType.STRUCTURAL_GLASS;
 	}
 
 	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -862,35 +834,30 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
 	{
 		IBlockState state = world.getBlockState(pos);
+		BasicBlockType type = BasicBlockType.get(state);
 		ItemStack ret = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
-		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1)
+		if(type == BasicBlockType.BIN)
 		{
-			if(ret.getItemDamage() == 6)
+			TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(pos);
+			InventoryBin inv = new InventoryBin(ret);
+
+			inv.setItemCount(tileEntity.getItemCount());
+
+			if(tileEntity.getItemCount() > 0)
 			{
-				TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(pos);
-				InventoryBin inv = new InventoryBin(ret);
-
-				inv.setItemCount(tileEntity.getItemCount());
-
-				if(tileEntity.getItemCount() > 0)
-				{
-					inv.setItemType(tileEntity.itemType);
-				}
+				inv.setItemType(tileEntity.itemType);
 			}
 		}
-		else if(getBasicBlock() == BasicBlock.BASIC_BLOCK_2)
+		else if(type == BasicBlockType.INDUCTION_CELL)
 		{
-			if(ret.getItemDamage() == 3)
-			{
-				TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(pos);
-				((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
-			}
-			else if(ret.getItemDamage() == 4)
-			{
-				TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(pos);
-				((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
-			}
+			TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(pos);
+			((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+		}
+		else if(type == BasicBlockType.INDUCTION_PROVIDER)
+		{
+			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(pos);
+			((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
 		}
 		
 		TileEntity tileEntity = world.getTileEntity(pos);
@@ -957,7 +924,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	{
 		Coord4D obj = new Coord4D(pos).offset(EnumFacing.getFront(side).getOpposite());
 		
-		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_1 && obj.getBlockState(world) == 10)
+		if(BasicBlockType.get(this, world.getBlockMetadata(x, y, z)) == BasicBlockType.STRUCTURAL_GLASS)
 		{
 			return ctms[10][0].shouldRenderSide(world, pos, side);
 		}
@@ -1016,19 +983,18 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 		{
 			return ctms[meta][1];
 		}
+		
+		BasicBlockType type = BasicBlockType.get(this, world.getBlockMetadata(x, y, z));
 
-		if(getBasicBlock() == BasicBlock.BASIC_BLOCK_2)
+		if(type == BasicBlockType.INDUCTION_CELL)
 		{
-			if(meta == 3)
-			{
-				TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(pos);
-				return ctms[meta][tileEntity.tier.ordinal()];
-			}
-			else if(meta == 4)
-			{
-				TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(pos);
-				return ctms[meta][tileEntity.tier.ordinal()];
-			}
+			TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(pos);
+			return ctms[meta][tileEntity.tier.ordinal()];
+		}
+		else if(type == BasicBlockType.INDUCTION_PROVIDER)
+		{
+			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(pos);
+			return ctms[meta][tileEntity.tier.ordinal()];
 		}
 
 		return ctms[meta][0];

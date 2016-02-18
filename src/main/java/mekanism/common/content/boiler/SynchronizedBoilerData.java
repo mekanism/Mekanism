@@ -7,7 +7,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -26,6 +25,12 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	public double heatCapacity = 0.000001;
 
 	public double enthalpyOfVaporization = 10;
+	
+	public int superheatingElements;
+	
+	public int waterVolume;
+	
+	public int steamVolume;
 
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 

@@ -74,7 +74,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 		
 		public void loop(Coord4D pos)
 		{
-			if(iterated.size() > 512 || found != null)
+			if(iterated.size() > 2048 || found != null)
 			{
 				return;
 			}

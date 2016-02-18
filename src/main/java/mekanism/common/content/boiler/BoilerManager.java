@@ -9,7 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.tile.TileEntityThermoelectricBoiler;
+import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -32,7 +32,7 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
         {
             String inventoryID = entry.getKey();
 
-            HashSet<TileEntityThermoelectricBoiler> boilers = new HashSet<TileEntityThermoelectricBoiler>();
+            HashSet<TileEntityBoilerCasing> boilers = new HashSet<TileEntityBoilerCasing>();
 
             for(Coord4D obj : entry.getValue().locations)
             {
@@ -49,10 +49,10 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
 
                         tilesToKill.get(inventoryID).add(obj);
                     }
-                    else if(tileEntity instanceof TileEntityThermoelectricBoiler)
+                    else if(tileEntity instanceof TileEntityBoilerCasing)
                     {
-                        ((TileEntityThermoelectricBoiler)tileEntity).simulateHeat();
-                        boilers.add((TileEntityThermoelectricBoiler) tileEntity);
+                        ((TileEntityBoilerCasing)tileEntity).simulateHeat();
+                        boilers.add((TileEntityBoilerCasing) tileEntity);
                     }
                 }
             }
@@ -66,7 +66,7 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
                     boilers.iterator().next().getSynchronizedData().applyTemperatureChange();
                 }
 
-                for (TileEntityThermoelectricBoiler boiler : boilers)
+                for (TileEntityBoilerCasing boiler : boilers)
                 {
                     boiler.applyTemperatureChange();
                 }

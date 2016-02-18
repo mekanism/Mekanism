@@ -20,7 +20,6 @@ import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
-import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -59,7 +58,6 @@ import buildcraft.api.tools.IToolWrench;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-
 /**
  * Block class for handling multiple generator block IDs.
  * 0: Heat Generator
@@ -70,11 +68,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 6: Wind Generator
  * 7: Turbine Rotor
  * 8: Rotational Complex
- * 9: Pressure Disperser
- * 10: Electromagnetic Coil
- * 11: Turbine Casing
- * 12: Turbine Valve
- * 13: Turbine Vent
+ * 9: Electromagnetic Coil
+ * 10: Turbine Casing
+ * 11: Turbine Valve
+ * 12: Turbine Vent
  * @author AidanBrady
  *
  */
@@ -102,20 +99,19 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	{
 		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
 		
-		ctms[10] = new CTMData("ctm/ElectromagneticCoil", this, Arrays.asList(10)).registerIcons(register);
-		ctms[11] = new CTMData("ctm/TurbineCasing", this, Arrays.asList(11, 12, 13)).registerIcons(register);
-		ctms[12] = new CTMData("ctm/TurbineValve", this, Arrays.asList(11, 12, 13)).registerIcons(register);
-		ctms[13] = new CTMData("ctm/TurbineVent", this, Arrays.asList(11, 12, 13)).registerIcons(register);
+		ctms[9] = new CTMData("ctm/ElectromagneticCoil", this, Arrays.asList(9)).registerIcons(register);
+		ctms[10] = new CTMData("ctm/TurbineCasing", this, Arrays.asList(10, 11, 12)).registerIcons(register);
+		ctms[11] = new CTMData("ctm/TurbineValve", this, Arrays.asList(10, 11, 12)).registerIcons(register);
+		ctms[12] = new CTMData("ctm/TurbineVent", this, Arrays.asList(10, 11, 12)).registerIcons(register);
 		
 		icons[7][0] = register.registerIcon("mekanism:TurbineRod");
 		icons[8][0] = register.registerIcon("mekanism:RotationalComplexSide");
 		icons[8][1] = register.registerIcon("mekanism:RotationalComplexTop");
-		icons[9][0] = register.registerIcon("mekanism:PressureDisperser");
 		
+		icons[9][0] = ctms[9].mainTextureData.icon;
 		icons[10][0] = ctms[10].mainTextureData.icon;
 		icons[11][0] = ctms[11].mainTextureData.icon;
 		icons[12][0] = ctms[12].mainTextureData.icon;
-		icons[13][0] = ctms[13].mainTextureData.icon;
 	}
 	
 	@Override
@@ -724,11 +720,10 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		WIND_GENERATOR(6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class, true),
 		TURBINE_ROTOR(7, "TurbineRotor", -1, -1, TileEntityTurbineRotor.class, false),
 		ROTATIONAL_COMPLEX(8, "RotationalComplex", -1, -1, TileEntityRotationalComplex.class, false),
-		PRESSURE_DISPERSER(9, "PressureDisperser", -1, -1, TileEntityPressureDisperser.class, false),
-		ELECTROMAGNETIC_COIL(10, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false),
-		TURBINE_CASING(11, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false),
-		TURBINE_VALVE(12, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false),
-		TURBINE_VENT(13, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false);
+		ELECTROMAGNETIC_COIL(9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false),
+		TURBINE_CASING(10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false),
+		TURBINE_VALVE(11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false),
+		TURBINE_VENT(12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false);
 
 		public int meta;
 		public String name;

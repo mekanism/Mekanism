@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-public class TileEntityPressureDisperser extends TileEntityBasicBlock
+public class TileEntitySuperheatingElement extends TileEntityBasicBlock
 {
 	@Override
 	public void onUpdate() {}

@@ -222,7 +222,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			Coord4D coord = Coord4D.get(tile).offset(side);
 			TileEntity tileEntity = coord.getTileEntity(tile.getWorld());
 
-			if(isViableNode(coord.getX(), coord.getY(), coord.getZ()))
+			if(isViableNode(coord))
 			{
 				if(!iteratedNodes.contains(tileEntity))
 				{
@@ -291,10 +291,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 * @param z - z coordinate
 	 * @return
 	 */
-	private boolean isViableNode(int x, int y, int z)
+	public boolean isViableNode(int x, int y, int z)
 	{
 		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
-		
+
 		if(tile instanceof IStructuralMultiblock)
 		{
 			if(((IStructuralMultiblock)tile).canInterface(pointer))
@@ -302,7 +302,32 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				return true;
 			}
 		}
-		
+
+		if(MultiblockManager.areEqual(tile, pointer))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether or not the block at the specified location is a viable node for a multiblock structure.
+	 * @param pos - coordinates
+	 * @return
+	 */
+	public boolean isViableNode(BlockPos pos)
+	{
+		TileEntity tile = pointer.getWorld().getTileEntity(pos);
+
+		if(tile instanceof IStructuralMultiblock)
+		{
+			if(((IStructuralMultiblock)tile).canInterface(pointer))
+			{
+				return true;
+			}
+		}
+
 		if(MultiblockManager.areEqual(tile, pointer))
 		{
 			return true;
@@ -535,5 +560,49 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				killInnerNode(coord);
 			}
 		}
+	}
+	
+	public class NodeCounter
+	{
+		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		
+		public NodeChecker checker;
+		
+		public NodeCounter(NodeChecker c)
+		{
+			checker = c;
+		}
+		
+		public void loop(Coord4D pos)
+		{
+			iterated.add(pos);
+			
+			for(EnumFacing side : EnumFacing.VALUES)
+			{
+				Coord4D coord = pos.offset(side);
+				
+				if(!iterated.contains(coord) && checker.isValid(coord))
+				{
+					loop(coord);
+				}
+			}
+		}
+		
+		public int calculate(Coord4D coord)
+		{
+			if(!checker.isValid(coord))
+			{
+				return 0;
+			}
+			
+			loop(coord);
+			
+			return iterated.size();
+		}
+	}
+	
+	public static interface NodeChecker
+	{
+		public boolean isValid(Coord4D coord);
 	}
 }

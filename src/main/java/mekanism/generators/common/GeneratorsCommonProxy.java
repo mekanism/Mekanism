@@ -60,7 +60,6 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityReactorPort.class, "ReactorPort");
 		GameRegistry.registerTileEntity(TileEntityReactorLogicAdapter.class, "ReactorLogicAdapter");
 		GameRegistry.registerTileEntity(TileEntityRotationalComplex.class, "RotationalComplex");
-		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
 		GameRegistry.registerTileEntity(TileEntityElectromagneticCoil.class, "ElectromagneticCoil");
 	}
 

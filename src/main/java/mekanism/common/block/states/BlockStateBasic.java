@@ -3,6 +3,9 @@ package mekanism.common.block.states;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
+import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.LangUtils;
 
 import net.minecraft.block.Block;
@@ -83,9 +86,10 @@ public class BlockStateBasic extends BlockStateFacing
 		INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
 		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
 		INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", null, false, Predicates.<EnumFacing>alwaysFalse(), false),
-		SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", null, true, Predicates.<EnumFacing>alwaysFalse(), false);
-		//BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 6, "BoilerCasing", TileEntityBoilerCasing.class, true, Predicates.<EnumFacing>alwaysFalse(), false),
-		//BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 7, "BoilerValve", TileEntityBoilerValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false);
+		SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", null, true, Predicates.<EnumFacing>alwaysFalse(), false),
+		PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser",TileEntityPressureDisperser.class, true, Predicates.<EnumFacing>alwaysFalse(), false),
+		BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing.class, true, Predicates.<EnumFacing>alwaysFalse(), false),
+		BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false);
 
 		public BasicBlock blockType;
 		public int meta;
@@ -109,9 +113,11 @@ public class BlockStateBasic extends BlockStateFacing
 
 		public static BasicBlockType get(IBlockState state)
 		{
-			Block b = state.getBlock();
-			int m = b.getMetaFromState(state);
-			return get(b, m);
+			if(state.getBlock() instanceof BlockBasic)
+			{
+				return state.getValue(((BlockBasic)state.getBlock()).getProperty());
+			}
+			return null;
 		}
 
 		public static BasicBlockType get(ItemStack stack)

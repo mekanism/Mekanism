@@ -71,16 +71,18 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySolarEvaporationBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationValve;
-import mekanism.common.tile.TileEntityThermoelectricBoiler;
-import mekanism.common.tile.TileEntityThermoelectricValve;
+import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
@@ -508,6 +510,9 @@ public class Mekanism
 		));
 		BlockStateMachine.MachineType.LASER_TRACTOR_BEAM.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 15),
 			"C", "F", Character.valueOf('C'), new ItemStack(MekanismBlocks.MachineBlock, 1, 13), Character.valueOf('F'), new ItemStack(MekanismBlocks.MachineBlock2, 1, 14)
+		));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 6),
+			"SFS", "FAF", "SFS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('F'), Blocks.iron_bars
 		));
 		
 		//Energy Cube recipes
@@ -1105,8 +1110,10 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntitySolarEvaporationValve.class, "SalinationValve");
 		GameRegistry.registerTileEntity(TileEntitySolarEvaporationBlock.class, "SalinationTank");
 		GameRegistry.registerTileEntity(TileEntityEntangledBlock.class, "EntangledBlock");
-		GameRegistry.registerTileEntity(TileEntityThermoelectricBoiler.class, "ThermoelectricBoiler");
-		GameRegistry.registerTileEntity(TileEntityThermoelectricValve.class, "ThermoelectricValve");
+		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
+		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
+		GameRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing");
+		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");
 		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 

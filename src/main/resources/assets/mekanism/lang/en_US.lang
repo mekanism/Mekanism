@@ -97,9 +97,10 @@ tile.BasicBlock2.InductionProviderBasic.name=Basic Induction Provider
 tile.BasicBlock2.InductionProviderAdvanced.name=Advanced Induction Provider
 tile.BasicBlock2.InductionProviderElite.name=Elite Induction Provider
 tile.BasicBlock2.InductionProviderUltimate.name=Ultimate Induction Provider
-tile.BasicBlock3.SuperheatingElement.name=Superheating Element
-tile.BasicBlock3.BoilerCasing.name=Boiler Casing
-tile.BasicBlock3.BoilerValve.name=Boiler Valve
+tile.BasicBlock2.SuperheatingElement.name=Superheating Element
+tile.BasicBlock2.PressureDisperser.name=Pressure Disperser
+tile.BasicBlock2.BoilerCasing.name=Boiler Casing
+tile.BasicBlock2.BoilerValve.name=Boiler Valve
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
@@ -737,6 +738,7 @@ tooltip.InductionPort=A port that can be placed on an Energized Induction Matrix
 tooltip.InductionCell=A highly conductive energy capacitor capable of storing massive amounts of energy in a single block. Housed in an Energized Induction Matrix to expand the multiblock's energy storage.
 tooltip.InductionProvider=An advanced complex of coolant systems, conductors and transformers capable of expanding the Energized Induction Matrix's maximum rate of energy transfer.
 tooltip.SuperheatingElement=A modular, somewhat dangerous radiator that is capable of emitting massive amounts of heat to its surroundings.
+tooltip.PressureDisperser=A block used disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.
 tooltip.BoilerCasing=A pressure-resistant, dense casing used in the creation of a Thermoelectric Boiler multiblock.
 tooltip.BoilerValve=A valve that can be placed on a Thermoelectric Boiler multiblock, allowing for the insertion of energy and water along with the extraction of produced steam.
 
@@ -781,7 +783,6 @@ tooltip.AdvancedSolarGenerator=An advanced generator that directly absorbs the s
 tooltip.WindGenerator=A generator that uses the strength of the wind to produce energy, with greater efficiency at higher levels.
 tooltip.TurbineRotor=The steel rod that is used to house Turbine Blades within an Industrial Turbine.
 tooltip.RotationalComplex=A connector that is placed on the highest Turbine Rotor of an Industrial Turbine to carry kinetic energy into its Electromagnetic Coils.
-tooltip.PressureDisperser=A block used in the Industrial Turbine to direct steam outwards. These should be placed just above your turbine rods, forming a gapless layer of dispersers surrounding your Rotational Complex.
 tooltip.ElectromagneticCoil=A block that converts kinetic energy from a Rotational Complex into useable electricity. These can be placed in any arrangement above your Rotational Complex, as long as they are all touching each other and the complex itself.
 tooltip.TurbineCasing=Pressure-resistant casing used in the creation of an Industrial Turbine.
 tooltip.TurbineValve=A type of Turbine Casing that includes a port for the transfer of energy and steam.
@@ -903,7 +904,6 @@ tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindGenerator.name=Wind Generator
 tile.Generator.TurbineRotor.name=Turbine Rotor
 tile.Generator.RotationalComplex.name=Rotational Complex
-tile.Generator.PressureDisperser.name=Pressure Disperser
 tile.Generator.ElectromagneticCoil.name=Electromagnetic Coil
 tile.Generator.TurbineCasing.name=Turbine Casing
 tile.Generator.TurbineValve.name=Turbine Valve
