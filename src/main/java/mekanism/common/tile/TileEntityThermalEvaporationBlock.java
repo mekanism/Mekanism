@@ -9,20 +9,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
+public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock
 {
 	public Coord4D master;
 	
 	public boolean attempted;
 
-	public TileEntitySolarEvaporationBlock()
+	public TileEntityThermalEvaporationBlock()
 	{
-		super("SolarEvaporationBlock");
+		super("ThermalEvaporationBlock");
 
 		inventory = new ItemStack[0];
 	}
 
-	public TileEntitySolarEvaporationBlock(String fullName)
+	public TileEntityThermalEvaporationBlock(String fullName)
 	{
 		super(fullName);
 
@@ -57,11 +57,11 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 
 		if(master != null)
 		{
-			TileEntitySolarEvaporationController tile = getController();
+			TileEntityThermalEvaporationController tile = getController();
 			
 			if(tile != null)
 			{
-				((TileEntitySolarEvaporationController)tile).refresh();
+				((TileEntityThermalEvaporationController)tile).refresh();
 			}
 		}
 	}
@@ -73,11 +73,11 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 
 		if(!worldObj.isRemote)
 		{
-			TileEntitySolarEvaporationController tile = getController();
+			TileEntityThermalEvaporationController tile = getController();
 			
 			if(tile != null)
 			{
-				((TileEntitySolarEvaporationController)tile).refresh();
+				((TileEntityThermalEvaporationController)tile).refresh();
 			}
 			else {
 				updateController();
@@ -87,9 +87,9 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 	
 	public void updateController()
 	{
-		if(!(this instanceof TileEntitySolarEvaporationController))
+		if(!(this instanceof TileEntityThermalEvaporationController))
 		{
-			TileEntitySolarEvaporationController found = new ControllerFinder().find();
+			TileEntityThermalEvaporationController found = new ControllerFinder().find();
 			
 			if(found != null)
 			{
@@ -98,15 +98,15 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 		}
 	}
 	
-	public TileEntitySolarEvaporationController getController()
+	public TileEntityThermalEvaporationController getController()
 	{
 		if(master != null)
 		{
 			TileEntity tile = master.getTileEntity(worldObj);
 			
-			if(tile instanceof TileEntitySolarEvaporationController)
+			if(tile instanceof TileEntityThermalEvaporationController)
 			{
-				return (TileEntitySolarEvaporationController)tile;
+				return (TileEntityThermalEvaporationController)tile;
 			}
 		}
 		
@@ -115,7 +115,7 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 	
 	public class ControllerFinder
 	{
-		public TileEntitySolarEvaporationController found;
+		public TileEntityThermalEvaporationController found;
 		
 		public Set<Coord4D> iterated = new HashSet<Coord4D>();
 		
@@ -132,13 +132,13 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 			{
 				Coord4D coord = pos.getFromSide(side);
 				
-				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
+				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock)
 				{
-					((TileEntitySolarEvaporationBlock)coord.getTileEntity(worldObj)).attempted = true;
+					((TileEntityThermalEvaporationBlock)coord.getTileEntity(worldObj)).attempted = true;
 					
-					if(coord.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationController)
+					if(coord.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationController)
 					{
-						found = (TileEntitySolarEvaporationController)coord.getTileEntity(worldObj);
+						found = (TileEntityThermalEvaporationController)coord.getTileEntity(worldObj);
 						return;
 					}
 					
@@ -147,9 +147,9 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 			}
 		}
 		
-		public TileEntitySolarEvaporationController find()
+		public TileEntityThermalEvaporationController find()
 		{
-			loop(Coord4D.get(TileEntitySolarEvaporationBlock.this));
+			loop(Coord4D.get(TileEntityThermalEvaporationBlock.this));
 			
 			return found;
 		}

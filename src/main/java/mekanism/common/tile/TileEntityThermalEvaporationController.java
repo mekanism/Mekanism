@@ -19,7 +19,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
-import mekanism.common.recipe.machines.SolarEvaporationRecipe;
+import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -34,7 +34,7 @@ import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySolarEvaporationController extends TileEntitySolarEvaporationBlock implements IActiveState, ITankManager
+public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager
 {
 	public static final int MAX_OUTPUT = 10000;
 	public static final int MAX_SOLARS = 4;
@@ -71,9 +71,9 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	public float prevScale;
 	
-	public TileEntitySolarEvaporationController()
+	public TileEntityThermalEvaporationController()
 	{
-		super("SolarEvaporationController");
+		super("ThermalEvaporationController");
 		
 		inventory = new ItemStack[4];
 	}
@@ -99,7 +99,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			
 			manageBuckets();
 			
-			SolarEvaporationRecipe recipe = getRecipe();
+			ThermalEvaporationRecipe recipe = getRecipe();
 	
 			if(canOperate(recipe))
 			{
@@ -143,9 +143,9 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		}
 	}
 	
-	public SolarEvaporationRecipe getRecipe()
+	public ThermalEvaporationRecipe getRecipe()
 	{
-		return RecipeHandler.getSolarEvaporationRecipe(new FluidInput(inputTank.getFluid()));
+		return RecipeHandler.getThermalEvaporationRecipe(new FluidInput(inputTank.getFluid()));
 	}
 	
 	@Override
@@ -171,7 +171,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			return false;
 		}
 		
-		return Recipe.SOLAR_EVAPORATION_PLANT.containsRecipe(fluid);
+		return Recipe.THERMAL_EVAPORATION_PLANT.containsRecipe(fluid);
 	}
 	
 	protected void refresh()
@@ -206,7 +206,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		}
 	}
 
-	public boolean canOperate(SolarEvaporationRecipe recipe)
+	public boolean canOperate(ThermalEvaporationRecipe recipe)
 	{
 		if(!structured || height < 3 || height > MAX_HEIGHT || inputTank.getFluid() == null)
 		{
@@ -383,13 +383,13 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		Coord4D startPoint = Coord4D.get(this);
 		
-		while(startPoint.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
+		while(startPoint.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock)
 		{
 			startPoint.step(ForgeDirection.UP);
 		}
 		
 		Coord4D test = startPoint.getFromSide(ForgeDirection.DOWN).getFromSide(right, 2);
-		isLeftOnFace = test.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock;
+		isLeftOnFace = test.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock;
 		
 		startPoint = startPoint.getFromSide(left, isLeftOnFace ? 1 : 2);
 		
@@ -440,7 +440,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 					{
 						continue;
 					}
-					else if(pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
+					else if(pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile))
 					{
 						return false;
 					}
@@ -454,7 +454,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 						}
 					}
 					else {
-						if(pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock || !addTankPart(pointerTile))
+						if(pointer.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile))
 						{
 							return false;
 						}
@@ -509,7 +509,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 				
 				if((x == 1 || x == 2) && (z == 1 || z == 2))
 				{
-					if(pointerTile instanceof TileEntitySolarEvaporationBlock)
+					if(pointerTile instanceof TileEntityThermalEvaporationBlock)
 					{
 						if(!foundCenter)
 						{
@@ -548,18 +548,18 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 	public boolean addTankPart(TileEntity tile)
 	{
-		if(tile instanceof TileEntitySolarEvaporationBlock && (tile == this || !(tile instanceof TileEntitySolarEvaporationController)))
+		if(tile instanceof TileEntityThermalEvaporationBlock && (tile == this || !(tile instanceof TileEntityThermalEvaporationController)))
 		{
 			if(tile != this)
 			{
-				((TileEntitySolarEvaporationBlock)tile).addToStructure(Coord4D.get(this));
+				((TileEntityThermalEvaporationBlock)tile).addToStructure(Coord4D.get(this));
 				tankParts.add(Coord4D.get(tile));
 			}
 			
 			return true;
 		}
 		else {
-			if(tile != this && tile instanceof TileEntitySolarEvaporationController)
+			if(tile != this && tile instanceof TileEntityThermalEvaporationController)
 			{
 				controllerConflict = true;
 			}
@@ -655,7 +655,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 					@Override
 					public boolean isNode(TileEntity tile)
 					{
-						return tile instanceof TileEntitySolarEvaporationBlock;
+						return tile instanceof TileEntityThermalEvaporationBlock;
 					}
 				});
 			}
@@ -741,9 +741,9 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		{
 			TileEntity tile = tankPart.getTileEntity(worldObj);
 			
-			if(tile instanceof TileEntitySolarEvaporationBlock)
+			if(tile instanceof TileEntityThermalEvaporationBlock)
 			{
-				((TileEntitySolarEvaporationBlock)tile).controllerGone();
+				((TileEntityThermalEvaporationBlock)tile).controllerGone();
 			}
 		}
 		

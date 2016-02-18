@@ -53,7 +53,7 @@ import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiSideConfiguration;
-import mekanism.client.gui.GuiSolarEvaporationController;
+import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiTransporterConfig;
@@ -96,7 +96,7 @@ import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
-import mekanism.client.render.tileentity.RenderSalinationController;
+import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
@@ -165,7 +165,7 @@ import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
-import mekanism.common.tile.TileEntitySolarEvaporationController;
+import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -313,7 +313,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser", new RenderChemicalInfuser());
 		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
-		ClientRegistry.registerTileEntity(TileEntitySolarEvaporationController.class, "SalinationController", new RenderSalinationController());
+		ClientRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "SalinationController", new RenderThermalEvaporationController()); //TODO rename
 		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
@@ -469,7 +469,7 @@ public class ClientProxy extends CommonProxy
 			case 32:
 				return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 33:
-				return new GuiSolarEvaporationController(player.inventory, (TileEntitySolarEvaporationController)tileEntity);
+				return new GuiThermalEvaporationController(player.inventory, (TileEntityThermalEvaporationController)tileEntity);
 			case 34:
 				return new GuiPrecisionSawmill(player.inventory, (TileEntityPrecisionSawmill)tileEntity);
 			case 35:

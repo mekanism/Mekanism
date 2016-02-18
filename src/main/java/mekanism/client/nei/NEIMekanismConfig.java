@@ -16,7 +16,7 @@ import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
-import mekanism.client.gui.GuiSolarEvaporationController;
+import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
@@ -66,8 +66,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new PrecisionSawmillRecipeHandler());
 		API.registerUsageHandler(new PrecisionSawmillRecipeHandler());
 
-		API.registerRecipeHandler(new SolarEvaporationRecipeHandler());
-		API.registerUsageHandler(new SolarEvaporationRecipeHandler());
+		API.registerRecipeHandler(new ThermalEvaporationRecipeHandler());
+		API.registerUsageHandler(new ThermalEvaporationRecipeHandler());
 
 		API.registerRecipeHandler(new ChemicalDissolutionChamberRecipeHandler());
 		API.registerUsageHandler(new ChemicalDissolutionChamberRecipeHandler());
@@ -102,12 +102,12 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiRotaryCondensentrator.class, RotaryCondensentratorRecipeHandler.xOffset, RotaryCondensentratorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiElectrolyticSeparator.class, ElectrolyticSeparatorRecipeHandler.xOffset, ElectrolyticSeparatorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPrecisionSawmill.class, 16, 6);
-		API.setGuiOffset(GuiSolarEvaporationController.class, SolarEvaporationRecipeHandler.xOffset, SolarEvaporationRecipeHandler.yOffset);
+		API.setGuiOffset(GuiThermalEvaporationController.class, ThermalEvaporationRecipeHandler.xOffset, ThermalEvaporationRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPRC.class, PRCRecipeHandler.xOffset, PRCRecipeHandler.yOffset);
-		API.setGuiOffset(GuiSolarEvaporationController.class, SolarEvaporationRecipeHandler.xOffset, SolarEvaporationRecipeHandler.yOffset);
+		API.setGuiOffset(GuiThermalEvaporationController.class, ThermalEvaporationRecipeHandler.xOffset, ThermalEvaporationRecipeHandler.yOffset);
 		API.setGuiOffset(GuiSolarNeutronActivator.class, SolarNeutronRecipeHandler.xOffset, SolarNeutronRecipeHandler.yOffset);
 		
 		GuiContainerManager.addSlotClickHandler(new MekanismSlotClickHandler());

@@ -8,7 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.tile.TileEntitySolarEvaporationController;
+import mekanism.common.tile.TileEntityThermalEvaporationController;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -22,17 +22,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderSalinationController extends TileEntitySpecialRenderer
+public class RenderThermalEvaporationController extends TileEntitySpecialRenderer
 {
 	private static Map<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>>();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntitySolarEvaporationController)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityThermalEvaporationController)tileEntity, x, y, z, partialTick);
 	}
 
-	public void renderAModelAt(TileEntitySolarEvaporationController tileEntity, double x, double y, double z, float partialTick)
+	public void renderAModelAt(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick)
 	{
 		if(tileEntity.structured && tileEntity.inputTank.getFluid() != null)
 		{

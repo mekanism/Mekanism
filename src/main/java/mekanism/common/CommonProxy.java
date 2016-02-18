@@ -49,7 +49,7 @@ import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.inventory.container.ContainerSeismicVibrator;
-import mekanism.common.inventory.container.ContainerSolarEvaporationController;
+import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
@@ -103,7 +103,7 @@ import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
-import mekanism.common.tile.TileEntitySolarEvaporationController;
+import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -173,7 +173,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
-		GameRegistry.registerTileEntity(TileEntitySolarEvaporationController.class, "SalinationController");
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "SalinationController"); //TODO rename
 		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
 		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
 		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
@@ -263,7 +263,7 @@ public class CommonProxy implements IGuiProvider
 		general.armoredJetpackDamageMax = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ArmoredJepackDamageMax", 115).getInt();
 		general.aestheticWorldDamage = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AestheticWorldDamage", true).getBoolean();
 		general.opsBypassRestrictions = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OpsBypassRestrictions", true).getBoolean();
-		general.solarEvaporationSpeed = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SolarEvaporationSpeed", 1.0D).getDouble();
+		general.thermalEvaporationSpeed = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ThermalEvaporationSpeed", 1.0D).getDouble();
 		general.maxJetpackGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxJetpackGas", 24000).getInt();
 		general.maxScubaGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxScubaGas", 24000).getInt();
 		general.maxFlamethrowerGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxFlamethrowerGas", 24000).getInt();
@@ -494,7 +494,7 @@ public class CommonProxy implements IGuiProvider
 			case 32:
 				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 33:
-				return new ContainerSolarEvaporationController(player.inventory, (TileEntitySolarEvaporationController)tileEntity);
+				return new ContainerThermalEvaporationController(player.inventory, (TileEntityThermalEvaporationController)tileEntity);
 			case 34:
 				return new ContainerChanceMachine(player.inventory, (TileEntityChanceMachine)tileEntity);
 			case 35:

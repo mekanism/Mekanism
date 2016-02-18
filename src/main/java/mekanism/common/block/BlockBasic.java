@@ -33,9 +33,9 @@ import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityPressureDisperser;
-import mekanism.common.tile.TileEntitySolarEvaporationBlock;
-import mekanism.common.tile.TileEntitySolarEvaporationController;
-import mekanism.common.tile.TileEntitySolarEvaporationValve;
+import mekanism.common.tile.TileEntityThermalEvaporationBlock;
+import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -81,9 +81,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
- * 0:14: Solar Evaporation Controller
- * 0:15: Solar Evaporation Valve
- * 1:0: Solar Evaporation Block
+ * 0:14: Thermal Evaporation Controller
+ * 0:15: Thermal Evaporation Valve
+ * 1:0: Thermal Evaporation Block
  * 1:1: Induction Casing
  * 1:2: Induction Port
  * 1:3: Induction Cell
@@ -165,9 +165,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[10][0] = new CTMData("ctm/StructuralGlass", this, Arrays.asList(10)).registerIcons(register);
 				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
 
-				ctms[14][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationController").registerIcons(register);
-				ctms[14][1] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationControllerOn").registerIcons(register);
-				ctms[15][0] = new CTMData("ctm/SolarEvaporationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+				ctms[14][0] = new CTMData("ctm/ThermalEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/ThermalEvaporationController").registerIcons(register);
+				ctms[14][1] = new CTMData("ctm/ThermalEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/ThermalEvaporationControllerOn").registerIcons(register);
+				ctms[15][0] = new CTMData("ctm/ThermalEvaporationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 
 				icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
 				icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
@@ -192,7 +192,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[15][0] = ctms[15][0].mainTextureData.icon;
 				break;
 			case BASIC_BLOCK_2:
-				ctms[0][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
+				ctms[0][0] = new CTMData("ctm/ThermalEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
 				ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
 				ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(1, 2)).registerIcons(register);
 				ctms[2][1] = new CTMData("ctm/InductionPortOutput", this, Arrays.asList(1, 2)).registerIcons(register);
@@ -247,7 +247,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 						boolean active = MekanismUtils.isActive(world, x, y, z);
 						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					case 14:
-						TileEntitySolarEvaporationController tileEntity1 = (TileEntitySolarEvaporationController)world.getTileEntity(x, y, z);
+						TileEntityThermalEvaporationController tileEntity1 = (TileEntityThermalEvaporationController)world.getTileEntity(x, y, z);
 
 						if(side == tileEntity1.facing)
 						{
@@ -456,7 +456,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			return true;
 		}
 
-		if(tile instanceof TileEntitySolarEvaporationController)
+		if(tile instanceof TileEntityThermalEvaporationController)
 		{
 			if(!entityplayer.isSneaking())
 			{
@@ -997,9 +997,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve.class, true),
 		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false),
 		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false),
-		SOLAR_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "SolarEvaporationController", TileEntitySolarEvaporationController.class, true),
-		SOLAR_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "SolarEvaporationValve", TileEntitySolarEvaporationValve.class, true),
-		SOLAR_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "SolarEvaporationBlock", TileEntitySolarEvaporationBlock.class, true),
+		THERMAL_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "ThermalEvaporationController", TileEntityThermalEvaporationController.class, true),
+		THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve.class, true),
+		THERMAL_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "ThermalEvaporationBlock", TileEntityThermalEvaporationBlock.class, true),
 		INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing.class, true),
 		INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort.class, true),
 		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", TileEntityInductionCell.class, true),

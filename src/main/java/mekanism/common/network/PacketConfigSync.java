@@ -57,7 +57,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.armoredJetpackDamageMax);
 			dataStream.writeBoolean(general.aestheticWorldDamage);
 			dataStream.writeBoolean(general.opsBypassRestrictions);
-			dataStream.writeDouble(general.solarEvaporationSpeed);
+			dataStream.writeDouble(general.thermalEvaporationSpeed);
 			dataStream.writeInt(general.maxJetpackGas);
 			dataStream.writeInt(general.maxScubaGas);
 			dataStream.writeInt(general.maxFlamethrowerGas);
@@ -140,7 +140,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.armoredJetpackDamageMax = dataStream.readInt();
 			general.aestheticWorldDamage = dataStream.readBoolean();
 			general.opsBypassRestrictions = dataStream.readBoolean();
-			general.solarEvaporationSpeed = dataStream.readDouble();
+			general.thermalEvaporationSpeed = dataStream.readDouble();
 			general.maxJetpackGas = dataStream.readInt();
 			general.maxScubaGas = dataStream.readInt();
 			general.maxFlamethrowerGas = dataStream.readInt();

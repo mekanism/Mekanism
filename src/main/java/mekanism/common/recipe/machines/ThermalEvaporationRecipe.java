@@ -5,22 +5,22 @@ import mekanism.common.recipe.outputs.FluidOutput;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public class SolarEvaporationRecipe extends MachineRecipe<FluidInput, FluidOutput, SolarEvaporationRecipe>
+public class ThermalEvaporationRecipe extends MachineRecipe<FluidInput, FluidOutput, ThermalEvaporationRecipe>
 {
-	public SolarEvaporationRecipe(FluidStack input, FluidStack output)
+	public ThermalEvaporationRecipe(FluidStack input, FluidStack output)
 	{
 		super(new FluidInput(input), new FluidOutput(output));
 	}
 
-	public SolarEvaporationRecipe(FluidInput input, FluidOutput output)
+	public ThermalEvaporationRecipe(FluidInput input, FluidOutput output)
 	{
 		super(input, output);
 	}
 
 	@Override
-	public SolarEvaporationRecipe copy()
+	public ThermalEvaporationRecipe copy()
 	{
-		return new SolarEvaporationRecipe(getInput(), getOutput());
+		return new ThermalEvaporationRecipe(getInput(), getOutput());
 	}
 
 	public boolean canOperate(FluidTank inputTank, FluidTank outputTank)

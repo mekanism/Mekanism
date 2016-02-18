@@ -78,8 +78,8 @@ import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityPressureDisperser;
-import mekanism.common.tile.TileEntitySolarEvaporationBlock;
-import mekanism.common.tile.TileEntitySolarEvaporationValve;
+import mekanism.common.tile.TileEntityThermalEvaporationBlock;
+import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.voice.VoiceServerManager;
@@ -853,9 +853,9 @@ public class Mekanism
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * general.FROM_H2, new GasStack(GasRegistry.getGas("sodium"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1));
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("heavywater", 2), usage.heavyWaterElectrolysisUsage, new GasStack(GasRegistry.getGas("deuterium"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1));
 		
-		//Solar Evaporation Plant Recipes
-		RecipeHandler.addSolarEvaporationRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("brine", 1));
-		RecipeHandler.addSolarEvaporationRecipe(FluidRegistry.getFluidStack("brine", 10), FluidRegistry.getFluidStack("lithium", 1));
+		//Thermal Evaporation Plant Recipes
+		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("brine", 1));
+		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("brine", 10), FluidRegistry.getFluidStack("lithium", 1));
 		
 		//Chemical Crystallizer Recipes
 		RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(GasRegistry.getGas("lithium"), 100), new ItemStack(MekanismItems.OtherDust, 1, 4));
@@ -1085,8 +1085,8 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
-		GameRegistry.registerTileEntity(TileEntitySolarEvaporationValve.class, "SalinationValve");
-		GameRegistry.registerTileEntity(TileEntitySolarEvaporationBlock.class, "SalinationTank");
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationValve.class, "SalinationValve"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationBlock.class, "SalinationTank"); //TODO rename
 		GameRegistry.registerTileEntity(TileEntityEntangledBlock.class, "EntangledBlock");
 		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
 		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
