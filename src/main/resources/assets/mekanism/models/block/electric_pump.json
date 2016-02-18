@@ -158,7 +158,7 @@
         }
     ],
     "textures": {
-        "all": "...",
+        "all": "mekanism:blocks/models/electric_pump",
         "particle": "..."
     }
 }

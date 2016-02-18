@@ -381,7 +381,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+ 		if(!worldObj.isRemote)
 		{
 			infuseStored.amount = dataStream.readInt();
 			return;
