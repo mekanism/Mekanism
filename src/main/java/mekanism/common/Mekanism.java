@@ -71,6 +71,8 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
@@ -79,8 +81,6 @@ import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySolarEvaporationBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationValve;
 import mekanism.common.tile.TileEntitySuperheatingElement;
-import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
@@ -422,13 +422,13 @@ public class Mekanism
 			"ICI", "ASA", "ICI", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('S'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 14), new Object[] {
-			"CGC", "IBI", "CGC", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('B'), "blockCopper"
+			"CGC", "IBI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 0), Character.valueOf('B'), Items.bucket
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 15), new Object[] {
-			"ITI", "CBC", "ITI", Character.valueOf('I'), "ingotCopper", Character.valueOf('T'), new ItemStack(MekanismBlocks.BasicBlock, 1, 11), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('B'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8)
+			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 0), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 0), new Object[] {
-			"CCC", "CTC", "CCC", Character.valueOf('C'), "ingotCopper", Character.valueOf('T'), new ItemStack(MekanismBlocks.BasicBlock, 1, 9)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 4, 0), new Object[] {
+			" S ", "SCS", " S ", Character.valueOf('C'), "ingotCopper", Character.valueOf('S'), "ingotSteel"
 		}));
 		MachineType.CHEMICAL_DISSOLUTION_CHAMBER.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 6), new Object[] {
 			"CGC", "EAE", "CGC", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('A'), MekanismItems.AtomicAlloy, Character.valueOf('E'), MekanismItems.EnrichedAlloy
@@ -505,6 +505,15 @@ public class Mekanism
 		}));
         CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 6), new Object[] {
 			"SFS", "FAF", "SFS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('F'), Blocks.iron_bars
+		}));
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 4, 7), new Object[] {
+			" S ", "SIS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('I'), "ingotIron"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 2, 8), new Object[] {
+			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 7), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 5), new Object[] {
+			"ACA", "CIC", "ACA", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('C'), "ingotCopper", Character.valueOf('A'), "alloyBasic"
 		}));
 		
 		//Energy Cube recipes
