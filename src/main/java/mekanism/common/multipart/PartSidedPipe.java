@@ -68,6 +68,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public boolean redstonePowered = false;
 
 	public boolean redstoneReactive = true;
+	
+	public boolean forceUpdate = false;
 
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 	public TileEntity[] cachedAcceptors = new TileEntity[6];
@@ -171,10 +173,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			}
 		}
 
-		if(sendDesc && !world().isRemote)
+		if(!world().isRemote)
 		{
-			sendDescUpdate();
-			sendDesc = false;
+			if(forceUpdate)
+			{
+				refreshConnections();
+				forceUpdate = false;
+			}
+			
+			if(sendDesc)
+			{
+				sendDescUpdate();
+				sendDesc = false;
+			}
 		}
 	}
 	
@@ -270,6 +281,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 					cachedAcceptors[side.ordinal()] = tileEntity;
 					markDirtyAcceptor(side);
 				}
+				
 				return true;
 			}
 		}
@@ -315,7 +327,15 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			if(canConnectMutual(side))
 			{
-				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+				Coord4D coord = Coord4D.get(tile()).getFromSide(side);
+				
+				if(!world().isRemote && !coord.exists(world()))
+				{
+					forceUpdate = true;
+					continue;
+				}
+				
+				TileEntity tileEntity = coord.getTileEntity(world());
 
 				if(isValidAcceptor(tileEntity, side))
 				{
@@ -324,10 +344,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 						cachedAcceptors[side.ordinal()] = tileEntity;
 						markDirtyAcceptor(side);
 					}
+					
 					connections |= 1 << side.ordinal();
 					continue;
 				}
 			}
+			
 			if(cachedAcceptors[side.ordinal()] != null)
 			{
 				cachedAcceptors[side.ordinal()] = null;
@@ -596,11 +618,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			redstonePowered = false;
 		}
 
-		byte possibleTransmitters = getPossibleTransmitterConnections();
-		byte possibleAcceptors = getPossibleAcceptorConnections();
-
 		if(!world().isRemote)
 		{
+			byte possibleTransmitters = getPossibleTransmitterConnections();
+			byte possibleAcceptors = getPossibleAcceptorConnections();
+			
 			if((possibleTransmitters | possibleAcceptors) != getAllCurrentConnections())
 			{
 				sendDesc = true;
