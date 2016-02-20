@@ -8,7 +8,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationBlock implements IFluidHandler
+public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandler
 {
 	public boolean prevMaster = false;
 	
@@ -25,7 +25,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
 
-					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock))
+					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock))
 					{
 						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
 					}
@@ -39,14 +39,14 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		TileEntitySolarEvaporationController controller = getController();
+		TileEntityThermalEvaporationController controller = getController();
 		return controller == null ? 0 : controller.inputTank.fill(resource, doFill);
 	}
 
 	@Override
 	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
-		TileEntitySolarEvaporationController controller = getController();
+		TileEntityThermalEvaporationController controller = getController();
 		
 		if(controller != null && (resource == null || resource.isFluidEqual(controller.outputTank.getFluid())))
 		{
@@ -59,7 +59,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	@Override
 	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
-		TileEntitySolarEvaporationController controller = getController();
+		TileEntityThermalEvaporationController controller = getController();
 		
 		if(controller != null)
 		{
@@ -72,21 +72,21 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		TileEntitySolarEvaporationController controller = getController();
+		TileEntityThermalEvaporationController controller = getController();
 		return controller != null && controller.hasRecipe(fluid);
 	}
 
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		TileEntitySolarEvaporationController controller = getController();
+		TileEntityThermalEvaporationController controller = getController();
 		return controller != null && controller.outputTank.getFluidAmount() > 0;
 	}
 
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		TileEntitySolarEvaporationController controller = getController();
+		TileEntityThermalEvaporationController controller = getController();
 		
 		if(controller == null)
 		{

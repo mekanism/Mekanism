@@ -4,8 +4,8 @@ import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
-import mekanism.common.inventory.container.ContainerSolarEvaporationController;
-import mekanism.common.tile.TileEntitySolarEvaporationController;
+import mekanism.common.inventory.container.ContainerThermalEvaporationController;
+import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -18,13 +18,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiSolarEvaporationController extends GuiMekanism
+public class GuiThermalEvaporationController extends GuiMekanism
 {
-	public TileEntitySolarEvaporationController tileEntity;
+	public TileEntityThermalEvaporationController tileEntity;
 
-	public GuiSolarEvaporationController(InventoryPlayer inventory, TileEntitySolarEvaporationController tentity)
+	public GuiThermalEvaporationController(InventoryPlayer inventory, TileEntityThermalEvaporationController tentity)
 	{
-		super(tentity, new ContainerSolarEvaporationController(inventory, tentity));
+		super(tentity, new ContainerThermalEvaporationController(inventory, tentity));
 		tileEntity = tentity;
 		
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
@@ -33,14 +33,14 @@ public class GuiSolarEvaporationController extends GuiMekanism
 			{
 				return tileEntity.inputTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"), 6, 13));
+		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png"), 6, 13));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
 			@Override
 			public FluidTank getTank()
 			{
 				return tileEntity.outputTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"), 152, 13));
+		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png"), 152, 13));
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class GuiSolarEvaporationController extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;

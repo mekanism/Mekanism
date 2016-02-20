@@ -82,11 +82,11 @@ tile.BasicBlock.StructuralGlass.name=Structural Glass
 tile.BasicBlock.DynamicValve.name=Dynamic Valve
 tile.BasicBlock.CopperBlock.name=Copper Block
 tile.BasicBlock.TinBlock.name=Tin Block
-tile.BasicBlock.SolarEvaporationController.name=Solar Evaporation Controller
-tile.BasicBlock.SolarEvaporationValve.name=Solar Evaporation Valve
+tile.BasicBlock.ThermalEvaporationController.name=Thermal Evaporation Controller
+tile.BasicBlock.ThermalEvaporationValve.name=Thermal Evaporation Valve
 
 //Basic Block 2 (second ID iteration)
-tile.BasicBlock2.SolarEvaporationBlock.name=Solar Evaporation Block
+tile.BasicBlock2.ThermalEvaporationBlock.name=Thermal Evaporation Block
 tile.BasicBlock2.InductionCasing.name=Induction Casing
 tile.BasicBlock2.InductionPort.name=Induction Port
 tile.BasicBlock2.InductionCellBasic.name=Basic Induction Cell
@@ -520,7 +520,7 @@ gui.upgrades.effect=Effect
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
-gui.solarEvaporationController.short=Solar E. Controller
+gui.thermalEvaporationController.short=Thermal E. Controller
 
 gui.dictionary.noKey=No key.
 
@@ -730,9 +730,9 @@ tooltip.SteelCasing=A sturdy, steel-based casing used as a foundation for machin
 tooltip.DynamicTank=The casing used in the Dynamic Tank multiblock, a structure capable of storing great amounts of fluid.
 tooltip.StructuralGlass=An advanced, reinforced material of glass that drops when broken and can be used in the structure of any applicable multiblock.
 tooltip.DynamicValve=A valve that can be placed on a Dynamic Tank multiblock, allowing for fluids to be inserted and extracted via external piping.
-tooltip.SolarEvaporationController=The controller for a Solar Evaporation Plant, acting as the master block of the structure. Only one of these should be placed on a multiblock.
-tooltip.SolarEvaporationValve=A valve that can be placed on a Solar Evaporation Plant multiblock, allowing for fluids to be inserted and extracted via external piping.
-tooltip.SolarEvaporationBlock=A copper-alloyed casing used in the structure of a Solar Evaporation Plant, using its advanced material to conduct the great amounts of heat necessary for processing.
+tooltip.ThermalEvaporationController=The controller for a Thermal Evaporation Plant, acting as the master block of the structure. Only one of these should be placed on a multiblock.
+tooltip.ThermalEvaporationValve=A valve that can be placed on a Thermal Evaporation Plant multiblock, allowing for fluids to be inserted and extracted via external piping.
+tooltip.ThermalEvaporationBlock=A copper-alloyed casing used in the structure of a Thermal Evaporation Plant, using its advanced material to conduct the great amounts of heat necessary for processing.
 tooltip.InductionCasing=A type of energy-resistant casing used in the creation of an Energized Induction Matrix multiblock.
 tooltip.InductionPort=A port that can be placed on an Energized Induction Matrix multiblock, allowing for energy to be inserted from and output to external cabling.
 tooltip.InductionCell=A highly conductive energy capacitor capable of storing massive amounts of energy in a single block. Housed in an Energized Induction Matrix to expand the multiblock's energy storage.

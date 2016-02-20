@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import mekanism.client.gui.GuiSolarEvaporationController;
+import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.SolarEvaporationRecipe;
+import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -26,7 +26,7 @@ import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
+public class ThermalEvaporationRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
@@ -36,35 +36,35 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return LangUtils.localize("gui.solarEvaporationController.short");
+		return LangUtils.localize("gui.thermalEvaporationController.short");
 	}
 
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "solarevaporation";
+		return "thermalevaporation";
 	}
 
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/nei/GuiSolarEvaporationController.png";
+		return "mekanism:gui/nei/GuiThermalEvaporationController.png";
 	}
 
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiSolarEvaporationController.class;
+		return GuiThermalEvaporationController.class;
 	}
 
 	public String getRecipeId()
 	{
-		return "mekanism.solarevaporation";
+		return "mekanism.thermalevaporation";
 	}
 
-	public Collection<SolarEvaporationRecipe> getRecipes()
+	public Collection<ThermalEvaporationRecipe> getRecipes()
 	{
-		return Recipe.SOLAR_EVAPORATION_PLANT.get().values();
+		return Recipe.THERMAL_EVAPORATION_PLANT.get().values();
 	}
 	
 	@Override
@@ -112,14 +112,14 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(SolarEvaporationRecipe irecipe : getRecipes())
+			for(ThermalEvaporationRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("fluid") && results.length == 1 && results[0] instanceof FluidStack)
 		{
-			for(SolarEvaporationRecipe irecipe : getRecipes())
+			for(ThermalEvaporationRecipe irecipe : getRecipes())
 			{
 				if(((FluidStack)results[0]).isFluidEqual(irecipe.recipeOutput.output))
 				{
@@ -137,7 +137,7 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			for(SolarEvaporationRecipe irecipe : getRecipes())
+			for(ThermalEvaporationRecipe irecipe : getRecipes())
 			{
 				if(irecipe.recipeInput.ingredient.isFluidEqual((FluidStack)ingredients[0]))
 				{
@@ -279,7 +279,7 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 			fluidOutput = output;
 		}
 
-		public CachedIORecipe(SolarEvaporationRecipe recipe)
+		public CachedIORecipe(ThermalEvaporationRecipe recipe)
 		{
 			this((FluidStack)recipe.recipeInput.ingredient, (FluidStack)recipe.recipeOutput.output);
 		}

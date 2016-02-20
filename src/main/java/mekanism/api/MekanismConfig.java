@@ -50,7 +50,7 @@ public class MekanismConfig
 		public static int armoredJetpackDamageMax;
 		public static boolean aestheticWorldDamage;
 		public static boolean opsBypassRestrictions;
-		public static double solarEvaporationSpeed;
+		public static double thermalEvaporationSpeed;
 		public static int maxJetpackGas;
 		public static int maxScubaGas;
 		public static int maxFlamethrowerGas;

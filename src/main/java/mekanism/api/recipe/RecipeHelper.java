@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -286,15 +285,15 @@ public final class RecipeHelper
 	}
 	
 	/**
-	 * Add a Solar Evaporation Plant recipe.
+	 * Add a Thermal Evaporation Plant recipe.
 	 * @param input - input GasStack
 	 * @param output - output GasStack
 	 */
-	public static void addSolarEvaporationRecipe(FluidStack input, FluidStack output)
+	public static void addThermalEvaporationRecipe(FluidStack input, FluidStack output)
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
-			Method m = recipeClass.getMethod("addSolarEvaporationRecipe", FluidStack.class, FluidStack.class);
+			Method m = recipeClass.getMethod("addThermalEvaporationRecipe", FluidStack.class, FluidStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("Error while adding recipe: " + e.getMessage());
@@ -310,7 +309,7 @@ public final class RecipeHelper
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
-			Method m = recipeClass.getMethod("addSolarEvaporationRecipe", GasStack.class, GasStack.class);
+			Method m = recipeClass.getMethod("addSolarNeutronRecipe", GasStack.class, GasStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("Error while adding recipe: " + e.getMessage());

@@ -55,9 +55,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
- * 0:14: Solar Evaporation Controller
- * 0:15: Solar Evaporation Valve
- * 1:0: Solar Evaporation Block
+ * 0:14: Thermal Evaporation Controller
+ * 0:15: Thermal Evaporation Valve
+ * 1:0: Thermal Evaporation Block
  * 1:1: Induction Casing
  * 1:2: Induction Port
  * 1:3: Induction Cell

@@ -236,11 +236,6 @@ public final class StackUtils
 		}
 	}
 
-	public static boolean contains(ItemStack container, ItemStack contained)
-	{
-		return equalsWildcardWithNBT(contained, container) && container.stackSize >= contained.stackSize;
-	}
-
 	public static int hashItemStack(ItemStack stack)
 	{
 		if(stack == null || stack.getItem() == null)

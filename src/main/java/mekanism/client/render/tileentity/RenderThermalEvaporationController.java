@@ -8,7 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.tile.TileEntitySolarEvaporationController;
+import mekanism.common.tile.TileEntityThermalEvaporationController;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -21,12 +21,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderSalinationController extends TileEntitySpecialRenderer<TileEntitySolarEvaporationController>
+public class RenderThermalEvaporationController extends TileEntitySpecialRenderer<TileEntityThermalEvaporationController>
 {
 	private static Map<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntitySolarEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void renderTileEntityAt(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick)
 	{
 		if(tileEntity.structured && tileEntity.inputTank.getFluid() != null)
 		{
