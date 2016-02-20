@@ -41,7 +41,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 
 	public boolean useItem(ItemStack[] inventory, int index, boolean deplete)
 	{
-		if(StackUtils.contains(inventory[index], itemStack))
+		if(inputContains(inventory[index], itemStack))
 		{
 			if(deplete)
 			{

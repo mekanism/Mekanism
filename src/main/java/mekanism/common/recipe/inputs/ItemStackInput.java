@@ -41,7 +41,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 
 	public boolean useItemStackFromInventory(ItemStack[] inventory, int index, boolean deplete)
 	{
-		if(StackUtils.contains(inventory[index], ingredient))
+		if(inputContains(inventory[index], ingredient))
 		{
 			if(deplete)
 			{

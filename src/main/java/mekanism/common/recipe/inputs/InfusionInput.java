@@ -56,15 +56,17 @@ public class InfusionInput extends MachineInput<InfusionInput>
 
 	public boolean use(ItemStack[] inventory, int index, InfuseStorage infuseStorage, boolean deplete)
 	{
-		if(StackUtils.contains(inventory[index], inputStack) && infuseStorage.contains(infuse))
+		if(inputContains(inventory[index], inputStack) && infuseStorage.contains(infuse))
 		{
 			if(deplete)
 			{
 				inventory[index] = StackUtils.subtract(inventory[index], inputStack);
 				infuseStorage.subtract(infuse);
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -81,6 +83,7 @@ public class InfusionInput extends MachineInput<InfusionInput>
 		{
 			return !other.isValid();
 		}
+		
 		return infuse.type == other.infuse.type && StackUtils.equalsWildcardWithNBT(inputStack, other.inputStack);
 	}
 
