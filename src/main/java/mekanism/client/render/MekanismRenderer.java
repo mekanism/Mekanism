@@ -149,7 +149,7 @@ public class MekanismRenderer
 */
 
 		RenderDynamicTank.resetDisplayInts();
-		RenderSalinationController.resetDisplayInts();
+		RenderThermalEvaporationController.resetDisplayInts();
 		RenderPortableTank.resetDisplayInts();
 	}
 

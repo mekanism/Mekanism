@@ -372,8 +372,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
 	public boolean buildStructure()
 	{
-		ForgeDirection right = MekanismUtils.getRight(facing);
-		ForgeDirection left = MekanismUtils.getLeft(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
+		EnumFacing left = MekanismUtils.getLeft(facing);
 
 		height = 0;
 		controllerConflict = false;
@@ -389,7 +389,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		Coord4D test = startPoint.offset(EnumFacing.DOWN).offset(right, 2);
 		isLeftOnFace = test.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock;
 		
-		startPoint = startPoint.getFromSide(left, isLeftOnFace ? 1 : 2);
+		startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
 		
 		if(!scanTopLayer(startPoint))
 		{

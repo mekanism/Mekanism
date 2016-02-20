@@ -174,7 +174,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 			return null;
 		}
 
-		return GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
+		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
 	}
 	
 	@Override

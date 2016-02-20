@@ -13,7 +13,6 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -199,7 +198,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 			return null;
 		}
 
-		return GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
+		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
 	}
 
 	@Override
