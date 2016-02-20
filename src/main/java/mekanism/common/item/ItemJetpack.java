@@ -37,13 +37,23 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	{
 		super(EnumHelper.addArmorMaterial("JETPACK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
 		setCreativeTab(Mekanism.tabMekanism);
-		setMaxDamage(100);
-		setNoRepair();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) {}
+	
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
+	}
 
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
@@ -163,17 +173,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-
-		if(stored == null)
-		{
-			itemstack.setItemDamage(100);
-		}
-		else {
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-		}
-
-		return stored;
+		return GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
 	}
 	
 	@Override
@@ -212,14 +212,12 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.setItemDamage(100);
 			itemstack.stackTagCompound.removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
@@ -228,7 +226,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
+		
 		return empty;
 	}
 
@@ -237,7 +235,6 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
