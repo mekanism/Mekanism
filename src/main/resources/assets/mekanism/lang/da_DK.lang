@@ -6,13 +6,14 @@
 tile.ObsidianTNT.name=Obsidian TNT
 item.EnrichedAlloy.name=Beriget Legering
 item.ReinforcedAlloy.name=Forstærket Legering
-item.AtomicAlloy.name=Kernefysisk Legering
-item.EnergyTablet.name=Energi Tablet
+item.AtomicAlloy.name=Atomar Legering
+item.EnergyTablet.name=Energi-tablet
 item.SpeedUpgrade.name=Hastighedsopgradering
 item.EnergyUpgrade.name=Energiopgradering
 item.FilterUpgrade.name=Filtreringsopgradering
+item.GasUpgrade.name=Gasopgradering
 item.Robit.name=Robit
-item.AtomicDisassembler.name=Entomadskiller
+item.AtomicDisassembler.name=Atomadskiller
 item.ElectricBow.name=Elektrisk Bue
 item.EnrichedIron.name=Beriget Jern
 item.CompressedCarbon.name=Komprimeret Kulstof
@@ -32,12 +33,13 @@ item.ElectrolyticCore.name=Elektrolysekerne
 item.Sawdust.name=Savsmuld
 item.Salt.name=Salt
 item.BrineBucket.name=Saltlagespand
-item.LithiumBucket.name=Litiumsspand
+item.LithiumBucket.name=Lithiumsspand
+item.HeavyWaterBucket.name=Tungtvandsspand
 item.FreeRunners.name=Fritløbere
 item.ArmoredJetpack.name=Panseret Jetpack
 item.FilterCard.name=Filterkort
 item.SeismicReader.name=Seismisk Aflæser
-item.HDPEPellet.name=HDPE-pellets
+item.HDPEPellet.name=HDPE-pellet
 item.HDPERod.name=HDPE-stav
 item.HDPESheet.name=HDPE-plade
 item.PlaStick.name=PlaStick
@@ -48,7 +50,7 @@ item.BioFuel.name=Biobrændsel
 
 //Control Circuits
 item.BasicControlCircuit.name=Basalt Kontrolkredsløb
-item.AdvancedControlCircuit.name=Envanceret Kontrolkredsløb
+item.AdvancedControlCircuit.name=Avanceret Kontrolkredsløb
 item.EliteControlCircuit.name=Elite Kontrolkredsløb
 item.UltimateControlCircuit.name=Ultimativt Kontrolkredsløb
 
@@ -69,11 +71,11 @@ tile.BasicBlock.OsmiumBlock.name=Osmiumblok
 tile.BasicBlock.BronzeBlock.name=Bronzeblok
 tile.BasicBlock.RefinedObsidian.name=Raffineret Obsidian
 tile.BasicBlock.CharcoalBlock.name=Trækulsblok
-tile.BasicBlock.RefinedGlowstone.name=Raffineretglødesten
+tile.BasicBlock.RefinedGlowstone.name=Raffineret Glødesten
 tile.BasicBlock.SteelBlock.name=Stålblok
 tile.BasicBlock.Bin.name=Papirkurv
-tile.BasicBlock.TeleporterFrame.name=Teleportørramme
-tile.BasicBlock.SteelCasing.name=Stål Casing
+tile.BasicBlock.TeleporterFrame.name=Teleportørindramning
+tile.BasicBlock.SteelCasing.name=Stål-casing
 tile.BasicBlock.DynamicTank.name=Dynamisk Tank
 tile.BasicBlock.DynamicGlass.name=Dynamisk Glas
 tile.BasicBlock.DynamicValve.name=Dynamisk Ventil
@@ -84,14 +86,14 @@ tile.BasicBlock.SolarEvaporationValve.name=Solfordampningsventil
 
 //Basic Block 2 (second ID iteration)
 tile.BasicBlock2.SolarEvaporationBlock.name=Solfordampningsblok
-tile.BasicBlock2.InductionCasing.name=Induktionskasse
+tile.BasicBlock2.InductionCasing.name=Induktions-casing
 tile.BasicBlock2.InductionPort.name=Induktionsport
 tile.BasicBlock2.InductionCellBasic.name=Basal Induktionscelle
-tile.BasicBlock2.InductionCellAdvanced.name=Envanceret Induktionscelle
+tile.BasicBlock2.InductionCellAdvanced.name=Avanceret Induktionscelle
 tile.BasicBlock2.InductionCellElite.name=Elite Induktionscelle
 tile.BasicBlock2.InductionCellUltimate.name=Ultimativ Induktionscelle
 tile.BasicBlock2.InductionProviderBasic.name=Basal Induktionsprovider
-tile.BasicBlock2.InductionProviderAdvanced.name=Envanceret Induktionsprovider
+tile.BasicBlock2.InductionProviderAdvanced.name=Avanceret Induktionsprovider
 tile.BasicBlock2.InductionProviderElite.name=Elite Induktionsprovider
 tile.BasicBlock2.InductionProviderUltimate.name=Ultimativ Induktionsprovider
 
@@ -100,9 +102,7 @@ tile.MachineBlock.EnrichmentChamber.name=Berigelseskammer
 tile.MachineBlock.OsmiumCompressor.name=Osmiumkompressor
 tile.MachineBlock.Combiner.name=Kombinerer
 tile.MachineBlock.Crusher.name=Knuser
-tile.MachineBlock.BasicFactory.name=Basal Fabrik
-tile.MachineBlock.AdvancedFactory.name=Envanceret Fabrik
-tile.MachineBlock.EliteFactory.name=Elite Fabrik
+tile.MachineBlock.Factory.name=Fabrik
 tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
 tile.MachineBlock.PurificationChamber.name=Rensningskammer
 tile.MachineBlock.EnergizedSmelter.name=Energibaseret Smelteværk
@@ -119,7 +119,7 @@ tile.MachineBlock2.ChemicalOxidizer.name=Kemisk Oxidationsenhed
 tile.MachineBlock2.ChemicalInfuser.name=Kemisk Infuser
 tile.MachineBlock2.ChemicalCombiner.name=Kemisk Kombinerer
 tile.MachineBlock2.ChemicalInjectionChamber.name=Kemisk Injektionskammer
-tile.MachineBlock2.ElectrolyticSeparator.name=Electrolyseseparator
+tile.MachineBlock2.ElectrolyticSeparator.name=Elektrolytisk Separator
 tile.MachineBlock2.PrecisionSawmill.name=Precisionssavmølle
 tile.MachineBlock2.ChemicalDissolutionChamber.name=Kemisk Opløsningskammer
 tile.MachineBlock2.ChemicalWasher.name=Kemisk vasker
@@ -161,32 +161,38 @@ tile.OreBlock.CopperOre.name=Kobbermalm
 tile.OreBlock.TinOre.name=Tinmalm
 
 //Transmitters
-item.MultipartTransmitter.PressurizedTube.name=Trykrør
+item.MultipartTransmitter.BasicPressurizedTube.name=Basal Tryk-tube
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Avanceret Tryk-tube
+item.MultipartTransmitter.ElitePressurizedTube.name=Elite Tryk-tube
+item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimativ Tryk-tube
 item.MultipartTransmitter.BasicUniversalCable.name=Basalt Universalkabel
-item.MultipartTransmitter.AdvancedUniversalCable.name=Envanceret Universalkabel
+item.MultipartTransmitter.AdvancedUniversalCable.name=Avanceret Universalkabel
 item.MultipartTransmitter.EliteUniversalCable.name=Elite Universalkabel
 item.MultipartTransmitter.UltimateUniversalCable.name=Ultimativt Universalkabel
 item.MultipartTransmitter.BasicMechanicalPipe.name=Basalt Mekanisk Rør
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Envanceret Mekanisk Rør
+item.MultipartTransmitter.AdvancedMechanicalPipe.name=Avanceret Mekanisk Rør
 item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mekanisk Rør
 item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimativt Mekanisk Rør
-item.MultipartTransmitter.LogisticalTransporter.name=Logistisk Transporter
+item.MultipartTransmitter.BasicLogisticalTransporter.name=Basal Logistisk Transportør
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Avanceret Logistisk Transportør
+item.MultipartTransmitter.EliteLogisticalTransporter.name=Elite Logistisk Transportør
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimativ Logistisk Transportør
 item.MultipartTransmitter.RestrictiveTransporter.name=Begrænsende Transporter
-item.MultipartTransmitter.DiversionTransporter.name=Enfledningstransporter
+item.MultipartTransmitter.DiversionTransporter.name=Afledningstransporter
 
 //Glow Panel
 item.GlowPanel.name=Glødepanel
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Basal Energikube
-tile.EnergyCube.Advanced.name=Envanceret Energikube
-tile.EnergyCube.Elite.name=Elite Energikube
-tile.EnergyCube.Ultimate.name=Ultimativ Energikube
-tile.EnergyCube.Creative.name=Kreativ Energikube
+tile.EnergyCubeBasic.name=Basal Energikube
+tile.EnergyCubeAdvanced.name=Avanceret Energikube
+tile.EnergyCubeElite.name=Elite Energikube
+tile.EnergyCubeUltimate.name=Ultimativ Energikube
+tile.EnergyCubeCreative.name=Kreativ Energikube
 
 //Factory Installers
 item.basicFactoryInstaller.name=Basal Fabrikinstallerer
-item.advancedFactoryInstaller.name=Endvanceret Fabrikinstallerer
+item.advancedFactoryInstaller.name=Avanceret Fabrikinstallerer
 item.eliteFactoryInstaller.name=Elite Fabrikinstallerer
 
 //Dust
@@ -277,7 +283,6 @@ gas.silver=Sølvslurry
 gas.obsidian=Obsidianslurry
 gas.lead=Blyslurry
 
-
 gas.cleanIron=Ren Jernslurry
 gas.cleanGold=Ren Guldslurry
 gas.cleanOsmium=Ren Osmiumslurry
@@ -318,6 +323,13 @@ oregas.silver=Sølvmalm
 oregas.obsidian=Obsidianmalm
 oregas.lead=Blymalm
 
+//Tier names
+tier.Basic=Basal
+tier.Advanced=Avanceret
+tier.Elite=Elite
+tier.Ultimate=Ultimativ
+tier.Creative=Kreativ
+
 //Transmission types
 transmission.Energy=Energi
 transmission.Fluids=Væsker
@@ -340,6 +352,8 @@ upgrade.speed=Hastighed
 upgrade.speed.desc=Øger hastigheden på maskinen.
 upgrade.filter=Filter
 upgrade.filter.desc=Et filter som sepererer !ntungtvand fra almindelig vand.
+upgrade.gas=Gas
+upgrade.gas.desc=Øger effektiviteten !naf gasforbrugende maskineri.
 
 //Key description text
 key.mode=Ændr Itemmodus
@@ -372,15 +386,15 @@ gui.decondensentrating=Decondensentrating
 gui.power=Strøm
 gui.confirm=Bekræft
 gui.open=Åbn
-gui.allOK=Enlt OK
+gui.allOK=Alt OK
 gui.none=Ingen
-gui.new=Ny
+gui.new=Nyt
 gui.edit=Ændr
 gui.save=Lagr
 gui.output=Udgang
 gui.delete=Slet
 gui.status=Status
-gui.autoEject=Enuto-udstød
+gui.autoEject=Auto-udstød
 gui.itemstack=ItemStack
 gui.oredict=OreDict
 gui.material=Materiale
@@ -412,22 +426,23 @@ gui.modID=Mod ID
 gui.key=Nøgle
 gui.id=ID
 gui.finished=Færdig
-gui.well=Enlt er vel!
+gui.well=Alt er vel!
 gui.upgrade=Opgradér
 gui.infinite=Uendelig
 gui.min=Min
 gui.max=Maks
 gui.delay=Forsinkelse
 gui.noDelay=Ingen forsinkelse
-gui.fuel=Brændsel
+gui.fuel=Brændstof
 gui.heat=Varme
 gui.formed=Formet
 gui.incomplete=Ufuldstændig
-gui.inductionMatrix=Induktionsatrice
-gui.matrixStats=Matricestatistik
+gui.inductionMatrix=Induktionsmatrice
+gui.matrixStats=Matrice-statistik
 gui.main=Hoved
 gui.outputting=Outputting
-gui.dimensions=dimensioner
+gui.receiving=Modtager
+gui.dimensions=Dimensioner
 gui.constituents=Bestanddele
 gui.cells=celler
 gui.providers=providers
@@ -441,9 +456,31 @@ gui.public=Offentlig
 gui.private=Privat
 gui.add=Tilføj
 gui.set=Sæt
-gui.freq=Frekvens
+gui.freq=Frek.
 gui.security=Sikkerhed
 gui.index=Indeks
+gui.producing=Producing
+gui.maxOutput=Max Output
+gui.storing=Storing
+gui.skyBlocked=Sky blocked
+gui.using=Using
+gui.needed=Needed
+gui.noRecipe=No recipe
+gui.conflict=Conflict
+gui.height=Height
+gui.mult=Mult
+gui.chunk=Chunk
+gui.vibrating=Vibrating
+gui.abundancy=Abundancy
+gui.nextItem=Next Item
+gui.lastItem=Last Item
+gui.oreDictCompat=Compatible OreDict Key
+gui.toggleCooling=Toggle Cooling Measurements
+gui.coolingMeasurements=Active cooling
+gui.redstoneOutputMode=Redstone mode
+gui.entityDetection=Entity Detection
+gui.moveUp=Move Up
+gui.moveDown=Move Down
 
 gui.reactor.injectionRate=Injektionssats
 
@@ -454,8 +491,8 @@ gui.upgrades.amount=Mængde
 gui.upgrades.max=Maks
 gui.upgrades.effect=Effekt
 
-gui.chemicalInfuser.short=C. Infuser
-gui.chemicalDissolutionChamber.short=C. Opløsningskammer
+gui.chemicalInfuser.short=K. Infuser
+gui.chemicalDissolutionChamber.short=K. Opløsningskammer
 gui.solarEvaporationController.short=Sol E. Kontrollør
 
 gui.dictionary.noKey=Ingen nøgle.
@@ -463,25 +500,27 @@ gui.dictionary.noKey=Ingen nøgle.
 gui.configuration=Konfiguration
 gui.config=Konfig
 gui.configuration.side=Sidekonfig
-gui.configuration.transporter=Transportørskonfig
+gui.configuration.transporter=Transporter-konfig
 gui.configuration.strictInput=Striks Input
 
-gui.rotaryCondensentrator.toggleOperation=Byt operation
+gui.rotaryCondensentrator.toggleOperation=Skift operation
 
 gui.factory.secondaryEnergy=Sekundær energi
-gui.factory.smelting=Smeltning
-gui.factory.enriching=Berigelse
-gui.factory.crushing=Knusning
-gui.factory.compressing=Komprimering
-gui.factory.combining=Kombinering
-gui.factory.purifying=Rensning
-gui.factory.injecting=Injicering
-gui.factory.autoSort=Enuto-sorterer
+gui.factory.autoSort=Auto-sortér
+
+//Recipe types
+gui.factory.Smelting=Smeltnings
+gui.factory.Enriching=Berigelses
+gui.factory.Crushing=Knusnings
+gui.factory.Compressing=Komprimerings
+gui.factory.Combining=Kombinerings
+gui.factory.Purifying=Rensnings
+gui.factory.Injecting=Injicerings
 
 gui.seismicReader.short=S. Aflæser
 gui.seismicReader.solids=Faste Stoffer
 gui.seismicReader.fluids=Væsker
-gui.seismicReader.reading=Læser
+gui.seismicReader.reading=Aflæser
 
 gui.filterSelect.title=Lav Nyt Filter
 
@@ -525,18 +564,18 @@ gui.password.fieldsEmpty=Felt(er) tomme
 gui.password.notMatching=Matcher ikke
 gui.password.identical=Idenstisk
 gui.password.invalid=Ugyldig
-gui.password=Endgangskode
+gui.password=Adgangskode
 
 gui.logisticalSorter.default=Standard
-gui.logisticalSorter.auto=Enuto
+gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Round-robin
 
-gui.electricChest.editPassword=Ændr Adgangskode
+gui.electricChest.editPassword=Ændr Kode
 
 gui.teleporter.notReady=Ikke klar
 gui.teleporter.ready=Klar
-gui.teleporter.noFrame=Ingen ramme
-gui.teleporter.noLink=Ingen tilkobling
+gui.teleporter.noFrame=Ingen indramning
+gui.teleporter.noLink=Ingen tilkoblinge
 gui.teleporter.exceeds=Tilkoblinger > 2
 gui.teleporter.needsEnergy=Mangler energi
 gui.teleporter.noAccess=Du har ikke adgang til denne teleportør.
@@ -544,13 +583,13 @@ gui.teleporter.noFreq=Ingen frekvens
 
 gui.digitalMinerConfig=Digital Miner Konfig
 
-gui.digitalMiner.autoPull=Enuto-træk
+gui.digitalMiner.autoPull=Auto-træk
 gui.digitalMiner.replaceBlock=Erstat blok
 gui.digitalMiner.reset=Nulstil
 gui.digitalMiner.silkTouch=Silk touch
 gui.digitalMiner.pull=Træk
 gui.digitalMiner.silk=Silk
-gui.digitalMiner.toMine=Ent grave
+gui.digitalMiner.toMine=At grave
 gui.digitalMiner.running=Kører
 gui.digitalMiner.inverse=Inverse modus
 gui.digitalMiner.requireReplace=Kræv erstatning
@@ -566,7 +605,7 @@ tooltip.configurator.empty=Tom
 tooltip.configurator.rotate=Rotér
 tooltip.configurator.wrench=Skruenøgle
 tooltip.configurator.pumpReset=Nulstil Elektrisk Pumpe udregning
-tooltip.configurator.toggleDiverter=Enfledermodus ændret til
+tooltip.configurator.toggleDiverter=Afledermodus ændret til
 tooltip.configurator.toggleMode=%s opførsel ændret til
 tooltip.configurator.viewMode=Nuværende %s opførsel
 tooltip.configurator.unauth=Denne kiste er låst
@@ -576,6 +615,8 @@ tooltip.configurator.dim=dimension
 tooltip.configurator.setLink=Sæt tilkobling til blok
 tooltip.configurator.plenisherReset=Nulstil Fluidisk Plenisher udregning
 tooltip.configurator.inductionPortMode=Skiftet Indukstionsports overføringsmodus til
+tooltip.configurator.toggleColor=Farve skiftet til
+tooltip.configurator.viewColor=Nuværende farve
 
 tooltip.upgrade.speed=Hastighed
 tooltip.upgrade.energy=Energi
@@ -620,8 +661,10 @@ tooltip.configureState=Konfigurér tilstand
 tooltip.outputRate=Output Sats
 tooltip.insufficientFuel=Utilstrækkelig Brændsel
 tooltip.readyForReaction=Klar til Reaktion
+tooltip.speed=Fart
+tooltip.and=og
 
-tooltip.portableTank.bucketMode=Spandmodus
+tooltip.portableTank.bucketMode=Spand-modus
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=langsom
@@ -638,6 +681,10 @@ tooltip.filterCard.oredictionificator=Oredictionificator
 
 tooltip.balloon=Ballon
 
+tooltip.jetpack.regular=Almindelig
+tooltip.jetpack.hover=Svæv
+tooltip.jetpack.disabled=Deaktiveret
+
 tooltip.flamethrower.combat=Kamp
 tooltip.flamethrower.heat=Opvarm
 tooltip.flamethrower.inferno=Inferno
@@ -650,11 +697,11 @@ tooltip.EnrichmentChamber=En simpel maskine brugt til at berige malm om til !nto
 tooltip.OsmiumCompressor=En nogenlunde avanceret maskine brugt til at !nkomprimere osmium om til adskillige støve for !nså at kunne lave deres barremodparter.
 tooltip.Combiner=En maskine brugt til at kombinere støv og brosten !nfor at forme deres malmmodparter.
 tooltip.Crusher=En maskine brugt til at knuse barrer om til deres støvmodparter, !nså vel som at udføre mange andre operationer.
-tooltip.DigitalMiner=En højtavanceret, filterbaseret, auto-miner !nder kan mine hvilken som helst blok du beder den om !inden for en 32-bloks(maks)radius.
+tooltip.DigitalMiner=En højtavanceret, filterbaseret, auto-miner !nder kan mine hvilken som helst blok du beder den om !ninden for en 32-bloks(maks)radius.
 tooltip.BasicFactory=Det laveste tier i linjen af Fabrikker, !nder kan bruges til at processere forskellige !nmaskinoperationer ad gangen.
 tooltip.AdvancedFactory=Det mellemste tier i linjen af Fabrikker, !nder kan bruges til at processere forskellige !nmaskinoperationer ad gangen.
 tooltip.EliteFactory=The højeste tier i linjen af Fabrikker, !nder kan bruges til at processere forskellige !nmaskinoperationer ad gangen.
-tooltip.MetallurgicInfuser=En maskine brugt til at infuse adskillige materialer !nom til (generalt) metaller til at lave legeringer !nog andre sammensætninger.
+tooltip.MetallurgicInfuser=En maskine brugt til at infuse adskillige materialer !nom til (generelt) metaller til at lave legeringer !nog andre sammensætninger.
 tooltip.PurificationChamber=En avanceret maskine i stand til at processere !nmalm om til the klumper: Bruges som det indledende !nfase i 300%-malmforarbejdning.
 tooltip.EnergizedSmelter=En simpel maskine der bruges som en Mekanism-baseret !novn, der kører på energy.
 tooltip.Teleporter=En maskine i stand til at teleportere spillere til forskellige !nsteder defineret af en anden teleporter.
@@ -674,12 +721,12 @@ tooltip.ChemicalInfuser=En maskine, der producerer en ny !ngas ved infuse til an
 tooltip.SeismicVibrator=En maskine, der bruger seismiske vibrationer til at !ngive information om forskellige lag !ni verdenen.
 tooltip.PressurizedReactionChamber=En avanceret maskine der forarbejder en !nfast, flydende og gasformig blanding og !nlaver både et gasformigt og fast produkt.
 tooltip.PortableTank=En handy, mobil tank, der lader dig !nbære 14 spande væske hvorhen du !nønsker. Kan også bruges som spand!
-tooltip.FluidicPlenisher=En maskine i stand til at lave hele !nsøer ved at fylde slugter med væske.
+tooltip.FluidicPlenisher=En maskine i stand til at lave hele !nsøer ved at fylde slugter op med væske.
 tooltip.Laser=En avanceret form for linær!nenergitransfer der udnytter en!nekstremt kollimeret lysstråle.
-tooltip.LaserAmplifier=En blok that can be brugt til at merge,!nredirect and amplify laser beams,!nwith fine controls over when to fire.
-tooltip.LaserTractorBeam=En blok brugt til at forene og!omdirigere laserstråler. Indsamler!ndrops fra blokke, den ødelægger.
+tooltip.LaserAmplifier=En blok that can be brugt til at merge,!nomdirigere og forstærke laserstråler,!nmed finkontrollering over hvornår der skydes.
+tooltip.LaserTractorBeam=En blok brugt til at forene og!nomdirigere laserstråler. Indsamler!ndrops fra blokke, den ødelægger.
 tooltip.SolarNeutronActivator=En maskine der dirigerer neutronstrålingen !nfra solen om til sin interne reserve, hvilket tillader !nen langsom dannelse af forskelige isotoper.
-tooltip.Oredictionificator=En maskine brugt til at forene og oversætte mellem forskellige ting !nog blokke vha. Ore Dictionaryen.
+tooltip.Oredictionificator=En maskine brugt til at forene og !noversætte mellem forskellige ting !nog blokke vha. Ore Dictionaryen.
 
 tooltip.HeatGenerator=En generator der bruger lavaens varme eller !nandre brændbare ressourcer til at producere energi.
 tooltip.SolarGenerator=En generator der bruger solens !nkraft til producere energi.
@@ -696,7 +743,7 @@ tooltip.ReactorNeutronCapturePlate=En blok, der kan bruges til !nbåde at bloker
 tooltip.ReactorPort=En blok forstærket indramning i stand til !nat håndtere både gas- og energioverførslen !naf Fusionsreaktoren.
 tooltip.ReactorLogicAdapter=En blok der kan bruges til at !ntillade basal overvågning af en reaktor vha. rødsten.
 
-tooltip.OsmiumOre=Et stærkt mineral der kan findes på !nenhver højde i verdenen. Den er!nkendt for at have mange anvendelser i !nthe konstruktionen af maskineri.
+tooltip.OsmiumOre=Et stærkt mineral der kan findes på !nenhver højde i verdenen. Den er!nkendt for at have mange anvendelser i !nkonstruktionen af maskineri.
 tooltip.CopperOre=Et almindeligt, ledende materiale der !nkan bruges i produktionen af !nledninger. Dets evne til at modstå !nhøj varme gør den også essential !ntil avanceret maskineri.
 tooltip.TinOre=Et letvægts, dog stadig robust, ledende !nmateriale, der er en smule mindre !nsjælden end Kobber.
 
@@ -779,7 +826,7 @@ reactor.depleted.desc=Reaktoren har utilstrækkelig brændstof til at vedligehol
 itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
-nei.chemicalInjectionChamber=C. Injektionskammer
+nei.chemicalInjectionChamber=K. Injektionskammer
 nei.rotaryCondensentrator=R. Condensentrator
 
 //**********//
@@ -799,7 +846,7 @@ tile.Generator.AdvancedSolarGenerator.name=Avanceret Solgenerator
 tile.Generator.WindTurbine.name=Vindturbine
 
 tile.Reactor.ReactorController.name=Reaktor-controller
-tile.Reactor.ReactorFrame.name=Reaktorramme
+tile.Reactor.ReactorFrame.name=Reaktorindramning
 tile.Reactor.ReactorNeutronCapturePlate.name=Neutronfanger-plade
 tile.Reactor.ReactorInOutPort.name=Reaktor-port
 tile.Reactor.ReactorLogicAdapter.name=Reaktorlogiks-adapter
