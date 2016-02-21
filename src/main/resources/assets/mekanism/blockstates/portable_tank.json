@@ -1,0 +1,15 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:portable_tank"
+  },
+  "variants": {
+    "normal": [{}],
+    "active": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

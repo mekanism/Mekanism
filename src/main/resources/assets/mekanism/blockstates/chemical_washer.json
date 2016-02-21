@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:pressurized_reaction_chamber"
+    "model": "mekanism:chemical_washer"
   },
   "variants": {
     "normal": [{}],

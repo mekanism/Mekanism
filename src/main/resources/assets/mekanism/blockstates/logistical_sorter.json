@@ -1,15 +1,17 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:pressurized_reaction_chamber"
+    "model": "mekanism:logistical_sorter"
   },
   "variants": {
     "normal": [{}],
     "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+      "north": {"y": 90},
+      "south": {"y": -90},
+      "east":  {"y": 180},
+      "west":  {},
+      "up":    {},
+      "down":  {}
     },
     "active": {
       "true": {},

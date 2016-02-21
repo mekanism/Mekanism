@@ -1,15 +1,15 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:pressurized_reaction_chamber"
+    "model": "mekanism:chemical_oxidizer"
   },
   "variants": {
     "normal": [{}],
     "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+      "north": {"y": 180},
+      "south": {},
+      "east":  {"y": -90},
+      "west":  {"y": 90}
     },
     "active": {
       "true": {},
