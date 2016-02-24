@@ -7,9 +7,11 @@ import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.MekanismConfig;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HeatNetwork;
+import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,7 +24,7 @@ import java.util.Collection;
 public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetwork>
 {
 	public static TransmitterIcons heatIcons = new TransmitterIcons(1, 2);
-
+    private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 	public PartHeatTransmitter()
 	{
 		transmitterDelegate = new MultipartHeatTransmitter(this);
@@ -58,11 +60,17 @@ public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetw
     @Override
     public void updateShare() {}
 
-	public static void registerIcons(IIconRegister register)
-	{
-		heatIcons.registerCenterIcons(register, new String[] {"HeatTransmitter"});
-		heatIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterHorizontalBasic"});
-		//TODO tiers
+	public static void registerIcons(IIconRegister register) {
+        if (!PartHeatTransmitter.opaque)
+        {
+            heatIcons.registerCenterIcons(register, new String[]{"HeatTransmitter"});
+            heatIcons.registerSideIcons(register, new String[]{"SmallTransmitterVerticalBasic", "SmallTransmitterHorizontalBasic"});
+            //TODO tiers
+        } else {
+            heatIcons.registerCenterIcons(register, new String[]{"HeatTransmitterOpaque"});
+            heatIcons.registerSideIcons(register, new String[]{"SmallTransmitterVerticalBasicOpaque", "SmallTransmitterHorizontalBasicOpaque"});
+            //TODO tiers
+        }
 	}
 
 	@Override
@@ -118,7 +126,7 @@ public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetw
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0)
+		if(pass == 0 && !opaque)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

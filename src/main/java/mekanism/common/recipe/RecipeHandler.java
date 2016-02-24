@@ -30,6 +30,10 @@ public final class RecipeHandler
 		recipeMap.put(recipe);
 	}
 
+	public static void addRecipe(Recipe recipeMap, GspMachineRecipe recipe)
+	{
+		recipeMap.put(recipe);
+	}
 	public static void removeRecipe(Recipe recipeMap, MachineRecipe recipe)
 	{
 		recipeMap.remove(recipe);
@@ -210,7 +214,12 @@ public final class RecipeHandler
 	{
 		addRecipe(Recipe.SOLAR_EVAPORATION_PLANT, new SolarEvaporationRecipe(inputFluid, outputFluid));
 	}
-	
+
+	public static void addGirdlerSulfidProcessorRecipe(FluidStack inputFluid, FluidStack inputFluidSnd, FluidStack outputFluid, FluidStack outputFluidSnd)
+	{
+		addRecipe(Recipe.GIRDLER_SULFID_PROCESSOR, new GirdlerSulfidProcessorRecipe(inputFluid, inputFluidSnd, outputFluid, outputFluidSnd));
+	}
+
 	public static void addSolarNeutronRecipe(GasStack inputGas, GasStack outputGas)
 	{
 		addRecipe(Recipe.SOLAR_NEUTRON_ACTIVATOR, new SolarNeutronRecipe(inputGas, outputGas));
@@ -409,6 +418,19 @@ public final class RecipeHandler
 		
 		return null;
 	}
+
+	public static GirdlerSulfidProcessorRecipe getGirdlerSulfidProcessorRecipe(FluidInput input)
+	{
+		if(input.isValid())
+		{
+			HashMap<FluidInput, GirdlerSulfidProcessorRecipe> recipes = Recipe.GIRDLER_SULFID_PROCESSOR.get();
+
+			GirdlerSulfidProcessorRecipe recipe = recipes.get(input);
+			return recipe == null ? null : recipe.copy();
+		}
+
+		return null;
+	}
 	
 	public static SolarNeutronRecipe getSolarNeutronRecipe(GasInput input)
 	{
@@ -521,6 +543,7 @@ public final class RecipeHandler
 		PRESSURIZED_REACTION_CHAMBER(MachineType.PRESSURIZED_REACTION_CHAMBER.name, PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class),
 		AMBIENT_ACCUMULATOR(MachineType.AMBIENT_ACCUMULATOR.name, IntegerInput.class, GasOutput.class, AmbientGasRecipe.class),
 		SOLAR_EVAPORATION_PLANT("SolarEvaporationPlant", FluidInput.class, FluidOutput.class, SolarEvaporationRecipe.class),
+		GIRDLER_SULFID_PROCESSOR(FluidInput.class, FluidOutput.class,GirdlerSulfidProcessorRecipe.class, "GirdlerSulfidProcessor"),
 		SOLAR_NEUTRON_ACTIVATOR(MachineType.SOLAR_NEUTRON_ACTIVATOR.name, GasInput.class, GasOutput.class, SolarNeutronRecipe.class);
 
 		private HashMap recipes;
@@ -529,7 +552,9 @@ public final class RecipeHandler
 		private Class<? extends MachineInput> inputClass;
 		private Class<? extends MachineOutput> outputClass;
 		private Class<? extends MachineRecipe> recipeClass;
+        private Class<? extends GspMachineRecipe> gspRecipeClass;
 
+        /** part doubled for my recipe - changed Recipe(name, in, out) to Recipe(in, out, name) to prevent clash */
 		private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe)
 		{
 			recipeName = name;
@@ -541,15 +566,34 @@ public final class RecipeHandler
 			recipes = new HashMap<INPUT, RECIPE>();
 		}
 
-		public <RECIPE extends MachineRecipe<?, ?, RECIPE>> void put(RECIPE recipe)
+        private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends GspMachineRecipe<INPUT, ?, ? , ?, RECIPE>> Recipe(Class<INPUT> inputSnd, Class<OUTPUT> outputSnd, Class<RECIPE> recipeSnd, String nameSnd)
+        {
+            recipeName = nameSnd;
+
+            inputClass = inputSnd;
+            outputClass = outputSnd;
+            gspRecipeClass = recipeSnd;
+
+            recipes = new HashMap<INPUT, RECIPE>();
+        }
+
+        public <RECIPE extends MachineRecipe<?, ?, RECIPE>> void put(RECIPE recipe)
 		{
 			recipes.put(recipe.getInput(), recipe);
 		}
 
+		public <RECIPE extends GspMachineRecipe<?, ?, ?, ?, RECIPE>> void put(RECIPE recipe)
+		{
+			recipes.put(recipe.getInput(), recipe);
+		}
 		public <RECIPE extends MachineRecipe<?, ?, RECIPE>> void remove(RECIPE recipe)
 		{
 			recipes.remove(recipe.getInput());
 		}
+        public <RECIPE extends GspMachineRecipe<?, ?, ?, ?, RECIPE>> void remove(RECIPE recipe)
+        {
+            recipes.remove(recipe.getInput());
+        }
 		
 		public String getRecipeName()
 		{

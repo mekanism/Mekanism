@@ -83,9 +83,12 @@ tile.BasicBlock.CopperBlock.name=Copper Block
 tile.BasicBlock.TinBlock.name=Tin Block
 tile.BasicBlock.SolarEvaporationController.name=Solar Evaporation Controller
 tile.BasicBlock.SolarEvaporationValve.name=Solar Evaporation Valve
+tile.BasicBlock.GirdlerSulfidProcessorController.name=Girdler-Sulfid-Processor Controller [WIP]
+tile.BasicBlock.GirdlerSulfidProcessorValve.name=Girdler-Sulfid-Processor Valve [WIP]
 
 //Basic Block 2 (second ID iteration)
 tile.BasicBlock2.SolarEvaporationBlock.name=Solar Evaporation Block
+tile.BasicBlock2.GirdlerSulfidProcessorBlock.name=Girdler-Sulfid-Processor Block [WIP]
 tile.BasicBlock2.InductionCasing.name=Induction Casing
 tile.BasicBlock2.InductionPort.name=Induction Port
 tile.BasicBlock2.InductionCellBasic.name=Basic Induction Cell
@@ -248,8 +251,10 @@ item.dirtyLeadDust.name=Dirty Lead Dust
 
 //Ingots
 item.obsidianIngot.name=Refined Obsidian Ingot
+item.refinedosmiumIngot.name=Refined Osmium Ingot
 item.osmiumIngot.name=Osmium Ingot
 item.bronzeIngot.name=Bronze Ingot
+item.refinedOsmiumIngot.name=Refined Osmium Ingot
 item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
 item.copperIngot.name=Copper Ingot
@@ -263,6 +268,15 @@ gas.chlorine=Chlorine
 gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
+
+gas.enricheddihydrogensulfidGas=Enriched Dihydrogensulfid I
+gas.enricheddihydrogensulfidsnd=Enriched Dihydrogensulfid II
+gas.enricheddihydrogensulfidrd=Enriched Dihydrogensulfid III
+
+gas.enrichedwater=Enriched Water I (g)
+gas.enrichedwatersnd=Enriched Water II (g)
+gas.enrichedwaterrd=Enriched Water III (g)
+
 gas.hydrogenChloride=Hydrogen Chloride
 gas.liquidOsmium=Liquid Osmium
 gas.liquidStone=Liquid Stone
@@ -301,13 +315,24 @@ fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
 fluid.chlorine=Liquid Chlorine
 fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
+
 fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
+
+fluid.enricheddihydrogensulfidGas=Liquid Enriched Dihydrogensulfid I
+fluid.enricheddihydrogensulfidsnd=Liquid Enriched Dihydrogensulfid II
+fluid.enricheddihydrogensulfidrd=Liquid Enriched Dihydrogensulfid III
+
 fluid.hydrogenChloride=Liquid Hydrogen Chloride
 fluid.brine=Brine
 fluid.ethene=Liquid Ethylene
 fluid.sodium=Liquid Sodium
+
+fluid.enrichedwater=Enriched Water I
+fluid.enrichedwatersnd=Enriched Water II
+fluid.enrichedwaterrd=Enriched Water III
 fluid.heavyWater=Heavy Water
+
 fluid.lithium=Liquid Lithium
 fluid.deuterium=Liquid Deuterium
 fluid.tritium=Liquid Tritium
@@ -494,6 +519,7 @@ gui.upgrades.effect=Effect
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
 gui.solarEvaporationController.short=Solar E. Controller
+gui.girdlerSulfidProcessorController.short=GSP Controller [WIP]
 
 gui.dictionary.noKey=No key.
 

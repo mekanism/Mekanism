@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.gas.GasRegistry;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemClump;
@@ -62,6 +63,15 @@ public class MekanismItems
 	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
 	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("LithiumBucket");
 	public static final Item HeavyWaterBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("HeavyWaterBucket");
+
+    public static final Item EnrichedWaterI = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedWaterIBucket");
+    public static final Item EnrichedWaterII = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedWaterIIBucket");
+    public static final Item EnrichedWaterIII = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedWaterIIIBucket");
+
+    public static final Item EnrichedDihydrogenSulfidI = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedDihydrogenSulfidIBucket");
+    public static final Item EnrichedDihydrogendSulfidII = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedDihydrogendSulfidIIBucket");
+    public static final Item EnrichedDihydrogenSulfidIII = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedDihydrogenSulfidIIIBucket");
+
 	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED).setUnlocalizedName("SpeedUpgrade");
 	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY).setUnlocalizedName("EnergyUpgrade");
 	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER).setUnlocalizedName("FilterUpgrade");
@@ -163,6 +173,15 @@ public class MekanismItems
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("lithium"), new ItemStack(LithiumBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("heavywater"), new ItemStack(HeavyWaterBucket), FluidContainerRegistry.EMPTY_BUCKET);
+
+        /** new fluids for GPS */
+        FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enrichedwater"), new ItemStack(EnrichedWaterI), FluidContainerRegistry.EMPTY_BUCKET);
+        FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enrichedwatersnd"), new ItemStack(EnrichedWaterII), FluidContainerRegistry.EMPTY_BUCKET);
+        FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enrichedwaterrd"), new ItemStack(EnrichedWaterIII), FluidContainerRegistry.EMPTY_BUCKET);
+
+        FluidContainerRegistry.registerFluidContainer(GasRegistry.getGas("enricheddihydrogensulfidGas").getFluid(), new ItemStack(EnrichedDihydrogenSulfidI), FluidContainerRegistry.EMPTY_BUCKET);
+        FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enricheddihydrogensulfidsnd"), new ItemStack(EnrichedDihydrogendSulfidII), FluidContainerRegistry.EMPTY_BUCKET);
+        FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enricheddihydrogensulfidrd"), new ItemStack(EnrichedDihydrogenSulfidIII), FluidContainerRegistry.EMPTY_BUCKET);
 
 		MinecraftForge.EVENT_BUS.register(GasMask);
 		MinecraftForge.EVENT_BUS.register(FreeRunners);

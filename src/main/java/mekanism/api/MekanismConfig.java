@@ -53,6 +53,7 @@ public class MekanismConfig
 		public static boolean aestheticWorldDamage;
 		public static boolean opsBypassRestrictions;
 		public static double solarEvaporationSpeed;
+		public static double girdlerSulfidProcessorSpeed;
 		public static int maxJetpackGas;
 		public static int maxScubaGas;
 		public static int maxFlamethrowerGas;
@@ -69,6 +70,7 @@ public class MekanismConfig
 		public static boolean oldTransmitterRender = false;
 		public static boolean replaceSoundsWhenResuming = true;
 		public static boolean renderCTM = true;
+		public static boolean opaque = false;
 	}
 	
 	public static class machines

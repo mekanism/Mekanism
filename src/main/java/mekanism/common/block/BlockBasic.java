@@ -70,19 +70,22 @@ import java.util.Random;
  * 0:13: Tin Block
  * 0:14: Solar Evaporation Controller
  * 0:15: Solar Evaporation Valve
+ * 0:16: Girdler Sulfid Processor Controller
+ * 0:17: Girdler Sulfid Processor Valve
  * 1:0: Solar Evaporation Block
  * 1:1: Induction Casing
  * 1:2: Induction Port
  * 1:3: Induction Cell
  * 1:4: Induction Provider
+ * 1:5: Girdler Sulfid Processor Block
  * @author AidanBrady
  *
  */
 public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 {
-	public IIcon[][] icons = new IIcon[16][16];
+	public IIcon[][] icons = new IIcon[18][18];
 
-	public CTMData[][] ctms = new CTMData[16][4];
+	public CTMData[][] ctms = new CTMData[18][4];
 	
 	public static String ICON_BASE = "mekanism:SteelCasing";
 
@@ -147,15 +150,19 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[14][1] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationControllerOn").registerIcons(register);
 				ctms[15][0] = new CTMData("ctm/SolarEvaporationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 
+                ctms[16][0] = new CTMData("ctm/GirdlerSulfidProcessorBlock", this, Arrays.asList(16, 17)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/GirdlerSulfidProcessorController").registerIcons(register);
+                ctms[16][1] = new CTMData("ctm/GirdlerSulfidProcessorBlock", this, Arrays.asList(16, 17)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/GirdlerSulfidProcessorControllerOn").registerIcons(register);
+                ctms[17][0] = new CTMData("ctm/GirdlerSulfidProcessorValve", this, Arrays.asList(17, 16)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+
 				icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
 				icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
 				icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
 				icons[3][0] = register.registerIcon("mekanism:CoalBlock");
 				icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
 				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
-				
+
 				MekanismRenderer.loadDynamicTextures(register, "Bin", icons[6], DefIcon.getActivePair(register.registerIcon("mekanism:BinSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinTop"), 0), new DefIcon(register.registerIcon("mekanism:BinTopOn"), 6));
+                        new DefIcon(register.registerIcon("mekanism:BinTop"), 0), new DefIcon(register.registerIcon("mekanism:BinTopOn"), 6));
 				
 				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
@@ -164,38 +171,58 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[11][0] = ctms[11][0].mainTextureData.icon;
 				icons[12][0] = register.registerIcon("mekanism:CopperBlock");
 				icons[13][0] = register.registerIcon("mekanism:TinBlock");
-				icons[14][0] = ctms[14][0].facingOverride.icon;
+
+                icons[14][0] = ctms[14][0].facingOverride.icon;
 				icons[14][1] = ctms[14][1].facingOverride.icon;
 				icons[14][2] = ctms[14][0].mainTextureData.icon;
-				icons[15][0] = ctms[15][0].mainTextureData.icon;
+
+                icons[15][0] = ctms[15][0].mainTextureData.icon;
+
+                icons[16][0] = ctms[16][0].facingOverride.icon;
+                icons[16][1] = ctms[16][1].facingOverride.icon;
+                icons[16][2] = ctms[16][0].mainTextureData.icon;
+
+                icons[17][0] = ctms[17][0].mainTextureData.icon;
+
 				break;
 			case BASIC_BLOCK_2:
 				ctms[0][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
-				ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
-				ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(1, 2)).registerIcons(register);
+
+                ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
+
+                ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(1, 2)).registerIcons(register);
 				ctms[2][1] = new CTMData("ctm/InductionPortOutput", this, Arrays.asList(1, 2)).registerIcons(register);
-				ctms[3][0] = new CTMData("ctm/InductionCellBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+
+                ctms[3][0] = new CTMData("ctm/InductionCellBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[3][1] = new CTMData("ctm/InductionCellAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[3][2] = new CTMData("ctm/InductionCellElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[3][3] = new CTMData("ctm/InductionCellUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[4][0] = new CTMData("ctm/InductionProviderBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+
+                ctms[4][0] = new CTMData("ctm/InductionProviderBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][1] = new CTMData("ctm/InductionProviderAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				
+
+                ctms[5][0] = new CTMData("ctm/GirdlerSulfidProcessorBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(16, 17)).registerIcons(register);
+
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
+
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
-				icons[2][0] = ctms[2][0].mainTextureData.icon;
+
+                icons[2][0] = ctms[2][0].mainTextureData.icon;
 				icons[2][1] = ctms[2][1].mainTextureData.icon;
-				icons[3][0] = ctms[3][0].mainTextureData.icon;
+
+                icons[3][0] = ctms[3][0].mainTextureData.icon;
 				icons[3][1] = ctms[3][1].mainTextureData.icon;
 				icons[3][2] = ctms[3][2].mainTextureData.icon;
 				icons[3][3] = ctms[3][3].mainTextureData.icon;
-				icons[4][0] = ctms[4][0].mainTextureData.icon;
+
+                icons[4][0] = ctms[4][0].mainTextureData.icon;
 				icons[4][1] = ctms[4][1].mainTextureData.icon;
 				icons[4][2] = ctms[4][2].mainTextureData.icon;
 				icons[4][3] = ctms[4][3].mainTextureData.icon;
-				
+
+                icons[5][0] = ctms[5][0].mainTextureData.icon;
 				break;
 		}
 	}
@@ -226,6 +253,19 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 						else {
 							return icons[meta][2];
 						}
+                    case 16:
+                        TileEntityGirdlerSulfidProcessorController tileEntity2 = (TileEntityGirdlerSulfidProcessorController)world.getTileEntity(x,y,z);
+
+                        if(side == tileEntity2.facing)
+                        {
+                            return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
+                        }
+                        else {
+                            // debuging
+
+                            Mekanism.logger.info(icons[meta][2].toString());
+                            return icons[meta][2];
+                        }
 					default:
 						return getIcon(side, meta);
 				}
@@ -268,6 +308,14 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 						else {
 							return icons[meta][2];
 						}
+                    case 16:
+                        if(side == 2)
+                        {
+                            return icons[meta][0];
+                        }
+                        else {
+                            return icons[meta][2];
+                        }
 					default:
 						return icons[meta][0];
 				}
@@ -291,14 +339,14 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		switch(blockType)
 		{
 			case BASIC_BLOCK_1:
-				for(int i = 0; i < 16; i++)
+				for(int i = 0; i < 18; i++)
 				{
 					list.add(new ItemStack(item, 1, i));
 				}
 				
 				break;
 			case BASIC_BLOCK_2:
-				for(int i = 0; i < 5; i++)
+				for(int i = 0; i < 6; i++)
 				{
 					if(i == 3)
 					{
@@ -460,6 +508,14 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				}
 			}
 
+            if(metadata == 16)
+            {
+                if(!entityplayer.isSneaking())
+                {
+                    entityplayer.openGui(Mekanism.instance, 34, world, x, y, z);
+                    return true;
+                }
+            }
 			if(world.isRemote)
 			{
 				return true;
@@ -760,6 +816,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					case 12:
 					case 14:
 					case 15:
+					case 16:
+					case 17:
 						return true;
 					default:
 						return false;
@@ -772,6 +830,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					case 2:
 					case 3:
 					case 4:
+					case 5:
 						return true;
 					default:
 						return false;
@@ -815,6 +874,10 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 						return new TileEntitySolarEvaporationController();
 					case 15:
 						return new TileEntitySolarEvaporationValve();
+                    case 16:
+                        return new TileEntityGirdlerSulfidProcessorController();
+                    case 17:
+                        return new TileEntityGirdlerSulfidProcessorValve();
 					default:
 						return null;
 				}
@@ -831,6 +894,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 						return new TileEntityInductionCell();
 					case 4:
 						return new TileEntityInductionProvider();
+                    case 5:
+                        return new TileEntityGirdlerSulfidProcessorBlock();
 					default:
 						return null;
 				}
@@ -1071,6 +1136,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	public static enum BasicBlock
 	{
 		BASIC_BLOCK_1,
-		BASIC_BLOCK_2;
+		BASIC_BLOCK_2
 	}
 }

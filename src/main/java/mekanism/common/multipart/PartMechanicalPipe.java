@@ -3,9 +3,11 @@ package mekanism.common.multipart;
 import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.api.MekanismConfig;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -29,6 +31,8 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	public FluidStack lastWrite;
 
 	public Tier.PipeTier tier;
+
+	private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 
 	public PartMechanicalPipe(Tier.PipeTier pipeTier)
 	{
@@ -161,9 +165,16 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 
 	public static void registerIcons(IIconRegister register)
 	{
-		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipeBasic", "MechanicalPipeAdvanced", "MechanicalPipeElite", "MechanicalPipeUltimate"});
-		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeVerticalBasic", "MechanicalPipeVerticalAdvanced", "MechanicalPipeVerticalElite", "MechanicalPipeVerticalUltimate",
-				"MechanicalPipeHorizontalBasic", "MechanicalPipeHorizontalAdvanced", "MechanicalPipeHorizontalElite", "MechanicalPipeHorizontalUltimate"});
+		if (!PartMechanicalPipe.opaque)
+		{
+			pipeIcons.registerCenterIcons(register, new String[]{"MechanicalPipeBasic", "MechanicalPipeAdvanced", "MechanicalPipeElite", "MechanicalPipeUltimate"});
+			pipeIcons.registerSideIcons(register, new String[]{"MechanicalPipeVerticalBasic", "MechanicalPipeVerticalAdvanced", "MechanicalPipeVerticalElite", "MechanicalPipeVerticalUltimate",
+					"MechanicalPipeHorizontalBasic", "MechanicalPipeHorizontalAdvanced", "MechanicalPipeHorizontalElite", "MechanicalPipeHorizontalUltimate"});
+		} else {
+			pipeIcons.registerCenterIcons(register, new String[]{"MechanicalPipeBasicOpaque", "MechanicalPipeAdvancedOpaque", "MechanicalPipeEliteOpaque", "MechanicalPipeUltimateOpaque"});
+			pipeIcons.registerSideIcons(register, new String[]{"MechanicalPipeVerticalBasicOpaque", "MechanicalPipeVerticalAdvancedOpaque", "MechanicalPipeVerticalEliteOpaque", "MechanicalPipeVerticalUltimateOpaque",
+					"MechanicalPipeHorizontalBasicOpaque", "MechanicalPipeHorizontalAdvancedOpaque", "MechanicalPipeHorizontalEliteOpaque", "MechanicalPipeHorizontalUltimateOpaque"});
+		}
 	}
 
 	@Override
@@ -218,7 +229,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0)
+		if(pass == 0 && !opaque)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

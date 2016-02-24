@@ -249,6 +249,7 @@ item.dirtyLeadDust.name=Dreckiger Bleistaub
 //Ingots
 item.obsidianIngot.name=Raffinierter Obsidianbarren
 item.osmiumIngot.name=Osmiumbarren
+item.refinedOsmiumIngot.name=Raffinierter Osmiumbarren
 item.bronzeIngot.name=Bronzebarren
 item.glowstoneIngot.name=Glowstonebarren
 item.steelIngot.name=Stahlbarren
@@ -263,6 +264,15 @@ gas.chlorine=Chlor
 gas.sulfurDioxideGas=Schwefeldioxid
 gas.sulfurTrioxideGas=Schwefeltrioxid
 gas.sulfuricAcid=Schwefelsäure
+
+gas.enricheddihydrogensulfidGas=Angereicherter Schwefelwasserstoff I
+gas.enricheddihydrogensulfidsnd=Angereicherter Schwefelwasserstoff II
+gas.enricheddihydrogensulfidrd=Angereicherter Schwefelwasserstoff III
+
+gas.enrichedwater=Angereichertes Wasser I
+gas.enrichedwatersnd=Angereichertes Wasser II
+gas.enrichedwaterrd=Angereichertes Wasser II
+
 gas.hydrogenChloride=Chlorwasserstoff
 gas.liquidOsmium=Flüssiges Osmium
 gas.liquidStone=Flüssiges Gestein
@@ -304,9 +314,19 @@ fluid.sulfurDioxideGas=Flüssiges Schwefeldioxid
 fluid.sulfurTrioxideGas=Flüssiges Schwefeltrioxid
 fluid.sulfuricAcid=Flüssige Schwefelsäure
 fluid.hydrogenChloride=Flüssiger Chlorwasserstoff
+
+fluid.enricheddihydrogensulfidGas=Angereicherter flüssiger Schwefelwasserstoff I
+fluid.enricheddihydrogensulfidsnd=Angereicherter flüssiger Schwefelwasserstoff II
+fluid.enricheddihydrogensulfidrd=Angereicherter flüssiger Schwefelwasserstoff III
+
 fluid.brine=Salzwasser
 fluid.ethene=Flüssigethylen
 fluid.sodium=Flüssignatrium
+
+fluid.enrichedwater=Angereichertes Wasser I
+fluid.enrichedwatersnd=Angereichertes Wasser II
+fluid.enrichedwaterrd=Angereichertes Wasser II
+
 fluid.heavyWater=Schweres Wasser
 fluid.lithium=Flüssiges Lithium
 fluid.deuterium=Flüssiges Deuterium
