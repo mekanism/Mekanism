@@ -7,8 +7,9 @@ import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.util.ListUtils;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiPurificationChamber;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.util.LangUtils;
@@ -53,7 +54,10 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	{
 		if(gasType == GasRegistry.getGas("oxygen"))
 		{
-			return ListUtils.asList(new ItemStack(Items.flint), MekanismUtils.getFullGasTank(GasRegistry.getGas("oxygen")));
+			for(GasTankTier tier : GasTankTier.values())
+			{
+				return ListUtils.asList(new ItemStack(Items.flint), MekanismUtils.getFullGasTank(tier, GasRegistry.getGas("oxygen")));
+			}
 		}
 
 		return new ArrayList<ItemStack>();

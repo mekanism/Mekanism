@@ -6,7 +6,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
-import mekanism.common.tile.TileEntityPortableTank;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.LangUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -160,10 +160,10 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 		
 		if(stored == null)
 		{
-			toFill = Math.min(resource.amount, TileEntityPortableTank.MAX_FLUID);
+			toFill = Math.min(resource.amount, CAPACITY);
 		}
 		else {
-			toFill = Math.min(resource.amount, TileEntityPortableTank.MAX_FLUID-stored.amount);
+			toFill = Math.min(resource.amount, CAPACITY-stored.amount);
 		}
 		
 		if(doFill)

@@ -91,7 +91,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			{
 				ItemBlockMachine machine = (ItemBlockMachine)item;
 
-				if(MachineType.get(toolStack) == MachineType.PORTABLE_TANK)
+				if(MachineType.get(toolStack) == MachineType.FLUID_TANK)
 				{
 					machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
 					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(machine.getBucketMode(toolStack)));

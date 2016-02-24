@@ -1,14 +1,14 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
-
+import mekanism.common.Tier.FluidTankTier;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelPortableTank extends ModelBase
+public class ModelFluidTank extends ModelBase
 {
 	ModelRenderer Base;
 	ModelRenderer PoleFL;
@@ -21,7 +21,7 @@ public class ModelPortableTank extends ModelBase
 	ModelRenderer RightGlass;
 	ModelRenderer LeftGlass;
 
-	public ModelPortableTank() 
+	public ModelFluidTank() 
 	{
 		textureWidth = 128;
 		textureHeight = 128;
@@ -88,7 +88,7 @@ public class ModelPortableTank extends ModelBase
 		setRotation(LeftGlass, 0F, 0F, 0F);
 	}
 
-	public void render(float size)
+	public void render(float size, FluidTankTier tier)
 	{
 		Base.render(size);
 		PoleFL.render(size);
@@ -98,6 +98,7 @@ public class ModelPortableTank extends ModelBase
 		Top.render(size);
 		
 		MekanismRenderer.blendOn();
+		MekanismRenderer.color(tier.getBaseTier().getColor());
 		FrontGlass.render(size);
 		BackGlass.render(size);
 		RightGlass.render(size);

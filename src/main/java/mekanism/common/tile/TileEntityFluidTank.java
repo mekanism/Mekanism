@@ -9,6 +9,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ISustainedTank;
@@ -17,6 +18,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -32,17 +34,17 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager
+public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager
 {
 	public boolean isActive;
 
 	public boolean clientActive;
 	
-	public static final int MAX_FLUID = 14000;
-	
-	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
+	public FluidTank fluidTank;
 	
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
+	
+	public FluidTankTier tier = FluidTankTier.BASIC;
 	
 	public int updateDelay;
 	
@@ -55,10 +57,11 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	
 	public boolean needsPacket;
 	
-	public TileEntityPortableTank() 
+	public TileEntityFluidTank() 
 	{
-		super("PortableTank");
+		super("FluidTank");
 		
+		fluidTank = new FluidTank(tier.storage);
 		inventory = new ItemStack[2];
 	}
 	
@@ -140,6 +143,12 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		}
 	}
 	
+	@Override
+	public String getInventoryName()
+	{
+		return LangUtils.localize("tile.FluidTank" + tier.getBaseTier().getName() + ".name");
+	}
+	
 	private void activeEmit()
 	{
 		if(fluidTank.getFluid() != null)
@@ -148,7 +157,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 
 			if(tileEntity instanceof IFluidHandler)
 			{
-				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(100, fluidTank.getFluidAmount()));
+				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.output, fluidTank.getFluidAmount()));
 				fluidTank.drain(((IFluidHandler)tileEntity).fill(ForgeDirection.UP, toDrain, true), true);
 			}
 		}
@@ -287,7 +296,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		Coord4D up = Coord4D.get(this).getFromSide(ForgeDirection.UP);
 		
-		if(up.getTileEntity(worldObj) instanceof TileEntityPortableTank)
+		if(up.getTileEntity(worldObj) instanceof TileEntityFluidTank)
 		{
 			IFluidHandler handler = (IFluidHandler)up.getTileEntity(worldObj);
 			
@@ -353,6 +362,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		super.writeToNBT(nbtTags);
 
+		nbtTags.setInteger("tier", tier.ordinal());
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("editMode", editMode.ordinal());
 		
@@ -367,6 +377,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		super.readFromNBT(nbtTags);
 
+		tier = FluidTankTier.values()[nbtTags.getInteger("tier")];
 		clientActive = isActive = nbtTags.getBoolean("isActive");
 		editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
 		
@@ -381,6 +392,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		super.handlePacketData(dataStream);
 
+		tier = FluidTankTier.values()[dataStream.readInt()];
 		clientActive = dataStream.readBoolean();
 		valve = dataStream.readInt();
 		editMode = ContainerEditMode.values()[dataStream.readInt()];
@@ -415,9 +427,9 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		
 		Coord4D top = Coord4D.get(this).getFromSide(ForgeDirection.UP);
 		
-		if(top.getTileEntity(worldObj) instanceof TileEntityPortableTank)
+		if(top.getTileEntity(worldObj) instanceof TileEntityFluidTank)
 		{
-			needed += ((TileEntityPortableTank)top.getTileEntity(worldObj)).getCurrentNeeded();
+			needed += ((TileEntityFluidTank)top.getTileEntity(worldObj)).getCurrentNeeded();
 		}
 		
 		return needed;
@@ -428,6 +440,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		super.getNetworkedData(data);
 
+		data.add(tier.ordinal());
 		data.add(isActive);
 		data.add(valve);
 		data.add(editMode.ordinal());
@@ -558,7 +571,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		{
 			TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj);
 			
-			if(isActive && !(tile instanceof TileEntityPortableTank))
+			if(isActive && !(tile instanceof TileEntityFluidTank))
 			{
 				return false;
 			}

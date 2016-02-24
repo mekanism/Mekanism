@@ -56,7 +56,16 @@ item.EliteControlCircuit.name=Elite Control Circuit
 item.UltimateControlCircuit.name=Ultimate Control Circuit
 
 //Gas Tank
-tile.GasTank.GasTank.name=Gas Tank
+tile.GasTankBasic.name=Basic Gas Tank
+tile.GasTankAdvanced.name=Advanced Gas Tank
+tile.GasTankElite.name=Elite Gas Tank
+tile.GasTankUltimate.name=Ultimate Gas Tank
+
+//Fluid Tank (part of MachineBlock2, naming handled differently)
+tile.FluidTankBasic.name=Basic Fluid Tank
+tile.FluidTankAdvanced.name=Advanced Fluid Tank
+tile.FluidTankElite.name=Elite Fluid Tank
+tile.FluidTankUltimate.name=Ultimate Fluid Tank
 
 //Cardboard Box
 tile.CardboardBox.name=Cardboard Box
@@ -132,7 +141,6 @@ tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
 tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
-tile.MachineBlock2.PortableTank.name=Portable Tank
 tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
 tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
@@ -766,7 +774,7 @@ tooltip.ChemicalOxidizer=A machine capable of oxidizing solid materials into gas
 tooltip.ChemicalInfuser=A machine that produces a new gas by infusing two others.
 tooltip.SeismicVibrator=A machine that uses seismic vibrations to provide information on differing layers of the world.
 tooltip.PressurizedReactionChamber=An advanced machine that processes a solid, liquid and gaseous mixture and creates both a gaseous and solid product.
-tooltip.PortableTank=A handy, sturdy, portable tank that lets you carry 14 buckets of fluid wherever you please. Also doubles as a bucket!
+tooltip.FluidTank=A handy, sturdy, portable tank that lets you carry multiple buckets of fluid wherever you please. Also doubles as a bucket!
 tooltip.FluidicPlenisher=A machine that is capable of creating entire lakes by filling ravines with fluids.
 tooltip.Laser=An advanced form of linear energy transfer that utilizes an extremely collimated beam of light.
 tooltip.LaserAmplifier=A block that can be used to merge, redirect and amplify laser beams, with fine controls over when to fire.

@@ -41,7 +41,7 @@ import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
-import mekanism.client.gui.GuiPortableTank;
+import mekanism.client.gui.GuiFluidTank;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRobitCrafting;
@@ -93,7 +93,7 @@ import mekanism.client.render.tileentity.RenderLaserTractorBeam;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
-import mekanism.client.render.tileentity.RenderPortableTank;
+import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
@@ -160,7 +160,7 @@ import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPortableTank;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -320,7 +320,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer", new RenderChemicalCrystallizer());
 		ClientRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator", new RenderSeismicVibrator());
 		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderPressurizedReactionChamber());
-		ClientRegistry.registerTileEntity(TileEntityPortableTank.class, "PortableTank", new RenderPortableTank());
+		ClientRegistry.registerTileEntity(TileEntityFluidTank.class, "PortableTank", new RenderFluidTank()); //TODO rename
 		ClientRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher", new RenderFluidicPlenisher());
 		ClientRegistry.registerTileEntity(TileEntityLaser.class, "Laser", new RenderLaser());
 		ClientRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier", new RenderLaserAmplifier());
@@ -490,7 +490,7 @@ public class ClientProxy extends CommonProxy
 			case 40:
 				return new GuiPRC(player.inventory, (TileEntityPRC)tileEntity);
 			case 41:
-				return new GuiPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
+				return new GuiFluidTank(player.inventory, (TileEntityFluidTank)tileEntity);
 			case 42:
 				return new GuiFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
 			case 43:

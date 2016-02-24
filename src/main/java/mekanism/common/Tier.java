@@ -553,6 +553,97 @@ public final class Tier
 		}
 	}
 	
+	public static enum FluidTankTier
+	{
+		BASIC(14000, 400),
+		ADVANCED(28000, 800),
+		ELITE(56000, 1600),
+		ULTIMATE(112000, 3200);
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		public int storage;
+		private int baseStorage;
+		
+		public int output;
+		private int baseOutput;
+
+		private FluidTankTier(int s, int o)
+		{
+			baseStorage = storage = s;
+			baseOutput = output = o;
+		}
+		
+		protected void loadConfig()
+		{
+			storage = Mekanism.configuration.get("tier", getBaseTier().getName() + "FluidTankStorage", baseStorage).getInt();
+			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "FluidTankOutput", baseOutput).getInt();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			storage = dataStream.readInt();
+			output = dataStream.readInt();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(storage);
+			dataStream.writeInt(output);
+		}
+	}
+
+	/**
+	 * The tiers used by Logistical Transporters and their corresponding values.
+	 * @author AidanBrady
+	 *
+	 */
+	public static enum GasTankTier
+	{
+		BASIC(64000, 256),
+		ADVANCED(128000, 512),
+		ELITE(256000, 1028),
+		ULTIMATE(512000, 2056);
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		public int storage;
+		private int baseStorage;
+		
+		public int output;
+		private int baseOutput;
+
+		private GasTankTier(int s, int o)
+		{
+			baseStorage = storage = s;
+			baseOutput = output = o;
+		}
+		
+		protected void loadConfig()
+		{
+			storage = Mekanism.configuration.get("tier", getBaseTier().getName() + "GasTankStorage", baseStorage).getInt();
+			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "GasTankOutput", baseOutput).getInt();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			storage = dataStream.readInt();
+			output = dataStream.readInt();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(storage);
+			dataStream.writeInt(output);
+		}
+	}
+	
 	public static void loadConfig()
 	{
 		for(CableTier tier : CableTier.values())
@@ -591,6 +682,16 @@ public final class Tier
 		}
 		
 		for(ConductorTier tier : ConductorTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(FluidTankTier tier : FluidTankTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(GasTankTier tier : GasTankTier.values())
 		{
 			tier.loadConfig();
 		}
@@ -637,6 +738,16 @@ public final class Tier
 		{
 			tier.readConfig(dataStream);
 		}
+		
+		for(FluidTankTier tier : FluidTankTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+		
+		for(GasTankTier tier : GasTankTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
 	}
 	
 	public static void writeConfig(ByteBuf dataStream)
@@ -677,6 +788,16 @@ public final class Tier
 		}
 		
 		for(ConductorTier tier : ConductorTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(FluidTankTier tier : FluidTankTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(GasTankTier tier : GasTankTier.values())
 		{
 			tier.writeConfig(dataStream);
 		}

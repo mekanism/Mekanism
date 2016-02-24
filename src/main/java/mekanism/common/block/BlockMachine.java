@@ -22,6 +22,7 @@ import mekanism.common.CTMData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
@@ -34,6 +35,7 @@ import mekanism.common.base.ISpecialBounds;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
@@ -63,6 +65,7 @@ import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
@@ -72,7 +75,6 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -141,7 +143,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:8: Chemical Crystallizer
  * 1:9: Seismic Vibrator
  * 1:10: Pressurized Reaction Chamber
- * 1:11: Portable Tank
+ * 1:11: Fluid Tank
  * 1:12: Fluidic Plenisher
  * 1:13: Laser
  * 1:14: Laser Amplifier
@@ -515,17 +517,23 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 						}
 						
 						break;
-					case PORTABLE_TANK:
-						list.add(new ItemStack(item, 1, type.meta));
+					case FLUID_TANK:
+						ItemBlockMachine itemMachine = (ItemBlockMachine)item;
+						
+						for(FluidTankTier tier : FluidTankTier.values())
+						{
+							ItemStack stack = new ItemStack(item, 1, type.meta);
+							itemMachine.setBaseTier(stack, tier.getBaseTier());
+							list.add(stack);
+						}
 
 						if(general.prefilledPortableTanks)
 						{
-							ItemBlockMachine itemMachine = (ItemBlockMachine)item;
-	
 							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
 							{
 								try { //Prevent bad IDs
 									ItemStack filled = new ItemStack(item, 1, type.meta);
+									itemMachine.setBaseTier(filled, BaseTier.ULTIMATE);
 									itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
 									itemMachine.setPrevScale(filled, 1);
 									list.add(filled);
@@ -620,10 +628,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 						return true;
 					}
 					break;
-				case PORTABLE_TANK:
+				case FLUID_TANK:
 					if(entityplayer.getCurrentEquippedItem() != null && FluidContainerRegistry.isContainer(entityplayer.getCurrentEquippedItem()))
 					{
-						if(manageInventory(entityplayer, (TileEntityPortableTank)tileEntity))
+						if(manageInventory(entityplayer, (TileEntityFluidTank)tileEntity))
 						{
 							entityplayer.inventory.markDirty();
 							return true;
@@ -758,7 +766,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		return world.setBlockToAir(x, y, z);
 	}
 	
-	private boolean manageInventory(EntityPlayer player, TileEntityPortableTank tileEntity)
+	private boolean manageInventory(EntityPlayer player, TileEntityFluidTank tileEntity)
 	{
 		ItemStack itemStack = player.getCurrentEquippedItem();
 
@@ -911,6 +919,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
+		
+		if(tileEntity instanceof TileEntityFluidTank)
+		{
+			ITierItem tierItem = (ITierItem)itemStack.getItem();
+			tierItem.setBaseTier(itemStack, ((TileEntityFluidTank)tileEntity).tier.getBaseTier());
+		}
 
 		if(tileEntity instanceof IUpgradeTile)
 		{
@@ -1034,7 +1048,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			case CHARGEPAD:
 				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
 				break;
-			case PORTABLE_TANK:
+			case FLUID_TANK:
 				setBlockBounds(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 				break;
 			default:
@@ -1064,7 +1078,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			case CHARGEPAD:
 			case ELECTRIC_CHEST:
 				return false;
-			case PORTABLE_TANK:
+			case FLUID_TANK:
 				return side == ForgeDirection.UP || side == ForgeDirection.DOWN;
 			default:
 				return true;
@@ -1122,7 +1136,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		CHEMICAL_CRYSTALLIZER(MachineBlock.MACHINE_BLOCK_2, 8, "ChemicalCrystallizer", 37, TileEntityChemicalCrystallizer.class, true, true, true),
 		SEISMIC_VIBRATOR(MachineBlock.MACHINE_BLOCK_2, 9, "SeismicVibrator", 39, TileEntitySeismicVibrator.class, true, true, false),
 		PRESSURIZED_REACTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 10, "PressurizedReactionChamber", 40, TileEntityPRC.class, true, true, false),
-		PORTABLE_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "PortableTank", 41, TileEntityPortableTank.class, false, true, false),
+		FLUID_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "FluidTank", 41, TileEntityFluidTank.class, false, true, false),
 		FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, TileEntityFluidicPlenisher.class, true, true, false),
 		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false),
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
@@ -1283,7 +1297,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					return usage.seismicVibratorUsage;
 				case PRESSURIZED_REACTION_CHAMBER:
 					return usage.pressurizedReactionBaseUsage;
-				case PORTABLE_TANK:
+				case FLUID_TANK:
 					return 0;
 				case FLUIDIC_PLENISHER:
 					return usage.fluidicPlenisherUsage;

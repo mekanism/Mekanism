@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerPortableTank;
-import mekanism.common.tile.TileEntityPortableTank;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -19,11 +19,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiPortableTank extends GuiMekanism
+public class GuiFluidTank extends GuiMekanism
 {
-	public TileEntityPortableTank tileEntity;
+	public TileEntityFluidTank tileEntity;
 
-	public GuiPortableTank(InventoryPlayer inventory, TileEntityPortableTank tentity)
+	public GuiFluidTank(InventoryPlayer inventory, TileEntityFluidTank tentity)
 	{
 		super(tentity, new ContainerPortableTank(inventory, tentity));
 		tileEntity = tentity;

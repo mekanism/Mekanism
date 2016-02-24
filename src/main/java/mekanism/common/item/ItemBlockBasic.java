@@ -15,6 +15,7 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
+import mekanism.common.base.ITierItem;
 import mekanism.common.block.BlockBasic.BasicType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -66,7 +67,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
+public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierItem
 {
 	public Block metaBlock;
 
@@ -91,7 +92,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	public ItemStack getUnchargedCell(InductionCellTier tier)
 	{
 		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 3);
-		setTier(stack, tier.getBaseTier());
+		setBaseTier(stack, tier.getBaseTier());
 		
 		return stack;
 	}
@@ -99,12 +100,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	public ItemStack getUnchargedProvider(InductionProviderTier tier)
 	{
 		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 4);
-		setTier(stack, tier.getBaseTier());
+		setBaseTier(stack, tier.getBaseTier());
 		
 		return stack;
 	}
 	
-	public BaseTier getTier(ItemStack itemstack)
+	@Override
+	public BaseTier getBaseTier(ItemStack itemstack)
 	{
 		if(itemstack.stackTagCompound == null)
 		{
@@ -114,7 +116,8 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 		return BaseTier.values()[itemstack.stackTagCompound.getInteger("tier")];
 	}
 
-	public void setTier(ItemStack itemstack, BaseTier tier)
+	@Override
+	public void setBaseTier(ItemStack itemstack, BaseTier tier)
 	{
 		if(itemstack.stackTagCompound == null)
 		{
@@ -161,13 +164,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 				}
 				else if(type == BasicType.INDUCTION_CELL)
 				{
-					InductionCellTier tier = InductionCellTier.values()[getTier(itemstack).ordinal()];
+					InductionCellTier tier = InductionCellTier.values()[getBaseTier(itemstack).ordinal()];
 					
 					list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.maxEnergy));
 				}
 				else if(type == BasicType.INDUCTION_PROVIDER)
 				{
-					InductionProviderTier tier = InductionProviderTier.values()[getTier(itemstack).ordinal()];
+					InductionProviderTier tier = InductionProviderTier.values()[getBaseTier(itemstack).ordinal()];
 					
 					list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.output));
 				}
@@ -250,7 +253,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			else if(type == BasicType.INDUCTION_CELL)
 			{
 				TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
-				tileEntity.tier = InductionCellTier.values()[getTier(stack).ordinal()];
+				tileEntity.tier = InductionCellTier.values()[getBaseTier(stack).ordinal()];
 				
 				if(!world.isRemote)
 				{
@@ -260,7 +263,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			else if(type == BasicType.INDUCTION_PROVIDER)
 			{
 				TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
-				tileEntity.tier = InductionProviderTier.values()[getTier(stack).ordinal()];
+				tileEntity.tier = InductionProviderTier.values()[getBaseTier(stack).ordinal()];
 				
 				if(!world.isRemote)
 				{
@@ -290,7 +293,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			
 			if(type == BasicType.INDUCTION_CELL || type == BasicType.INDUCTION_PROVIDER)
 			{
-				name += getTier(itemstack).getName();
+				name += getBaseTier(itemstack).getName();
 			}
 			
 			return name;
@@ -334,7 +337,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		if(BasicType.get(itemStack) == BasicType.INDUCTION_CELL)
 		{
-			return InductionCellTier.values()[getTier(itemStack).ordinal()].maxEnergy;
+			return InductionCellTier.values()[getBaseTier(itemStack).ordinal()].maxEnergy;
 		}
 		
 		return 0;

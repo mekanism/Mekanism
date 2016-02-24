@@ -9,12 +9,12 @@ import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.model.ModelFlamethrower;
+import mekanism.client.model.ModelFluidTank;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelGasTank;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelObsidianTNT;
-import mekanism.client.model.ModelPortableTank;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.render.MekanismRenderer;
@@ -22,16 +22,19 @@ import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.tileentity.RenderBin;
-import mekanism.client.render.tileentity.RenderPortableTank;
+import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
@@ -43,7 +46,7 @@ import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityPortableTank;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -84,12 +87,12 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	public ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
-	public ModelPortableTank portableTank = new ModelPortableTank();
+	public ModelFluidTank portableTank = new ModelFluidTank();
 	public ModelFlamethrower flamethrower = new ModelFlamethrower();
 
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
 	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityBin.class);
-	private final RenderPortableTank portableTankRenderer = (RenderPortableTank)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityPortableTank.class);
+	private final RenderFluidTank portableTankRenderer = (RenderFluidTank)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityFluidTank.class);
 	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 
 	@Override
@@ -293,7 +296,8 @@ public class ItemRenderingHandler implements IItemRenderer
 		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.GasTank)
 		{
 			GL11.glPushMatrix();
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank.png"));
+			BaseTier tier = ((ItemBlockGasTank)item.getItem()).getBaseTier(item);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank" + tier.getName() + ".png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
@@ -506,15 +510,16 @@ public class ItemRenderingHandler implements IItemRenderer
 			flamethrower.render(0.0625F);
 			GL11.glPopMatrix();
 		}
-		else if(MachineType.get(item) == MachineType.PORTABLE_TANK)
+		else if(MachineType.get(item) == MachineType.FLUID_TANK)
 		{
 			GL11.glPushMatrix();
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PortableTank.png"));
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
 			
 			ItemBlockMachine itemMachine = (ItemBlockMachine)item.getItem();
+			FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(item).ordinal()];
 			Fluid fluid = itemMachine.getFluidStack(item) != null ? itemMachine.getFluidStack(item).getFluid() : null;
-			portableTankRenderer.render(fluid, itemMachine.getPrevScale(item), false, null, -0.5, -0.5, -0.5);
+			portableTankRenderer.render(tier, fluid, itemMachine.getPrevScale(item), false, null, -0.5, -0.5, -0.5);
 			GL11.glPopMatrix();
 		}
 		else {

@@ -3,46 +3,47 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.client.model.ModelPortableTank;
+import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.tile.TileEntityPortableTank;
+import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 @SideOnly(Side.CLIENT)
-public class RenderPortableTank extends TileEntitySpecialRenderer
+public class RenderFluidTank extends TileEntitySpecialRenderer
 {
 	private static Map<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<Fluid, DisplayInteger[]>();
 	private static Map<Fluid, DisplayInteger[]> cachedValveFluids = new HashMap<Fluid, DisplayInteger[]>();
 	
 	private static int stages = 1400;
 	
-	private ModelPortableTank model = new ModelPortableTank();
+	private ModelFluidTank model = new ModelFluidTank();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityPortableTank)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityFluidTank)tileEntity, x, y, z, partialTick);
 	}
 
-	private void renderAModelAt(TileEntityPortableTank tileEntity, double x, double y, double z, float partialTick)
+	private void renderAModelAt(TileEntityFluidTank tileEntity, double x, double y, double z, float partialTick)
 	{
 		Fluid fluid = tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid() : null;
-		render(fluid, tileEntity.prevScale, tileEntity.isActive, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);
+		render(tileEntity.tier, fluid, tileEntity.prevScale, tileEntity.isActive, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);
 	}
 	
-	public void render(Fluid fluid, float fluidScale, boolean active, Fluid valveFluid, double x, double y, double z)
+	public void render(FluidTankTier tier, Fluid fluid, float fluidScale, boolean active, Fluid valveFluid, double x, double y, double z)
 	{
 		if(fluid != null && fluidScale > 0)
 		{
@@ -93,10 +94,10 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 		
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PortableTank" + (active ? "On" : "") + ".png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank" + (active ? "On" : "") + ".png"));
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F);
+		model.render(0.0625F, tier);
 		GL11.glPopMatrix();
 	}
 	

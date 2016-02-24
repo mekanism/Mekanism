@@ -1,8 +1,11 @@
 package mekanism.common.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -10,7 +13,11 @@ import mekanism.api.gas.IGasItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ITierItem;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
@@ -26,7 +33,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory
+public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory, ITierItem
 {
 	public Block metaBlock;
 
@@ -58,11 +65,11 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	{
 		return metaBlock.getIcon(2, i);
 	}
-
+	
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getItemStackDisplayName(ItemStack itemstack)
 	{
-		return getUnlocalizedName() + "." + "GasTank";
+		return LangUtils.localize("tile.GasTank" + getBaseTier(itemstack).getName() + ".name");
 	}
 
 	@Override
@@ -73,9 +80,16 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		if(place)
 		{
 			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+			tileEntity.tier = GasTankTier.values()[getBaseTier(stack).ordinal()];
+			tileEntity.gasTank.setMaxGas(tileEntity.tier.storage);
 			tileEntity.gasTank.setGas(getGas(stack));
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			
+			if(!world.isRemote)
+			{
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+			}
 		}
 
 		return place;
@@ -101,12 +115,6 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		else {
 			list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
-	}
-
-	@Override
-	public void onCreated(ItemStack itemstack, World world, EntityPlayer entityplayer)
-	{
-		itemstack = getEmptyItem();
 	}
 
 	@Override
@@ -152,43 +160,72 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		}
 	}
 
-	public ItemStack getEmptyItem()
+	public ItemStack getEmptyItem(GasTankTier tier)
 	{
 		ItemStack empty = new ItemStack(this);
+		setBaseTier(empty, tier.getBaseTier());
 		setGas(empty, null);
 		empty.setItemDamage(100);
+		
 		return empty;
 	}
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
-		ItemStack empty = new ItemStack(this);
-		setGas(empty, null);
-		empty.setItemDamage(100);
-		list.add(empty);
+		for(GasTankTier tier : GasTankTier.values())
+		{
+			ItemStack empty = new ItemStack(this);
+			setBaseTier(empty, tier.getBaseTier());
+			setGas(empty, null);
+			empty.setItemDamage(100);
+			list.add(empty);
+		}
 
 		for(Gas type : GasRegistry.getRegisteredGasses())
 		{
 			if(type.isVisible())
 			{
 				ItemStack filled = new ItemStack(this);
+				setBaseTier(filled, BaseTier.ULTIMATE);
 				setGas(filled, new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 				list.add(filled);
 			}
 		}
 	}
+	
+	@Override
+	public BaseTier getBaseTier(ItemStack itemstack)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			return BaseTier.BASIC;
+		}
+
+		return BaseTier.values()[itemstack.stackTagCompound.getInteger("tier")];
+	}
+
+	@Override
+	public void setBaseTier(ItemStack itemstack, BaseTier tier)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemstack.stackTagCompound.setInteger("tier", tier.ordinal());
+	}
 
 	@Override
 	public int getMaxGas(ItemStack itemstack)
 	{
-		return MAX_GAS;
+		return GasTankTier.values()[getBaseTier(itemstack).ordinal()].storage;
 	}
 
 	@Override
 	public int getRate(ItemStack itemstack)
 	{
-		return TRANSFER_RATE;
+		return GasTankTier.values()[getBaseTier(itemstack).ordinal()].output;
 	}
 
 	@Override

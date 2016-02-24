@@ -34,6 +34,8 @@ import mekanism.common.OreDictCache;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.Upgrade;
@@ -49,6 +51,7 @@ import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
+import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -368,10 +371,18 @@ public final class MekanismUtils
 	 * Retrieves an empty Gas Tank.
 	 * @return empty gas tank
 	 */
-	public static ItemStack getEmptyGasTank()
+	public static ItemStack getEmptyGasTank(GasTankTier tier)
 	{
-		ItemStack itemstack = ((ItemBlockGasTank)new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem();
-		return itemstack;
+		return ((ItemBlockGasTank)new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem(tier);
+	}
+	
+	public static ItemStack getEmptyFluidTank(FluidTankTier tier)
+	{
+		ItemStack stack = new ItemStack(MekanismBlocks.MachineBlock2, 1, 11);
+		ItemBlockMachine itemMachine = (ItemBlockMachine)stack.getItem();
+		itemMachine.setBaseTier(stack, tier.getBaseTier());
+		
+		return stack;
 	}
 
 	/**
@@ -1336,9 +1347,9 @@ public final class MekanismUtils
 	 * @param gas - gas to fill the tank with
 	 * @return filled gas tank
 	 */
-	public static ItemStack getFullGasTank(Gas gas)
+	public static ItemStack getFullGasTank(GasTankTier tier, Gas gas)
 	{
-		ItemStack tank = getEmptyGasTank();
+		ItemStack tank = getEmptyGasTank(tier);
 		ItemBlockGasTank item = (ItemBlockGasTank)tank.getItem();
 		item.setGas(tank, new GasStack(gas, item.MAX_GAS));
 

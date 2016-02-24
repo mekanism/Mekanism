@@ -164,6 +164,7 @@ public class BlockEnergyCube extends BlockContainer
 
 				tileEntity.setFacing((short)change);
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				
 				return true;
 			}
 		}

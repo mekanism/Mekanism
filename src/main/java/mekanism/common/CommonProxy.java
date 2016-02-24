@@ -49,9 +49,9 @@ import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.inventory.container.ContainerSeismicVibrator;
-import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
 import mekanism.common.inventory.container.ContainerTeleporter;
+import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
@@ -82,6 +82,7 @@ import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
@@ -98,15 +99,14 @@ import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -180,7 +180,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer");
 		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
-		GameRegistry.registerTileEntity(TileEntityPortableTank.class, "PortableTank");
+		GameRegistry.registerTileEntity(TileEntityFluidTank.class, "PortableTank"); //TODO rename
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
 		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
@@ -508,7 +508,7 @@ public class CommonProxy implements IGuiProvider
 			case 40:
 				return new ContainerPRC(player.inventory, (TileEntityPRC)tileEntity);
 			case 41:
-				return new ContainerPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
+				return new ContainerPortableTank(player.inventory, (TileEntityFluidTank)tileEntity);
 			case 42:
 				return new ContainerFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
 			case 43:

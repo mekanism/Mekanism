@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.tile.TileEntityPortableTank;
+import mekanism.common.tile.TileEntityFluidTank;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,9 +12,9 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 
 public class ContainerPortableTank extends Container
 {
-	private TileEntityPortableTank tileEntity;
+	private TileEntityFluidTank tileEntity;
 
-	public ContainerPortableTank(InventoryPlayer inventory, TileEntityPortableTank tentity)
+	public ContainerPortableTank(InventoryPlayer inventory, TileEntityFluidTank tentity)
 	{
 		tileEntity = tentity;
 		addSlotToContainer(new Slot(tentity, 0, 146, 19));

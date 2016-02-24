@@ -11,8 +11,8 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
+import mekanism.common.base.ITierItem;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.recipe.ShapelessMekanismRecipe;
 import net.minecraft.block.Block;
@@ -79,9 +79,9 @@ public class RecipeUtils
 					return false;
 				}
 			}
-			else if(target.getItem() instanceof ItemBlockBasic && input.getItem() instanceof ItemBlockBasic)
+			else if(target.getItem() instanceof ITierItem && input.getItem() instanceof ITierItem)
 			{
-				if(((ItemBlockBasic)target.getItem()).getTier(target) != ((ItemBlockBasic)input.getItem()).getTier(input))
+				if(((ITierItem)target.getItem()).getBaseTier(target) != ((ITierItem)input.getItem()).getBaseTier(input))
 				{
 					return false;
 				}

@@ -17,6 +17,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -24,6 +25,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -42,12 +44,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 
 	/** The type of gas stored in this tank. */
-	public GasTank gasTank = new GasTank(MAX_GAS);
-
-	public static final int MAX_GAS = 96000;
-
-	/** How fast this tank can output gas. */
-	public int output = 256;
+	public GasTank gasTank;
+	
+	public GasTankTier tier = GasTankTier.BASIC;
 
 	public GasMode dumping;
 
@@ -74,6 +73,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		configComponent.setIOConfig(TransmissionType.GAS);
 		configComponent.setEjecting(TransmissionType.GAS, true);
 		
+		gasTank = new GasTank(tier.storage);
 		inventory = new ItemStack[2];
 		dumping = GasMode.IDLE;
 		controlType = RedstoneControl.DISABLED;
@@ -100,19 +100,19 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			{
 				if(configComponent.isEjecting(TransmissionType.GAS))
 				{
-					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), output));
+					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), tier.output));
 					gasTank.draw(GasTransmission.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, facing, 2)), true);
 				}
 			}
 	
 			if(dumping == GasMode.DUMPING)
 			{
-				gasTank.draw(8, true);
+				gasTank.draw(tier.storage/400, true);
 			}
 	
-			if(dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < output)
+			if(dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.output)
 			{
-				gasTank.draw(output-gasTank.getNeeded(), true);
+				gasTank.draw(tier.output-gasTank.getNeeded(), true);
 			}
 			
 			int newGasAmount = gasTank.getStored();
@@ -124,6 +124,12 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			
 			currentGasAmount = newGasAmount;
 		}
+	}
+	
+	@Override
+	public String getInventoryName()
+	{
+		return LangUtils.localize("tile.GasTank" + tier.getBaseTier().getName() + ".name");
 	}
 
 	@Override
@@ -226,6 +232,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		}
 
 		super.handlePacketData(dataStream);
+		
+		tier = GasTankTier.values()[dataStream.readInt()];
+		gasTank.setMaxGas(tier.storage);
 
 		if(dataStream.readBoolean())
 		{
@@ -246,6 +255,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	{
 		super.readFromNBT(nbtTags);
 
+		tier = GasTankTier.values()[nbtTags.getInteger("tier")];
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
 		dumping = GasMode.values()[nbtTags.getInteger("dumping")];
 		
@@ -257,6 +267,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	{
 		super.writeToNBT(nbtTags);
 
+		nbtTags.setInteger("tier", tier.ordinal());
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 		nbtTags.setInteger("dumping", dumping.ordinal());
 		nbtTags.setInteger("controlType", controlType.ordinal());
@@ -266,6 +277,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
+		data.add(tier.ordinal());
 
 		if(gasTank.getGas() != null)
 		{

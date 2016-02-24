@@ -119,11 +119,11 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	{
 		if(getBlockFromItem(stack.getItem()) == MekanismBlocks.BasicBlock2 && stack.getItemDamage() == 3)
 		{
-			return icons[3][((ItemBlockBasic)stack.getItem()).getTier(stack).ordinal()];
+			return icons[3][((ItemBlockBasic)stack.getItem()).getBaseTier(stack).ordinal()];
 		}
 		else if(getBlockFromItem(stack.getItem()) == MekanismBlocks.BasicBlock2 && stack.getItemDamage() == 4)
 		{
-			return icons[4][((ItemBlockBasic)stack.getItem()).getTier(stack).ordinal()];
+			return icons[4][((ItemBlockBasic)stack.getItem()).getBaseTier(stack).ordinal()];
 		}
 		
 		return getIcon(side, stack.getItemDamage());
@@ -331,7 +331,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 							if(tier.isObtainable())
 							{
 								ItemStack stack = new ItemStack(item, 1, type.meta);
-								((ItemBlockBasic)stack.getItem()).setTier(stack, tier);
+								((ItemBlockBasic)stack.getItem()).setBaseTier(stack, tier);
 								list.add(stack);
 							}
 						}
@@ -830,12 +830,12 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		else if(type == BasicType.INDUCTION_CELL)
 		{
 			TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
-			((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+			((ItemBlockBasic)ret.getItem()).setBaseTier(ret, tileEntity.tier.getBaseTier());
 		}
 		else if(type == BasicType.INDUCTION_PROVIDER)
 		{
 			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
-			((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+			((ItemBlockBasic)ret.getItem()).setBaseTier(ret, tileEntity.tier.getBaseTier());
 		}
 		
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
