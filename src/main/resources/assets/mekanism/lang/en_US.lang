@@ -468,6 +468,7 @@ gui.providers=providers
 gui.structure=Structure
 gui.dynamicTank=Dynamic Tank
 gui.industrialTurbine=Industrial Turbine
+gui.thermoelectricBoiler=Thermoelectric Boiler
 gui.visuals=Visuals
 gui.noEject=Can't Eject
 gui.undefined=Undefined

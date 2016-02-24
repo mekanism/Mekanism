@@ -116,9 +116,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 					}
 					
 					structure.prevFluid = structure.fluidStored;
+					
+					manageInventory();
 				}
-				
-				manageInventory();
 			}
 		}
 	}

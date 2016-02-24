@@ -63,12 +63,12 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
 	}
 }

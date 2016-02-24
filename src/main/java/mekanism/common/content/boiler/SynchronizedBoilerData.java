@@ -15,8 +15,10 @@ import net.minecraftforge.fluids.FluidStack;
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer
 {
 	public FluidStack waterStored;
+	public FluidStack prevWater;
 
 	public FluidStack steamStored;
+	public FluidStack prevSteam;
 
 	public double temperature;
 
@@ -37,6 +39,37 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	public ItemStack[] inventory = new ItemStack[2];
 
 	public Set<ValveData> valves = new HashSet<ValveData>();
+	
+	public boolean needsRenderUpdate()
+	{
+		if((waterStored == null && prevWater != null) || (waterStored != null && prevWater == null))
+		{
+			return true;
+		}
+		
+		if(waterStored != null && prevWater != null)
+		{
+			if((waterStored.getFluid() != prevWater.getFluid()) || (waterStored.amount != prevWater.amount))
+			{
+				return true;
+			}
+		}
+		
+		if((steamStored == null && prevSteam != null) || (steamStored != null && prevSteam == null))
+		{
+			return true;
+		}
+		
+		if(steamStored != null && prevSteam != null)
+		{
+			if((steamStored.getFluid() != prevSteam.getFluid()) || (steamStored.amount != prevSteam.amount))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	@Override
 	public ItemStack[] getInventory()
@@ -124,7 +157,14 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	{
 		public ForgeDirection side;
 		public Coord4D location;
-		public boolean serverFluid;
+		
+		public boolean prevActive;
+		public int activeTicks;
+		
+		public void onTransfer()
+		{
+			activeTicks = 30;
+		}
 
 		@Override
 		public int hashCode()
