@@ -240,6 +240,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			return getReactor().getTemp();
 		}
+		
 		return 0;
 	}
 

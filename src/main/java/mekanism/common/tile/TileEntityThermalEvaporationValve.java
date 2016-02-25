@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import mekanism.api.Coord4D;
+import mekanism.api.IHeatTransfer;
 import mekanism.common.util.PipeUtils;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -8,7 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandler
+public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandler, IHeatTransfer
 {
 	public boolean prevMaster = false;
 	
@@ -94,5 +95,58 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 		}
 
 		return new FluidTankInfo[] {new FluidTankInfo(controller.inputTank), new FluidTankInfo(controller.outputTank)};
+	}
+
+	@Override
+	public double getTemp() 
+	{
+		return 0;
+	}
+
+	@Override
+	public double getInverseConductionCoefficient() 
+	{
+		return 1;
+	}
+
+	@Override
+	public double getInsulationCoefficient(ForgeDirection side) 
+	{
+		return 0;
+	}
+
+	@Override
+	public void transferHeatTo(double heat) 
+	{
+		TileEntityThermalEvaporationController controller = getController();
+		
+		if(controller != null)
+		{
+			controller.heatToAbsorb += heat;
+		}
+	}
+
+	@Override
+	public double[] simulateHeat() 
+	{
+		return new double[] {0, 0};
+	}
+
+	@Override
+	public double applyTemperatureChange() 
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean canConnectHeat(ForgeDirection side) 
+	{
+		return getController() != null;
+	}
+
+	@Override
+	public IHeatTransfer getAdjacent(ForgeDirection side) 
+	{
+		return null;
 	}
 }

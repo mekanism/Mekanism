@@ -77,6 +77,7 @@ import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
@@ -1144,7 +1145,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityEntangledBlock.class, true, false, false),
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false),
 		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false),
-		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false);
+		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false),
+		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, true, false);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -1195,7 +1197,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			
 			for(MachineType type : MachineType.values())
 			{
-				if(type != ENTANGLED_BLOCK && type != AMBIENT_ACCUMULATOR)
+				if(type != ENTANGLED_BLOCK && type != AMBIENT_ACCUMULATOR && type != RESISTIVE_HEATER)
 				{
 					ret.add(type);
 				}

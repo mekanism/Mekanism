@@ -16,10 +16,8 @@ import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-import mekanism.common.util.HeatUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -315,7 +313,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	@Override
 	public double getInverseConductionCoefficient()
 	{
-		return 50;
+		return 1;
 	}
 
 	@Override
@@ -327,14 +325,16 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	@Override
 	public void transferHeatTo(double heat)
 	{
-		heatToAbsorb += heat;
+		if(structure != null)
+		{
+			structure.heatToAbsorb += heat;
+		}
 	}
 
 	@Override
 	public double[] simulateHeat()
 	{
-		innerSide = null;
-		return HeatUtils.simulate(this);
+		return new double[] {0, 0};
 	}
 
 	@Override
@@ -349,25 +349,12 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	@Override
 	public boolean canConnectHeat(ForgeDirection side)
 	{
-		return structure == null || !isInnerSide(side);
+		return structure != null;
 	}
 
 	@Override
 	public IHeatTransfer getAdjacent(ForgeDirection side)
 	{
-		if(structure != null && isInnerSide(side))
-		{
-			return structure;
-		}
-		else {
-			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
-			
-			if(adj instanceof IHeatTransfer)
-			{
-				return (IHeatTransfer)adj;
-			}
-		}
-
 		return null;
 	}
 	

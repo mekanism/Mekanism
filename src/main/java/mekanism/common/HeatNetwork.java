@@ -6,6 +6,9 @@ import java.util.Set;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.multipart.MultipartTransmitter;
+import mekanism.common.util.MekanismUtils;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
@@ -40,13 +43,13 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 	@Override
 	public String getStoredInfo()
 	{
-		return meanTemp + "K above ambient";
+		return MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN) + " above ambient";
 	}
 
 	@Override
 	public String getFlowInfo()
 	{
-		return heatTransferred + " transferred to acceptors,  " + heatLost + " lost to environment, " + (heatTransferred + heatLost == 0 ? "" : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency");
+		return MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN) + " transferred to acceptors, " + MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN) + " lost to environment, " + (heatTransferred + heatLost == 0 ? "" : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency");
 	}
 
 	@Override
@@ -74,9 +77,9 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 		{
 			for(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters)
 			{
-				if(transmitter instanceof IHeatTransfer)
+				if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart() instanceof IHeatTransfer)
 				{
-					IHeatTransfer heatTransmitter = (IHeatTransfer)transmitter;
+					IHeatTransfer heatTransmitter = (IHeatTransfer)((MultipartTransmitter)transmitter).getPart();
 					double[] d = heatTransmitter.simulateHeat();
 					newHeatTransferred += d[0];
 					newHeatLost += d[1];
@@ -85,9 +88,9 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 			
 			for(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters)
 			{
-				if(transmitter instanceof IHeatTransfer)
+				if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart() instanceof IHeatTransfer)
 				{
-					IHeatTransfer heatTransmitter = (IHeatTransfer)transmitter;
+					IHeatTransfer heatTransmitter = (IHeatTransfer)((MultipartTransmitter)transmitter).getPart();
 					newSumTemp += heatTransmitter.applyTemperatureChange();
 				}
 			}

@@ -484,10 +484,10 @@ public final class Tier
 	
 	public static enum ConductorTier
 	{
-		BASIC(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_BASIC),
-		ADVANCED(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ADVANCED),
-		ELITE(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ELITE),
-		ULTIMATE(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ULTIMATE);
+		BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_BASIC),
+		ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ADVANCED),
+		ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ELITE),
+		ULTIMATE(5, 1, 100000, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ULTIMATE);
 		
 		public BaseTier getBaseTier()
 		{
