@@ -16,7 +16,7 @@ public class ContainerResistiveHeater extends Container
 	public ContainerResistiveHeater(InventoryPlayer inventory, TileEntityResistiveHeater tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotDischarge(tentity, 0, 28, 35));
+		addSlotToContainer(new SlotDischarge(tentity, 0, 15, 35));
 		
 		int slotY;
 

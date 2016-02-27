@@ -16,6 +16,7 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer
@@ -73,6 +74,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 			double toUse = Math.min(getEnergy(), energyUsage);
 			heatToAbsorb += toUse/general.energyPerHeat;
 			setEnergy(getEnergy() - toUse);
+			setActive(toUse > 0);
 			
 			simulateHeat();
 			applyTemperatureChange();
@@ -87,6 +89,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		energyUsage = nbtTags.getDouble("energyUsage");
 		temperature = nbtTags.getDouble("temperature");
 		clientActive = isActive = nbtTags.getBoolean("isActive");
+		
+		maxEnergy = energyUsage * 400;
 	}
 
 	@Override
@@ -104,7 +108,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	{
 		if(!worldObj.isRemote)
 		{
-			energyUsage = dataStream.readDouble();
+			energyUsage = dataStream.readInt();
+			maxEnergy = energyUsage * 400;
 			
 			return;
 		}
@@ -185,6 +190,13 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	@Override
 	public IHeatTransfer getAdjacent(ForgeDirection side) 
 	{
+		TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+		
+		if(adj instanceof IHeatTransfer)
+		{
+			return (IHeatTransfer)adj;
+		}
+		
 		return null;
 	}
 	

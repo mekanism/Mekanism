@@ -225,6 +225,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
 				icons[2][0] = BASE_ICON;
+				icons[4][0] = BASE_ICON;
 				MekanismRenderer.loadDynamicTextures(register, MachineType.OREDICTIONIFICATOR.name, icons[3], DefIcon.getAll(register.registerIcon("mekanism:OredictionificatorSide")));
 				break;
 		}
@@ -1147,7 +1148,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false),
 		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false),
 		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false),
-		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, true, false);
+		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, false, false);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -1198,7 +1199,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			
 			for(MachineType type : MachineType.values())
 			{
-				if(type != ENTANGLED_BLOCK && type != AMBIENT_ACCUMULATOR && type != RESISTIVE_HEATER)
+				if(type != ENTANGLED_BLOCK && type != AMBIENT_ACCUMULATOR)
 				{
 					ret.add(type);
 				}
