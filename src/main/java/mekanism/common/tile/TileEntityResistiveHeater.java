@@ -9,7 +9,9 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
@@ -19,7 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer
+public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl
 {
 	public double energyUsage = 100;
 	
@@ -34,6 +36,10 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
+	
+	public float soundScale = 1;
+	
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileEntityResistiveHeater()
 	{
@@ -59,26 +65,54 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		
 		if(!worldObj.isRemote)
 		{
+			boolean packet = false;
+			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					packet = true;
 				}
 			}
 			
 			ChargeUtils.discharge(0, this);
 			
-			double toUse = Math.min(getEnergy(), energyUsage);
-			heatToAbsorb += toUse/general.energyPerHeat;
-			setEnergy(getEnergy() - toUse);
+			double toUse = 0;
+			
+			if(MekanismUtils.canFunction(this))
+			{
+				toUse = Math.min(getEnergy(), energyUsage);
+				heatToAbsorb += toUse/general.energyPerHeat;
+				setEnergy(getEnergy() - toUse);
+			}
+			
 			setActive(toUse > 0);
 			
 			simulateHeat();
 			applyTemperatureChange();
+			
+			float newSoundScale = (float)Math.max(0, (toUse/1E5));
+			
+			if(Math.abs(newSoundScale-soundScale) > 0.01)
+			{
+				packet = true;
+			}
+			
+			soundScale = newSoundScale;
+			
+			if(packet)
+			{
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			}
 		}
+	}
+	
+	@Override
+	public float getVolume()
+	{
+		return super.getVolume()*Math.max(0.001F, soundScale);
 	}
 	
 	@Override
@@ -89,6 +123,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		energyUsage = nbtTags.getDouble("energyUsage");
 		temperature = nbtTags.getDouble("temperature");
 		clientActive = isActive = nbtTags.getBoolean("isActive");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		
 		maxEnergy = energyUsage * 400;
 	}
@@ -101,6 +136,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		nbtTags.setDouble("energyUsage", energyUsage);
 		nbtTags.setDouble("temperature", temperature);
 		nbtTags.setBoolean("isActive", isActive);
+		nbtTags.setInteger("controlType", controlType.ordinal());
 	}
 	
 	@Override
@@ -120,6 +156,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		temperature = dataStream.readDouble();
 		clientActive = dataStream.readBoolean();
 		maxEnergy = dataStream.readDouble();
+		soundScale = dataStream.readFloat();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		if(updateDelay == 0 && clientActive != isActive)
 		{
@@ -138,6 +176,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		data.add(temperature);
 		data.add(isActive);
 		data.add(maxEnergy);
+		data.add(soundScale);
+		data.add(controlType.ordinal());
 		
 		return data;
 	}
@@ -223,12 +263,64 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	@Override
 	public boolean renderUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean lightUpdate()
 	{
 		return true;
+	}
+	
+	private static final String[] methods = new String[] {"getEnergy", "getMaxEnergy", "getTemperature", "setEnergyUsage"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
+	{
+		switch(method)
+		{
+			case 0:
+				return new Object[] {getEnergy()};
+			case 1:
+				return new Object[] {getMaxEnergy()};
+			case 2:
+				return new Object[] {temperature};
+			case 3:
+				if(arguments.length == 1)
+				{
+					if(arguments[0] instanceof Double)
+					{
+						temperature = (Double)arguments[0];
+					}
+				}
+				
+				return new Object[] {"Invalid parameters."};
+			default:
+				throw new NoSuchMethodException();
+		}
+	}
+	
+	@Override
+	public RedstoneControl getControlType()
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type)
+	{
+		controlType = type;
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
 	}
 }

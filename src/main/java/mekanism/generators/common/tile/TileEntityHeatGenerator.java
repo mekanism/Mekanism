@@ -276,7 +276,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		return data;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
 
 	@Override
 	public String[] getMethods()

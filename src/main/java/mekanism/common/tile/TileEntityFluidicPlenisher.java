@@ -13,6 +13,8 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -38,7 +40,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank, IUpgradeTile
+public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank, IUpgradeTile, IRedstoneControl
 {
 	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
 	public Set<Coord4D> usedNodes = new HashSet<Coord4D>();
@@ -59,6 +61,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	/** How many ticks this machine has been operating for. */
 	public int operatingTicks;
+	
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	private static EnumSet<ForgeDirection> dirs = EnumSet.complementOf(EnumSet.of(ForgeDirection.UP, ForgeDirection.UNKNOWN));
 	
@@ -278,6 +282,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		super.handlePacketData(dataStream);
 		
 		finishedCalc = dataStream.readBoolean();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		if(dataStream.readInt() == 1)
 		{
@@ -296,6 +301,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		super.getNetworkedData(data);
 		
 		data.add(finishedCalc);
+		data.add(controlType.ordinal());
 
 		if(fluidTank.getFluid() != null)
 		{
@@ -317,6 +323,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setBoolean("finishedCalc", finishedCalc);
+		nbtTags.setInteger("controlType", controlType.ordinal());
 
 		if(fluidTank.getFluid() != null)
 		{
@@ -357,6 +364,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		finishedCalc = nbtTags.getBoolean("finishedCalc");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 
 		if(nbtTags.hasKey("fluidTank"))
 		{
@@ -578,5 +586,23 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			default:
 				break;
 		}
+	}
+	
+	@Override
+	public RedstoneControl getControlType()
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type)
+	{
+		controlType = type;
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
 	}
 }

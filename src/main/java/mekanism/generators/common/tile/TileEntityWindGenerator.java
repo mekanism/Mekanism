@@ -71,7 +71,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 		return 1.5F*super.getVolume();
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
 
 	@Override
 	public String[] getMethods()

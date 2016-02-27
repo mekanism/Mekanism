@@ -429,7 +429,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		}
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+	private static final String[] methods = new String[] {"getEnergy", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()

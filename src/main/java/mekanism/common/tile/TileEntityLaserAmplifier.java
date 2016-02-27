@@ -310,7 +310,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		return MAX_ENERGY;
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getMaxEnergy"};
+	private static final String[] methods = new String[] {"getEnergy", "getMaxEnergy"};
 
 	@Override
 	public String[] getMethods()

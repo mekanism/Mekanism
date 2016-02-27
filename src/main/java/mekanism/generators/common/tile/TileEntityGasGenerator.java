@@ -156,7 +156,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		return fuelTank.getStored()*i / MAX_GAS;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
 
 	@Override
 	public String[] getMethods()

@@ -211,7 +211,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
 
 	@Override
 	public String[] getMethods()

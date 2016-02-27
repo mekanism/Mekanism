@@ -167,7 +167,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		return false;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()

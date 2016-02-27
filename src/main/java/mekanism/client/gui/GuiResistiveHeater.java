@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -39,6 +40,7 @@ public class GuiResistiveHeater extends GuiMekanism
 		
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png"), 164, 15));
 		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png"), 14, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png")));
 	}
 	
 	@Override

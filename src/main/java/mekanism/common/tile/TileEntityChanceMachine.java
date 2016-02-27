@@ -159,7 +159,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		return null;
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+	private static final String[] methods = new String[] {"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()

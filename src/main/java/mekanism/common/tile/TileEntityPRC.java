@@ -293,7 +293,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		return null;
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getFluidStored", "getGasStored"};
+	private static final String[] methods = new String[] {"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getFluidStored", "getGasStored"};
 
 	@Override
 	public String[] getMethods()

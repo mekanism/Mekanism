@@ -105,7 +105,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
-
+	
 	@Override
 	public void onUpdate()
 	{
@@ -424,7 +424,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		return data;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
 
 	@Override
 	public String[] getMethods()

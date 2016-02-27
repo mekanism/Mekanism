@@ -576,7 +576,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		nbtTags.setInteger("dumpRight", dumpRight.ordinal());
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen", "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
+	private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen", "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
 
 	@Override
 	public String[] getMethods()

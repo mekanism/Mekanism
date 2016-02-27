@@ -139,7 +139,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		return 0;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
 
 	@Override
 	public String[] getMethods()
