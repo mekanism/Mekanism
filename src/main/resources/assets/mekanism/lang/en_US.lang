@@ -149,6 +149,7 @@ tile.MachineBlock2.LaserTractorBeam.name=Laser Tractor Beam
 //Machine Block 3 (third ID iteration)
 tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
 tile.MachineBlock3.Oredictionificator.name=Oredictionificator
+tile.MachineBlock3.ResistiveHeater.name=Resistive Heater
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
@@ -783,6 +784,7 @@ tooltip.LaserTractorBeam=A block used to merge and redirect laser beams. Collect
 tooltip.SolarNeutronActivator=A machine that directs the neutron radiation of the sun into its internal reservoir, allowing for the slow creation of various isotopes.
 tooltip.Oredictionificator=A machine used to unify and translate between various items and blocks using the Ore Dictionary.
 tooltip.Factory=A machine that serves as an upgrade to regular machinery, allowing for multiple processing operations to occur at once.
+tooltip.ResistiveHeater=A condensed, coiled resistor capable of converting electrical energy directly into heat energy.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or other burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the sun to produce energy.

@@ -61,6 +61,7 @@ public class MekanismConfig
 		public static double evaporationTempMultiplier = 0.1;
 		public static double evaporationSolarMultiplier = 0.2;
 		public static double evaporationMaxTemp = 3000;
+		public static double energyPerHeat = 1000;
 	}
 
 	public static class client

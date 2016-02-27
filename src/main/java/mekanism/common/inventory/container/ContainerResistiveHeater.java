@@ -1,24 +1,22 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.tile.TileEntityFluidTank;
-
+import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.tile.TileEntityResistiveHeater;
+import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 
-public class ContainerPortableTank extends Container
+public class ContainerResistiveHeater extends Container
 {
-	private TileEntityFluidTank tileEntity;
+	private TileEntityResistiveHeater tileEntity;
 
-	public ContainerPortableTank(InventoryPlayer inventory, TileEntityFluidTank tentity)
+	public ContainerResistiveHeater(InventoryPlayer inventory, TileEntityResistiveHeater tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new Slot(tentity, 0, 146, 19));
-		addSlotToContainer(new SlotOutput(tentity, 1, 146, 51));
+		addSlotToContainer(new SlotDischarge(tentity, 0, 28, 35));
 		
 		int slotY;
 
@@ -65,39 +63,40 @@ public class ContainerPortableTank extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
+			if(ChargeUtils.canBeDischarged(slotStack))
 			{
-				if(slotID != 0 && slotID != 1)
+				if(slotID != 0)
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
 						return null;
 					}
 				}
-				else {
-					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+				else if(slotID == 0)
+				{
+					if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
 					{
 						return null;
 					}
 				}
 			}
 			else {
-				if(slotID >= 2 && slotID <= 8)
+				if(slotID >= 1 && slotID <= 27)
 				{
-					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
+					if(!mergeItemStack(slotStack, 28, inventorySlots.size(), false))
 					{
 						return null;
 					}
 				}
-				else if(slotID > 28)
+				else if(slotID > 27)
 				{
-					if(!mergeItemStack(slotStack, 2, 28, false))
+					if(!mergeItemStack(slotStack, 1, 27, false))
 					{
 						return null;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
 					{
 						return null;
 					}

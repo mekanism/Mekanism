@@ -6,7 +6,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.common.inventory.container.ContainerPortableTank;
+import mekanism.common.inventory.container.ContainerFluidTank;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,7 +25,7 @@ public class GuiFluidTank extends GuiMekanism
 
 	public GuiFluidTank(InventoryPlayer inventory, TileEntityFluidTank tentity)
 	{
-		super(tentity, new ContainerPortableTank(inventory, tentity));
+		super(tentity, new ContainerFluidTank(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiContainerEditMode(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()

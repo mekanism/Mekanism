@@ -153,6 +153,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 2:1: Solar Neutron Activator
  * 2:2: Ambient Accumulator
  * 2:3: Oredictionificator
+ * 2:4: Resistive Heater
  * 
  * @author AidanBrady
  *
@@ -1315,6 +1316,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					return 0;
 				case AMBIENT_ACCUMULATOR:
 					return 0;
+				case RESISTIVE_HEATER:
+					return 100;
 				default:
 					return 0;
 			}

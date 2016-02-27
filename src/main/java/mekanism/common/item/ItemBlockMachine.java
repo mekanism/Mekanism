@@ -108,6 +108,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 2:1: Solar Neutron Activator
  * 2:2: Ambient Accumulator
  * 2:3: Oredictionificator
+ * 2:4: Resistive Heater
  * @author AidanBrady
  *
  */

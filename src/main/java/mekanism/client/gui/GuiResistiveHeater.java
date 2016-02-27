@@ -1,0 +1,96 @@
+package mekanism.client.gui;
+
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.common.inventory.container.ContainerResistiveHeater;
+import mekanism.common.tile.TileEntityResistiveHeater;
+import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.entity.player.InventoryPlayer;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
+public class GuiResistiveHeater extends GuiMekanism
+{
+	public TileEntityResistiveHeater tileEntity;
+	
+	private GuiTextField energyUsageField;
+	
+	public GuiResistiveHeater(InventoryPlayer inventory, TileEntityResistiveHeater tentity)
+	{
+		super(tentity, new ContainerResistiveHeater(inventory, tentity));
+		tileEntity = tentity;
+		
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 27, 34).with(SlotOverlay.POWER));
+	}
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+		
+		String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
+		
+		energyUsageField = new GuiTextField(fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
+		energyUsageField.setMaxStringLength(7);
+		energyUsageField.setEnableBackgroundDrawing(false);
+		energyUsageField.setText(prevEnergyUsage);
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	{
+		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize / 2) - (fontRendererObj.getStringWidth(tileEntity.getInventoryName()) / 2), 6, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
+
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+	}
+	
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
+	{
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"));
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+	}
+	
+	private void setEnergyUsage()
+	{
+		
+	}
+	
+	@Override
+	public void keyTyped(char c, int i)
+	{
+		if(!energyUsageField.isFocused() || i == Keyboard.KEY_ESCAPE)
+		{
+			super.keyTyped(c, i);
+		}
+
+		if(energyUsageField.isFocused() && i == Keyboard.KEY_RETURN)
+		{
+			setEnergyUsage();
+			return;
+		}
+
+		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		{
+			energyUsageField.textboxKeyTyped(c, i);
+		}
+	}
+}

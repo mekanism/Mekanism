@@ -32,6 +32,7 @@ import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.inventory.container.ContainerFilter;
+import mekanism.common.inventory.container.ContainerFluidTank;
 import mekanism.common.inventory.container.ContainerFluidicPlenisher;
 import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
@@ -41,7 +42,7 @@ import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.inventory.container.ContainerPRC;
-import mekanism.common.inventory.container.ContainerPortableTank;
+import mekanism.common.inventory.container.ContainerResistiveHeater;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.inventory.container.ContainerRobitMain;
@@ -101,6 +102,7 @@ import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
@@ -193,6 +195,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
 		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
 		GameRegistry.registerTileEntity(TileEntityStructuralGlass.class, "StructuralGlass");
+		GameRegistry.registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater");
 	}
 	
 	public void handleTeleporterUpdate(PortableTeleporterMessage message) {}
@@ -508,7 +511,7 @@ public class CommonProxy implements IGuiProvider
 			case 40:
 				return new ContainerPRC(player.inventory, (TileEntityPRC)tileEntity);
 			case 41:
-				return new ContainerPortableTank(player.inventory, (TileEntityFluidTank)tileEntity);
+				return new ContainerFluidTank(player.inventory, (TileEntityFluidTank)tileEntity);
 			case 42:
 				return new ContainerFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
 			case 43:
@@ -531,6 +534,8 @@ public class CommonProxy implements IGuiProvider
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 52:
 				return new ContainerOredictionificator(player.inventory, (TileEntityOredictionificator)tileEntity);
+			case 53:
+				return new ContainerResistiveHeater(player.inventory, (TileEntityResistiveHeater)tileEntity);
 		}
 
 		return null;
