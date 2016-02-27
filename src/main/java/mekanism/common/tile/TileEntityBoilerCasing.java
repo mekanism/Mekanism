@@ -8,6 +8,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.content.boiler.BoilerCache;
@@ -34,10 +35,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	public float prevWaterScale;
 
 	public ForgeDirection innerSide;
-
-	public double temperature;
-	public double heatToAbsorb;
-	public double invHeatCapacity = 5;
 
 	public TileEntityBoilerCasing()
 	{
@@ -121,6 +118,25 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 					if(needsValveUpdate || structure.needsRenderUpdate())
 					{
 						sendPacketToRenderer();
+					}
+					
+					structure.simulateHeat();
+					structure.applyTemperatureChange();
+					
+					if(structure.temperature >= 100 && structure.waterStored != null)
+					{
+						double heatAvailable = (structure.temperature-100)*structure.locations.size();
+						heatAvailable = Math.min(heatAvailable, structure.superheatingElements*general.superheatingHeatTransfer);
+						int amountToBoil = Math.min((int)Math.floor(heatAvailable / structure.enthalpyOfVaporization), structure.waterStored.amount);
+						structure.waterStored.amount -= amountToBoil;
+						
+						if(structure.steamStored == null)
+						{
+							structure.steamStored = new FluidStack(FluidRegistry.getFluid("steam"), amountToBoil);
+						}
+						else {
+							structure.steamStored.amount += amountToBoil;
+						}
 					}
 					
 					structure.prevWater = structure.waterStored;
@@ -307,19 +323,19 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	@Override
 	public double getTemp()
 	{
-		return temperature;
+		return 0;
 	}
 
 	@Override
 	public double getInverseConductionCoefficient()
 	{
-		return 1;
+		return SynchronizedBoilerData.CASING_INVERSE_CONDUCTION_COEFFICIENT;
 	}
 
 	@Override
 	public double getInsulationCoefficient(ForgeDirection side)
 	{
-		return 50;
+		return SynchronizedBoilerData.CASING_INSULATION_COEFFICIENT;
 	}
 
 	@Override
@@ -340,10 +356,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	@Override
 	public double applyTemperatureChange()
 	{
-		temperature += invHeatCapacity * heatToAbsorb;
-		heatToAbsorb = 0;
-		
-		return temperature;
+		return 0;
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package mekanism.common.content.tank;
 
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

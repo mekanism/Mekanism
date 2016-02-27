@@ -1,5 +1,7 @@
 package mekanism.client.gui.element;
 
+import java.util.Arrays;
+
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
@@ -15,9 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
 
-import java.util.Arrays;
+import org.lwjgl.input.Keyboard;
 
 public class GuiGasGauge extends GuiGauge<Gas>
 {

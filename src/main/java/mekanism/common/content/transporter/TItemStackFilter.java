@@ -1,18 +1,14 @@
 package mekanism.common.content.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TItemStackFilter extends TransporterFilter
 {

@@ -6,7 +6,6 @@ import java.util.List;
 
 import mekanism.api.util.ItemInfo;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;

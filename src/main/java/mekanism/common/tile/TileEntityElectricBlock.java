@@ -12,7 +12,6 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.util.MekanismUtils;

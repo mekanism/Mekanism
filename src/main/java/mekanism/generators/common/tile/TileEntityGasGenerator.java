@@ -1,8 +1,18 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.gas.*;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.ISustainedData;
@@ -11,8 +21,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
 
 public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection, ISustainedData
 {

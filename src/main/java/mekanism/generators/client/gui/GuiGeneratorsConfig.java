@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import mekanism.common.Mekanism;
-
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import cpw.mods.fml.client.config.GuiConfig;

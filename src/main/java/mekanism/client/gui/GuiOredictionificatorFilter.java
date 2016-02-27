@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.Coord4D;

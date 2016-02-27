@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 

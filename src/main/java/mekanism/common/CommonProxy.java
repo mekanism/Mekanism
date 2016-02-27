@@ -288,19 +288,19 @@ public class CommonProxy implements IGuiProvider
 		{
 			if(s.trim().equalsIgnoreCase("j") || s.trim().equalsIgnoreCase("joules"))
 			{
-				general.activeType = EnergyType.J;
+				general.energyUnit = EnergyType.J;
 			}
 			else if(s.trim().equalsIgnoreCase("rf") || s.trim().equalsIgnoreCase("te") || s.trim().equalsIgnoreCase("thermal expansion"))
 			{
-				general.activeType = EnergyType.RF;
+				general.energyUnit = EnergyType.RF;
 			}
 			else if(s.trim().equalsIgnoreCase("eu") || s.trim().equalsIgnoreCase("ic2"))
 			{
-				general.activeType = EnergyType.EU;
+				general.energyUnit = EnergyType.EU;
 			}
 			else if(s.trim().equalsIgnoreCase("mj") || s.trim().equalsIgnoreCase("bc") || s.trim().equalsIgnoreCase("buildcraft"))
 			{
-				general.activeType = EnergyType.MJ;
+				general.energyUnit = EnergyType.MJ;
 			}
 		}
 

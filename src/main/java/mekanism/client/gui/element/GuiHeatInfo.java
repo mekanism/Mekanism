@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.UnitDisplayUtils.EnergyType;
+import mekanism.api.util.UnitDisplayUtils.TempType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -15,13 +15,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiEnergyInfo extends GuiElement
+public class GuiHeatInfo extends GuiElement
 {
 	public IInfoHandler infoHandler;
 
-	public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def)
+	public GuiHeatInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiHeatInfo.png"), gui, def);
 
 		infoHandler = handler;
 	}
@@ -37,7 +37,7 @@ public class GuiEnergyInfo extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 112, 0, 0, 26, 26);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
@@ -45,7 +45,7 @@ public class GuiEnergyInfo extends GuiElement
 	@Override
 	public void renderForeground(int xAxis, int yAxis)
 	{
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
+		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134)
 		{
 			List<String> info = new ArrayList<String>();
 			
@@ -54,7 +54,7 @@ public class GuiEnergyInfo extends GuiElement
 				info.add(s);
 			}
 			
-			info.add(LangUtils.localize("gui.unit") + ": " + general.energyUnit);
+			info.add(LangUtils.localize("gui.unit") + ": " + general.tempUnit);
 			displayTooltips(info, xAxis, yAxis);
 		}
 	}
@@ -67,9 +67,9 @@ public class GuiEnergyInfo extends GuiElement
 	{
 		if(button == 0)
 		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
+			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134)
 			{
-				general.energyUnit = EnergyType.values()[(general.energyUnit.ordinal()+1)%EnergyType.values().length];
+				general.tempUnit = TempType.values()[(general.tempUnit.ordinal()+1)%TempType.values().length];
 			}
 		}
 	}

@@ -5,7 +5,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;

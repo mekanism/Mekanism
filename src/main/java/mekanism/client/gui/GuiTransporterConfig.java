@@ -10,7 +10,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;

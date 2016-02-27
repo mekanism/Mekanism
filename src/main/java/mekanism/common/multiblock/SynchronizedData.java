@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-
 import net.minecraft.item.ItemStack;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>>

@@ -1,9 +1,15 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.util.ListUtils;
+import mekanism.api.util.UnitDisplayUtils;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
+import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
@@ -41,6 +47,23 @@ public class GuiResistiveHeater extends GuiMekanism
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png"), 164, 15));
 		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png"), 14, 34).with(SlotOverlay.POWER));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png")));
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+			@Override
+			public List<String> getInfo()
+			{
+				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyUsage);
+				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png")));
+		guiElements.add(new GuiHeatInfo(new IInfoHandler() {
+			@Override
+			public List<String> getInfo()
+			{
+				String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, TemperatureUnit.KELVIN);
+				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, TemperatureUnit.KELVIN);
+				return ListUtils.asList(LangUtils.localize("gui.transferred") + ": " + transfer + "/t", LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png")));
 	}
 	
 	@Override

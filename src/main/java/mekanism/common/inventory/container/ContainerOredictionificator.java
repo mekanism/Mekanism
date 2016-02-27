@@ -1,10 +1,7 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.tile.TileEntityOredictionificator;
-import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

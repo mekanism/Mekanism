@@ -3,7 +3,6 @@ package mekanism.common.block;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.tile.TileEntityObsidianTNT;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;

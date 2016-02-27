@@ -5,9 +5,9 @@ import java.util.List;
 
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,10 +18,11 @@ import mekanism.generators.client.gui.element.GuiStatTab;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.InventoryPlayer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorController extends GuiMekanism

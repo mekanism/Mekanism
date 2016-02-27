@@ -8,7 +8,6 @@ import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>

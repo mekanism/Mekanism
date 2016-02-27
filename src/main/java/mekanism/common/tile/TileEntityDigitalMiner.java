@@ -1,8 +1,16 @@
 package mekanism.common.tile;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.usage;
@@ -10,7 +18,12 @@ import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
-import mekanism.common.base.*;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITransporterTile;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
@@ -23,7 +36,11 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.util.*;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MinerUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,8 +56,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
-
-import java.util.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock
 {

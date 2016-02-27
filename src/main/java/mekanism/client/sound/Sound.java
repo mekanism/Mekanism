@@ -1,7 +1,6 @@
 package mekanism.client.sound;
 
 import mekanism.api.MekanismConfig.client;
-
 import net.minecraft.client.audio.ISound;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;

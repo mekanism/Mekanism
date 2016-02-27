@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 

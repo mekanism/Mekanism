@@ -49,7 +49,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.DISASSEMBLER_USAGE);
 			dataStream.writeInt(general.VOICE_PORT);
 			dataStream.writeInt(general.maxUpgradeMultiplier);
-			dataStream.writeInt(general.activeType.ordinal());
+			dataStream.writeInt(general.energyUnit.ordinal());
 			dataStream.writeDouble(general.minerSilkMultiplier);
 			dataStream.writeBoolean(general.blacklistIC2);
 			dataStream.writeBoolean(general.blacklistRF);
@@ -132,7 +132,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.DISASSEMBLER_USAGE = dataStream.readDouble();
 			general.VOICE_PORT = dataStream.readInt();
 			general.maxUpgradeMultiplier = dataStream.readInt();
-			general.activeType = EnergyType.values()[dataStream.readInt()];
+			general.energyUnit = EnergyType.values()[dataStream.readInt()];
 			general.minerSilkMultiplier = dataStream.readDouble();
 			general.blacklistIC2 = dataStream.readBoolean();
 			general.blacklistRF = dataStream.readBoolean();

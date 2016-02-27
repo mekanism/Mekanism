@@ -1,5 +1,8 @@
 package mekanism.common.integration;
 
+import java.util.Arrays;
+import java.util.Locale;
+
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
@@ -10,9 +13,6 @@ import li.cil.oc.api.prefab.DriverTileEntity;
 import li.cil.oc.api.prefab.ManagedEnvironment;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-
-import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * Created by aidancbrady on 7/20/15.

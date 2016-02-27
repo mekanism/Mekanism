@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import mekanism.common.block.BlockCardboardBox.BlockData;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 

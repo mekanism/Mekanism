@@ -3,8 +3,8 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.util.ListUtils;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge;

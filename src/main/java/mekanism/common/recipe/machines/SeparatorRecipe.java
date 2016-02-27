@@ -4,7 +4,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
-
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 

@@ -7,7 +7,6 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitterTile;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;

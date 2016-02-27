@@ -4,7 +4,6 @@ import java.util.Random;
 
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;

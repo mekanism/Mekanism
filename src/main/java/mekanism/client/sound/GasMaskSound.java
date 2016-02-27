@@ -2,7 +2,6 @@ package mekanism.client.sound;
 
 import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemGasMask;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;

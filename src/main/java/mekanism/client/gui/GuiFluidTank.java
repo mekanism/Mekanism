@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerFluidTank;
@@ -13,10 +13,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidTank;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiFluidTank extends GuiMekanism

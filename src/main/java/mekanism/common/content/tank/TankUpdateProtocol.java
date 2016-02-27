@@ -12,7 +12,6 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-
 import net.minecraft.item.ItemStack;
 
 public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>

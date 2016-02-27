@@ -1160,7 +1160,7 @@ public final class MekanismUtils
 			return LangUtils.localize("gui.infinite");
 		}
 		
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case J:
 				return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
@@ -1182,7 +1182,7 @@ public final class MekanismUtils
 	 */
 	public static double convertToJoules(double energy)
 	{
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case RF:
 				return energy * general.FROM_TE;
@@ -1202,7 +1202,7 @@ public final class MekanismUtils
 	 */
 	public static double convertToDisplay(double energy)
 	{
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case RF:
 				return energy * general.TO_TE;

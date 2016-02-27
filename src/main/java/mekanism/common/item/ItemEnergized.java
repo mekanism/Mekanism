@@ -1,5 +1,8 @@
 package mekanism.common.item;
 
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
+
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -14,12 +17,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
-import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 
 @InterfaceList({
 		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),

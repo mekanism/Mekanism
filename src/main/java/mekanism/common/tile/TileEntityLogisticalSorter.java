@@ -1,16 +1,28 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IFilterAccess;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.base.*;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.transporter.Finder.FirstFinder;
-import mekanism.common.content.transporter.*;
+import mekanism.common.content.transporter.InvStack;
+import mekanism.common.content.transporter.StackSearcher;
+import mekanism.common.content.transporter.TItemStackFilter;
+import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -24,9 +36,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
 
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IFilterAccess, ISustainedData
 {

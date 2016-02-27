@@ -1,11 +1,18 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.util.*;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.HeatUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -13,9 +20,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
-
-import java.util.ArrayList;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData, IHeatTransfer
 {
@@ -31,6 +43,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public double heatToAbsorb = 0;
 	
 	public double producingEnergy;
+	
+	public double lastTransferLoss;
+	public double lastEnvironmentLoss;
 
 	public TileEntityHeatGenerator()
 	{
@@ -121,8 +136,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				setActive(false);
 			}
 			
-			simulateHeat();
+			double[] loss = simulateHeat();
 			applyTemperatureChange();
+			
+			lastTransferLoss = loss[0];
+			lastEnvironmentLoss = loss[1];
 			
 			producingEnergy = getEnergy()-prev;
 		}
@@ -246,6 +264,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		super.handlePacketData(dataStream);
 		
 		producingEnergy = dataStream.readDouble();
+		
+		lastTransferLoss = dataStream.readDouble();
+		lastEnvironmentLoss = dataStream.readDouble();
 
 		int amount = dataStream.readInt();
 
@@ -264,6 +285,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		super.getNetworkedData(data);
 		
 		data.add(producingEnergy);
+		
+		data.add(lastTransferLoss);
+		data.add(lastEnvironmentLoss);
 
 		if(lavaTank.getFluid() != null)
 		{

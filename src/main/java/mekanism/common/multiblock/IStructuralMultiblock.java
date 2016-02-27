@@ -1,7 +1,6 @@
 package mekanism.common.multiblock;
 
 import mekanism.api.Coord4D;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 

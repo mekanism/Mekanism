@@ -9,11 +9,13 @@ import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer
 {
+	public static double CASING_INSULATION_COEFFICIENT = 50;
+	public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
+	
 	public FluidStack waterStored;
 	public FluidStack prevWater;
 
@@ -24,7 +26,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
 	public double heatToAbsorb;
 
-	public double heatCapacity = 0.000001;
+	public double heatCapacity = 1000;
 
 	public double enthalpyOfVaporization = 10;
 	
@@ -86,57 +88,36 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	@Override
 	public double getInverseConductionCoefficient()
 	{
-		return 1;
+		return CASING_INVERSE_CONDUCTION_COEFFICIENT*locations.size();
 	}
 
 	@Override
 	public double getInsulationCoefficient(ForgeDirection side)
 	{
-		return 100;
+		return CASING_INSULATION_COEFFICIENT*locations.size();
 	}
 
 	@Override
 	public void transferHeatTo(double heat)
 	{
-		heatToAbsorb = heat;
+		heatToAbsorb += heat;
 	}
 
 	@Override
 	public double[] simulateHeat()
 	{
-		return new double[0];
+		double invConduction = IHeatTransfer.AIR_INVERSE_COEFFICIENT + (CASING_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT)*locations.size();
+		double heatToTransfer = temperature / invConduction;
+		transferHeatTo(-heatToTransfer);
+		
+		return new double[] {0, heatToTransfer};
 	}
 
 	@Override
 	public double applyTemperatureChange()
 	{
-		if(temperature < 100 + IHeatTransfer.AMBIENT_TEMP)
-		{
-			double temperatureDeficit = 100 + IHeatTransfer.AMBIENT_TEMP - temperature;
-			double heatNeeded = temperatureDeficit * volume * heatCapacity * 16000;
-			double heatProvided = Math.min(heatToAbsorb, heatNeeded);
-			heatToAbsorb -= heatProvided;
-			temperature += heatProvided / (volume * heatCapacity * 16);
-		}
-		
-		if(temperature >= 100 + IHeatTransfer.AMBIENT_TEMP && waterStored != null)
-		{
-			int amountToBoil = (int)Math.floor(heatToAbsorb / enthalpyOfVaporization);
-			amountToBoil = Math.min(amountToBoil, waterStored.amount);
-			waterStored.amount -= amountToBoil;
-			
-			if(steamStored == null)
-			{
-				steamStored = new FluidStack(FluidRegistry.getFluid("steam"), amountToBoil);
-			}
-			else {
-				steamStored.amount += amountToBoil;
-			}
-
-			heatToAbsorb -= amountToBoil * enthalpyOfVaporization;
-		}
-		
-		heatToAbsorb *= 0.8;
+		temperature += heatToAbsorb / locations.size();
+		heatToAbsorb = 0;
 		
 		return temperature;
 	}

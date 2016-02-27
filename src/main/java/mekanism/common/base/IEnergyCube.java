@@ -1,7 +1,6 @@
 package mekanism.common.base;
 
 import mekanism.common.Tier.EnergyCubeTier;
-
 import net.minecraft.item.ItemStack;
 
 /**

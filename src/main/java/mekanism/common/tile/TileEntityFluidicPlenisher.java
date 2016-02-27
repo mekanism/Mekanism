@@ -14,7 +14,6 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;

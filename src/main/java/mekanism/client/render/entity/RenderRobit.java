@@ -4,7 +4,6 @@ import mekanism.client.model.ModelRobit;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;

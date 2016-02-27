@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;

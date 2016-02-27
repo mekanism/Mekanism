@@ -1,15 +1,18 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Rectangle;
 import java.util.Collection;
 
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiPowerBar;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -22,8 +25,6 @@ import org.lwjgl.opengl.GL11;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public abstract class MachineRecipeHandler extends BaseRecipeHandler
 {

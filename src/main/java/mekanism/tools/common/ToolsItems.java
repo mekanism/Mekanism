@@ -8,7 +8,6 @@ import mekanism.tools.item.ItemMekanismPaxel;
 import mekanism.tools.item.ItemMekanismPickaxe;
 import mekanism.tools.item.ItemMekanismShovel;
 import mekanism.tools.item.ItemMekanismSword;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import cpw.mods.fml.common.registry.GameRegistry;

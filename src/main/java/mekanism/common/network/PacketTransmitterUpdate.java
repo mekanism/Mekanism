@@ -1,10 +1,11 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Collection;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
-import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
@@ -17,8 +18,8 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
@@ -28,8 +29,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdateMessage, IMessage>
 {

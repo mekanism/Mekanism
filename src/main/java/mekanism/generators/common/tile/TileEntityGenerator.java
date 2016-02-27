@@ -1,8 +1,10 @@
 package mekanism.generators.common.tile;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
@@ -19,9 +21,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl
 {

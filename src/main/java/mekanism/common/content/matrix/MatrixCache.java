@@ -1,7 +1,6 @@
 package mekanism.common.content.matrix;
 
 import mekanism.common.multiblock.MultiblockCache;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
@@ -9,6 +7,8 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {

@@ -6,7 +6,6 @@ import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

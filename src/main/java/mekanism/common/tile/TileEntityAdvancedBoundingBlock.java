@@ -1,9 +1,5 @@
 package mekanism.common.tile;
 
-import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
 import mekanism.api.IFilterAccess;
@@ -17,6 +13,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyHandler;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),

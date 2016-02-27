@@ -7,12 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class TransporterFilter
 {

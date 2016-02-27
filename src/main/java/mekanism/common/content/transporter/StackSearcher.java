@@ -2,7 +2,6 @@ package mekanism.common.content.transporter;
 
 import mekanism.api.util.StackUtils;
 import mekanism.common.util.InventoryUtils;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;

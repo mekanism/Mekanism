@@ -1,13 +1,21 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
-import mekanism.common.base.*;
+import mekanism.common.base.IEjector;
+import mekanism.common.base.IElectricMachine;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.inputs.MachineInput;
@@ -20,9 +28,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
 
 public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl
 {

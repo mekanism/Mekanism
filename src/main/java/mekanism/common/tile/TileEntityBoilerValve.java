@@ -4,7 +4,6 @@ import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;

@@ -1,13 +1,13 @@
 package mekanism.common.integration;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import cpw.mods.fml.common.Optional;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 /**
  * Created by aidancbrady on 7/20/15.

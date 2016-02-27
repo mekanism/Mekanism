@@ -1,6 +1,10 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
@@ -10,10 +14,12 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {

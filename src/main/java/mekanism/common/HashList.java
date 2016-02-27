@@ -3,8 +3,6 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import mekanism.common.content.transporter.TransporterFilter;
-
 public class HashList<T> implements Iterable<T>
 {
 	private ArrayList<T> list = new ArrayList<T>(256);

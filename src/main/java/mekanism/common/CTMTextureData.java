@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import mekanism.client.render.block.TextureSubmap;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 

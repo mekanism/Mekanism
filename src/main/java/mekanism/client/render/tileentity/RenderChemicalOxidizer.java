@@ -11,7 +11,6 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;

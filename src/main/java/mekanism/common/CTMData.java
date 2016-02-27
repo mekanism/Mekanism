@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import mekanism.api.Coord4D;
 import mekanism.client.render.block.TextureSubmap;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;

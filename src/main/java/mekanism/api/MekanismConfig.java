@@ -32,7 +32,7 @@ public class MekanismConfig
 		public static double ENERGY_PER_REDSTONE = 10000;
 		public static int ETHENE_BURN_TIME = 40;
 		public static double DISASSEMBLER_USAGE = 10;
-		public static EnergyType activeType = EnergyType.J;
+		public static EnergyType energyUnit = EnergyType.J;
 		public static TempType tempUnit =	TempType.K;
 		public static double TO_IC2;
 		public static double TO_TE;
@@ -62,6 +62,7 @@ public class MekanismConfig
 		public static double evaporationSolarMultiplier = 0.2;
 		public static double evaporationMaxTemp = 3000;
 		public static double energyPerHeat = 1000;
+		public static double superheatingHeatTransfer = 10000;
 	}
 
 	public static class client

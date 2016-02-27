@@ -3,7 +3,6 @@ package mekanism.common.block;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;

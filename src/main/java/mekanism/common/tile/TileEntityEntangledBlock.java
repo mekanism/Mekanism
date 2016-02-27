@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -11,15 +13,12 @@ import mekanism.common.PacketHandler;
 import mekanism.common.content.teleportation.SharedInventory;
 import mekanism.common.content.teleportation.SharedInventoryManager;
 import mekanism.common.util.CableUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileEntityEntangledBlock extends TileEntityElectricBlock implements IFluidHandler, IGasHandler, ITubeConnection
 {

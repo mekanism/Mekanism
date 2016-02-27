@@ -1,7 +1,6 @@
 package mekanism.common.multipart;
 
 import net.minecraft.block.Block;
-
 import codechicken.microblock.BlockMicroMaterial;
 
 public class PlasticMicroMaterial extends BlockMicroMaterial

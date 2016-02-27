@@ -71,6 +71,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	
 	public float prevScale;
 	
+	public float totalLoss = 0;
+	
 	public TileEntityThermalEvaporationController()
 	{
 		super("ThermalEvaporationController");
@@ -333,6 +335,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		
 		float biome = biomeTemp-0.5F;
 		float base = biome > 0 ? biome*20 : biomeTemp*40;
+		
+		if(Math.abs(temperature-base) < 0.001)
+		{
+			temperature = base;
+		}
+		
 		float incr = (float)Math.sqrt(Math.abs(temperature-base))*(float)general.evaporationHeatDissipation;
 		
 		if(temperature > base)
@@ -340,7 +348,16 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			incr = -incr;
 		}
 		
+		float prev = temperature;
 		temperature = (float)Math.min(general.evaporationMaxTemp, temperature + incr/(float)height);
+		
+		if(incr < 0)
+		{
+			totalLoss = prev-temperature;
+		}
+		else {
+			totalLoss = 0;
+		}
 		
 		heatToAbsorb = 0;
 		
@@ -643,6 +660,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		biomeTemp = dataStream.readFloat();
 		isLeftOnFace = dataStream.readBoolean();
 		lastGain = dataStream.readFloat();
+		totalLoss = dataStream.readFloat();
 		
 		if(structured != prev)
 		{
@@ -697,6 +715,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		data.add(biomeTemp);
 		data.add(isLeftOnFace);
 		data.add(lastGain);
+		data.add(totalLoss);
 		
 		return data;
 	}
