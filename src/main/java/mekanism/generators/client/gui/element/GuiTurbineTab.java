@@ -2,7 +2,7 @@ package mekanism.generators.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiBoilerTab.TurbineTab;
+import mekanism.client.gui.element.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -85,7 +85,7 @@ public class GuiTurbineTab extends GuiElement
 		}
 	}
 	
-	public static enum BoilerTab
+	public static enum TurbineTab
 	{
 		MAIN("GuiGasesTab.png", 6, "gui.main"),
 		STAT("GuiStatsTab.png", 7, "gui.stats");
@@ -94,7 +94,7 @@ public class GuiTurbineTab extends GuiElement
 		private int guiId;
 		private String desc;
 		
-		private BoilerTab(String s, int id, String s1)
+		private TurbineTab(String s, int id, String s1)
 		{
 			path = s;
 			guiId = id;

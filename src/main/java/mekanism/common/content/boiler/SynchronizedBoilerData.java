@@ -6,6 +6,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -15,8 +16,9 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer
 {
-	public static double CASING_INSULATION_COEFFICIENT = 50;
+	public static double CASING_INSULATION_COEFFICIENT = 10;
 	public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
+	public static double BASE_BOIL_TEMP = 100-(TemperatureUnit.AMBIENT.zeroOffset-TemperatureUnit.CELSIUS.zeroOffset);
 	
 	public FluidStack waterStored;
 	public FluidStack prevWater;
@@ -26,6 +28,8 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	
 	public double lastEnvironmentLoss;
 	public int lastBoilRate;
+	
+	public double clientHeatAvailable;
 
 	public double temperature;
 
@@ -51,7 +55,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	
 	public double getHeatAvailable()
 	{
-		double heatAvailable = (temperature-100)*locations.size();
+		double heatAvailable = (temperature-BASE_BOIL_TEMP)*locations.size();
 		return Math.min(heatAvailable, superheatingElements*general.superheatingHeatTransfer);
 	}
 	

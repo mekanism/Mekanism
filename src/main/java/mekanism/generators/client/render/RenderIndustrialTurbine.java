@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 {
-	private static Map<RenderData, DisplayInteger[]> cachedFluids = new HashMap<RenderData, DisplayInteger[]>();
+	private static Map<RenderData, DisplayInteger> cachedFluids = new HashMap<RenderData, DisplayInteger>();
 	
 	private Fluid STEAM = FluidRegistry.getFluid("steam");
 	
@@ -80,10 +80,10 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
 	
-					DisplayInteger[] displayList = getListAndRender(data, tileEntity.getWorldObj());
+					DisplayInteger display = getListAndRender(data, tileEntity.getWorldObj());
 	
 					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.structure.getFluidCapacity())+0.3F));
-					displayList[getStages(data.height+1)-1].render();
+					display.render();
 	
 					MekanismRenderer.glowOff();
 					MekanismRenderer.resetColor();
@@ -130,7 +130,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 		return z - TileEntityRendererDispatcher.staticPlayerZ;
 	}
 	
-	private DisplayInteger[] getListAndRender(RenderData data, World world)
+	private DisplayInteger getListAndRender(RenderData data, World world)
 	{
 		if(cachedFluids.containsKey(data))
 		{
@@ -142,31 +142,26 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 		toReturn.setTexture(STEAM.getIcon());
 
 		final int stages = getStages(data.height);
-		DisplayInteger[] displays = new DisplayInteger[stages];
+		DisplayInteger display = DisplayInteger.createAndStart();
 
-		cachedFluids.put(data, displays);
-
-		for(int i = 0; i < stages; i++)
+		cachedFluids.put(data, display);
+		
+		if(STEAM.getIcon() != null)
 		{
-			displays[i] = DisplayInteger.createAndStart();
+			toReturn.minX = 0 + .01;
+			toReturn.minY = 0 + .01;
+			toReturn.minZ = 0 + .01;
 
-			if(STEAM.getIcon() != null)
-			{
-				toReturn.minX = 0 + .01;
-				toReturn.minY = 0 + .01;
-				toReturn.minZ = 0 + .01;
+			toReturn.maxX = data.length - .01;
+			toReturn.maxY = data.height - .01;
+			toReturn.maxZ = data.width - .01;
 
-				toReturn.maxX = data.length - .01;
-				toReturn.maxY = ((float)i/(float)stages)*(data.height+1) - .01;
-				toReturn.maxZ = data.width - .01;
-
-				MekanismRenderer.renderObject(toReturn);
-			}
-
-			GL11.glEndList();
+			MekanismRenderer.renderObject(toReturn);
 		}
 
-		return displays;
+		GL11.glEndList();
+
+		return display;
 	}
 	
 	public static void resetDisplayInts()

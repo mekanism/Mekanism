@@ -129,6 +129,7 @@ public class MekanismRenderer
 
 			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
 			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:LiquidHeavyWater"));
+			FluidRegistry.getFluid("steam").setIcons(event.map.registerIcon("mekanism:LiquidSteam"));
 			
 			for(InfuseType type : InfuseRegistry.getInfuseMap().values())
 			{

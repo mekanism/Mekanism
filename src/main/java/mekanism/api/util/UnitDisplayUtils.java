@@ -37,8 +37,8 @@ public class UnitDisplayUtils
 
 		public String name;
 		public String symbol;
-		double zeroOffset;
-		double intervalSize;
+		public double zeroOffset;
+		public double intervalSize;
 
 		private TemperatureUnit(String s, String s1, double offset, double size)
 		{

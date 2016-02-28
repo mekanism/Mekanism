@@ -8,7 +8,6 @@ import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.client.gui.element.GuiTurbineTab.BoilerTab;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import codechicken.lib.vec.Rectangle4i;
@@ -84,7 +83,7 @@ public class GuiBoilerTab extends GuiElement
 		}
 	}
 	
-	public static enum TurbineTab
+	public static enum BoilerTab
 	{
 		MAIN("GuiGasesTab.png", 54, "gui.main"),
 		STAT("GuiStatsTab.png", 55, "gui.stats");
@@ -93,7 +92,7 @@ public class GuiBoilerTab extends GuiElement
 		private int guiId;
 		private String desc;
 		
-		private TurbineTab(String s, int id, String s1)
+		private BoilerTab(String s, int id, String s1)
 		{
 			path = s;
 			guiId = id;

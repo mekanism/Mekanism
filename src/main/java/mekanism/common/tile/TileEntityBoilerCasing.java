@@ -19,6 +19,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -124,7 +125,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 					structure.applyTemperatureChange();
 					structure.lastEnvironmentLoss = d[1];
 					
-					if(structure.temperature >= 100 && structure.waterStored != null)
+					if(structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && structure.waterStored != null)
 					{
 						int steamAmount = structure.steamStored != null ? structure.steamStored.amount : 0;
 						double heatAvailable = structure.getHeatAvailable();
@@ -148,6 +149,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 					
 					structure.prevWater = structure.waterStored;
 					structure.prevSteam = structure.steamStored;
+					
+					MekanismUtils.saveChunk(this);
 				}
 			}
 		}
@@ -205,6 +208,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			data.add(structure.lastBoilRate);
 			data.add(structure.superheatingElements);
 			data.add(structure.temperature);
+			data.add(Math.max(0, structure.getHeatAvailable()));
 
 			if(structure.waterStored != null)
 			{
@@ -267,6 +271,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			structure.lastBoilRate = dataStream.readInt();
 			structure.superheatingElements = dataStream.readInt();
 			structure.temperature = dataStream.readDouble();
+			structure.clientHeatAvailable = dataStream.readDouble();
 			
 			if(dataStream.readInt() == 1)
 			{

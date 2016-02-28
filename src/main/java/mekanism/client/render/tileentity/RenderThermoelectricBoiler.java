@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 {
 	private static Map<RenderData, DisplayInteger[]> cachedLowerFluids = new HashMap<RenderData, DisplayInteger[]>();
-	private static Map<RenderData, DisplayInteger[]> cachedUpperFluids = new HashMap<RenderData, DisplayInteger[]>();
+	private static Map<RenderData, DisplayInteger> cachedUpperFluids = new HashMap<RenderData, DisplayInteger>();
 	private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<ValveRenderData, DisplayInteger>();
 	
 	private Fluid STEAM = FluidRegistry.getFluid("steam");
@@ -49,13 +49,15 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				RenderData data = new RenderData();
 
 				data.location = tileEntity.structure.renderLocation;
-				data.height = tileEntity.structure.volHeight;
+				data.height = (tileEntity.structure.upperRenderLocation.yCoord-1)-tileEntity.structure.renderLocation.yCoord;
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
+				
+				System.out.println("Water height: " + data.height);
 
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				
-				if(data.location != null && tileEntity.structure.waterStored.getFluid() != null)
+				if(data.location != null && data.height >= 1 && tileEntity.structure.waterStored.getFluid() != null)
 				{
 					push();
 
@@ -64,7 +66,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 					MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.waterStored.getFluid());
 
-					DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj(), cachedLowerFluids);
+					DisplayInteger[] displayList = getLowerDisplay(data, tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj());
 
 					if(tileEntity.structure.waterStored.getFluid().isGaseous())
 					{
@@ -103,13 +105,15 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				RenderData data = new RenderData();
 
 				data.location = tileEntity.structure.upperRenderLocation;
-				data.height = tileEntity.structure.volHeight;
+				data.height = (tileEntity.structure.renderLocation.yCoord+tileEntity.structure.volHeight-2)-(tileEntity.structure.upperRenderLocation.yCoord);
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
+				
+				System.out.println("Steam height: " + data.height);
 
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				
-				if(data.location != null && tileEntity.structure.steamStored.getFluid() != null)
+				if(data.location != null && data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null)
 				{
 					push();
 					
@@ -118,10 +122,10 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 					MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.steamStored.getFluid());
 	
-					DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj(), cachedUpperFluids);
+					DisplayInteger display = getUpperDisplay(data, tileEntity.structure.steamStored.getFluid(), tileEntity.getWorldObj());
 	
 					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.steamStored.amount / (float)tileEntity.clientSteamCapacity)+0.3F));
-					displayList[getStages(data.height+1)-1].render();
+					display.render();
 	
 					MekanismRenderer.glowOff();
 					MekanismRenderer.resetColor();
@@ -148,11 +152,11 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private DisplayInteger[] getListAndRender(RenderData data, Fluid fluid, World world, Map<RenderData, DisplayInteger[]> map)
+	private DisplayInteger[] getLowerDisplay(RenderData data, Fluid fluid, World world)
 	{
-		if(map.containsKey(data))
+		if(cachedLowerFluids.containsKey(data))
 		{
-			return map.get(data);
+			return cachedLowerFluids.get(data);
 		}
 
 		Model3D toReturn = new Model3D();
@@ -162,7 +166,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
 
-		map.put(data, displays);
+		cachedLowerFluids.put(data, displays);
 
 		for(int i = 0; i < stages; i++)
 		{
@@ -185,6 +189,40 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 		}
 
 		return displays;
+	}
+	
+	private DisplayInteger getUpperDisplay(RenderData data, Fluid fluid, World world)
+	{
+		if(cachedUpperFluids.containsKey(data))
+		{
+			return cachedUpperFluids.get(data);
+		}
+
+		Model3D toReturn = new Model3D();
+		toReturn.baseBlock = Blocks.water;
+		toReturn.setTexture(fluid.getIcon());
+
+		final int stages = getStages(data.height);
+		DisplayInteger display = DisplayInteger.createAndStart();
+
+		cachedUpperFluids.put(data, display);
+		
+		if(STEAM.getIcon() != null)
+		{
+			toReturn.minX = 0 + .01;
+			toReturn.minY = 0 + .01;
+			toReturn.minZ = 0 + .01;
+
+			toReturn.maxX = data.length - .01;
+			toReturn.maxY = data.height - .01;
+			toReturn.maxZ = data.width - .01;
+
+			MekanismRenderer.renderObject(toReturn);
+		}
+
+		GL11.glEndList();
+
+		return display;
 	}
 
 	private DisplayInteger getValveDisplay(ValveRenderData data, Fluid fluid, World world)
@@ -293,7 +331,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 	private int getStages(int height)
 	{
-		return (height-2)*(TankUpdateProtocol.FLUID_PER_TANK/10);
+		return height*(TankUpdateProtocol.FLUID_PER_TANK/10);
 	}
 
 	private double getX(int x)

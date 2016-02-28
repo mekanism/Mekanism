@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBasic.BasicType;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -51,8 +50,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	@Override
 	protected boolean canForm(SynchronizedBoilerData structure)
 	{
-		System.out.println("hi");
-		
 		if(structure.volHeight >= 3)
 		{
 			Set<Coord4D> dispersers = new HashSet<Coord4D>();
@@ -174,7 +171,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			int steamHeight = (structure.renderLocation.yCoord+structure.volHeight-2)-initDisperser.yCoord;
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
 			
-			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, structure.renderLocation.zCoord, initDisperser.yCoord+1);
+			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord+1, structure.renderLocation.zCoord);
 			System.out.println(structure.superheatingElements + " " + structure.waterVolume + " " + structure.steamVolume);
 			
 			return true;
@@ -221,15 +218,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 		{
 			((BoilerCache)cache).steam.amount += ((BoilerCache)merge).steam.amount;
 		}
-
-		List<ItemStack> rejects = StackUtils.getMergeRejects(((BoilerCache)cache).inventory, ((BoilerCache)merge).inventory);
-
-		if(!rejects.isEmpty())
-		{
-			rejectedItems.addAll(rejects);
-		}
-
-		StackUtils.merge(((BoilerCache)cache).inventory, ((BoilerCache)merge).inventory);
+		
+		((BoilerCache)cache).temperature = Math.max(((BoilerCache)cache).temperature, ((BoilerCache)merge).temperature);
 	}
 
 	@Override
