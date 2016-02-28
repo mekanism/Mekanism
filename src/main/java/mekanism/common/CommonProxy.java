@@ -60,6 +60,8 @@ import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -196,6 +198,8 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
 		GameRegistry.registerTileEntity(TileEntityStructuralGlass.class, "StructuralGlass");
 		GameRegistry.registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater");
+		GameRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing");
+		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");
 	}
 	
 	public void handleTeleporterUpdate(PortableTeleporterMessage message) {}

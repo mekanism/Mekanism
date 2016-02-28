@@ -17,6 +17,7 @@ import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
+import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.util.MekanismUtils;
@@ -143,6 +144,7 @@ public class MekanismRenderer
 			RenderDynamicTank.resetDisplayInts();
 			RenderThermalEvaporationController.resetDisplayInts();
 			RenderFluidTank.resetDisplayInts();
+			RenderThermoelectricBoiler.resetDisplayInts();
 		}
 	}
 	

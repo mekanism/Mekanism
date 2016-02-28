@@ -203,6 +203,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
 			if(isRendering)
 			{
+				structure.upperRenderLocation.write(data);
+				
 				Set<ValveData> toSend = new HashSet<ValveData>();
 
 				for(ValveData valveData : structure.valves)
@@ -255,6 +257,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	
 			if(isRendering)
 			{
+				structure.upperRenderLocation = Coord4D.read(dataStream);
+				
 				int size = dataStream.readInt();
 				
 				valveViewing.clear();
@@ -375,41 +379,5 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	public String getInventoryName()
 	{
 		return LangUtils.localize("gui.thermoelectricBoiler");
-	}
-
-	public boolean isInnerSide(ForgeDirection side)
-	{
-		if(innerSide != null)
-		{
-			return side == innerSide;
-		}
-
-		if(!Coord4D.get(this).getFromSide(side).getBlock(worldObj).isAir(worldObj, xCoord, yCoord, zCoord))
-		{
-			return false;
-		}
-
-		if(structure == null || structure.minLocation == null || structure.maxLocation == null)
-		{
-			return false;
-		}
-
-		switch(side)
-		{
-			case DOWN:
-				return yCoord == structure.maxLocation.yCoord;
-			case UP:
-				return yCoord == structure.minLocation.yCoord;
-			case NORTH:
-				return zCoord == structure.maxLocation.zCoord;
-			case SOUTH:
-				return zCoord == structure.minLocation.zCoord;
-			case WEST:
-				return xCoord == structure.maxLocation.xCoord;
-			case EAST:
-				return xCoord == structure.minLocation.xCoord;
-			default:
-				return false;
-		}
 	}
 }

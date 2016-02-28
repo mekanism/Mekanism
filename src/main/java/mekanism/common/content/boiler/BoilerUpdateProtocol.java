@@ -51,6 +51,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	@Override
 	protected boolean canForm(SynchronizedBoilerData structure)
 	{
+		System.out.println("hi");
+		
 		if(structure.volHeight >= 3)
 		{
 			Set<Coord4D> dispersers = new HashSet<Coord4D>();
@@ -75,6 +77,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			//Ensure at least one disperser exists
 			if(dispersers.size() == 0)
 			{
+				System.out.println("No dispersers");
 				return false;
 			}
 			
@@ -90,6 +93,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 					
 					if(!(tile instanceof TileEntityPressureDisperser))
 					{
+						System.out.println("Missing disperser");
 						return false;
 					}
 					
@@ -100,6 +104,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			//If there are more dispersers than those on the plane found, the structure is invalid
 			if(dispersers.size() > 0)
 			{
+				System.out.println("Bad disperser");
 				return false;
 			}
 			
@@ -113,6 +118,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			
 			if(elements.size() > structure.superheatingElements)
 			{
+				System.out.println("Disconnected elements");
 				return false;
 			}
 			
@@ -138,25 +144,35 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			//Some air must exist for the structure to be valid
 			if(initAir == null)
 			{
+				System.out.println("No air");
 				return false;
 			}
+			
+			final int total = totalAir;
 			
 			structure.waterVolume = new NodeCounter(new NodeChecker() {
 				@Override
 				public boolean isValid(Coord4D coord) 
 				{
-					return coord.yCoord < initDisperser.yCoord && (coord.isAirBlock(pointer.getWorldObj()) || isViableNode(coord.xCoord, coord.yCoord, coord.zCoord));
+					return coord.yCoord >= structure.renderLocation.yCoord && coord.yCoord < initDisperser.yCoord && 
+							coord.xCoord >= structure.renderLocation.xCoord && coord.xCoord <= structure.renderLocation.xCoord+structure.volLength && 
+							coord.zCoord >= structure.renderLocation.zCoord && coord.zCoord <= structure.renderLocation.zCoord+structure.volWidth &&
+							(coord.isAirBlock(pointer.getWorldObj()) || isViableNode(coord.xCoord, coord.yCoord, coord.zCoord));
 				}
 			}).calculate(initAir);
 			
 			//Make sure all air blocks are connected
 			if(totalAir > structure.waterVolume)
 			{
+				System.out.println("nonconnected air");
 				return false;
 			}
 			
 			int steamHeight = (structure.renderLocation.yCoord+structure.volHeight)-initDisperser.yCoord;
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
+			
+			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, structure.renderLocation.zCoord, initDisperser.yCoord+1);
+			System.out.println(structure.superheatingElements + " " + structure.waterVolume + " " + structure.steamVolume);
 			
 			return true;
 		}

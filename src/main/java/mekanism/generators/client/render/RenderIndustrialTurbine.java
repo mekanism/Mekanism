@@ -22,6 +22,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 {
 	private static Map<RenderData, DisplayInteger[]> cachedFluids = new HashMap<RenderData, DisplayInteger[]>();

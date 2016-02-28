@@ -27,8 +27,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage
 {
-	public float prevScale;
-	
 	public TileEntityTurbineCasing() 
 	{
 		this("TurbineCasing");
@@ -44,19 +42,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
-		{
-			if(structure != null && clientHasStructure && isRendering)
-			{
-				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/structure.getFluidCapacity();
-
-				if(Math.abs(prevScale - targetScale) > 0.01)
-				{
-					prevScale = (9*prevScale + targetScale)/10;
-				}
-			}
-		}
-
 		if(!worldObj.isRemote)
 		{
 			if(structure != null)

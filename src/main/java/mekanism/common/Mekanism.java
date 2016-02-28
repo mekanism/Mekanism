@@ -1116,8 +1116,6 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityEntangledBlock.class, "EntangledBlock");
 		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
 		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
-		GameRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing");
-		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");
 
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();

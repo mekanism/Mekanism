@@ -39,6 +39,8 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
 	public ItemStack[] inventory = new ItemStack[2];
+	
+	public Coord4D upperRenderLocation;
 
 	public Set<ValveData> valves = new HashSet<ValveData>();
 	
