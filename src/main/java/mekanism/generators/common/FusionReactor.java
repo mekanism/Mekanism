@@ -447,6 +447,7 @@ public class FusionReactor implements IFusionReactor
 				{
 					neutronCaptors.add((INeutronCapture)tile);
 				}
+				
 				if(tile instanceof IHeatTransfer)
 				{
 					heatTransfers.add((IHeatTransfer)tile);

@@ -5,6 +5,8 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.MekanismConfig.general;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
@@ -21,6 +23,9 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
 	public FluidStack steamStored;
 	public FluidStack prevSteam;
+	
+	public double lastEnvironmentLoss;
+	public int lastBoilRate;
 
 	public double temperature;
 
@@ -43,6 +48,12 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	public Coord4D upperRenderLocation;
 
 	public Set<ValveData> valves = new HashSet<ValveData>();
+	
+	public double getHeatAvailable()
+	{
+		double heatAvailable = (temperature-100)*locations.size();
+		return Math.min(heatAvailable, superheatingElements*general.superheatingHeatTransfer);
+	}
 	
 	public boolean needsRenderUpdate()
 	{
@@ -134,34 +145,5 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	public IHeatTransfer getAdjacent(ForgeDirection side)
 	{
 		return null;
-	}
-
-	public static class ValveData
-	{
-		public ForgeDirection side;
-		public Coord4D location;
-		
-		public boolean prevActive;
-		public int activeTicks;
-		
-		public void onTransfer()
-		{
-			activeTicks = 30;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			int code = 1;
-			code = 31 * code + side.ordinal();
-			code = 31 * code + location.hashCode();
-			return code;
-		}
-
-		@Override
-		public boolean equals(Object obj)
-		{
-			return obj instanceof ValveData && ((ValveData)obj).side == side && ((ValveData)obj).location.equals(location);
-		}
 	}
 }

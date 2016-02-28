@@ -6,6 +6,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiBoilerTab.TurbineTab;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.common.inventory.container.ContainerNull;
@@ -13,7 +14,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
-import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.InventoryPlayer;
 

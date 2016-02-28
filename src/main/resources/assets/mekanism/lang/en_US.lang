@@ -521,6 +521,8 @@ gui.temp=Temp
 gui.usage=Usage
 gui.transferred=Transferred
 gui.dissipated=Dissipated
+gui.boilRate=Boil Rate
+gui.maxBoil=Max Boil
 
 gui.reactor.injectionRate=Injection Rate
 

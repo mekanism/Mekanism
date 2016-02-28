@@ -8,16 +8,18 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.general;
+import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.LangUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -33,8 +35,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	public int clientSteamCapacity;
 
 	public float prevWaterScale;
-
-	public ForgeDirection innerSide;
 
 	public TileEntityBoilerCasing()
 	{
@@ -120,14 +120,16 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 						sendPacketToRenderer();
 					}
 					
-					structure.simulateHeat();
+					double[] d = structure.simulateHeat();
 					structure.applyTemperatureChange();
+					structure.lastEnvironmentLoss = d[1];
 					
 					if(structure.temperature >= 100 && structure.waterStored != null)
 					{
-						double heatAvailable = (structure.temperature-100)*structure.locations.size();
-						heatAvailable = Math.min(heatAvailable, structure.superheatingElements*general.superheatingHeatTransfer);
+						int steamAmount = structure.steamStored != null ? structure.steamStored.amount : 0;
+						double heatAvailable = structure.getHeatAvailable();
 						int amountToBoil = Math.min((int)Math.floor(heatAvailable / structure.enthalpyOfVaporization), structure.waterStored.amount);
+						amountToBoil = Math.min(amountToBoil, (structure.steamVolume*BoilerUpdateProtocol.STEAM_PER_TANK)-steamAmount);
 						structure.waterStored.amount -= amountToBoil;
 						
 						if(structure.steamStored == null)
@@ -137,6 +139,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 						else {
 							structure.steamStored.amount += amountToBoil;
 						}
+						
+						structure.lastBoilRate = amountToBoil;
+					}
+					else {
+						structure.lastBoilRate = 0;
 					}
 					
 					structure.prevWater = structure.waterStored;
@@ -144,6 +151,20 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean onActivate(EntityPlayer player)
+	{
+		if(!player.isSneaking() && structure != null)
+		{
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			player.openGui(Mekanism.instance, 54, worldObj, xCoord, yCoord, zCoord);
+			
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -180,6 +201,10 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			data.add(structure.volume*BoilerUpdateProtocol.WATER_PER_TANK);
 			data.add(structure.volume*BoilerUpdateProtocol.STEAM_PER_TANK);
 			data.add(structure.editMode.ordinal());
+			data.add(structure.lastEnvironmentLoss);
+			data.add(structure.lastBoilRate);
+			data.add(structure.superheatingElements);
+			data.add(structure.temperature);
 
 			if(structure.waterStored != null)
 			{
@@ -238,6 +263,10 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			clientWaterCapacity = dataStream.readInt();
 			clientSteamCapacity = dataStream.readInt();
 			structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
+			structure.lastEnvironmentLoss = dataStream.readDouble();
+			structure.lastBoilRate = dataStream.readInt();
+			structure.superheatingElements = dataStream.readInt();
+			structure.temperature = dataStream.readDouble();
 			
 			if(dataStream.readInt() == 1)
 			{

@@ -8,7 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBasic.BasicType;
-import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -108,13 +108,16 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
-			structure.superheatingElements = new NodeCounter(new NodeChecker() {
-				@Override
-				public boolean isValid(Coord4D coord) 
-				{
-					return coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntitySuperheatingElement;
-				}
-			}).calculate(elements.iterator().next());
+			if(elements.size() > 0)
+			{
+				structure.superheatingElements = new NodeCounter(new NodeChecker() {
+					@Override
+					public boolean isValid(Coord4D coord) 
+					{
+						return coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntitySuperheatingElement;
+					}
+				}).calculate(elements.iterator().next());
+			}
 			
 			if(elements.size() > structure.superheatingElements)
 			{
@@ -154,9 +157,9 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				@Override
 				public boolean isValid(Coord4D coord) 
 				{
-					return coord.yCoord >= structure.renderLocation.yCoord && coord.yCoord < initDisperser.yCoord && 
-							coord.xCoord >= structure.renderLocation.xCoord && coord.xCoord <= structure.renderLocation.xCoord+structure.volLength && 
-							coord.zCoord >= structure.renderLocation.zCoord && coord.zCoord <= structure.renderLocation.zCoord+structure.volWidth &&
+					return coord.yCoord >= structure.renderLocation.yCoord-1 && coord.yCoord < initDisperser.yCoord && 
+							coord.xCoord >= structure.renderLocation.xCoord && coord.xCoord < structure.renderLocation.xCoord+structure.volLength && 
+							coord.zCoord >= structure.renderLocation.zCoord && coord.zCoord < structure.renderLocation.zCoord+structure.volWidth &&
 							(coord.isAirBlock(pointer.getWorldObj()) || isViableNode(coord.xCoord, coord.yCoord, coord.zCoord));
 				}
 			}).calculate(initAir);
@@ -168,7 +171,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
-			int steamHeight = (structure.renderLocation.yCoord+structure.volHeight)-initDisperser.yCoord;
+			int steamHeight = (structure.renderLocation.yCoord+structure.volHeight-2)-initDisperser.yCoord;
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
 			
 			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, structure.renderLocation.zCoord, initDisperser.yCoord+1);

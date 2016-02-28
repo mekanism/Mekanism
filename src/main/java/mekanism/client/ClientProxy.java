@@ -57,6 +57,7 @@ import mekanism.client.gui.GuiSideConfiguration;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiThermalEvaporationController;
+import mekanism.client.gui.GuiThermoelectricBoiler;
 import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
@@ -523,6 +524,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator)tileEntity);
 			case 53:
 				return new GuiResistiveHeater(player.inventory, (TileEntityResistiveHeater)tileEntity);
+			case 54:
+				return new GuiThermoelectricBoiler(player.inventory, (TileEntityBoilerCasing)tileEntity);
 		}
 		
 		return null;

@@ -1,7 +1,7 @@
 package mekanism.common.content.boiler;
 
 import mekanism.api.Coord4D;
-import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;

@@ -1,15 +1,14 @@
-package mekanism.generators.client.gui.element;
+package mekanism.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiBoilerTab.TurbineTab;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.client.gui.element.GuiTurbineTab.BoilerTab;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import codechicken.lib.vec.Rectangle4i;
@@ -17,13 +16,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiTurbineTab extends GuiElement
+public class GuiBoilerTab extends GuiElement
 {
 	private TileEntity tileEntity;
-	private TurbineTab tabType;
+	private BoilerTab tabType;
 	private int yPos;
 
-	public GuiTurbineTab(IGuiWrapper gui, TileEntity tile, TurbineTab type, int y, ResourceLocation def)
+	public GuiBoilerTab(IGuiWrapper gui, TileEntity tile, BoilerTab type, int y, ResourceLocation def)
 	{
 		super(type.getResource(), gui, def);
 
@@ -85,16 +84,16 @@ public class GuiTurbineTab extends GuiElement
 		}
 	}
 	
-	public static enum BoilerTab
+	public static enum TurbineTab
 	{
-		MAIN("GuiGasesTab.png", 6, "gui.main"),
-		STAT("GuiStatsTab.png", 7, "gui.stats");
+		MAIN("GuiGasesTab.png", 54, "gui.main"),
+		STAT("GuiStatsTab.png", 55, "gui.stats");
 		
 		private String path;
 		private int guiId;
 		private String desc;
 		
-		private BoilerTab(String s, int id, String s1)
+		private TurbineTab(String s, int id, String s1)
 		{
 			path = s;
 			guiId = id;

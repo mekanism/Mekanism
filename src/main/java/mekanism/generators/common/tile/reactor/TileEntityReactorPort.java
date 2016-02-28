@@ -257,6 +257,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			return getReactor().getInsulationCoefficient(side);
 		}
+		
 		return 0;
 	}
 

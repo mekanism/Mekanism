@@ -72,8 +72,6 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
-import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
@@ -1204,7 +1202,6 @@ public class Mekanism
 		GasRegistry.register(new Gas("deuterium")).registerFluid();
 		GasRegistry.register(new Gas("tritium")).registerFluid();
 		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
-		GasRegistry.register(new Gas("steam")).registerFluid();
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
