@@ -73,7 +73,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	}
 	
 	@Override
-	public boolean isInteriorValid(SynchronizedMatrixData structure)
+	protected boolean canForm(SynchronizedMatrixData structure)
 	{
 		for(Coord4D coord : innerNodes)
 		{

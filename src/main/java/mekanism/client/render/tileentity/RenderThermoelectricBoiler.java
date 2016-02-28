@@ -27,7 +27,18 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick)
 	{
-		
+		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null)
+		{
+			if(tileEntity.structure.waterStored != null && tileEntity.structure.waterStored.amount != 0)
+			{
+				
+			}
+			
+			if(tileEntity.structure.steamStored != null && tileEntity.structure.steamStored.amount != 0)
+			{
+				
+			}
+		}
 	}
 	
 	public static void resetDisplayInts()
