@@ -129,7 +129,10 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 					{
 						int steamAmount = structure.steamStored != null ? structure.steamStored.amount : 0;
 						double heatAvailable = structure.getHeatAvailable();
-						int amountToBoil = Math.min((int)Math.floor(heatAvailable / structure.enthalpyOfVaporization), structure.waterStored.amount);
+						
+						structure.lastMaxBoil = (int)Math.floor(heatAvailable / SynchronizedBoilerData.getHeatEnthalpy());
+								
+						int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterStored.amount);
 						amountToBoil = Math.min(amountToBoil, (structure.steamVolume*BoilerUpdateProtocol.STEAM_PER_TANK)-steamAmount);
 						structure.waterStored.amount -= amountToBoil;
 						
@@ -141,10 +144,12 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 							structure.steamStored.amount += amountToBoil;
 						}
 						
+						structure.temperature -= (amountToBoil*SynchronizedBoilerData.getHeatEnthalpy())/structure.locations.size();
 						structure.lastBoilRate = amountToBoil;
 					}
 					else {
 						structure.lastBoilRate = 0;
+						structure.lastMaxBoil = 0;
 					}
 					
 					structure.prevWater = structure.waterStored;
@@ -208,7 +213,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			data.add(structure.lastBoilRate);
 			data.add(structure.superheatingElements);
 			data.add(structure.temperature);
-			data.add(Math.max(0, structure.getHeatAvailable()));
+			data.add(structure.lastMaxBoil);
 
 			if(structure.waterStored != null)
 			{
@@ -271,7 +276,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			structure.lastBoilRate = dataStream.readInt();
 			structure.superheatingElements = dataStream.readInt();
 			structure.temperature = dataStream.readDouble();
-			structure.clientHeatAvailable = dataStream.readDouble();
+			structure.lastMaxBoil = dataStream.readInt();
 			
 			if(dataStream.readInt() == 1)
 			{

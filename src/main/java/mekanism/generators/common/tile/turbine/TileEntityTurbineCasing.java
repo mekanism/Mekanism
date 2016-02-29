@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -63,7 +64,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 					
 					if(stored > 0 && getEnergy() < structure.getEnergyCapacity())
 					{
-						double energyMultiplier = generators.turbineBaseEnergyPerSteam*Math.min(structure.blades, structure.coils*generators.turbineBladesPerCoil);
+						double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(structure.blades, structure.coils*generators.turbineBladesPerCoil);
 						double rate = structure.lowerVolume*(structure.getDispersers()*generators.turbineDisperserGasFlow);						
 						rate = Math.min(rate, structure.vents*generators.turbineVentGasFlow);
 						

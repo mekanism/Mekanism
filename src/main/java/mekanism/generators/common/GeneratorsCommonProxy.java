@@ -100,7 +100,6 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		loadWindConfiguration();
 		
 		generators.turbineBladesPerCoil = Mekanism.configuration.get("generation", "TurbineBladesPerCoil", 4).getInt();
-		generators.turbineBaseEnergyPerSteam = Mekanism.configuration.get("generation", "TurbineBaseEnergyPerSteam", 10D).getDouble();
 		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
 		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
 

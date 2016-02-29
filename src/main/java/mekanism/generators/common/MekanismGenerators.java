@@ -208,7 +208,6 @@ public class MekanismGenerators implements IModule
 		dataStream.writeInt(generators.windGenerationMaxY);
 		
 		dataStream.writeInt(generators.turbineBladesPerCoil);
-		dataStream.writeDouble(generators.turbineBaseEnergyPerSteam);
 		dataStream.writeDouble(generators.turbineVentGasFlow);
 		dataStream.writeDouble(generators.turbineDisperserGasFlow);
 	}
@@ -230,7 +229,6 @@ public class MekanismGenerators implements IModule
 		generators.windGenerationMaxY = dataStream.readInt();
 		
 		generators.turbineBladesPerCoil = dataStream.readInt();
-		generators.turbineBaseEnergyPerSteam = dataStream.readDouble();
 		generators.turbineVentGasFlow = dataStream.readDouble();
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
 	}

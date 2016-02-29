@@ -13,6 +13,7 @@ import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.LangUtils;
@@ -47,9 +48,7 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				double max = Math.floor(tileEntity.structure.clientHeatAvailable / tileEntity.structure.enthalpyOfVaporization);
-				
-				return (double)tileEntity.structure.lastBoilRate/max;
+				return (double)tileEntity.structure.lastBoilRate/(double)tileEntity.structure.lastMaxBoil;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiThermoelectricBoiler.png"), 24, 13));
 		guiElements.add(new GuiRateBar(this, new IRateInfoHandler()
@@ -57,17 +56,14 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 			@Override
 			public String getTooltip()
 			{
-				int max = (int)Math.floor(tileEntity.structure.clientHeatAvailable / tileEntity.structure.enthalpyOfVaporization);
-				
-				return LangUtils.localize("gui.maxBoil") + ": " + max + " mB/t";
+				return LangUtils.localize("gui.maxBoil") + ": " + tileEntity.structure.lastMaxBoil + " mB/t";
 			}
 			
 			@Override
 			public double getLevel()
 			{
-				double max = Math.floor(tileEntity.structure.clientHeatAvailable / tileEntity.structure.enthalpyOfVaporization);
-				double cap = (tileEntity.structure.superheatingElements*general.superheatingHeatTransfer) / tileEntity.structure.enthalpyOfVaporization;
-				return max/cap;
+				double cap = (tileEntity.structure.superheatingElements*general.superheatingHeatTransfer) / SynchronizedBoilerData.getHeatEnthalpy();
+				return (double)tileEntity.structure.lastMaxBoil/cap;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiThermoelectricBoiler.png"), 144, 13));
 		guiElements.add(new GuiHeatInfo(new IInfoHandler() {
@@ -89,11 +85,9 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 5, 0x404040);
 		
-		double max = (int)Math.floor(tileEntity.structure.clientHeatAvailable / tileEntity.structure.enthalpyOfVaporization);
-		
 		renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils.getTemperatureDisplay(tileEntity.structure.temperature, TemperatureUnit.AMBIENT), 43, 30, 0x00CD00, 90);
 		renderScaledText(LangUtils.localize("gui.boilRate") + ": " + tileEntity.structure.lastBoilRate + " mB/t", 43, 39, 0x00CD00, 90);
-		renderScaledText(LangUtils.localize("gui.maxBoil") + ": " + max + " mB/t", 43, 48, 0x00CD00, 90);
+		renderScaledText(LangUtils.localize("gui.maxBoil") + ": " + tileEntity.structure.lastMaxBoil + " mB/t", 43, 48, 0x00CD00, 90);
 		
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{

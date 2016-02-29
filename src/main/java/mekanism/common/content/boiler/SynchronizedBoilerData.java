@@ -28,16 +28,13 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	
 	public double lastEnvironmentLoss;
 	public int lastBoilRate;
-	
-	public double clientHeatAvailable;
+	public int lastMaxBoil;
 
 	public double temperature;
 
 	public double heatToAbsorb;
 
 	public double heatCapacity = 1000;
-
-	public double enthalpyOfVaporization = 10;
 	
 	public int superheatingElements;
 	
@@ -52,6 +49,14 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	public Coord4D upperRenderLocation;
 
 	public Set<ValveData> valves = new HashSet<ValveData>();
+	
+	/**
+	 * @return how much heat energy is needed to convert one unit of water into steam
+	 */
+	public static double getHeatEnthalpy()
+	{
+		return general.maxEnergyPerSteam/general.energyPerHeat;
+	}
 	
 	public double getHeatAvailable()
 	{

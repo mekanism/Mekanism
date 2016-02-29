@@ -62,6 +62,7 @@ public class MekanismConfig
 		public static double evaporationSolarMultiplier = 0.2;
 		public static double evaporationMaxTemp = 3000;
 		public static double energyPerHeat = 1000;
+		public static double maxEnergyPerSteam = 100;
 		public static double superheatingHeatTransfer = 10000;
 	}
 
@@ -139,7 +140,6 @@ public class MekanismConfig
 		public static int windGenerationMaxY;
 		
 		public static int turbineBladesPerCoil;
-		public static double turbineBaseEnergyPerSteam;
 		public static double turbineVentGasFlow;
 		public static double turbineDisperserGasFlow;
 	}

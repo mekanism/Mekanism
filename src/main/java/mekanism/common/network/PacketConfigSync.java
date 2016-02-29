@@ -68,6 +68,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.evaporationTempMultiplier);
 			dataStream.writeDouble(general.evaporationSolarMultiplier);
 			dataStream.writeDouble(general.evaporationMaxTemp);
+			dataStream.writeDouble(general.energyPerHeat);
+			dataStream.writeDouble(general.maxEnergyPerSteam);
+			dataStream.writeDouble(general.superheatingHeatTransfer);
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -151,6 +154,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.evaporationTempMultiplier = dataStream.readDouble();
 			general.evaporationSolarMultiplier = dataStream.readDouble();
 			general.evaporationMaxTemp = dataStream.readDouble();
+			general.energyPerHeat = dataStream.readDouble();
+			general.maxEnergyPerSteam = dataStream.readDouble();
+			general.superheatingHeatTransfer = dataStream.readDouble();
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
