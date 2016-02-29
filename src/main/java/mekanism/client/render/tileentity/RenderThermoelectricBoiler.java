@@ -42,7 +42,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick)
 	{
-		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null)
+		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null && tileEntity.structure.upperRenderLocation != null)
 		{
 			if(tileEntity.structure.waterStored != null && tileEntity.structure.waterStored.amount != 0)
 			{
@@ -52,8 +52,6 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				data.height = (tileEntity.structure.upperRenderLocation.yCoord-1)-tileEntity.structure.renderLocation.yCoord;
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
-				
-				System.out.println("Water height: " + data.height);
 
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				
@@ -70,7 +68,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 					if(tileEntity.structure.waterStored.getFluid().isGaseous())
 					{
-						GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.waterStored.amount / (float)tileEntity.clientWaterCapacity)+0.3F));
+						GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.waterStored.amount / (float)tileEntity.clientWaterCapacity)+MekanismRenderer.GAS_RENDER_BASE));
 						displayList[getStages(data.height)-1].render();
 					}
 					else {
@@ -108,8 +106,6 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				data.height = (tileEntity.structure.renderLocation.yCoord+tileEntity.structure.volHeight-2)-(tileEntity.structure.upperRenderLocation.yCoord);
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
-				
-				System.out.println("Steam height: " + data.height);
 
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				
@@ -124,7 +120,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 	
 					DisplayInteger display = getUpperDisplay(data, tileEntity.structure.steamStored.getFluid(), tileEntity.getWorldObj());
 	
-					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.steamStored.amount / (float)tileEntity.clientSteamCapacity)+0.3F));
+					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.steamStored.amount / (float)tileEntity.clientSteamCapacity)+MekanismRenderer.GAS_RENDER_BASE));
 					display.render();
 	
 					MekanismRenderer.glowOff();
@@ -179,7 +175,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				toReturn.minZ = 0 + .01;
 
 				toReturn.maxX = data.length - .01;
-				toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
+				toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
 				toReturn.maxZ = data.width - .01;
 
 				MekanismRenderer.renderObject(toReturn);

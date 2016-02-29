@@ -66,7 +66,7 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 			public double getLevel()
 			{
 				double max = Math.floor(tileEntity.structure.clientHeatAvailable / tileEntity.structure.enthalpyOfVaporization);
-				double cap = tileEntity.structure.superheatingElements*general.superheatingHeatTransfer;
+				double cap = (tileEntity.structure.superheatingElements*general.superheatingHeatTransfer) / tileEntity.structure.enthalpyOfVaporization;
 				return max/cap;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiThermoelectricBoiler.png"), 144, 13));

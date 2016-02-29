@@ -82,7 +82,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 	
 					DisplayInteger display = getListAndRender(data, tileEntity.getWorldObj());
 	
-					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.structure.getFluidCapacity())+0.3F));
+					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.structure.getFluidCapacity())+MekanismRenderer.GAS_RENDER_BASE));
 					display.render();
 	
 					MekanismRenderer.glowOff();

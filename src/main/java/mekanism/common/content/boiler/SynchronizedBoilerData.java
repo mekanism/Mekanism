@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer
 {
-	public static double CASING_INSULATION_COEFFICIENT = 10;
+	public static double CASING_INSULATION_COEFFICIENT = 1;
 	public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 	public static double BASE_BOIL_TEMP = 100-(TemperatureUnit.AMBIENT.zeroOffset-TemperatureUnit.CELSIUS.zeroOffset);
 	

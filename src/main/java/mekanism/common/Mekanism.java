@@ -1205,7 +1205,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
-		FluidRegistry.registerFluid(new Fluid("steam"));
+		FluidRegistry.registerFluid(new Fluid("steam").setGaseous(true));
 		
 		for(Resource resource : Resource.values())
 		{

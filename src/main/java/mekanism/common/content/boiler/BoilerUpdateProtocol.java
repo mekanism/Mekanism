@@ -74,7 +74,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			//Ensure at least one disperser exists
 			if(dispersers.size() == 0)
 			{
-				System.out.println("No dispersers");
 				return false;
 			}
 			
@@ -90,7 +89,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 					
 					if(!(tile instanceof TileEntityPressureDisperser))
 					{
-						System.out.println("Missing disperser");
 						return false;
 					}
 					
@@ -101,7 +99,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			//If there are more dispersers than those on the plane found, the structure is invalid
 			if(dispersers.size() > 0)
 			{
-				System.out.println("Bad disperser");
 				return false;
 			}
 			
@@ -118,7 +115,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			
 			if(elements.size() > structure.superheatingElements)
 			{
-				System.out.println("Disconnected elements");
 				return false;
 			}
 			
@@ -144,7 +140,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			//Some air must exist for the structure to be valid
 			if(initAir == null)
 			{
-				System.out.println("No air");
 				return false;
 			}
 			
@@ -164,7 +159,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			//Make sure all air blocks are connected
 			if(totalAir > structure.waterVolume)
 			{
-				System.out.println("nonconnected air");
 				return false;
 			}
 			
@@ -172,7 +166,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
 			
 			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord+1, structure.renderLocation.zCoord);
-			System.out.println(structure.superheatingElements + " " + structure.waterVolume + " " + structure.steamVolume);
 			
 			return true;
 		}

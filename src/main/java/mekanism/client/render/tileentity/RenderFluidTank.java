@@ -59,7 +59,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer
 	
 			if(fluid.isGaseous())
 			{
-				GL11.glColor4f(1F, 1F, 1F, Math.min(1, fluidScale+0.3F));
+				GL11.glColor4f(1F, 1F, 1F, Math.min(1, fluidScale+MekanismRenderer.GAS_RENDER_BASE));
 				displayList[stages-1].render();
 			}
 			else {

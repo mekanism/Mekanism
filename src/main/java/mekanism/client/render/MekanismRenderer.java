@@ -60,6 +60,8 @@ public class MekanismRenderer
 	public static IIcon energyIcon;
 	public static IIcon heatIcon;
 	
+	public static float GAS_RENDER_BASE = 0.2F;
+	
 	public static Map<TransmissionType, IIcon> overlays = new HashMap<TransmissionType, IIcon>();
 	
 	private static float lightmapLastX;
