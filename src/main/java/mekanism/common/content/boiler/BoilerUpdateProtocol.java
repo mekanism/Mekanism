@@ -143,6 +143,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
+			//Gradle build requires these fields to be final
 			final Coord4D renderLocation = structure.renderLocation.clone();
 			final int volLength = structure.volLength;
 			final int volWidth = structure.volWidth;

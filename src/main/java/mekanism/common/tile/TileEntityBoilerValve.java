@@ -1,9 +1,11 @@
 package mekanism.common.tile;
 
+import mekanism.api.Coord4D;
 import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
 import mekanism.common.util.PipeUtils;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -17,31 +19,84 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 
 	public TileEntityBoilerValve()
 	{
-		super("Boiler Valve");
+		super("BoilerValve");
+		
 		waterTank = new BoilerWaterTank(this);
 		steamTank = new BoilerSteamTank(this);
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		super.onUpdate();
+		
+		if(!worldObj.isRemote)
+		{
+			if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord)
+			{
+				if(structure.steamStored != null && structure.steamStored.amount > 0)
+				{
+					for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+					{
+						TileEntity tile = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+						
+						if(tile instanceof IFluidHandler && !(tile instanceof TileEntityBoilerValve))
+						{
+							if(((IFluidHandler)tile).canFill(side.getOpposite(), structure.steamStored.getFluid()))
+							{
+								structure.steamStored.amount -= ((IFluidHandler)tile).fill(side.getOpposite(), structure.steamStored, true);
+								
+								if(structure.steamStored.amount <= 0)
+								{
+									structure.steamStored = null;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {waterTank.getInfo(), steamTank.getInfo()} : PipeUtils.EMPTY;
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			if(structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord)
+			{
+				return new FluidTankInfo[] {steamTank.getInfo()};
+			}
+			else {
+				return new FluidTankInfo[] {waterTank.getInfo()};
+			}
+		}
+		
+		return PipeUtils.EMPTY;
 	}
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		return waterTank.fill(resource, doFill);
+		if(structure != null && structure.upperRenderLocation != null && yCoord < structure.upperRenderLocation.yCoord)
+		{
+			return waterTank.fill(resource, doFill);
+		}
+		
+		return 0;
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(structure != null && structure.steamStored != null)
+		if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord)
 		{
-			if(resource.getFluid() == structure.steamStored.getFluid())
+			if(structure.steamStored != null)
 			{
-				return steamTank.drain(resource.amount, doDrain);
+				if(resource.getFluid() == structure.steamStored.getFluid())
+				{
+					return steamTank.drain(resource.amount, doDrain);
+				}
 			}
 		}
 
@@ -51,7 +106,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		if(structure != null)
+		if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord)
 		{
 			return steamTank.drain(maxDrain, doDrain);
 		}
@@ -62,12 +117,22 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			return structure.upperRenderLocation != null && yCoord < structure.upperRenderLocation.yCoord;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			return structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord;
+		}
+		
+		return false;
 	}
 }

@@ -235,10 +235,10 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 				data.add(0);
 			}
 
+			structure.upperRenderLocation.write(data);
+			
 			if(isRendering)
 			{
-				structure.upperRenderLocation.write(data);
-				
 				Set<ValveData> toSend = new HashSet<ValveData>();
 
 				for(ValveData valveData : structure.valves)
@@ -293,11 +293,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			else {
 				structure.steamStored = null;
 			}
+			
+			structure.upperRenderLocation = Coord4D.read(dataStream);
 	
 			if(isRendering)
 			{
-				structure.upperRenderLocation = Coord4D.read(dataStream);
-				
 				int size = dataStream.readInt();
 				
 				valveViewing.clear();
