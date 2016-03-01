@@ -78,7 +78,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			}
 			
 			//Find a single disperser contained within this multiblock
-			Coord4D initDisperser = dispersers.iterator().next();
+			final Coord4D initDisperser = dispersers.iterator().next();
 			
 			//Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
 			for(int x = structure.renderLocation.xCoord+1; x < structure.renderLocation.xCoord+structure.volLength-1; x++)
@@ -143,9 +143,11 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
+			final Coord4D renderLocation = structure.renderLocation.clone();
+			
 			structure.waterVolume = new NodeCounter(new NodeChecker() {
 				@Override
-				public final boolean isValid(Coord4D coord) 
+				public final boolean isValid(final Coord4D coord) 
 				{
 					return coord.yCoord >= structure.renderLocation.yCoord-1 && coord.yCoord < initDisperser.yCoord && 
 							coord.xCoord >= structure.renderLocation.xCoord && coord.xCoord < structure.renderLocation.xCoord+structure.volLength && 

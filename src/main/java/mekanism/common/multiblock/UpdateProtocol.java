@@ -581,7 +581,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	public static abstract class NodeChecker
 	{
-		public abstract boolean isValid(Coord4D coord);
+		public abstract boolean isValid(final Coord4D coord);
 		
 		public boolean shouldContinue(int iterated)
 		{
