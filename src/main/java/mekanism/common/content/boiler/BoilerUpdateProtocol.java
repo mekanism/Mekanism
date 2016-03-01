@@ -144,14 +144,16 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			}
 			
 			final Coord4D renderLocation = structure.renderLocation.clone();
+			final int volLength = structure.volLength;
+			final int volWidth = structure.volWidth;
 			
 			structure.waterVolume = new NodeCounter(new NodeChecker() {
 				@Override
 				public final boolean isValid(Coord4D coord) 
 				{
 					return coord.yCoord >= renderLocation.yCoord-1 && coord.yCoord < initDisperser.yCoord && 
-							coord.xCoord >= renderLocation.xCoord && coord.xCoord < renderLocation.xCoord+structure.volLength && 
-							coord.zCoord >= renderLocation.zCoord && coord.zCoord < renderLocation.zCoord+structure.volWidth &&
+							coord.xCoord >= renderLocation.xCoord && coord.xCoord < renderLocation.xCoord+volLength && 
+							coord.zCoord >= renderLocation.zCoord && coord.zCoord < renderLocation.zCoord+volWidth &&
 							(coord.isAirBlock(pointer.getWorldObj()) || isViableNode(coord.xCoord, coord.yCoord, coord.zCoord));
 				}
 			}).calculate(initAir);
