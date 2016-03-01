@@ -524,6 +524,11 @@ gui.transferred=Transferred
 gui.dissipated=Dissipated
 gui.boilRate=Boil Rate
 gui.maxBoil=Max Boil
+gui.maxWater=Max Water
+gui.maxSteam=Max Steam
+gui.heatTransfer=Heat Transfer
+gui.superheaters=Superheaters
+gui.boilCapacity=Boil Capacity
 
 gui.reactor.injectionRate=Injection Rate
 

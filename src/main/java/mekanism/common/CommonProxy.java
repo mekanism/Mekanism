@@ -545,6 +545,8 @@ public class CommonProxy implements IGuiProvider
 				return new ContainerResistiveHeater(player.inventory, (TileEntityResistiveHeater)tileEntity);
 			case 54:
 				return new ContainerFilter(player.inventory, (TileEntityContainerBlock)tileEntity);
+			case 55:
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}
 
 		return null;

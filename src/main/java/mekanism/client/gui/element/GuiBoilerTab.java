@@ -106,7 +106,7 @@ public class GuiBoilerTab extends GuiElement
 		
 		public void openGui(TileEntity tile)
 		{
-			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 1, guiId));
+			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
 		}
 		
 		public String getDesc()

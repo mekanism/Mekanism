@@ -9,6 +9,7 @@ import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
+import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -526,6 +527,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiResistiveHeater(player.inventory, (TileEntityResistiveHeater)tileEntity);
 			case 54:
 				return new GuiThermoelectricBoiler(player.inventory, (TileEntityBoilerCasing)tileEntity);
+			case 55:
+				return new GuiBoilerStats(player.inventory, (TileEntityBoilerCasing)tileEntity);
 		}
 		
 		return null;

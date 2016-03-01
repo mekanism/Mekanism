@@ -143,11 +143,9 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
-			final int total = totalAir;
-			
 			structure.waterVolume = new NodeCounter(new NodeChecker() {
 				@Override
-				public boolean isValid(Coord4D coord) 
+				public final boolean isValid(Coord4D coord) 
 				{
 					return coord.yCoord >= structure.renderLocation.yCoord-1 && coord.yCoord < initDisperser.yCoord && 
 							coord.xCoord >= structure.renderLocation.xCoord && coord.xCoord < structure.renderLocation.xCoord+structure.volLength && 
