@@ -6,11 +6,14 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +32,7 @@ public class WailaDataProvider implements IWailaDataProvider
 		registrar.registerHeadProvider(provider, TileEntityInductionCell.class);
 		registrar.registerHeadProvider(provider, TileEntityInductionProvider.class);
 		registrar.registerHeadProvider(provider, TileEntityFactory.class);
+		registrar.registerHeadProvider(provider, TileEntityBoundingBlock.class);
 	}
 	
 	@Override
@@ -55,6 +59,16 @@ public class WailaDataProvider implements IWailaDataProvider
 		else if(tile instanceof TileEntityFactory)
 		{
 			currenttip.set(0, EnumColor.WHITE + ((TileEntityFactory)tile).getInventoryName());
+		}
+		else if(tile instanceof TileEntityBoundingBlock)
+		{
+			TileEntityBoundingBlock bound = (TileEntityBoundingBlock)tile;
+			Coord4D coord = new Coord4D(bound.mainX, bound.mainY, bound.mainZ, tile.getWorldObj().provider.dimensionId);
+			
+			if(bound.receivedCoords && coord.getTileEntity(tile.getWorldObj()) instanceof IInventory)
+			{
+				currenttip.set(0, EnumColor.WHITE + ((IInventory)coord.getTileEntity(tile.getWorldObj())).getInventoryName());
+			}
 		}
 		
 		return currenttip;

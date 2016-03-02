@@ -35,11 +35,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState, IHasSound, ISoundSource
 {
 	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
+	public static final int MAX_STEAM = MAX_WATER * 1000;
 
 	public static final int MAX_FUEL = 1 * FluidContainerRegistry.BUCKET_VOLUME;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);
-	public FluidTank steamTank = new FluidTank(MAX_WATER*1000);
+	public FluidTank steamTank = new FluidTank(MAX_STEAM);
 
 	public GasTank deuteriumTank = new GasTank(MAX_FUEL);
 	public GasTank tritiumTank = new GasTank(MAX_FUEL);
@@ -217,7 +218,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			data.add(fuelTank.getStored());
 			data.add(deuteriumTank.getStored());
 			data.add(tritiumTank.getStored());
+			data.add(waterTank.getCapacity());
 			data.add(waterTank.getFluidAmount());
+			data.add(steamTank.getCapacity());
 			data.add(steamTank.getFluidAmount());
 		}
 
@@ -272,7 +275,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
 			deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
 			tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
+			waterTank.setCapacity(dataStream.readInt());
 			waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
+			steamTank.setCapacity(dataStream.readInt());
 			steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
 		}
 		else if(getReactor() != null)

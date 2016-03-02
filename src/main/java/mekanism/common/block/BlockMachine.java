@@ -26,7 +26,7 @@ import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
-import mekanism.common.recipe.MekanismRecipe;
+import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.tile.*;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -690,7 +690,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
@@ -1090,7 +1090,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		public boolean isElectric;
 		public boolean hasModel;
 		public boolean supportsUpgrades;
-		public Collection<MekanismRecipe> machineRecipes = new HashSet<MekanismRecipe>();
+		public Collection<ShapedMekanismRecipe> machineRecipes = new HashSet<ShapedMekanismRecipe>();
 
 		private MachineType(MachineBlock block, int i, String s, int j, Class<? extends TileEntity> tileClass, boolean electric, boolean model, boolean upgrades)
 		{
@@ -1109,17 +1109,17 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			return machines.isEnabled(this.name);
 		}
 		
-		public void addRecipes(Collection<MekanismRecipe> recipes)
+		public void addRecipes(Collection<ShapedMekanismRecipe> recipes)
 		{
 			machineRecipes.addAll(recipes);
 		}
 		
-		public void addRecipe(MekanismRecipe recipe)
+		public void addRecipe(ShapedMekanismRecipe recipe)
 		{
 			machineRecipes.add(recipe);
 		}
 		
-		public Collection<MekanismRecipe> getRecipes()
+		public Collection<ShapedMekanismRecipe> getRecipes()
 		{
 			return machineRecipes;
 		}

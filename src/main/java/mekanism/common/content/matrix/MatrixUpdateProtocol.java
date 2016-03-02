@@ -73,7 +73,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	}
 	
 	@Override
-	protected void onFormed()
+	public boolean isInteriorValid(SynchronizedMatrixData structure)
 	{
 		for(Coord4D coord : innerNodes)
 		{
@@ -81,14 +81,16 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 			
 			if(tile instanceof TileEntityInductionCell)
 			{
-				structureFound.cells.add(coord);
-				structureFound.storageCap += ((TileEntityInductionCell)tile).tier.maxEnergy;
+				structure.cells.add(coord);
+				structure.storageCap += ((TileEntityInductionCell)tile).tier.maxEnergy;
 			}
 			else if(tile instanceof TileEntityInductionProvider)
 			{
-				structureFound.providers.add(coord);
-				structureFound.transferCap += ((TileEntityInductionProvider)tile).tier.output;
+				structure.providers.add(coord);
+				structure.transferCap += ((TileEntityInductionProvider)tile).tier.output;
 			}
 		}
+		
+		return true;
 	}
 }

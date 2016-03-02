@@ -4,10 +4,15 @@ import java.util.List;
 
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.ShapedMekanismRecipe;
+import mekanism.common.recipe.ShapelessMekanismRecipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.util.RecipeUtils;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class IMCHandler
 {
@@ -21,10 +26,58 @@ public class IMCHandler
 				try {
 					boolean found = false;
 					boolean delete = false;
-
-					if(msg.key.startsWith("Delete"))
+					
+					String message = msg.key;
+					
+					if(message.equals("ShapedMekanismRecipe"))
 					{
-						msg.key.replace("Delete", "");
+						ShapedMekanismRecipe recipe = ShapedMekanismRecipe.create(msg.getNBTValue());
+						
+						if(recipe != null)
+						{
+							GameRegistry.addRecipe(recipe);
+							Mekanism.logger.info("[Mekanism] " + msg.getSender() + " added a shaped recipe to the recipe list.");
+						}
+						else {
+							Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to add an invalid shaped recipe.");
+						}
+						
+						found = true;
+					}
+					else if(message.equals("ShapelessMekanismRecipe"))
+					{
+						ShapelessMekanismRecipe recipe = ShapelessMekanismRecipe.create(msg.getNBTValue());
+						
+						if(recipe != null)
+						{
+							GameRegistry.addRecipe(recipe);
+							Mekanism.logger.info("[Mekanism] " + msg.getSender() + " added a shapeless recipe to the recipe list.");
+						}
+						else {
+							Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to add an invalid shapeless recipe.");
+						}
+						
+						found = true;
+					}
+					else if(message.equals("DeleteMekanismRecipes") || message.equals("RemoveMekanismRecipes"))
+					{
+						ItemStack stack = RecipeUtils.loadRecipeItemStack(msg.getNBTValue());
+						
+						if(stack != null)
+						{
+							RecipeUtils.removeRecipes(stack);
+							Mekanism.logger.info("[Mekanism] " + msg.getSender() + " removed a Mekanism recipe from the recipe list.");
+						}
+						else {
+							Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to remove a Mekanism recipe with an invalid output.");
+						}
+						
+						found = true;
+					}
+
+					if(message.startsWith("Delete") || message.startsWith("Remove"))
+					{
+						message = message.replace("Delete", "").replace("Remove", "");
 						delete = true;
 					}
 
@@ -51,11 +104,11 @@ public class IMCHandler
 									}
 								}
 								else {
-									Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to " + (delete ? "remove" : "add") + "recipe of type " + type.getRecipeName() + " with an invalid output.");
+									Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to " + (delete ? "remove" : "add") + " recipe of type " + type.getRecipeName() + " with an invalid output.");
 								}
 							}
 							else {
-								Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to " + (delete ? "remove" : "add") + "recipe of type " + type.getRecipeName() + " with an invalid input.");
+								Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to " + (delete ? "remove" : "add") + " recipe of type " + type.getRecipeName() + " with an invalid input.");
 							}
 							
 							found = true;

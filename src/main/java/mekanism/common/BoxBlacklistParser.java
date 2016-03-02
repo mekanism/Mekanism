@@ -65,15 +65,15 @@ public final class BoxBlacklistParser
 				continue;
 			}
 
-			String[] split = readingLine.split(":");
+			String[] split = readingLine.split(" ");
 
-			if(split.length < 2 || split.length > 3 || !isInteger(split[split.length-1]))
+			if(split.length != 2 || !isInteger(split[split.length-1]))
 			{
 				Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
 				continue;
 			}
 			
-			String blockName = (split.length == 2) ? split[0].trim() : split[0].trim() + ":" + split[1].trim();
+			String blockName = split[0].trim();
 			
 			Block block = Block.getBlockFromName(blockName);
 			
@@ -99,10 +99,10 @@ public final class BoxBlacklistParser
 		writer.append("# Use this file to tell Mekanism which blocks should not be picked up by a cardboard box.");
 		writer.newLine();
 
-		writer.append("# Proper syntax is \"NAME:META\". Example (for stone):");
+		writer.append("# Proper syntax is \"NAME META\". Example (for stone):");
 		writer.newLine();
 
-		writer.append("# stone:0");
+		writer.append("# minecraft:stone 0");
 
 		writer.flush();
 		writer.close();

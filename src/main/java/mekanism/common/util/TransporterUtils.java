@@ -55,19 +55,24 @@ public final class TransporterUtils
 	public static boolean isValidAcceptorOnSide(TileEntity tile, ForgeDirection side)
 	{
 		if(tile instanceof ITransmitterTile || !(tile instanceof IInventory))
+		{
 			return false;
+		}
 
 		IInventory inventory = (IInventory)tile;
 
 		if(inventory.getSizeInventory() > 0)
 		{
 			if(!(inventory instanceof ISidedInventory))
+			{
 				return true;
+			}
 
 			int[] slots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(side.getOpposite().ordinal());
 
 			return (slots != null && slots.length > 0);
 		}
+		
 		return false;
 	}
 

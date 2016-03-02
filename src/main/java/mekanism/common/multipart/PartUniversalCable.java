@@ -295,14 +295,14 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
-		return 0;
+		return (int)Math.round(getEnergy() * general.TO_TE);
 	}
 
 	@Override
 	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getTransmitter().getTransmitterNetwork().getEnergyNeeded() * general.TO_TE);
+		return (int)Math.round(getMaxEnergy() * general.TO_TE);
 	}
 
 	@Override
@@ -337,8 +337,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		if(getTransmitter().hasTransmitterNetwork())
 		{
 			return getTransmitter().getTransmitterNetwork().getCapacity();
-		} else
-		{
+		} 
+		else {
 			return getCapacity();
 		}
 	}
