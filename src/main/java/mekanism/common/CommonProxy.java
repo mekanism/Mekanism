@@ -42,6 +42,7 @@ import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.inventory.container.ContainerPRC;
+import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
 import mekanism.common.inventory.container.ContainerRobitInventory;
@@ -104,6 +105,7 @@ import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
@@ -528,7 +530,7 @@ public class CommonProxy implements IGuiProvider
 			case 45:
 				return new ContainerLaserTractorBeam(player.inventory, (TileEntityLaserTractorBeam)tileEntity);
 			case 46:
-				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
+				return new ContainerQuantumEntangloporter(player.inventory, (TileEntityQuantumEntangloporter)tileEntity);
 			case 47:
 				return new ContainerSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator)tileEntity);
 			case 48:

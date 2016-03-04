@@ -62,7 +62,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		super("QuantumEntangloporter", 0);
 		
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 		
 		for(TransmissionType type : TransmissionType.values())
 		{
@@ -190,7 +190,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			}
 		}
 		
-		Frequency freq = new Frequency(name, owner).setPublic(publicFreq);
+		Frequency freq = new InventoryFrequency(name, owner).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = (InventoryFrequency)freq;

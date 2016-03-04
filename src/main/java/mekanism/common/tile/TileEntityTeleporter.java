@@ -179,6 +179,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			{
 				frequency = freq;
 				frequency.activeCoords.add(Coord4D.get(this));
+				
 				return;
 			}
 		}
@@ -221,7 +222,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			return Mekanism.privateTeleporters.get(owner);
 		}
 		
-		return FrequencyManager.loadOnly(world, owner, Frequency.class);
+		return FrequencyManager.loadOnly(world, owner, Frequency.class, "Teleporter");
 	}
 	
 	@Override

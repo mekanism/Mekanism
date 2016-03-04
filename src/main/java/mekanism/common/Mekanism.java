@@ -175,10 +175,10 @@ public class Mekanism
 	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<SynchronizedBoilerData>("thermoelectricBoiler");
 	
 	/** FrequencyManagers for various networks */
-	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class);
+	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, "Teleporter");
 	public static Map<String, FrequencyManager> privateTeleporters = new HashMap<String, FrequencyManager>();
 	
-	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class);
+	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, "Entangloporter");
 	public static Map<String, FrequencyManager> privateEntangloporters = new HashMap<String, FrequencyManager>();
 	
 	/** Mekanism creative tab */

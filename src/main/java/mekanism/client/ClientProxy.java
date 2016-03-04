@@ -28,7 +28,6 @@ import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiEnergizedSmelter;
 import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiEnrichmentChamber;
-import mekanism.client.gui.GuiEntangledBlock;
 import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiFluidTank;
 import mekanism.client.gui.GuiFluidicPlenisher;
@@ -45,6 +44,7 @@ import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
+import mekanism.client.gui.GuiQuantumEntangloporter;
 import mekanism.client.gui.GuiResistiveHeater;
 import mekanism.client.gui.GuiRobitCrafting;
 import mekanism.client.gui.GuiRobitInventory;
@@ -148,7 +148,6 @@ import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
-import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
@@ -169,6 +168,7 @@ import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
@@ -510,7 +510,7 @@ public class ClientProxy extends CommonProxy
 			case 45:
 				return new GuiLaserTractorBeam(player.inventory, (TileEntityLaserTractorBeam)tileEntity);
 			case 46:
-				return new GuiEntangledBlock(player.inventory, (TileEntityQuantumEntangloporter)tileEntity);
+				return new GuiQuantumEntangloporter(player.inventory, (TileEntityQuantumEntangloporter)tileEntity);
 			case 47:
 				return new GuiSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator)tileEntity);
 			case 48:

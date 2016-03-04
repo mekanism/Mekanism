@@ -3,12 +3,9 @@ package mekanism.common.content.entangloporter;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.frequency.Frequency;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,8 +22,6 @@ public class InventoryFrequency extends Frequency
 	public GasTank storedGas = new GasTank(1000);
 	public ItemStack storedItem;
 	public double temperature;
-	
-	public Map<TransmissionType, TransferType> transmissions = new HashMap<TransmissionType, TransferType>();
 	
 	public InventoryFrequency(String n, String o)
 	{
@@ -66,11 +61,6 @@ public class InventoryFrequency extends Frequency
 		}
 		
 		nbtTags.setDouble("temperature", temperature);
-		
-		for(TransmissionType type : TransmissionType.values())
-		{
-			nbtTags.setInteger("transmission" + type.ordinal(), transmissions.get(type).ordinal());
-		}
 	}
 
 	@Override
@@ -96,11 +86,6 @@ public class InventoryFrequency extends Frequency
 		}
 		
 		temperature = nbtTags.getDouble("temperature");
-		
-		for(TransmissionType type : TransmissionType.values())
-		{
-			transmissions.put(type, TransferType.values()[nbtTags.getInteger("transmission" + type.ordinal())]);
-		}
 	}
 
 	@Override
@@ -131,11 +116,6 @@ public class InventoryFrequency extends Frequency
 		}
 		
 		data.add(temperature);
-		
-		for(TransmissionType type : TransmissionType.values())
-		{
-			data.add(transmissions.get(type).ordinal());
-		}
 	}
 
 	@Override
@@ -162,11 +142,6 @@ public class InventoryFrequency extends Frequency
 		}
 		
 		temperature = dataStream.readDouble();
-		
-		for(TransmissionType type : TransmissionType.values())
-		{
-			transmissions.put(type, TransferType.values()[dataStream.readInt()]);
-		}
 	}
 	
 	public static enum TransferType

@@ -223,7 +223,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				MekanismRenderer.loadDynamicTextures(register, MachineType.PRECISION_SAWMILL.name, icons[5], def);
 				break;
 			case MACHINE_BLOCK_3:
-				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
+				icons[0][0] = BASE_ICON;
 				icons[2][0] = BASE_ICON;
 				icons[4][0] = BASE_ICON;
 				MekanismRenderer.loadDynamicTextures(register, MachineType.OREDICTIONIFICATOR.name, icons[3], DefIcon.getAll(register.registerIcon("mekanism:OredictionificatorSide")));
@@ -1224,7 +1224,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			
 			for(MachineType type : MachineType.values())
 			{
-				if(type != QUANTUM_ENTANGLOPORTER && type != AMBIENT_ACCUMULATOR)
+				if(type != AMBIENT_ACCUMULATOR)
 				{
 					ret.add(type);
 				}

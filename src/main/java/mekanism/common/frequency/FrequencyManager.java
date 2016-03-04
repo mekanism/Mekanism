@@ -28,17 +28,21 @@ public class FrequencyManager
 	
 	private String owner;
 	
+	private String name;
+	
 	private Class<? extends Frequency> frequencyClass;
 	
-	public FrequencyManager(Class c)
+	public FrequencyManager(Class c, String n)
 	{
 		frequencyClass = c;
+		name = n;
+		
 		managers.add(this);
 	}
 	
-	public FrequencyManager(Class c, String s)
+	public FrequencyManager(Class c, String n, String s)
 	{
-		this(c);
+		this(c, n);
 		
 		owner = s;
 	}
@@ -173,9 +177,9 @@ public class FrequencyManager
 		}
 	}
 	
-	public static FrequencyManager loadOnly(World world, String owner, Class<? extends Frequency> freqClass)
+	public static FrequencyManager loadOnly(World world, String owner, Class<? extends Frequency> freqClass, String n)
 	{
-		FrequencyManager manager = new FrequencyManager(freqClass);
+		FrequencyManager manager = new FrequencyManager(freqClass, n);
 		String name = manager.getName();
 		
 		FrequencyDataHandler handler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, name);
@@ -295,7 +299,7 @@ public class FrequencyManager
 	
 	public String getName()
 	{
-		return owner != null ? owner + "FrequencyHandler" : "FrequencyHandler";
+		return owner != null ? (owner + "_" + name + "FrequencyHandler") : (name + "FrequencyHandler");
 	}
 	
 	public static void reset()
