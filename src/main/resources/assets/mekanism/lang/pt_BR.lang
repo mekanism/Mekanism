@@ -10,6 +10,8 @@ item.AtomicAlloy.name=Liga Atômica
 item.EnergyTablet.name=Tablete de Energia
 item.SpeedUpgrade.name=Upgrade de Velocidade
 item.EnergyUpgrade.name=Upgrade de Energia
+item.FilterUpgrade.name=Filter Upgrade
+item.GasUpgrade.name=Gas Upgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Desintegrador Atômico
 item.ElectricBow.name=Arco Elétrico
@@ -31,22 +33,26 @@ item.ElectrolyticCore.name=Núcleo Eletrolítico
 item.Sawdust.name=Serragem
 item.Salt.name=Sal
 item.BrineBucket.name=Balde de Salmoura
+item.LithiumBucket.name=Balde de Lítio	
+item.HeavyWaterBucket.name=Balde de Água Pesada
 item.FreeRunners.name=Corredores
 item.ArmoredJetpack.name=Jetpack Blindado
 item.FilterCard.name=Cartão de Filtro
 item.SeismicReader.name=Leitor Sísmico
-item.HDPEPellet.name=Pelota de HDPE
-item.HDPERod.name=Vara de HDPE
-item.HDPESheet.name=Folha de HDPE
+item.HDPEPellet.name=Pelota de PEAD
+item.HDPERod.name=Vara de PEAD
+item.HDPESheet.name=Folha de PEAD
 item.PlaStick.name=Plástico
 item.Substrate.name=Substrato
 item.Flamethrower.name=Lança-Chamas
+item.GaugeDropper.name=Medidor Conta-Gotas 
+item.BioFuel.name=Biocombustível
 
 //Control Circuits
 item.BasicControlCircuit.name=Circuito de Controle Básico
 item.AdvancedControlCircuit.name=Circuito de Controle Avançado
 item.EliteControlCircuit.name=Circuito de Controle Elite
-item.UltimateControlCircuit.name=Circuito de Controle Ultimate
+item.UltimateControlCircuit.name=Circuito de Controle Final
 
 //Gas Tank
 tile.GasTank.GasTank.name=Tanque de Gás
@@ -65,7 +71,7 @@ tile.BasicBlock.OsmiumBlock.name=Bloco de Ósmio
 tile.BasicBlock.BronzeBlock.name=Bloco de Bronze
 tile.BasicBlock.RefinedObsidian.name=Obsidiana Refinada
 tile.BasicBlock.CharcoalBlock.name=Bloco de Carvão Vegetal
-tile.BasicBlock.RefinedGlowstone.name=Glowstone Refinada
+tile.BasicBlock.RefinedGlowstone.name=Pedra Luminosa Refinada
 tile.BasicBlock.SteelBlock.name=Bloco de Aço
 tile.BasicBlock.Bin.name=Silo
 tile.BasicBlock.TeleporterFrame.name=Moldura do Teletransportador
@@ -75,32 +81,40 @@ tile.BasicBlock.DynamicGlass.name=Vidro Dinâmico
 tile.BasicBlock.DynamicValve.name=Válvula Dinâmica
 tile.BasicBlock.CopperBlock.name=Bloco de Cobre
 tile.BasicBlock.TinBlock.name=Bloco de Estanho
-tile.BasicBlock.SalinationController.name=Controlador de Salinização
-tile.BasicBlock.SalinationValve.name=Válvula de Salinização
+tile.BasicBlock.SolarEvaporationController.name=Controlador de Salinização
+tile.BasicBlock.SolarEvaporationValve.name=Válvula de Salinização
 
 //Basic Block 2 (second ID iteration)
-tile.BasicBlock2.SalinationBlock.name=Bloco de Salinização
+tile.BasicBlock2.SolarEvaporationBlock.name=Bloco de Salinização
+tile.BasicBlock2.InductionCasing.name=Caixa de Indução
+tile.BasicBlock2.InductionPort.name=Porta de Indução
+tile.BasicBlock2.InductionCellBasic.name=Célula de Indução Básica 
+tile.BasicBlock2.InductionCellAdvanced.name=Célula de Indução Avançada
+tile.BasicBlock2.InductionCellElite.name=Célula de Indução Elite
+tile.BasicBlock2.InductionCellUltimate.name=Célula de Indução Final
+tile.BasicBlock2.InductionProviderBasic.name=Provedor de Indução Básico
+tile.BasicBlock2.InductionProviderAdvanced.name=Provedor de Indução Avançado
+tile.BasicBlock2.InductionProviderElite.name=Provedor de Indução Elite
+tile.BasicBlock2.InductionProviderUltimate.name=Provedor de Indução Final
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Câmara de Enriquecimento
 tile.MachineBlock.OsmiumCompressor.name=Compressor de Ósmio
 tile.MachineBlock.Combiner.name=Combinador
 tile.MachineBlock.Crusher.name=Triturador
-tile.MachineBlock.BasicFactory.name=Fábrica Básica
-tile.MachineBlock.AdvancedFactory.name=Fábrica Avançada
-tile.MachineBlock.EliteFactory.name=Fábrica de Elite
+tile.MachineBlock.Factory.name=Fábrica
 tile.MachineBlock.MetallurgicInfuser.name=Infusor Metalúrgico
 tile.MachineBlock.PurificationChamber.name=Câmara de Purificação
 tile.MachineBlock.EnergizedSmelter.name=Fundição Energizada
 tile.MachineBlock.Teleporter.name=Teletransportador
 tile.MachineBlock.ElectricPump.name=Bomba Elétrica
 tile.MachineBlock.ElectricChest.name=Baú Elétrico
-tile.MachineBlock.Chargepad.name=Plataforma Recarregadora
+tile.MachineBlock.Chargepad.name=Base de Recarga
 tile.MachineBlock.LogisticalSorter.name=Classificador Logístico
 tile.MachineBlock.DigitalMiner.name=Minerador Digital
 
 //Machine Block 2 (second ID iteration)
-tile.MachineBlock2.RotaryCondensentrator.name=Condensentrator Rotatório
+tile.MachineBlock2.RotaryCondensentrator.name=Condensentrador Rotativo
 tile.MachineBlock2.ChemicalOxidizer.name=Oxidador Químico
 tile.MachineBlock2.ChemicalInfuser.name=Infusor Químico
 tile.MachineBlock2.ChemicalCombiner.name=Combinador Químico
@@ -112,12 +126,16 @@ tile.MachineBlock2.ChemicalWasher.name=Lavador Químico
 tile.MachineBlock2.ChemicalCrystallizer.name=Cristalizador Químico
 tile.MachineBlock2.SeismicVibrator.name=Vibrador Sísmico
 tile.MachineBlock2.PressurizedReactionChamber.name=Câmara de Reação Pressurizada
-tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+tile.MachineBlock2.PressurizedReactionChamber.short.name=CRP
 tile.MachineBlock2.PortableTank.name=Tanque Portátil
-tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+tile.MachineBlock2.FluidicPlenisher.name=Abastecedor Fluídico
 tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Amplificador de Laser
-tile.MachineBlock2.LaserTractorBeam.name=Feixe do trator do Laser
+tile.MachineBlock2.LaserTractorBeam.name=Feixe Trator do Laser
+
+//Machine Block 3 (third ID iteration)
+tile.MachineBlock3.SolarNeutronActivator.name=Ativador Neutrônico Solar
+tile.MachineBlock3.Oredictionificator.name=Oredictionificador
 
 //Plastic
 tile.PlasticBlock.name=Bloco de Plástico
@@ -135,6 +153,7 @@ infuse.diamond=Diamante
 infuse.redstone=Redstone
 infuse.fungi=Fungos
 infuse.obsidian=Obsidiana
+infuse.bio=Biomassa
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Minério de Ósmio
@@ -146,23 +165,23 @@ item.MultipartTransmitter.PressurizedTube.name=Tubo Pressurizado
 item.MultipartTransmitter.BasicUniversalCable.name=Cabo Universal Básico
 item.MultipartTransmitter.AdvancedUniversalCable.name=Cabo Universal Avançado
 item.MultipartTransmitter.EliteUniversalCable.name=Cabo Universal Elite
-item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Ultimate
+item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Final
 item.MultipartTransmitter.BasicMechanicalPipe.name=Tubo Mecânico Básico
 item.MultipartTransmitter.AdvancedMechanicalPipe.name=Tubo Mecânico Avançado
 item.MultipartTransmitter.EliteMechanicalPipe.name=Tubo Mecânico Elite
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Tubo Mecânico Ultimate
+item.MultipartTransmitter.UltimateMechanicalPipe.name=Tubo Mecânico Final
 item.MultipartTransmitter.LogisticalTransporter.name=Transportador Logístico
 item.MultipartTransmitter.RestrictiveTransporter.name=Transportador Restritivo
 item.MultipartTransmitter.DiversionTransporter.name=Transportador Redirecionador
 
 //Glow Panel
-item.GlowPanel.name=Painel de Glowstone
+item.GlowPanel.name=Painel de Pedra Luminosa
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Cubo de Energia Básico
 tile.EnergyCube.Advanced.name=Cubo de Energia Avançado
 tile.EnergyCube.Elite.name=Cubo de Energia de Elite
-tile.EnergyCube.Ultimate.name=Cubo de Energia Ultimate
+tile.EnergyCube.Ultimate.name=Cubo de Energia Final
 tile.EnergyCube.Creative.name=Cubo de Energia Criativo
 
 //Dust
@@ -177,6 +196,7 @@ item.tinDust.name=Pó de Estanho
 item.silverDust.name=Pó de Prata
 item.leadDust.name=Pó de Chumbo
 item.sulfurDust.name=Pó de Enxofre
+item.lithiumDust.name=Pó de Lítio
 
 //Clumps
 item.ironClump.name=Aglomerado de Ferro
@@ -189,14 +209,14 @@ item.obsidianClump.name=Aglomerado de Obsidiana
 item.leadClump.name=Aglomerado de Chumbo
 
 //Shards
-item.ironShard.name=Fragmento de Ferro
-item.goldShard.name=Fragmento de Ouro
-item.osmiumShard.name=Fragmento de Ósmio
-item.copperShard.name=Fragmento de Cobre
-item.tinShard.name=Fragmento de Estanho
-item.silverShard.name=Fragmento de Prata
-item.obsidianShard.name=Fragmento de Obsidiana
-item.leadShard.name=Fragmento de Chumbo
+item.ironShard.name=Estilhaço de Ferro
+item.goldShard.name=Estilhaço de Ouro
+item.osmiumShard.name=Estilhaço de Ósmio
+item.copperShard.name=Estilhaço de Cobre
+item.tinShard.name=Estilhaço de Estanho
+item.silverShard.name=Estilhaço de Prata
+item.obsidianShard.name=Estilhaço de Obsidiana
+item.leadShard.name=Estilhaço de Chumbo
 
 //Crystals
 item.ironCrystal.name=Cristal de Ferro
@@ -241,6 +261,10 @@ gas.liquidStone=Pedra Líquida
 gas.ethene=Etileno
 gas.sodium=Sódio
 gas.brine=Salmoura Gasosa
+gas.deuterium=Deutério
+gas.tritium=Trítio
+gas.lithium=Lítio
+gas.fusionFuelDT=Combustível D-T
 
 gas.iron=Lodo de Ferro
 gas.gold=Lodo de Ouro
@@ -285,6 +309,13 @@ oregas.tin=Minério de Estanho
 oregas.silver=Minério de Prata
 oregas.obsidian=Minério de Obsidiana
 oregas.lead=Minério de Chumbo
+
+//Tier names
+tier.Basic=Básico
+tier.Advanced=Avançado
+tier.Elite=Elite
+tier.Ultimate=Final
+tier.Creative=Criativo
 
 //Update handler text
 update.consider=Considere atualizar para a versão
