@@ -115,13 +115,16 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				SideData data = sideData.get(TransmissionType.GAS);
 				List<ForgeDirection> outputSides = getOutputSides(TransmissionType.GAS, data);
 				
-				GasTank tank = (GasTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
-				
-				if(tank.getStored() > 0)
+				if(((ITankManager)tileEntity).getTanks() != null)
 				{
-					GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
-					int emit = GasTransmission.emit(toEmit, tileEntity, outputSides);
-					tank.draw(emit, true);
+					GasTank tank = (GasTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
+					
+					if(tank.getStored() > 0)
+					{
+						GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
+						int emit = GasTransmission.emit(toEmit, tileEntity, outputSides);
+						tank.draw(emit, true);
+					}
 				}
 			}
 			
@@ -130,13 +133,16 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				SideData data = sideData.get(TransmissionType.FLUID);
 				List<ForgeDirection> outputSides = getOutputSides(TransmissionType.FLUID, data);
 				
-				FluidTank tank = (FluidTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
-				
-				if(tank.getFluidAmount() > 0)
+				if(((ITankManager)tileEntity).getTanks() != null)
 				{
-					FluidStack toEmit = new FluidStack(tank.getFluid().getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
-					int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
-					tank.drain(emit, true);
+					FluidTank tank = (FluidTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
+					
+					if(tank.getFluidAmount() > 0)
+					{
+						FluidStack toEmit = new FluidStack(tank.getFluid().getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
+						int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
+						tank.drain(emit, true);
+					}
 				}
 			}
 		}

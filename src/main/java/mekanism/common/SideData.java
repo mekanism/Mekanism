@@ -64,6 +64,11 @@ public class SideData
 		Object[] tanks = manager.getTanks();
 		List<FluidTankInfo> infos = new ArrayList<FluidTankInfo>();
 		
+		if(tanks == null)
+		{
+			return infos.toArray(new FluidTankInfo[] {});
+		}
+		
 		for(int slot : availableSlots)
 		{
 			if(slot <= tanks.length-1 && tanks[slot] instanceof IFluidTank)
@@ -79,7 +84,7 @@ public class SideData
 	{
 		Object[] tanks = manager.getTanks();
 		
-		if(tanks.length < 1 || !(tanks[0] instanceof GasTank))
+		if(tanks == null || tanks.length < 1 || !(tanks[0] instanceof GasTank))
 		{
 			return null;
 		}

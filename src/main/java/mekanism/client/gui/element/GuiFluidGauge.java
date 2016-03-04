@@ -56,7 +56,7 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 			{
 				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				
-				if(tile instanceof ITankManager)
+				if(tile instanceof ITankManager && ((ITankManager)tile).getTanks() != null)
 				{
 					int index = Arrays.asList(((ITankManager)tile).getTanks()).indexOf(infoHandler.getTank());
 					

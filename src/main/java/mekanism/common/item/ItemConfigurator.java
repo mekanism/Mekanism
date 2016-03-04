@@ -287,6 +287,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		CONFIGURATE_FLUIDS("configurate", "(" + TransmissionType.FLUID.localize() + ")", EnumColor.BRIGHT_GREEN, true),
 		CONFIGURATE_GASES("configurate", "(" + TransmissionType.GAS.localize() + ")", EnumColor.BRIGHT_GREEN, true),
 		CONFIGURATE_ENERGY("configurate", "(" + TransmissionType.ENERGY.localize() + ")", EnumColor.BRIGHT_GREEN, true),
+		CONFIGURATE_HEAT("configurate", "(" + TransmissionType.HEAT.localize() + ")", EnumColor.BRIGHT_GREEN, true),
 		EMPTY("empty", "", EnumColor.DARK_RED, false),
 		ROTATE("rotate", "", EnumColor.YELLOW, false),
 		WRENCH("wrench", "", EnumColor.PINK, false);
@@ -331,6 +332,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					return TransmissionType.GAS;
 				case CONFIGURATE_ENERGY:
 					return TransmissionType.ENERGY;
+				case CONFIGURATE_HEAT:
+					return TransmissionType.HEAT;
 				default:
 					return null;
 			}
