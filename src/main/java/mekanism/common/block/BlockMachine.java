@@ -63,7 +63,6 @@ import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
-import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
@@ -77,6 +76,7 @@ import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
@@ -149,7 +149,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:13: Laser
  * 1:14: Laser Amplifier
  * 1:15: Laser Tractor Beam
- * 2:0: Entangled Block
+ * 2:0: Quantum Entangloporter
  * 2:1: Solar Neutron Activator
  * 2:2: Ambient Accumulator
  * 2:3: Oredictionificator
@@ -311,6 +311,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		{
 			TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
 			teleporter.owner = entityliving.getCommandSenderName();
+		}
+		else if(tileEntity instanceof TileEntityQuantumEntangloporter)
+		{
+			TileEntityQuantumEntangloporter entangloporter = (TileEntityQuantumEntangloporter)tileEntity;
+			entangloporter.owner = entityliving.getCommandSenderName();
 		}
 
 		tileEntity.setFacing((short)change);
@@ -664,6 +669,26 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 						}
 						else {
 							entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.teleporter.noAccess")));
+						}
+						
+						return true;
+					}
+				case QUANTUM_ENTANGLOPORTER:
+					if(!entityplayer.isSneaking())
+					{
+						TileEntityQuantumEntangloporter teleporter = (TileEntityQuantumEntangloporter)tileEntity;
+						
+						if(teleporter.owner == null)
+						{
+							teleporter.owner = entityplayer.getCommandSenderName();
+						}
+						
+						if(teleporter.owner.equals(entityplayer.getCommandSenderName()) || MekanismUtils.isOp((EntityPlayerMP)entityplayer))
+						{
+							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						}
+						else {
+							entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.entangloporter.noAccess")));
 						}
 						
 						return true;
@@ -1144,7 +1169,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false),
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
 		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false),
-		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityEntangledBlock.class, true, false, false),
+		QUANTUM_ENTANGLOPORTER(MachineBlock.MACHINE_BLOCK_3, 0, "QuantumEntangloporter", 46, TileEntityQuantumEntangloporter.class, true, false, false),
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false),
 		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false),
 		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false),
@@ -1199,7 +1224,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			
 			for(MachineType type : MachineType.values())
 			{
-				if(type != ENTANGLED_BLOCK && type != AMBIENT_ACCUMULATOR)
+				if(type != QUANTUM_ENTANGLOPORTER && type != AMBIENT_ACCUMULATOR)
 				{
 					ret.add(type);
 				}
@@ -1311,7 +1336,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					return 0;
 				case LASER_TRACTOR_BEAM:
 					return 0;
-				case ENTANGLED_BLOCK:
+				case QUANTUM_ENTANGLOPORTER:
 					return 0;
 				case SOLAR_NEUTRON_ACTIVATOR:
 					return 0;

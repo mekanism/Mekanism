@@ -213,14 +213,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive* general.FROM_TE);
+			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*general.FROM_TE);
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
 
-			return (int)Math.round(toAdd* general.TO_TE);
+			return (int)Math.round(toAdd*general.TO_TE);
 		}
 
 		return 0;
@@ -232,14 +232,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getOutputtingSides().contains(from))
 		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract* general.FROM_TE));
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_TE));
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() - toSend);
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_TE);
 		}
 
 		return 0;
@@ -256,14 +256,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getEnergy()* general.TO_TE);
+		return (int)Math.round(getEnergy()*general.TO_TE);
 	}
 
 	@Override
 	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getMaxEnergy()* general.TO_TE);
+		return (int)Math.round(getMaxEnergy()*general.TO_TE);
 	}
 
 	@Override

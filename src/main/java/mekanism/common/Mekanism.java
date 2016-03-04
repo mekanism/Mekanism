@@ -44,6 +44,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
+import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
@@ -75,8 +76,8 @@ import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
-import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
@@ -176,6 +177,9 @@ public class Mekanism
 	/** FrequencyManagers for various networks */
 	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class);
 	public static Map<String, FrequencyManager> privateTeleporters = new HashMap<String, FrequencyManager>();
+	
+	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class);
+	public static Map<String, FrequencyManager> privateEntangloporters = new HashMap<String, FrequencyManager>();
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -1111,7 +1115,7 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
 		GameRegistry.registerTileEntity(TileEntityThermalEvaporationValve.class, "SalinationValve"); //TODO rename
 		GameRegistry.registerTileEntity(TileEntityThermalEvaporationBlock.class, "SalinationTank"); //TODO rename
-		GameRegistry.registerTileEntity(TileEntityEntangledBlock.class, "EntangledBlock");
+		GameRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "EntangledBlock");
 		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
 		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
 
@@ -1154,6 +1158,7 @@ public class Mekanism
 		activeVibrators.clear();
 		worldTickHandler.resetRegenChunks();
 		privateTeleporters.clear();
+		privateEntangloporters.clear();
 		
 		//Reset consistent managers
 		MultiblockManager.reset();

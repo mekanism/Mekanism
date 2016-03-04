@@ -1,4 +1,4 @@
-package mekanism.common.content.teleportation;
+package mekanism.common.content.entangloporter;
 
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.Gas;

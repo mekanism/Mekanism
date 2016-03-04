@@ -282,7 +282,7 @@ public class FrequencyManager
 		try {
 			for(int i = 0; i < size; i++)
 			{
-				Frequency freq = frequencyClass.newInstance();
+				Frequency freq = frequencyClass.getConstructor(new Class[] {ByteBuf.class}).newInstance(dataStream);
 				freq.read(dataStream);
 				ret.add(freq);
 			}

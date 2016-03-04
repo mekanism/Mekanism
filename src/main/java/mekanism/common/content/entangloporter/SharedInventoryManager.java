@@ -1,4 +1,4 @@
-package mekanism.common.content.teleportation;
+package mekanism.common.content.entangloporter;
 
 import java.util.Arrays;
 import java.util.HashMap;

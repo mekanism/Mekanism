@@ -147,6 +147,7 @@ tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
 tile.MachineBlock2.LaserTractorBeam.name=Laser Tractor Beam
 
 //Machine Block 3 (third ID iteration)
+tile.MachineBlock3.QuantumEntangloporter.name=Quantum Entangloporter
 tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
 tile.MachineBlock3.Oredictionificator.name=Oredictionificator
 tile.MachineBlock3.ResistiveHeater.name=Resistive Heater
@@ -627,8 +628,10 @@ gui.teleporter.noFrame=No frame
 gui.teleporter.noLink=No link
 gui.teleporter.exceeds=Links > 2
 gui.teleporter.needsEnergy=Needs energy
-gui.teleporter.noAccess=You don't have access to this teleporter.
+gui.teleporter.noAccess=You don't have access to this Teleporter.
 gui.teleporter.noFreq=No frequency
+
+gui.entangloporter.noAccess=You don't have access to this Entangloporter.
 
 gui.digitalMinerConfig=Digital Miner Config
 

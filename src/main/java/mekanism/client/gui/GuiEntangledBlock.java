@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityEntangledBlock;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -22,13 +22,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiEntangledBlock extends GuiMekanism
 {
-	public TileEntityEntangledBlock tileEntity;
+	public TileEntityQuantumEntangloporter tileEntity;
 
 	public GuiTextField frequencyField;
 
 	public boolean isCreative;
 
-	public GuiEntangledBlock(InventoryPlayer inventory, TileEntityEntangledBlock tentity)
+	public GuiEntangledBlock(InventoryPlayer inventory, TileEntityQuantumEntangloporter tentity)
 	{
 		super(tentity, new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
