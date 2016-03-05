@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.particle.EntityBubbleFX;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -165,6 +166,38 @@ public class RenderTickHandler
 					}
 				}
 				
+				synchronized(Mekanism.gasmaskOn)
+				{
+					if(world.getWorldTime() % 4 == 0)
+					{
+						for(String s : Mekanism.gasmaskOn)
+						{
+							EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
+	
+							if(p == null || !p.isInWater())
+							{
+								continue;
+							}
+							
+							Pos3D playerPos = new Pos3D(p);
+
+							if(p != mc.thePlayer)
+							{
+								playerPos.translate(0, 1.7, 0);
+							}
+							
+							float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
+							float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
+							
+							Pos3D vec = new Pos3D(0, 0, 0.4).rotate(p.rotationYawHead, p.rotationPitch);
+							Pos3D motion = vec.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+							
+							Pos3D v = playerPos.clone().translate(vec);
+							spawnAndSetParticle("bubble", world, v.xPos, v.yPos, v.zPos, motion.xPos, motion.yPos, motion.zPos);
+						}
+					}
+				}
+				
 				if(world.getWorldTime() % 4 == 0)
 				{
 					for(EntityPlayer p : (List<EntityPlayer>)world.playerEntities)
@@ -229,6 +262,10 @@ public class RenderTickHandler
 		else if(s.equals("smoke"))
 		{
 			fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
+		}
+		else if(s.equals("bubble"))
+		{
+			fx = new EntityBubbleFX(world, x, y, z, velX, velY, velZ);
 		}
 
 		mc.effectRenderer.addEffect(fx);

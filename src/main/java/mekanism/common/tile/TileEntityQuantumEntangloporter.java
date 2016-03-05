@@ -11,17 +11,18 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData.IOState;
-import mekanism.common.base.IEjector;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.CableUtils;
@@ -38,7 +39,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandler, IFrequencyHandler, IGasHandler, IHeatTransfer
+public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandler, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration
 {
 	public String owner;
 	
@@ -667,8 +668,44 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public IEjector getEjector() 
+	public TileComponentEjector getEjector() 
 	{
 		return ejectorComponent;
+	}
+
+	@Override
+	public boolean canTubeConnect(ForgeDirection side) 
+	{
+		return frequency != null && configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).ioState != IOState.OFF;
+	}
+	
+	private static final String[] methods = new String[] {"setFrequency"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
+	{
+		switch(method)
+		{
+			case 0:
+				if(!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean))
+				{
+					return new Object[] {"Invalid parameters."};
+				}
+				
+				String freq = ((String)arguments[0]).trim();
+				boolean isPublic = (Boolean)arguments[1];
+				
+				setFrequency(freq, isPublic);
+				
+				return new Object[] {"Frequency set."};
+			default:
+				throw new NoSuchMethodException();
+		}
 	}
 }

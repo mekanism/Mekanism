@@ -139,6 +139,7 @@ public final class StackUtils
 
 		ItemStack ret = stack.copy();
 		ret.stackSize = size;
+		
 		return ret;
 	}
 

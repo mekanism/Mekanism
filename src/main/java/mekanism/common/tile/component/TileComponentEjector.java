@@ -14,7 +14,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.base.IEjector;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
@@ -33,7 +32,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public class TileComponentEjector implements ITileComponent, IEjector
+public class TileComponentEjector implements ITileComponent
 {
 	public TileEntityContainerBlock tileEntity;
 
@@ -164,7 +163,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		return outputSides;
 	}
 
-	@Override
 	public void outputItems()
 	{
 		if(!getEjecting(TransmissionType.ITEM) || tileEntity.getWorldObj().isRemote)
@@ -224,40 +222,34 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		tickDelay = 20;
 	}
 
-	@Override
 	public boolean hasStrictInput()
 	{
 		return strictInput;
 	}
 
-	@Override
 	public void setStrictInput(boolean strict)
 	{
 		strictInput = strict;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
 	public void setOutputColor(EnumColor color)
 	{
 		outputColor = color;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
 	public EnumColor getOutputColor()
 	{
 		return outputColor;
 	}
 
-	@Override
 	public void setInputColor(ForgeDirection side, EnumColor color)
 	{
 		inputColors[side.ordinal()] = color;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
 	public EnumColor getInputColor(ForgeDirection side)
 	{
 		return inputColors[side.ordinal()];

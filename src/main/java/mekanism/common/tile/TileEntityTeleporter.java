@@ -699,7 +699,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		return ChargeUtils.canBeOutputted(itemstack, false);
 	}
 
-    private static final String[] methods = new String[] {"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "set"};
+    private static final String[] methods = new String[] {"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
 
 	@Override
 	public String[] getMethods()

@@ -1155,7 +1155,7 @@ public final class MekanismUtils
 	 */
 	public static String getEnergyDisplay(double energy)
 	{
-		if(energy == Integer.MAX_VALUE)
+		if(energy == Double.MAX_VALUE)
 		{
 			return LangUtils.localize("gui.infinite");
 		}

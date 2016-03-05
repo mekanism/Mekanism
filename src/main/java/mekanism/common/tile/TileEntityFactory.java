@@ -8,6 +8,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
@@ -31,7 +32,6 @@ import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IEjector;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -60,7 +60,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection
+public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection, ISpecialConfigData
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -1080,7 +1080,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public IEjector getEjector()
+	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
 	}
@@ -1164,5 +1164,25 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			default:
 				break;
 		}
+	}
+
+	@Override
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags) 
+	{
+		nbtTags.setBoolean("sorting", sorting);
+		
+		return nbtTags;
+	}
+
+	@Override
+	public void setConfigurationData(NBTTagCompound nbtTags) 
+	{
+		sorting = nbtTags.getBoolean("sorting");
+	}
+
+	@Override
+	public String getDataType() 
+	{
+		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getInventoryName();
 	}
 }

@@ -1364,7 +1364,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("radius", radius);
 		nbtTags.setInteger("minY", minY);
@@ -1372,7 +1372,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		nbtTags.setBoolean("doEject", doEject);
 		nbtTags.setBoolean("doPull", doPull);
 		nbtTags.setBoolean("silkTouch", silkTouch);
-		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setBoolean("inverse", inverse);
 
 		NBTTagList filterTags = new NBTTagList();
@@ -1391,7 +1390,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
 		radius = nbtTags.getInteger("radius");
 		minY = nbtTags.getInteger("minY");
@@ -1399,7 +1398,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		doEject = nbtTags.getBoolean("doEject");
 		doPull = nbtTags.getBoolean("doPull");
 		silkTouch = nbtTags.getBoolean("silkTouch");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		inverse = nbtTags.getBoolean("inverse");
 
 		if(nbtTags.hasKey("filters"))
@@ -1416,7 +1414,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public String getDataType()
 	{
-		return "tooltip.filterCard.digitalMiner";
+		return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
 	}
 	
 	public void writeSustainedData(ItemStack itemStack) 

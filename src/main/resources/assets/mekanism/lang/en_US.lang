@@ -38,7 +38,7 @@ item.LithiumBucket.name=Lithium Bucket
 item.HeavyWaterBucket.name=Heavy Water Bucket
 item.FreeRunners.name=Free Runners
 item.ArmoredJetpack.name=Armored Jetpack
-item.FilterCard.name=Filter Card
+item.ConfigurationCard.name=Configuration Card
 item.SeismicReader.name=Seismic Reader
 item.HDPEPellet.name=HDPE Pellet
 item.HDPERod.name=HDPE Rod
@@ -727,12 +727,9 @@ tooltip.disassembler.fast=fast
 tooltip.disassembler.vein=vein
 tooltip.disassembler.off=off
 
-tooltip.filterCard.got=Retrieved filter data from %s
-tooltip.filterCard.set=Injected filter data of type %s
-tooltip.filterCard.unequal=Unequal filter data formats
-tooltip.filterCard.logisticalSorter=Logistical Sorter
-tooltip.filterCard.digitalMiner=Digital Miner
-tooltip.filterCard.oredictionificator=Oredictionificator
+tooltip.configurationCard.got=Retrieved configuration data from %s
+tooltip.configurationCard.set=Injected configuration data of type %s
+tooltip.configurationCard.unequal=Unequal configuration data formats
 
 tooltip.balloon=Balloon
 

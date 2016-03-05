@@ -12,7 +12,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.base.IEjector;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.integration.IComputerIntegration;
@@ -279,7 +278,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public IEjector getEjector()
+	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
 	}

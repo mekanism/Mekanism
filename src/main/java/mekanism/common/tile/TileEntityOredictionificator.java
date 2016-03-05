@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.IFilterAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -27,7 +27,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, IFilterAccess, ISustainedData
+public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, ISpecialConfigData, ISustainedData
 {
 	public static final int MAX_LENGTH = 24;
 	
@@ -316,10 +316,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 	
 	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
-		nbtTags.setInteger("controlType", controlType.ordinal());
-
 		NBTTagList filterTags = new NBTTagList();
 
 		for(OredictionificatorFilter filter : filters)
@@ -338,10 +336,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
 		if(nbtTags.hasKey("filters"))
 		{
 			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
@@ -356,7 +352,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public String getDataType()
 	{
-		return "tooltip.filterCard.oredictionificator";
+		return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
 	}
 
 	@Override

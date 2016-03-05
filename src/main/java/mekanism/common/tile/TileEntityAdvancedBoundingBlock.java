@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
-import mekanism.api.IFilterAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.integration.IComputerIntegration;
@@ -22,7 +22,7 @@ import cpw.mods.fml.common.Optional.Method;
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore")
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IComputerIntegration, IFilterAccess
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IComputerIntegration, ISpecialConfigData
 {
 	@Override
 	public int getSizeInventory()
@@ -410,25 +410,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
 		if(getInv() == null)
 		{
 			return new NBTTagCompound();
 		}
 		
-		return getInv().getFilterData(nbtTags);
+		return getInv().getConfigurationData(nbtTags);
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 		
-		getInv().setFilterData(nbtTags);
+		getInv().setConfigurationData(nbtTags);
 	}
 
 	@Override

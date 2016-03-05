@@ -89,20 +89,29 @@ public final class Tier
 		
 		protected void loadConfig()
 		{
-			maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeMaxEnergy", baseMaxEnergy).getDouble();
-			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeOutput", baseOutput).getDouble();
+			if(this != CREATIVE)
+			{
+				maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeMaxEnergy", baseMaxEnergy).getDouble();
+				output = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeOutput", baseOutput).getDouble();
+			}
 		}
 		
 		protected void readConfig(ByteBuf dataStream)
 		{
-			maxEnergy = dataStream.readDouble();
-			output = dataStream.readDouble();
+			if(this != CREATIVE)
+			{
+				maxEnergy = dataStream.readDouble();
+				output = dataStream.readDouble();
+			}
 		}
 		
 		protected void writeConfig(ByteBuf dataStream)
 		{
-			dataStream.writeDouble(maxEnergy);
-			dataStream.writeDouble(output);
+			if(this != CREATIVE)
+			{
+				dataStream.writeDouble(maxEnergy);
+				dataStream.writeDouble(output);
+			}
 		}
 		
 		public BaseTier getBaseTier()
