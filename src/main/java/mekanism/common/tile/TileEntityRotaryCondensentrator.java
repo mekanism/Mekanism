@@ -149,7 +149,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 							if(filled != null)
 							{
-								if(inventory[3] == null || (inventory[3].isItemEqual(filled) && inventory[3].stackSize+1 <= filled.getMaxStackSize()))
+								if(inventory[3] == null || (ItemStack.areItemStacksEqual(inventory[3], filled) && inventory[3].stackSize+1 <= filled.getMaxStackSize()))
 								{
 									inventory[2].stackSize--;
 
@@ -249,7 +249,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	
 							if(containerItem != null)
 							{
-								if(inventory[3] == null || (inventory[3].isItemEqual(containerItem) && inventory[3].stackSize+1 <= containerItem.getMaxStackSize()))
+								if(inventory[3] == null || (ItemStack.areItemStacksEqual(inventory[3], containerItem) && inventory[3].stackSize+1 <= containerItem.getMaxStackSize()))
 								{
 									inventory[2] = null;
 	

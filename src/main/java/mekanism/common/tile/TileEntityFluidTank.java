@@ -210,7 +210,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
 					if(filled != null)
 					{
-						if(inventory[1] == null || (inventory[1].isItemEqual(filled) && inventory[1].stackSize+1 <= filled.getMaxStackSize()))
+						if(inventory[1] == null || (ItemStack.areItemStacksEqual(inventory[1], filled) && inventory[1].stackSize+1 <= filled.getMaxStackSize()))
 						{
 							inventory[0].stackSize--;
 
@@ -250,7 +250,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
 					if(containerItem != null)
 					{
-						if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
+						if(inventory[1] == null || (ItemStack.areItemStacksEqual(inventory[1], containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
 						{
 							inventory[0] = null;
 

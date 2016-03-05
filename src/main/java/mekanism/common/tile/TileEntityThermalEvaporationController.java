@@ -249,7 +249,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 							
 							markDirty();
 						}
-						else if(tempStack.isItemEqual(inventory[3]) && tempStack.getMaxStackSize() > inventory[3].stackSize)
+						else if(ItemStack.areItemStacksEqual(tempStack, inventory[3]) && tempStack.getMaxStackSize() > inventory[3].stackSize)
 						{
 							outputTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 							
@@ -287,7 +287,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 					
 					if(containerItem != null)
 					{
-						if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
+						if(inventory[1] == null || (ItemStack.areItemStacksEqual(inventory[1], containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
 						{
 							inventory[0] = null;
 							

@@ -230,7 +230,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	
 					if(containerItem != null)
 					{
-						if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
+						if(inventory[1] == null || (ItemStack.areItemStacksEqual(inventory[1], containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
 						{
 							inventory[0] = null;
 	

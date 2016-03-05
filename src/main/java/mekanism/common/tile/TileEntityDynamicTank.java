@@ -190,7 +190,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
 					if(filled != null)
 					{
-						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(filled) && structure.inventory[1].stackSize+1 <= filled.getMaxStackSize()))
+						if(structure.inventory[1] == null || (ItemStack.areItemStacksEqual(structure.inventory[1], filled) && structure.inventory[1].stackSize+1 <= filled.getMaxStackSize()))
 						{
 							structure.inventory[0].stackSize--;
 
@@ -238,7 +238,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
 					if(containerItem != null)
 					{
-						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(containerItem) && structure.inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
+						if(structure.inventory[1] == null || (ItemStack.areItemStacksEqual(structure.inventory[1], containerItem) && structure.inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
 						{
 							structure.inventory[0] = null;
 
