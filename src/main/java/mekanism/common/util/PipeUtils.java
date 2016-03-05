@@ -57,7 +57,7 @@ public final class PipeUtils
 		{
 			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
-			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitterTile))
+			if(acceptor instanceof IFluidHandler)
 			{
 				acceptors[orientation.ordinal()] = (IFluidHandler)acceptor;
 			}

@@ -238,7 +238,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public void setEnergy(double energy)
 	{
-		if(tier == EnergyCubeTier.CREATIVE && energy != Integer.MAX_VALUE)
+		if(tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE)
 		{
 			return;
 		}

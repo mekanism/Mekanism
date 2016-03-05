@@ -18,14 +18,17 @@ public class InventoryFrequency extends Frequency
 	public static final double MAX_ENERGY = 1000000;
 	
 	public double storedEnergy;
-	public FluidTank storedFluid = new FluidTank(1000);
-	public GasTank storedGas = new GasTank(1000);
+	public FluidTank storedFluid;
+	public GasTank storedGas;
 	public ItemStack storedItem;
 	public double temperature;
 	
 	public InventoryFrequency(String n, String o)
 	{
 		super(n, o);
+		
+		storedFluid = new FluidTank(1000);
+		storedGas = new GasTank(1000);
 	}
 	
 	public InventoryFrequency(NBTTagCompound nbtTags)
@@ -45,12 +48,12 @@ public class InventoryFrequency extends Frequency
 		
 		nbtTags.setDouble("storedEnergy", storedEnergy);
 		
-		if(storedFluid != null)
+		if(storedFluid.getFluid() != null)
 		{
 			nbtTags.setTag("storedFluid", storedFluid.writeToNBT(new NBTTagCompound()));
 		}
 		
-		if(storedGas != null)
+		if(storedGas.getGas() != null)
 		{
 			nbtTags.setTag("storedGas", storedGas.write(new NBTTagCompound()));
 		}
@@ -67,6 +70,9 @@ public class InventoryFrequency extends Frequency
 	protected void read(NBTTagCompound nbtTags)
 	{
 		super.read(nbtTags);
+		
+		storedFluid = new FluidTank(1000);
+		storedGas = new GasTank(1000);
 		
 		storedEnergy = nbtTags.getDouble("storedEnergy");
 		
@@ -122,6 +128,9 @@ public class InventoryFrequency extends Frequency
 	protected void read(ByteBuf dataStream)
 	{
 		super.read(dataStream);
+		
+		storedFluid = new FluidTank(1000);
+		storedGas = new GasTank(1000);
 		
 		storedEnergy = dataStream.readDouble();
 		

@@ -66,7 +66,7 @@ public final class Tier
 		ADVANCED(8000000, 3200),
 		ELITE(32000000, 12800),
 		ULTIMATE(128000000, 51200),
-		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		CREATIVE(Double.MAX_VALUE, Double.MAX_VALUE);
 
 		public double maxEnergy;
 		private double baseMaxEnergy;

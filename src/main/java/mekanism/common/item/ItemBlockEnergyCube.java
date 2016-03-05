@@ -214,7 +214,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(getEnergyCubeTier(itemStack) == EnergyCubeTier.CREATIVE && amount != Integer.MAX_VALUE)
+		if(getEnergyCubeTier(itemStack) == EnergyCubeTier.CREATIVE && amount != Double.MAX_VALUE)
 		{
 			return;
 		}

@@ -179,12 +179,12 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		{
 			int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];
 
-			if(tileEntity.inventory[slotID] == null)
+			if(tileEntity.getStackInSlot(slotID) == null)
 			{
 				continue;
 			}
 
-			ItemStack stack = tileEntity.inventory[slotID];
+			ItemStack stack = tileEntity.getStackInSlot(slotID);
 			List<ForgeDirection> outputs = getTrackedOutputs(TransmissionType.ITEM, index, outputSides);
 
 			for(ForgeDirection side : outputs)
@@ -217,7 +217,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				}
 			}
 
-			tileEntity.inventory[slotID] = stack;
+			tileEntity.setInventorySlotContents(slotID, stack);
 			tileEntity.markDirty();
 		}
 
