@@ -9,6 +9,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.client.render.particle.EntityJetpackFlameFX;
 import mekanism.client.render.particle.EntityJetpackSmokeFX;
+import mekanism.client.render.particle.EntityScubaBubbleFX;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
@@ -17,7 +18,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.particle.EntityBubbleFX;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -128,18 +128,21 @@ public class RenderTickHandler
 						vLeft.xPos -= 0.43;
 						vLeft.yPos -= 0.55;
 						vLeft.zPos -= 0.54;
+						vLeft.rotatePitch(p.isSneaking() ? 25 : 0);
 						vLeft.rotateYaw(p.renderYawOffset);
 
 						Pos3D vRight = new Pos3D();
 						vRight.xPos += 0.43;
 						vRight.yPos -= 0.55;
 						vRight.zPos -= 0.54;
+						vRight.rotatePitch(p.isSneaking() ? 25 : 0);
 						vRight.rotateYaw(p.renderYawOffset);
 
 						Pos3D vCenter = new Pos3D();
 						vCenter.xPos = (rand.nextFloat() - 0.5F) * 0.4F;
 						vCenter.yPos -= 0.86;
 						vCenter.zPos -= 0.30;
+						vCenter.rotatePitch(p.isSneaking() ? 25 : 0);
 						vCenter.rotateYaw(p.renderYawOffset);
 
 						Pos3D rLeft = vLeft.clone().scale(random);
@@ -189,11 +192,11 @@ public class RenderTickHandler
 							float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
 							float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
 							
-							Pos3D vec = new Pos3D(0, 0, 0.4).rotate(p.rotationYawHead, p.rotationPitch);
+							Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(90))).translate(0, -0.2, 0);
 							Pos3D motion = vec.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
 							
 							Pos3D v = playerPos.clone().translate(vec);
-							spawnAndSetParticle("bubble", world, v.xPos, v.yPos, v.zPos, motion.xPos, motion.yPos, motion.zPos);
+							spawnAndSetParticle("bubble", world, v.xPos, v.yPos, v.zPos, motion.xPos, motion.yPos + 0.2, motion.zPos);
 						}
 					}
 				}
@@ -265,7 +268,7 @@ public class RenderTickHandler
 		}
 		else if(s.equals("bubble"))
 		{
-			fx = new EntityBubbleFX(world, x, y, z, velX, velY, velZ);
+			fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
 		}
 
 		mc.effectRenderer.addEffect(fx);

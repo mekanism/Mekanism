@@ -15,6 +15,7 @@ import mekanism.api.IClientTicker;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.GasStack;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemFlamethrower;
@@ -34,6 +35,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StringUtils;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -310,7 +312,7 @@ public class ClientTickHandler
 					flamethrower.useGas(mc.thePlayer.getCurrentEquippedItem());
 				}
 			}
-
+			
 			if(isJetpackOn(mc.thePlayer))
 			{
 				ItemJetpack jetpack = (ItemJetpack)mc.thePlayer.getEquipmentInSlot(3).getItem();
@@ -330,7 +332,10 @@ public class ClientTickHandler
 						}
 						else if(mc.thePlayer.motionY < 0)
 						{
-							mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0);
+							if(!CommonPlayerTickHandler.isOnGround(mc.thePlayer))
+							{
+								mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0);
+							}
 						}
 					}
 					else {
@@ -340,7 +345,10 @@ public class ClientTickHandler
 						}
 						else if(mc.gameSettings.keyBindSneak.getIsKeyPressed() && mc.currentScreen == null)
 						{
-							mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
+							if(!CommonPlayerTickHandler.isOnGround(mc.thePlayer))
+							{
+								mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
+							}
 						}
 					}
 
@@ -355,17 +363,26 @@ public class ClientTickHandler
 				ItemScubaTank tank = (ItemScubaTank)mc.thePlayer.getEquipmentInSlot(3).getItem();
 
 				final int max = 300;
-
+				
 				tank.useGas(mc.thePlayer.getEquipmentInSlot(3));
 				GasStack received = tank.useGas(mc.thePlayer.getEquipmentInSlot(3), max-mc.thePlayer.getAir());
 
 				if(received != null)
 				{
 					mc.thePlayer.setAir(mc.thePlayer.getAir()+received.amount);
-
-					if(mc.thePlayer.getAir() == max)
+				}
+				
+				if(mc.thePlayer.getAir() == max)
+				{
+					for(Object obj : mc.thePlayer.getActivePotionEffects())
 					{
-						mc.thePlayer.clearActivePotions();
+						if(obj instanceof PotionEffect)
+						{
+							for(int i = 0; i < 9; i++)
+							{
+								((PotionEffect)obj).onUpdate(mc.thePlayer);
+							}
+						}
 					}
 				}
 			}
@@ -392,7 +409,7 @@ public class ClientTickHandler
 
 		ItemStack stack = player.inventory.armorInventory[2];
 
-		if(stack != null)
+		if(stack != null && !player.capabilities.isCreativeMode)
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
@@ -406,6 +423,15 @@ public class ClientTickHandler
 					}
 					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
 					{
+						if((!mc.gameSettings.keyBindJump.getIsKeyPressed() && !mc.gameSettings.keyBindSneak.getIsKeyPressed()) || (mc.gameSettings.keyBindJump.getIsKeyPressed() && mc.gameSettings.keyBindSneak.getIsKeyPressed()) || mc.currentScreen != null)
+						{
+							return !player.onGround;
+						}
+						else if(mc.gameSettings.keyBindSneak.getIsKeyPressed() && mc.currentScreen == null)
+						{
+							return !player.onGround;
+						}
+						
 						return true;
 					}
 				}
