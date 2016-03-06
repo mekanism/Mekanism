@@ -50,18 +50,4 @@ public interface IElectricChest
 	 * @return authenticated value
 	 */
 	public boolean getLocked(ItemStack itemStack);
-
-	/**
-	 * Sets the 'open' value of this electric chest to a new value.
-	 * @param itemStack - electric chest ItemStack
-	 * @param open - new value
-	 */
-	public void setOpen(ItemStack itemStack, boolean open);
-
-	/**
-	 * Retrieves the 'open' value of this electric chest.
-	 * @param itemStack - electric chest ItemStack
-	 * @return open value
-	 */
-	public boolean getOpen(ItemStack itemStack);
 }

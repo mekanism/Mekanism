@@ -543,7 +543,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 									ItemStack filled = new ItemStack(item, 1, type.meta);
 									itemMachine.setBaseTier(filled, BaseTier.ULTIMATE);
 									itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
-									itemMachine.setPrevScale(filled, 1);
 									list.add(filled);
 								} catch(Exception e) {}
 							}

@@ -350,10 +350,21 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		int needed = fluidTank.getCapacity()-fluidTank.getFluidAmount();
 		
 		Coord4D top = Coord4D.get(this).getFromSide(ForgeDirection.UP);
+		TileEntity topTile = top.getTileEntity(worldObj);
 		
-		if(top.getTileEntity(worldObj) instanceof TileEntityFluidTank)
+		if(topTile instanceof TileEntityFluidTank)
 		{
-			needed += ((TileEntityFluidTank)top.getTileEntity(worldObj)).getCurrentNeeded();
+			TileEntityFluidTank topTank = (TileEntityFluidTank)topTile;
+			
+			if(fluidTank.getFluid() != null && topTank.fluidTank.getFluid() != null)
+			{
+				if(fluidTank.getFluid().getFluid() != topTank.fluidTank.getFluid().getFluid())
+				{
+					return needed;
+				}
+			}
+			
+			needed += topTank.getCurrentNeeded();
 		}
 		
 		return needed;

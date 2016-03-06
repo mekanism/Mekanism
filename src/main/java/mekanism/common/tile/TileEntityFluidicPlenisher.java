@@ -21,6 +21,7 @@ import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -84,11 +85,23 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				if(inventory[0].getItem() instanceof IFluidContainerItem)
 				{
-					FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1);
+					FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
+						@Override
+						public boolean isValid(Fluid f)
+						{
+							return f.canBePlacedInWorld();
+						}
+					});
 				}
 				else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
 				{
-					FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 0, 1);
+					FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
+						@Override
+						public boolean isValid(Fluid f)
+						{
+							return f.canBePlacedInWorld();
+						}
+					});
 				}
 			}
 			

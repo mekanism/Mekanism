@@ -456,18 +456,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				}
 			}
 		}
-		else if(type == MachineType.FLUID_TANK)
-		{
-			if(world != null && !world.isRemote)
-			{
-				float targetScale = (float)(getFluidStack(itemstack) != null ? getFluidStack(itemstack).amount : 0)/getCapacity(itemstack);
-	
-				if(Math.abs(getPrevScale(itemstack) - targetScale) > 0.01)
-				{
-					setPrevScale(itemstack, (9*getPrevScale(itemstack) + targetScale)/10);
-				}
-			}
-		}
 	}
 
 	@Override
@@ -796,48 +784,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		}
 
 		return itemStack.stackTagCompound.getBoolean("locked");
-	}
-
-	@Override
-	public void setOpen(ItemStack itemStack, boolean open)
-	{
-		if(itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.stackTagCompound.setBoolean("open", open);
-	}
-
-	@Override
-	public boolean getOpen(ItemStack itemStack)
-	{
-		if(itemStack.stackTagCompound == null)
-		{
-			return false;
-		}
-
-		return itemStack.stackTagCompound.getBoolean("open");
-	}
-
-	public void setPrevScale(ItemStack itemStack, float prevLidAngle)
-	{
-		if(itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.stackTagCompound.setFloat("prevScale", prevLidAngle);
-	}
-
-	public float getPrevScale(ItemStack itemStack)
-	{
-		if(itemStack.stackTagCompound == null)
-		{
-			return 0.0F;
-		}
-
-		return itemStack.stackTagCompound.getFloat("prevScale");
 	}
 	
 	public void setBucketMode(ItemStack itemStack, boolean bucketMode)

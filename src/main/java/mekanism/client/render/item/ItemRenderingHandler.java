@@ -9,7 +9,6 @@ import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.model.ModelFlamethrower;
-import mekanism.client.model.ModelFluidTank;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelGasTank;
@@ -87,7 +86,6 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	public ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
-	public ModelFluidTank portableTank = new ModelFluidTank();
 	public ModelFlamethrower flamethrower = new ModelFlamethrower();
 
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
@@ -515,11 +513,11 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glPushMatrix();
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
-			
 			ItemBlockMachine itemMachine = (ItemBlockMachine)item.getItem();
+			float targetScale = (float)(itemMachine.getFluidStack(item) != null ? itemMachine.getFluidStack(item).amount : 0)/itemMachine.getCapacity(item);
 			FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(item).ordinal()];
 			Fluid fluid = itemMachine.getFluidStack(item) != null ? itemMachine.getFluidStack(item).getFluid() : null;
-			portableTankRenderer.render(tier, fluid, itemMachine.getPrevScale(item), false, null, -0.5, -0.5, -0.5);
+			portableTankRenderer.render(tier, fluid, targetScale, false, null, -0.5, -0.5, -0.5);
 			GL11.glPopMatrix();
 		}
 		else {

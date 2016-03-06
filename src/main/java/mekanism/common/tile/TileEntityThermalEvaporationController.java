@@ -10,7 +10,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.util.StackUtils;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -229,46 +228,15 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	
 	private void manageBuckets()
 	{
-		if(inventory[2] != null)
+		if(inventory[2] != null && outputTank.getFluid() != null)
 		{
-			if(outputTank.getFluid() != null && outputTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+			if(inventory[2].getItem() instanceof IFluidContainerItem)
 			{
-				if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
-				{
-					ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(outputTank.getFluid(), inventory[2]);
-					
-					if(tempStack != null)
-					{
-						if(inventory[3] == null)
-						{
-							outputTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-							
-							inventory[3] = tempStack;
-							inventory[2].stackSize--;
-							
-							if(inventory[2].stackSize <= 0)
-							{
-								inventory[2] = null;
-							}
-							
-							markDirty();
-						}
-						else if(StackUtils.equalsWildcardWithNBT(tempStack, inventory[3]) && tempStack.getMaxStackSize() > inventory[3].stackSize)
-						{
-							outputTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-							
-							inventory[3].stackSize++;
-							inventory[2].stackSize--;
-							
-							if(inventory[2].stackSize <= 0)
-							{
-								inventory[2] = null;
-							}
-							
-							markDirty();
-						}
-					}
-				}
+				FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
+			}
+			else if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
+			{
+				FluidContainerUtils.handleRegistryItemFill(this, outputTank, 2, 3);
 			}
 		}
 		
