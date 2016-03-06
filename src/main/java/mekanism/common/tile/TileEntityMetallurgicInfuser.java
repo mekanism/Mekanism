@@ -89,12 +89,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("Infuse", EnumColor.PURPLE, new int[] {1}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {2}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {3}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {4}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Infuse", EnumColor.PURPLE, new int[] {1}));
 		
-		configComponent.setConfig(TransmissionType.ITEM, new byte[] {1, 0, 0, 4, 2, 3});
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 0, 0, 3, 1, 2});
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = new ItemStack[5];
@@ -103,7 +103,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
 		
 		ejectorComponent = new TileComponentEjector(this);
-		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
 	
 	@Override
@@ -228,9 +228,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		factory.upgradeComponent.readFrom(upgradeComponent);
 		factory.upgradeComponent.setUpgradeSlot(0);
 		factory.ejectorComponent.readFrom(ejectorComponent);
-		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
 		factory.recipeType = type;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
+		
+		for(TransmissionType transmission : configComponent.transmissions)
+		{
+			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission));
+			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
+		}
 		
 		//Infuser
 		factory.infuseStored.amount = infuseStored.amount;
