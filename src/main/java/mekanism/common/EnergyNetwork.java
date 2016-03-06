@@ -128,6 +128,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 		} while(tryAgain);
 
 		joulesTransmitted = sent;
+		
 		return sent;
 	}
 
