@@ -151,6 +151,7 @@ tile.MachineBlock3.QuantumEntangloporter.name=Quantum Entangloporter
 tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
 tile.MachineBlock3.Oredictionificator.name=Oredictionificator
 tile.MachineBlock3.ResistiveHeater.name=Resistive Heater
+tile.MachineBlock3.FormulaicAssemblicator.name=Formulaic Assemblicator
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block

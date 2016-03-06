@@ -116,6 +116,12 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	}
 	
 	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
+	
+	@Override
 	public float getVolume()
 	{
 		return super.getVolume()*Math.max(0.001F, soundScale);

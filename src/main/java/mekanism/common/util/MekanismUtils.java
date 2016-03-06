@@ -62,6 +62,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -1355,9 +1356,22 @@ public final class MekanismUtils
 
 		return tank;
 	}
+	
+	public static InventoryCrafting getDummyCraftingInv()
+	{
+		Container tempContainer = new Container() {
+			@Override
+			public boolean canInteractWith(EntityPlayer player)
+			{
+				return false;
+			}
+		};
+		
+		return new InventoryCrafting(tempContainer, 3, 3);
+	}
 
 	/**
-	 * Finds the output of a defined InventoryCrafting grid. Taken from CofhCore.
+	 * Finds the output of a defined InventoryCrafting grid.
 	 * @param inv - InventoryCrafting to check
 	 * @param world - world reference
 	 * @return output ItemStack

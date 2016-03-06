@@ -122,6 +122,7 @@ public class MekanismConfig
 		public static double laserUsage;
 		public static double gasCentrifugeUsage;
 		public static double heavyWaterElectrolysisUsage;
+		public static double formulaicAssemblicatorUsage;
 	}
 
 	public static class generators

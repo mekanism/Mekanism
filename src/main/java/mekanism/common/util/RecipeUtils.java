@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeUtils 
@@ -262,5 +263,18 @@ public class RecipeUtils
 		}
 		
 		return false;
+	}
+	
+	public static IRecipe getRecipeFromGrid(InventoryCrafting inv, World world)
+	{
+		for(IRecipe recipe : (List<IRecipe>)CraftingManager.getInstance().getRecipeList())
+		{
+			if(recipe.matches(inv, world))
+			{
+				return recipe;
+			}
+		}
+		
+		return null;
 	}
 }

@@ -86,8 +86,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 			}
 		}
-		else
-		{
+		else {
 			if(collectedEnergy > 0)
 			{
 				double firing = collectedEnergy;
