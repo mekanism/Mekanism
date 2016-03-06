@@ -1258,7 +1258,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return Mekanism.hooks.CoFHCoreLoaded && !general.blacklistRF;
+		return !general.blacklistRF;
 	}
 
 	/**
@@ -1393,6 +1393,7 @@ public final class MekanismUtils
 			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamageForDisplay();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
+			
 			return new ItemStack(dmgItems[0].getItem(), 1, solve);
 		}
 

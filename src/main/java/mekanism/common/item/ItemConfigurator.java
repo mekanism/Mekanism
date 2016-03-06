@@ -38,8 +38,7 @@ import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 
 @InterfaceList({
-		@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft"),
-		@Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHCore")
+	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
 })
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer
 {

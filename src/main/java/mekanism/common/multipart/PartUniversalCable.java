@@ -30,15 +30,9 @@ import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
-})
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {
 	public Tier.CableTier tier;
@@ -177,6 +171,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	public void save(NBTTagCompound nbtTags)
 	{
 		super.save(nbtTags);
+		
 		nbtTags.setDouble("cacheEnergy", lastWrite);
 		nbtTags.setInteger("tier", tier.ordinal());
 	}
@@ -271,7 +266,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(canReceiveEnergy(from))
@@ -283,28 +277,24 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return canConnect(from);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getEnergy() * general.TO_TE);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getMaxEnergy() * general.TO_TE);
