@@ -82,73 +82,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			
 			if(inventory[0] != null)
 			{
-				if(inventory[0].getItem() instanceof IFluidContainerItem && ((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]) != null)
+				if(inventory[0].getItem() instanceof IFluidContainerItem)
 				{
-					if(((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]).getFluid().canBePlacedInWorld())
-					{
-						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
-
-						if(((IFluidContainerItem) inventory[0].getItem()).getFluid(inventory[0]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
-						{
-							if(inventory[1] == null)
-							{
-								inventory[1] = inventory[0].copy();
-								inventory[0] = null;
-
-								markDirty();
-							}
-						}
-					}
+					FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1);
 				}
 				else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
 				{
-					FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-	
-					if((fluidTank.getFluid() == null && itemFluid.amount <= fluidTank.getCapacity()) || fluidTank.getFluid().amount+itemFluid.amount <= fluidTank.getCapacity())
-					{
-						if((fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid)) || !itemFluid.getFluid().canBePlacedInWorld())
-						{
-							return;
-						}
-	
-						ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
-	
-						boolean filled = false;
-	
-						if(containerItem != null)
-						{
-							if(inventory[1] == null || (ItemStack.areItemStacksEqual(inventory[1], containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
-							{
-								inventory[0] = null;
-	
-								if(inventory[1] == null)
-								{
-									inventory[1] = containerItem;
-								}
-								else {
-									inventory[1].stackSize++;
-								}
-	
-								filled = true;
-							}
-						}
-						else {
-							inventory[0].stackSize--;
-	
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
-							}
-	
-							filled = true;
-						}
-	
-						if(filled)
-						{
-							fluidTank.fill(itemFluid, true);
-							markDirty();
-						}
-					}
+					FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 0, 1);
 				}
 			}
 			

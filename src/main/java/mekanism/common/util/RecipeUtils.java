@@ -8,6 +8,7 @@ import java.util.Map;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.util.StackUtils;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
@@ -253,7 +254,7 @@ public class RecipeUtils
 			
 			if(iterRecipe instanceof ShapedMekanismRecipe || iterRecipe instanceof ShapelessMekanismRecipe)
 			{
-				if(ItemStack.areItemStacksEqual(stack, iterRecipe.getRecipeOutput()))
+				if(StackUtils.equalsWildcard(stack, iterRecipe.getRecipeOutput()))
 				{
 					iter.remove();
 				}

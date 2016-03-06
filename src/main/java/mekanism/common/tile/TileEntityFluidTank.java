@@ -171,121 +171,42 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			{
 				if(editMode == ContainerEditMode.FILL && fluidTank.getFluidAmount() > 0)
 				{
-					int prev = fluidTank.getFluidAmount();
-					
-					fluidTank.drain(FluidContainerUtils.insertFluid(fluidTank, inventory[0]), true);
-					
-					if(prev == fluidTank.getFluidAmount())
-					{
-						if(inventory[1] == null)
-						{
-							inventory[1] = inventory[0].copy();
-							inventory[0] = null;
-							
-							markDirty();
-						}
-					}
+					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
 				}
 				else if(editMode == ContainerEditMode.EMPTY)
 				{
-					fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
+					FluidStack ret = FluidContainerUtils.handleContainerItemEmpty(this, inventory, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 					
-					if(((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
+					if(ret != null)
 					{
-						if(inventory[1] == null)
+						fluidTank.setFluid(new FluidStack(ret.getFluid(), Math.min(fluidTank.getCapacity(), ret.amount)));
+						
+						int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
+						
+						if(rejects > 0)
 						{
-							inventory[1] = inventory[0].copy();
-							inventory[0] = null;
-							
-							markDirty();
+							pushUp(new FluidStack(ret.getFluid(), rejects), true);
 						}
 					}
 				}
 			}
 			else if(FluidContainerRegistry.isEmptyContainer(inventory[0]) && (editMode == ContainerEditMode.BOTH || editMode == ContainerEditMode.FILL))
 			{
-				if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
-				{
-					ItemStack filled = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[0]);
-
-					if(filled != null)
-					{
-						if(inventory[1] == null || (ItemStack.areItemStacksEqual(inventory[1], filled) && inventory[1].stackSize+1 <= filled.getMaxStackSize()))
-						{
-							inventory[0].stackSize--;
-
-							if(inventory[0].stackSize <= 0)
-							{
-								inventory[0] = null;
-							}
-
-							if(inventory[1] == null)
-							{
-								inventory[1] = filled;
-							}
-							else {
-								inventory[1].stackSize++;
-							}
-
-							fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
-						}
-					}
-				}
+				FluidContainerUtils.handleRegistryItemFill(this, fluidTank, 0, 1);
 			}
 			else if(FluidContainerRegistry.isFilledContainer(inventory[0]) && (editMode == ContainerEditMode.BOTH || editMode == ContainerEditMode.EMPTY))
 			{
-				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-				int needed = getCurrentNeeded();
-
-				if((fluidTank.getFluid() == null && itemFluid.amount <= fluidTank.getCapacity()) || itemFluid.amount <= needed)
+				FluidStack ret = FluidContainerUtils.handleRegistryItemEmpty(this, inventory, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
+				
+				if(ret != null)
 				{
-					if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
+					fluidTank.setFluid(new FluidStack(ret.getFluid(), Math.min(fluidTank.getCapacity(), ret.amount)));
+					
+					int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
+					
+					if(rejects > 0)
 					{
-						return;
-					}
-
-					ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
-
-					boolean filled = false;
-
-					if(containerItem != null)
-					{
-						if(inventory[1] == null || (ItemStack.areItemStacksEqual(inventory[1], containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
-						{
-							inventory[0] = null;
-
-							if(inventory[1] == null)
-							{
-								inventory[1] = containerItem;
-							}
-							else {
-								inventory[1].stackSize++;
-							}
-
-							filled = true;
-						}
-					}
-					else {
-						inventory[0].stackSize--;
-
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
-						}
-
-						filled = true;
-					}
-
-					if(filled)
-					{
-						int toFill = Math.min(needed, itemFluid.amount);
-						
-						fluidTank.fill(itemFluid, true);
-						
-						if(itemFluid.amount-toFill > 0)
-						{
-							pushUp(new FluidStack(itemFluid.getFluid(), itemFluid.amount-toFill), true);
-						}
+						pushUp(new FluidStack(ret.getFluid(), rejects), true);
 					}
 				}
 			}
@@ -383,6 +304,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		if(nbtTags.hasKey("fluidTank"))
 		{
+			fluidTank.setCapacity(tier.storage);
 			fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
 		}
 	}
@@ -393,6 +315,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		super.handlePacketData(dataStream);
 
 		tier = FluidTankTier.values()[dataStream.readInt()];
+		fluidTank.setCapacity(tier.storage);
+		
 		clientActive = dataStream.readBoolean();
 		valve = dataStream.readInt();
 		editMode = ContainerEditMode.values()[dataStream.readInt()];

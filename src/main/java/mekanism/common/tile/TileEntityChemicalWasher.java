@@ -31,6 +31,7 @@ import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -200,68 +201,11 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		{
 			if(inventory[0].getItem() instanceof IFluidContainerItem)
 			{
-				fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0], FluidRegistry.WATER), true);
-				
-				if(((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
-				{
-					if(inventory[1] == null)
-					{
-						inventory[1] = inventory[0].copy();
-						inventory[0] = null;
-						
-						markDirty();
-					}
-				}
+				FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, FluidChecker.check(FluidRegistry.WATER));
 			}
 			else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
 			{
-				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-	
-				if((fluidTank.getFluid() == null && itemFluid.amount <= MAX_FLUID) || fluidTank.getFluid().amount+itemFluid.amount <= MAX_FLUID)
-				{
-					if(itemFluid.getFluid() != FluidRegistry.WATER || (fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid)))
-					{
-						return;
-					}
-	
-					ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
-	
-					boolean filled = false;
-	
-					if(containerItem != null)
-					{
-						if(inventory[1] == null || (ItemStack.areItemStacksEqual(inventory[1], containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
-						{
-							inventory[0] = null;
-	
-							if(inventory[1] == null)
-							{
-								inventory[1] = containerItem;
-							}
-							else {
-								inventory[1].stackSize++;
-							}
-	
-							filled = true;
-						}
-					}
-					else {
-						inventory[0].stackSize--;
-	
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
-						}
-	
-						filled = true;
-					}
-	
-					if(filled)
-					{
-						fluidTank.fill(itemFluid, true);
-						markDirty();
-					}
-				}
+				FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 0, 1, FluidChecker.check(FluidRegistry.WATER));
 			}
 		}
 	}

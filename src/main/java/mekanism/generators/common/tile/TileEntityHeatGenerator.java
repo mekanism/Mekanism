@@ -10,6 +10,7 @@ import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -68,7 +69,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				
 				if(inventory[0].getItem() instanceof IFluidContainerItem)
 				{
-					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory[0], FluidRegistry.LAVA), true);
+					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory[0], FluidChecker.check(FluidRegistry.LAVA)), true);
 				}
 				else if(fluid != null)
 				{
