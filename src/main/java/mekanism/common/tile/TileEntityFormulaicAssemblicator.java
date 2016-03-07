@@ -16,7 +16,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.assemblicator.RecipeFormula;
-import mekanism.common.item.ItemRecipeFormula;
+import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -42,6 +42,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	public int operatingTicks;
 	
 	public boolean autoMode = false;
+	
+	public int pulseOperations;
 	
 	public RecipeFormula formula;
 	
@@ -83,15 +85,49 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		{
 			ChargeUtils.discharge(1, this);
 			
-			if(inventory[2] != null && inventory[2].getItem() instanceof ItemRecipeFormula)
+			if(controlType != RedstoneControl.PULSE)
 			{
+				pulseOperations = 0;
+			}
+			else if(MekanismUtils.canFunction(this))
+			{
+				pulseOperations++;
+			}
+			
+			if(inventory[2] != null && inventory[2].getItem() instanceof ItemCraftingFormula)
+			{
+				ItemCraftingFormula item = (ItemCraftingFormula)inventory[2].getItem();
 				
+				if(item.getInventory(inventory[2]) != null && !item.isInvalid(inventory[2]))
+				{
+					RecipeFormula itemFormula = new RecipeFormula(item.getInventory(inventory[2]));
+					
+					if(itemFormula.isValidFormula(worldObj))
+					{
+						if(formula != null && !formula.isFormulaEqual(worldObj, itemFormula))
+						{
+							itemFormula = formula;
+							operatingTicks = 0;
+						}
+						else if(formula == null)
+						{
+							formula = itemFormula;
+						}
+					}
+					else {
+						formula = null;
+						item.setInvalid(inventory[2], true);
+					}
+				}
+				else {
+					formula = null;
+				}
 			}
 			else {
 				formula = null;
 			}
 			
-			if(autoMode && formula != null)
+			if(autoMode && formula != null && ((controlType == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this)))
 			{
 				boolean canOperate = true;
 				
@@ -104,9 +140,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				{
 					if(operatingTicks == ticksRequired)
 					{
-						if(MekanismUtils.canFunction(this))
+						if(doSingleCraft())
 						{
-							doSingleCraft();
+							operatingTicks = 0;
+							
+							if(pulseOperations > 0)
+							{
+								pulseOperations--;
+							}
 						}
 					}
 					else {
@@ -150,6 +191,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				}
 			}
 			
+			markDirty();
+			
 			return true;
 		}
 		
@@ -191,6 +234,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			if(inventory[i] != null)
 			{
 				inventory[i] = tryMoveToInput(inventory[i]);
+				markDirty();
 				
 				if(inventory[i] != null)
 				{
@@ -212,6 +256,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 							inventory[j] = null;
 						}
 						
+						markDirty();
 						found = true;
 						
 						break;
@@ -246,6 +291,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				inventory[i] = tryMoveToInput(inventory[i]);
 			}
 			
+			markDirty();
 			autoMode = true;
 		}
 	}
@@ -317,7 +363,20 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	
 	private void encodeFormula()
 	{
-		
+		if(inventory[2] != null && inventory[2].getItem() instanceof ItemCraftingFormula)
+		{
+			ItemCraftingFormula item = (ItemCraftingFormula)inventory[2].getItem();
+			
+			if(item.getInventory(inventory[2]) == null)
+			{
+				RecipeFormula formula = new RecipeFormula(inventory, 27);
+				
+				if(formula.isValidFormula(worldObj))
+				{
+					item.setInventory(inventory[2], formula.input);
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -334,6 +393,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		autoMode = nbtTags.getBoolean("autoMode");
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+		pulseOperations = nbtTags.getInteger("pulseOperations");
 	}
 
 	@Override
@@ -344,6 +404,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		nbtTags.setBoolean("autoMode", autoMode);
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		nbtTags.setInteger("pulseOperations", pulseOperations);
 	}
 	
 	@Override

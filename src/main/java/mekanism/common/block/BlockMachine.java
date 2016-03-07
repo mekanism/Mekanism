@@ -155,6 +155,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 2:2: Ambient Accumulator
  * 2:3: Oredictionificator
  * 2:4: Resistive Heater
+ * 2:5: Formulaic Assemblicator
  * 
  * @author AidanBrady
  *
@@ -227,6 +228,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				icons[0][0] = BASE_ICON;
 				icons[2][0] = BASE_ICON;
 				icons[4][0] = BASE_ICON;
+				icons[5][0] = BASE_ICON;
 				MekanismRenderer.loadDynamicTextures(register, MachineType.OREDICTIONIFICATOR.name, icons[3], DefIcon.getAll(register.registerIcon("mekanism:OredictionificatorSide")));
 				break;
 		}
@@ -1225,7 +1227,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			
 			for(MachineType type : MachineType.values())
 			{
-				if(type != AMBIENT_ACCUMULATOR && type != FORMULAIC_ASSEMBLICATOR)
+				if(type != AMBIENT_ACCUMULATOR)
 				{
 					ret.add(type);
 				}

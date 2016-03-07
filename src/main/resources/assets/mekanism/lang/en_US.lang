@@ -48,6 +48,7 @@ item.Substrate.name=Substrate
 item.Flamethrower.name=Flamethrower
 item.GaugeDropper.name=Gauge Dropper
 item.BioFuel.name=Bio Fuel
+item.CraftingFormula.name=Crafting Formula
 
 //Control Circuits
 item.BasicControlCircuit.name=Basic Control Circuit
@@ -719,6 +720,9 @@ tooltip.speed=Speed
 tooltip.and=and
 tooltip.heat=Heat
 tooltip.itemAmount=Item amount
+tooltip.invalid=Invalid
+tooltip.encoded=Encoded
+tooltip.ingredients=Ingredients
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
@@ -797,6 +801,7 @@ tooltip.SolarNeutronActivator=A machine that directs the neutron radiation of th
 tooltip.Oredictionificator=A machine used to unify and translate between various items and blocks using the Ore Dictionary.
 tooltip.Factory=A machine that serves as an upgrade to regular machinery, allowing for multiple processing operations to occur at once.
 tooltip.ResistiveHeater=A condensed, coiled resistor capable of converting electrical energy directly into heat energy.
+tooltip.FormulaicAssemblicator=A machine that uses energy to rapidly craft items and blocks from Recipe Formulas. Doubles as an advanced crafting bench.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or other burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the sun to produce energy.
