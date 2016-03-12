@@ -5,11 +5,13 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import codechicken.lib.inventory.InventoryUtils;
@@ -18,9 +20,27 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCraftingFormula extends ItemMekanism
 {
+	public IIcon[] icons = new IIcon[3];
+	
 	public ItemCraftingFormula()
 	{
 		super();
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IIconRegister register)
+	{
+		icons[0] = register.registerIcon("mekanism:CraftingFormula");
+		icons[1] = register.registerIcon("mekanism:CraftingFormulaInvalid");
+		icons[2] = register.registerIcon("mekanism:CraftingFormulaEncoded");
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(ItemStack stack, int pass)
+	{
+		return getInventory(stack) == null ? icons[0] : (isInvalid(stack) ? icons[1] : icons[2]);
 	}
 	
 	@Override

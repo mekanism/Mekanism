@@ -202,11 +202,6 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 			return true;
 		}
 
-		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
-		{
-			return true;
-		}
-
 		return false;
 	}
 
@@ -219,9 +214,12 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 			{
 				return null;
 			}
+			
+			int newCount = stack.stackTagCompound.getInteger("newCount");
+			stack.stackTagCompound.removeTag("newCount");
 
             ItemStack ret = stack.copy();
-            ret.stackTagCompound.setInteger("itemCount", stack.stackTagCompound.getInteger("newCount"));
+            ret.stackTagCompound.setInteger("itemCount", newCount);
 
             return ret;
 		}

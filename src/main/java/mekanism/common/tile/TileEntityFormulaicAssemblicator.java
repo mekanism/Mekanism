@@ -9,6 +9,7 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.StackUtils;
+import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
@@ -17,6 +18,9 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -384,6 +388,48 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	{
 		return side != 0 && side != 1;
 	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
+	}
+	
+	@Override
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return ChargeUtils.canBeOutputted(itemstack, false);
+		}
+		else if(slotID >= 21 && slotID <= 26)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID >= 3 && slotID <= 20)
+		{
+			if(formula == null)
+			{
+				return true;
+			}
+			else {
+				return formula.isIngredient(worldObj, itemstack);
+			}
+		}
+		else if(slotID == 1)
+		{
+			return ChargeUtils.canBeDischarged(itemstack);
+		}
+
+		return false;
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
@@ -439,6 +485,21 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		autoMode = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
+		
+		if(dataStream.readBoolean())
+		{
+			ItemStack[] inv = new ItemStack[9];
+			
+			for(int i = 0; i < 9; i++)
+			{
+				inv[i] = PacketHandler.readStack(dataStream);
+			}
+			
+			formula = new RecipeFormula(inv);
+		}
+		else {
+			formula = null;
+		}
 	}
 
 	@Override
@@ -449,6 +510,19 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		data.add(autoMode);
 		data.add(operatingTicks);
 		data.add(controlType.ordinal());
+		
+		if(formula != null)
+		{
+			data.add(true);
+			
+			for(int i = 0; i < 9; i++)
+			{
+				data.add(formula.input[i]);
+			}
+		}
+		else {
+			data.add(false);
+		}
 		
 		return data;
 	}

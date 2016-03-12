@@ -38,8 +38,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public enum GasMode
 	{
 		IDLE,
-		DUMPING,
-		DUMPING_EXCESS
+		DUMPING_EXCESS,
+		DUMPING
 	}
 
 	/** The type of gas stored in this tank. */
