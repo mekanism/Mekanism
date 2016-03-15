@@ -25,7 +25,7 @@ public class ContainerFormulaicAssemblicator extends Container
 	public ContainerFormulaicAssemblicator(InventoryPlayer inventory, TileEntityFormulaicAssemblicator tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotDischarge(tentity, 1, 155, 76));
+		addSlotToContainer(new SlotDischarge(tentity, 1, 152, 76));
 		addSlotToContainer(new SlotSpecific(tentity, 2, 6, 26, ItemCraftingFormula.class));
 		
 		int slotY;
@@ -42,9 +42,15 @@ public class ContainerFormulaicAssemblicator extends Container
 		{
 			for(int slotX = 0; slotX < 3; slotX++)
 			{
-				addSlotToContainer(new Slot(tentity, slotX + slotY * 9 + 27, 26 + slotX * 18, 17 + slotY * 18) {
+				addSlotToContainer(new Slot(tentity, slotX + slotY * 3 + 27, 26 + slotX * 18, 17 + slotY * 18) {
 					@Override
 					public boolean isItemValid(ItemStack stack)
+					{
+						return !tileEntity.autoMode;
+					}
+					
+					@Override
+					public boolean canTakeStack(EntityPlayer player)
 					{
 						return !tileEntity.autoMode;
 					}
@@ -77,7 +83,7 @@ public class ContainerFormulaicAssemblicator extends Container
 		{
 			for(int slotX = 0; slotX < 2; slotX++)
 			{
-				addSlotToContainer(new SlotOutput(tentity, slotX + slotY * 9 + 21, 116 + slotX * 18, 17 + slotY * 18));
+				addSlotToContainer(new SlotOutput(tentity, slotX + slotY * 2 + 21, 116 + slotX * 18, 17 + slotY * 18));
 			}
 		}
 

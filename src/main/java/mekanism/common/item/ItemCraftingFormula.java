@@ -45,6 +45,13 @@ public class ItemCraftingFormula extends ItemMekanism
 	
 	@Override
 	@SideOnly(Side.CLIENT)
+	public boolean requiresMultipleRenderPasses()
+	{
+		return true;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		ItemStack[] inv = getInventory(itemstack);
@@ -145,7 +152,7 @@ public class ItemCraftingFormula extends ItemMekanism
 	
 	public ItemStack[] getInventory(ItemStack stack)
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("Items"))
 		{
 			return null;
 		}
@@ -172,6 +179,12 @@ public class ItemCraftingFormula extends ItemMekanism
 		if(stack.stackTagCompound == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(inv == null)
+		{
+			stack.stackTagCompound.removeTag("Items");
+			return;
 		}
 		
 		NBTTagList tagList = new NBTTagList();

@@ -1,7 +1,9 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -12,7 +14,9 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,7 +40,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png")));
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png")));
 		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png")));
-		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png"), 159, 16));
+		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png"), 159, 15));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
@@ -45,7 +49,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png")));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png"), 154, 75).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png"), 151, 75).with(SlotOverlay.POWER));
 		
 		ySize+=64;
 	}
@@ -53,9 +57,38 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-
+		
+		if(!tileEntity.autoMode)
+		{
+			/*if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
+			{
+				drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 0, 14, 14);
+			}
+			
+			if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
+			{
+				drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 176 + 14, 0, 16, 16);
+			}
+			
+			if(xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91)
+			{
+				drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 176 + 30, 0, 16, 16);
+			}*/
+		}
+		
+		if(tileEntity.formula != null)
+		{
+			if(xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91)
+			{
+				
+			}
+		}
+		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
@@ -67,7 +100,106 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		
+		int xAxis = mouseX - guiWidth;
+		int yAxis = mouseY - guiHeight;
+		
+		if(!tileEntity.autoMode)
+		{
+			if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
+			{
+				drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 0, 14, 14);
+			}
+			else {
+				drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 14, 14, 14);
+			}
+			
+			if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
+			{
+				drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 176 + 14, 0, 16, 16);
+			}
+			else {
+				drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 176 + 14, 16, 16, 16);
+			}
+			
+			if(xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91)
+			{
+				drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 176 + 30, 0, 16, 16);
+			}
+			else {
+				drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 176 + 30, 16, 16, 16);
+			}
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 28, 14, 14);
+			drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 176 + 14, 32, 16, 16);
+			drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 176 + 30, 32, 16, 16);
+		}
+		
+		if(tileEntity.formula != null)
+		{
+			if(xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91)
+			{
+				drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 176 + 46, 0, 16, 16);
+			}
+			else {
+				drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 176 + 46, 16, 16, 16);
+			}
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 176 + 46, 32, 16, 16);
+		}
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+	}
+	
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int button)
+	{
+		super.mouseClicked(mouseX, mouseY, button);
+
+		if(button == 0)
+		{
+			int xAxis = (mouseX - (width - xSize) / 2);
+			int yAxis = (mouseY - (height - ySize) / 2);
+
+			if(!tileEntity.autoMode)
+			{
+				if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
+				{
+					ArrayList data = new ArrayList();
+					data.add(1);
+
+					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				}
+				
+				if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
+				{
+					ArrayList data = new ArrayList();
+					data.add(2);
+
+					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				}
+				
+				if(xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91)
+				{
+					ArrayList data = new ArrayList();
+					data.add(3);
+
+					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				}
+			}
+			
+			if(tileEntity.formula != null)
+			{
+				if(xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91)
+				{
+					ArrayList data = new ArrayList();
+					data.add(0);
+	
+					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				}
+			}
+		}
 	}
 }
