@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -267,8 +268,12 @@ public class RecipeUtils
 	
 	public static IRecipe getRecipeFromGrid(InventoryCrafting inv, World world)
 	{
-		for(IRecipe recipe : (List<IRecipe>)CraftingManager.getInstance().getRecipeList())
+		List<IRecipe> list = new ArrayList<IRecipe>(CraftingManager.getInstance().getRecipeList());
+		
+		for(Iterator<IRecipe> iter = list.iterator(); iter.hasNext();)
 		{
+			IRecipe recipe = iter.next();
+			
 			if(recipe.matches(inv, world))
 			{
 				return recipe;

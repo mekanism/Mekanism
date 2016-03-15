@@ -36,7 +36,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
 	public double energyPerTick = BASE_ENERGY_PER_TICK;
 
-	public int BASE_TICKS_REQUIRED = 100;
+	public int BASE_TICKS_REQUIRED = 40;
 
 	public int ticksRequired = BASE_TICKS_REQUIRED;
 	
@@ -134,17 +134,38 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			{
 				toggleAutoMode();
 			}
-			else if(formula != null)
+			
+			if(formula == null)
 			{
-				moveItemsToGrid();
+				if(autoMode)
+				{
+					toggleAutoMode();
+				}
+				
+				for(int i = 0; i < 9; i++)
+				{
+					dummyInv.setInventorySlotContents(i, inventory[27+i]);
+				}
+				
+				isRecipe = MekanismUtils.findMatchingRecipe(dummyInv, worldObj) != null;
+			}
+			else {
+				isRecipe = formula.matches(worldObj, inventory, 27);
 			}
 			
 			if(autoMode && formula != null && ((controlType == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this)))
 			{
 				boolean canOperate = true;
 				
-				if(formula.matches(worldObj, inventory, 27))
+				if(!formula.matches(worldObj, inventory, 27))
 				{
+					canOperate = moveItemsToGrid();
+				}
+				
+				if(canOperate)
+				{
+					isRecipe = true;
+					
 					if(operatingTicks == ticksRequired)
 					{
 						if(doSingleCraft())
@@ -231,6 +252,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				}
 			}
 			
+			if(formula != null)
+			{
+				moveItemsToGrid();
+			}
+			
 			markDirty();
 			
 			return true;
@@ -243,7 +269,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	{
 		if(formula != null)
 		{
-			boolean canOperate = false;
+			boolean canOperate = true;
 			
 			if(!formula.matches(worldObj, inventory, 27))
 			{

@@ -11,10 +11,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -60,21 +56,6 @@ public class ContainerFormulaicAssemblicator extends Container
 				    {
 						return !tileEntity.autoMode;
 				    }
-					
-					@Override
-					@SideOnly(Side.CLIENT)
-					public IIcon getBackgroundIconIndex()
-					{
-						if(tileEntity.formula != null)
-						{
-							ItemStack stack = tileEntity.formula.input[getSlotIndex()-27];
-							GL11.glColor4f(1, 1, 1, 0.4F);
-							
-							return stack != null ? stack.getIconIndex() : null;
-						}
-						
-						return null;
-					}
 				});
 			}
 		}

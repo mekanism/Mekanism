@@ -532,6 +532,10 @@ gui.maxSteam=Max Steam
 gui.heatTransfer=Heat Transfer
 gui.superheaters=Superheaters
 gui.boilCapacity=Boil Capacity
+gui.encodeFormula=Encode Formula
+gui.autoModeToggle=Turn Auto-Mode
+gui.craftSingle=Craft Single Item
+gui.craftAvailable=Craft Available Items
 
 gui.reactor.injectionRate=Injection Rate
 
