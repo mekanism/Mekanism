@@ -15,6 +15,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.item.ItemCraftingFormula;
@@ -67,6 +68,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		
+		if(xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91)
+		{
+			drawCreativeTabHoveringText(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
+		}
+		
 		if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
 		{
 			drawCreativeTabHoveringText(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
@@ -102,6 +108,20 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 		int xAxis = mouseX - guiWidth;
 		int yAxis = mouseY - guiHeight;
 		
+		if(!tileEntity.autoMode)
+		{
+			if(xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91)
+			{
+				drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 176 + 62, 0, 16, 16);
+			}
+			else {
+				drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 176 + 62, 16, 16, 16);
+			}
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 176 + 62, 32, 16, 16);
+		}
+		
 		if(!tileEntity.autoMode && tileEntity.isRecipe)
 		{
 			if(canEncode())
@@ -113,6 +133,9 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				else {
 					drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 14, 14, 14);
 				}
+			}
+			else {
+				drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 28, 14, 14);
 			}
 			
 			if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
@@ -203,33 +226,52 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
 
-			if(!tileEntity.autoMode && tileEntity.isRecipe)
+			if(!tileEntity.autoMode)
 			{
-				if(canEncode())
+				if(xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91)
 				{
-					if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
+					SoundHandler.playSound("gui.button.press");
+					
+					ArrayList data = new ArrayList();
+					data.add(4);
+
+					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				}
+				
+				if(tileEntity.isRecipe)
+				{
+					if(canEncode())
 					{
+						if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
+						{
+							SoundHandler.playSound("gui.button.press");
+							
+							ArrayList data = new ArrayList();
+							data.add(1);
+		
+							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+						}
+					}
+					
+					if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
+					{
+						SoundHandler.playSound("gui.button.press");
+						
 						ArrayList data = new ArrayList();
-						data.add(1);
+						data.add(2);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 					}
-				}
-				
-				if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
-				{
-					ArrayList data = new ArrayList();
-					data.add(2);
-
-					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				}
-				
-				if(xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91)
-				{
-					ArrayList data = new ArrayList();
-					data.add(3);
-
-					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+					
+					if(xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91)
+					{
+						SoundHandler.playSound("gui.button.press");
+						
+						ArrayList data = new ArrayList();
+						data.add(3);
+	
+						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+					}
 				}
 			}
 			
@@ -237,6 +279,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 			{
 				if(xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91)
 				{
+					SoundHandler.playSound("gui.button.press");
+					
 					ArrayList data = new ArrayList();
 					data.add(0);
 	

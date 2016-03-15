@@ -344,11 +344,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		while(craftSingle());
 	}
 	
-	private void moveItemsToInput()
+	private void moveItemsToInput(boolean forcePush)
 	{
 		for(int i = 27; i <= 35; i++)
 		{
-			if(inventory[i] != null && formula != null && !formula.isIngredientInPos(worldObj, inventory[i], i-27))
+			if(inventory[i] != null && (forcePush || (formula != null && !formula.isIngredientInPos(worldObj, inventory[i], i-27))))
 			{
 				inventory[i] = tryMoveToInput(inventory[i]);
 			}
@@ -364,7 +364,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		}
 		else if(formula != null)
 		{
-			moveItemsToInput();
+			moveItemsToInput(false);
 			autoMode = true;
 		}
 		
@@ -546,6 +546,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			else if(type == 3)
 			{
 				craftAll();
+			}
+			else if(type == 4)
+			{
+				if(formula != null)
+				{
+					moveItemsToGrid();
+				}
+				else {
+					moveItemsToInput(true);
+				}
 			}
 			
 			return;

@@ -520,7 +520,7 @@ public class Mekanism
 			"OCO", "ATA", "OCO", Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismItems.TeleportationCore
 		}));
 		MachineType.FORMULAIC_ASSEMBLICATOR.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock3, 1, 5), new Object[] {
-			"STS", "BIB", "SCS", Character.valueOf('S'), "ingotSteel", Character.valueOf('T'), Blocks.crafting_table, Character.valueOf('B'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('I'), new ItemStack(MekanismBlocks.MachineBlock, 1, 8), Character.valueOf('C'), Blocks.chest
+			"STS", "BIB", "SCS", Character.valueOf('S'), "ingotSteel", Character.valueOf('T'), Blocks.crafting_table, Character.valueOf('B'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('C'), Blocks.chest
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapelessMekanismRecipe(new ItemStack(MekanismItems.CraftingFormula), new Object[] {
 			Items.paper, MekanismUtils.getControlCircuit(BaseTier.BASIC)
