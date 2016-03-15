@@ -31,6 +31,7 @@ import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiFluidTank;
 import mekanism.client.gui.GuiFluidicPlenisher;
+import mekanism.client.gui.GuiFormulaicAssemblicator;
 import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiInductionMatrix;
 import mekanism.client.gui.GuiLaserAmplifier;
@@ -151,6 +152,7 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
+import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -529,6 +531,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiThermoelectricBoiler(player.inventory, (TileEntityBoilerCasing)tileEntity);
 			case 55:
 				return new GuiBoilerStats(player.inventory, (TileEntityBoilerCasing)tileEntity);
+			case 56:
+				return new GuiFormulaicAssemblicator(player.inventory, (TileEntityFormulaicAssemblicator)tileEntity);
 		}
 		
 		return null;

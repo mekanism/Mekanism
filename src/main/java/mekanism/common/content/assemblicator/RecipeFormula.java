@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 
 public class RecipeFormula 
 {
-	public InventoryCrafting dummy = MekanismUtils.getDummyCraftingInv();
+	private InventoryCrafting dummy = MekanismUtils.getDummyCraftingInv();
 	
 	public ItemStack[] input = new ItemStack[9];
 	

@@ -8,7 +8,7 @@ import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.client.model.ModelGasGenerator;
 import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.client.model.ModelSolarGenerator;
-import mekanism.generators.client.model.ModelWindTurbine;
+import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
@@ -30,7 +30,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelBioGenerator bioGenerator = new ModelBioGenerator();
 	public ModelHeatGenerator heatGenerator = new ModelHeatGenerator();
 	public ModelGasGenerator hydrogenGenerator = new ModelGasGenerator();
-	public ModelWindTurbine windTurbine = new ModelWindTurbine();
+	public ModelWindGenerator windTurbine = new ModelWindGenerator();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -84,9 +84,9 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			{
 				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 				GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
-				GL11.glTranslatef(0.0F, 0.35F, 0.0F);
-				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindTurbine.png"));
-				windTurbine.render(0.018F, 0);
+				GL11.glTranslatef(0.0F, 0.4F, 0.0F);
+				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));
+				windTurbine.render(0.016F, 0);
 			}
 			else if(metadata != 2) 
 			{

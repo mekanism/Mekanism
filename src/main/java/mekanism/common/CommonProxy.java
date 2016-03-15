@@ -34,6 +34,7 @@ import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerFluidTank;
 import mekanism.common.inventory.container.ContainerFluidicPlenisher;
+import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
@@ -88,6 +89,7 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
+import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -372,6 +374,7 @@ public class CommonProxy implements IGuiProvider
 		usage.laserUsage = Mekanism.configuration.get("usage", "LaserUsage", 5000D).getDouble();
 		usage.gasCentrifugeUsage = Mekanism.configuration.get("usage", "GasCentrifugeUsage", 100D).getDouble();
 		usage.heavyWaterElectrolysisUsage = Mekanism.configuration.get("usage", "HeavyWaterElectrolysisUsage", 800D).getDouble();
+		usage.formulaicAssemblicatorUsage = Mekanism.configuration.get("usage", "FormulaicAssemblicatorUsage", 100D).getDouble();
 
 		Tier.loadConfig();
 		
@@ -549,6 +552,8 @@ public class CommonProxy implements IGuiProvider
 				return new ContainerFilter(player.inventory, (TileEntityContainerBlock)tileEntity);
 			case 55:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
+			case 56:
+				return new ContainerFormulaicAssemblicator(player.inventory, (TileEntityFormulaicAssemblicator)tileEntity);
 		}
 
 		return null;
