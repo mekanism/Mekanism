@@ -1090,6 +1090,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
+		setBlockBoundsBasedOnState(world, x, y, z);
+		
 		if(world.getTileEntity(x, y, z) instanceof TileEntityChargepad)
 		{
 			return null;
