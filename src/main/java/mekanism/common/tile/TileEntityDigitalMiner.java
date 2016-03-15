@@ -792,7 +792,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			maxY = dataStream.readInt();
 			doEject = dataStream.readBoolean();
 			doPull = dataStream.readBoolean();
-			isActive = dataStream.readBoolean();
+			clientActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
 			silkTouch = dataStream.readBoolean();
 			numPowering = dataStream.readInt();
@@ -825,7 +825,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			maxY = dataStream.readInt();
 			doEject = dataStream.readBoolean();
 			doPull = dataStream.readBoolean();
-			isActive = dataStream.readBoolean();
+			clientActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
 			silkTouch = dataStream.readBoolean();
 			numPowering = dataStream.readInt();
@@ -855,7 +855,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 		else if(type == 3)
 		{
-			isActive = dataStream.readBoolean();
+			clientActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
 			clientToMine = dataStream.readInt();
 			
@@ -866,6 +866,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			else {
 				missingStack = null;
 			}
+		}
+		
+		if(clientActive != isActive)
+		{
+			isActive = clientActive;
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}
 

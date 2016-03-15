@@ -35,19 +35,19 @@ public class ModelAdvancedSolarGenerator extends ModelBase
 		Shape1.setRotationPoint(-20F, -17F, 0F);
 		Shape1.setTextureSize(256, 256);
 		Shape1.mirror = true;
-		setRotation(Shape1, 0.3490659F, 0F, 0F);
+		setRotation(Shape1, 0F, 0F, 0F); //rotates
 		Shape2 = new ModelRenderer(this, 0, 49);
 		Shape2.addBox(0F, -1F, -23F, 16, 1, 45);
 		Shape2.setRotationPoint(7F, -17F, 0F);
 		Shape2.setTextureSize(256, 256);
 		Shape2.mirror = true;
-		setRotation(Shape2, 0.3490659F, 0F, 0F);
+		setRotation(Shape2, 0F, 0F, 0F); //rotates
 		Shape3 = new ModelRenderer(this, 0, 0);
 		Shape3.addBox(0F, -2F, -24F, 18, 1, 48);
 		Shape3.setRotationPoint(6F, -17F, 0F);
 		Shape3.setTextureSize(256, 256);
 		Shape3.mirror = true;
-		setRotation(Shape3, 0.3490659F, 0F, 0F);
+		setRotation(Shape3, 0F, 0F, 0F); //rotates
 		Shape4 = new ModelRenderer(this, 86, 21);
 		Shape4.addBox(0F, 0F, 0F, 6, 6, 10);
 		Shape4.setRotationPoint(-3F, 13F, -7F);
@@ -95,13 +95,13 @@ public class ModelAdvancedSolarGenerator extends ModelBase
 		Shape11.setRotationPoint(-24F, -17F, 0F);
 		Shape11.setTextureSize(256, 256);
 		Shape11.mirror = true;
-		setRotation(Shape11, 0.3490659F, 0F, 0F);
+		setRotation(Shape11, 0F, 0F, 0F); //rotates
 		Shape12 = new ModelRenderer(this, 0, 49);
 		Shape12.addBox(0F, -1F, -23F, 16, 1, 45);
 		Shape12.setRotationPoint(-23F, -17F, 0F);
 		Shape12.setTextureSize(256, 256);
 		Shape12.mirror = true;
-		setRotation(Shape12, 0.3490659F, 0F, 0F);
+		setRotation(Shape12, 0F, 0F, 0F); //rotates
 		Shape13 = new ModelRenderer(this, 78, 50);
 		Shape13.addBox(0F, 0F, 0F, 16, 2, 16);
 		Shape13.setRotationPoint(-8F, 22F, -8F);
