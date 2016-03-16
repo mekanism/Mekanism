@@ -152,11 +152,4 @@ public class InventoryFrequency extends Frequency
 		
 		temperature = dataStream.readDouble();
 	}
-	
-	public static enum TransferType
-	{
-		RECEIVE,
-		SEND,
-		BOTH;
-	}
 }
