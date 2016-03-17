@@ -56,7 +56,7 @@ public class GuiFactory extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick*tileEntity.tier.processes);
+				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.lastUsage);
 				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity.tier.guiLocation));

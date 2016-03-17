@@ -118,6 +118,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public boolean sorting;
 	
 	public boolean upgraded;
+	
+	public double lastUsage;
 
 	@SideOnly(Side.CLIENT)
 	public SoundWrapper[] sounds;
@@ -332,6 +334,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			else {
 				recipeTicks = 0;
 			}
+			
+			double prev = getEnergy();
 
 			secondaryEnergyThisTick = recipeType.fuelEnergyUpgrades() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int)Math.ceil(secondaryEnergyPerTick);
 			
@@ -392,6 +396,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				infuseStored.type = null;
 			}
 
+			lastUsage = prev-getEnergy();
 			prevEnergy = getEnergy();
 		}
 	}
@@ -778,6 +783,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		sorting = dataStream.readBoolean();
 		upgraded = dataStream.readBoolean();
+		lastUsage = dataStream.readDouble();
 		infuseStored.amount = dataStream.readInt();
 		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
 
@@ -877,6 +883,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		data.add(controlType.ordinal());
 		data.add(sorting);
 		data.add(upgraded);
+		data.add(lastUsage);
 		data.add(infuseStored.amount);
 		
 		if(infuseStored.type != null)
