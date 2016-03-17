@@ -32,6 +32,7 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.BinTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Tier.FluidTankTier;
@@ -375,9 +376,6 @@ public class Mekanism
 		MachineType.LOGISTICAL_SORTER.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 15), new Object[] {
 			"IPI", "ICI", "III", Character.valueOf('I'), "ingotIron", Character.valueOf('P'), Blocks.piston, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 6), new Object[] {
-			"SSS", "SCS", "SSS", Character.valueOf('S'), Blocks.cobblestone, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
-		}));
 		MachineType.DIGITAL_MINER.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 4), new Object[] {
 			"ACA", "SES", "TIT", Character.valueOf('A'), MekanismItems.AtomicAlloy, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('S'), new ItemStack(MekanismBlocks.MachineBlock, 1, 15), Character.valueOf('E'), MekanismItems.Robit.getUnchargedItem(),
 			Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('T'), MekanismItems.TeleportationCore
@@ -566,6 +564,20 @@ public class Mekanism
 		}));
 		MachineType.FLUID_TANK.addRecipe(new ShapedMekanismRecipe(MekanismUtils.getEmptyFluidTank(FluidTankTier.ULTIMATE), new Object[] {
 			"AIA", "ITI", "AIA", Character.valueOf('I'), "ingotIron", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismUtils.getEmptyFluidTank(FluidTankTier.ELITE)
+		}));
+		
+		//Bin recipes
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getBin(BinTier.BASIC), new Object[] {
+			"SCS", "A A", "SSS", Character.valueOf('S'), Blocks.cobblestone, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('A'), "alloyBasic"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getBin(BinTier.ADVANCED), new Object[] {
+			"SCS", "ABA", "SSS", Character.valueOf('S'), Blocks.cobblestone, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED), Character.valueOf('A'), "alloyAdvanced", Character.valueOf('B'), MekanismUtils.getBin(BinTier.BASIC)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getBin(BinTier.ELITE), new Object[] {
+			"SCS", "ABA", "SSS", Character.valueOf('S'), Blocks.cobblestone, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ELITE), Character.valueOf('A'), "alloyElite", Character.valueOf('B'), MekanismUtils.getBin(BinTier.ADVANCED)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getBin(BinTier.ULTIMATE), new Object[] {
+			"SCS", "ABA", "SSS", Character.valueOf('S'), Blocks.cobblestone, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('A'), "alloyUltimate", Character.valueOf('B'), MekanismUtils.getBin(BinTier.ELITE)
 		}));
 		
 		//Induction Cell recipes
@@ -1188,6 +1200,9 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		//Register tier information
+		Tier.init();
+		
 		File config = event.getSuggestedConfigurationFile();
 		
 		//Set the mod's configuration

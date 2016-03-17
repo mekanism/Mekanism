@@ -28,6 +28,7 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IEnergyCube;
+import mekanism.common.block.BlockBasic.BasicType;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemAtomicDisassembler;
@@ -162,18 +163,16 @@ public class ItemRenderingHandler implements IItemRenderer
 
 			GL11.glPopMatrix();
 		}
-		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock2 && item.getItemDamage() == 3)
+		else if(BasicType.get(item) == BasicType.INDUCTION_CELL || BasicType.get(item) == BasicType.INDUCTION_PROVIDER)
 		{
 			MekanismRenderer.renderCustomItem((RenderBlocks)data[0], item);
 		}
-		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock2 && item.getItemDamage() == 4)
+		else if(BasicType.get(item) == BasicType.BIN)
 		{
+			GL11.glRotatef(270, 0.0F, 1.0F, 0.0F);
 			MekanismRenderer.renderCustomItem((RenderBlocks)data[0], item);
-		}
-		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock && item.getItemDamage() == 6)
-		{
-			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
-
+			GL11.glRotatef(-270, 0.0F, 1.0F, 0.0F);
+			
 			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()*/ == null)
 			{
 				return;

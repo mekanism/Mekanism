@@ -14,7 +14,9 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.ITierItem;
+import mekanism.common.block.BlockBasic.BasicType;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.inventory.InventoryBin;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.recipe.ShapelessMekanismRecipe;
 import net.minecraft.block.Block;
@@ -25,6 +27,8 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeUtils 
@@ -167,6 +171,74 @@ public class RecipeUtils
 			{
 				gasFound.amount = Math.min(((IGasItem)toReturn.getItem()).getMaxGas(toReturn), gasFound.amount);
 				((IGasItem)toReturn.getItem()).setGas(toReturn, gasFound);
+			}
+		}
+		
+		if(toReturn.getItem() instanceof IFluidContainerItem)
+		{
+			FluidStack fluidFound = null;
+			
+			for(int i = 0; i < 9; i++)
+			{
+				ItemStack itemstack = inv.getStackInSlot(i);
+
+				if(itemstack != null && itemstack.getItem() instanceof IFluidContainerItem)
+				{
+					FluidStack stored = ((IFluidContainerItem)itemstack.getItem()).getFluid(itemstack);
+					
+					if(stored != null)
+					{
+						if(((IFluidContainerItem)toReturn.getItem()).fill(toReturn, stored, false) == 0)
+						{
+							return null;
+						}
+						
+						if(fluidFound == null)
+						{
+							fluidFound = stored;
+						}
+						else {
+							if(fluidFound.getFluid() != stored.getFluid())
+							{
+								return null;
+							}
+							
+							fluidFound.amount += stored.amount;
+						}
+					}
+				}
+			}
+			
+			if(fluidFound != null)
+			{
+				fluidFound.amount = Math.min(((IFluidContainerItem)toReturn.getItem()).getCapacity(toReturn), fluidFound.amount);
+				((IFluidContainerItem)toReturn.getItem()).fill(toReturn, fluidFound, true);
+			}
+		}
+		
+		if(BasicType.get(toReturn) == BasicType.BIN)
+		{
+			int foundCount = 0;
+			ItemStack foundType = null;
+			
+			for(int i = 0; i < 9; i++)
+			{
+				ItemStack itemstack = inv.getStackInSlot(i);
+
+				if(BasicType.get(itemstack) == BasicType.BIN)
+				{
+					InventoryBin binInv = new InventoryBin(itemstack);
+					
+					foundCount = binInv.getItemCount();
+					foundType = binInv.getItemType();
+				}
+			}
+			
+			if(foundCount > 0 && foundType != null)
+			{
+				InventoryBin binInv = new InventoryBin(toReturn);
+				binInv.setItemCount(foundCount);
+				binInv.setItemType(foundType);
 			}
 		}
 

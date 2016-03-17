@@ -32,6 +32,7 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.BinTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Tier.FluidTankTier;
@@ -366,6 +367,19 @@ public final class MekanismUtils
 	public static ItemStack getInductionProvider(InductionProviderTier tier)
 	{
 		return ((ItemBlockBasic)new ItemStack(MekanismBlocks.BasicBlock2, 1, 4).getItem()).getUnchargedProvider(tier);
+	}
+	
+	/**
+	 * Retrieves an Bin with a defined tier.
+	 * @param tier - tier to add to the Bin
+	 * @return Bin with defined tier
+	 */
+	public static ItemStack getBin(BinTier tier)
+	{
+		ItemStack ret = new ItemStack(MekanismBlocks.BasicBlock, 1, 6);
+		((ItemBlockBasic)ret.getItem()).setBaseTier(ret, tier.getBaseTier());
+		
+		return ret;
 	}
 
 	/**

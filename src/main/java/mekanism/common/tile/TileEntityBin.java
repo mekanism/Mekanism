@@ -10,6 +10,7 @@ import mekanism.api.Range4D;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.Tier.BinTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITransporterTile;
@@ -44,8 +45,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public int delayTicks;
 
 	public int cacheCount;
-
-	public final int MAX_STORAGE = 4096;
+	
+	public BinTier tier = BinTier.BASIC;
 
 	public ItemStack itemType;
 
@@ -69,7 +70,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 
 		int count = getItemCount();
-		int remain = MAX_STORAGE-count;
+		int remain = tier.storage-count;
 
 		if(remain >= itemType.getMaxStackSize())
 		{
@@ -117,23 +118,23 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 	public ItemStack add(ItemStack stack)
 	{
-		if(isValid(stack) && getItemCount() != MAX_STORAGE)
+		if(isValid(stack) && getItemCount() != tier.storage)
 		{
 			if(itemType == null)
 			{
 				setItemType(stack);
 			}
 
-			if(getItemCount() + stack.stackSize <= MAX_STORAGE)
+			if(getItemCount() + stack.stackSize <= tier.storage)
 			{
 				setItemCount(getItemCount() + stack.stackSize);
 				return null;
 			}
 			else {
 				ItemStack rejects = itemType.copy();
-				rejects.stackSize = (getItemCount()+stack.stackSize) - MAX_STORAGE;
+				rejects.stackSize = (getItemCount()+stack.stackSize) - tier.storage;
 
-				setItemCount(MAX_STORAGE);
+				setItemCount(tier.storage);
 
 				return rejects;
 			}
@@ -226,6 +227,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("itemCount", cacheCount);
+		nbtTags.setInteger("tier", tier.ordinal());
 
 		if(bottomStack != null)
 		{
@@ -250,6 +252,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		isActive = nbtTags.getBoolean("isActive");
 		cacheCount = nbtTags.getInteger("itemCount");
+		tier = BinTier.values()[nbtTags.getInteger("tier")];
 
 		bottomStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("bottomStack"));
 		topStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("topStack"));
@@ -267,6 +270,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		data.add(isActive);
 		data.add(getItemCount());
+		data.add(tier.ordinal());
 
 		if(getItemCount() > 0)
 		{
@@ -283,6 +287,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		isActive = dataStream.readBoolean();
 		clientAmount = dataStream.readInt();
+		tier = BinTier.values()[dataStream.readInt()];
 
 		if(clientAmount > 0)
 		{
@@ -424,7 +429,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public String getInventoryName()
 	{
-		return LangUtils.localize("tile.BasicBlock.Bin.name");
+		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".Bin" + tier.getBaseTier().getName() + ".name");
 	}
 
 	@Override
@@ -558,7 +563,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public int getMaxStoredCount()
 	{
-		return MAX_STORAGE;
+		return tier.storage;
 	}
 
 	@Override

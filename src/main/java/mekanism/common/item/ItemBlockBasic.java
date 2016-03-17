@@ -13,6 +13,7 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.BinTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.base.ITierItem;
@@ -240,6 +241,8 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 			{
 				TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(x, y, z);
 				InventoryBin inv = new InventoryBin(stack);
+				
+				tileEntity.tier = BinTier.values()[getBaseTier(stack).ordinal()];
 
 				if(inv.getItemType() != null)
 				{
@@ -289,7 +292,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 		{
 			String name = getUnlocalizedName() + "." + BasicType.get(itemstack).name;
 			
-			if(type == BasicType.INDUCTION_CELL || type == BasicType.INDUCTION_PROVIDER)
+			if(type == BasicType.BIN || type == BasicType.INDUCTION_CELL || type == BasicType.INDUCTION_PROVIDER)
 			{
 				name += getBaseTier(itemstack).getName();
 			}
