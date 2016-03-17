@@ -451,12 +451,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
-	{
-		return true;
-	}
-
-	@Override
 	@Method(modid = "IC2")
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{

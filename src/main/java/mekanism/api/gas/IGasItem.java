@@ -72,10 +72,4 @@ public interface IGasItem
 	 * @return maximum gas
 	 */
 	public int getMaxGas(ItemStack itemstack);
-	
-	/**
-	 * Returns whether or not this item contains metadata-specific subtypes instead of using metadata for damage display.
-	 * @return if the item contains metadata-specific subtypes
-	 */
-	public boolean isMetadataSpecific(ItemStack itemstack);
 }

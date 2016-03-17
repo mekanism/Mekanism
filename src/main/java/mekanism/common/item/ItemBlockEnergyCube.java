@@ -204,10 +204,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 			return 0;
 		}
 
-		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
-
-		return electricityStored;
+		return itemStack.stackTagCompound.getDouble("electricity");
 	}
 
 	@Override
@@ -225,7 +222,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
 		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
 	}
 
 	@Override
@@ -303,9 +299,15 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	}
 
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return false;
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
 	}
 
 	@Override

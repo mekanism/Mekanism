@@ -49,8 +49,6 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		metaBlock = block;
 		setHasSubtypes(true);
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -125,17 +123,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-
-		if(stored == null)
-		{
-			itemstack.setItemDamage(100);
-		}
-		else {
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-		}
-
-		return stored;
+		return GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
 	}
 
 	@Override
@@ -148,14 +136,12 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.setItemDamage(100);
 			itemstack.stackTagCompound.removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
@@ -165,7 +151,6 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		ItemStack empty = new ItemStack(this);
 		setBaseTier(empty, tier.getBaseTier());
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		
 		return empty;
 	}
@@ -178,7 +163,6 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			ItemStack empty = new ItemStack(this);
 			setBaseTier(empty, tier.getBaseTier());
 			setGas(empty, null);
-			empty.setItemDamage(100);
 			list.add(empty);
 		}
 
@@ -310,8 +294,14 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 	
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return false;
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
 	}
 }

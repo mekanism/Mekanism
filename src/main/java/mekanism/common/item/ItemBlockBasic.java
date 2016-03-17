@@ -361,10 +361,4 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		return false;
 	}
-
-	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack) 
-	{
-		return true;
-	}
 }

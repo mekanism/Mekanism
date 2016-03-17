@@ -909,12 +909,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
-	{
-		return true;
-	}
-
-	@Override
 	@Method(modid = "IC2")
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{

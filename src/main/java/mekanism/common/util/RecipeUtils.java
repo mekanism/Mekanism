@@ -48,59 +48,35 @@ public class RecipeUtils
 		{
 			return false;
 		}
-
-		if(!(target.getItem() instanceof IEnergizedItem) && !(input.getItem() instanceof IEnergizedItem) && !(target.getItem() instanceof IGasItem) && !(input.getItem() instanceof IGasItem))
+		
+		if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
 		{
-			if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+			return false;
+		}
+
+		if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
+		{
+			if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
 			{
 				return false;
 			}
 		}
-		else {
-			if(target.getItem() instanceof IEnergizedItem && input.getItem() instanceof IEnergizedItem)
+		
+		if(target.getItem() instanceof ITierItem && input.getItem() instanceof ITierItem)
+		{
+			if(((ITierItem)target.getItem()).getBaseTier(target) != ((ITierItem)input.getItem()).getBaseTier(input))
 			{
-				if(((IEnergizedItem)target.getItem()).isMetadataSpecific(target) && ((IEnergizedItem)input.getItem()).isMetadataSpecific(input))
-				{
-					if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
-					{
-						return false;
-					}
-				}
+				return false;
 			}
-			
-			if(target.getItem() instanceof IGasItem && input.getItem() instanceof IGasItem)
+		}
+		
+		if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
+		{
+			if(isFactory(target) && isFactory(input))
 			{
-				if(((IGasItem)target.getItem()).isMetadataSpecific(target) && ((IGasItem)input.getItem()).isMetadataSpecific(input))
-				{
-					if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
-					{
-						return false;
-					}
-				}
-			}
-
-			if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
-			{
-				if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
+				if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
 				{
 					return false;
-				}
-			}
-			else if(target.getItem() instanceof ITierItem && input.getItem() instanceof ITierItem)
-			{
-				if(((ITierItem)target.getItem()).getBaseTier(target) != ((ITierItem)input.getItem()).getBaseTier(input))
-				{
-					return false;
-				}
-			}
-			else if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
-			{
-				if(isFactory(target) && isFactory(input))
-				{
-					if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
-					{
-						return false;
-					}
 				}
 			}
 		}
