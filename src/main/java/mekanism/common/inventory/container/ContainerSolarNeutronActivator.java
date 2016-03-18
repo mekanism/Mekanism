@@ -1,17 +1,13 @@
 package mekanism.common.inventory.container;
 
 import mekanism.api.gas.IGasItem;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
-import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 
 public class ContainerSolarNeutronActivator extends Container
 {

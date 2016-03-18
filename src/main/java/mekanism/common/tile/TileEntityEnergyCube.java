@@ -12,7 +12,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.base.IEjector;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.integration.IComputerIntegration;
@@ -168,7 +167,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		return false;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()
@@ -239,7 +238,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public void setEnergy(double energy)
 	{
-		if(tier == EnergyCubeTier.CREATIVE && energy != Integer.MAX_VALUE)
+		if(tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE)
 		{
 			return;
 		}
@@ -280,7 +279,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public IEjector getEjector()
+	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
 	}

@@ -32,11 +32,6 @@ public class GuiEnergyInfo extends GuiElement
 		return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
 	}
 
-	public static interface IInfoHandler
-	{
-		public List<String> getInfo();
-	}
-
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
@@ -59,7 +54,7 @@ public class GuiEnergyInfo extends GuiElement
 				info.add(s);
 			}
 			
-			info.add(LangUtils.localize("gui.unit") + ": " + general.activeType);
+			info.add(LangUtils.localize("gui.unit") + ": " + general.energyUnit);
 			displayTooltips(info, xAxis, yAxis);
 		}
 	}
@@ -72,7 +67,10 @@ public class GuiEnergyInfo extends GuiElement
 	{
 		if(button == 0)
 		{
-			general.activeType = EnergyType.values()[(general.activeType.ordinal()+1)%EnergyType.values().length];
+			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
+			{
+				general.energyUnit = EnergyType.values()[(general.energyUnit.ordinal()+1)%EnergyType.values().length];
+			}
 		}
 	}
 }

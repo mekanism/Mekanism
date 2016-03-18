@@ -1,12 +1,11 @@
 package mekanism.common.content.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.common.PacketHandler;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
-import mekanism.common.util.InventoryUtils;
-
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;

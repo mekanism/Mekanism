@@ -1,5 +1,7 @@
 package mekanism.client.gui.element;
 
+import java.util.Arrays;
+
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanism;
@@ -18,9 +20,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.input.Keyboard;
 
-import java.util.Arrays;
+import org.lwjgl.input.Keyboard;
 
 public class GuiFluidGauge extends GuiGauge<Fluid>
 {
@@ -58,7 +59,7 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 			{
 				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				
-				if(tile instanceof ITankManager)
+				if(tile instanceof ITankManager && ((ITankManager)tile).getTanks() != null)
 				{
 					int index = Arrays.asList(((ITankManager)tile).getTanks()).indexOf(infoHandler.getTank());
 					

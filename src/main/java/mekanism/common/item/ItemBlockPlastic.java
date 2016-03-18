@@ -1,7 +1,5 @@
 package mekanism.common.item;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
@@ -9,6 +7,8 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBlockPlastic extends ItemBlock
 {

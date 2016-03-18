@@ -4,13 +4,13 @@ import mekanism.client.model.ModelElectrolyticSeparator;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderElectrolyticSeparator extends TileEntitySpecialRenderer<TileEntityElectrolyticSeparator>

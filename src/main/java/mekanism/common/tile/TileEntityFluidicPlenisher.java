@@ -13,6 +13,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
@@ -21,6 +22,7 @@ import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -41,7 +43,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank, IUpgradeTile
+public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank, IUpgradeTile, IRedstoneControl
 {
 	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
 	public Set<Coord4D> usedNodes = new HashSet<Coord4D>();
@@ -63,6 +65,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	/** How many ticks this machine has been operating for. */
 	public int operatingTicks;
 	
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
 	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
@@ -82,73 +86,25 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			
 			if(inventory[0] != null)
 			{
-				if(inventory[0].getItem() instanceof IFluidContainerItem && ((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]) != null)
+				if(inventory[0].getItem() instanceof IFluidContainerItem)
 				{
-					if(((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]).getFluid().canBePlacedInWorld())
-					{
-						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
-
-						if(((IFluidContainerItem) inventory[0].getItem()).getFluid(inventory[0]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
+					FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
+						@Override
+						public boolean isValid(Fluid f)
 						{
-							if(inventory[1] == null)
-							{
-								inventory[1] = inventory[0].copy();
-								inventory[0] = null;
-
-								markDirty();
-							}
+							return f.canBePlacedInWorld();
 						}
-					}
+					});
 				}
 				else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
 				{
-					FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-	
-					if((fluidTank.getFluid() == null && itemFluid.amount <= fluidTank.getCapacity()) || fluidTank.getFluid().amount+itemFluid.amount <= fluidTank.getCapacity())
-					{
-						if((fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid)) || !itemFluid.getFluid().canBePlacedInWorld())
+					FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
+						@Override
+						public boolean isValid(Fluid f)
 						{
-							return;
+							return f.canBePlacedInWorld();
 						}
-	
-						ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
-	
-						boolean filled = false;
-	
-						if(containerItem != null)
-						{
-							if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
-							{
-								inventory[0] = null;
-	
-								if(inventory[1] == null)
-								{
-									inventory[1] = containerItem;
-								}
-								else {
-									inventory[1].stackSize++;
-								}
-	
-								filled = true;
-							}
-						}
-						else {
-							inventory[0].stackSize--;
-	
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
-							}
-	
-							filled = true;
-						}
-	
-						if(filled)
-						{
-							fluidTank.fill(itemFluid, true);
-							markDirty();
-						}
-					}
+					});
 				}
 			}
 			
@@ -281,6 +237,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		super.handlePacketData(dataStream);
 		
 		finishedCalc = dataStream.readBoolean();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		if(dataStream.readInt() == 1)
 		{
@@ -299,6 +256,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		super.getNetworkedData(data);
 		
 		data.add(finishedCalc);
+		data.add(controlType.ordinal());
 
 		if(fluidTank.getFluid() != null)
 		{
@@ -320,6 +278,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setBoolean("finishedCalc", finishedCalc);
+		nbtTags.setInteger("controlType", controlType.ordinal());
 
 		if(fluidTank.getFluid() != null)
 		{
@@ -360,6 +319,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		finishedCalc = nbtTags.getBoolean("finishedCalc");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 
 		if(nbtTags.hasKey("fluidTank"))
 		{
@@ -581,5 +541,23 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			default:
 				break;
 		}
+	}
+	
+	@Override
+	public RedstoneControl getControlType()
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type)
+	{
+		controlType = type;
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
 	}
 }

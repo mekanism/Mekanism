@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
-
 import net.minecraft.util.EnumFacing;
 
 public class PathfinderCache 

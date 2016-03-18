@@ -146,10 +146,12 @@ public class BlockStateMachine extends BlockStateFacing
 		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false, always, false),
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false, always, true),
 		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false, always, true),
-		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityEntangledBlock.class, true, false, false, Plane.HORIZONTAL, true),
+		QUANTUM_ENTANGLOPORTER(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityEntangledBlock.class, true, false, false, Plane.HORIZONTAL, true),
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false, Plane.HORIZONTAL, true),
 		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false, never, true),
-		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false, Plane.HORIZONTAL, true);
+		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false, Plane.HORIZONTAL, true),
+		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, false, false),
+		FORMULAIC_ASSEMBLICATOR(MachineBlock.MACHINE_BLOCK_3, 5, "FormulaicAssemblicator", 56, TileEntityFormulaicAssemblicator.class, true, false, true);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -306,7 +308,7 @@ public class BlockStateMachine extends BlockStateFacing
 					return usage.seismicVibratorUsage;
 				case PRESSURIZED_REACTION_CHAMBER:
 					return usage.pressurizedReactionBaseUsage;
-				case PORTABLE_TANK:
+				case FLUID_TANK:
 					return 0;
 				case FLUIDIC_PLENISHER:
 					return usage.fluidicPlenisherUsage;
@@ -316,14 +318,19 @@ public class BlockStateMachine extends BlockStateFacing
 					return 0;
 				case LASER_TRACTOR_BEAM:
 					return 0;
-				case ENTANGLED_BLOCK:
+				case QUANTUM_ENTANGLOPORTER:
 					return 0;
 				case SOLAR_NEUTRON_ACTIVATOR:
 					return 0;
 				case AMBIENT_ACCUMULATOR:
 					return 0;
+				case RESISTIVE_HEATER:
+					return 100;
+				case FORMULAIC_ASSEMBLICATOR:
+					return usage.formulaicAssemblicatorUsage;
 				default:
 					return 0;
+
 			}
 		}
 

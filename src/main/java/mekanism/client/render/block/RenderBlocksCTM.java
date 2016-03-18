@@ -2,7 +2,6 @@ package mekanism.client.render.block;
 
 import mekanism.client.render.CTM;
 import mekanism.common.CTMData;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;

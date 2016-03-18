@@ -6,7 +6,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateOre;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 

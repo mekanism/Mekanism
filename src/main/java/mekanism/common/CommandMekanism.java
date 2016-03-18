@@ -11,14 +11,11 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
-
-import com.mojang.authlib.GameProfile;
 
 public class CommandMekanism extends CommandBase
 {

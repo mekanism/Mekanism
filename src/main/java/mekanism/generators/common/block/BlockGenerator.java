@@ -588,7 +588,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 
 		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
 		{
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.65F, 1.0F);
+			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
 		}
 		else if(metadata == GeneratorType.TURBINE_ROTOR.meta)
 		{
@@ -788,7 +788,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	{
 		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
 		{
-			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.65F, 1.0F);
+			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
 		}
 		else if(metadata == GeneratorType.TURBINE_ROTOR.meta)
 		{

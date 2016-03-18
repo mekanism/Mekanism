@@ -1,10 +1,14 @@
 package mekanism.common.integration;
 
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Optional.Method;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import dan200.computercraft.api.ComputerCraftAPI;
-import ic2.api.recipe.*;
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputItemStack;
+import ic2.api.recipe.RecipeInputOreDict;
+import ic2.api.recipe.RecipeOutput;
+import ic2.api.recipe.Recipes;
+
+import java.util.List;
+import java.util.Map;
+
 import li.cil.oc.api.Driver;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -16,9 +20,10 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.List;
-import java.util.Map;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import dan200.computercraft.api.ComputerCraftAPI;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.

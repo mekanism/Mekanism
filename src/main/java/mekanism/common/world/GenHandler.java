@@ -4,7 +4,6 @@ import java.util.Random;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.MekanismBlocks;
-
 import net.minecraft.block.state.pattern.BlockHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;

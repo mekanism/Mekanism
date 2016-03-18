@@ -1,20 +1,18 @@
 package mekanism.common.inventory.container;
 
+import invtweaks.api.container.ChestContainer;
 import mekanism.common.base.IElectricChest;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.inventory.slot.SlotElectricChest;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.ChargeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import invtweaks.api.container.ChestContainer;
 
 @ChestContainer(isLargeChest=true)
 public class ContainerElectricChest extends Container

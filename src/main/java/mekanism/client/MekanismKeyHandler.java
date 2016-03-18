@@ -1,20 +1,19 @@
 package mekanism.client;
 
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
 import mekanism.api.util.StackUtils;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.item.*;
+import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
+import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemFlamethrower;
+import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
+import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import mekanism.common.network.PacketFlamethrowerData;
@@ -31,7 +30,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
+
 import org.lwjgl.input.Keyboard;
+
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class MekanismKeyHandler extends MekKeyHandler
@@ -91,7 +99,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			{
 				ItemBlockMachine machine = (ItemBlockMachine)item;
 
-				if(BlockStateMachine.MachineType.get(toolStack) == BlockStateMachine.MachineType.PORTABLE_TANK)
+				if(BlockStateMachine.MachineType.get(toolStack) == BlockStateMachine.MachineType.FLUID_TANK)
 				{
 					machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
 					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(machine.getBucketMode(toolStack)));

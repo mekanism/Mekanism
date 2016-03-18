@@ -1,8 +1,5 @@
 package mekanism.common.network;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -10,6 +7,9 @@ import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataMessage, IMessage>
 {

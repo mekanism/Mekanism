@@ -50,10 +50,4 @@ public interface IEnergizedItem
 	 * @return if the item can send energy
 	 */
 	public boolean canSend(ItemStack itemStack);
-
-	/**
-	 * Returns whether or not this item contains metadata-specific subtypes instead of using metadata for damage display.
-	 * @return if the item contains metadata-specific subtypes
-	 */
-	public boolean isMetadataSpecific(ItemStack itemStack);
 }

@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import mekanism.api.MekanismAPI;
-
 import net.minecraft.block.Block;
 
 public final class BoxBlacklistParser

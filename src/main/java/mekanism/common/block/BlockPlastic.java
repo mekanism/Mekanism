@@ -6,7 +6,6 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStatePlastic;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 

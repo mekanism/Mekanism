@@ -1,10 +1,9 @@
 package mekanism.common.recipe;
 
 import mekanism.common.MekanismItems;
+import mekanism.common.block.BlockBasic.BasicType;
 import mekanism.common.inventory.InventoryBin;
-import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemProxy;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -41,7 +40,7 @@ public class BinRecipe implements IRecipe
 			return false;
 		}
 
-		return itemStack.getItem() instanceof ItemBlockBasic && itemStack.getItemDamage() == 6 && itemStack.stackSize == 1;
+		return BasicType.get(itemStack) == BasicType.BIN && itemStack.stackSize <= 1;
 	}
 
 	@Override
@@ -101,7 +100,7 @@ public class BinRecipe implements IRecipe
 			}
 
 			binInv.add(addStack);
-
+			
 			return bin;
 		}
 		else {

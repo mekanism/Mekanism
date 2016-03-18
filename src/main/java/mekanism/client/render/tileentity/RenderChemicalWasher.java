@@ -4,7 +4,6 @@ import mekanism.client.model.ModelChemicalWasher;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 

@@ -1,6 +1,10 @@
 package mekanism.common;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 
@@ -14,6 +18,10 @@ import net.minecraft.util.ResourceLocation;
  */
 public final class Tier
 {
+	private static List<ITier> tierTypes = new ArrayList<ITier>();
+	
+	private static boolean initiated = false;
+	
 	/** The default tiers used in Mekanism.
 	 * @author aidancbrady
 	 */
@@ -55,24 +63,25 @@ public final class Tier
 		}
 	}
 	
-	/**
-	 * The tiers used by the Energy Cube and their corresponding values.
-	 * @author aidancbrady
-	 *
-	 */
-	public static enum EnergyCubeTier implements IStringSerializable
+	public static enum EnergyCubeTier implements ITier, IStringSerializable
 	{
 		BASIC(2000000, 800),
 		ADVANCED(8000000, 3200),
 		ELITE(32000000, 12800),
 		ULTIMATE(128000000, 51200),
-		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		CREATIVE(Double.MAX_VALUE, Double.MAX_VALUE);
 
 		public double maxEnergy;
 		private double baseMaxEnergy;
 		
 		public double output;
 		private double baseOutput;
+		
+		private EnergyCubeTier(double max, double out)
+		{
+			baseMaxEnergy = maxEnergy = max;
+			baseOutput = output = out;
+		}
 
 		public static EnergyCubeTier getFromName(String tierName)
 		{
@@ -87,33 +96,40 @@ public final class Tier
 			return BASIC;
 		}
 		
-		protected void loadConfig()
+		@Override
+		public void loadConfig()
 		{
-			maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeMaxEnergy", baseMaxEnergy).getDouble();
-			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeOutput", baseOutput).getDouble();
+			if(this != CREATIVE)
+			{
+				maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeMaxEnergy", baseMaxEnergy).getDouble();
+				output = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeOutput", baseOutput).getDouble();
+			}
 		}
 		
-		protected void readConfig(ByteBuf dataStream)
+		@Override
+		public void readConfig(ByteBuf dataStream)
 		{
-			maxEnergy = dataStream.readDouble();
-			output = dataStream.readDouble();
+			if(this != CREATIVE)
+			{
+				maxEnergy = dataStream.readDouble();
+				output = dataStream.readDouble();
+			}
 		}
 		
-		protected void writeConfig(ByteBuf dataStream)
+		@Override
+		public void writeConfig(ByteBuf dataStream)
 		{
-			dataStream.writeDouble(maxEnergy);
-			dataStream.writeDouble(output);
+			if(this != CREATIVE)
+			{
+				dataStream.writeDouble(maxEnergy);
+				dataStream.writeDouble(output);
+			}
 		}
 		
+		@Override
 		public BaseTier getBaseTier()
 		{
 			return BaseTier.values()[ordinal()];
-		}
-
-		private EnergyCubeTier(double max, double out)
-		{
-			baseMaxEnergy = maxEnergy = max;
-			baseOutput = output = out;
 		}
 
 		@Override
@@ -123,7 +139,7 @@ public final class Tier
 		}
 	}
 	
-	public static enum InductionCellTier
+	public static enum InductionCellTier implements ITier
 	{
 		BASIC(1E9D),
 		ADVANCED(8E9D),
@@ -133,33 +149,37 @@ public final class Tier
 		public double maxEnergy;
 		private double baseMaxEnergy;
 		
+		private InductionCellTier(double max)
+		{
+			baseMaxEnergy = maxEnergy = max;
+		}
+		
+		@Override
 		public BaseTier getBaseTier()
 		{
 			return BaseTier.values()[ordinal()];
 		}
 		
-		protected void loadConfig()
+		@Override
+		public void loadConfig()
 		{
 			maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "InductionCellMaxEnergy", baseMaxEnergy).getDouble();
 		}
 		
-		protected void readConfig(ByteBuf dataStream)
+		@Override
+		public void readConfig(ByteBuf dataStream)
 		{
 			maxEnergy = dataStream.readDouble();
 		}
 		
-		protected void writeConfig(ByteBuf dataStream)
+		@Override
+		public void writeConfig(ByteBuf dataStream)
 		{
 			dataStream.writeDouble(maxEnergy);
 		}
-
-		private InductionCellTier(double max)
-		{
-			baseMaxEnergy = maxEnergy = max;
-		}
 	}
 	
-	public static enum InductionProviderTier
+	public static enum InductionProviderTier implements ITier
 	{
 		BASIC(64000),
 		ADVANCED(512000),
@@ -169,37 +189,36 @@ public final class Tier
 		public double output;
 		private double baseOutput;
 		
+		private InductionProviderTier(double out)
+		{
+			baseOutput = output = out;
+		}
+		
+		@Override
 		public BaseTier getBaseTier()
 		{
 			return BaseTier.values()[ordinal()];
 		}
 		
-		protected void loadConfig()
+		@Override
+		public void loadConfig()
 		{
 			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "InductionProviderOutput", baseOutput).getDouble();
 		}
 		
-		protected void readConfig(ByteBuf dataStream)
+		@Override
+		public void readConfig(ByteBuf dataStream)
 		{
 			output = dataStream.readDouble();
 		}
 		
-		protected void writeConfig(ByteBuf dataStream)
+		@Override
+		public void writeConfig(ByteBuf dataStream)
 		{
 			dataStream.writeDouble(output);
 		}
-
-		private InductionProviderTier(double out)
-		{
-			baseOutput = output = out;
-		}
 	}
 
-	/**
-	 * The tiers used by the Factory and their corresponding values.
-	 * @author aidancbrady
-	 *
-	 */
 	public static enum FactoryTier
 	{
 		BASIC(3, new ResourceLocation("mekanism", "gui/factory/GuiBasicFactory.png")),
@@ -234,24 +253,13 @@ public final class Tier
 			guiLocation = gui;
 		}
 	}
-
-	/**
-	 * The tiers used by Universal Cables and their corresponding values.
-	 * @author aidancbrady
-	 *
-	 */
 /*
-	public static enum CableTier
+	public static enum CableTier implements ITier
 	{
 		BASIC(3200, TransmitterType.UNIVERSAL_CABLE_BASIC),
 		ADVANCED(12800, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
 		ELITE(64000, TransmitterType.UNIVERSAL_CABLE_ELITE),
 		ULTIMATE(320000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
-		
-		public BaseTier getBaseTier()
-		{
-			return BaseTier.values()[ordinal()];
-		}
 
 		public int cableCapacity;
 		private int baseCapacity;
@@ -265,17 +273,26 @@ public final class Tier
 			type = transmitterType;
 		}
 		
-		protected void loadConfig()
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
 		{
 			cableCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "CableCapacity", baseCapacity).getInt();
 		}
-		
-		protected void readConfig(ByteBuf dataStream)
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
 		{
 			cableCapacity = dataStream.readInt();
 		}
-		
-		protected void writeConfig(ByteBuf dataStream)
+
+		@Override
+		public void writeConfig(ByteBuf dataStream)
 		{
 			dataStream.writeInt(cableCapacity);
 		}
@@ -294,24 +311,12 @@ public final class Tier
 		}
 	}
 
-	*/
-/**
-	 * The tiers used by Mechanical Pipes and their corresponding values.
-	 * @author unpairedbracket
-	 *
-	 *//*
-
-	public static enum PipeTier
+	public static enum PipeTier implements ITier
 	{
 		BASIC(1000, 100, TransmitterType.MECHANICAL_PIPE_BASIC),
 		ADVANCED(4000, 400, TransmitterType.MECHANICAL_PIPE_ADVANCED),
 		ELITE(16000, 1600, TransmitterType.MECHANICAL_PIPE_ELITE),
 		ULTIMATE(64000, 6400, TransmitterType.MECHANICAL_PIPE_ULTIMATE);
-		
-		public BaseTier getBaseTier()
-		{
-			return BaseTier.values()[ordinal()];
-		}
 
 		public int pipeCapacity;
 		private int baseCapacity;
@@ -328,20 +333,29 @@ public final class Tier
 			
 			type = transmitterType;
 		}
-		
-		protected void loadConfig()
+
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
 		{
 			pipeCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "PipeCapacity", baseCapacity).getInt();
 			pipePullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "PipePullAmount", basePull).getInt();
 		}
-		
-		protected void readConfig(ByteBuf dataStream)
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
 		{
 			pipeCapacity = dataStream.readInt();
 			pipePullAmount = dataStream.readInt();
 		}
-		
-		protected void writeConfig(ByteBuf dataStream)
+
+		@Override
+		public void writeConfig(ByteBuf dataStream)
 		{
 			dataStream.writeInt(pipeCapacity);
 			dataStream.writeInt(pipePullAmount);
@@ -360,25 +374,13 @@ public final class Tier
 			return BASIC;
 		}
 	}
-	
-	*/
-/**
-	 * The tiers used by Pressurized Tubes and their corresponding values.
-	 * @author AidanBrady
-	 *
-	 *//*
 
-	public static enum TubeTier
+	public static enum TubeTier implements ITier
 	{
 		BASIC(256, 64, TransmitterType.PRESSURIZED_TUBE_BASIC),
 		ADVANCED(1024, 256, TransmitterType.PRESSURIZED_TUBE_ADVANCED),
 		ELITE(4096, 1024, TransmitterType.PRESSURIZED_TUBE_ELITE),
 		ULTIMATE(16384, 4096, TransmitterType.PRESSURIZED_TUBE_ULTIMATE);
-		
-		public BaseTier getBaseTier()
-		{
-			return BaseTier.values()[ordinal()];
-		}
 
 		public int tubeCapacity;
 		private int baseCapacity;
@@ -395,20 +397,29 @@ public final class Tier
 			
 			type = transmitterType;
 		}
-		
-		protected void loadConfig()
+
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
 		{
 			tubeCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "TubeCapacity", baseCapacity).getInt();
 			tubePullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "TubePullAmount", basePull).getInt();
 		}
-		
-		protected void readConfig(ByteBuf dataStream)
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
 		{
 			tubeCapacity = dataStream.readInt();
 			tubePullAmount = dataStream.readInt();
 		}
-		
-		protected void writeConfig(ByteBuf dataStream)
+
+		@Override
+		public void writeConfig(ByteBuf dataStream)
 		{
 			dataStream.writeInt(tubeCapacity);
 			dataStream.writeInt(tubePullAmount);
@@ -428,24 +439,12 @@ public final class Tier
 		}
 	}
 	
-	*/
-/**
-	 * The tiers used by Logistical Transporters and their corresponding values.
-	 * @author AidanBrady
-	 *
-	 *//*
-
-	public static enum TransporterTier
+	public static enum TransporterTier implements ITier
 	{
 		BASIC(1, 5, TransmitterType.LOGISTICAL_TRANSPORTER_BASIC),
 		ADVANCED(16, 10, TransmitterType.LOGISTICAL_TRANSPORTER_ADVANCED),
 		ELITE(32, 20, TransmitterType.LOGISTICAL_TRANSPORTER_ELITE),
 		ULTIMATE(64, 50, TransmitterType.LOGISTICAL_TRANSPORTER_ULTIMATE);
-		
-		public BaseTier getBaseTier()
-		{
-			return BaseTier.values()[ordinal()];
-		}
 
 		public int pullAmount;
 		private int basePull;
@@ -462,20 +461,29 @@ public final class Tier
 			
 			type = transmitterType;
 		}
-		
-		protected void loadConfig()
+
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
 		{
 			pullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "TransporterPullAmount", basePull).getInt();
 			speed = Mekanism.configuration.get("tier", getBaseTier().getName() + "TransporterSpeed", baseSpeed).getInt();
 		}
-		
-		protected void readConfig(ByteBuf dataStream)
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
 		{
 			pullAmount = dataStream.readInt();
 			speed = dataStream.readInt();
 		}
-		
-		protected void writeConfig(ByteBuf dataStream)
+
+		@Override
+		public void writeConfig(ByteBuf dataStream)
 		{
 			dataStream.writeInt(pullAmount);
 			dataStream.writeInt(speed);
@@ -495,17 +503,12 @@ public final class Tier
 		}
 	}
 	
-	public static enum ConductorTier
+	public static enum ConductorTier implements ITier
 	{
-		BASIC(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_BASIC),
-		ADVANCED(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ADVANCED),
-		ELITE(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ELITE),
-		ULTIMATE(5, 1, 0, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ULTIMATE);
-		
-		public BaseTier getBaseTier()
-		{
-			return BaseTier.values()[ordinal()];
-		}
+		BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_BASIC),
+		ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ADVANCED),
+		ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ELITE),
+		ULTIMATE(5, 1, 100000, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ULTIMATE);
 
 		public double inverseConduction;
 		private double baseConduction;
@@ -530,22 +533,31 @@ public final class Tier
 			
 			type = transmitterType;
 		}
-		
-		protected void loadConfig()
+
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
 		{
 			inverseConduction = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorInverseConduction", baseConduction).getDouble();
 			inverseHeatCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorHeatCapacity", baseHeatCapacity).getDouble();
 			inverseConductionInsulation = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorConductionInsulation", baseConductionInsulation).getDouble();
 		}
-		
-		protected void readConfig(ByteBuf dataStream)
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
 		{
 			inverseConduction = dataStream.readDouble();
 			inverseHeatCapacity = dataStream.readDouble();
 			inverseConductionInsulation = dataStream.readDouble();
 		}
-		
-		protected void writeConfig(ByteBuf dataStream)
+
+		@Override
+		public void writeConfig(ByteBuf dataStream)
 		{
 			dataStream.writeDouble(inverseConduction);
 			dataStream.writeDouble(inverseHeatCapacity);
@@ -566,44 +578,174 @@ public final class Tier
 		}
 	}
 	
+	public static enum FluidTankTier implements ITier
+	{
+		BASIC(14000, 400),
+		ADVANCED(28000, 800),
+		ELITE(56000, 1600),
+		ULTIMATE(112000, 3200);
+
+		public int storage;
+		private int baseStorage;
+		
+		public int output;
+		private int baseOutput;
+
+		private FluidTankTier(int s, int o)
+		{
+			baseStorage = storage = s;
+			baseOutput = output = o;
+		}
+		
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
+		{
+			storage = Mekanism.configuration.get("tier", getBaseTier().getName() + "FluidTankStorage", baseStorage).getInt();
+			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "FluidTankOutput", baseOutput).getInt();
+		}
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
+		{
+			storage = dataStream.readInt();
+			output = dataStream.readInt();
+		}
+
+		@Override
+		public void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(storage);
+			dataStream.writeInt(output);
+		}
+	}
+
+	public static enum GasTankTier implements ITier
+	{
+		BASIC(64000, 256),
+		ADVANCED(128000, 512),
+		ELITE(256000, 1028),
+		ULTIMATE(512000, 2056);
+
+		public int storage;
+		private int baseStorage;
+		
+		public int output;
+		private int baseOutput;
+
+		private GasTankTier(int s, int o)
+		{
+			baseStorage = storage = s;
+			baseOutput = output = o;
+		}
+		
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
+		{
+			storage = Mekanism.configuration.get("tier", getBaseTier().getName() + "GasTankStorage", baseStorage).getInt();
+			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "GasTankOutput", baseOutput).getInt();
+		}
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
+		{
+			storage = dataStream.readInt();
+			output = dataStream.readInt();
+		}
+		
+		@Override
+		public void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(storage);
+			dataStream.writeInt(output);
+		}
+	}
+	
+	public static enum BinTier implements ITier
+	{
+		BASIC(4096),
+		ADVANCED(8192),
+		ELITE(32768),
+		ULTIMATE(262144);
+
+		public int storage;
+		private int baseStorage;
+
+		private BinTier(int s)
+		{
+			baseStorage = storage = s;
+		}
+		
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
+		{
+			storage = Mekanism.configuration.get("tier", getBaseTier().getName() + "BinStorage", baseStorage).getInt();
+		}
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
+		{
+			storage = dataStream.readInt();
+		}
+		
+		@Override
+		public void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(storage);
+		}
+	}
+*/
+
+	public static void init()
+	{
+/*
+		if(initiated)
+		{
+			return;
+		}
+*/
+
+		for(Class c : Tier.class.getDeclaredClasses())
+		{
+			if(c.isEnum())
+			{
+				try {
+					for(Object obj : c.getEnumConstants())
+					{
+						if(obj instanceof ITier)
+						{
+							tierTypes.add((ITier)obj);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		initiated = true;
+	}
+	
 	public static void loadConfig()
 	{
-		for(CableTier tier : CableTier.values())
-		{
-			tier.loadConfig();
-		}
-		
-		for(InductionCellTier tier : InductionCellTier.values())
-		{
-			tier.loadConfig();
-		}
-		
-		for(InductionProviderTier tier : InductionProviderTier.values())
-		{
-			tier.loadConfig();
-		}
-		
-		for(EnergyCubeTier tier : EnergyCubeTier.values())
-		{
-			tier.loadConfig();
-		}
-		
-		for(PipeTier tier : PipeTier.values())
-		{
-			tier.loadConfig();
-		}
-		
-		for(TubeTier tier : TubeTier.values())
-		{
-			tier.loadConfig();
-		}
-		
-		for(TransporterTier tier : TransporterTier.values())
-		{
-			tier.loadConfig();
-		}
-		
-		for(ConductorTier tier : ConductorTier.values())
+		for(ITier tier : tierTypes)
 		{
 			tier.loadConfig();
 		}
@@ -611,92 +753,29 @@ public final class Tier
 	
 	public static void readConfig(ByteBuf dataStream)
 	{
-		for(CableTier tier : CableTier.values())
-		{
-			tier.readConfig(dataStream);
-		}
-		
-		for(InductionCellTier tier : InductionCellTier.values())
-		{
-			tier.readConfig(dataStream);
-		}
-		
-		for(InductionProviderTier tier : InductionProviderTier.values())
-		{
-			tier.readConfig(dataStream);
-		}
-		
-		for(EnergyCubeTier tier : EnergyCubeTier.values())
-		{
-			tier.readConfig(dataStream);
-		}
-		
-		for(PipeTier tier : PipeTier.values())
-		{
-			tier.readConfig(dataStream);
-		}
-		
-		for(TubeTier tier : TubeTier.values())
-		{
-			tier.readConfig(dataStream);
-		}
-		
-		for(TransporterTier tier : TransporterTier.values())
-		{
-			tier.readConfig(dataStream);
-		}
-		
-		for(ConductorTier tier : ConductorTier.values())
+		for(ITier tier : tierTypes)
 		{
 			tier.readConfig(dataStream);
 		}
 	}
-*/
-
+	
 	public static void writeConfig(ByteBuf dataStream)
 	{
-/*
-		for(CableTier tier : CableTier.values())
+		for(ITier tier : tierTypes)
 		{
 			tier.writeConfig(dataStream);
 		}
-*/
-
-		for(InductionCellTier tier : InductionCellTier.values())
-		{
-			tier.writeConfig(dataStream);
-		}
+	}
+	
+	public static interface ITier
+	{
+		public BaseTier getBaseTier();
 		
-		for(InductionProviderTier tier : InductionProviderTier.values())
-		{
-			tier.writeConfig(dataStream);
-		}
+		public void loadConfig();
 		
-		for(EnergyCubeTier tier : EnergyCubeTier.values())
-		{
-			tier.writeConfig(dataStream);
-		}
+		public void readConfig(ByteBuf dataStream);
 		
-/*
-		for(PipeTier tier : PipeTier.values())
-		{
-			tier.writeConfig(dataStream);
-		}
-		
-		for(TubeTier tier : TubeTier.values())
-		{
-			tier.writeConfig(dataStream);
-		}
-		
-		for(TransporterTier tier : TransporterTier.values())
-		{
-			tier.writeConfig(dataStream);
-		}
-		
-		for(ConductorTier tier : ConductorTier.values())
-		{
-			tier.writeConfig(dataStream);
-		}
+		public void writeConfig(ByteBuf dataStream);
 */
 	}
 }

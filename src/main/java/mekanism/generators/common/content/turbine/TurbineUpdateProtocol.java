@@ -25,6 +25,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData>
 {
 	public static final int FLUID_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
+	public static final int MAX_BLADES = 28;
 	
 	public TurbineUpdateProtocol(TileEntityTurbineCasing tileEntity) 
 	{

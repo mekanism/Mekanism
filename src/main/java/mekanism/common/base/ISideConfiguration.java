@@ -1,6 +1,7 @@
 package mekanism.common.base;
 
 import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
 
 import net.minecraft.util.EnumFacing;
 
@@ -27,5 +28,5 @@ public interface ISideConfiguration
 	 * Gets this machine's ejector.
 	 * @return
 	 */
-	public IEjector getEjector();
+	public TileComponentEjector getEjector();
 }

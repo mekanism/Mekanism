@@ -32,8 +32,11 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.BinTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.Upgrade;
@@ -49,6 +52,7 @@ import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
+import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -61,6 +65,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -369,15 +374,36 @@ public final class MekanismUtils
 	{
 		return ((ItemBlockBasic)new ItemStack(MekanismBlocks.BasicBlock2, 1, 4).getItem()).getUnchargedProvider(tier);
 	}
+	
+	/**
+	 * Retrieves an Bin with a defined tier.
+	 * @param tier - tier to add to the Bin
+	 * @return Bin with defined tier
+	 */
+	public static ItemStack getBin(BinTier tier)
+	{
+		ItemStack ret = new ItemStack(MekanismBlocks.BasicBlock, 1, 6);
+		((ItemBlockBasic)ret.getItem()).setBaseTier(ret, tier.getBaseTier());
+		
+		return ret;
+	}
 
 	/**
 	 * Retrieves an empty Gas Tank.
 	 * @return empty gas tank
 	 */
-	public static ItemStack getEmptyGasTank()
+	public static ItemStack getEmptyGasTank(GasTankTier tier)
 	{
-		ItemStack itemstack = ((ItemBlockGasTank)new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem();
-		return itemstack;
+		return ((ItemBlockGasTank)new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem(tier);
+	}
+	
+	public static ItemStack getEmptyFluidTank(FluidTankTier tier)
+	{
+		ItemStack stack = new ItemStack(MekanismBlocks.MachineBlock2, 1, 11);
+		ItemBlockMachine itemMachine = (ItemBlockMachine)stack.getItem();
+		itemMachine.setBaseTier(stack, tier.getBaseTier());
+		
+		return stack;
 	}
 
 	/**
@@ -1132,12 +1158,12 @@ public final class MekanismUtils
 	 */
 	public static String getEnergyDisplay(double energy)
 	{
-		if(energy == Integer.MAX_VALUE)
+		if(energy == Double.MAX_VALUE)
 		{
 			return LangUtils.localize("gui.infinite");
 		}
 		
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case J:
 				return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
@@ -1159,7 +1185,7 @@ public final class MekanismUtils
 	 */
 	public static double convertToJoules(double energy)
 	{
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case RF:
 				return energy * general.FROM_TE;
@@ -1179,7 +1205,7 @@ public final class MekanismUtils
 	 */
 	public static double convertToDisplay(double energy)
 	{
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case RF:
 				return energy * general.TO_TE;
@@ -1235,7 +1261,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return Mekanism.hooks.CoFHCoreLoaded && !general.blacklistRF;
+		return !general.blacklistRF;
 	}
 
 	/**
@@ -1324,17 +1350,30 @@ public final class MekanismUtils
 	 * @param gas - gas to fill the tank with
 	 * @return filled gas tank
 	 */
-	public static ItemStack getFullGasTank(Gas gas)
+	public static ItemStack getFullGasTank(GasTankTier tier, Gas gas)
 	{
-		ItemStack tank = getEmptyGasTank();
+		ItemStack tank = getEmptyGasTank(tier);
 		ItemBlockGasTank item = (ItemBlockGasTank)tank.getItem();
 		item.setGas(tank, new GasStack(gas, item.MAX_GAS));
 
 		return tank;
 	}
+	
+	public static InventoryCrafting getDummyCraftingInv()
+	{
+		Container tempContainer = new Container() {
+			@Override
+			public boolean canInteractWith(EntityPlayer player)
+			{
+				return false;
+			}
+		};
+		
+		return new InventoryCrafting(tempContainer, 3, 3);
+	}
 
 	/**
-	 * Finds the output of a defined InventoryCrafting grid. Taken from CofhCore.
+	 * Finds the output of a defined InventoryCrafting grid.
 	 * @param inv - InventoryCrafting to check
 	 * @param world - world reference
 	 * @return output ItemStack
@@ -1370,6 +1409,7 @@ public final class MekanismUtils
 			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamage/*TODO:ForDisplay*/();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
+			
 			return new ItemStack(dmgItems[0].getItem(), 1, solve);
 		}
 

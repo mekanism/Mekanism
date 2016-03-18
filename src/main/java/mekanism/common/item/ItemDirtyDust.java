@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import mekanism.common.Mekanism;
 import mekanism.common.Resource;
-
 import net.minecraft.item.ItemStack;
 
 public class ItemDirtyDust extends ItemMekanism

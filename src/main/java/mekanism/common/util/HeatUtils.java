@@ -1,18 +1,14 @@
 package mekanism.common.util;
 
-import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
-
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
 
 public class HeatUtils
 {
 	public static double[] simulate(IHeatTransfer source)
 	{
-		double heatTransferred[] = new double[] {0,0};
+		double heatTransferred[] = new double[] {0, 0};
 		
 		for(EnumFacing side : EnumFacing.VALUES)
 		{

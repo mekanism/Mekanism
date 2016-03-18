@@ -1,6 +1,9 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
@@ -19,8 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.EnumFacing;
-
-import java.util.ArrayList;
 
 public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage, IComputerIntegration
 {
@@ -310,7 +311,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		return MAX_ENERGY;
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getMaxEnergy"};
+	private static final String[] methods = new String[] {"getEnergy", "getMaxEnergy"};
 
 	@Override
 	public String[] getMethods()

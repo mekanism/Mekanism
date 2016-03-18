@@ -8,6 +8,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.block.BlockBasic;
@@ -116,16 +117,16 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 					}
 					
 					structure.prevFluid = structure.fluidStored;
+					
+					manageInventory();
 				}
-				
-				manageInventory();
 			}
 		}
 	}
 
 	public void manageInventory()
 	{
-		int max = structure.volume * TankUpdateProtocol.FLUID_PER_TANK;
+		int needed = (structure.volume*TankUpdateProtocol.FLUID_PER_TANK)-(structure.fluidStored != null ? structure.fluidStored.amount : 0);
 
 		if(structure.inventory[0] != null)
 		{
@@ -133,152 +134,24 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			{
 				if(structure.editMode == ContainerEditMode.FILL && structure.fluidStored != null)
 				{
-					int prev = structure.fluidStored.amount;
-					
-					structure.fluidStored.amount -= FluidContainerUtils.insertFluid(structure.fluidStored, structure.inventory[0]);
-					
-					if(prev == structure.fluidStored.amount || structure.fluidStored.amount == 0)
-					{
-						if(structure.inventory[1] == null)
-						{
-							structure.inventory[1] = structure.inventory[0].copy();
-							structure.inventory[0] = null;
-							
-							markDirty();
-						}
-					}
-					
-					if(structure.fluidStored.amount == 0)
-					{
-						structure.fluidStored = null;
-					}
+					structure.fluidStored = FluidContainerUtils.handleContainerItemFill(this, structure.inventory, structure.fluidStored, 0, 1);
 				}
 				else if(structure.editMode == ContainerEditMode.EMPTY)
 				{
-					if(structure.fluidStored != null)
-					{
-						FluidStack received = FluidContainerUtils.extractFluid(max-structure.fluidStored.amount, structure.inventory[0], structure.fluidStored.getFluid());
-						
-						if(received != null)
-						{
-							structure.fluidStored.amount += received.amount;
-						}
-					}
-					else {
-						structure.fluidStored = FluidContainerUtils.extractFluid(max, structure.inventory[0], null);
-					}
-					
-					int newStored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
-					
-					if(((IFluidContainerItem)structure.inventory[0].getItem()).getFluid(structure.inventory[0]) == null || newStored == max)
-					{
-						if(structure.inventory[1] == null)
-						{
-							structure.inventory[1] = structure.inventory[0].copy();
-							structure.inventory[0] = null;
-							
-							markDirty();
-						}
-					}
+					structure.fluidStored = FluidContainerUtils.handleContainerItemEmpty(this, structure.inventory, structure.fluidStored, needed, 0, 1, null);
 				}
 			}
 			else if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.FILL))
 			{
-				if(structure.fluidStored != null && structure.fluidStored.amount >= FluidContainerRegistry.BUCKET_VOLUME)
-				{
-					ItemStack filled = FluidContainerRegistry.fillFluidContainer(structure.fluidStored, structure.inventory[0]);
-
-					if(filled != null)
-					{
-						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(filled) && structure.inventory[1].stackSize+1 <= filled.getMaxStackSize()))
-						{
-							structure.inventory[0].stackSize--;
-
-							if(structure.inventory[0].stackSize <= 0)
-							{
-								structure.inventory[0] = null;
-							}
-
-							if(structure.inventory[1] == null)
-							{
-								structure.inventory[1] = filled;
-							}
-							else {
-								structure.inventory[1].stackSize++;
-							}
-
-							markDirty();
-
-							structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-
-							if(structure.fluidStored.amount == 0)
-							{
-								structure.fluidStored = null;
-							}
-
-							Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-						}
-					}
-				}
+				structure.fluidStored = FluidContainerUtils.handleRegistryItemFill(this, structure.inventory, structure.fluidStored, 0, 1);
+				
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 			else if(FluidContainerRegistry.isFilledContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.EMPTY))
 			{
-				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(structure.inventory[0]);
-
-				if((structure.fluidStored == null && itemFluid.amount <= max) || structure.fluidStored.amount+itemFluid.amount <= max)
-				{
-					if(structure.fluidStored != null && !structure.fluidStored.isFluidEqual(itemFluid))
-					{
-						return;
-					}
-
-					ItemStack containerItem = structure.inventory[0].getItem().getContainerItem(structure.inventory[0]);
-
-					boolean filled = false;
-
-					if(containerItem != null)
-					{
-						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(containerItem) && structure.inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
-						{
-							structure.inventory[0] = null;
-
-							if(structure.inventory[1] == null)
-							{
-								structure.inventory[1] = containerItem;
-							}
-							else {
-								structure.inventory[1].stackSize++;
-							}
-
-							filled = true;
-						}
-					}
-					else {
-						structure.inventory[0].stackSize--;
-
-						if(structure.inventory[0].stackSize == 0)
-						{
-							structure.inventory[0] = null;
-						}
-
-						filled = true;
-					}
-
-					if(filled)
-					{
-						if(structure.fluidStored == null)
-						{
-							structure.fluidStored = itemFluid.copy();
-						}
-						else {
-							structure.fluidStored.amount += itemFluid.amount;
-						}
-						
-						markDirty();
-					}
-
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				}
+				structure.fluidStored = FluidContainerUtils.handleRegistryItemEmpty(this, structure.inventory, structure.fluidStored, needed, 0, 1, null);
+				
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 		}
 	}

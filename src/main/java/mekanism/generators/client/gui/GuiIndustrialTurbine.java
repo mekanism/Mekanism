@@ -2,11 +2,12 @@ package mekanism.generators.client.gui;
 
 import java.util.List;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
@@ -17,6 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
+import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidStack;
@@ -42,7 +44,7 @@ public class GuiIndustrialTurbine extends GuiMekanism
 			@Override
 			public String getTooltip()
 			{
-				return LangUtils.localize("gui.steamInput") + ": " + tileEntity.structure.lastSteamInput + "mB/t";
+				return LangUtils.localize("gui.steamInput") + ": " + tileEntity.structure.lastSteamInput + " mB/t";
 			}
 			
 			@Override
@@ -53,19 +55,19 @@ public class GuiIndustrialTurbine extends GuiMekanism
 				
 				return (double)tileEntity.structure.lastSteamInput/rate;
 			}
-		}, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 40, 13));
+		}, MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png"), 40, 13));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
 		{
 			@Override
 			public List<String> getInfo()
 			{
-				double energyMultiplier = generators.turbineBaseEnergyPerSteam*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
+				double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
 				
 				return ListUtils.asList(
 						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
 						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow*energyMultiplier) + "/t");
 			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png")));
 	}
 	
 	@Override
@@ -74,9 +76,10 @@ public class GuiIndustrialTurbine extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 5, 0x404040);
 		
-		double energyMultiplier = generators.turbineBaseEnergyPerSteam*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
+		double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
 		
 		double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow);		
 		rate = Math.min(rate, tileEntity.structure.vents*generators.turbineVentGasFlow);

@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -27,8 +28,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage
 {
-	public float prevScale;
-	
 	public TileEntityTurbineCasing() 
 	{
 		this("TurbineCasing");
@@ -44,19 +43,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
-		{
-			if(structure != null && clientHasStructure && isRendering)
-			{
-				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/structure.getFluidCapacity();
-
-				if(Math.abs(prevScale - targetScale) > 0.01)
-				{
-					prevScale = (9*prevScale + targetScale)/10;
-				}
-			}
-		}
-
 		if(!worldObj.isRemote)
 		{
 			if(structure != null)
@@ -78,7 +64,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 					
 					if(stored > 0 && getEnergy() < structure.getEnergyCapacity())
 					{
-						double energyMultiplier = generators.turbineBaseEnergyPerSteam*Math.min(structure.blades, structure.coils*generators.turbineBladesPerCoil);
+						double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(structure.blades, structure.coils*generators.turbineBladesPerCoil);
 						double rate = structure.lowerVolume*(structure.getDispersers()*generators.turbineDisperserGasFlow);						
 						rate = Math.min(rate, structure.vents*generators.turbineVentGasFlow);
 						

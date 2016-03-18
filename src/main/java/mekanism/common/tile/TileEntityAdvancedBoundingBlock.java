@@ -1,14 +1,8 @@
 package mekanism.common.tile;
 
-import cofh.api.energy.IEnergyHandler;
-
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
-import net.minecraftforge.fml.common.Optional.Method;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
-import mekanism.api.IFilterAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.integration.IComputerIntegration;
@@ -22,12 +16,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+import cofh.api.energy.IEnergyHandler;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore")
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IComputerIntegration, IFilterAccess
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IComputerIntegration, ISpecialConfigData
 {
 	@Override
 	public int getSizeInventory()
@@ -232,7 +230,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(getInv() == null)
@@ -244,7 +241,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getInv() == null)
@@ -256,7 +252,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		if(getInv() == null)
@@ -268,7 +263,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getEnergyStored(EnumFacing from)
 	{
 		if(getInv() == null)
@@ -280,7 +274,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(EnumFacing from)
 	{
 		if(getInv() == null)
@@ -445,25 +438,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
 		if(getInv() == null)
 		{
 			return new NBTTagCompound();
 		}
 		
-		return getInv().getFilterData(nbtTags);
+		return getInv().getConfigurationData(nbtTags);
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 		
-		getInv().setFilterData(nbtTags);
+		getInv().setConfigurationData(nbtTags);
 	}
 
 	@Override

@@ -4,12 +4,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer<TileEntityAdvancedSolarGenerator>
@@ -25,10 +26,10 @@ public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer<Tile
 
 		switch(tileEntity.facing)
 		{
-			case 2: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
-			case 3: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
-			case 4: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
-			case 5: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
+			case 4: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 		}
 
 		GL11.glRotatef(180, 0F, 0F, 1F);

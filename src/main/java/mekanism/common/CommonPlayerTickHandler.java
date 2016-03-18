@@ -9,10 +9,14 @@ import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -70,7 +74,10 @@ public class CommonPlayerTickHandler
 					}
 					else if(player.motionY < 0)
 					{
-						player.motionY = Math.min(player.motionY + 0.15D, 0);
+						if(!isOnGround(player))
+						{
+							player.motionY = Math.min(player.motionY + 0.15D, 0);
+						}
 					}
 				}
 				else {
@@ -80,7 +87,10 @@ public class CommonPlayerTickHandler
 					}
 					else if(Mekanism.keyMap.has(player, KeySync.DESCEND))
 					{
-						player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
+						if(!isOnGround(player))
+						{
+							player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
+						}
 					}
 				}
 			}
@@ -107,13 +117,35 @@ public class CommonPlayerTickHandler
 			if(received != null)
 			{
 				player.setAir(player.getAir()+received.amount);
-				
-				if(player.getAir() == max)
+			}
+			
+			if(player.getAir() == max)
+			{
+				for(Object obj : player.getActivePotionEffects())
 				{
-					player.clearActivePotions();
+					if(obj instanceof PotionEffect)
+					{
+						for(int i = 0; i < 9; i++)
+						{
+							((PotionEffect)obj).onUpdate(player);
+						}
+					}
 				}
 			}
 		}
+	}
+	
+	public static boolean isOnGround(EntityPlayer player)
+	{
+		int x = MathHelper.floor_double(player.posX);
+		int y = (int)Math.round(player.posY-player.yOffset - 1);
+		int z = MathHelper.floor_double(player.posZ);
+		
+		Block b = player.worldObj.getBlock(x, y, z);
+		AxisAlignedBB box = b.getCollisionBoundingBoxFromPool(player.worldObj, x, y, z);
+		AxisAlignedBB playerBox = player.boundingBox.copy().offset(0, -0.01, 0);
+		
+		return box != null && playerBox.intersectsWith(box);
 	}
 
 	public boolean isJetpackOn(EntityPlayer player)
@@ -134,6 +166,15 @@ public class CommonPlayerTickHandler
 					}
 					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
 					{
+						if((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) || (Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND)))
+						{
+							return !player.onGround;
+						}
+						else if(Mekanism.keyMap.has(player, KeySync.DESCEND))
+						{
+							return !player.onGround;
+						}
+						
 						return true;
 					}
 				}

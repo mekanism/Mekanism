@@ -5,7 +5,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
@@ -101,7 +100,6 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		loadWindConfiguration();
 		
 		generators.turbineBladesPerCoil = Mekanism.configuration.get("generation", "TurbineBladesPerCoil", 4).getInt();
-		generators.turbineBaseEnergyPerSteam = Mekanism.configuration.get("generation", "TurbineBaseEnergyPerSteam", 10D).getDouble();
 		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
 		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
 

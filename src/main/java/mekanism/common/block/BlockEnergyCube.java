@@ -3,9 +3,6 @@ package mekanism.common.block;
 import java.util.List;
 import java.util.Random;
 
-import buildcraft.api.tools.IToolWrench;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -21,7 +18,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -38,6 +34,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import buildcraft.api.tools.IToolWrench;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple energy cube block IDs.
@@ -214,6 +213,7 @@ public class BlockEnergyCube extends BlockContainer
 
 				tileEntity.setFacing((short)change);
 				world.notifyNeighborsOfStateChange(pos, this);
+				
 				return true;
 			}
 		}

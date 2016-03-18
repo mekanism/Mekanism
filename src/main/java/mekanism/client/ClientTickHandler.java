@@ -1,19 +1,29 @@
 package mekanism.client;
 
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import static mekanism.client.sound.SoundHandler.Channel.FLAMETHROWER;
+import static mekanism.client.sound.SoundHandler.Channel.GASMASK;
+import static mekanism.client.sound.SoundHandler.Channel.JETPACK;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import mekanism.api.IClientTicker;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.GasStack;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
-import mekanism.common.item.*;
+import mekanism.common.item.ItemFlamethrower;
+import mekanism.common.item.ItemFreeRunners;
+import mekanism.common.item.ItemGasMask;
+import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
+import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
@@ -25,11 +35,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StringUtils;
 
-import java.util.*;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
-import static mekanism.client.sound.SoundHandler.Channel.*;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -295,7 +311,7 @@ public class ClientTickHandler
 					flamethrower.useGas(mc.thePlayer.getCurrentEquippedItem());
 				}
 			}
-
+			
 			if(isJetpackOn(mc.thePlayer))
 			{
 				ItemJetpack jetpack = (ItemJetpack)mc.thePlayer.getEquipmentInSlot(3).getItem();
@@ -315,7 +331,10 @@ public class ClientTickHandler
 						}
 						else if(mc.thePlayer.motionY < 0)
 						{
-							mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0);
+							if(!CommonPlayerTickHandler.isOnGround(mc.thePlayer))
+							{
+								mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0);
+							}
 						}
 					}
 					else {
@@ -325,7 +344,10 @@ public class ClientTickHandler
 						}
 						else if(mc.gameSettings.keyBindSneak.isPressed() && mc.currentScreen == null)
 						{
-							mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
+							if(!CommonPlayerTickHandler.isOnGround(mc.thePlayer))
+							{
+								mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
+							}
 						}
 					}
 
@@ -340,17 +362,26 @@ public class ClientTickHandler
 				ItemScubaTank tank = (ItemScubaTank)mc.thePlayer.getEquipmentInSlot(3).getItem();
 
 				final int max = 300;
-
+				
 				tank.useGas(mc.thePlayer.getEquipmentInSlot(3));
 				GasStack received = tank.useGas(mc.thePlayer.getEquipmentInSlot(3), max-mc.thePlayer.getAir());
 
 				if(received != null)
 				{
 					mc.thePlayer.setAir(mc.thePlayer.getAir()+received.amount);
-
-					if(mc.thePlayer.getAir() == max)
+				}
+				
+				if(mc.thePlayer.getAir() == max)
+				{
+					for(Object obj : mc.thePlayer.getActivePotionEffects())
 					{
-						mc.thePlayer.clearActivePotions();
+						if(obj instanceof PotionEffect)
+						{
+							for(int i = 0; i < 9; i++)
+							{
+								((PotionEffect)obj).onUpdate(mc.thePlayer);
+							}
+						}
 					}
 				}
 			}
@@ -377,7 +408,7 @@ public class ClientTickHandler
 
 		ItemStack stack = player.inventory.armorInventory[2];
 
-		if(stack != null)
+		if(stack != null && !player.capabilities.isCreativeMode)
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
@@ -391,6 +422,15 @@ public class ClientTickHandler
 					}
 					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
 					{
+						if((!mc.gameSettings.keyBindJump.getIsKeyPressed() && !mc.gameSettings.keyBindSneak.getIsKeyPressed()) || (mc.gameSettings.keyBindJump.getIsKeyPressed() && mc.gameSettings.keyBindSneak.getIsKeyPressed()) || mc.currentScreen != null)
+						{
+							return !player.onGround;
+						}
+						else if(mc.gameSettings.keyBindSneak.getIsKeyPressed() && mc.currentScreen == null)
+						{
+							return !player.onGround;
+						}
+						
 						return true;
 					}
 				}

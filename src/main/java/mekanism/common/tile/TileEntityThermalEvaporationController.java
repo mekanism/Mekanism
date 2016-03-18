@@ -20,6 +20,8 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
+import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -32,6 +34,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -72,6 +75,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public boolean cacheStructure = false;
 	
 	public float prevScale;
+	
+	public float totalLoss = 0;
 	
 	public TileEntityThermalEvaporationController()
 	{
@@ -221,98 +226,41 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	
 	private void manageBuckets()
 	{
-		if(inventory[2] != null)
+		if(inventory[2] != null && outputTank.getFluid() != null)
 		{
-			if(outputTank.getFluid() != null && outputTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+			if(inventory[2].getItem() instanceof IFluidContainerItem)
 			{
-				if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
-				{
-					ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(outputTank.getFluid(), inventory[2]);
-					
-					if(tempStack != null)
-					{
-						if(inventory[3] == null)
-						{
-							outputTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-							
-							inventory[3] = tempStack;
-							inventory[2].stackSize--;
-							
-							if(inventory[2].stackSize <= 0)
-							{
-								inventory[2] = null;
-							}
-							
-							markDirty();
-						}
-						else if(tempStack.isItemEqual(inventory[3]) && tempStack.getMaxStackSize() > inventory[3].stackSize)
-						{
-							outputTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-							
-							inventory[3].stackSize++;
-							inventory[2].stackSize--;
-							
-							if(inventory[2].stackSize <= 0)
-							{
-								inventory[2] = null;
-							}
-							
-							markDirty();
-						}
-					}
-				}
+				FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
+			}
+			else if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
+			{
+				FluidContainerUtils.handleRegistryItemFill(this, outputTank, 2, 3);
 			}
 		}
 		
 		if(structured)
 		{
-			if(FluidContainerRegistry.isFilledContainer(inventory[0]))
+			if(inventory[0] != null)
 			{
-				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-				
-				if((inputTank.getFluid() == null && itemFluid.amount <= getMaxFluid()) || inputTank.getFluid().amount+itemFluid.amount <= getMaxFluid())
+				if(inventory[0].getItem() instanceof IFluidContainerItem)
 				{
-					if(!hasRecipe(itemFluid.getFluid()) || (inputTank.getFluid() != null && !inputTank.getFluid().isFluidEqual(itemFluid)))
-					{
-						return;
-					}
-					
-					ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
-					
-					boolean filled = false;
-					
-					if(containerItem != null)
-					{
-						if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
+					FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
+						@Override
+						public boolean isValid(Fluid f)
 						{
-							inventory[0] = null;
-							
-							if(inventory[1] == null)
-							{
-								inventory[1] = containerItem;
-							}
-							else {
-								inventory[1].stackSize++;
-							}
-							
-							filled = true;
+							return hasRecipe(f);
 						}
-					}
-					else {						
-						inventory[0].stackSize--;
-						
-						if(inventory[0].stackSize == 0)
+					});
+				}
+				else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
+				{
+					FluidContainerUtils.handleRegistryItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
+						@Override
+						public boolean isValid(Fluid f)
 						{
-							inventory[0] = null;
+							return hasRecipe(f);
 						}
-						
-						filled = true;
-					}
-					
-					if(filled)
-					{
-						inputTank.fill(itemFluid, true);
-					}
+					});
 				}
 			}
 		}
@@ -331,6 +279,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		
 		float biome = biomeTemp-0.5F;
 		float base = biome > 0 ? biome*20 : biomeTemp*40;
+		
+		if(Math.abs(temperature-base) < 0.001)
+		{
+			temperature = base;
+		}
+		
 		float incr = (float)Math.sqrt(Math.abs(temperature-base))*(float)general.evaporationHeatDissipation;
 		
 		if(temperature > base)
@@ -338,7 +292,16 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			incr = -incr;
 		}
 		
+		float prev = temperature;
 		temperature = (float)Math.min(general.evaporationMaxTemp, temperature + incr/(float)height);
+		
+		if(incr < 0)
+		{
+			totalLoss = prev-temperature;
+		}
+		else {
+			totalLoss = 0;
+		}
 		
 		heatToAbsorb = 0;
 		
@@ -630,6 +593,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		biomeTemp = dataStream.readFloat();
 		isLeftOnFace = dataStream.readBoolean();
 		lastGain = dataStream.readFloat();
+		totalLoss = dataStream.readFloat();
 		
 		if(structured != prev)
 		{
@@ -684,6 +648,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		data.add(biomeTemp);
 		data.add(isLeftOnFace);
 		data.add(lastGain);
+		data.add(totalLoss);
 		
 		return data;
 	}

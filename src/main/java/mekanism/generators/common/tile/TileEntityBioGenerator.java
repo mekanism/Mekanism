@@ -1,6 +1,10 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
@@ -10,10 +14,12 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.*;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {
@@ -211,7 +217,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
 
 	@Override
 	public String[] getMethods()

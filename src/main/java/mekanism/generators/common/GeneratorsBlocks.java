@@ -4,7 +4,6 @@ import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.item.ItemBlockReactor;
-
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;

@@ -180,7 +180,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		return structure != null ? structure.storageCap : 0;
 	}
 
-	public static final String[] methods = new String[] {"getStored", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
+	public static final String[] methods = new String[] {"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
 
 	@Override
 	public String[] getMethods()

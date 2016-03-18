@@ -8,6 +8,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
@@ -31,7 +32,6 @@ import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IEjector;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -61,7 +61,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection
+public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection, ISpecialConfigData
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -119,6 +119,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public boolean sorting;
 	
 	public boolean upgraded;
+	
+	public double lastUsage;
 
 	@SideOnly(Side.CLIENT)
 	public SoundWrapper[] sounds;
@@ -137,11 +139,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {1}));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[] {4}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {5, 6, 7}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {8, 9, 10}));
-		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 3, 0, 2, 1, 0});
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[] {4}));
+		
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 0, 0, 3, 1, 2});
 		
 		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[] {0}));
@@ -154,7 +157,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
 		
 		ejectorComponent = new TileComponentEjector(this);
-		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
@@ -332,6 +335,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			else {
 				recipeTicks = 0;
 			}
+			
+			double prev = getEnergy();
 
 			secondaryEnergyThisTick = recipeType.fuelEnergyUpgrades() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int)Math.ceil(secondaryEnergyPerTick);
 			
@@ -392,6 +397,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				infuseStored.type = null;
 			}
 
+			lastUsage = prev-getEnergy();
 			prevEnergy = getEnergy();
 		}
 	}
@@ -770,6 +776,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		sorting = dataStream.readBoolean();
 		upgraded = dataStream.readBoolean();
+		lastUsage = dataStream.readDouble();
 		infuseStored.amount = dataStream.readInt();
 		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
 
@@ -869,6 +876,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		data.add(controlType.ordinal());
 		data.add(sorting);
 		data.add(upgraded);
+		data.add(lastUsage);
 		data.add(infuseStored.amount);
 		
 		if(infuseStored.type != null)
@@ -912,7 +920,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getName();
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+	private static final String[] methods = new String[] {"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()
@@ -1073,7 +1081,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public IEjector getEjector()
+	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
 	}
@@ -1157,5 +1165,25 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			default:
 				break;
 		}
+	}
+
+	@Override
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags) 
+	{
+		nbtTags.setBoolean("sorting", sorting);
+		
+		return nbtTags;
+	}
+
+	@Override
+	public void setConfigurationData(NBTTagCompound nbtTags) 
+	{
+		sorting = nbtTags.getBoolean("sorting");
+	}
+
+	@Override
+	public String getDataType() 
+	{
+		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getInventoryName();
 	}
 }

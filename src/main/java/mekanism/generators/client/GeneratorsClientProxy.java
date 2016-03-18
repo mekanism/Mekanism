@@ -21,7 +21,7 @@ import mekanism.generators.client.render.RenderIndustrialTurbine;
 import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
-import mekanism.generators.client.render.RenderWindTurbine;
+import mekanism.generators.client.render.RenderWindGenerator;
 import mekanism.generators.client.render.item.GeneratorsItemRenderer;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
@@ -63,7 +63,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator", new RenderBioGenerator());
 		ClientRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator", new RenderHeatGenerator());
 		ClientRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator", new RenderGasGenerator());
-		ClientRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine", new RenderWindTurbine());
+		ClientRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine", new RenderWindGenerator());
 		ClientRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController", new RenderReactor());
 		ClientRegistry.registerTileEntity(TileEntityTurbineRotor.class, "TurbineRod", new RenderTurbineRotor());
 		ClientRegistry.registerTileEntity(TileEntityTurbineCasing.class, "TurbineCasing", new RenderIndustrialTurbine());

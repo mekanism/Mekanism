@@ -7,7 +7,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.common.ObfuscatedNames;

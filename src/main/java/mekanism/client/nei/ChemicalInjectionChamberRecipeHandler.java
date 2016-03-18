@@ -9,6 +9,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.util.LangUtils;
@@ -49,18 +50,31 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 		{
 			List<ItemStack> fuels = new ArrayList<ItemStack>();
 			fuels.addAll(OreDictionary.getOres("dustSulfur"));
-			fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("sulfuricAcid")));
+
+			for(GasTankTier tier : GasTankTier.values())
+			{
+				fuels.add(MekanismUtils.getFullGasTank(tier, GasRegistry.getGas("sulfuricAcid")));
+			}
+			
 			return fuels;
 		}
 		else if(gasType == GasRegistry.getGas("water"))
 		{
-			return ListUtils.asList(MekanismUtils.getFullGasTank(GasRegistry.getGas("water")));
+			for(GasTankTier tier : GasTankTier.values())
+			{
+				return ListUtils.asList(MekanismUtils.getFullGasTank(tier, GasRegistry.getGas("water")));
+			}
 		}
 		else if(gasType == GasRegistry.getGas("hydrogenChloride"))
 		{
 			List<ItemStack> fuels = new ArrayList<ItemStack>();
 			fuels.addAll(OreDictionary.getOres("dustSalt"));
-			fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
+			
+			for(GasTankTier tier : GasTankTier.values())
+			{
+				fuels.add(MekanismUtils.getFullGasTank(tier, GasRegistry.getGas("hydrogenChloride")));
+			}
+			
 			return fuels;
 		}
 

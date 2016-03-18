@@ -68,7 +68,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	{
 		if(this instanceof IUpgradeTile && ((IUpgradeTile)this).getComponent().supports(Upgrade.MUFFLING))
 		{
-			return 1F - (float)((IUpgradeTile)this).getComponent().getUpgrades(Upgrade.MUFFLING)/(float)Upgrade.MUFFLING.getMax();
+			return Math.max(0.001F, 1F - (float)((IUpgradeTile)this).getComponent().getUpgrades(Upgrade.MUFFLING)/(float)Upgrade.MUFFLING.getMax());
 		}
 		
 		return 1F;

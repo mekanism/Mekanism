@@ -2,8 +2,6 @@ package mekanism.client.gui.element;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -11,6 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -135,6 +136,11 @@ public abstract class GuiElement
 	public abstract void preMouseClicked(int xAxis, int yAxis, int button);
 
 	public abstract void mouseClicked(int xAxis, int yAxis, int button);
+	
+	public static interface IInfoHandler
+	{
+		public List<String> getInfo();
+	}
 
 	public static class Rectangle4i
 	{

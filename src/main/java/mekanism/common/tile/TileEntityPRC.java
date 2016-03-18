@@ -1,9 +1,18 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.api.gas.*;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
@@ -26,10 +35,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.*;
-
-import java.util.ArrayList;
-import java.util.Map;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedOutput, PressurizedRecipe> implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData, ITankManager
 {
@@ -293,7 +304,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		return null;
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getFluidStored", "getGasStored"};
+	private static final String[] methods = new String[] {"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getFluidStored", "getGasStored"};
 
 	@Override
 	public String[] getMethods()

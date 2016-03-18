@@ -36,8 +36,7 @@ import net.minecraftforge.fml.common.Optional.Method;
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
-	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
-	@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
+	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2")
 })
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState
 {
@@ -221,7 +220,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
@@ -241,7 +239,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
@@ -261,21 +258,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return structure != null;
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getEnergy()*general.TO_TE);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getMaxEnergy()*general.TO_TE);

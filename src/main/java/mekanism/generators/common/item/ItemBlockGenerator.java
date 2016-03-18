@@ -57,8 +57,7 @@ import ic2.api.item.ISpecialElectricItem;
  */
 
 @InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),
-		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
 public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem
 {
@@ -449,12 +448,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
 		return (int)(getMaxEnergy(theItem)* general.TO_TE);
-	}
-
-	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
-	{
-		return true;
 	}
 
 	@Override

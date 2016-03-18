@@ -2,7 +2,6 @@ package mekanism.common.recipe.machines;
 
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-
 import net.minecraft.item.ItemStack;
 
 public class CombinerRecipe extends AdvancedMachineRecipe<CombinerRecipe>

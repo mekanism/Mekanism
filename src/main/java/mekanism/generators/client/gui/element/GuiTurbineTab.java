@@ -2,6 +2,7 @@ package mekanism.generators.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;

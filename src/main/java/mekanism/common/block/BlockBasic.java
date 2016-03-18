@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
@@ -26,7 +27,11 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.tile.TileEntityStructuralGlass;
+import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.tile.TileEntityThermalEvaporationValve;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -141,13 +146,17 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	@Override
 	public IIcon getIcon(ItemStack stack, int side)
 	{
-		if(getBlockFromItem(stack.getItem()) == MekanismBlocks.BasicBlock2 && stack.getItemDamage() == 3)
+		if(BasicType.get(stack) == BasicType.BIN)
 		{
-			return icons[3][((ItemBlockBasic)stack.getItem()).getTier(stack).ordinal()];
+			return binIcons[((ItemBlockBasic)stack.getItem()).getBaseTier(stack).ordinal()][side];
 		}
-		else if(getBlockFromItem(stack.getItem()) == MekanismBlocks.BasicBlock2 && stack.getItemDamage() == 4)
+		else if(BasicType.get(stack) == BasicType.INDUCTION_CELL)
 		{
-			return icons[4][((ItemBlockBasic)stack.getItem()).getTier(stack).ordinal()];
+			return icons[3][((ItemBlockBasic)stack.getItem()).getBaseTier(stack).ordinal()];
+		}
+		else if(BasicType.get(stack) == BasicType.INDUCTION_PROVIDER)
+		{
+			return icons[4][((ItemBlockBasic)stack.getItem()).getBaseTier(stack).ordinal()];
 		}
 		
 		return getIcon(side, stack.getItemDamage());
@@ -201,9 +210,16 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				icons[3][0] = register.registerIcon("mekanism:CoalBlock");
 				icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
 				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
+				icons[6][0] = register.registerIcon(ICON_BASE);
 				
-				MekanismRenderer.loadDynamicTextures(register, "Bin", icons[6], DefIcon.getActivePair(register.registerIcon("mekanism:BinSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinTop"), 0), new DefIcon(register.registerIcon("mekanism:BinTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "BinBasic", binIcons[0], DefIcon.getActivePair(register.registerIcon("mekanism:BinBasicSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:BinBasicTop"), 0), new DefIcon(register.registerIcon("mekanism:BinBasicTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "BinAdvanced", binIcons[1], DefIcon.getActivePair(register.registerIcon("mekanism:BinAdvancedSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:BinAdvancedTop"), 0), new DefIcon(register.registerIcon("mekanism:BinAdvancedTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "BinElite", binIcons[2], DefIcon.getActivePair(register.registerIcon("mekanism:BinEliteSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:BinEliteTop"), 0), new DefIcon(register.registerIcon("mekanism:BinEliteTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "BinUltimate", binIcons[3], DefIcon.getActivePair(register.registerIcon("mekanism:BinUltimateSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:BinUltimateTop"), 0), new DefIcon(register.registerIcon("mekanism:BinUltimateTopOn"), 6));
 				
 				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
@@ -268,10 +284,10 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				switch(meta)
 				{
 					case 6:
-						TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+						TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(pos);
 
 						boolean active = MekanismUtils.isActive(world, pos);
-						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
+						return binIcons[tileEntity.tier.ordinal()][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					case 14:
 						TileEntityThermalEvaporationController tileEntity1 = (TileEntityThermalEvaporationController)world.getTileEntity(pos);
 
@@ -314,8 +330,6 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 			case BASIC_BLOCK_1:
 				switch(meta)
 				{
-					case 6:
-						return icons[meta][side];
 					case 14:
 						if(side == 2)
 						{
@@ -353,12 +367,13 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				{
 					case INDUCTION_CELL:
 					case INDUCTION_PROVIDER:
+					case BIN:
 						for(BaseTier tier : BaseTier.values())
 						{
 							if(tier.isObtainable())
 							{
 								ItemStack stack = new ItemStack(item, 1, type.meta);
-								((ItemBlockBasic)stack.getItem()).setTier(stack, tier);
+								((ItemBlockBasic)stack.getItem()).setBaseTier(stack, tier);
 								list.add(stack);
 							}
 						}
@@ -517,7 +532,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				return true;
 			}
 
-			if(bin.getItemCount() < bin.MAX_STORAGE)
+			if(bin.getItemCount() < bin.tier.storage)
 			{
 				if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
 				{
@@ -534,7 +549,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 
 					for(int i = 0; i < inv.length; i++)
 					{
-						if(bin.getItemCount() == bin.MAX_STORAGE)
+						if(bin.getItemCount() == bin.tier.storage)
 						{
 							break;
 						}
@@ -842,8 +857,9 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 			TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(pos);
 			InventoryBin inv = new InventoryBin(ret);
 
+			((ITierItem)ret.getItem()).setBaseTier(ret, tileEntity.tier.getBaseTier());
 			inv.setItemCount(tileEntity.getItemCount());
-
+			
 			if(tileEntity.getItemCount() > 0)
 			{
 				inv.setItemType(tileEntity.itemType);
@@ -852,12 +868,12 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 		else if(type == BasicBlockType.INDUCTION_CELL)
 		{
 			TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(pos);
-			((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+			((ItemBlockBasic)ret.getItem()).setBaseTier(ret, tileEntity.tier.getBaseTier());
 		}
 		else if(type == BasicBlockType.INDUCTION_PROVIDER)
 		{
 			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(pos);
-			((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+			((ItemBlockBasic)ret.getItem()).setBaseTier(ret, tileEntity.tier.getBaseTier());
 		}
 		
 		TileEntity tileEntity = world.getTileEntity(pos);

@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
-import mekanism.common.block.states.BlockStateBounding;
+import java.util.Random;
+
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
@@ -16,8 +17,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class BlockBounding extends Block
 {

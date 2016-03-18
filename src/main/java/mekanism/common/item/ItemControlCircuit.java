@@ -1,8 +1,11 @@
 package mekanism.common.item;
 
-import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
+import java.util.List;
 
+import mekanism.common.Tier.BaseTier;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemControlCircuit extends ItemMekanism
@@ -11,7 +14,6 @@ public class ItemControlCircuit extends ItemMekanism
 	{
 		super();
 		setHasSubtypes(true);
-		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 /*

@@ -133,7 +133,8 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		return data;
 	}
 
-    private static final String[] methods = new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing"};
+    private static final String[] methods = new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing", "getIgnitionTemp", 
+    	"getEnergy", "getMaxEnergy", "getWater", "getSteam", "getFuel"};
 	
 	@Override
 	public String[] getMethods()
@@ -179,6 +180,18 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 						(getReactor().getTritiumTank().getStored() >= getReactor().getInjectionRate()/2)};
             case 9:
                 return new Object[] {getReactor().getPassiveGeneration(false, true)};
+            case 10:
+            	return new Object[] {getReactor().getIgnitionTemperature(activeCooled)};
+            case 11:
+            	return new Object[] {getReactor().getBufferedEnergy()};
+            case 12:
+            	return new Object[] {getReactor().getBufferSize()};
+            case 13:
+            	return new Object[] {getReactor().getWaterTank().getFluidAmount()};
+            case 14:
+            	return new Object[] {getReactor().getSteamTank().getFluidAmount()};
+            case 15:
+            	return new Object[] {getReactor().getFuelTank().getStored()};
 			default:
 				return new Object[] {"Unknown command."};
 		}

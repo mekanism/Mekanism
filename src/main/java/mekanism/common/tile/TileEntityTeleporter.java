@@ -183,6 +183,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			{
 				frequency = freq;
 				frequency.activeCoords.add(Coord4D.get(this));
+				
 				return;
 			}
 		}
@@ -225,7 +226,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			return Mekanism.privateTeleporters.get(owner);
 		}
 		
-		return FrequencyManager.loadOnly(world, owner, Frequency.class);
+		return FrequencyManager.loadOnly(world, owner, Frequency.class, "Teleporter");
 	}
 	
 	@Override
@@ -700,7 +701,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		return ChargeUtils.canBeOutputted(itemstack, false);
 	}
 
-    private static final String[] methods = new String[] {"getStored", "canTeleport", "getMaxEnergy", "getEnergyNeeded", "teleport", "set"};
+    private static final String[] methods = new String[] {"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
 
 	@Override
 	public String[] getMethods()
@@ -720,11 +721,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			case 2:
 				return new Object[] {getMaxEnergy()};
 			case 3:
-				return new Object[] {(getMaxEnergy()-getEnergy())};
-			case 4:
 				teleport();
 				return new Object[] {"Attempted to teleport."};
-			case 5:
+			case 4:
 				if(!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean))
 				{
 					return new Object[] {"Invalid parameters."};

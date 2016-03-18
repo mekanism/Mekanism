@@ -208,62 +208,57 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive* general.FROM_TE);
+			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*general.FROM_TE);
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
 
-			return (int)Math.round(toAdd* general.TO_TE);
+			return (int)Math.round(toAdd*general.TO_TE);
 		}
 
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
 		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract* general.FROM_TE));
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_TE));
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() - toSend);
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_TE);
 		}
 
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy()* general.TO_TE);
+		return (int)Math.round(getEnergy()*general.TO_TE);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy()* general.TO_TE);
+		return (int)Math.round(getMaxEnergy()*general.TO_TE);
 	}
 
 	@Override

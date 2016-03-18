@@ -121,9 +121,13 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 
 	@Override
-	protected boolean onConfigure(EntityPlayer player, int part, int side)
+	public boolean onRightClick(EntityPlayer player, int side)
 	{
-		temperature += 10000;
+		if(!world().isRemote)
+		{
+			temperature += 10000; //TODO remove
+		}
+		
 		return true;
 	}
 

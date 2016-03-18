@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
@@ -9,6 +7,8 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
@@ -71,7 +71,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 		return 1.5F*super.getVolume();
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
 
 	@Override
 	public String[] getMethods()

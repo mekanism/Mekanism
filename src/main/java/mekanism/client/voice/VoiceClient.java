@@ -7,13 +7,12 @@ import java.io.DataOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 
+import javax.sound.sampled.AudioFormat;
+
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import javax.sound.sampled.AudioFormat;
 
 @SideOnly(Side.CLIENT)
 public class VoiceClient extends Thread

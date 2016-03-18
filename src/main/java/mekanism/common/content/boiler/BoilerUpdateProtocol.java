@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
-import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -80,7 +79,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			}
 			
 			//Find a single disperser contained within this multiblock
-			Coord4D initDisperser = dispersers.iterator().next();
+			final Coord4D initDisperser = dispersers.iterator().next();
 			
 			//Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
 			Coord4D pos = new Coord4D(structure.renderLocation.getX(), initDisperser.getY(), structure.renderLocation.getZ(), pointer.getWorld().provider.getDimensionId());
@@ -106,13 +105,16 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
-			structure.superheatingElements = new NodeCounter(new NodeChecker() {
-				@Override
-				public boolean isValid(Coord4D coord) 
-				{
-					return coord.getTileEntity(pointer.getWorld()) instanceof TileEntitySuperheatingElement;
-				}
-			}).calculate(elements.iterator().next());
+			if(elements.size() > 0)
+			{
+				structure.superheatingElements = new NodeCounter(new NodeChecker() {
+					@Override
+					public boolean isValid(Coord4D coord) 
+					{
+						return coord.getTileEntity(pointer.getWorld()) instanceof TileEntitySuperheatingElement;
+					}
+				}).calculate(elements.iterator().next());
+			}
 			
 			if(elements.size() > structure.superheatingElements)
 			{
@@ -145,11 +147,20 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
+			//Gradle build requires these fields to be final
+			final Coord4D renderLocation = structure.renderLocation.clone();
+			final int volLength = structure.volLength;
+			final int volWidth = structure.volWidth;
+			
 			structure.waterVolume = new NodeCounter(new NodeChecker() {
 				@Override
-				public boolean isValid(Coord4D coord) 
+				public final boolean isValid(Coord4D coord) 
 				{
 					return coord.getY() < initDisperser.getY() && (coord.isAirBlock(pointer.getWorld()) || isViableNode(coord));
+					return coord.yCoord >= renderLocation.yCoord-1 && coord.yCoord < initDisperser.yCoord && 
+							coord.xCoord >= renderLocation.xCoord && coord.xCoord < renderLocation.xCoord+volLength && 
+							coord.zCoord >= renderLocation.zCoord && coord.zCoord < renderLocation.zCoord+volWidth &&
+							(coord.isAirBlock(pointer.getWorldObj()) || isViableNode(coord.xCoord, coord.yCoord, coord.zCoord));
 				}
 			}).calculate(initAir);
 			
@@ -159,8 +170,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
-			int steamHeight = (structure.renderLocation.getY()+structure.volHeight)-initDisperser.getY();
+			int steamHeight = (structure.renderLocation.getY()+structure.volHeight-2)-initDisperser.getY();
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
+			
+			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord+1, structure.renderLocation.zCoord);
 			
 			return true;
 		}
@@ -206,15 +219,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 		{
 			((BoilerCache)cache).steam.amount += ((BoilerCache)merge).steam.amount;
 		}
-
-		List<ItemStack> rejects = StackUtils.getMergeRejects(((BoilerCache)cache).inventory, ((BoilerCache)merge).inventory);
-
-		if(!rejects.isEmpty())
-		{
-			rejectedItems.addAll(rejects);
-		}
-
-		StackUtils.merge(((BoilerCache)cache).inventory, ((BoilerCache)merge).inventory);
+		
+		((BoilerCache)cache).temperature = Math.max(((BoilerCache)cache).temperature, ((BoilerCache)merge).temperature);
 	}
 
 	@Override

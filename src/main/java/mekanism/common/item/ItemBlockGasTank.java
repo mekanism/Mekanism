@@ -1,8 +1,11 @@
 package mekanism.common.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -10,7 +13,11 @@ import mekanism.api.gas.IGasItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ITierItem;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
@@ -28,7 +35,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory
+public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory, ITierItem
 {
 	public Block metaBlock;
 
@@ -44,8 +51,6 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		metaBlock = block;
 		setHasSubtypes(true);
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -58,7 +63,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		return getUnlocalizedName() + "." + "GasTank";
+		return LangUtils.localize("tile.GasTank" + getBaseTier(itemstack).getName() + ".name");
 	}
 
 	@Override
@@ -69,9 +74,16 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		if(place)
 		{
 			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
+			tileEntity.tier = GasTankTier.values()[getBaseTier(stack).ordinal()];
+			tileEntity.gasTank.setMaxGas(tileEntity.tier.storage);
 			tileEntity.gasTank.setGas(getGas(stack));
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			
+			if(!world.isRemote)
+			{
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+			}
 		}
 
 		return place;
@@ -100,12 +112,6 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public void onCreated(ItemStack itemstack, World world, EntityPlayer entityplayer)
-	{
-		itemstack = getEmptyItem();
-	}
-
-	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
 		if(itemstack.getTagCompound() == null)
@@ -113,17 +119,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
-
-		if(stored == null)
-		{
-			itemstack.setItemDamage(100);
-		}
-		else {
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-		}
-
-		return stored;
+		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
 	}
 
 	@Override
@@ -136,55 +132,80 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.setItemDamage(100);
 			itemstack.getTagCompound().removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 
-	public ItemStack getEmptyItem()
+	public ItemStack getEmptyItem(GasTankTier tier)
 	{
 		ItemStack empty = new ItemStack(this);
+		setBaseTier(empty, tier.getBaseTier());
 		setGas(empty, null);
-		empty.setItemDamage(100);
+		
 		return empty;
 	}
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
 	{
-		ItemStack empty = new ItemStack(this);
-		setGas(empty, null);
-		empty.setItemDamage(100);
-		list.add(empty);
+		for(GasTankTier tier : GasTankTier.values())
+		{
+			ItemStack empty = new ItemStack(this);
+			setBaseTier(empty, tier.getBaseTier());
+			setGas(empty, null);
+			list.add(empty);
+		}
 
 		for(Gas type : GasRegistry.getRegisteredGasses())
 		{
 			if(type.isVisible())
 			{
 				ItemStack filled = new ItemStack(this);
+				setBaseTier(filled, BaseTier.ULTIMATE);
 				setGas(filled, new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 				list.add(filled);
 			}
 		}
 	}
+	
+	@Override
+	public BaseTier getBaseTier(ItemStack itemstack)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			return BaseTier.BASIC;
+		}
+
+		return BaseTier.values()[itemstack.stackTagCompound.getInteger("tier")];
+	}
+
+	@Override
+	public void setBaseTier(ItemStack itemstack, BaseTier tier)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemstack.stackTagCompound.setInteger("tier", tier.ordinal());
+	}
 
 	@Override
 	public int getMaxGas(ItemStack itemstack)
 	{
-		return MAX_GAS;
+		return GasTankTier.values()[getBaseTier(itemstack).ordinal()].storage;
 	}
 
 	@Override
 	public int getRate(ItemStack itemstack)
 	{
-		return TRANSFER_RATE;
+		return GasTankTier.values()[getBaseTier(itemstack).ordinal()].output;
 	}
 
 	@Override
@@ -269,8 +290,14 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 	
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return false;
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
 	}
 }

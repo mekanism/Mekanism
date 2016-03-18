@@ -24,8 +24,6 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	{
 		super();
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 	}
 	
 	@Override
@@ -113,23 +111,19 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
-
-		if(stored == null)
-		{
-			itemstack.setItemDamage(100);
-		}
-		else {
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-		}
-
-		return stored;
+		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
 	}
 	
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return false;
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
 	}
 
 	@Override
@@ -142,14 +136,12 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.setItemDamage(100);
 			itemstack.getTagCompound().removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
@@ -158,7 +150,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	{
 		ItemStack stack = new ItemStack(this);
 		setGas(stack, null);
-		stack.setItemDamage(100);
+		
 		return stack;
 	}
 
@@ -167,7 +159,6 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);

@@ -7,28 +7,29 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityEntangledBlock;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 @SideOnly(Side.CLIENT)
 public class GuiEntangledBlock extends GuiMekanism
 {
-	public TileEntityEntangledBlock tileEntity;
+	public TileEntityQuantumEntangloporter tileEntity;
 
 	public GuiTextField frequencyField;
 
 	public boolean isCreative;
 
-	public GuiEntangledBlock(InventoryPlayer inventory, TileEntityEntangledBlock tentity)
+	public GuiEntangledBlock(InventoryPlayer inventory, TileEntityQuantumEntangloporter tentity)
 	{
 		super(tentity, new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;

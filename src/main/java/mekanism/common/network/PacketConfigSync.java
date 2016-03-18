@@ -50,7 +50,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.DISASSEMBLER_USAGE);
 			dataStream.writeInt(general.VOICE_PORT);
 			dataStream.writeInt(general.maxUpgradeMultiplier);
-			dataStream.writeInt(general.activeType.ordinal());
+			dataStream.writeInt(general.energyUnit.ordinal());
 			dataStream.writeDouble(general.minerSilkMultiplier);
 			dataStream.writeBoolean(general.blacklistIC2);
 			dataStream.writeBoolean(general.blacklistRF);
@@ -69,6 +69,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.evaporationTempMultiplier);
 			dataStream.writeDouble(general.evaporationSolarMultiplier);
 			dataStream.writeDouble(general.evaporationMaxTemp);
+			dataStream.writeDouble(general.energyPerHeat);
+			dataStream.writeDouble(general.maxEnergyPerSteam);
+			dataStream.writeDouble(general.superheatingHeatTransfer);
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
@@ -97,6 +100,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(usage.fluidicPlenisherUsage);
 			dataStream.writeDouble(usage.gasCentrifugeUsage);
 			dataStream.writeDouble(usage.heavyWaterElectrolysisUsage);
+			dataStream.writeDouble(usage.formulaicAssemblicatorUsage);
 			
 			Tier.writeConfig(dataStream);
 	
@@ -133,7 +137,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.DISASSEMBLER_USAGE = dataStream.readDouble();
 			general.VOICE_PORT = dataStream.readInt();
 			general.maxUpgradeMultiplier = dataStream.readInt();
-			general.activeType = EnergyType.values()[dataStream.readInt()];
+			general.energyUnit = EnergyType.values()[dataStream.readInt()];
 			general.minerSilkMultiplier = dataStream.readDouble();
 			general.blacklistIC2 = dataStream.readBoolean();
 			general.blacklistRF = dataStream.readBoolean();
@@ -152,6 +156,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.evaporationTempMultiplier = dataStream.readDouble();
 			general.evaporationSolarMultiplier = dataStream.readDouble();
 			general.evaporationMaxTemp = dataStream.readDouble();
+			general.energyPerHeat = dataStream.readDouble();
+			general.maxEnergyPerSteam = dataStream.readDouble();
+			general.superheatingHeatTransfer = dataStream.readDouble();
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
@@ -180,6 +187,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.fluidicPlenisherUsage = dataStream.readDouble();
 			usage.gasCentrifugeUsage = dataStream.readDouble();
 			usage.heavyWaterElectrolysisUsage = dataStream.readDouble();
+			usage.formulaicAssemblicatorUsage = dataStream.readDouble();
 			
 			//TODO: Tier.readConfig(dataStream);
 	

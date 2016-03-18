@@ -1,5 +1,7 @@
 package mekanism.common.item;
 
+import java.util.List;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
@@ -18,8 +20,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
-
-import java.util.List;
 
 public class ItemBalloon extends ItemMekanism
 {

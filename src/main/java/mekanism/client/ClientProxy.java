@@ -9,6 +9,7 @@ import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
+import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -27,9 +28,10 @@ import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiEnergizedSmelter;
 import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiEnrichmentChamber;
-import mekanism.client.gui.GuiEntangledBlock;
 import mekanism.client.gui.GuiFactory;
+import mekanism.client.gui.GuiFluidTank;
 import mekanism.client.gui.GuiFluidicPlenisher;
+import mekanism.client.gui.GuiFormulaicAssemblicator;
 import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiInductionMatrix;
 import mekanism.client.gui.GuiLaserAmplifier;
@@ -41,9 +43,10 @@ import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
-import mekanism.client.gui.GuiPortableTank;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
+import mekanism.client.gui.GuiQuantumEntangloporter;
+import mekanism.client.gui.GuiResistiveHeater;
 import mekanism.client.gui.GuiRobitCrafting;
 import mekanism.client.gui.GuiRobitInventory;
 import mekanism.client.gui.GuiRobitMain;
@@ -53,9 +56,10 @@ import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiSideConfiguration;
-import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
+import mekanism.client.gui.GuiThermalEvaporationController;
+import mekanism.client.gui.GuiThermoelectricBoiler;
 import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
@@ -78,16 +82,24 @@ import mekanism.client.render.tileentity.RenderElectricChest;
 import mekanism.client.render.tileentity.RenderElectricPump;
 import mekanism.client.render.tileentity.RenderElectrolyticSeparator;
 import mekanism.client.render.tileentity.RenderEnergyCube;
+import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderFluidicPlenisher;
 import mekanism.client.render.tileentity.RenderGasTank;
+import mekanism.client.render.tileentity.RenderLaser;
 import mekanism.client.render.tileentity.RenderLaserAmplifier;
 import mekanism.client.render.tileentity.RenderLaserTractorBeam;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
+import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
+import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
+import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
+import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
+import mekanism.client.render.tileentity.RenderThermalEvaporationController;
+import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -110,6 +122,8 @@ import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
@@ -130,9 +144,10 @@ import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
-import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
+import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -146,16 +161,16 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
+import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
-
+import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -315,7 +330,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer", new RenderChemicalCrystallizer());
 		ClientRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator", new RenderSeismicVibrator());
 		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderPressurizedReactionChamber());
-		ClientRegistry.registerTileEntity(TileEntityPortableTank.class, "PortableTank", new RenderPortableTank());
+		ClientRegistry.registerTileEntity(TileEntityFluidTank.class, "PortableTank", new RenderFluidTank()); //TODO rename
 		ClientRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher", new RenderFluidicPlenisher());
 		//ClientRegistry.registerTileEntity(TileEntityLaser.class, "Laser", new RenderLaser());
 		ClientRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier", new RenderLaserAmplifier());
@@ -328,6 +343,9 @@ public class ClientProxy extends CommonProxy
 		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
 		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
 		GameRegistry.registerTileEntity(TileEntityStructuralGlass.class, "StructuralGlass");
+		GameRegistry.registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater");
+		ClientRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing", new RenderThermoelectricBoiler());
+		ClientRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve", new RenderThermoelectricBoiler());
 	}
 
 	@Override
@@ -602,6 +620,14 @@ public class ClientProxy extends CommonProxy
 				return new GuiTransporterConfig(player, (ISideConfiguration)tileEntity);
 			case 52:
 				return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator)tileEntity);
+			case 53:
+				return new GuiResistiveHeater(player.inventory, (TileEntityResistiveHeater)tileEntity);
+			case 54:
+				return new GuiThermoelectricBoiler(player.inventory, (TileEntityBoilerCasing)tileEntity);
+			case 55:
+				return new GuiBoilerStats(player.inventory, (TileEntityBoilerCasing)tileEntity);
+			case 56:
+				return new GuiFormulaicAssemblicator(player.inventory, (TileEntityFormulaicAssemblicator)tileEntity);
 		}
 		
 		return null;

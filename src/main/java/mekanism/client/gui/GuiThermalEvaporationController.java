@@ -1,9 +1,15 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.util.ListUtils;
+import mekanism.api.util.UnitDisplayUtils;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.LangUtils;
@@ -41,6 +47,14 @@ public class GuiThermalEvaporationController extends GuiMekanism
 				return tileEntity.outputTank;
 			}
 		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png"), 152, 13));
+		guiElements.add(new GuiHeatInfo(new IInfoHandler() {
+			@Override
+			public List<String> getInfo()
+			{
+				String loss = UnitDisplayUtils.getDisplayShort(tileEntity.totalLoss, TemperatureUnit.KELVIN);
+				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + loss + "/t");
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png")));
 	}
 
 	@Override

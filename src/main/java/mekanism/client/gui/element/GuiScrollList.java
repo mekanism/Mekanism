@@ -100,7 +100,7 @@ public class GuiScrollList extends GuiElement
 		{
 			for(int xIter = 0; xIter < xDisplays; xIter++)
 			{
-				int width = (xSize%10 > 0 && xIter == xDisplays ? xSize%10 : 10);
+				int width = (xSize%10 > 0 && xIter == xDisplays-1 ? xSize%10 : 10);
 				guiObj.drawTexturedRect(guiWidth + xPosition + (xIter*10), guiHeight + yPosition + (yIter*10), 0, 0, width, 10);
 			}
 		}
@@ -116,7 +116,7 @@ public class GuiScrollList extends GuiElement
 			
 			for(int xIter = 0; xIter < xDisplays; xIter++)
 			{
-				int width = (xSize%10 > 0 && xIter == xDisplays ? xSize%10 : 10);
+				int width = (xSize%10 > 0 && xIter == xDisplays-1 ? xSize%10 : 10);
 				guiObj.drawTexturedRect(guiWidth + xPosition + (xIter*10), guiHeight + yPosition + (index-scroll)*10, 0, 10, width, 10);
 			}
 		}

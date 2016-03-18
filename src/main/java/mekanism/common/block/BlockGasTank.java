@@ -6,6 +6,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ITierItem;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
@@ -104,12 +105,15 @@ public class BlockGasTank extends BlockContainer
 				}
 
 				if(MekanismUtils.isBCWrench(tool))
+				{
 					((IToolWrench)tool).wrenchUsed(entityplayer, pos);
+				}
 
 				int change = tileEntity.facing.rotateY().ordinal();
 
 				tileEntity.setFacing((short)change);
 				world.notifyNeighborsOfStateChange(pos, this);
+				
 				return true;
 			}
 		}
@@ -122,6 +126,7 @@ public class BlockGasTank extends BlockContainer
 				return true;
 			}
 		}
+		
 		return false;
 	}
 
@@ -199,6 +204,9 @@ public class BlockGasTank extends BlockContainer
 	{
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
+		
+		ITierItem tierItem = (ITierItem)itemStack.getItem();
+		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
 
 		IGasItem storageTank = (IGasItem)itemStack.getItem();
 		storageTank.setGas(itemStack, tileEntity.gasTank.getGas());

@@ -19,12 +19,11 @@ public class ItemRenderingHandler// implements IItemRenderer
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	public ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
-	public ModelPortableTank portableTank = new ModelPortableTank();
 	public ModelFlamethrower flamethrower = new ModelFlamethrower();
 
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
 	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityBin.class);
-	private final RenderPortableTank portableTankRenderer = (RenderPortableTank)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityPortableTank.class);
+	private final RenderFluidTank portableTankRenderer = (RenderFluidTank)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityFluidTank.class);
 	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 
 	@Override
@@ -96,18 +95,16 @@ public class ItemRenderingHandler// implements IItemRenderer
 
 			GL11.glPopMatrix();
 		}
-		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock2 && item.getItemDamage() == 3)
+		else if(BasicType.get(item) == BasicType.INDUCTION_CELL || BasicType.get(item) == BasicType.INDUCTION_PROVIDER)
 		{
 			MekanismRenderer.renderCustomItem((RenderBlocks)data[0], item);
 		}
-		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock2 && item.getItemDamage() == 4)
+		else if(BasicType.get(item) == BasicType.BIN)
 		{
+			GL11.glRotatef(270, 0.0F, 1.0F, 0.0F);
 			MekanismRenderer.renderCustomItem((RenderBlocks)data[0], item);
-		}
-		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock && item.getItemDamage() == 6)
-		{
-			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
-
+			GL11.glRotatef(-270, 0.0F, 1.0F, 0.0F);
+			
 			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()* / == null)
 			{
 				return;
@@ -228,7 +225,8 @@ public class ItemRenderingHandler// implements IItemRenderer
 		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.GasTank)
 		{
 			GL11.glPushMatrix();
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank.png"));
+			BaseTier tier = ((ItemBlockGasTank)item.getItem()).getBaseTier(item);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank" + tier.getName() + ".png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
@@ -441,15 +439,16 @@ public class ItemRenderingHandler// implements IItemRenderer
 			flamethrower.render(0.0625F);
 			GL11.glPopMatrix();
 		}
-		else if(MachineType.get(item) == MachineType.PORTABLE_TANK)
+		else if(MachineType.get(item) == MachineType.FLUID_TANK)
 		{
 			GL11.glPushMatrix();
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PortableTank.png"));
-			
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
 			ItemBlockMachine itemMachine = (ItemBlockMachine)item.getItem();
+			float targetScale = (float)(itemMachine.getFluidStack(item) != null ? itemMachine.getFluidStack(item).amount : 0)/itemMachine.getCapacity(item);
+			FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(item).ordinal()];
 			Fluid fluid = itemMachine.getFluidStack(item) != null ? itemMachine.getFluidStack(item).getFluid() : null;
-			portableTankRenderer.render(fluid, itemMachine.getPrevScale(item), false, null, -0.5, -0.5, -0.5);
+			portableTankRenderer.render(tier, fluid, targetScale, false, null, -0.5, -0.5, -0.5);
 			GL11.glPopMatrix();
 		}
 		else {

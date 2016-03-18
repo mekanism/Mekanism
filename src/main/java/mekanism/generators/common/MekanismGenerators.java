@@ -14,6 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.multiblock.MultiblockManager;
@@ -166,7 +167,7 @@ public class MekanismGenerators implements IModule
 			" I ", "IGI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('G'), "blockGlass"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 0), new Object[] {
-			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank()
+			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank(GasTankTier.BASIC)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 2, 1), new Object[] {
 			" I ", "ILI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.ReactorGlass, 1, 0), Character.valueOf('L'), "blockRedstone"
@@ -207,7 +208,6 @@ public class MekanismGenerators implements IModule
 		dataStream.writeInt(generators.windGenerationMaxY);
 		
 		dataStream.writeInt(generators.turbineBladesPerCoil);
-		dataStream.writeDouble(generators.turbineBaseEnergyPerSteam);
 		dataStream.writeDouble(generators.turbineVentGasFlow);
 		dataStream.writeDouble(generators.turbineDisperserGasFlow);
 	}
@@ -229,7 +229,6 @@ public class MekanismGenerators implements IModule
 		generators.windGenerationMaxY = dataStream.readInt();
 		
 		generators.turbineBladesPerCoil = dataStream.readInt();
-		generators.turbineBaseEnergyPerSteam = dataStream.readDouble();
 		generators.turbineVentGasFlow = dataStream.readDouble();
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
 	}

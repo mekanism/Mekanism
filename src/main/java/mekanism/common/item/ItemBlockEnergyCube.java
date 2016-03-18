@@ -43,8 +43,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),
-		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
 public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IEnergyCube, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem
 {
@@ -79,6 +78,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		ItemStack stack = new ItemStack(this);
 		setEnergyCubeTier(stack, tier);
 		stack.setItemDamage(100);
+		
 		return stack;
 	}
 	
@@ -207,16 +207,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 			return 0;
 		}
 
-		double electricityStored = itemStack.getTagCompound().getDouble("electricity");
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
-
-		return electricityStored;
+		return electricityStored = itemStack.getTagCompound().getDouble("electricity");
 	}
 
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(getEnergyCubeTier(itemStack) == EnergyCubeTier.CREATIVE && amount != Integer.MAX_VALUE)
+		if(getEnergyCubeTier(itemStack) == EnergyCubeTier.CREATIVE && amount != Double.MAX_VALUE)
 		{
 			return;
 		}
@@ -228,7 +225,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
 		itemStack.getTagCompound().setDouble("electricity", electricityStored);
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
 	}
 
 	@Override
@@ -261,14 +257,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy*general.FROM_TE, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive* general.TO_TE);
+			return (int)Math.round(toReceive*general.TO_TE);
 		}
 
 		return 0;
@@ -280,14 +276,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy*general.FROM_TE), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_TE);
 		}
 
 		return 0;
@@ -296,19 +292,25 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)* general.TO_TE);
+		return (int)(getEnergy(theItem)*general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)* general.TO_TE);
+		return (int)(getMaxEnergy(theItem)*general.TO_TE);
 	}
 
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return false;
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
 	}
 
 	@Override

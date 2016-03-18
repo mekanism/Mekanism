@@ -1,16 +1,14 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.MekanismAPI;
 import mekanism.api.util.BlockInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
-
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, IMessage>
 {

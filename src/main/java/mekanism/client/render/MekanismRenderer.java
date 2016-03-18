@@ -15,8 +15,9 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
-import mekanism.client.render.tileentity.RenderPortableTank;
+import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
+import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.util.MekanismUtils;
@@ -67,6 +68,8 @@ public class MekanismRenderer
 	
 	public static TextureAtlasSprite energyIcon;
 	public static TextureAtlasSprite heatIcon;
+	
+	public static float GAS_RENDER_BASE = 0.2F;
 	
 	public static Map<TransmissionType, TextureAtlasSprite> overlays = new HashMap<TransmissionType, TextureAtlasSprite>();
 	
@@ -124,7 +127,6 @@ public class MekanismRenderer
 		GasRegistry.getGas("deuterium").setIcon(event.map,"mekanism:blocks/LiquidDeuterium");
 		GasRegistry.getGas("tritium").setIcon(event.map,"mekanism:blocks/LiquidTritium");
 		GasRegistry.getGas("fusionFuelDT").setIcon(event.map,"mekanism:blocks/LiquidDT");
-		GasRegistry.getGas("steam").setIcon(event.map,"mekanism:blocks/LiquidSteam");
 		GasRegistry.getGas("lithium").setIcon(event.map,"mekanism:blocks/LiquidLithium");
 
 		for(Gas gas : GasRegistry.getRegisteredGasses())

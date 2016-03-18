@@ -5,7 +5,6 @@ import java.util.Collections;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.IGasItem;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

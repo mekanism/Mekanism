@@ -1,8 +1,6 @@
 package mekanism.common.inventory;
 
-import mekanism.common.base.IElectricChest;
 import mekanism.common.base.ISustainedInventory;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -47,22 +45,12 @@ public class InventoryElectricChest extends InventoryBasic
 	public void openInventory(EntityPlayer player)
 	{
 		read();
-		
-		if(getStack() != null)
-		{
-			((IElectricChest)getStack().getItem()).setOpen(getStack(), true);
-		}
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player)
 	{
 		write();
-		
-		if(getStack() != null)
-		{
-			((IElectricChest)getStack().getItem()).setOpen(getStack(), false);
-		}
 	}
 
 	public void write()

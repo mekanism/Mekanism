@@ -7,10 +7,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderGasTank extends TileEntitySpecialRenderer<TileEntityGasTank>
@@ -22,7 +23,7 @@ public class RenderGasTank extends TileEntitySpecialRenderer<TileEntityGasTank>
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank" + tileEntity.tier.getBaseTier().getName() + ".png"));
 
 		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
 		{
@@ -36,6 +37,6 @@ public class RenderGasTank extends TileEntitySpecialRenderer<TileEntityGasTank>
 		model.render(0.0625F);
 		GL11.glPopMatrix();
 		
-		//TODOMekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);
+		//TODO MekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);
 	}
 }

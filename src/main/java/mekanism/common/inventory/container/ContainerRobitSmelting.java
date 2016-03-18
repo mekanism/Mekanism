@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.entity.EntityRobit;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

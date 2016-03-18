@@ -2,26 +2,20 @@ package mekanism.client.render.entity;
 
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.entity.EntityFlame;
-
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 @SideOnly(Side.CLIENT)
 public class RenderFlame extends Render<EntityFlame>
 {
-    public RenderFlame(RenderManager renderManager)
-    {
-        super(renderManager);
-    }
-
     @Override
     public void doRender(EntityFlame entity, double x, double y, double z, float f, float partialTick)
     {

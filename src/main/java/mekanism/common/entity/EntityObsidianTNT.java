@@ -1,7 +1,6 @@
 package mekanism.common.entity;
 
 import mekanism.api.MekanismConfig.general;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;

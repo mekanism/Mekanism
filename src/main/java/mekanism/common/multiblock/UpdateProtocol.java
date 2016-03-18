@@ -577,6 +577,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		{
 			iterated.add(pos);
 			
+			if(!checker.shouldContinue(iterated.size()))
+			{
+				return;
+			}
+			
 			for(EnumFacing side : EnumFacing.VALUES)
 			{
 				Coord4D coord = pos.offset(side);
@@ -601,8 +606,13 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		}
 	}
 	
-	public static interface NodeChecker
+	public static abstract class NodeChecker
 	{
-		public boolean isValid(Coord4D coord);
+		public abstract boolean isValid(final Coord4D coord);
+		
+		public boolean shouldContinue(int iterated)
+		{
+			return true;
+		}
 	}
 }

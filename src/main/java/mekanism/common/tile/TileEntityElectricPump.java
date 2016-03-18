@@ -92,63 +92,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			ChargeUtils.discharge(2, this);
 	
-			if(inventory[0] != null)
+			if(inventory[0] != null && fluidTank.getFluid() != null)
 			{
-				if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+				if(inventory[0].getItem() instanceof IFluidContainerItem)
 				{
-					if(inventory[0].getItem() instanceof IFluidContainerItem)
-					{
-						int prev = fluidTank.getFluidAmount();
-						
-						fluidTank.drain(FluidContainerUtils.insertFluid(fluidTank, inventory[0]), true);
-						
-						if(prev == fluidTank.getFluidAmount() || fluidTank.getFluidAmount() == 0)
-						{
-							if(inventory[1] == null)
-							{
-								inventory[1] = inventory[0].copy();
-								inventory[0] = null;
-								
-								markDirty();
-							}
-						}
-					}
-					else if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
-					{
-						ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[0]);
-	
-						if(tempStack != null)
-						{
-							if(inventory[1] == null)
-							{
-								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-	
-								inventory[1] = tempStack;
-								inventory[0].stackSize--;
-	
-								if(inventory[0].stackSize <= 0)
-								{
-									inventory[0] = null;
-								}
-	
-								markDirty();
-							}
-							else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
-							{
-								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-	
-								inventory[1].stackSize++;
-								inventory[0].stackSize--;
-	
-								if(inventory[0].stackSize <= 0)
-								{
-									inventory[0] = null;
-								}
-	
-								markDirty();
-							}
-						}
-					}
+					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
+				}
+				else if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
+				{
+					FluidContainerUtils.handleRegistryItemFill(this, fluidTank, 0, 1);
 				}
 			}
 		}

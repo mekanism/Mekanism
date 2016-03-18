@@ -36,6 +36,11 @@ public class GuiEnergyGauge extends GuiGauge
 	@Override
 	public int getScaledLevel()
 	{
+		if(infoHandler.getEnergyStorage().getEnergy() == Double.MAX_VALUE)
+		{
+			return height-2;
+		}
+		
 		return (int)(infoHandler.getEnergyStorage().getEnergy()*(height-2) / infoHandler.getEnergyStorage().getMaxEnergy());
 	}
 

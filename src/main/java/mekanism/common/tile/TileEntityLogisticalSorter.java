@@ -1,16 +1,28 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.IFilterAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.base.*;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.content.transporter.Finder.FirstFinder;
-import mekanism.common.content.transporter.*;
+import mekanism.common.content.transporter.InvStack;
+import mekanism.common.content.transporter.StackSearcher;
+import mekanism.common.content.transporter.TItemStackFilter;
+import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,10 +37,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraft.util.EnumFacing;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IFilterAccess, ISustainedData
+public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, ISpecialConfigData, ISustainedData
 {
 	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 
@@ -580,10 +589,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
-		nbtTags.setInteger("controlType", controlType.ordinal());
-
 		if(color != null)
 		{
 			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
@@ -612,10 +619,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
 		if(nbtTags.hasKey("color"))
 		{
 			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
@@ -640,7 +645,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public String getDataType()
 	{
-		return "tooltip.filterCard.logisticalSorter";
+		return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
 	}
 
 	@Override

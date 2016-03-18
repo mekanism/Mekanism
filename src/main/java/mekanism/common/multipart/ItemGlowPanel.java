@@ -1,13 +1,7 @@
 package mekanism.common.multipart;
 
-import codechicken.lib.vec.BlockCoord;
-import codechicken.lib.vec.Vector3;
-import codechicken.microblock.HollowMicroblock;
-import codechicken.multipart.JItemMultiPart;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TileMultipart;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import java.util.List;
+
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
@@ -19,8 +13,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.List;
+import codechicken.lib.vec.BlockCoord;
+import codechicken.lib.vec.Vector3;
+import codechicken.microblock.HollowMicroblock;
+import codechicken.multipart.JItemMultiPart;
+import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TileMultipart;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemGlowPanel extends JItemMultiPart
 {

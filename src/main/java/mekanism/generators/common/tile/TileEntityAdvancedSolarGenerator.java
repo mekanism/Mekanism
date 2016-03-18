@@ -7,7 +7,6 @@ import mekanism.api.ISalinationSolar;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, ISalinationSolar

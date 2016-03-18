@@ -20,13 +20,11 @@ import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.AdvancedModelLoader;
@@ -108,10 +106,10 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		else if(type == MachineType.DIGITAL_MINER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
-			GL11.glTranslatef(-0.2F, -0.3F, 0.0F);
+			GL11.glRotatef(-180F, 0.0F, 1.0F, 0.0F);
+			GL11.glTranslatef(0.35F, 0.1F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
-			digitalMiner.render(0.03125F, false);
+			digitalMiner.render(0.022F, false);
 		}
 		else if(type == MachineType.ROTARY_CONDENSENTRATOR)
 		{

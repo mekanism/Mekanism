@@ -1,6 +1,10 @@
 package mekanism.common;
 
-import mekanism.common.Tier.EnergyCubeTier;
+import static mekanism.common.block.states.BlockStateBasic.BasicBlock.BASIC_BLOCK_1;
+import static mekanism.common.block.states.BlockStateBasic.BasicBlock.BASIC_BLOCK_2;
+import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
+import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
+import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_3;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
@@ -25,7 +29,6 @@ import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
@@ -39,12 +42,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import static mekanism.common.block.states.BlockStateBasic.BasicBlock.BASIC_BLOCK_1;
-import static mekanism.common.block.states.BlockStateBasic.BasicBlock.BASIC_BLOCK_2;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_3;
 
 @ObjectHolder("Mekanism")
 public class MekanismBlocks

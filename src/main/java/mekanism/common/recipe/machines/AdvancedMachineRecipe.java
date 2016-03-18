@@ -5,7 +5,6 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-
 import net.minecraft.item.ItemStack;
 
 public abstract class AdvancedMachineRecipe<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends MachineRecipe<AdvancedMachineInput, ItemStackOutput, RECIPE>

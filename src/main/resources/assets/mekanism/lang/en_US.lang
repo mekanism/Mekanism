@@ -38,7 +38,7 @@ item.LithiumBucket.name=Lithium Bucket
 item.HeavyWaterBucket.name=Heavy Water Bucket
 item.FreeRunners.name=Free Runners
 item.ArmoredJetpack.name=Armored Jetpack
-item.FilterCard.name=Filter Card
+item.ConfigurationCard.name=Configuration Card
 item.SeismicReader.name=Seismic Reader
 item.HDPEPellet.name=HDPE Pellet
 item.HDPERod.name=HDPE Rod
@@ -48,6 +48,7 @@ item.Substrate.name=Substrate
 item.Flamethrower.name=Flamethrower
 item.GaugeDropper.name=Gauge Dropper
 item.BioFuel.name=Bio Fuel
+item.CraftingFormula.name=Crafting Formula
 
 //Control Circuits
 item.BasicControlCircuit.name=Basic Control Circuit
@@ -56,7 +57,16 @@ item.EliteControlCircuit.name=Elite Control Circuit
 item.UltimateControlCircuit.name=Ultimate Control Circuit
 
 //Gas Tank
-tile.GasTank.GasTank.name=Gas Tank
+tile.GasTankBasic.name=Basic Gas Tank
+tile.GasTankAdvanced.name=Advanced Gas Tank
+tile.GasTankElite.name=Elite Gas Tank
+tile.GasTankUltimate.name=Ultimate Gas Tank
+
+//Fluid Tank (part of MachineBlock2, naming handled differently)
+tile.FluidTankBasic.name=Basic Fluid Tank
+tile.FluidTankAdvanced.name=Advanced Fluid Tank
+tile.FluidTankElite.name=Elite Fluid Tank
+tile.FluidTankUltimate.name=Ultimate Fluid Tank
 
 //Cardboard Box
 tile.CardboardBox.name=Cardboard Box
@@ -74,7 +84,10 @@ tile.BasicBlock.RefinedObsidian.name=Refined Obsidian
 tile.BasicBlock.CharcoalBlock.name=Charcoal Block
 tile.BasicBlock.RefinedGlowstone.name=Refined Glowstone
 tile.BasicBlock.SteelBlock.name=Steel Block
-tile.BasicBlock.Bin.name=Bin
+tile.BasicBlock.BinBasic.name=Basic Bin
+tile.BasicBlock.BinAdvanced.name=Advanced Bin
+tile.BasicBlock.BinElite.name=Elite Bin
+tile.BasicBlock.BinUltimate.name=Ultimate Bin
 tile.BasicBlock.TeleporterFrame.name=Teleporter Frame
 tile.BasicBlock.SteelCasing.name=Steel Casing
 tile.BasicBlock.DynamicTank.name=Dynamic Tank
@@ -132,15 +145,17 @@ tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
 tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
-tile.MachineBlock2.PortableTank.name=Portable Tank
 tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
 tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
 tile.MachineBlock2.LaserTractorBeam.name=Laser Tractor Beam
 
 //Machine Block 3 (third ID iteration)
+tile.MachineBlock3.QuantumEntangloporter.name=Quantum Entangloporter
 tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
 tile.MachineBlock3.Oredictionificator.name=Oredictionificator
+tile.MachineBlock3.ResistiveHeater.name=Resistive Heater
+tile.MachineBlock3.FormulaicAssemblicator.name=Formulaic Assemblicator
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
@@ -450,6 +465,7 @@ gui.incomplete=Incomplete
 gui.inductionMatrix=Induction Matrix
 gui.matrixStats=Matrix Statistics
 gui.turbineStats=Turbine Statistics
+gui.boilerStats=Boiler Statistics
 gui.main=Main
 gui.outputting=Outputting
 gui.receiving=Receiving
@@ -460,6 +476,7 @@ gui.providers=providers
 gui.structure=Structure
 gui.dynamicTank=Dynamic Tank
 gui.industrialTurbine=Industrial Turbine
+gui.thermoelectricBoiler=Thermoelectric Boiler
 gui.visuals=Visuals
 gui.noEject=Can't Eject
 gui.undefined=Undefined
@@ -508,6 +525,21 @@ gui.steamInput=Steam Input
 gui.capacity=Capacity
 gui.unit=Unit
 gui.temp=Temp
+gui.usage=Usage
+gui.transferred=Transferred
+gui.dissipated=Dissipated
+gui.boilRate=Boil Rate
+gui.maxBoil=Max Boil
+gui.maxWater=Max Water
+gui.maxSteam=Max Steam
+gui.heatTransfer=Heat Transfer
+gui.superheaters=Superheaters
+gui.boilCapacity=Boil Capacity
+gui.encodeFormula=Encode Formula
+gui.autoModeToggle=Turn Auto-Mode
+gui.craftSingle=Craft Single Item
+gui.craftAvailable=Craft Available Items
+gui.fillEmpty=Fill/Empty Grid
 
 gui.reactor.injectionRate=Injection Rate
 
@@ -606,8 +638,10 @@ gui.teleporter.noFrame=No frame
 gui.teleporter.noLink=No link
 gui.teleporter.exceeds=Links > 2
 gui.teleporter.needsEnergy=Needs energy
-gui.teleporter.noAccess=You don't have access to this teleporter.
+gui.teleporter.noAccess=You don't have access to this Teleporter.
 gui.teleporter.noFreq=No frequency
+
+gui.entangloporter.noAccess=You don't have access to this Entangloporter.
 
 gui.digitalMinerConfig=Digital Miner Config
 
@@ -694,6 +728,9 @@ tooltip.speed=Speed
 tooltip.and=and
 tooltip.heat=Heat
 tooltip.itemAmount=Item amount
+tooltip.invalid=Invalid
+tooltip.encoded=Encoded
+tooltip.ingredients=Ingredients
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
@@ -703,12 +740,9 @@ tooltip.disassembler.fast=fast
 tooltip.disassembler.vein=vein
 tooltip.disassembler.off=off
 
-tooltip.filterCard.got=Retrieved filter data from %s
-tooltip.filterCard.set=Injected filter data of type %s
-tooltip.filterCard.unequal=Unequal filter data formats
-tooltip.filterCard.logisticalSorter=Logistical Sorter
-tooltip.filterCard.digitalMiner=Digital Miner
-tooltip.filterCard.oredictionificator=Oredictionificator
+tooltip.configurationCard.got=Retrieved configuration data from %s
+tooltip.configurationCard.set=Injected configuration data of type %s
+tooltip.configurationCard.unequal=Unequal configuration data formats
 
 tooltip.balloon=Balloon
 
@@ -766,7 +800,7 @@ tooltip.ChemicalOxidizer=A machine capable of oxidizing solid materials into gas
 tooltip.ChemicalInfuser=A machine that produces a new gas by infusing two others.
 tooltip.SeismicVibrator=A machine that uses seismic vibrations to provide information on differing layers of the world.
 tooltip.PressurizedReactionChamber=An advanced machine that processes a solid, liquid and gaseous mixture and creates both a gaseous and solid product.
-tooltip.PortableTank=A handy, sturdy, portable tank that lets you carry 14 buckets of fluid wherever you please. Also doubles as a bucket!
+tooltip.FluidTank=A handy, sturdy, portable tank that lets you carry multiple buckets of fluid wherever you please. Also doubles as a bucket!
 tooltip.FluidicPlenisher=A machine that is capable of creating entire lakes by filling ravines with fluids.
 tooltip.Laser=An advanced form of linear energy transfer that utilizes an extremely collimated beam of light.
 tooltip.LaserAmplifier=A block that can be used to merge, redirect and amplify laser beams, with fine controls over when to fire.
@@ -774,6 +808,8 @@ tooltip.LaserTractorBeam=A block used to merge and redirect laser beams. Collect
 tooltip.SolarNeutronActivator=A machine that directs the neutron radiation of the sun into its internal reservoir, allowing for the slow creation of various isotopes.
 tooltip.Oredictionificator=A machine used to unify and translate between various items and blocks using the Ore Dictionary.
 tooltip.Factory=A machine that serves as an upgrade to regular machinery, allowing for multiple processing operations to occur at once.
+tooltip.ResistiveHeater=A condensed, coiled resistor capable of converting electrical energy directly into heat energy.
+tooltip.FormulaicAssemblicator=A machine that uses energy to rapidly craft items and blocks from Crafting Formulas. Doubles as an advanced crafting bench.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or other burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the sun to produce energy.

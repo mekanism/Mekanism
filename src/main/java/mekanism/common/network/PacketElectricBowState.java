@@ -1,15 +1,13 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketElectricBowState implements IMessageHandler<ElectricBowStateMessage, IMessage>
 {

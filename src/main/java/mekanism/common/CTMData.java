@@ -6,10 +6,8 @@ package mekanism.common;
 //
 //import mekanism.api.Coord4D;
 //import mekanism.client.render.block.TextureSubmap;
-//
 //import net.minecraft.block.Block;
 //import net.minecraft.client.renderer.texture.IIconRegister;
-//import net.minecraft.util.EnumFacing;
 //import net.minecraft.util.IIcon;
 //import net.minecraft.world.IBlockAccess;
 //import net.minecraft.util.EnumFacing;
