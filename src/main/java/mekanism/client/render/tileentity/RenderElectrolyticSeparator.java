@@ -21,7 +21,7 @@ public class RenderElectrolyticSeparator extends TileEntitySpecialRenderer<TileE
 	public void renderTileEntityAt(TileEntityElectrolyticSeparator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 2.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparator.png"));
 
 		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/

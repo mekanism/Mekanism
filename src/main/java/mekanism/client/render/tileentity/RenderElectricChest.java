@@ -21,7 +21,7 @@ public class RenderElectricChest extends TileEntitySpecialRenderer<TileEntityEle
 	public void renderTileEntityAt(TileEntityElectricChest tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x, (float)y + 1.0F, (float)z);
+		GL11.glTranslatef((float)x, (float)y + 1.0F, (float)z+1);
 		GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
 

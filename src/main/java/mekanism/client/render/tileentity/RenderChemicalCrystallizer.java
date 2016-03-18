@@ -22,7 +22,7 @@ public class RenderChemicalCrystallizer extends TileEntitySpecialRenderer<TileEn
 	public void renderTileEntityAt(TileEntityChemicalCrystallizer tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 1.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));
 
 		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/

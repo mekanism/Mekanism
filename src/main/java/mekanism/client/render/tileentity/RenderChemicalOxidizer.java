@@ -53,7 +53,7 @@ public class RenderChemicalOxidizer extends TileEntitySpecialRenderer<TileEntity
 	private void render(boolean glass, double x, double y, double z, TileEntityChemicalOxidizer tileEntity)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 1.5F);
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalOxidizer.png"));
 
