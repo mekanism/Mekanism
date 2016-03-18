@@ -71,14 +71,14 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	public void radiateNeutrons(int neutrons) {} //future impl
 
-	public void formMultiblock()
+	public void formMultiblock(boolean keepBurning)
 	{
 		if(getReactor() == null)
 		{
 			setReactor(new FusionReactor(this));
 		}
 		
-		getReactor().formMultiblock();
+		getReactor().formMultiblock(keepBurning);
 	}
 
 	public double getPlasmaTemp()
@@ -139,7 +139,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onChunkUnload();
 		
-		formMultiblock();
+		formMultiblock(true);
 	}
 	
 	@Override
@@ -147,7 +147,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onAdded();
 		
-		formMultiblock();
+		formMultiblock(false);
 	}
 
 	@Override

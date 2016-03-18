@@ -354,7 +354,7 @@ public class FusionReactor implements IFusionReactor
 	}
 
 	@Override
-	public void formMultiblock()
+	public void formMultiblock(boolean keepBurning)
 	{
 		updatedThisTick = true;
 
@@ -367,19 +367,19 @@ public class FusionReactor implements IFusionReactor
 
 		if(!createFrame(centreOfReactor))
 		{
-			unformMultiblock(false);
+			unformMultiblock(keepBurning);
 			return;
 		}
 		
 		if(!addSides(centreOfReactor))
 		{
-			unformMultiblock(false);
+			unformMultiblock(keepBurning);
 			return;
 		}
 		
 		if(!centreIsClear(centreOfReactor))
 		{
-			unformMultiblock(false);
+			unformMultiblock(keepBurning);
 			return;
 		}
 		

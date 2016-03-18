@@ -35,7 +35,7 @@ public interface IFusionReactor extends IHeatTransfer
 
 	public double getBufferSize();
 
-	public void formMultiblock();
+	public void formMultiblock(boolean keepBurning);
 
 	public boolean isFormed();
 
