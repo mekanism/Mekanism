@@ -137,6 +137,17 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 		return data;
 	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		for(ITileComponent component : components)
+		{
+			component.invalidate();
+		}
+	}
 
 	@Override
 	public void validate()

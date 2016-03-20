@@ -17,4 +17,6 @@ public interface ITileComponent
 	public void write(NBTTagCompound nbtTags);
 
 	public void write(ArrayList data);
+	
+	public void invalidate();
 }

@@ -73,6 +73,7 @@ import mekanism.common.recipe.ShapelessMekanismRecipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
@@ -182,6 +183,8 @@ public class Mekanism
 	
 	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, "Entangloporter");
 	public static Map<String, FrequencyManager> privateEntangloporters = new HashMap<String, FrequencyManager>();
+	
+	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, "Security");
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();

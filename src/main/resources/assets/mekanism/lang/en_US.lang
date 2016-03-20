@@ -540,6 +540,7 @@ gui.autoModeToggle=Turn Auto-Mode
 gui.craftSingle=Craft Single Item
 gui.craftAvailable=Craft Available Items
 gui.fillEmpty=Fill/Empty Grid
+gui.noOwner=No Owner
 
 gui.reactor.injectionRate=Injection Rate
 

@@ -216,6 +216,9 @@ public class TileComponentConfig implements ITileComponent
 		}
 	}
 	
+	@Override
+	public void invalidate() {}
+	
 	public boolean isEjecting(TransmissionType type)
 	{
 		return ejecting.get(type.ordinal());

@@ -165,11 +165,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public void setFrequency(String name, boolean publicFreq)
 	{
-		if(name.equals(frequency))
-		{
-			return;
-		}
-		
 		FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
 		manager.deactivate(Coord4D.get(this));
 		

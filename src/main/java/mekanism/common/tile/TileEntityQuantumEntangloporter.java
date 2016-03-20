@@ -192,11 +192,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	
 	public void setFrequency(String name, boolean publicFreq)
 	{
-		if(name.equals(frequency))
-		{
-			return;
-		}
-		
 		FrequencyManager manager = getManager(new InventoryFrequency(name, null).setPublic(publicFreq));
 		manager.deactivate(Coord4D.get(this));
 		

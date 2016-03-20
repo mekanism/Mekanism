@@ -55,6 +55,8 @@ import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
+import mekanism.common.network.PacketSecurityMode;
+import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity;
@@ -102,7 +104,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Side.SERVER);
 		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
 		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
-		//EMPTY SLOT 9
+		netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Side.SERVER);
 		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.CLIENT);
 		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.SERVER);
 		netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Side.SERVER);
