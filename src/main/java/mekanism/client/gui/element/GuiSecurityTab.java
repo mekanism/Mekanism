@@ -7,12 +7,15 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
+import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import codechicken.lib.vec.Rectangle4i;
@@ -22,13 +25,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiSecurityTab extends GuiElement
 {
-	TileEntity tileEntity;
+	public boolean isItem;
+	
+	public TileEntity tileEntity;
 
 	public GuiSecurityTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def);
 
 		tileEntity = tile;
+	}
+	
+	public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def)
+	{
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def);
+		
+		isItem = true;
 	}
 	
 	@Override
@@ -44,18 +56,18 @@ public class GuiSecurityTab extends GuiElement
 
 		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 32, 0, 0, 26, 26);
 
-		ISecurityTile tile = (ISecurityTile)tileEntity;
-		SecurityMode mode = tile.getSecurity().getMode();
+		SecurityMode mode = getSecurity();
+		SecurityFrequency freq = getFrequency();
 		
-		if(tile.getSecurity().getFrequency() != null && tile.getSecurity().getFrequency().override)
+		if(freq != null && freq.override)
 		{
-			mode = tile.getSecurity().getFrequency().securityMode;
+			mode = freq.securityMode;
 		}
 		
 		int renderX = 26 + (18*mode.ordinal());
 
-		if(tile.getSecurity().getOwner() != null && tile.getSecurity().getOwner().equals(mc.thePlayer.getCommandSenderName()) && 
-				(tile.getSecurity().getFrequency() == null || !tile.getSecurity().getFrequency().override))
+		if(getOwner() != null && getOwner().equals(mc.thePlayer.getCommandSenderName()) && 
+				(getFrequency() == null || !getFrequency().override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 			{
@@ -77,15 +89,14 @@ public class GuiSecurityTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		ISecurityTile control = (ISecurityTile)tileEntity;
-
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 		{
-			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay((TileEntity)control);
-			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getCommandSenderName(), control.getSecurity().getOwner());
+			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem()) : SecurityUtils.getSecurityDisplay(tileEntity);
+			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
+			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getCommandSenderName(), getOwner());
 			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 			
-			if(SecurityUtils.isOverridden((TileEntity)control))
+			if(isItem ? SecurityUtils.isOverridden(getItem()) : SecurityUtils.isOverridden(tileEntity))
 			{
 				displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis); 
 			}
@@ -96,6 +107,62 @@ public class GuiSecurityTab extends GuiElement
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
+	
+	private SecurityFrequency getFrequency()
+	{
+		if(isItem)
+		{
+			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			{
+				mc.thePlayer.closeScreen();
+				return null;
+			}
+			
+			return SecurityUtils.getFrequency(getOwner());
+		}
+		else {
+			return ((ISecurityTile)tileEntity).getSecurity().getFrequency();
+		}
+	}
+	
+	private SecurityMode getSecurity()
+	{
+		if(isItem)
+		{
+			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			{
+				mc.thePlayer.closeScreen();
+				return SecurityMode.PUBLIC;
+			}
+			
+			return ((ISecurityItem)getItem().getItem()).getSecurity(getItem());
+		}
+		else {
+			return ((ISecurityTile)tileEntity).getSecurity().getMode();
+		}
+	}
+	
+	private String getOwner()
+	{
+		if(isItem)
+		{
+			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			{
+				mc.thePlayer.closeScreen();
+				return null;
+			}
+			
+			return ((ISecurityItem)getItem().getItem()).getOwner(getItem());
+		}
+		else {
+			return ((ISecurityTile)tileEntity).getSecurity().getOwner();
+		}
+	}
+	
+	private ItemStack getItem()
+	{
+		return mc.thePlayer.getCurrentEquippedItem();
+	}
 
 	@Override
 	public void preMouseClicked(int xAxis, int yAxis, int button) {}
@@ -103,19 +170,24 @@ public class GuiSecurityTab extends GuiElement
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		ISecurityTile control = (ISecurityTile)tileEntity;
-
 		if(button == 0)
 		{
-			if(control.getSecurity().getOwner() != null && mc.thePlayer.getCommandSenderName().equals(control.getSecurity().getOwner()))
+			if(getOwner() != null && mc.thePlayer.getCommandSenderName().equals(getOwner()))
 			{
 				if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 				{
-					SecurityMode current = control.getSecurity().getMode();
+					SecurityMode current = getSecurity();
 					int ordinalToSet = current.ordinal() < (SecurityMode.values().length-1) ? current.ordinal()+1 : 0;
 	
 					SoundHandler.playSound("gui.button.press");
-					Mekanism.packetHandler.sendToServer(new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
+					
+					if(isItem)
+					{
+						Mekanism.packetHandler.sendToServer(new SecurityModeMessage(SecurityMode.values()[ordinalToSet]));
+					}
+					else {
+						Mekanism.packetHandler.sendToServer(new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
+					}
 				}
 			}
 		}

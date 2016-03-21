@@ -35,6 +35,7 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -115,6 +116,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 28);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityDigitalMiner()
 	{
@@ -1488,5 +1490,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			default:
 				break;
 		}
+	}
+
+	@Override
+	public TileComponentSecurity getSecurity() 
+	{
+		return securityComponent;
 	}
 }

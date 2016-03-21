@@ -74,6 +74,17 @@ public class BlockBounding extends Block
 			world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, this);
 		} catch(Exception e) {}
 	}
+	
+	@Override
+	public float getBlockHardness(World world, int x, int y, int z)
+	{
+		try {
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getBlockHardness(world, x, y, z);
+		} catch(Exception e) {
+			return blockHardness;
+		}
+	}
 
 	@Override
 	public int quantityDropped(Random random)

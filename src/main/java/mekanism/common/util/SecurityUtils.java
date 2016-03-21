@@ -75,11 +75,14 @@ public final class SecurityUtils
 	
 	public static SecurityFrequency getFrequency(String owner)
 	{
-		for(Frequency f : Mekanism.securityFrequencies.getFrequencies())
+		if(owner != null)
 		{
-			if(f instanceof SecurityFrequency && f.owner.equals(owner))
+			for(Frequency f : Mekanism.securityFrequencies.getFrequencies())
 			{
-				return (SecurityFrequency)f;
+				if(f instanceof SecurityFrequency && f.owner.equals(owner))
+				{
+					return (SecurityFrequency)f;
+				}
 			}
 		}
 		

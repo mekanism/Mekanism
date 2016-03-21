@@ -26,7 +26,9 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentAdvancedUpgrade;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -37,7 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager
+public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager, ISecurityTile
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -73,6 +75,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	public DissolutionRecipe cachedRecipe;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentAdvancedUpgrade(this, 4);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
@@ -502,5 +505,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	public Object[] getTanks() 
 	{
 		return new Object[] {injectTank, outputTank};
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

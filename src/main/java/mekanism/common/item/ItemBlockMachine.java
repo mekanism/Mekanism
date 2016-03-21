@@ -454,6 +454,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			if(!world.isRemote)
 			{
+				if(getOwner(itemstack) == null)
+				{
+					setOwner(itemstack, entityplayer.getCommandSenderName());
+				}
+				
 				if(SecurityUtils.canAccess(entityplayer, itemstack))
 				{
 					InventoryPersonalChest inventory = new InventoryPersonalChest(entityplayer);
@@ -543,10 +548,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		            return itemstack;
 		        }
 	    	}
+			else {
+				SecurityUtils.displayNoAccess(entityplayer);
+			}
     	}
-		else {
-			SecurityUtils.displayNoAccess(entityplayer);
-		}
 
 		return itemstack;
 	}
@@ -952,7 +957,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		MachineType type = MachineType.get(stack);
 		
-		if(type != MachineType.LASER)
+		if(type != MachineType.LASER && type != MachineType.CHARGEPAD)
 		{
 			return true;
 		}

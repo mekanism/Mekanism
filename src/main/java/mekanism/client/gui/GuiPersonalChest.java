@@ -18,19 +18,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiPersonalChest extends GuiMekanism
 {
 	public TileEntityPersonalChest tileEntity;
-	public IInventory itemInventory;
-	public boolean isBlock;
 
 	public GuiPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tentity)
 	{
 		super(tentity, new ContainerPersonalChest(inventory, tentity, null, true));
-		
-		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png")));
 
 		xSize+=26;
 		ySize+=64;
 		tileEntity = tentity;
-		isBlock = true;
+
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png")));
 	}
 
 	public GuiPersonalChest(InventoryPlayer inventory, IInventory inv)
@@ -39,8 +36,8 @@ public class GuiPersonalChest extends GuiMekanism
 
 		xSize+=26;
 		ySize+=64;
-		itemInventory = inv;
-		isBlock = false;
+		
+		guiElements.add(new GuiSecurityTab(this, MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png")));
 	}
 
 	@Override
@@ -66,5 +63,7 @@ public class GuiPersonalChest extends GuiMekanism
 
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 }
