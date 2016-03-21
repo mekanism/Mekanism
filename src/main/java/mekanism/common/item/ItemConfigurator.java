@@ -17,9 +17,9 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -77,20 +77,27 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					{
 						SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
 						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
+						
 						return true;
 					}
 					else {
 						if(getEnergy(stack) >= ENERGY_PER_CONFIGURE)
 						{
-							setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-							MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-							SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
-
-							if(config instanceof TileEntityBasicBlock)
+							if(SecurityUtils.canAccess(player, tile))
 							{
-								TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-								Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+								setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
+								MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
+								SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+								player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
+	
+								if(config instanceof TileEntityBasicBlock)
+								{
+									TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
+									Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+								}
+							}
+							else {
+								SecurityUtils.displayNoAccess(player);
 							}
 
 							return true;
@@ -101,12 +108,20 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 				{
 					IConfigurable config = (IConfigurable)tile;
 
-					if(player.isSneaking())
+					if(SecurityUtils.canAccess(player, tile))
 					{
-						return config.onSneakRightClick(player, side);
+						if(player.isSneaking())
+						{
+							return config.onSneakRightClick(player, side);
+						}
+						else {
+							return config.onRightClick(player, side);
+						}
 					}
 					else {
-						return config.onRightClick(player, side);
+						SecurityUtils.displayNoAccess(player);
+						
+						return true;
 					}
 				}
 			}
@@ -116,7 +131,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 				{
 					IInventory inv = (IInventory)tile;
 
-					if(!(inv instanceof TileEntityElectricChest) || (((TileEntityElectricChest)inv).canAccess()))
+					if(SecurityUtils.canAccess(player, tile))
 					{
 						for(int i = 0; i < inv.getSizeInventory(); i++)
 						{
@@ -165,7 +180,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 						return true;
 					}
 					else {
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.unauth")));
+						SecurityUtils.displayNoAccess(player);
 						return true;
 					}
 				}

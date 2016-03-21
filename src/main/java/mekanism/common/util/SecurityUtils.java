@@ -8,6 +8,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -16,7 +17,7 @@ public final class SecurityUtils
 {
 	public static boolean canAccess(EntityPlayer player, ItemStack stack)
 	{
-		if(stack == null || !(stack.getItem() instanceof ISecurityItem))
+		if((!player.worldObj.isRemote && MekanismUtils.isOp((EntityPlayerMP)player)) || stack == null || !(stack.getItem() instanceof ISecurityItem))
 		{
 			return true;
 		}
@@ -28,7 +29,7 @@ public final class SecurityUtils
 	
 	public static boolean canAccess(EntityPlayer player, TileEntity tile)
 	{
-		if(tile == null || !(tile instanceof ISecurityTile))
+		if((!player.worldObj.isRemote && MekanismUtils.isOp((EntityPlayerMP)player)) || tile == null || !(tile instanceof ISecurityTile))
 		{
 			return true;
 		}
@@ -38,7 +39,7 @@ public final class SecurityUtils
 		return canAccess(security.getSecurity().getMode(), player.getCommandSenderName(), security.getSecurity().getOwner());
 	}
 	
-	public static boolean canAccess(SecurityMode mode, String username, String owner)
+	private static boolean canAccess(SecurityMode mode, String username, String owner)
 	{
 		if(owner == null || username.equals(owner))
 		{

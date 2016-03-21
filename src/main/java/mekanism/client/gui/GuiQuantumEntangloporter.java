@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.sound.SoundHandler;
@@ -61,6 +62,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		resource = MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png");
 
 		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png")));
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png")));
 		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png")));
 		
@@ -122,7 +124,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 	
 	public void updateButtons()
 	{
-		if(tileEntity.owner == null)
+		if(tileEntity.getSecurity().getOwner() == null)
 		{
 			return;
 		}
@@ -167,7 +169,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 				setButton.enabled = false;
 			}
 			
-			if(tileEntity.owner.equals(freq.owner))
+			if(tileEntity.getSecurity().getOwner().equals(freq.owner))
 			{
 				deleteButton.enabled = true;
 			}
@@ -298,8 +300,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		int yAxis = (mouseY-(height-ySize)/2);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (tileEntity.owner != null ? tileEntity.owner : LangUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
-		
+
 		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
 		

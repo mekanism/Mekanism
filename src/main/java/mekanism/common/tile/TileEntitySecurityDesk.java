@@ -9,8 +9,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -40,10 +40,13 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock
 				{
 					ISecurityItem item = (ISecurityItem)inventory[0].getItem();
 					
-					if(item.hasSecurity(inventory[0]))
+					if(item.hasSecurity(inventory[0]) && item.getOwner(inventory[0]) != null)
 					{
-						item.setOwner(inventory[0], null);
-						item.setSecurity(inventory[0], SecurityMode.PUBLIC);
+						if(item.getOwner(inventory[0]).equals(owner))
+						{
+							item.setOwner(inventory[0], null);
+							item.setSecurity(inventory[0], SecurityMode.PUBLIC);
+						}
 					}
 				}
 				
@@ -51,7 +54,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock
 				{
 					ISecurityItem item = (ISecurityItem)inventory[1].getItem();
 					
-					if(item.hasSecurity(inventory[1]))
+					if(item.hasSecurity(inventory[1]) && item.getOwner(inventory[1]) == null)
 					{
 						item.setOwner(inventory[1], owner);
 						item.setSecurity(inventory[1], frequency.securityMode);

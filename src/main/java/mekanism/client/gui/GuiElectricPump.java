@@ -10,6 +10,7 @@ import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -59,6 +60,7 @@ public class GuiElectricPump extends GuiMekanism
 				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, guiLocation));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, guiLocation));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, guiLocation));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, guiLocation));
 	}

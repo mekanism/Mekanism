@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRecipeType;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiSortingTab;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
@@ -47,6 +48,7 @@ public class GuiFactory extends GuiMekanism
 		ySize += 11;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiRecipeType(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, tileEntity.tier.guiLocation));

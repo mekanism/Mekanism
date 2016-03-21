@@ -7,24 +7,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public class InventoryElectricChest extends InventoryBasic
+public class InventoryPersonalChest extends InventoryBasic
 {
 	public EntityPlayer entityPlayer;
 	public ItemStack itemStack;
 
 	public boolean reading;
 
-	public InventoryElectricChest(EntityPlayer player)
+	public InventoryPersonalChest(EntityPlayer player)
 	{
-		super("Electric Chest", false, 55);
+		super("PersonalChest", false, 55);
 		entityPlayer = player;
 
 		read();
 	}
 
-	public InventoryElectricChest(ItemStack stack)
+	public InventoryPersonalChest(ItemStack stack)
 	{
-		super("Electric Chest", false, 55);
+		super("PersonalChest", false, 55);
 		itemStack = stack;
 
 		read();

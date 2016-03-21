@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelChest;
@@ -13,22 +13,22 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderElectricChest extends TileEntitySpecialRenderer
+public class RenderPersonalChest extends TileEntitySpecialRenderer
 {
 	private ModelChest model = new ModelChest();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityElectricChest)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityPersonalChest)tileEntity, x, y, z, partialTick);
 	}
 
-	private void renderAModelAt(TileEntityElectricChest tileEntity, double x, double y, double z, float partialTick)
+	private void renderAModelAt(TileEntityPersonalChest tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x, (float)y + 1.0F, (float)z);
 		GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
 
 		switch(tileEntity.facing)
 		{

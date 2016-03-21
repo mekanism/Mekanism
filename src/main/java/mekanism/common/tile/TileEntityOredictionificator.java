@@ -62,7 +62,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			
 			didProcess = false;
 			
-			if(inventory[0] != null && getValidName(inventory[0]) != null)
+			if(MekanismUtils.canFunction(this) && inventory[0] != null && getValidName(inventory[0]) != null)
 			{
 				ItemStack result = getResult(inventory[0]);
 				

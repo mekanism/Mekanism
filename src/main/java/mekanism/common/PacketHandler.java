@@ -27,8 +27,8 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketPersonalChest;
+import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketJetpackData;
@@ -94,8 +94,8 @@ public class PacketHandler
 	{
 		netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
 		netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Side.CLIENT);
-		netHandler.registerMessage(PacketElectricChest.class, ElectricChestMessage.class, 2, Side.CLIENT);
-		netHandler.registerMessage(PacketElectricChest.class, ElectricChestMessage.class, 2, Side.SERVER);
+		netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.CLIENT);
+		netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.SERVER);
 		netHandler.registerMessage(PacketElectricBowState.class, ElectricBowStateMessage.class, 3, Side.SERVER);
 		netHandler.registerMessage(PacketConfiguratorState.class, ConfiguratorStateMessage.class, 4, Side.SERVER);
 		netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.CLIENT);

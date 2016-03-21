@@ -76,7 +76,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemRenderingHandler implements IItemRenderer
 {
 	public ModelRobit robit = new ModelRobit();
-	public ModelChest electricChest = new ModelChest();
+	public ModelChest personalChest = new ModelChest();
 	public ModelEnergyCube energyCube = new ModelEnergyCube();
 	public ModelEnergyCore energyCore = new ModelEnergyCore();
 	public ModelGasTank gasTank = new ModelGasTank();
@@ -325,7 +325,7 @@ public class ItemRenderingHandler implements IItemRenderer
 				MekanismRenderer.glowOff();
 			}
 		}
-		else if(MachineType.get(item) == MachineType.ELECTRIC_CHEST)
+		else if(MachineType.get(item) == MachineType.PERSONAL_CHEST)
 		{
 			GL11.glPushMatrix();
 			ItemBlockMachine chest = (ItemBlockMachine)item.getItem();
@@ -335,9 +335,9 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glTranslatef(0, 1.0F, 1.0F);
 			GL11.glScalef(1.0F, -1F, -1F);
 
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
 
-			electricChest.renderAll();
+			personalChest.renderAll();
 			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemRobit)

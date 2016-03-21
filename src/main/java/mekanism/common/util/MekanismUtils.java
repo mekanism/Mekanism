@@ -48,16 +48,16 @@ import mekanism.common.base.IModule;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.inventory.container.ContainerElectricChest;
+import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
-import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
+import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -953,7 +953,7 @@ public final class MekanismUtils
 	 * @param inventory - IInventory of the item, if it's not a block
 	 * @param isBlock - whether or not this electric chest is in it's block form
 	 */
-	public static void openElectricChestGui(EntityPlayerMP player, TileEntityElectricChest tileEntity, IInventory inventory, boolean isBlock)
+	public static void openPersonalChestGui(EntityPlayerMP player, TileEntityPersonalChest tileEntity, IInventory inventory, boolean isBlock)
 	{
 		player.getNextWindowId();
 		player.closeContainer();
@@ -961,13 +961,13 @@ public final class MekanismUtils
 
 		if(isBlock)
 		{
-			Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 0, id, null, Coord4D.get(tileEntity)), player);
+			Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity)), player);
 		}
 		else {
-			Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, false, false, 0, id, null, null), player);
+			Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null), player);
 		}
 
-		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);
+		player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
 		player.openContainer.addCraftingToCrafters(player);
 	}

@@ -1,12 +1,9 @@
 package mekanism.common.inventory.container;
 
 import invtweaks.api.container.ChestContainer;
-import mekanism.common.base.IElectricChest;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.inventory.slot.SlotElectricChest;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.tile.TileEntityElectricChest;
-import mekanism.common.util.ChargeUtils;
+import mekanism.common.inventory.slot.SlotPersonalChest;
+import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -15,13 +12,13 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 @ChestContainer(isLargeChest=true)
-public class ContainerElectricChest extends Container
+public class ContainerPersonalChest extends Container
 {
-	private TileEntityElectricChest tileEntity;
+	private TileEntityPersonalChest tileEntity;
 	private IInventory itemInventory;
 	private boolean isBlock;
 
-	public ContainerElectricChest(InventoryPlayer inventory, TileEntityElectricChest tentity, IInventory inv, boolean b)
+	public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tentity, IInventory inv, boolean b)
 	{
 		tileEntity = tentity;
 		itemInventory = inv;
@@ -40,11 +37,9 @@ public class ContainerElectricChest extends Container
 		{
 			for(int slotX = 0; slotX < 9; slotX++)
 			{
-				addSlotToContainer(new SlotElectricChest(getInv(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
+				addSlotToContainer(new SlotPersonalChest(getInv(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
 			}
 		}
-
-		addSlotToContainer(new SlotDischarge(getInv(), 54, 180, 11));
 
 		int slotX;
 
@@ -52,13 +47,13 @@ public class ContainerElectricChest extends Container
 		{
 			for(int slotY = 0; slotY < 9; ++slotY)
 			{
-				addSlotToContainer(new SlotElectricChest(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
+				addSlotToContainer(new SlotPersonalChest(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
 			}
 		}
 
 		for(slotX = 0; slotX < 9; ++slotX)
 		{
-			addSlotToContainer(new SlotElectricChest(inventory, slotX, 8 + slotX * 18, 206));
+			addSlotToContainer(new SlotPersonalChest(inventory, slotX, 8 + slotX * 18, 206));
 		}
 	}
 
@@ -110,35 +105,16 @@ public class ContainerElectricChest extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(ChargeUtils.canBeDischarged(slotStack))
+			if(slotID < 54)
 			{
-				if(slotID != 54)
-				{
-					if(!mergeItemStack(slotStack, 54, 55, false))
-					{
-						return null;
-					}
-				}
-				else if(slotID == 54)
-				{
-					if(!mergeItemStack(slotStack, 55, inventorySlots.size(), true))
-					{
-						return null;
-					}
-				}
-			}
-			else {
-				if(slotID < 54)
-				{
-					if(!mergeItemStack(slotStack, 55, inventorySlots.size(), true))
-					{
-						return null;
-					}
-				}
-				else if(!mergeItemStack(slotStack, 0, 54, false))
+				if(!mergeItemStack(slotStack, 54, inventorySlots.size(), true))
 				{
 					return null;
 				}
+			}
+			else if(!mergeItemStack(slotStack, 0, 54, false))
+			{
+				return null;
 			}
 
 			if(slotStack.stackSize == 0)
@@ -166,14 +142,11 @@ public class ContainerElectricChest extends Container
 		if(modifier == 2 && destSlot >= 0 && destSlot < 9)
 		{
 			ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
-			if(itemStack != null && itemStack.getItem() instanceof IElectricChest)
+			
+			if(MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
 			{
-				if(MachineType.get(itemStack) == MachineType.ELECTRIC_CHEST)
-				{
-					return null;
-				}
+				return null;
 			}
-
 		}
 
 		return super.slotClick(slotNumber, destSlot, modifier, player);
