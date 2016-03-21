@@ -42,6 +42,7 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -483,9 +484,18 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		}
 		else if(tile instanceof TileEntitySecurityDesk)
 		{
+			String owner = ((TileEntitySecurityDesk)tile).owner;
+			
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(Mekanism.instance, 57, world, x, y, z);
+				if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+				{
+					entityplayer.openGui(Mekanism.instance, 57, world, x, y, z);
+				}
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}

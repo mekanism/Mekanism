@@ -7,8 +7,8 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
-import mekanism.common.security.ISecurity;
-import mekanism.common.security.ISecurity.SecurityMode;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -44,10 +44,18 @@ public class GuiSecurityTab extends GuiElement
 
 		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 32, 0, 0, 26, 26);
 
-		ISecurity tile = (ISecurity)tileEntity;
-		int renderX = 26 + (18*tile.getSecurity().getMode().ordinal());
+		ISecurityTile tile = (ISecurityTile)tileEntity;
+		SecurityMode mode = tile.getSecurity().getMode();
+		
+		if(tile.getSecurity().getFrequency() != null && tile.getSecurity().getFrequency().override)
+		{
+			mode = tile.getSecurity().getFrequency().securityMode;
+		}
+		
+		int renderX = 26 + (18*mode.ordinal());
 
-		if(tile.getSecurity().getOwner() != null && tile.getSecurity().getOwner().equals(mc.thePlayer.getCommandSenderName()))
+		if(tile.getSecurity().getOwner() != null && tile.getSecurity().getOwner().equals(mc.thePlayer.getCommandSenderName()) && 
+				(tile.getSecurity().getFrequency() == null || !tile.getSecurity().getFrequency().override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 			{
@@ -69,14 +77,21 @@ public class GuiSecurityTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		ISecurity control = (ISecurity)tileEntity;
+		ISecurityTile control = (ISecurityTile)tileEntity;
 
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 		{
-			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + control.getSecurity().getMode().getDisplay();
+			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay((TileEntity)control);
 			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getCommandSenderName(), control.getSecurity().getOwner());
+			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 			
-			displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis);
+			if(SecurityUtils.isOverridden((TileEntity)control))
+			{
+				displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis); 
+			}
+			else {
+				displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis); 
+			}
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -88,7 +103,7 @@ public class GuiSecurityTab extends GuiElement
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		ISecurity control = (ISecurity)tileEntity;
+		ISecurityTile control = (ISecurityTile)tileEntity;
 
 		if(button == 0)
 		{

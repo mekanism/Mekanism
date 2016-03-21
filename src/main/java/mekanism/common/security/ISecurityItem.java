@@ -1,6 +1,6 @@
 package mekanism.common.security;
 
-import mekanism.common.security.ISecurity.SecurityMode;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.item.ItemStack;
 
 public interface ISecurityItem 

@@ -19,6 +19,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.recipe.ShapelessMekanismRecipe;
+import mekanism.common.security.ISecurityItem;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -147,6 +148,22 @@ public class RecipeUtils
 			{
 				gasFound.amount = Math.min(((IGasItem)toReturn.getItem()).getMaxGas(toReturn), gasFound.amount);
 				((IGasItem)toReturn.getItem()).setGas(toReturn, gasFound);
+			}
+		}
+		
+		if(toReturn.getItem() instanceof ISecurityItem)
+		{
+			for(int i = 0; i < 9; i++)
+			{
+				ItemStack itemstack = inv.getStackInSlot(i);
+				
+				if(itemstack.getItem() instanceof ISecurityItem)
+				{
+					((ISecurityItem)toReturn.getItem()).setOwner(toReturn, ((ISecurityItem)itemstack.getItem()).getOwner(itemstack));
+					((ISecurityItem)toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem)itemstack.getItem()).getSecurity(itemstack));
+					
+					break;
+				}
 			}
 		}
 		

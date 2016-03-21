@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.security.ISecurity.SecurityMode;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;

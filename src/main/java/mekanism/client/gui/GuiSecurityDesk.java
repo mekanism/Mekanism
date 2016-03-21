@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -10,12 +11,11 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.security.ISecurity.SecurityMode;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiSecurityDesk extends GuiMekanism
 {
-public static int MAX_LENGTH = 24;
+	public static int MAX_LENGTH = 24;
 	
 	public ResourceLocation resource;
 	
@@ -44,6 +44,8 @@ public static int MAX_LENGTH = 24;
 	public GuiScrollList scrollList;
 	
 	public GuiTextField trustedField;
+	
+	public static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|');
 
 	public GuiSecurityDesk(InventoryPlayer inventory, TileEntitySecurityDesk tentity)
 	{
@@ -66,9 +68,9 @@ public static int MAX_LENGTH = 24;
 
 		buttonList.clear();
 
-		removeButton = new GuiButton(0, guiWidth + 13, guiHeight + 116, 122, 20, LangUtils.localize("gui.remove"));
+		removeButton = new GuiButton(0, guiWidth + 13, guiHeight + 81, 122, 20, LangUtils.localize("gui.remove"));
 		
-		trustedField = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 68, 86, 11);
+		trustedField = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 69, 86, 11);
 		trustedField.setMaxStringLength(MAX_LENGTH);
 		trustedField.setEnableBackgroundDrawing(false);
 		
@@ -211,7 +213,7 @@ public static int MAX_LENGTH = 24;
 			}
 		}
 
-		if(Character.isDigit(c) || Character.isLetter(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
 		{
 			trustedField.textboxKeyTyped(c, i);
 		}
@@ -252,16 +254,24 @@ public static int MAX_LENGTH = 24;
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getCommandSenderName(), tileEntity.owner);
+		String ownerText = EnumColor.RED + tileEntity.owner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.owner) : LangUtils.localize("gui.noOwner");
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
 		fontRendererObj.drawString(ownerText, (xSize - 7) - fontRendererObj.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.trustedPlayers"), 13, 57, 0x404040);
 		
-		String security = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + tileEntity.frequency.securityMode.getDisplay();
+		String trusted = LangUtils.localize("gui.trustedPlayers");
+		fontRendererObj.drawString(trusted, 74-(fontRendererObj.getStringWidth(trusted)/2), 57, 0x787878);
+		
+		String security = EnumColor.RED + LangUtils.localize("gui.securityOffline");
+		
+		if(tileEntity.frequency != null)
+		{
+			security = LangUtils.localize("gui.security") + ": " + tileEntity.frequency.securityMode.getDisplay();
+		}
+		
 		fontRendererObj.drawString(security, 13, 103, 0x404040);
 		
-		renderScaledText(LangUtils.localize("gui.add") + ":", 13, 67, 0x404040, 20);
+		renderScaledText(LangUtils.localize("gui.add") + ":", 13, 70, 0x404040, 20);
 		
 		if(tileEntity.frequency != null && xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75)
 		{

@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
-import mekanism.common.security.ISecurity;
-import mekanism.common.security.ISecurity.SecurityMode;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -20,13 +20,13 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 		
-		if(tileEntity instanceof ISecurity)
+		if(tileEntity instanceof ISecurityTile)
 		{
-			String owner = ((ISecurity)tileEntity).getSecurity().getOwner();
+			String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
 			
 			if(owner != null && player.getCommandSenderName().equals(owner))
 			{
-				((ISecurity)tileEntity).getSecurity().setMode(message.value);
+				((ISecurityTile)tileEntity).getSecurity().setMode(message.value);
 			}
 		}
 		

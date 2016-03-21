@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import mekanism.common.HashList;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
-import mekanism.common.security.ISecurity.SecurityMode;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;

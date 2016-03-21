@@ -545,9 +545,12 @@ gui.noOwner=No Owner
 gui.securityOverride=Security Override
 gui.remove=Remove
 gui.trustedPlayers=Trusted Players
-gui.publicMode=Public Mode (universal access)
-gui.privateMode=Private Mode (owner-exclusive access)
-gui.trustedMode=Trusted Mode (owner and trusted player access)
+gui.publicMode=Public Mode
+gui.privateMode=Private Mode
+gui.trustedMode=Trusted Mode
+gui.securityOffline=Security Offline
+gui.noAccessDesc=You don't have access to this block.
+gui.overridden=Overridden
 
 gui.reactor.injectionRate=Injection Rate
 

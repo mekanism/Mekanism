@@ -10,7 +10,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.security.ISecurity.SecurityMode;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
@@ -32,6 +32,11 @@ public class TileComponentSecurity implements ITileComponent
 		tileEntity = tile;
 		
 		tile.components.add(this);
+	}
+	
+	public SecurityFrequency getFrequency()
+	{
+		return frequency;
 	}
 	
 	public String getOwner()

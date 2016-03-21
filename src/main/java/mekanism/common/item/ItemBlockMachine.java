@@ -34,6 +34,9 @@ import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -41,6 +44,7 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.settings.GameSettings;
@@ -116,7 +120,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @InterfaceList({
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem, IFluidContainerItem, ITierItem
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem, IFluidContainerItem, ITierItem, ISecurityItem
 {
 	public Block metaBlock;
 
@@ -193,6 +197,17 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		}
 		else if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey))
 		{
+			if(hasSecurity(itemstack))
+			{
+				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getCommandSenderName(), getOwner(itemstack)));
+				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack));
+				
+				if(SecurityUtils.isOverridden(itemstack))
+				{
+					list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
+				}
+			}
+				
 			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
 				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName());
@@ -299,6 +314,18 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				TileEntityFluidTank tile = (TileEntityFluidTank)tileEntity;
 				tile.tier = FluidTankTier.values()[getBaseTier(stack).ordinal()];
 				tile.fluidTank.setCapacity(tile.tier.storage);
+			}
+			
+			if(tileEntity instanceof ISecurityTile)
+			{
+				ISecurityTile security = (ISecurityTile)tileEntity;
+				security.getSecurity().setOwner(getOwner(stack));
+				security.getSecurity().setMode(getSecurity(stack));
+				
+				if(getOwner(stack) == null)
+				{
+					security.getSecurity().setOwner(player.getCommandSenderName());
+				}
 			}
 			
 			if(tileEntity instanceof IUpgradeTile)
@@ -1018,5 +1045,61 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		}
 
 		itemstack.stackTagCompound.setInteger("tier", tier.ordinal());
+	}
+
+	@Override
+	public String getOwner(ItemStack stack) 
+	{
+		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("owner"))
+		{
+			return stack.stackTagCompound.getString("owner");
+		}
+		
+		return null;
+	}
+
+	@Override
+	public void setOwner(ItemStack stack, String owner) 
+	{
+		if(stack.stackTagCompound == null)
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(owner == null || owner.isEmpty())
+		{
+			stack.stackTagCompound.removeTag("owner");
+			return;
+		}
+		
+		stack.stackTagCompound.setString("owner", owner);
+	}
+
+	@Override
+	public SecurityMode getSecurity(ItemStack stack) 
+	{
+		if(stack.stackTagCompound == null)
+		{
+			return SecurityMode.PUBLIC;
+		}
+
+		return SecurityMode.values()[stack.stackTagCompound.getInteger("security")];
+	}
+
+	@Override
+	public void setSecurity(ItemStack stack, SecurityMode mode) 
+	{
+		if(stack.stackTagCompound == null)
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
+		
+		stack.stackTagCompound.setInteger("security", mode.ordinal());
+	}
+
+	@Override
+	public boolean hasSecurity(ItemStack stack) 
+	{
+		return true;
 	}
 }

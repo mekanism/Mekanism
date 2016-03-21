@@ -32,8 +32,10 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -42,7 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess
+public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
 {
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
@@ -81,6 +83,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	public TileEntityMetallurgicInfuser()
 	{
@@ -104,6 +107,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 	
 	@Override
@@ -549,6 +554,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 
 	@Override

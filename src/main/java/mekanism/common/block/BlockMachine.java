@@ -43,6 +43,9 @@ import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.recipe.ShapedMekanismRecipe;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -85,6 +88,7 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -578,7 +582,14 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			{
 				if(entityplayer.isSneaking() && MachineType.get(blockType, metadata) != MachineType.ELECTRIC_CHEST)
 				{
-					dismantleBlock(world, x, y, z, false);
+					if(SecurityUtils.canAccess(entityplayer, tileEntity))
+					{
+						dismantleBlock(world, x, y, z, false);
+					}
+					else {
+						SecurityUtils.displayNoAccess(entityplayer);
+					}
+					
 					return true;
 				}
 
@@ -753,8 +764,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	@Override
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
 		if(MachineType.get(blockType, world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
 		{
+			if(tile instanceof ISecurityTile)
+			{
+				return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
+			}
+			
 			return blockHardness;
 		}
 		else {
@@ -954,6 +972,13 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		{
 			ITierItem tierItem = (ITierItem)itemStack.getItem();
 			tierItem.setBaseTier(itemStack, ((TileEntityFluidTank)tileEntity).tier.getBaseTier());
+		}
+		
+		if(tileEntity instanceof ISecurityTile)
+		{
+			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+			securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+			securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 		}
 
 		if(tileEntity instanceof IUpgradeTile)
