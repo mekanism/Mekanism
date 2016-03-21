@@ -48,8 +48,6 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 	public GuiButton setButton;
 	public GuiButton deleteButton;
 	
-	public GuiButton teleportButton;
-	
 	public GuiScrollList scrollList;
 	
 	public GuiTextField frequencyField;

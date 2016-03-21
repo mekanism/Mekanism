@@ -114,6 +114,7 @@ tile.BasicBlock2.SuperheatingElement.name=Superheating Element
 tile.BasicBlock2.PressureDisperser.name=Pressure Disperser
 tile.BasicBlock2.BoilerCasing.name=Boiler Casing
 tile.BasicBlock2.BoilerValve.name=Boiler Valve
+tile.BasicBlock2.SecurityDesk.name=Security Desk
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
@@ -541,6 +542,12 @@ gui.craftSingle=Craft Single Item
 gui.craftAvailable=Craft Available Items
 gui.fillEmpty=Fill/Empty Grid
 gui.noOwner=No Owner
+gui.securityOverride=Security Override
+gui.remove=Remove
+gui.trustedPlayers=Trusted Players
+gui.publicMode=Public Mode (universal access)
+gui.privateMode=Private Mode (owner-exclusive access)
+gui.trustedMode=Trusted Mode (owner and trusted player access)
 
 gui.reactor.injectionRate=Injection Rate
 
@@ -663,6 +670,11 @@ gui.digitalMiner.missingBlock=Missing block
 recipe.mekanismShaped=Shaped
 recipe.mekanismShapeless=Shapeless
 
+//Security types
+security.public=Public
+security.private=Private
+security.trusted=Trusted
+
 //Item and block tooltip text
 tooltip.configurator.configurate=Configurate
 tooltip.configurator.empty=Empty
@@ -776,6 +788,7 @@ tooltip.SuperheatingElement=A modular, somewhat dangerous radiator that is capab
 tooltip.PressureDisperser=A block used disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.
 tooltip.BoilerCasing=A pressure-resistant, dense casing used in the creation of a Thermoelectric Boiler multiblock.
 tooltip.BoilerValve=A valve that can be placed on a Thermoelectric Boiler multiblock, allowing for the insertion of energy and water along with the extraction of produced steam.
+tooltip.SecurityDesk=A central control hub for managing the security of all your owned machinery.
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into two of their dust counterparts, as well as perform many other operations.
 tooltip.OsmiumCompressor=A fairly advanced machine used to compress osmium into various dusts in order to create their ingot counterparts.

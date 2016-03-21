@@ -12,4 +12,6 @@ public interface ISecurityItem
 	public SecurityMode getSecurity(ItemStack stack);
 	
 	public void setSecurity(ItemStack stack, SecurityMode mode);
+	
+	public boolean hasSecurity(ItemStack stack);
 }

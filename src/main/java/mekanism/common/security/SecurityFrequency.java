@@ -17,13 +17,16 @@ public class SecurityFrequency extends Frequency
 {
 	public boolean override;
 	
-	public HashList<String> trusted = new HashList<String>();
+	public HashList<String> trusted;
 	
-	public SecurityMode securityMode = SecurityMode.PUBLIC;
+	public SecurityMode securityMode;
 	
 	public SecurityFrequency(String o)
 	{
 		super("Security", o);
+		
+		trusted = new HashList<String>();
+		securityMode = SecurityMode.PUBLIC;
 	}
 	
 	public SecurityFrequency(NBTTagCompound nbtTags)
@@ -62,6 +65,9 @@ public class SecurityFrequency extends Frequency
 	{
 		super.read(nbtTags);
 		
+		trusted = new HashList<String>();
+		securityMode = SecurityMode.PUBLIC;
+		
 		override = nbtTags.getBoolean("override");
 		securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
 		
@@ -88,7 +94,7 @@ public class SecurityFrequency extends Frequency
 		
 		for(String s : trusted)
 		{
-			data.add(trusted);
+			data.add(s);
 		}
 	}
 
@@ -96,6 +102,9 @@ public class SecurityFrequency extends Frequency
 	protected void read(ByteBuf dataStream)
 	{
 		super.read(dataStream);
+		
+		trusted = new HashList<String>();
+		securityMode = SecurityMode.PUBLIC;
 		
 		override = dataStream.readBoolean();
 		securityMode = SecurityMode.values()[dataStream.readInt()];

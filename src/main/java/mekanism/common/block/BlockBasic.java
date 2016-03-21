@@ -34,6 +34,7 @@ import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
@@ -94,6 +95,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:6: Pressure Disperser
  * 1:7: Boiler Casing
  * 1:8: Boiler Valve
+ * 1:9: Security Desk
  * @author AidanBrady
  *
  */
@@ -239,6 +241,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[5][0] = ctms[5][0].mainTextureData.icon;
 				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = ctms[8][0].mainTextureData.icon;
+				
+				icons[9][0] = register.registerIcon(ICON_BASE);
 				
 				break;
 		}
@@ -474,6 +478,14 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			if(!entityplayer.isSneaking())
 			{
 				entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
+				return true;
+			}
+		}
+		else if(tile instanceof TileEntitySecurityDesk)
+		{
+			if(!entityplayer.isSneaking())
+			{
+				entityplayer.openGui(Mekanism.instance, 57, world, x, y, z);
 				return true;
 			}
 		}
@@ -795,6 +807,11 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 
 			tileEntity.setFacing((short)change);
 			tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
+			
+			if(tileEntity instanceof TileEntitySecurityDesk)
+			{
+				((TileEntitySecurityDesk)tileEntity).owner = entityliving.getCommandSenderName();
+			}
 
 			if(tileEntity instanceof IBoundingBlock)
 			{
@@ -1021,13 +1038,13 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", TileEntitySuperheatingElement.class, true),
 		PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser", TileEntityPressureDisperser.class, true),
 		BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing.class, true),
-		BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true);
+		BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true),
+		SECURITY_DESK(BasicBlock.BASIC_BLOCK_2, 9, "SecurityDesk", TileEntitySecurityDesk.class, true);
 		
 		public BasicBlock typeBlock;
 		public int meta;
 		public String name;
 		public Class<? extends TileEntity> tileEntityClass;
-		public boolean isElectric;
 		public boolean hasDescription;
 
 		private BasicType(BasicBlock block, int i, String s, Class<? extends TileEntity> tileClass, boolean hasDesc)

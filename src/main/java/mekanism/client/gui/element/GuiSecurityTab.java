@@ -12,6 +12,7 @@ import mekanism.common.security.ISecurity.SecurityMode;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import codechicken.lib.vec.Rectangle4i;
@@ -73,7 +74,7 @@ public class GuiSecurityTab extends GuiElement
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 		{
 			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + control.getSecurity().getMode().getDisplay();
-			String ownerText = ISecurity.getOwnerDisplay(mc.thePlayer.getCommandSenderName(), control.getSecurity().getOwner());
+			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getCommandSenderName(), control.getSecurity().getOwner());
 			
 			displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis);
 		}
