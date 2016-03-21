@@ -135,9 +135,9 @@ public class TileComponentSecurity implements ITileComponent
 			owner = nbtTags.getString("owner");
 		}
 		
-		if(nbtTags.hasKey("frequency"))
+		if(nbtTags.hasKey("securityFreq"))
 		{
-			frequency = new SecurityFrequency(nbtTags.getCompoundTag("frequency"));
+			frequency = new SecurityFrequency(nbtTags.getCompoundTag("securityFreq"));
 			frequency.valid = false;
 		}
 	}
@@ -178,7 +178,7 @@ public class TileComponentSecurity implements ITileComponent
 		{
 			NBTTagCompound frequencyTag = new NBTTagCompound();
 			frequency.write(frequencyTag);
-			nbtTags.setTag("frequency", frequencyTag);
+			nbtTags.setTag("securityFreq", frequencyTag);
 		}
 	}
 

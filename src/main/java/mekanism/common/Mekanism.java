@@ -178,13 +178,13 @@ public class Mekanism
 	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<SynchronizedBoilerData>("thermoelectricBoiler");
 	
 	/** FrequencyManagers for various networks */
-	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, "Teleporter");
+	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
 	public static Map<String, FrequencyManager> privateTeleporters = new HashMap<String, FrequencyManager>();
 	
-	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, "Entangloporter");
+	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
 	public static Map<String, FrequencyManager> privateEntangloporters = new HashMap<String, FrequencyManager>();
 	
-	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, "Security");
+	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -527,7 +527,7 @@ public class Mekanism
 			Items.paper, MekanismUtils.getControlCircuit(BaseTier.BASIC)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapelessMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 9), new Object[] {
-			
+			"SGS", "CIC", "STS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "blockGlass", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ELITE), Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('T'), MekanismItems.TeleportationCore
 		}));
 		
 		//Energy Cube recipes

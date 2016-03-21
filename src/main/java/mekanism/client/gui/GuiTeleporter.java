@@ -9,7 +9,6 @@ import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiScrollList;
-import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -78,7 +77,6 @@ public class GuiTeleporter extends GuiMekanism
 		resource = MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png");
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, resource));
-		guiElements.add(new GuiSecurityTab(this, tileEntity, resource));
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
 			public String getTooltip()

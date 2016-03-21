@@ -78,7 +78,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:10: Energized Smelter
  * 0:11: Teleporter
  * 0:12: Electric Pump
- * 0:13: Electric Chest
+ * 0:13: Personal Chest
  * 0:14: Chargepad
  * 0:15: Logistical Sorter
  * 1:0: Rotary Condensentrator
@@ -303,7 +303,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				ISecurityTile security = (ISecurityTile)tileEntity;
 				security.getSecurity().setOwner(getOwner(stack));
-				security.getSecurity().setMode(getSecurity(stack));
+				
+				if(hasSecurity(stack))
+				{
+					security.getSecurity().setMode(getSecurity(stack));
+				}
 				
 				if(getOwner(stack) == null)
 				{
@@ -957,7 +961,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		MachineType type = MachineType.get(stack);
 		
-		if(type != MachineType.LASER && type != MachineType.CHARGEPAD)
+		if(type != MachineType.LASER && type != MachineType.CHARGEPAD && type != MachineType.TELEPORTER && type != MachineType.QUANTUM_ENTANGLOPORTER)
 		{
 			return true;
 		}

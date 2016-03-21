@@ -165,8 +165,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public Frequency getFrequency()
+	public Frequency getFrequency(FrequencyManager manager)
 	{
+		if(manager == Mekanism.securityFrequencies)
+		{
+			return getSecurity().getFrequency();
+		}
+		
 		return frequency;
 	}
 	
@@ -184,7 +189,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		else {
 			if(!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwner()))
 			{
-				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, getSecurity().getOwner());
+				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwner());
 				Mekanism.privateEntangloporters.put(getSecurity().getOwner(), manager);
 				manager.createOrLoad(worldObj);
 			}

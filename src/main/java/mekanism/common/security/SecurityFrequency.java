@@ -15,6 +15,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class SecurityFrequency extends Frequency
 {
+	public static final String SECURITY = "Security";
+	
 	public boolean override;
 	
 	public HashList<String> trusted;

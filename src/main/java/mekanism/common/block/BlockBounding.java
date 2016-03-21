@@ -80,7 +80,7 @@ public class BlockBounding extends Block
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getBlockHardness(world, x, y, z);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getBlockHardness(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
 		} catch(Exception e) {
 			return blockHardness;
 		}

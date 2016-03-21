@@ -155,8 +155,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 	
 	@Override
-	public Frequency getFrequency()
+	public Frequency getFrequency(FrequencyManager manager)
 	{
+		if(manager == Mekanism.securityFrequencies)
+		{
+			return getSecurity().getFrequency();
+		}
+		
 		return frequency;
 	}
 	
@@ -208,7 +213,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		else {
 			if(!Mekanism.privateTeleporters.containsKey(getSecurity().getOwner()))
 			{
-				FrequencyManager manager = new FrequencyManager(Frequency.class, getSecurity().getOwner());
+				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwner());
 				Mekanism.privateTeleporters.put(getSecurity().getOwner(), manager);
 				manager.createOrLoad(worldObj);
 			}

@@ -45,7 +45,7 @@ public class GuiSecurityDesk extends GuiMekanism
 	
 	public GuiTextField trustedField;
 	
-	public static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|');
+	public static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
 
 	public GuiSecurityDesk(InventoryPlayer inventory, TileEntitySecurityDesk tentity)
 	{

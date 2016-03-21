@@ -15,6 +15,8 @@ import net.minecraftforge.fluids.FluidTank;
 
 public class InventoryFrequency extends Frequency
 {
+	public static final String ENTANGLOPORTER = "Entangloporter";
+	
 	public static final double MAX_ENERGY = 1000000;
 	
 	public double storedEnergy;

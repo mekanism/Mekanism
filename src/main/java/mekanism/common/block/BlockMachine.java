@@ -672,6 +672,24 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					}
 					
 					break;
+				case TELEPORTER:
+				case QUANTUM_ENTANGLOPORTER:
+					if(!entityplayer.isSneaking())
+					{
+						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
+						
+						if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+						{
+							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						}
+						else {
+							SecurityUtils.displayNoAccess(entityplayer);
+						}
+						
+						return true;
+					}
+					
+					break;
 				default:
 					if(!entityplayer.isSneaking() && type.guiId != -1)
 					{
