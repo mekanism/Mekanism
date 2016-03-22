@@ -4,12 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.common.integration.IComputerIntegration;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock
+public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock implements IComputerIntegration
 {
 	public Coord4D master;
 	
@@ -152,6 +153,41 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock
 			loop(Coord4D.get(TileEntityThermalEvaporationBlock.this));
 			
 			return found;
+		}
+	}
+	
+	private static final String[] methods = new String[] {"getTemperature", "getHeight", "isFormed", "getInput", "getOutput"};
+
+	@Override
+	public String[] getMethods() 
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] args) throws Exception 
+	{
+		TileEntityThermalEvaporationController controller = getController();
+		
+		if(controller == null)
+		{
+			return new Object[] {"Unformed."};
+		}
+		
+		switch(method)
+		{
+			case 0:
+				return new Object[] {controller.temperature};
+			case 1:
+				return new Object[] {controller.height};
+			case 2:
+				return new Object[] {controller.structured};
+			case 3:
+				return new Object[] {controller.inputTank.getFluidAmount()};
+			case 4:
+				return new Object[] {controller.outputTank.getFluidAmount()};
+			default:
+				throw new NoSuchMethodException();
 		}
 	}
 }

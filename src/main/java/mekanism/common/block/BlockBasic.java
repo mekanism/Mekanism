@@ -942,7 +942,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	{
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
 		
-		if(BasicType.get(this, world.getBlockMetadata(x, y, z)) == BasicType.STRUCTURAL_GLASS)
+		if(BasicType.get(this, obj.getMetadata(world)) == BasicType.STRUCTURAL_GLASS)
 		{
 			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
 		}
