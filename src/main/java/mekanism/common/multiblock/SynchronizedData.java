@@ -31,6 +31,8 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 	
 	public boolean destroyed;
 	
+	public Set<Coord4D> internalLocations = new HashSet<Coord4D>();
+	
 	public ItemStack[] getInventory()
 	{
 		return null;

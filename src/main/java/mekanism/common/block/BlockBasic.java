@@ -18,6 +18,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITierItem;
+import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
@@ -743,6 +744,20 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					return 15;
 				case 7:
 					return 12;
+			}
+		}
+		else if(blockType == BasicBlock.BASIC_BLOCK_2)
+		{
+			if(metadata == 5)
+			{
+				TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)tileEntity;
+				
+				if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
+				{
+					return SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 15 : 0;
+				}
+				
+				return 0;
 			}
 		}
 

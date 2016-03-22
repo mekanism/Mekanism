@@ -1,11 +1,18 @@
 package mekanism.generators.common.content.turbine;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData>
 {
+	public static Map<String, Float> clientRotationMap = new HashMap<String, Float>();
+	
+	public static final float ROTATION_THRESHOLD = 0.001F;
+	
 	public FluidStack fluidStored;
 	
 	public FluidStack prevFluid;
@@ -25,6 +32,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 	
 	public int clientDispersers;
 	public int clientFlow;
+	public float clientRotation;
 	
 	public int getDispersers()
 	{

@@ -39,7 +39,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
 	public TileEntityBoilerCasing()
 	{
-		this("SteamBoiler");
+		this("BoilerCasing");
 	}
 
 	public TileEntityBoilerCasing(String name)
@@ -116,9 +116,13 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 						data.prevActive = data.activeTicks > 0;
 					}
 					
-					if(needsValveUpdate || structure.needsRenderUpdate())
+					boolean needsHotUpdate = false;
+					boolean newHot = structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP-0.01F;
+					
+					if(newHot != structure.clientHot)
 					{
-						sendPacketToRenderer();
+						needsHotUpdate = true;
+						structure.clientHot = newHot;
 					}
 					
 					double[] d = structure.simulateHeat();
@@ -154,6 +158,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 					
 					structure.prevWater = structure.waterStored;
 					structure.prevSteam = structure.steamStored;
+					
+					if(needsValveUpdate || structure.needsRenderUpdate() || needsHotUpdate)
+					{
+						sendPacketToRenderer();
+					}
 					
 					MekanismUtils.saveChunk(this);
 				}
@@ -239,6 +248,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			
 			if(isRendering)
 			{
+				data.add(structure.clientHot);
+				
 				Set<ValveData> toSend = new HashSet<ValveData>();
 
 				for(ValveData valveData : structure.valves)
@@ -298,6 +309,9 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	
 			if(isRendering)
 			{
+				structure.clientHot = dataStream.readBoolean();
+				SynchronizedBoilerData.clientHotMap.put(structure.inventoryID, structure.clientHot);
+				
 				int size = dataStream.readInt();
 				
 				valveViewing.clear();

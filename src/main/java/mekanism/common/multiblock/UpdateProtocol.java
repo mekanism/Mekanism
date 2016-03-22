@@ -388,13 +388,43 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	protected abstract void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<T> cache, MultiblockCache<T> merge);
 	
-	protected void onFormed() {}
+	protected void onFormed() 
+	{
+		for(Coord4D coord : structureFound.internalLocations)
+		{
+			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			
+			if(tile instanceof TileEntityInternalMultiblock)
+			{
+				((TileEntityInternalMultiblock)tile).setMultiblock(structureFound.inventoryID);
+			}
+		}
+	}
 	
 	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 	
-	public void onStructureDestroyed(T structure) {}
+	public void onStructureDestroyed(T structure) 
+	{
+		for(Coord4D coord : structure.internalLocations)
+		{
+			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			
+			if(tile instanceof TileEntityInternalMultiblock)
+			{
+				((TileEntityInternalMultiblock)tile).setMultiblock(null);
+			}
+		}
+	}
 	
-	public void killInnerNode(Coord4D coord) {}
+	public void killInnerNode(Coord4D coord)
+	{
+		TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+		
+		if(tile instanceof TileEntityInternalMultiblock)
+		{
+			((TileEntityInternalMultiblock)tile).setMultiblock(null);
+		}
+	}
 
 	/**
 	 * Runs the protocol and updates all nodes that make a part of the multiblock.

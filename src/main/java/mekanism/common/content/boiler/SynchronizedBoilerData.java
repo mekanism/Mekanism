@@ -1,6 +1,8 @@
 package mekanism.common.content.boiler;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -16,6 +18,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer
 {
+	public static Map<String, Boolean> clientHotMap = new HashMap<String, Boolean>();
+	
 	public static double CASING_INSULATION_COEFFICIENT = 1;
 	public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 	public static double BASE_BOIL_TEMP = 100-(TemperatureUnit.AMBIENT.zeroOffset-TemperatureUnit.CELSIUS.zeroOffset);
@@ -29,6 +33,8 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	public double lastEnvironmentLoss;
 	public int lastBoilRate;
 	public int lastMaxBoil;
+	
+	public boolean clientHot;
 
 	public double temperature;
 

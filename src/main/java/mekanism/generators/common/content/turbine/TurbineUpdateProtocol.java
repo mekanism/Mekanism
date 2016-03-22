@@ -54,28 +54,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 	}
 	
 	@Override
-	public void killInnerNode(Coord4D coord)
-	{
-		TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
-		
-		if(tile instanceof TileEntityRotationalComplex)
-		{
-			((TileEntityRotationalComplex)tile).setMultiblock(null);
-		}
-	}
-	
-	@Override
-	public void onStructureDestroyed(SynchronizedTurbineData structure) 
-	{
-		TileEntity tile = structure.complex.getTileEntity(pointer.getWorldObj());
-		
-		if(tile instanceof TileEntityRotationalComplex)
-		{
-			((TileEntityRotationalComplex)tile).setMultiblock(null);
-		}
-	}
-	
-	@Override
 	protected boolean canForm(SynchronizedTurbineData structure)
 	{
 		if(structure.volLength % 2 == 1 && structure.volWidth % 2 == 1)
@@ -109,6 +87,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 							return false;
 						}
 						
+						structure.internalLocations.add(coord);
 						complex = coord;
 					}
 					else if(tile instanceof TileEntityTurbineRotor)
@@ -269,13 +248,13 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 	@Override
 	protected void onFormed()
 	{
+		super.onFormed();
+		
 		if(structureFound.fluidStored != null)
 		{
 			structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.getFluidCapacity());
 		}
 		
 		structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
-		
-		((TileEntityRotationalComplex)structureFound.complex.getTileEntity(pointer.getWorldObj())).setMultiblock(structureFound.inventoryID);
 	}
 }
