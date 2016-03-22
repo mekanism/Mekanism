@@ -210,6 +210,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 				frequency = (InventoryFrequency)freq;
 				frequency.activeCoords.add(Coord4D.get(this));
 				
+				markDirty();
+				
 				return;
 			}
 		}
