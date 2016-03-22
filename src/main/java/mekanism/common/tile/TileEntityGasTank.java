@@ -21,8 +21,10 @@ import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -33,7 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, ISecurityTile
 {
 	public enum GasMode
 	{
@@ -56,6 +58,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	public TileEntityGasTank()
 	{
@@ -78,6 +81,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		controlType = RedstoneControl.DISABLED;
 		
 		ejectorComponent = new TileComponentEjector(this);
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -347,5 +352,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public int getOrientation()
 	{
 		return facing;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

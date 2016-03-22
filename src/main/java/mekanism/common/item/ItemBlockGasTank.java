@@ -18,8 +18,12 @@ import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
@@ -33,7 +37,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory, ITierItem
+public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory, ITierItem, ISecurityItem
 {
 	public Block metaBlock;
 
@@ -81,6 +85,22 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			tileEntity.tier = GasTankTier.values()[getBaseTier(stack).ordinal()];
 			tileEntity.gasTank.setMaxGas(tileEntity.tier.storage);
 			tileEntity.gasTank.setGas(getGas(stack));
+			
+			if(tileEntity instanceof ISecurityTile)
+			{
+				ISecurityTile security = (ISecurityTile)tileEntity;
+				security.getSecurity().setOwner(getOwner(stack));
+				
+				if(hasSecurity(stack))
+				{
+					security.getSecurity().setMode(getSecurity(stack));
+				}
+				
+				if(getOwner(stack) == null)
+				{
+					security.getSecurity().setOwner(player.getCommandSenderName());
+				}
+			}
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
 			
@@ -111,6 +131,17 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
 		}
 		else {
+			if(hasSecurity(itemstack))
+			{
+				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getCommandSenderName(), getOwner(itemstack)));
+				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack));
+				
+				if(SecurityUtils.isOverridden(itemstack))
+				{
+					list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
+				}
+			}
+			
 			list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
 	}
@@ -303,5 +334,61 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
 		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
+	}
+	
+	@Override
+	public String getOwner(ItemStack stack) 
+	{
+		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("owner"))
+		{
+			return stack.stackTagCompound.getString("owner");
+		}
+		
+		return null;
+	}
+
+	@Override
+	public void setOwner(ItemStack stack, String owner) 
+	{
+		if(stack.stackTagCompound == null)
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(owner == null || owner.isEmpty())
+		{
+			stack.stackTagCompound.removeTag("owner");
+			return;
+		}
+		
+		stack.stackTagCompound.setString("owner", owner);
+	}
+
+	@Override
+	public SecurityMode getSecurity(ItemStack stack) 
+	{
+		if(stack.stackTagCompound == null)
+		{
+			return SecurityMode.PUBLIC;
+		}
+
+		return SecurityMode.values()[stack.stackTagCompound.getInteger("security")];
+	}
+
+	@Override
+	public void setSecurity(ItemStack stack, SecurityMode mode) 
+	{
+		if(stack.stackTagCompound == null)
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
+		
+		stack.stackTagCompound.setInteger("security", mode.ordinal());
+	}
+
+	@Override
+	public boolean hasSecurity(ItemStack stack) 
+	{
+		return true;
 	}
 }

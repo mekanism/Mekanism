@@ -10,9 +10,13 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.item.ItemBlockEnergyCube;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -23,6 +27,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -132,6 +137,19 @@ public class BlockEnergyCube extends BlockContainer
 			list.add(charged);
 		}
 	}
+	
+	@Override
+	public float getBlockHardness(World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof ISecurityTile)
+		{
+			return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
+		}
+		
+		return blockHardness;
+	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float f1, float f2, float f3)
@@ -149,21 +167,28 @@ public class BlockEnergyCube extends BlockContainer
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(entityplayer.isSneaking())
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					dismantleBlock(world, x, y, z, false);
-					return true;
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(world, x, y, z, false);
+						
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+	                {
+	                    ((IToolWrench) tool).wrenchUsed(entityplayer, x, y, z);
+	                }
+	
+					int change = ForgeDirection.ROTATION_MATRIX[side][tileEntity.facing];
+	
+					tileEntity.setFacing((short)change);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-                {
-                    ((IToolWrench) tool).wrenchUsed(entityplayer, x, y, z);
-                }
-
-				int change = ForgeDirection.ROTATION_MATRIX[side][tileEntity.facing];
-
-				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
 				
 				return true;
 			}
@@ -173,7 +198,14 @@ public class BlockEnergyCube extends BlockContainer
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(Mekanism.instance, 8, world, x, y, z);
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
+				{
+					entityplayer.openGui(Mekanism.instance, 8, world, x, y, z);
+				}
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
@@ -227,6 +259,22 @@ public class BlockEnergyCube extends BlockContainer
 	{
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
+		
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(tileEntity instanceof ISecurityTile)
+		{
+			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+			
+			if(securityItem.hasSecurity(itemStack))
+			{
+				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			}
+		}
 
 		IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
 		energyCube.setEnergyCubeTier(itemStack, tileEntity.tier);

@@ -7,9 +7,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -19,6 +23,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -79,6 +84,19 @@ public class BlockGasTank extends BlockContainer
 			}
 		}
 	}
+	
+	@Override
+	public float getBlockHardness(World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof ISecurityTile)
+		{
+			return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
+		}
+		
+		return blockHardness;
+	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
@@ -96,21 +114,28 @@ public class BlockGasTank extends BlockContainer
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(entityplayer.isSneaking())
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					dismantleBlock(world, x, y, z, false);
-					return true;
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(world, x, y, z, false);
+						
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					}
+	
+					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
+	
+					tileEntity.setFacing((short)change);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-				{
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
 				}
-
-				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
-
-				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
 				
 				return true;
 			}
@@ -120,7 +145,14 @@ public class BlockGasTank extends BlockContainer
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(Mekanism.instance, 10, world, x, y, z);
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
+				{
+					entityplayer.openGui(Mekanism.instance, 10, world, x, y, z);
+				}
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
@@ -208,6 +240,22 @@ public class BlockGasTank extends BlockContainer
 	{
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
+		
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(tileEntity instanceof ISecurityTile)
+		{
+			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+			
+			if(securityItem.hasSecurity(itemStack))
+			{
+				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			}
+		}
 		
 		ITierItem tierItem = (ITierItem)itemStack.getItem();
 		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());

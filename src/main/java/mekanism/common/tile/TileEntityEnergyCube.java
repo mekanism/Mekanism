@@ -16,8 +16,10 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -28,7 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
@@ -43,6 +45,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	/**
 	 * A block used to store and transfer electricity.
@@ -66,6 +69,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		controlType = RedstoneControl.DISABLED;
 		
 		ejectorComponent = new TileComponentEjector(this);
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -293,5 +298,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	public int getOrientation()
 	{
 		return facing;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

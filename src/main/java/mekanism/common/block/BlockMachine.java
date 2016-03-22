@@ -960,8 +960,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		if(tileEntity instanceof ISecurityTile)
 		{
 			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
-			securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
-			securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			
+			if(securityItem.hasSecurity(itemStack))
+			{
+				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			}
 		}
 
 		if(tileEntity instanceof IUpgradeTile)
