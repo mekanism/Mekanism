@@ -132,7 +132,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
-	public TileComponentSecurity securityComponent;
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityFactory()
 	{
@@ -160,8 +160,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
-		
-		securityComponent = new TileComponentSecurity(this);
 	}
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)

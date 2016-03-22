@@ -13,6 +13,8 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -21,7 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl
+public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile
 {
 	public double energyUsage = 100;
 	
@@ -43,6 +45,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	public double lastEnvironmentLoss;
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntityResistiveHeater()
 	{
@@ -340,5 +344,11 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	public boolean canPulse()
 	{
 		return false;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }
