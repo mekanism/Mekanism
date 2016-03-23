@@ -188,14 +188,14 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
 				icons[6][0] = register.registerIcon(ICON_BASE);
 				
-				MekanismRenderer.loadDynamicTextures(register, "BinBasic", binIcons[0], DefIcon.getActivePair(register.registerIcon("mekanism:BinBasicSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinBasicTop"), 0), new DefIcon(register.registerIcon("mekanism:BinBasicTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "BinAdvanced", binIcons[1], DefIcon.getActivePair(register.registerIcon("mekanism:BinAdvancedSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinAdvancedTop"), 0), new DefIcon(register.registerIcon("mekanism:BinAdvancedTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "BinElite", binIcons[2], DefIcon.getActivePair(register.registerIcon("mekanism:BinEliteSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinEliteTop"), 0), new DefIcon(register.registerIcon("mekanism:BinEliteTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "BinUltimate", binIcons[3], DefIcon.getActivePair(register.registerIcon("mekanism:BinUltimateSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinUltimateTop"), 0), new DefIcon(register.registerIcon("mekanism:BinUltimateTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "bin/BinBasic", binIcons[0], DefIcon.getActivePair(register.registerIcon("mekanism:bin/BinBasicSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:bin/BinBasicTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinBasicTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "bin/BinAdvanced", binIcons[1], DefIcon.getActivePair(register.registerIcon("mekanism:bin/BinAdvancedSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:bin/BinAdvancedTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinAdvancedTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "bin/BinElite", binIcons[2], DefIcon.getActivePair(register.registerIcon("mekanism:bin/BinEliteSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:bin/BinEliteTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinEliteTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "bin/BinUltimate", binIcons[3], DefIcon.getActivePair(register.registerIcon("mekanism:bin/BinUltimateSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:bin/BinUltimateTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinUltimateTopOn"), 6));
 				
 				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = register.registerIcon("mekanism:SteelCasing");

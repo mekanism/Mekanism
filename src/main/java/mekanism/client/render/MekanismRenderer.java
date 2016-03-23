@@ -94,26 +94,26 @@ public class MekanismRenderer
 				overlays.put(type, event.map.registerIcon("mekanism:overlay/" + type.getTransmission() + "Overlay"));
 			}
 			
-			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
-			heatIcon = event.map.registerIcon("mekanism:LiquidHeat");
+			energyIcon = event.map.registerIcon("mekanism:liquid/LiquidEnergy");
+			heatIcon = event.map.registerIcon("mekanism:liquid/LiquidHeat");
 			
-			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
-			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
-			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
-			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:LiquidChlorine"));
-			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurDioxide"));
-			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
-			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
-			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
-			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
-			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
-			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:LiquidEthene"));
-			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:LiquidBrine"));
-			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:LiquidSodium"));
-			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:LiquidDeuterium"));
-			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:LiquidTritium"));
-			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:LiquidDT"));
-			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:LiquidLithium"));
+			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:liquid/LiquidHydrogen"));
+			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:liquid/LiquidOxygen"));
+			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSteam"));
+			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:liquid/LiquidChlorine"));
+			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSulfurDioxide"));
+			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSulfurTrioxide"));
+			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSulfuricAcid"));
+			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:liquid/LiquidHydrogenChloride"));
+			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidOsmium"));
+			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:liquid/LiquidStone"));
+			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:liquid/LiquidEthene"));
+			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:liquid/LiquidBrine"));
+			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSodium"));
+			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDeuterium"));
+			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidTritium"));
+			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDT"));
+			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidLithium"));
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
@@ -121,17 +121,17 @@ public class MekanismRenderer
 				{
 					if(gas.getUnlocalizedName().contains("clean"))
 					{
-						gas.setIcon(event.map.registerIcon("mekanism:LiquidCleanOre"));
+						gas.setIcon(event.map.registerIcon("mekanism:liquid/LiquidCleanOre"));
 					}
 					else {
-						gas.setIcon(event.map.registerIcon("mekanism:LiquidOre"));
+						gas.setIcon(event.map.registerIcon("mekanism:liquid/LiquidOre"));
 					}
 				}
 			}
 
-			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
-			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:LiquidHeavyWater"));
-			FluidRegistry.getFluid("steam").setIcons(event.map.registerIcon("mekanism:LiquidSteam"));
+			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:liquid/LiquidBrine"));
+			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:liquid/LiquidHeavyWater"));
+			FluidRegistry.getFluid("steam").setIcons(event.map.registerIcon("mekanism:liquid/LiquidSteam"));
 			
 			for(InfuseType type : InfuseRegistry.getInfuseMap().values())
 			{
