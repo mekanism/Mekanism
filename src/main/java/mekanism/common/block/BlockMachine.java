@@ -228,9 +228,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			case MACHINE_BLOCK_3:
 				icons[0][0] = BASE_ICON;
 				icons[2][0] = BASE_ICON;
-				icons[4][0] = BASE_ICON;
-				icons[5][0] = BASE_ICON;
 				MekanismRenderer.loadDynamicTextures(register, "oredictionificator/" + MachineType.OREDICTIONIFICATOR.name, icons[3], DefIcon.getAll(register.registerIcon("mekanism:oredictionificator/OredictionificatorSide")));
+				icons[4][0] = BASE_ICON;
+				MekanismRenderer.loadDynamicTextures(register, "formulaic_assemblicator/" + MachineType.FORMULAIC_ASSEMBLICATOR.name, icons[5], DefIcon.getAll(register.registerIcon("mekanism:formulaic_assemblicator/FormulaicAssemblicatorSide")));
 				
 				break;
 		}
