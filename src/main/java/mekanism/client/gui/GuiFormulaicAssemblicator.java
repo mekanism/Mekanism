@@ -182,11 +182,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 86, guiHeight + 43, 176, 48, display, 16);
 		}
 		
-		if(tileEntity.isRecipe)
-		{
-			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
-			drawTexturedModalRect(guiWidth + 90, guiHeight + 25, 2, 39, 14, 12);
-		}
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
+		drawTexturedModalRect(guiWidth + 90, guiHeight + 25, tileEntity.isRecipe ? 2 : 20, 39, 14, 12);
 		
 		if(tileEntity.formula != null)
 		{

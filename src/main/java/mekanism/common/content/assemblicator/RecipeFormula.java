@@ -35,7 +35,7 @@ public class RecipeFormula
 		}
 	}
 	
-	public boolean matches(World world, ItemStack[] input, int start)
+	public boolean matches(World world, ItemStack[] newInput, int start)
 	{
 		resetToRecipe();
 		
@@ -43,7 +43,7 @@ public class RecipeFormula
 		
 		for(int i = 0; i < 9; i++)
 		{
-			dummy.setInventorySlotContents(i, input[start+i]);
+			dummy.setInventorySlotContents(i, newInput[start+i]);
 		}
 		
 		IRecipe newRecipe = RecipeUtils.getRecipeFromGrid(dummy, world);

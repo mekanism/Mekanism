@@ -51,6 +51,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	public int pulseOperations;
 	
 	public RecipeFormula formula;
+	public RecipeFormula prevFormula;
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -59,7 +60,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	public TileComponentConfig configComponent;
 	public TileComponentSecurity securityComponent;
 	
-	public TileEntityFormulaicAssemblicator() 
+	public TileEntityFormulaicAssemblicator()
 	{
 		super("FormulaicAssemblicator", MachineType.FORMULAIC_ASSEMBLICATOR.baseEnergy);
 		
@@ -135,27 +136,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				formula = null;
 			}
 			
+			if(formula != prevFormula)
+			{
+				prevFormula = formula;
+				markDirty();
+			}
+			
 			if(autoMode && formula == null)
 			{
 				toggleAutoMode();
-			}
-			
-			if(formula == null)
-			{
-				if(autoMode)
-				{
-					toggleAutoMode();
-				}
-				
-				for(int i = 0; i < 9; i++)
-				{
-					dummyInv.setInventorySlotContents(i, inventory[27+i]);
-				}
-				
-				isRecipe = MekanismUtils.findMatchingRecipe(dummyInv, worldObj) != null;
-			}
-			else {
-				isRecipe = formula.matches(worldObj, inventory, 27);
 			}
 			
 			if(autoMode && formula != null && ((controlType == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this)))
@@ -198,6 +187,25 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			else {
 				operatingTicks = 0;
 			}
+		}
+	}
+	
+	@Override
+	public void markDirty()
+	{
+		super.markDirty();
+		
+		if(formula == null)
+		{
+			for(int i = 0; i < 9; i++)
+			{
+				dummyInv.setInventorySlotContents(i, inventory[27+i]);
+			}
+			
+			isRecipe = MekanismUtils.findMatchingRecipe(dummyInv, worldObj) != null;
+		}
+		else {
+			isRecipe = formula.matches(worldObj, inventory, 27);
 		}
 	}
 	
@@ -295,6 +303,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	
 	private boolean moveItemsToGrid()
 	{
+		boolean ret = true;
+		
 		for(int i = 27; i <= 35; i++)
 		{
 			if(formula.isIngredientInPos(worldObj, inventory[i], i-27))
@@ -309,7 +319,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				
 				if(inventory[i] != null)
 				{
-					return false;
+					ret = false;
 				}
 			}
 			else {
@@ -336,12 +346,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				
 				if(!found)
 				{
-					return false;
+					ret = false;
 				}
 			}
 		}
 		
-		return true;
+		return ret;
 	}
 	
 	private void craftAll()
@@ -358,6 +368,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				inventory[i] = tryMoveToInput(inventory[i]);
 			}
 		}
+		
+		markDirty();
 	}
 	
 	private void toggleAutoMode()
