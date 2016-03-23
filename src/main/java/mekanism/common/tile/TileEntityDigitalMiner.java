@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1099,7 +1100,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public boolean lightUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
@@ -1490,6 +1491,30 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			default:
 				break;
 		}
+	}
+	
+	@Override
+	public boolean canBoundReceiveEnergy(Coord4D coord, ForgeDirection side)
+	{
+		ForgeDirection left = MekanismUtils.getLeft(facing);
+		ForgeDirection right = MekanismUtils.getRight(facing);
+		
+		if(coord.equals(Coord4D.get(this).getFromSide(left)))
+		{
+			return side == left;
+		}
+		else if(coord.equals(Coord4D.get(this).getFromSide(right)))
+		{
+			return side == right;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return EnumSet.of(MekanismUtils.getLeft(facing), MekanismUtils.getRight(facing), ForgeDirection.DOWN);
 	}
 
 	@Override

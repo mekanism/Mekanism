@@ -51,7 +51,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	public int pulseOperations;
 	
 	public RecipeFormula formula;
-	public RecipeFormula prevFormula;
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -134,12 +133,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			}
 			else {
 				formula = null;
-			}
-			
-			if(formula != prevFormula)
-			{
-				prevFormula = formula;
-				markDirty();
 			}
 			
 			if(autoMode && formula == null)
