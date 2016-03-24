@@ -56,7 +56,7 @@ public class ModelSolarGenerator extends ModelBase
 		solarPanelPipeConnector.mirror = true;
 		setRotation(solarPanelPipeConnector, 0F, 0F, 0F);
 		solarPanelPipeBase1 = new ModelRenderer(this, 36, 33);
-		solarPanelPipeBase1.addBox(0F, 0F, 0F, 2, 4, 4);
+		solarPanelPipeBase1.addBox(0F, 0F, 0F, 1, 4, 4);
 		solarPanelPipeBase1.setRotationPoint(2F, 22F, -2F);
 		solarPanelPipeBase1.setTextureSize(64, 64);
 		solarPanelPipeBase1.mirror = true;
@@ -69,7 +69,7 @@ public class ModelSolarGenerator extends ModelBase
 		setRotation(solarPanelPipeU1, 0F, 0F, 0F);
 	}
 
-	public void render(float size) 
+	public void render(float size)
 	{
 		solarPanelPipeBase.render(size);
 		solarPanel.render(size);

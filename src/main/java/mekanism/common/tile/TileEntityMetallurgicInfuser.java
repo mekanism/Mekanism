@@ -89,7 +89,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	{
 		super("machine.metalinfuser", "MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {2}));
@@ -98,7 +98,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Infuse", EnumColor.PURPLE, new int[] {1}));
 		
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 0, 0, 3, 1, 2});
-		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = new ItemStack[5];
 		
@@ -266,7 +265,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public EnumSet<ForgeDirection> getConsumingSides()
 	{
-		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
+		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
 
 	@Override
@@ -516,7 +515,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public boolean renderUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override

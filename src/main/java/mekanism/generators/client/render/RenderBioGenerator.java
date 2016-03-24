@@ -37,22 +37,6 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 
 	private void renderAModelAt(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick)
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
-
-		switch(tileEntity.facing)
-		{
-			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
-			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
-			case 4: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
-			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
-		}
-
-		GL11.glRotatef(180, 0F, 0F, 1F);
-		model.render(0.0625F);
-		GL11.glPopMatrix();
-
 		if(tileEntity.bioFuelSlot.fluidStored > 0)
 		{
 			push();
@@ -65,6 +49,22 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 
 			pop();
 		}
+		
+		GL11.glPushMatrix();
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
+
+		switch(tileEntity.facing)
+		{
+			case 2: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
+			case 3: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+			case 4: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
+			case 5: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+		}
+		
+		GL11.glRotatef(180, 0F, 0F, 1F);
+		model.render(0.0625F);
+		GL11.glPopMatrix();
 	}
 
 	@SuppressWarnings("incomplete-switch")
@@ -89,46 +89,46 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 			{
 				case NORTH:
 				{
-					model3D.minZ = 0.1875;
-					model3D.maxZ = 0.4375;
+					model3D.minZ = 0.5;
+					model3D.maxZ = 0.875;
 
-					model3D.minX = 0.375;
-					model3D.maxX = 0.625;
-					model3D.minY = 0.125;
-					model3D.maxY = 0.125 + ((float)i/stages)*.34375;
+					model3D.minX = 0.1875;
+					model3D.maxX = 0.8215;
+					model3D.minY = 0.4375;
+					model3D.maxY = 0.4375 + ((float)i/stages)*0.4375;
 					break;
 				}
 				case SOUTH:
 				{
-					model3D.minZ = 0.5625;
-					model3D.maxZ = 0.8125;
+					model3D.minZ = 0.125;
+					model3D.maxZ = 0.5;
 
-					model3D.minX = 0.375;
-					model3D.maxX = 0.625;
-					model3D.minY = 0.125;
-					model3D.maxY = 0.125 + ((float)i/stages)*.34375;
+					model3D.minX = 0.1875;
+					model3D.maxX = 0.8215;
+					model3D.minY = 0.4375;
+					model3D.maxY = 0.4375 + ((float)i/stages)*0.4375;
 					break;
 				}
 				case WEST:
 				{
-					model3D.minX = 0.1875;
-					model3D.maxX = 0.4375;
+					model3D.minX = 0.5;
+					model3D.maxX = 0.875;
 
-					model3D.minZ = 0.375;
-					model3D.maxZ = 0.625;
-					model3D.minY = 0.125;
-					model3D.maxY = 0.125 + ((float)i/stages)*.34375;
+					model3D.minZ = 0.1875;
+					model3D.maxZ = 0.8215;
+					model3D.minY = 0.4375;
+					model3D.maxY = 0.4375 + ((float)i/stages)*0.4375;
 					break;
 				}
 				case EAST:
 				{
-					model3D.minX = 0.5625;
-					model3D.maxX = 0.8125;
+					model3D.minX = 0.125;
+					model3D.maxX = 0.5;
 
-					model3D.minZ = 0.375;
-					model3D.maxZ = 0.625;
-					model3D.minY = 0.125;
-					model3D.maxY = 0.125 + ((float)i/stages)*.34375;
+					model3D.minZ = 0.1875;
+					model3D.maxZ = 0.8215;
+					model3D.minY = 0.4375;
+					model3D.maxY = 0.4375 + ((float)i/stages)*0.4375;
 					break;
 				}
 			}

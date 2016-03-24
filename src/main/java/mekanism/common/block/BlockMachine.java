@@ -921,7 +921,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			{
 				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
 			}
-
+			
 			if(tileEntity instanceof TileEntityLogisticalSorter)
 			{
 				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
