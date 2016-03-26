@@ -100,7 +100,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 						sendPacketToRenderer();
 					}
 					
-					structure.prevFluid = structure.fluidStored;
+					structure.prevFluid = structure.fluidStored != null ? structure.fluidStored.copy() : null;
 				}
 			}
 		}

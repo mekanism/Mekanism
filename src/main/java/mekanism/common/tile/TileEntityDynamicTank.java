@@ -115,7 +115,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 						sendPacketToRenderer();
 					}
 					
-					structure.prevFluid = structure.fluidStored.copy();
+					structure.prevFluid = structure.prevFluid != null ? structure.fluidStored.copy() : null;
 					
 					manageInventory();
 				}
