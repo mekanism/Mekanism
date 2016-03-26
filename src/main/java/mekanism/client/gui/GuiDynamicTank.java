@@ -62,7 +62,7 @@ public class GuiDynamicTank extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
+		
 		if(tileEntity.getScaledFluidLevel(58) > 0)
 		{
 			displayGauge(7, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 0);

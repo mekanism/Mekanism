@@ -156,13 +156,13 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 						structure.lastMaxBoil = 0;
 					}
 					
-					structure.prevWater = structure.waterStored;
-					structure.prevSteam = structure.steamStored;
-					
 					if(needsValveUpdate || structure.needsRenderUpdate() || needsHotUpdate)
 					{
 						sendPacketToRenderer();
 					}
+					
+					structure.prevWater = structure.waterStored.copy();
+					structure.prevSteam = structure.steamStored.copy();
 					
 					MekanismUtils.saveChunk(this);
 				}

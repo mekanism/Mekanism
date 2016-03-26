@@ -182,7 +182,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		volume += locations.size();
 
-		if(volume >= 27 && volume <= 5832 && locations.size() >= 26)
+		if(Math.abs(xmax-xmin)+1 <= 18 && Math.abs(xmax-xmin)+1 <= 18 && Math.abs(zmax-zmin)+1 <= 18)
 		{
 			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
@@ -191,7 +191,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				structure.volLength = Math.abs(xmax-xmin)+1;
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
-				structure.volume = volume;
+				structure.volume = structure.volLength*structure.volHeight*structure.volWidth;
 				structure.renderLocation = Coord4D.get(tile).translate(0, 1, 0);
 				structure.minLocation = Coord4D.get(tile).translate(xmin, ymin, zmin);
 				structure.maxLocation = Coord4D.get(tile).translate(xmax, ymax, zmax);
