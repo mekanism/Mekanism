@@ -183,7 +183,7 @@ public class MekanismRenderer
 					
 					for(DefIcon def : defaults)
 					{
-						if(def.icons.contains(side.ordinal()+6))
+						if(def.icons.contains(side.ordinal()+6) && def.overridesInactive)
 						{
 							textures[side.ordinal()+6] = def.defIcon;
 							found = true;
@@ -219,6 +219,10 @@ public class MekanismRenderer
 		
 		public List<Integer> icons = new ArrayList<Integer>();
 		
+		/** If this DefIcon should be prioritized over a machine's side-specific off texture 
+		 * if no on texture is present. */
+		public boolean overridesInactive = true;
+		
 		public DefIcon(IIcon icon, int... is)
 		{
 			defIcon = icon;
@@ -227,6 +231,13 @@ public class MekanismRenderer
 			{
 				icons.add(i);
 			}
+		}
+		
+		public DefIcon setOverrides(boolean b)
+		{
+			overridesInactive = b;
+			
+			return this;
 		}
 		
 		public static DefIcon getAll(IIcon icon)
