@@ -521,6 +521,7 @@ public class MekanismRenderer
             GL11.glColor4f(red, green, blue, 1.0F);
         }
 
+        GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
     }
     
@@ -545,19 +546,19 @@ public class MekanismRenderer
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-    	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
+    	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 3));
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 3));
+    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-    	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 5));
+    	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 4));
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-    	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 4));
+    	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 5));
     	        tessellator.draw();
             } catch(Exception e) {}
             
@@ -588,19 +589,19 @@ public class MekanismRenderer
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
+	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
+	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
+	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
+	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
 	        tessellator.draw();
         } catch(Exception e) {}
         

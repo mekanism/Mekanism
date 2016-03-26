@@ -430,6 +430,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				switch(meta)
 				{
 					case 3:
+					case 5:
 						return icons[meta][side];
 					default:
 						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
@@ -483,6 +484,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				switch(meta)
 				{
 					case 3:
+					case 5:
 						boolean active = MekanismUtils.isActive(world, x, y, z);
 						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					default:
