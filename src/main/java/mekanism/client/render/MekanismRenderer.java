@@ -553,11 +553,11 @@ public class MekanismRenderer
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-    	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 4));
+    	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 5));
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-    	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 5));
+    	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 4));
     	        tessellator.draw();
             } catch(Exception e) {}
             
@@ -596,11 +596,11 @@ public class MekanismRenderer
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
+	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
+	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
 	        tessellator.draw();
         } catch(Exception e) {}
         
