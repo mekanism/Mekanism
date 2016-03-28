@@ -515,6 +515,11 @@ public final class MekanismUtils
 	 */
 	public static int getBaseOrientation(int side, int blockFacing)
 	{
+		if(side == 0 || side == 1)
+		{
+			return side;
+		}
+		
 		if(blockFacing == 3 || side == 1 || side == 0)
 		{
 			if(side == 2 || side == 3)

@@ -16,7 +16,7 @@ public class ModelElectrolyticSeparator extends ModelBase
 	ModelRenderer tube4;
 	ModelRenderer tube3;
 	ModelRenderer tube2;
-	ModelRenderer tube1;
+	ModelRenderer tube1; 
 	ModelRenderer base;
 	ModelRenderer portToggle1;
 	ModelRenderer portToggle2a;
