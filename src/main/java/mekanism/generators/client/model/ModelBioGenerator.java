@@ -25,12 +25,11 @@ public class ModelBioGenerator extends ModelBase
 		base.mirror = true;
 		setRotation(base, 0F, 0F, 0F);
 		sideRight = new ModelRenderer(this, 0, 40);
+		sideRight.mirror = true;
 		sideRight.addBox(0F, 0F, 0F, 3, 9, 8);
 		sideRight.setRotationPoint(5F, 8F, -8F);
 		sideRight.setTextureSize(64, 64);
-		sideRight.mirror = true;
 		setRotation(sideRight, 0F, 0F, 0F);
-		sideRight.mirror = false;
 		back = new ModelRenderer(this, 0, 23);
 		back.addBox(0F, 0F, 0F, 16, 9, 8);
 		back.setRotationPoint(-8F, 8F, 0F);

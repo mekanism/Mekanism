@@ -293,12 +293,14 @@ public class ItemRenderingHandler implements IItemRenderer
 		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.GasTank)
 		{
 			GL11.glPushMatrix();
+			
 			BaseTier tier = ((ItemBlockGasTank)item.getItem()).getBaseTier(item);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank" + tier.getName() + ".png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			gasTank.render(0.0625F);
+			
 			GL11.glPopMatrix();
 		}
 		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.ObsidianTNT)

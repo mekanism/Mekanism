@@ -52,12 +52,11 @@ public class ModelChargepad extends ModelBase
 		stand.mirror = true;
 		setRotation(stand, 0F, 0F, 0F);
 		pillar2 = new ModelRenderer(this, 48, 0);
+		pillar2.mirror = true;
 		pillar2.addBox(0F, 0F, 0F, 2, 7, 2);
 		pillar2.setRotationPoint(2F, 16F, 3.99F);
 		pillar2.setTextureSize(64, 64);
-		pillar2.mirror = true;
 		setRotation(pillar2, 0F, 0F, 0F);
-		pillar2.mirror = false;
 		pillar1 = new ModelRenderer(this, 48, 0);
 		pillar1.addBox(0F, 0F, 0F, 2, 7, 2);
 		pillar1.setRotationPoint(-4F, 16F, 3.99F);

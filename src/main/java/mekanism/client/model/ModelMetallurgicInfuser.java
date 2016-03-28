@@ -56,12 +56,11 @@ public class ModelMetallurgicInfuser extends ModelBase
 		connector2.mirror = true;
 		setRotation(connector2, 0F, 0F, 0F);
 		sideRight = new ModelRenderer(this, 64, 0);
+		sideRight.mirror = true;
 		sideRight.addBox(0F, 0F, 0F, 1, 11, 7);
 		sideRight.setRotationPoint(7F, 9F, 0F);
 		sideRight.setTextureSize(128, 64);
-		sideRight.mirror = true;
 		setRotation(sideRight, 0F, 0F, 0F);
-		sideRight.mirror = false;
 		top = new ModelRenderer(this, 80, 0);
 		top.addBox(0F, 0F, 0F, 16, 1, 7);
 		top.setRotationPoint(-8F, 8F, 0F);

@@ -35,21 +35,6 @@ public class RenderChemicalOxidizer extends TileEntitySpecialRenderer
 	private void renderAModelAt(TileEntityChemicalOxidizer tileEntity, double x, double y, double z, float partialTick)
 	{
 		render(false, x, y, z, tileEntity);
-
-		if(tileEntity.gasTank.getGas() != null)
-		{
-			push();
-
-			GL11.glTranslatef((float)x, (float)y, (float)z);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.gasTank.getStored()/tileEntity.gasTank.getMaxGas());
-			bindTexture(MekanismRenderer.getBlocksTexture());
-			getListAndRender(ForgeDirection.getOrientation(tileEntity.facing), tileEntity.gasTank.getGas().getGas()).render();
-			GL11.glColor4f(1, 1, 1, 1);
-
-			pop();
-		}
-
-		render(true, x, y, z, tileEntity);
 	}
 
 	/*
@@ -72,13 +57,7 @@ public class RenderChemicalOxidizer extends TileEntitySpecialRenderer
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 
-		if(!glass)
-		{
-			model.render(0.0625F);
-		}
-		else {
-			model.renderGlass(0.0625F);
-		}
+		model.render(0.0625F);
 
 		GL11.glPopMatrix();
 	}

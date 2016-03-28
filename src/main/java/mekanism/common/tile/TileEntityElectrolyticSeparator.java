@@ -76,9 +76,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	/** Type type of gas this block is dumping. */
 	public GasMode dumpRight = GasMode.IDLE;
 	
-	public boolean clientDumpLeft = false;
-	public boolean clientDumpRight = false;
-	
 	public double BASE_ENERGY_USAGE;
 	
 	public double energyPerTick;
@@ -210,9 +207,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			}
 			
 			int dumpAmount = 8*(int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-			
-			boolean dumpedLeft = false;
-			boolean dumpedRight = false;
 
 			if(leftTank.getGas() != null)
 			{
@@ -233,15 +227,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				else if(dumpLeft == GasMode.DUMPING)
 				{
 					leftTank.draw(dumpAmount, true);
-					
-					dumpedLeft = true;
 				}
 				
 				if(dumpLeft == GasMode.DUMPING_EXCESS && leftTank.getNeeded() < output)
 				{
 					leftTank.draw(output-leftTank.getNeeded(), true);
-					
-					dumpedLeft = true;
 				}
 			}
 
@@ -264,38 +254,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				else if(dumpRight == GasMode.DUMPING)
 				{
 					rightTank.draw(dumpAmount, true);
-					
-					dumpedRight = true;
 				}
 				
 				if(dumpRight == GasMode.DUMPING_EXCESS && rightTank.getNeeded() < output)
 				{
 					rightTank.draw(output-rightTank.getNeeded(), true);
-					
-					dumpedRight = true;
 				}
-			}
-			
-			if(clientDumpLeft != dumpedLeft || clientDumpRight != dumpedRight)
-			{
-				clientDumpLeft = dumpedLeft;
-				clientDumpRight = dumpedRight;
-				
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 
             prevEnergy = getEnergy();
-		}
-		else {
-			if(clientDumpLeft)
-			{
-				spawnParticle(0);
-			}
-			
-			if(clientDumpRight)
-			{
-				spawnParticle(1);
-			}
 		}
 	}
 	
@@ -354,37 +321,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
 				&& rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
-	}
-
-	public void spawnParticle(int type)
-	{
-		if(type == 0)
-		{
-			ForgeDirection side = ForgeDirection.getOrientation(facing);
-
-			double x = xCoord + (side.offsetX == 0 ? 0.5 : Math.max(side.offsetX, 0));
-			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
-
-			worldObj.spawnParticle("smoke", x, yCoord + 0.5, z, 0.0D, 0.0D, 0.0D);
-		}
-		else if(type == 1)
-		{
-			switch(facing)
-			{
-				case 3:
-					worldObj.spawnParticle("smoke", xCoord+0.9, yCoord+1, zCoord+0.75, 0.0D, 0.0D, 0.0D);
-					break;
-				case 4:
-					worldObj.spawnParticle("smoke", xCoord+0.25, yCoord+1, zCoord+0.9, 0.0D, 0.0D, 0.0D);
-					break;
-				case 2:
-					worldObj.spawnParticle("smoke", xCoord+0.1, yCoord+1, zCoord+0.25, 0.0D, 0.0D, 0.0D);
-					break;
-				case 5:
-					worldObj.spawnParticle("smoke", xCoord+0.75, yCoord+1, zCoord+0.1, 0.0D, 0.0D, 0.0D);
-					break;
-			}
-		}
 	}
 
 	@Override
@@ -493,8 +429,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         controlType = RedstoneControl.values()[dataStream.readInt()];
 		dumpLeft = GasMode.values()[dataStream.readInt()];
 		dumpRight = GasMode.values()[dataStream.readInt()];
-		clientDumpLeft = dataStream.readBoolean();
-		clientDumpRight = dataStream.readBoolean();
 		clientActive = dataStream.readBoolean();
 		clientEnergyUsed = dataStream.readDouble();
 
@@ -544,8 +478,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         data.add(controlType.ordinal());
 		data.add(dumpLeft.ordinal());
 		data.add(dumpRight.ordinal());
-		data.add(clientDumpLeft);
-		data.add(clientDumpRight);
 		data.add(isActive);
 		data.add(clientEnergyUsed);
 

@@ -122,16 +122,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		else if(type == MachineType.CHEMICAL_OXIDIZER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.00F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalOxidizer.png"));
 			chemicalOxidizer.render(0.0625F);
-			chemicalOxidizer.renderGlass(0.0625F);
 		}
 		else if(type == MachineType.CHEMICAL_INFUSER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalInfuser.png"));
 			chemicalInfuser.render(0.0625F);
@@ -140,6 +138,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		else if(type == MachineType.ELECTROLYTIC_SEPARATOR)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(-90F, 0.0F, 1.0F, 0.0F);
 			GL11.glTranslated(0.0F, -1.0F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparator.png"));
 			electrolyticSeparator.render(0.0625F);
