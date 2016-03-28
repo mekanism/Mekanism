@@ -67,9 +67,11 @@ public class TileComponentConfig implements ITileComponent
 		
 		for(byte b = 0; b < 6; b++)
 		{
-			if(getConfig(type)[b] == dataIndex)
+			int side = MekanismUtils.getBaseOrientation(b, facing);
+			
+			if(getConfig(type)[side] == dataIndex)
 			{
-				ret.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(b, facing)));
+				ret.add(ForgeDirection.getOrientation(b));
 			}
 		}
 		
