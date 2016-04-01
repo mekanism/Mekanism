@@ -391,4 +391,10 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	{
 		return true;
 	}
+	
+	@Override
+	public boolean hasOwner(ItemStack stack)
+	{
+		return hasSecurity(stack);
+	}
 }

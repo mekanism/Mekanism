@@ -3,6 +3,7 @@ package mekanism.common.util;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -17,6 +18,13 @@ public final class SecurityUtils
 {
 	public static boolean canAccess(EntityPlayer player, ItemStack stack)
 	{
+		if(!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem)
+		{
+			String owner = ((IOwnerItem)stack.getItem()).getOwner(stack);
+			
+			return owner == null || owner.equals(player.getCommandSenderName());
+		}
+		
 		if((!player.worldObj.isRemote && MekanismUtils.isOp((EntityPlayerMP)player)) || stack == null || !(stack.getItem() instanceof ISecurityItem))
 		{
 			return true;

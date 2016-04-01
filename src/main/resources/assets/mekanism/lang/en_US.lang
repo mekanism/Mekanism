@@ -549,8 +549,11 @@ gui.publicMode=Public Mode
 gui.privateMode=Private Mode
 gui.trustedMode=Trusted Mode
 gui.securityOffline=Security Offline
-gui.noAccessDesc=You don't have access to this block.
+gui.noAccessDesc=You don't have access.
 gui.overridden=Overridden
+gui.nowOwn=You now own this item.
+gui.frequency=Frequency
+gui.mode=Mode
 
 gui.reactor.injectionRate=Injection Rate
 

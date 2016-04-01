@@ -14,12 +14,15 @@ import mekanism.common.SideData;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileComponentConfig implements ITileComponent
 {
+	public static SideData EMPTY = new SideData("Empty", EnumColor.BLACK, InventoryUtils.EMPTY);
+	
 	public TileEntityContainerBlock tileEntity;
 	
 	public Map<Integer, byte[]> sideConfigs = new HashMap<Integer, byte[]>();
@@ -135,12 +138,19 @@ public class TileComponentConfig implements ITileComponent
 	
 	public SideData getOutput(TransmissionType type, int side, int facing)
 	{
-		return getOutputs(type).get(getConfig(type)[MekanismUtils.getBaseOrientation(side, facing)]);
+		return getOutput(type, MekanismUtils.getBaseOrientation(side, facing));
 	}
 	
 	public SideData getOutput(TransmissionType type, int side)
 	{
-		return getOutputs(type).get(getConfig(type)[side]);
+		int index = getConfig(type)[side];
+		
+		if(index == -1)
+		{
+			return EMPTY;
+		}
+		
+		return getOutputs(type).get(index);
 	}
 	
 	public boolean supports(TransmissionType type)

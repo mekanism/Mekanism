@@ -5,6 +5,7 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
@@ -15,6 +16,7 @@ import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -93,17 +95,23 @@ public class GuiTransporterConfig extends GuiMekanism
 
 			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
 
-			if(color != null)
+			if(configurable.getConfig().getOutput(TransmissionType.ITEM, i) != TileComponentConfig.EMPTY)
 			{
-				MekanismRenderer.color(color);
-			}
-
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
-			{
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+				if(color != null)
+				{
+					MekanismRenderer.color(color);
+				}
+	
+				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+				{
+					drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+				}
+				else {
+					drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+				}
 			}
 			else {
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
 			}
 		}
 
@@ -145,9 +153,12 @@ public class GuiTransporterConfig extends GuiMekanism
 
 			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
 
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+			if(configurable.getConfig().getOutput(TransmissionType.ITEM, i) != TileComponentConfig.EMPTY)
 			{
-				drawCreativeTabHoveringText(color != null ? color.getName() : LangUtils.localize("gui.none"), xAxis, yAxis);
+				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+				{
+					drawCreativeTabHoveringText(color != null ? color.getName() : LangUtils.localize("gui.none"), xAxis, yAxis);
+				}
 			}
 		}
 		

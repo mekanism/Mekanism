@@ -545,4 +545,10 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		
 		return type.hasModel;
 	}
+	
+	@Override
+	public boolean hasOwner(ItemStack stack)
+	{
+		return hasSecurity(stack);
+	}
 }

@@ -67,12 +67,18 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 						manager1.addFrequency(toUse);
 					}
 					
+					item.setFrequency(itemstack, toUse.name);
+					item.setPrivateMode(itemstack, !toUse.publicFreq);
+					
 					sendDataResponse(toUse, world, player, item, itemstack);
 					
 					break;
 				case DEL_FREQ:
 					FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getCommandSenderName(), world);
 					manager.remove(message.frequency.name, player.getCommandSenderName());
+					
+					item.setFrequency(itemstack, null);
+					item.setPrivateMode(itemstack, false);
 					
 					break;
 				case TELEPORT:
@@ -158,6 +164,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 				{
 					given = iterFreq;
 					found = true;
+					
 					break;
 				}
 			}

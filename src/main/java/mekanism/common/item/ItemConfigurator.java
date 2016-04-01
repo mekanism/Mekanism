@@ -17,6 +17,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -72,37 +73,38 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 				if(tile instanceof ISideConfiguration && ((ISideConfiguration)tile).getConfig().supports(getState(stack).getTransmission()))
 				{
 					ISideConfiguration config = (ISideConfiguration)tile;
+					SideData initial = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
 
-					if(!player.isSneaking())
+					if(initial != TileComponentConfig.EMPTY)
 					{
-						SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
-						
-						return true;
-					}
-					else {
-						if(getEnergy(stack) >= ENERGY_PER_CONFIGURE)
+						if(!player.isSneaking())
 						{
-							if(SecurityUtils.canAccess(player, tile))
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + initial.color + initial.localize() + " (" + initial.color.getName() + ")"));
+						}
+						else {
+							if(getEnergy(stack) >= ENERGY_PER_CONFIGURE)
 							{
-								setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-								MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-								SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
-								player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
-	
-								if(config instanceof TileEntityBasicBlock)
+								if(SecurityUtils.canAccess(player, tile))
 								{
-									TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-									Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+									setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
+									MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
+									SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+									player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
+		
+									if(config instanceof TileEntityBasicBlock)
+									{
+										TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
+										Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+									}
+								}
+								else {
+									SecurityUtils.displayNoAccess(player);
 								}
 							}
-							else {
-								SecurityUtils.displayNoAccess(player);
-							}
-
-							return true;
 						}
 					}
+					
+					return true;
 				}
 				else if(tile instanceof IConfigurable)
 				{

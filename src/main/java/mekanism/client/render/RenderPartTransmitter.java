@@ -94,16 +94,14 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		for(Map.Entry<String, CCModel> e : small_models.entrySet())
 		{
-			e.setValue(e.getValue().twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
-			e.getValue().computeLighting(LightModel.standardLightModel);
+			e.setValue(e.getValue().computeLighting(LightModel.standardLightModel).twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
 		}
 
 		large_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_large.obj"), 7, null);
 
 		for(Map.Entry<String, CCModel> e : large_models.entrySet())
 		{
-			e.setValue(e.getValue().twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
-			e.getValue().computeLighting(LightModel.standardLightModel);
+			e.setValue(e.getValue().computeLighting(LightModel.standardLightModel).twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
 		}
 
 		contents_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
@@ -297,12 +295,12 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
 		float targetScale;
+		
 		if(pipe.getTransmitter().hasTransmitterNetwork())
 		{
 			targetScale = pipe.getTransmitter().getTransmitterNetwork().fluidScale;
 		}
-		else
-		{
+		else {
 			targetScale = (float)pipe.buffer.getFluidAmount() / (float)pipe.buffer.getCapacity();
 		}
 

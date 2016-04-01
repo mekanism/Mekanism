@@ -21,6 +21,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.IOwnerItem;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -69,6 +70,8 @@ public class GuiTeleporter extends GuiMekanism
 	
 	public List<Frequency> clientPublicCache = new ArrayList<Frequency>();
 	public List<Frequency> clientPrivateCache = new ArrayList<Frequency>();
+	
+	public boolean isInit = true;
 
 	public GuiTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
 	{
@@ -123,6 +126,17 @@ public class GuiTeleporter extends GuiMekanism
 		}, resource, 158, 26));
 		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 		
+		ItemPortableTeleporter item = (ItemPortableTeleporter)itemStack.getItem();
+		
+		if(item.getFrequency(stack) != null)
+		{
+			privateMode = item.isPrivateMode(itemStack);
+			setFrequency(item.getFrequency(stack));
+		}
+		else {
+			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
+		}
+		
 		ySize = 175;
 	}
 	
@@ -161,9 +175,15 @@ public class GuiTeleporter extends GuiMekanism
 		if(itemStack != null)
 		{
 			buttonList.add(teleportButton);
+			
+			if(!isInit)
+			{
+				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
+			}
+			else {
+				isInit = false;
+			}
 		}
-		
-		Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
 	}
 	
 	public void setFrequency(String freq)
@@ -465,7 +485,13 @@ public class GuiTeleporter extends GuiMekanism
 	
 	private String getOwner()
 	{
-		return tileEntity != null ? tileEntity.getSecurity().getOwner() : entityPlayer.getCommandSenderName();
+		if(tileEntity != null)
+		{
+			return tileEntity.getSecurity().getOwner();
+		}
+		else {
+			return ((IOwnerItem)itemStack.getItem()).getOwner(itemStack);
+		}
 	}
 	
 	private byte getStatus()

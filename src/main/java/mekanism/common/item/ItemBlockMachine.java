@@ -968,4 +968,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		
 		return false;
 	}
+	
+	@Override
+	public boolean hasOwner(ItemStack stack)
+	{
+		return hasSecurity(stack);
+	}
 }

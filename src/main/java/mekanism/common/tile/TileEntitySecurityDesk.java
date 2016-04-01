@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
@@ -36,28 +37,42 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock
 		{
 			if(owner != null && frequency != null)
 			{
-				if(inventory[0] != null && inventory[0].getItem() instanceof ISecurityItem)
+				if(inventory[0] != null && inventory[0].getItem() instanceof IOwnerItem)
 				{
-					ISecurityItem item = (ISecurityItem)inventory[0].getItem();
+					IOwnerItem item = (IOwnerItem)inventory[0].getItem();
 					
-					if(item.hasSecurity(inventory[0]) && item.getOwner(inventory[0]) != null)
+					if(item.hasOwner(inventory[0]) && item.getOwner(inventory[0]) != null)
 					{
 						if(item.getOwner(inventory[0]).equals(owner))
 						{
 							item.setOwner(inventory[0], null);
-							item.setSecurity(inventory[0], SecurityMode.PUBLIC);
+							
+							if(item instanceof ISecurityItem && ((ISecurityItem)item).hasSecurity(inventory[0]))
+							{
+								((ISecurityItem)item).setSecurity(inventory[0], SecurityMode.PUBLIC);
+							}
 						}
 					}
 				}
 				
-				if(inventory[1] != null && inventory[1].getItem() instanceof ISecurityItem)
+				if(inventory[1] != null && inventory[1].getItem() instanceof IOwnerItem)
 				{
-					ISecurityItem item = (ISecurityItem)inventory[1].getItem();
+					IOwnerItem item = (IOwnerItem)inventory[1].getItem();
 					
-					if(item.hasSecurity(inventory[1]) && item.getOwner(inventory[1]) == null)
+					if(item.hasOwner(inventory[1]))
 					{
-						item.setOwner(inventory[1], owner);
-						item.setSecurity(inventory[1], frequency.securityMode);
+						if(item.getOwner(inventory[1]) == null)
+						{
+							item.setOwner(inventory[1], owner);
+						}
+						
+						if(item.getOwner(inventory[1]).equals(owner))
+						{
+							if(item instanceof ISecurityItem && ((ISecurityItem)item).hasSecurity(inventory[1]))
+							{
+								((ISecurityItem)item).setSecurity(inventory[1], frequency.securityMode);
+							}
+						}
 					}
 				}
 			}
