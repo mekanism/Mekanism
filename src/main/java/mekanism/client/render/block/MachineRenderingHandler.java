@@ -75,7 +75,6 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		if(type == MachineType.ELECTRIC_PUMP)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
 			electricPump.render(0.0560F);
@@ -114,8 +113,8 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		else if(type == MachineType.ROTARY_CONDENSENTRATOR)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RotaryCondensentrator.png"));
 			rotaryCondensentrator.render(0.0625F);
 		}
@@ -146,24 +145,24 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		else if(type == MachineType.CHEMICAL_DISSOLUTION_CHAMBER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
 			chemicalDissolutionChamber.render(0.0625F);
 		}
 		else if(type == MachineType.CHEMICAL_WASHER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalWasher.png"));
 			chemicalWasher.render(0.0625F);
 		}
 		else if(type == MachineType.CHEMICAL_CRYSTALLIZER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));
 			chemicalCrystallizer.render(0.0625F);
 		}
@@ -178,8 +177,8 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		else if(type == MachineType.PRESSURIZED_REACTION_CHAMBER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedReactionChamber.png"));
 			pressurizedReactionChamber.render(0.0625F);
 		}

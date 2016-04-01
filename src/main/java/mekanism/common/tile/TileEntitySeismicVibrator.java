@@ -11,6 +11,7 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -22,7 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl, ISecurityTile
+public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl, ISecurityTile, IBoundingBlock
 {
 	public boolean isActive;
 
@@ -213,5 +214,18 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	public TileComponentSecurity getSecurity()
 	{
 		return securityComponent;
+	}
+	
+	@Override
+	public void onPlace() 
+	{
+		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).getFromSide(ForgeDirection.UP), Coord4D.get(this));
+	}
+
+	@Override
+	public void onBreak() 
+	{
+		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	}
 }

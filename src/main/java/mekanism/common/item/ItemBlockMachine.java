@@ -280,7 +280,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				}
 			}
 		}
-		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
+		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR || type == MachineType.SEISMIC_VIBRATOR)
 		{
 			if(y+1 > 255 || !world.getBlock(x, y+1, z).isReplaceable(world, x, y+1, z))
 			{
