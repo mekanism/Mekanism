@@ -18,6 +18,7 @@ import mekanism.client.model.ModelMetallurgicInfuser;
 import mekanism.client.model.ModelPressurizedReactionChamber;
 import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.client.model.ModelSeismicVibrator;
+import mekanism.client.model.ModelSolarNeutronActivator;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
@@ -25,10 +26,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
 
 import org.lwjgl.opengl.GL11;
 
@@ -56,8 +54,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelFluidicPlenisher fluidicPlenisher = new ModelFluidicPlenisher();
 	public ModelLaser laser = new ModelLaser();
 	public ModelLaserAmplifier laserAmplifier = new ModelLaserAmplifier();
-	
-	public IModelCustom solarNeutronActivator = AdvancedModelLoader.loadModel(new ResourceLocation("mekanism:models/solar_tri.obj"));
+	public ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -132,7 +129,6 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalInfuser.png"));
 			chemicalInfuser.render(0.0625F);
-			chemicalInfuser.renderGlass(0.0625F);
 		}
 		else if(type == MachineType.ELECTROLYTIC_SEPARATOR)
 		{
@@ -169,8 +165,9 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		else if(type == MachineType.SEISMIC_VIBRATOR)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glScalef(0.6F, 0.6F, 0.6F);
+			GL11.glTranslatef(0.0F, -0.55F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
 			seismicVibrator.render(0.0625F);
 		}
@@ -216,11 +213,12 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		}
 		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
 		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
-			GL11.glScalef(0.45F, 0.45F, 0.45F);
-			GL11.glTranslatef(0.0F, -1.3F, 0.0F);
+			GL11.glScalef(0.6F, 0.6F, 0.6F);
+			GL11.glTranslatef(0.0F, -0.55F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
-			solarNeutronActivator.renderAll();
+			solarNeutronActivator.render(0.0625F);
 		}
 		else {
 			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);

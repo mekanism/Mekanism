@@ -1,12 +1,11 @@
 package mekanism.client.render.tileentity;
 
+import mekanism.client.model.ModelSolarNeutronActivator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
 
 import org.lwjgl.opengl.GL11;
 
@@ -16,12 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer
 {
-	private IModelCustom model;
-	
-	public RenderSolarNeutronActivator()
-	{
-		model = AdvancedModelLoader.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "solar_tri.obj"));
-	}
+	private ModelSolarNeutronActivator model = new ModelSolarNeutronActivator();
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -32,8 +26,8 @@ public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer
 	private void renderAModelAt(TileEntitySolarNeutronActivator tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x+0.5F, (float)y, (float)z+0.5F);
-		GL11.glScalef(0.5F, 0.5F, 0.5F);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+		
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
 		
 		switch(tileEntity.facing)
@@ -44,7 +38,9 @@ public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer
 			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 		}
 		
-		model.renderAll();
+		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+		
+		model.render(0.0625F);
 		GL11.glPopMatrix();
 	}
 }

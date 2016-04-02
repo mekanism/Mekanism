@@ -176,8 +176,8 @@ public class ModelElectricPump extends ModelBase
 		pipeTogglePortLeft.render(size);
 		pipeToggleRight.render(size);
 		pipeToggleRingRight.render(size);
-		pipeTogglePortRight.render(size);*/
-		pumpPipe.render(size);
+		pipeTogglePortRight.render(size);
+		pumpPipe.render(size);*/
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

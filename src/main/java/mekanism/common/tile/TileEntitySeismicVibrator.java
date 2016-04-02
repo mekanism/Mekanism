@@ -31,7 +31,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	
 	public int updateDelay;
 	
-	public float clientPiston;
+	public int clientPiston;
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -51,6 +51,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 		
 		if(worldObj.isRemote)
 		{
+			if(isActive)
+			{
+				clientPiston++;
+			}
+			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -194,7 +199,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	@Override
 	public EnumSet<ForgeDirection> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.UP);
+		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
 
 	@Override
