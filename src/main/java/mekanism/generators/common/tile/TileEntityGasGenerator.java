@@ -31,7 +31,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public GasTank fuelTank;
 
 	public int burnTicks = 0;
+	public int maxBurnTicks;
 	public double generationRate = 0;
+	
+	public int clientUsed;
 
 	public TileEntityGasGenerator()
 	{
@@ -82,33 +85,61 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 			if(canOperate())
 			{
 				setActive(true);
-
-				if(burnTicks > 0)
+				
+				FuelGas fuel = null;
+				
+				if(fuelTank.getStored() != 0)
 				{
-					burnTicks--;
-					setEnergy(electricityStored + generationRate);
+					fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
+					maxBurnTicks = fuel.burnTicks;
+					generationRate = fuel.energyPerTick;
 				}
-				else if(fuelTank.getStored() > 0)
+				
+				int toUse = getToUse();
+				
+				output = generationRate*getToUse()*2;
+				
+				int total = burnTicks + fuelTank.getStored()*maxBurnTicks;
+				total -= toUse;
+				
+				setEnergy(getEnergy() + generationRate*toUse);
+				
+				if(fuelTank.getStored() > 0)
 				{
-					FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
-					
-					if(fuel != null)
-					{
-						burnTicks = fuel.burnTicks - 1;
-						generationRate = fuel.energyPerTick;
-						fuelTank.draw(1, true);
-						setEnergy(getEnergy() + generationRate);
-					}
+					fuelTank.setGas(new GasStack(fuelTank.getGasType(), total/maxBurnTicks));
 				}
-				else {
-					burnTicks = 0;
-					generationRate = 0;
-				}
+				
+				burnTicks = total % maxBurnTicks;
+				clientUsed = toUse;
 			}
 			else {
+				reset();
 				setActive(false);
 			}
 		}
+	}
+	
+	public void reset()
+	{
+		burnTicks = 0;
+		maxBurnTicks = 0;
+		generationRate = 0;
+		output = general.FROM_H2*2;
+		clientUsed = 0;
+	}
+	
+	public int getToUse()
+	{
+		if(generationRate == 0 || fuelTank.getGas() == null)
+		{
+			return 0;
+		}
+		
+		int max = (int)Math.ceil(((float)fuelTank.getStored()/(float)fuelTank.getMaxGas())*256F);
+		max = Math.min((fuelTank.getStored()*maxBurnTicks) + burnTicks, max);
+		max = (int)Math.min((getMaxEnergy()-getEnergy())/generationRate, max);
+		
+		return max;
 	}
 
 	@Override
@@ -151,7 +182,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canOperate()
 	{
-		return getEnergy() < getMaxEnergy() && fuelTank.getStored() > 0 && MekanismUtils.canFunction(this);
+		return getEnergy() < getMaxEnergy() && (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
 	}
 
 	/**
@@ -209,6 +240,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		
 		generationRate = dataStream.readDouble();
 		output = dataStream.readDouble();
+		clientUsed = dataStream.readInt();
 	}
 
 	@Override
@@ -228,6 +260,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		
 		data.add(generationRate);
 		data.add(output);
+		data.add(clientUsed);
 		
 		return data;
 	}

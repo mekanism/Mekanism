@@ -44,7 +44,7 @@ public class GuiGasGenerator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate) + "/t",
+						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate*tileEntity.clientUsed) + "/t",
 						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
@@ -67,6 +67,8 @@ public class GuiGasGenerator extends GuiMekanism
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		String s = LangUtils.localize("gui.burnRate") + ": " + tileEntity.clientUsed;
+		fontRendererObj.drawString(s, xSize - 8 - fontRendererObj.getStringWidth(s), (ySize - 96) + 2, 0x404040);
 	}
 
 	@Override

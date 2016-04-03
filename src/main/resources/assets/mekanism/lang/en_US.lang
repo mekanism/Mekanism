@@ -554,6 +554,7 @@ gui.overridden=Overridden
 gui.nowOwn=You now own this item.
 gui.frequency=Frequency
 gui.mode=Mode
+gui.burnRate=Burn Rate
 
 gui.reactor.injectionRate=Injection Rate
 

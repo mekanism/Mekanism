@@ -182,7 +182,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		else if(type == MachineType.FLUIDIC_PLENISHER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidicPlenisher.png"));
 			fluidicPlenisher.render(0.0560F);
