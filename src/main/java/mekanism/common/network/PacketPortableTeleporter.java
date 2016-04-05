@@ -107,7 +107,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					if(teleporter != null)
 					{
 						try {
-							teleporter.didTeleport.add(player);
+							teleporter.didTeleport.add(player.getPersistentID());
 							teleporter.teleDelay = 5;
 							
 							item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));

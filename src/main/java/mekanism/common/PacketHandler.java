@@ -27,8 +27,8 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
-import mekanism.common.network.PacketPersonalChest;
-import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
+import mekanism.common.network.PacketEntityMove;
+import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketJetpackData;
@@ -41,6 +41,8 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketOredictionificatorGui;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
+import mekanism.common.network.PacketPersonalChest;
+import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPortableTankState;
 import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
 import mekanism.common.network.PacketPortableTeleporter;
@@ -131,6 +133,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.CLIENT);
 		netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.SERVER);
 		netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
+		netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
 	}
 	
 	/**

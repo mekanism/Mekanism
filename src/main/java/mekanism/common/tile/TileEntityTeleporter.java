@@ -7,9 +7,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
@@ -20,6 +22,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -53,7 +56,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public AxisAlignedBB teleportBounds = null;
 
-	public Set<Entity> didTeleport = new HashSet<Entity>();
+	public Set<UUID> didTeleport = new HashSet<UUID>();
 
 	public int teleDelay = 0;
 
@@ -271,14 +274,20 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public void cleanTeleportCache()
 	{
-		List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds);
-		Set<Entity> teleportCopy = (Set<Entity>)((HashSet<Entity>)didTeleport).clone();
-
-		for(Entity entity : teleportCopy)
+		List<UUID> list = new ArrayList<UUID>();
+		
+		for(Entity e : (List<Entity>)worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds))
 		{
-			if(!list.contains(entity))
+			list.add(e.getPersistentID());
+		}
+		
+		Set<UUID> teleportCopy = (Set<UUID>)((HashSet<UUID>)didTeleport).clone();
+
+		for(UUID id : teleportCopy)
+		{
+			if(!list.contains(id))
 			{
-				didTeleport.remove(entity);
+				didTeleport.remove(id);
 			}
 		}
 	}
@@ -362,7 +371,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 			if(teleporter != null)
 			{
-				teleporter.didTeleport.add(entity);
+				teleporter.didTeleport.add(entity.getPersistentID());
 				teleporter.teleDelay = 5;
 
 				if(entity instanceof EntityPlayerMP)
@@ -450,10 +459,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			{
 				e.copyDataFrom(entity, true);
 				world.spawnEntityInWorld(e);
-				teleporter.didTeleport.add(e);
+				teleporter.didTeleport.add(e.getPersistentID());
 			}
 
 			entity.isDead = true;
+		}
+		else {
+			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			Mekanism.packetHandler.sendToReceivers(new EntityMoveMessage(entity), new Range4D(new Coord4D(entity)));
 		}
 	}
 
@@ -501,7 +514,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 		for(Entity entity : entities)
 		{
-			if(!didTeleport.contains(entity))
+			if(!didTeleport.contains(entity.getPersistentID()))
 			{
 				ret.add(entity);
 			}
