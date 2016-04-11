@@ -863,6 +863,19 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			}
 		}
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+		if(tileEntity instanceof IBoundingBlock)
+		{
+			((IBoundingBlock)tileEntity).onBreak();
+		}
+
+		super.breakBlock(world, x, y, z, block, meta);
+	}
 
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
@@ -1034,7 +1047,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	@Override
 	public boolean shouldRenderBlock(IBlockAccess world, int x, int y, int z, int meta)
 	{
-		return true;
+		return BasicType.get(this, world.getBlockMetadata(x, y, z)) != BasicType.SECURITY_DESK;
 	}
 	
 	public static enum BasicType

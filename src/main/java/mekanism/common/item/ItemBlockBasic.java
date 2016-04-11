@@ -232,12 +232,20 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
 	{
-		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
-
-		if(place)
+		boolean place = true;
+		
+		BasicType type = BasicType.get(stack);
+		
+		if(type == BasicType.SECURITY_DESK)
 		{
-			BasicType type = BasicType.get(stack);
-			
+			if(y+1 > 255 || !world.getBlock(x, y+1, z).isReplaceable(world, x, y+1, z))
+			{
+				place = false;
+			}
+		}
+
+		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
+		{
 			if(type == BasicType.BIN && stack.stackTagCompound != null)
 			{
 				TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(x, y, z);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.security.IOwnerItem;
@@ -16,8 +17,9 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySecurityDesk extends TileEntityContainerBlock
+public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock
 {
 	public String owner;
 	
@@ -273,5 +275,29 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void onPlace() 
+	{
+		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).getFromSide(ForgeDirection.UP), Coord4D.get(this));
+	}
+
+	@Override
+	public void onBreak() 
+	{
+		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+	}
+	
+	@Override
+	public Frequency getFrequency(FrequencyManager manager)
+	{
+		if(manager == Mekanism.securityFrequencies)
+		{
+			return frequency;
+		}
+		
+		return null;
 	}
 }

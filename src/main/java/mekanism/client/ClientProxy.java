@@ -99,6 +99,7 @@ import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderPersonalChest;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
+import mekanism.client.render.tileentity.RenderSecurityDesk;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
@@ -314,7 +315,7 @@ public class ClientProxy extends CommonProxy
 		GameRegistry.registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater");
 		ClientRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing", new RenderThermoelectricBoiler());
 		ClientRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve", new RenderThermoelectricBoiler());
-		GameRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk");
+		ClientRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk", new RenderSecurityDesk());
 	}
 
 	@Override
