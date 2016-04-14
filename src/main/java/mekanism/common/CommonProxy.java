@@ -203,6 +203,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
 		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
 		GameRegistry.registerTileEntity(TileEntityStructuralGlass.class, "StructuralGlass");
+		GameRegistry.registerTileEntity(TileEntityFormulaicAssemblicator.class, "FormulaicAssemblicator");
 		GameRegistry.registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater");
 		GameRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing");
 		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");

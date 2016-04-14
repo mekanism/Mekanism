@@ -16,6 +16,7 @@ import mekanism.client.model.ModelLaserAmplifier;
 import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
 import mekanism.client.model.ModelPressurizedReactionChamber;
+import mekanism.client.model.ModelResistiveHeater;
 import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.model.ModelSolarNeutronActivator;
@@ -55,6 +56,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelLaser laser = new ModelLaser();
 	public ModelLaserAmplifier laserAmplifier = new ModelLaserAmplifier();
 	public ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
+	public ModelResistiveHeater resistiveHeater = new ModelResistiveHeater();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -210,6 +212,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserTractorBeam.png"));
 			laserAmplifier.render(0.0560F);
+		}
+		else if(type == MachineType.RESISTIVE_HEATER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
+			resistiveHeater.render(0.0625F);
 		}
 		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
 		{

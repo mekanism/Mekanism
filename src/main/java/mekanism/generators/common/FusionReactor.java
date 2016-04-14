@@ -141,7 +141,7 @@ public class FusionReactor implements IFusionReactor
 		else {
 			burning = false;
 		}
-
+		
 		//Perform the heat transfer calculations
 		transferHeat();
 
@@ -218,7 +218,7 @@ public class FusionReactor implements IFusionReactor
 		double plasmaCaseHeat = plasmaCaseConductivity * (lastPlasmaTemperature - lastCaseTemperature);
 		plasmaTemperature -= plasmaCaseHeat / plasmaHeatCapacity;
 		caseTemperature += plasmaCaseHeat / caseHeatCapacity;
-
+		
 		//Transfer from casing to water if necessary
 		if(activelyCooled)
 		{
