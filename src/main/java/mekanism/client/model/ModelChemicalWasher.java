@@ -49,9 +49,9 @@ public class ModelChemicalWasher extends ModelBase
 		base.setTextureSize(128, 64);
 		base.mirror = true;
 		setRotation(base, 0F, 0F, 0F);
-		portTop = new ModelRenderer(this, 66, 0);
-		portTop.addBox(0F, 0F, 0F, 8, 1, 8);
-		portTop.setRotationPoint(-4F, 8F, -4F);
+		portTop = new ModelRenderer(this, 53, 33);
+		portTop.addBox(0F, 0F, 0F, 10, 1, 10);
+		portTop.setRotationPoint(-5F, 8F, -5F);
 		portTop.setTextureSize(128, 64);
 		portTop.mirror = true;
 		setRotation(portTop, 0F, 0F, 0F);

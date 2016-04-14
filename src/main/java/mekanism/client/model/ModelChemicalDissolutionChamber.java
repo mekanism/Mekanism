@@ -213,9 +213,9 @@ public class ModelChemicalDissolutionChamber extends ModelBase
 		glass.setTextureSize(128, 64);
 		glass.mirror = true;
 		setRotation(glass, 0F, 0F, 0F);
-		portToggle1 = new ModelRenderer(this, 64, 32);
-		portToggle1.addBox(0F, 0F, 0F, 1, 8, 8);
-		portToggle1.setRotationPoint(-8.01F, 12F, -4F);
+		portToggle1 = new ModelRenderer(this, 106, 0);
+		portToggle1.addBox(0F, 0F, 0F, 1, 10, 10);
+		portToggle1.setRotationPoint(-8.01F, 10.99F, -5F);
 		portToggle1.setTextureSize(128, 64);
 		portToggle1.mirror = true;
 		setRotation(portToggle1, 0F, 0F, 0F);

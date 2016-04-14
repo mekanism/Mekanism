@@ -19,7 +19,7 @@ public class ModelChemicalOxidizer extends ModelBase
 	ModelRenderer connector;
 	ModelRenderer connectorToggle;
 
-	public ModelChemicalOxidizer() 
+	public ModelChemicalOxidizer()
 	{
 		textureWidth = 128;
 		textureHeight = 64;
@@ -72,9 +72,9 @@ public class ModelChemicalOxidizer extends ModelBase
 		base.setTextureSize(128, 64);
 		base.mirror = true;
 		setRotation(base, 0F, 0F, 0F);
-		connector = new ModelRenderer(this, 64, 28);
-		connector.addBox(0F, 0F, 0F, 1, 8, 8);
-		connector.setRotationPoint(-8F, 12F, -4F);
+		connector = new ModelRenderer(this, 0, 34);
+		connector.addBox(0F, 0F, 0F, 1, 10, 10);
+		connector.setRotationPoint(-8F, 11F, -5F);
 		connector.setTextureSize(128, 64);
 		connector.mirror = true;
 		setRotation(connector, 0F, 0F, 0F);

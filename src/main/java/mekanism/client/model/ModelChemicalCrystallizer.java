@@ -50,10 +50,10 @@ public class ModelChemicalCrystallizer extends ModelBase
 		rimBack.setTextureSize(128, 64);
 		rimBack.mirror = true;
 		setRotation(rimBack, 0F, 0F, 0F);
-		portRight = new ModelRenderer(this, 36, 42);
+		portRight = new ModelRenderer(this, 54, 42);
 		portRight.mirror = true;
-		portRight.addBox(0F, 0F, 0F, 1, 8, 8);
-		portRight.setRotationPoint(7.01F, 12F, -4F);
+		portRight.addBox(0F, 0F, 0F, 1, 10, 10);
+		portRight.setRotationPoint(7.01F, 11F, -5F);
 		portRight.setTextureSize(128, 64);
 		setRotation(portRight, 0F, 0F, 0F);
 		rimRight = new ModelRenderer(this, 0, 50);
