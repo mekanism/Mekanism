@@ -55,11 +55,11 @@ public class ModelChemicalInfuser extends ModelBase
 		tank2.setRotationPoint(1F, 8F, 1F);
 		tank2.setTextureSize(128, 64);
 		setRotation(tank2, 0F, 0F, 0F);
-		portRight = new ModelRenderer(this, 64, 0);
-		portRight.mirror = true;
-		portRight.addBox(0F, 0F, 0F, 1, 10, 10);
-		portRight.setRotationPoint(7.01F, 11F, -5F);
+		portRight = new ModelRenderer(this, 0, 38);
+		portRight.addBox(0F, 0F, 0F, 1, 8, 8);
+		portRight.setRotationPoint(7.01F, 12F, -4F);
 		portRight.setTextureSize(128, 64);
+		portRight.mirror = true;
 		setRotation(portRight, 0F, 0F, 0F);
 		portBack = new ModelRenderer(this, 0, 54);
 		portBack.addBox(0F, 0F, 0F, 8, 8, 1);
@@ -67,9 +67,9 @@ public class ModelChemicalInfuser extends ModelBase
 		portBack.setTextureSize(128, 64);
 		portBack.mirror = true;
 		setRotation(portBack, 0F, 0F, 0F);
-		portLeft = new ModelRenderer(this, 64, 0);
-		portLeft.addBox(0F, 0F, 0F, 1, 10, 10);
-		portLeft.setRotationPoint(-8.01F, 11F, -5F);
+		portLeft = new ModelRenderer(this, 0, 38);
+		portLeft.addBox(0F, 0F, 0F, 1, 8, 8);
+		portLeft.setRotationPoint(-8.01F, 12F, -4F);
 		portLeft.setTextureSize(128, 64);
 		portLeft.mirror = true;
 		setRotation(portLeft, 0F, 0F, 0F);
