@@ -1,7 +1,13 @@
 package mekanism.common.tile;
 
+import java.util.ArrayList;
+
+import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
+import mekanism.common.Mekanism;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 
 public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
@@ -11,12 +17,24 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock
 	@Override
 	public void setMultiblock(String id)
 	{
+		boolean packet = false;
+		
 		if(id == null && multiblockUUID != null)
 		{
 			SynchronizedBoilerData.clientHotMap.remove(multiblockUUID);
+			packet = true;
+		}
+		else if(id != null && multiblockUUID == null)
+		{
+			packet = true;
 		}
 		
 		super.setMultiblock(id);
+		
+		if(packet && !worldObj.isRemote)
+		{
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		}
 	}
 	
 	@Override

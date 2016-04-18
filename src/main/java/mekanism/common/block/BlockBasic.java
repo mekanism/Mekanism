@@ -34,6 +34,7 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityStructuralGlass;
@@ -223,6 +224,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[5][0] = new CTMData("ctm/SuperheatingElement", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
+				ctms[5][1] = new CTMData("ctm/SuperheatingElementOn", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
 				ctms[7][0] = new CTMData("ctm/BoilerCasing", this, Arrays.asList(7, 8)).registerIcons(register);
 				ctms[8][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(7, 8)).registerIcons(register);
 				
@@ -241,6 +243,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[4][2] = ctms[4][2].mainTextureData.icon;
 				icons[4][3] = ctms[4][3].mainTextureData.icon;
 				icons[5][0] = ctms[5][0].mainTextureData.icon;
+				icons[5][1] = ctms[5][1].mainTextureData.icon;
 				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = ctms[8][0].mainTextureData.icon;
 				
@@ -291,6 +294,15 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					case 4:
 						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
 						return icons[meta][tileEntity2.tier.ordinal()];
+					case 5:
+						TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)world.getTileEntity(x, y, z);
+						
+						if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
+						{
+							return icons[meta][SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 1 : 0];
+						}
+						
+						return icons[meta][0];
 					default:
 						return getIcon(side, meta);
 				}
@@ -373,8 +385,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			case BASIC_BLOCK_1:
 				switch(meta)
 				{
-					case 9:
 					case 10:
+						return false;
+					case 9:
 					case 11:
 						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
 
@@ -402,7 +415,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				{
 					case 1:
 					case 2:
-						TileEntityInductionCasing tileEntity = (TileEntityInductionCasing)world.getTileEntity(x, y, z);
+					case 7:
+					case 8:
+						TileEntityMultiblock tileEntity = (TileEntityMultiblock)world.getTileEntity(x, y, z);
 
 						if(tileEntity != null)
 						{
@@ -1039,6 +1054,17 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		{
 			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
 			return ctms[meta][tileEntity.tier.ordinal()];
+		}
+		else if(type == BasicType.SUPERHEATING_ELEMENT)
+		{
+			TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)world.getTileEntity(x, y, z);
+			
+			if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
+			{
+				return ctms[meta][SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 1 : 0];
+			}
+			
+			return ctms[meta][0];
 		}
 
 		return ctms[meta][0];
