@@ -1,7 +1,9 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
+import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
@@ -9,6 +11,9 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -62,6 +67,12 @@ public class ModelEnergyCube extends ModelBase
 	ModelRenderer ledRight1;
 	ModelRenderer ledLeft1;
 	ModelRenderer ledLeft2;
+	
+	public ModelRenderer[] leds1;
+	public ModelRenderer[] leds2;
+	
+	public ModelRenderer[] ports;
+	public ModelRenderer[] connectors;
 
 	public ModelEnergyCube() 
 	{
@@ -332,9 +343,15 @@ public class ModelEnergyCube extends ModelBase
 		ledLeft2.setTextureSize(64, 64);
 		ledLeft2.mirror = true;
 		setRotation(ledLeft2, 0F, 0F, 0F);
+		
+		leds1 = new ModelRenderer[] {ledBottom1, ledTop1, ledFront1, ledBack1, ledLeft1, ledRight1};
+		leds2 = new ModelRenderer[] {ledBottom2, ledTop2, ledFront2, ledBack2, ledLeft2, ledRight2};
+		
+		ports = new ModelRenderer[] {portBottomToggle, portTopToggle, portFrontToggle, portBackToggle, portLeftToggle, portRightToggle};
+		connectors = new ModelRenderer[] {connectorBottomToggle, connectorTopToggle, connectorFrontToggle, connectorBackToggle, connectorLeftToggle, connectorRightToggle};
 	}
 
-	public void render(float size)
+	public void render(float size, EnergyCubeTier tier, TextureManager manager)
 	{
 		frame12.render(size);
 		frame11.render(size);
@@ -349,7 +366,6 @@ public class ModelEnergyCube extends ModelBase
 		frame2.render(size);
 		frame1.render(size);
 		
-		MekanismRenderer.glowOn();
 		corner8.render(size);
 		corner7.render(size);
 		corner6.render(size);
@@ -358,112 +374,41 @@ public class ModelEnergyCube extends ModelBase
 		corner3.render(size);
 		corner2.render(size);
 		corner1.render(size);
+		
+		GL11.glPushMatrix();
+		GL11.glScalef(1.0001F, 1.0001F, 1.0001F);
+		GL11.glTranslatef(0, -0.00011F, 0);
+		manager.bindTexture(RenderEnergyCube.resources.get(tier));
+		MekanismRenderer.glowOn();
+		
+		corner8.render(size);
+		corner7.render(size);
+		corner6.render(size);
+		corner5.render(size);
+		corner4.render(size);
+		corner3.render(size);
+		corner2.render(size);
+		corner1.render(size);
+		
 		MekanismRenderer.glowOff();
+		GL11.glPopMatrix();
 	}
 	
-	@SuppressWarnings("incomplete-switch")
-	public void renderSide(float size, ForgeDirection side, IOState state, TextureManager renderer)
+	public void renderSide(float size, ForgeDirection side, IOState state, EnergyCubeTier tier, TextureManager renderer)
 	{
 		if(state != IOState.OFF)
 		{
-			switch(side)
+			connectors[side.ordinal()].render(size);
+			ports[side.ordinal()].render(size);
+			
+			if(state == IOState.OUTPUT)
 			{
-				case DOWN:
-					connectorBottomToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOn();
-					}
-					
-					portBottomToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOff();
-					}
-					
-					break;
-				case UP:
-					connectorTopToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOn();
-					}
-					
-					portTopToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOff();
-					}
-					
-					break;
-				case NORTH:
-					connectorFrontToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOn();
-					}
-					
-					portFrontToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOff();
-					}
-					
-					break;
-				case SOUTH:
-					connectorBackToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOn();
-					}
-					
-					portBackToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOff();
-					}
-					
-					break;
-				case WEST:
-					connectorLeftToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOn();
-					}
-					
-					portLeftToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOff();
-					}
-					
-					break;
-				case EAST:
-					connectorRightToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOn();
-					}
-					
-					portRightToggle.render(size);
-					
-					if(state == IOState.OUTPUT)
-					{
-						MekanismRenderer.glowOff();
-					}
-					
-					break;
+				MekanismRenderer.glowOn();
+				renderer.bindTexture(RenderEnergyCube.resources.get(tier));
+				
+				ports[side.ordinal()].render(size);
+				
+				MekanismRenderer.glowOff();
 			}
 		}
 		
@@ -474,39 +419,8 @@ public class ModelEnergyCube extends ModelBase
 			MekanismRenderer.glowOn();
 		}
 		
-		switch(side)
-		{
-			case DOWN:
-				ledBottom1.render(size);
-				ledBottom2.render(size);
-				
-				break;
-			case UP:
-				ledTop1.render(size);
-				ledTop2.render(size);
-				
-				break;
-			case NORTH:
-				ledFront1.render(size);
-				ledFront2.render(size);
-				
-				break;
-			case SOUTH:
-				ledBack1.render(size);
-				ledBack2.render(size);
-				
-				break;
-			case WEST:
-				ledLeft1.render(size);
-				ledLeft2.render(size);
-				
-				break;
-			case EAST:
-				ledRight1.render(size);
-				ledRight2.render(size);
-				
-				break;
-		}
+		leds1[side.ordinal()].render(size);
+		leds2[side.ordinal()].render(size);
 		
 		if(state == IOState.OUTPUT)
 		{

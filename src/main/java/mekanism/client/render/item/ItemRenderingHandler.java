@@ -129,22 +129,23 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
 			IEnergizedItem energized = (IEnergizedItem)item.getItem();
-			mc.renderEngine.bindTexture(RenderEnergyCube.resources.get(tier));
+			mc.renderEngine.bindTexture(RenderEnergyCube.baseTexture);
 
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 
-			energyCube.render(0.0625F);
+			energyCube.render(0.0625F, tier, mc.renderEngine);
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				energyCube.renderSide(0.0625F, side, side == ForgeDirection.NORTH ? IOState.OUTPUT : IOState.INPUT, mc.renderEngine);
+				mc.renderEngine.bindTexture(RenderEnergyCube.baseTexture);
+				energyCube.renderSide(0.0625F, side, side == ForgeDirection.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, mc.renderEngine);
 			}
 
 			GL11.glPushMatrix();
 			GL11.glTranslated(0.0, 1.0, 0.0);
-			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
+			mc.renderEngine.bindTexture(RenderEnergyCube.coreTexture);
 
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 			GL11.glEnable(GL11.GL_BLEND);

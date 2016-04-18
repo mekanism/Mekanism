@@ -30,6 +30,8 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 	private ModelEnergyCore core = new ModelEnergyCore();
 	
 	public static Map<EnergyCubeTier, ResourceLocation> resources = new HashMap<EnergyCubeTier, ResourceLocation>();
+	public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube.png");
+	public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png");
 
 	static {
 		if(resources.isEmpty())
@@ -52,7 +54,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
-		bindTexture(resources.get(tileEntity.tier));
+		bindTexture(baseTexture);
 
 		switch(tileEntity.facing)
 		{
@@ -75,12 +77,12 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F);
+		model.render(0.0625F, tileEntity.tier, field_147501_a.field_147553_e);
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			bindTexture(resources.get(tileEntity.tier));
-			model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side.ordinal()).ioState, field_147501_a.field_147553_e);
+			bindTexture(baseTexture);
+			model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side.ordinal()).ioState, tileEntity.tier, field_147501_a.field_147553_e);
 		}
 		
 		GL11.glPopMatrix();
@@ -89,7 +91,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
-			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
+			bindTexture(coreTexture);
 
 			MekanismRenderer.blendOn();
 			MekanismRenderer.glowOn();
