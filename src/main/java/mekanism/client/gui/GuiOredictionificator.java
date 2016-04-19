@@ -70,7 +70,7 @@ public class GuiOredictionificator extends GuiMekanism
 	
 	public int getScroll()
 	{
-		return Math.max(Math.min((int)(scroll*88), 88), 0);
+		return Math.max(Math.min((int)(scroll*73), 73), 0);
 	}
 	
 	public int getFilterIndex()
@@ -167,7 +167,7 @@ public class GuiOredictionificator extends GuiMekanism
 			if(tileEntity.filters.get(getFilterIndex()+i) != null)
 			{
 				int yStart = i*22 + 18;
-				boolean mouseOver = xAxis >= 10 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22;
+				boolean mouseOver = xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart+22;
 				
 				if(mouseOver)
 				{
@@ -207,9 +207,9 @@ public class GuiOredictionificator extends GuiMekanism
 			{
 				if(tileEntity.filters.get(getFilterIndex()+i) != null)
 				{
-					int yStart = i*29 + 18;
+					int yStart = i*22 + 18;
 
-					if(xAxis >= 10 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22)
+					if(xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart+22)
 					{
 						OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex()+i);
 
@@ -231,7 +231,7 @@ public class GuiOredictionificator extends GuiMekanism
 
 		if(isDragging)
 		{
-			scroll = Math.min(Math.max((float)(yAxis-18-dragOffset)/88F, 0), 1);
+			scroll = Math.min(Math.max((float)(yAxis-18-dragOffset)/73F, 0), 1);
 		}
 	}
 	
