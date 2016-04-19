@@ -10,11 +10,9 @@ public class ModelPressurizedReactionChamber extends ModelBase
 {
 	ModelRenderer frontDivider1;
 	ModelRenderer base;
-	ModelRenderer port2b;
 	ModelRenderer front;
 	ModelRenderer bar1;
 	ModelRenderer body;
-	ModelRenderer port1b;
 	ModelRenderer bar5;
 	ModelRenderer bar4;
 	ModelRenderer bar3;
@@ -38,13 +36,6 @@ public class ModelPressurizedReactionChamber extends ModelBase
 		base.setTextureSize(128, 64);
 		base.mirror = true;
 		setRotation(base, 0F, 0F, 0F);
-		port2b = new ModelRenderer(this, 0, 6);
-		port2b.addBox(0F, 0F, 0F, 1, 8, 2);
-		port2b.setRotationPoint(7F, 12F, -4F);
-		port2b.setTextureSize(128, 64);
-		port2b.mirror = true;
-		setRotation(port2b, 0F, 0F, 0F);
-		port2b.mirror = false;
 		front = new ModelRenderer(this, 48, 0);
 		front.addBox(0F, 0F, 0F, 9, 11, 5);
 		front.setRotationPoint(-2F, 9F, -7F);
@@ -63,12 +54,6 @@ public class ModelPressurizedReactionChamber extends ModelBase
 		body.setTextureSize(128, 64);
 		body.mirror = true;
 		setRotation(body, 0F, 0F, 0F);
-		port1b = new ModelRenderer(this, 0, 6);
-		port1b.addBox(0F, 0F, 0F, 1, 8, 2);
-		port1b.setRotationPoint(-8F, 12F, -4F);
-		port1b.setTextureSize(128, 64);
-		port1b.mirror = true;
-		setRotation(port1b, 0F, 0F, 0F);
 		bar5 = new ModelRenderer(this, 0, 0);
 		bar5.addBox(0F, 0F, 0F, 1, 1, 5);
 		bar5.setRotationPoint(-5F, 10F, -7F);
@@ -94,23 +79,20 @@ public class ModelPressurizedReactionChamber extends ModelBase
 		bar2.mirror = true;
 		setRotation(bar2, 0F, 0F, 0F);
 		frontDivider2 = new ModelRenderer(this, 52, 20);
+		frontDivider2.mirror = true;
 		frontDivider2.addBox(0F, 0F, 0F, 2, 12, 6);
 		frontDivider2.setRotationPoint(-4F, 8.5F, -7.5F);
 		frontDivider2.setTextureSize(128, 64);
-		frontDivider2.mirror = true;
 		setRotation(frontDivider2, 0F, 0F, 0F);
-		frontDivider2.mirror = false;
 	}
 
 	public void render(float size) 
 	{
 		frontDivider1.render(size);
 		base.render(size);
-		port2b.render(size);
 		front.render(size);
 		bar1.render(size);
 		body.render(size);
-		port1b.render(size);
 		bar5.render(size);
 		bar4.render(size);
 		bar3.render(size);

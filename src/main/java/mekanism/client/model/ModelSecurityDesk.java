@@ -1,15 +1,23 @@
 package mekanism.client.model;
 
+import org.lwjgl.opengl.GL11;
+
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelSecurityDesk extends ModelBase
 {
+	public static ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk_Overlay.png");
+	
 	ModelRenderer deskTop;
-	ModelRenderer port;
 	ModelRenderer deskBase;
 	ModelRenderer led;
 	ModelRenderer monitorBack;
@@ -31,12 +39,6 @@ public class ModelSecurityDesk extends ModelBase
 		deskTop.setTextureSize(128, 64);
 		deskTop.mirror = true;
 		setRotation(deskTop, 0F, 0F, 0F);
-		port = new ModelRenderer(this, 64, 0);
-		port.addBox(0F, 0F, 0F, 8, 8, 1);
-		port.setRotationPoint(-4F, 12F, 7.01F);
-		port.setTextureSize(128, 64);
-		port.mirror = true;
-		setRotation(port, 0F, 0F, 0F);
 		deskBase = new ModelRenderer(this, 0, 38);
 		deskBase.addBox(0F, 0F, 0F, 16, 5, 16);
 		deskBase.setRotationPoint(-8F, 19F, -8F);
@@ -93,10 +95,25 @@ public class ModelSecurityDesk extends ModelBase
 		setRotation(monitorScreen, -0.4712389F, 0F, 0F);
 	}
 
-	public void render(float size)
+	public void render(float size, TextureManager manager)
+	{
+		doRender(size);
+		
+		GL11.glPushMatrix();
+		manager.bindTexture(OVERLAY);
+		GL11.glScalef(1.001F, 1.001F, 1.001F);
+		GL11.glTranslatef(0, -0.0011F, 0);
+		MekanismRenderer.glowOn();
+		
+		doRender(size);
+		
+		MekanismRenderer.glowOff();
+		GL11.glPopMatrix();
+	}
+	
+	private void doRender(float size)
 	{
 		deskTop.render(size);
-		port.render(size);
 		deskBase.render(size);
 		led.render(size);
 		monitorBack.render(size);

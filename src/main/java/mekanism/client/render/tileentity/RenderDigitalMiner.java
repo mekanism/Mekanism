@@ -52,7 +52,7 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tileEntity.isActive);
+		model.render(0.0625F, tileEntity.isActive, field_147501_a.field_147553_e);
 		GL11.glPopMatrix();
 		
 		if(tileEntity.clientRendering)

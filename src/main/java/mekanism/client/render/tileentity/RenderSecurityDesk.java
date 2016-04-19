@@ -39,7 +39,7 @@ public class RenderSecurityDesk extends TileEntitySpecialRenderer
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F);
+		model.render(0.0625F, field_147501_a.field_147553_e);
 		GL11.glPopMatrix();
 	}
 }

@@ -1,14 +1,24 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelDigitalMiner extends ModelBase 
 {
+	public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner_OverlayOn.png");
+	public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner_OverlayOff.png");
+	
 	ModelRenderer keyboard;
 	ModelRenderer keyboardBottom;
 	ModelRenderer keyboardSupportExt1;
@@ -411,8 +421,24 @@ public class ModelDigitalMiner extends ModelBase
 		monitor3.mirror = true;
 		setRotation(monitor3, 0.0872665F, 0.2094395F, 0F);
 	}
+	
+	public void render(float size, boolean on, TextureManager manager)
+	{
+		render(size);
+		
+		GL11.glPushMatrix();
+		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
+		GL11.glScalef(1.001F, 1.001F, 1.001F);
+		GL11.glTranslatef(0, -0.0011F, 0);
+		MekanismRenderer.glowOn();
+		
+		render(size);
+		
+		MekanismRenderer.glowOff();
+		GL11.glPopMatrix();
+	}
 
-	public void render(float size, boolean on) 
+	public void render(float size) 
 	{
 		keyboard.render(size);
 		keyboardBottom.render(size);
@@ -425,25 +451,12 @@ public class ModelDigitalMiner extends ModelBase
 		monitor3back.render(size);
 		monitorBar1.render(size);
 		monitorBar2.render(size);
-		
-		if(on)
-		{
-			MekanismRenderer.glowOn();
-		}
-		
 		led1.render(size);
 		led2.render(size);
 		led3.render(size);
-		
 		monitor1.render(size);
 		monitor2.render(size);
 		monitor3.render(size);
-		
-		if(on)
-		{
-			MekanismRenderer.glowOff();
-		}
-		
 		monitorMount1.render(size);
 		monitorMount2.render(size);
 		frame1.render(size);

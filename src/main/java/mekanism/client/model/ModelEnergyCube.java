@@ -20,8 +20,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelEnergyCube extends ModelBase
 {
-	public static ResourceLocation LED_ON = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_On.png");
-	public static ResourceLocation LED_OFF = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_Off.png");
+	public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayOn.png");
+	public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayOff.png");
 	
 	ModelRenderer frame12;
 	ModelRenderer frame11;
@@ -412,7 +412,7 @@ public class ModelEnergyCube extends ModelBase
 			}
 		}
 		
-		renderer.bindTexture(state == IOState.OUTPUT ? LED_ON : LED_OFF);
+		renderer.bindTexture(state == IOState.OUTPUT ? OVERLAY_ON : OVERLAY_OFF);
 		
 		if(state == IOState.OUTPUT)
 		{

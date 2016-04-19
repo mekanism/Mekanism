@@ -21,6 +21,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 {
+	private Minecraft mc = Minecraft.getMinecraft();
+	
 	public ModelSecurityDesk securityDesk = new ModelSecurityDesk();
 	
 	@Override
@@ -47,8 +49,8 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 				GL11.glRotatef(180, 1.0F, 0.0F, 0.0F);
 				GL11.glScalef(0.8F, 0.8F, 0.8F);
 				GL11.glTranslatef(0.0F, -0.8F, 0.0F);
-				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk.png"));
-				securityDesk.render(0.0625F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk.png"));
+				securityDesk.render(0.0625F, mc.renderEngine);
 			}
 			
 			if(type == BasicType.STRUCTURAL_GLASS)
