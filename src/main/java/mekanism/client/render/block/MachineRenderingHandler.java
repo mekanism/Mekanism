@@ -93,7 +93,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
-			chargepad.render(0.0625F);
+			chargepad.render(0.0625F, mc.renderEngine);
 		}
 		else if(type == MachineType.LOGISTICAL_SORTER)
 		{

@@ -1,13 +1,23 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelChargepad extends ModelBase
 {
+	public static ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "Chargepad_Overlay.png");
+	
     ModelRenderer base;
     ModelRenderer port;
     ModelRenderer plug;
@@ -64,8 +74,24 @@ public class ModelChargepad extends ModelBase
 		pillar1.mirror = true;
 		setRotation(pillar1, 0F, 0F, 0F);
 	}
+	
+	public void render(float size, TextureManager manager)
+	{
+		doRender(size);
+		
+		GL11.glPushMatrix();
+		manager.bindTexture(OVERLAY);
+		GL11.glScalef(1.001F, 1.001F, 1.001F);
+		GL11.glTranslatef(0, -0.0011F, 0);
+		MekanismRenderer.glowOn();
+		
+		doRender(size);
+		
+		MekanismRenderer.glowOff();
+		GL11.glPopMatrix();
+	}
 
-	public void render(float size) 
+	private void doRender(float size) 
 	{
 		base.render(size);
 		port.render(size);
