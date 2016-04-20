@@ -1,13 +1,23 @@
 package mekanism.client.model;
 
+import org.lwjgl.opengl.GL11;
+
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelResistiveHeater extends ModelBase
 {
+	public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater_OverlayOn.png");
+	public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater_OverlayOff.png");
+	
 	ModelRenderer wallLeft;
 	ModelRenderer base;
 	ModelRenderer fin10;
@@ -155,8 +165,24 @@ public class ModelResistiveHeater extends ModelBase
 		portLeft.mirror = true;
 		setRotation(portLeft, 0F, 0F, 0F);
 	}
+	
+	public void render(float size, boolean on, TextureManager manager)
+	{
+		doRender(size);
+		
+		GL11.glPushMatrix();
+		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
+		GL11.glScalef(1.001F, 1.001F, 1.001F);
+		GL11.glTranslatef(0, -0.0011F, 0);
+		MekanismRenderer.glowOn();
+		
+		doRender(size);
+		
+		MekanismRenderer.glowOff();
+		GL11.glPopMatrix();
+	}
 
-	public void render(float size)
+	private void doRender(float size)
 	{
 		wallLeft.render(size);
 		base.render(size);

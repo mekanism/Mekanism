@@ -222,7 +222,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
-			resistiveHeater.render(0.0625F);
+			resistiveHeater.render(0.0625F, false, mc.renderEngine);
 		}
 		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
 		{

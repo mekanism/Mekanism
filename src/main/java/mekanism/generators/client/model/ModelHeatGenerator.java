@@ -1,13 +1,24 @@
 package mekanism.generators.client.model;
 
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelHeatGenerator extends ModelBase
 {
+	public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator_OverlayOn.png");
+	public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator_OverlayOff.png");
+	
 	ModelRenderer drum;
 	ModelRenderer ring1;
 	ModelRenderer ring2;
@@ -130,8 +141,24 @@ public class ModelHeatGenerator extends ModelBase
 		base.mirror = true;
 		setRotation(base, 0F, 0F, 0F);
 	}
+	
+	public void render(float size, boolean on, TextureManager manager)
+	{
+		doRender(size);
+		
+		GL11.glPushMatrix();
+		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
+		GL11.glScalef(1.001F, 1.001F, 1.001F);
+		GL11.glTranslatef(0, -0.0011F, 0);
+		MekanismRenderer.glowOn();
+		
+		doRender(size);
+		
+		MekanismRenderer.glowOff();
+		GL11.glPopMatrix();
+	}
 
-	public void render(float size) 
+	private void doRender(float size) 
 	{
 		drum.render(size);
 		ring1.render(size);

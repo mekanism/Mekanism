@@ -424,7 +424,7 @@ public class ModelDigitalMiner extends ModelBase
 	
 	public void render(float size, boolean on, TextureManager manager)
 	{
-		render(size);
+		doRender(size);
 		
 		GL11.glPushMatrix();
 		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
@@ -432,13 +432,13 @@ public class ModelDigitalMiner extends ModelBase
 		GL11.glTranslatef(0, -0.0011F, 0);
 		MekanismRenderer.glowOn();
 		
-		render(size);
+		doRender(size);
 		
 		MekanismRenderer.glowOff();
 		GL11.glPopMatrix();
 	}
 
-	public void render(float size) 
+	private void doRender(float size) 
 	{
 		keyboard.render(size);
 		keyboardBottom.render(size);
