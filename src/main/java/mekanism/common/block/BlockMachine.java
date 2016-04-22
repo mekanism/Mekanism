@@ -558,7 +558,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	{
 		if(world.isRemote)
 		{
-			return true;
+			return false;
 		}
 
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);

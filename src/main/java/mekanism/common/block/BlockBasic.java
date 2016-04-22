@@ -487,7 +487,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		
 		if(world.isRemote)
 		{
-			return true;
+			return false;
 		}
 
 		if(tile instanceof TileEntityThermalEvaporationController)

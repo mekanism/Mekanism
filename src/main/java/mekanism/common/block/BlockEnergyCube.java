@@ -156,7 +156,7 @@ public class BlockEnergyCube extends BlockContainer
 	{
 		if(world.isRemote)
 		{
-			return true;
+			return false;
 		}
 
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
