@@ -484,17 +484,16 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				return true;
 			}
 		}
-		
-		if(world.isRemote)
-		{
-			return false;
-		}
 
 		if(tile instanceof TileEntityThermalEvaporationController)
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
+				if(!world.isRemote)
+				{
+					entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
+				}
+				
 				return true;
 			}
 		}
@@ -504,12 +503,15 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			
 			if(!entityplayer.isSneaking())
 			{
-				if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+				if(!world.isRemote)
 				{
-					entityplayer.openGui(Mekanism.instance, 57, world, x, y, z);
-				}
-				else {
-					SecurityUtils.displayNoAccess(entityplayer);
+					if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+					{
+						entityplayer.openGui(Mekanism.instance, 57, world, x, y, z);
+					}
+					else {
+						SecurityUtils.displayNoAccess(entityplayer);
+					}
 				}
 				
 				return true;
@@ -521,57 +523,63 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 
 			if(entityplayer.getCurrentEquippedItem() != null && MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				Item tool = entityplayer.getCurrentEquippedItem().getItem();
-				
-				if(entityplayer.isSneaking())
+				if(!world.isRemote)
 				{
-					dismantleBlock(world, x, y, z, false);
-					return true;
+					Item tool = entityplayer.getCurrentEquippedItem().getItem();
+					
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(world, x, y, z, false);
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					}
+	
+					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][bin.facing];
+	
+					bin.setFacing((short)change);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-				{
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
-				}
-
-				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][bin.facing];
-
-				bin.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
 				
 				return true;
 			}
 
-			if(bin.getItemCount() < bin.tier.storage)
+			if(!world.isRemote)
 			{
-				if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
+				if(bin.getItemCount() < bin.tier.storage)
 				{
-					if(entityplayer.getCurrentEquippedItem() != null)
+					if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
 					{
-						ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
-						entityplayer.setCurrentItemOrArmor(0, remain);
-						bin.addTicks = 5;
-					}
-				}
-				else if(bin.addTicks > 0 && bin.getItemCount() > 0)
-				{
-					ItemStack[] inv = entityplayer.inventory.mainInventory;
-
-					for(int i = 0; i < inv.length; i++)
-					{
-						if(bin.getItemCount() == bin.tier.storage)
+						if(entityplayer.getCurrentEquippedItem() != null)
 						{
-							break;
-						}
-
-						if(inv[i] != null)
-						{
-							ItemStack remain = bin.add(inv[i]);
-							inv[i] = remain;
+							ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
+							entityplayer.setCurrentItemOrArmor(0, remain);
 							bin.addTicks = 5;
 						}
-
-						((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
+					}
+					else if(bin.addTicks > 0 && bin.getItemCount() > 0)
+					{
+						ItemStack[] inv = entityplayer.inventory.mainInventory;
+	
+						for(int i = 0; i < inv.length; i++)
+						{
+							if(bin.getItemCount() == bin.tier.storage)
+							{
+								break;
+							}
+	
+							if(inv[i] != null)
+							{
+								ItemStack remain = bin.add(inv[i]);
+								inv[i] = remain;
+								bin.addTicks = 5;
+							}
+	
+							((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
+						}
 					}
 				}
 			}
@@ -580,10 +588,20 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		}
 		else if(tile instanceof IMultiblock)
 		{
+			if(world.isRemote)
+			{
+				return true;
+			}
+			
 			return ((IMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
 		}
 		else if(tile instanceof IStructuralMultiblock)
 		{
+			if(world.isRemote)
+			{
+				return true;
+			}
+			
 			return ((IStructuralMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
 		}
 

@@ -103,7 +103,7 @@ public class BlockGasTank extends BlockContainer
 	{
 		if(world.isRemote)
 		{
-			return false;
+			return true;
 		}
 
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
