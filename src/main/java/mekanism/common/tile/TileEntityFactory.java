@@ -217,6 +217,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(4));
 		factory.recipeType = recipeType;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
+		factory.securityComponent.readFrom(securityComponent);
 		
 		for(int i = 0; i < tier.processes+5; i++)
 		{

@@ -34,6 +34,12 @@ public class TileComponentSecurity implements ITileComponent
 		tile.components.add(this);
 	}
 	
+	public void readFrom(TileComponentSecurity security)
+	{
+		owner = security.owner;
+		securityMode = security.securityMode;
+	}
+	
 	public SecurityFrequency getFrequency()
 	{
 		return frequency;
