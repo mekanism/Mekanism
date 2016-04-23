@@ -153,7 +153,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				{
 					isRecipe = true;
 					
-					if(operatingTicks == ticksRequired)
+					if(operatingTicks >= ticksRequired)
 					{
 						if(doSingleCraft())
 						{
@@ -163,6 +163,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 							{
 								pulseOperations--;
 							}
+							
+							ejectorComponent.outputItems();
 						}
 					}
 					else {
