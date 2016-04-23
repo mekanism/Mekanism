@@ -61,6 +61,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
 	public ModelResistiveHeater resistiveHeater = new ModelResistiveHeater();
 	public ModelQuantumEntangloporter quantumEntangloporter = new ModelQuantumEntangloporter();
+	public ModelResistiveHeater fuelwoodHeater = new ModelResistiveHeater();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -225,6 +226,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
 			resistiveHeater.render(0.0625F, false, mc.renderEngine);
+		}
+		else if(type == MachineType.FUELWOOD_HEATER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
+			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FuelwoodHeater.png"));
+			fuelwoodHeater.render(0.0625F, false, mc.renderEngine);
 		}
 		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
 		{

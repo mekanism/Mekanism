@@ -70,6 +70,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.energyPerHeat);
 			dataStream.writeDouble(general.maxEnergyPerSteam);
 			dataStream.writeDouble(general.superheatingHeatTransfer);
+			dataStream.writeDouble(general.heatPerFuelTick);
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -156,6 +157,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.energyPerHeat = dataStream.readDouble();
 			general.maxEnergyPerSteam = dataStream.readDouble();
 			general.superheatingHeatTransfer = dataStream.readDouble();
+			general.heatPerFuelTick = dataStream.readDouble();
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{

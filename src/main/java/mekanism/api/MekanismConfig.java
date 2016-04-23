@@ -63,6 +63,7 @@ public class MekanismConfig
 		public static double energyPerHeat = 1000;
 		public static double maxEnergyPerSteam = 100;
 		public static double superheatingHeatTransfer = 10000;
+		public static double heatPerFuelTick = 1;
 	}
 
 	public static class client

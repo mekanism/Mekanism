@@ -157,6 +157,7 @@ tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
 tile.MachineBlock3.Oredictionificator.name=Oredictionificator
 tile.MachineBlock3.ResistiveHeater.name=Resistive Heater
 tile.MachineBlock3.FormulaicAssemblicator.name=Formulaic Assemblicator
+tile.MachineBlock3.FuelwoodHeater.name=Fuelwood Heater
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
@@ -828,6 +829,7 @@ tooltip.Oredictionificator=A machine used to unify and translate between various
 tooltip.Factory=A machine that serves as an upgrade to regular machinery, allowing for multiple processing operations to occur at once.
 tooltip.ResistiveHeater=A condensed, coiled resistor capable of converting electrical energy directly into heat energy.
 tooltip.FormulaicAssemblicator=A machine that uses energy to rapidly craft items and blocks from Crafting Formulas. Doubles as an advanced crafting bench.
+tooltip.FuelwoodHeater=A machine that is capable of producing large quantities of heat energy by burning combustible items.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or other burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the sun to produce energy.
