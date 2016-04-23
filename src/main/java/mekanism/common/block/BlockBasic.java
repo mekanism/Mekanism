@@ -908,6 +908,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		}
 
 		super.breakBlock(world, x, y, z, block, meta);
+		
+		world.removeTileEntity(x, y, z);
 	}
 
 	@Override
