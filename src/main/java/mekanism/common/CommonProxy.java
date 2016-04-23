@@ -208,6 +208,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing");
 		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");
 		GameRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk");
+		GameRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter");
 	}
 	
 	public void handleTeleporterUpdate(PortableTeleporterMessage message) {}

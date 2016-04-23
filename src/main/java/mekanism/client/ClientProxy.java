@@ -98,6 +98,7 @@ import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderPersonalChest;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
+import mekanism.client.render.tileentity.RenderQuantumEntangloporter;
 import mekanism.client.render.tileentity.RenderResistiveHeater;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
 import mekanism.client.render.tileentity.RenderSecurityDesk;
@@ -318,6 +319,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing", new RenderThermoelectricBoiler());
 		ClientRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve", new RenderThermoelectricBoiler());
 		ClientRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk", new RenderSecurityDesk());
+		ClientRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter", new RenderQuantumEntangloporter());
 	}
 
 	@Override

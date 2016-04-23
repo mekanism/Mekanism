@@ -16,6 +16,7 @@ import mekanism.client.model.ModelLaserAmplifier;
 import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
 import mekanism.client.model.ModelPressurizedReactionChamber;
+import mekanism.client.model.ModelQuantumEntangloporter;
 import mekanism.client.model.ModelResistiveHeater;
 import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.client.model.ModelSeismicVibrator;
@@ -59,6 +60,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelLaserAmplifier laserAmplifier = new ModelLaserAmplifier();
 	public ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
 	public ModelResistiveHeater resistiveHeater = new ModelResistiveHeater();
+	public ModelQuantumEntangloporter quantumEntangloporter = new ModelQuantumEntangloporter();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -232,6 +234,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glTranslatef(0.0F, -0.55F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
 			solarNeutronActivator.render(0.0625F);
+		}
+		else if(type == MachineType.QUANTUM_ENTANGLOPORTER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter.png"));
+			quantumEntangloporter.render(0.0625F, mc.renderEngine);
 		}
 		else {
 			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);

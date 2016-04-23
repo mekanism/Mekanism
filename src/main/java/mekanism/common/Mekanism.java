@@ -79,7 +79,6 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityPressureDisperser;
-import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
@@ -1143,7 +1142,6 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
 		GameRegistry.registerTileEntity(TileEntityThermalEvaporationValve.class, "SalinationValve"); //TODO rename
 		GameRegistry.registerTileEntity(TileEntityThermalEvaporationBlock.class, "SalinationTank"); //TODO rename
-		GameRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter");
 		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
 		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
 
