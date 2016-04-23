@@ -29,6 +29,7 @@ public class RecipeFormula
 		}
 		
 		resetToRecipe();
+		
 		recipe = RecipeUtils.getRecipeFromGrid(dummy, world);
 	}
 	

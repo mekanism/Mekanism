@@ -59,6 +59,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	public TileComponentConfig configComponent;
 	public TileComponentSecurity securityComponent;
 	
+	public ItemStack lastFormulaStack;
+	public boolean needsFormulaUpdate = false;
+	
 	public TileEntityFormulaicAssemblicator()
 	{
 		super("FormulaicAssemblicator", MachineType.FORMULAIC_ASSEMBLICATOR.baseEnergy);
@@ -102,38 +105,27 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				pulseOperations++;
 			}
 			
+			RecipeFormula prev = formula;
+			
 			if(inventory[2] != null && inventory[2].getItem() instanceof ItemCraftingFormula)
 			{
 				ItemCraftingFormula item = (ItemCraftingFormula)inventory[2].getItem();
 				
-				if(item.getInventory(inventory[2]) != null && !item.isInvalid(inventory[2]))
+				if(formula == null || lastFormulaStack != inventory[2])
 				{
-					RecipeFormula itemFormula = new RecipeFormula(worldObj, item.getInventory(inventory[2]));
-					
-					if(itemFormula.isValidFormula(worldObj))
-					{
-						if(formula != null && !formula.isFormulaEqual(worldObj, itemFormula))
-						{
-							itemFormula = formula;
-							operatingTicks = 0;
-						}
-						else if(formula == null)
-						{
-							formula = itemFormula;
-						}
-					}
-					else {
-						formula = null;
-						item.setInvalid(inventory[2], true);
-					}
-				}
-				else {
-					formula = null;
+					loadFormula();
 				}
 			}
 			else {
 				formula = null;
 			}
+			
+			if(prev != formula)
+			{
+				needsFormulaUpdate = true;
+			}
+			
+			lastFormulaStack = inventory[2];
 			
 			if(autoMode && formula == null)
 			{
@@ -185,22 +177,55 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		}
 	}
 	
+	public void loadFormula()
+	{
+		ItemCraftingFormula item = (ItemCraftingFormula)inventory[2].getItem();
+		
+		if(item.getInventory(inventory[2]) != null && !item.isInvalid(inventory[2]))
+		{
+			RecipeFormula itemFormula = new RecipeFormula(worldObj, item.getInventory(inventory[2]));
+			
+			if(itemFormula.isValidFormula(worldObj))
+			{
+				if(formula != null && !formula.isFormulaEqual(worldObj, itemFormula))
+				{
+					formula = itemFormula;
+					operatingTicks = 0;
+				}
+				else if(formula == null)
+				{
+					formula = itemFormula;
+				}
+			}
+			else {
+				formula = null;
+				item.setInvalid(inventory[2], true);
+			}
+		}
+		else {
+			formula = null;
+		}
+	}
+	
 	@Override
 	public void markDirty()
 	{
 		super.markDirty();
 		
-		if(formula == null)
+		if(worldObj != null && !worldObj.isRemote)
 		{
-			for(int i = 0; i < 9; i++)
+			if(formula == null)
 			{
-				dummyInv.setInventorySlotContents(i, inventory[27+i]);
+				for(int i = 0; i < 9; i++)
+				{
+					dummyInv.setInventorySlotContents(i, inventory[27+i]);
+				}
+				
+				isRecipe = MekanismUtils.findMatchingRecipe(dummyInv, worldObj) != null;
 			}
-			
-			isRecipe = MekanismUtils.findMatchingRecipe(dummyInv, worldObj) != null;
-		}
-		else {
-			isRecipe = formula.matches(worldObj, inventory, 27);
+			else {
+				isRecipe = formula.matches(worldObj, inventory, 27);
+			}
 		}
 	}
 	
@@ -582,20 +607,23 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		
 		if(dataStream.readBoolean())
 		{
-			ItemStack[] inv = new ItemStack[9];
-			
-			for(int i = 0; i < 9; i++)
+			if(dataStream.readBoolean())
 			{
-				if(dataStream.readBoolean())
+				ItemStack[] inv = new ItemStack[9];
+				
+				for(int i = 0; i < 9; i++)
 				{
-					inv[i] = PacketHandler.readStack(dataStream);
+					if(dataStream.readBoolean())
+					{
+						inv[i] = PacketHandler.readStack(dataStream);
+					}
 				}
+				
+				formula = new RecipeFormula(worldObj, inv);
 			}
-			
-			formula = new RecipeFormula(worldObj, inv);
-		}
-		else {
-			formula = null;
+			else {
+				formula = null;
+			}
 		}
 	}
 
@@ -609,25 +637,35 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		data.add(controlType.ordinal());
 		data.add(isRecipe);
 		
-		if(formula != null)
+		if(needsFormulaUpdate)
 		{
 			data.add(true);
 			
-			for(int i = 0; i < 9; i++)
+			if(formula != null)
 			{
-				if(formula.input[i] != null)
+				data.add(true);
+				
+				for(int i = 0; i < 9; i++)
 				{
-					data.add(true);
-					data.add(formula.input[i]);
+					if(formula.input[i] != null)
+					{
+						data.add(true);
+						data.add(formula.input[i]);
+					}
+					else {
+						data.add(false);
+					}
 				}
-				else {
-					data.add(false);
-				}
+			}
+			else {
+				data.add(false);
 			}
 		}
 		else {
 			data.add(false);
 		}
+		
+		needsFormulaUpdate = false;
 		
 		return data;
 	}
