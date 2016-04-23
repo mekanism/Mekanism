@@ -108,7 +108,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				
 				if(item.getInventory(inventory[2]) != null && !item.isInvalid(inventory[2]))
 				{
-					RecipeFormula itemFormula = new RecipeFormula(item.getInventory(inventory[2]));
+					RecipeFormula itemFormula = new RecipeFormula(worldObj, item.getInventory(inventory[2]));
 					
 					if(itemFormula.isValidFormula(worldObj))
 					{
@@ -144,7 +144,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			{
 				boolean canOperate = true;
 				
-				if(!formula.matches(worldObj, inventory, 27))
+				if(!isRecipe)
 				{
 					canOperate = moveItemsToGrid();
 				}
@@ -456,7 +456,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			
 			if(item.getInventory(inventory[2]) == null)
 			{
-				RecipeFormula formula = new RecipeFormula(inventory, 27);
+				RecipeFormula formula = new RecipeFormula(worldObj, inventory, 27);
 				
 				if(formula.isValidFormula(worldObj))
 				{
@@ -592,7 +592,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				}
 			}
 			
-			formula = new RecipeFormula(inv);
+			formula = new RecipeFormula(worldObj, inv);
 		}
 		else {
 			formula = null;
