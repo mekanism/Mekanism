@@ -53,6 +53,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -130,6 +131,14 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	{
 		return !GeneratorType.getFromMetadata(meta).hasModel;
 	}
+	
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+		setBlockBoundsBasedOnState(world, x, y, z);
+		
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+    }
 	
 	@Override
 	@SideOnly(Side.CLIENT)
