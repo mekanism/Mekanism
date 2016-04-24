@@ -90,7 +90,6 @@ import mekanism.client.render.tileentity.RenderElectrolyticSeparator;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderFluidicPlenisher;
-import mekanism.client.render.tileentity.RenderFuelwoodHeater;
 import mekanism.client.render.tileentity.RenderGasTank;
 import mekanism.client.render.tileentity.RenderLaser;
 import mekanism.client.render.tileentity.RenderLaserAmplifier;
@@ -323,7 +322,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve", new RenderThermoelectricBoiler());
 		ClientRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk", new RenderSecurityDesk());
 		ClientRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter", new RenderQuantumEntangloporter());
-		ClientRegistry.registerTileEntity(TileEntityFuelwoodHeater.class, "FuelwoodHeater", new RenderFuelwoodHeater());
+		GameRegistry.registerTileEntity(TileEntityFuelwoodHeater.class, "FuelwoodHeater");
 	}
 
 	@Override

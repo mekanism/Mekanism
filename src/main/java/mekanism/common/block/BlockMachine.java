@@ -230,9 +230,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			case MACHINE_BLOCK_3:
 				icons[0][0] = BASE_ICON;
 				icons[2][0] = BASE_ICON;
-				MekanismRenderer.loadDynamicTextures(register, "oredictionificator/" + MachineType.OREDICTIONIFICATOR.name, icons[3], DefIcon.getAll(register.registerIcon("mekanism:oredictionificator/OredictionificatorSide")));
+				MekanismRenderer.loadDynamicTextures(register, "oredictionificator/" + MachineType.OREDICTIONIFICATOR.name, icons[3]);
 				icons[4][0] = BASE_ICON;
-				MekanismRenderer.loadDynamicTextures(register, "formulaic_assemblicator/" + MachineType.FORMULAIC_ASSEMBLICATOR.name, icons[5], DefIcon.getAll(register.registerIcon("mekanism:formulaic_assemblicator/FormulaicAssemblicatorSide")));
+				MekanismRenderer.loadDynamicTextures(register, "formulaic_assemblicator/" + MachineType.FORMULAIC_ASSEMBLICATOR.name, icons[5]);
+				MekanismRenderer.loadDynamicTextures(register, "fuelwood_heater/" + MachineType.FUELWOOD_HEATER.name, icons[6]);
 				
 				break;
 		}
@@ -433,6 +434,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				{
 					case 3:
 					case 5:
+					case 6:
 						return icons[meta][side];
 					default:
 						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
@@ -487,6 +489,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 				{
 					case 3:
 					case 5:
+					case 6:
 						boolean active = MekanismUtils.isActive(world, x, y, z);
 						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					default:
@@ -1190,7 +1193,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false),
 		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, true, false),
 		FORMULAIC_ASSEMBLICATOR(MachineBlock.MACHINE_BLOCK_3, 5, "FormulaicAssemblicator", 56, TileEntityFormulaicAssemblicator.class, true, false, true),
-		FUELWOOD_HEATER(MachineBlock.MACHINE_BLOCK_3, 6, "FuelwoodHeater", 58, TileEntityFuelwoodHeater.class, false, true, false);
+		FUELWOOD_HEATER(MachineBlock.MACHINE_BLOCK_3, 6, "FuelwoodHeater", 58, TileEntityFuelwoodHeater.class, false, false, false);
 
 		public MachineBlock typeBlock;
 		public int meta;
