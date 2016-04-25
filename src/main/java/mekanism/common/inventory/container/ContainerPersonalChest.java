@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import invtweaks.api.container.ChestContainer;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.slot.SlotPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.EntityPlayer;

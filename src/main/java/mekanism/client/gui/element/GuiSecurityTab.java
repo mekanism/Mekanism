@@ -18,9 +18,8 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiSecurityTab extends GuiElement
@@ -66,7 +65,7 @@ public class GuiSecurityTab extends GuiElement
 		
 		int renderX = 26 + (18*mode.ordinal());
 
-		if(getOwner() != null && getOwner().equals(mc.thePlayer.getCommandSenderName()) && 
+		if(getOwner() != null && getOwner().equals(mc.thePlayer.getName()) &&
 				(getFrequency() == null || !getFrequency().override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
@@ -93,7 +92,7 @@ public class GuiSecurityTab extends GuiElement
 		{
 			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem()) : SecurityUtils.getSecurityDisplay(tileEntity);
 			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
-			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getCommandSenderName(), getOwner());
+			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getName(), getOwner());
 			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 			
 			if(isItem ? SecurityUtils.isOverridden(getItem()) : SecurityUtils.isOverridden(tileEntity))
@@ -172,7 +171,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(button == 0)
 		{
-			if(getOwner() != null && mc.thePlayer.getCommandSenderName().equals(getOwner()))
+			if(getOwner() != null && mc.thePlayer.getName().equals(getOwner()))
 			{
 				if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 				{

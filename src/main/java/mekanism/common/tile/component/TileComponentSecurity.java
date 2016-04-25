@@ -104,7 +104,7 @@ public class TileComponentSecurity implements ITileComponent
 	@Override
 	public void tick() 
 	{
-		if(!tileEntity.getWorldObj().isRemote)
+		if(!tileEntity.getWorld().isRemote)
 		{
 			if(frequency == null && owner != null)
 			{
@@ -189,7 +189,7 @@ public class TileComponentSecurity implements ITileComponent
 	}
 
 	@Override
-	public void write(ArrayList data) 
+	public void write(ArrayList<Object> data)
 	{
 		data.add(securityMode.ordinal());
 		
@@ -215,7 +215,7 @@ public class TileComponentSecurity implements ITileComponent
 	@Override
 	public void invalidate()
 	{
-		if(!tileEntity.getWorldObj().isRemote)
+		if(!tileEntity.getWorld().isRemote)
 		{
 			if(frequency != null)
 			{

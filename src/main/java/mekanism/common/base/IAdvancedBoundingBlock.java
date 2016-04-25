@@ -25,7 +25,7 @@ public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory,
 
 	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, EnumFacing side);
 	
-	public boolean canBoundReceiveEnergy(Coord4D location, ForgeDirection side);
+	public boolean canBoundReceiveEnergy(Coord4D location, EnumFacing side);
 
 	public void onPower();
 

@@ -235,21 +235,21 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
 		boolean place = true;
 		
 		BasicBlockType type = BasicBlockType.get(stack);
 		
-		if(type == BasicType.SECURITY_DESK)
+		if(type == BasicBlockType.SECURITY_DESK)
 		{
-			if(y+1 > 255 || !world.getBlock(x, y+1, z).isReplaceable(world, x, y+1, z))
+			if(pos.getY()+1 > 255 || !world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()))
 			{
 				place = false;
 			}
 		}
 
-		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
+		if(place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state))
 		{
 			if(type == BasicBlockType.BIN && stack.getTagCompound() != null)
 			{

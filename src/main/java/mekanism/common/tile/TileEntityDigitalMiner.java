@@ -1491,16 +1491,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
-	public boolean canBoundReceiveEnergy(Coord4D coord, ForgeDirection side)
+	public boolean canBoundReceiveEnergy(Coord4D coord, EnumFacing side)
 	{
-		ForgeDirection left = MekanismUtils.getLeft(facing);
-		ForgeDirection right = MekanismUtils.getRight(facing);
+		EnumFacing left = MekanismUtils.getLeft(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
 		
-		if(coord.equals(Coord4D.get(this).getFromSide(left)))
+		if(coord.equals(Coord4D.get(this).offset(left)))
 		{
 			return side == left;
 		}
-		else if(coord.equals(Coord4D.get(this).getFromSide(right)))
+		else if(coord.equals(Coord4D.get(this).offset(right)))
 		{
 			return side == right;
 		}
@@ -1509,9 +1509,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(MekanismUtils.getLeft(facing), MekanismUtils.getRight(facing), ForgeDirection.DOWN);
+		return EnumSet.of(MekanismUtils.getLeft(facing), MekanismUtils.getRight(facing), EnumFacing.DOWN);
 	}
 
 	@Override

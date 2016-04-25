@@ -22,7 +22,7 @@ public final class SecurityUtils
 		{
 			String owner = ((IOwnerItem)stack.getItem()).getOwner(stack);
 			
-			return owner == null || owner.equals(player.getCommandSenderName());
+			return owner == null || owner.equals(player.getName());
 		}
 		
 		if((!player.worldObj.isRemote && MekanismUtils.isOp((EntityPlayerMP)player)) || stack == null || !(stack.getItem() instanceof ISecurityItem))
@@ -32,7 +32,7 @@ public final class SecurityUtils
 		
 		ISecurityItem security = (ISecurityItem)stack.getItem();
 		
-		return canAccess(security.getSecurity(stack), player.getCommandSenderName(), security.getOwner(stack));
+		return canAccess(security.getSecurity(stack), player.getName(), security.getOwner(stack));
 	}
 	
 	public static boolean canAccess(EntityPlayer player, TileEntity tile)
@@ -44,7 +44,7 @@ public final class SecurityUtils
 		
 		ISecurityTile security = (ISecurityTile)tile;
 		
-		return canAccess(security.getSecurity().getMode(), player.getCommandSenderName(), security.getSecurity().getOwner());
+		return canAccess(security.getSecurity().getMode(), player.getName(), security.getSecurity().getOwner());
 	}
 	
 	private static boolean canAccess(SecurityMode mode, String username, String owner)

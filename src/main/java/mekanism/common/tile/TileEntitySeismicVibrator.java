@@ -199,7 +199,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
+		return EnumSet.of(facing.getOpposite());
 	}
 
 	@Override
@@ -224,13 +224,13 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).getFromSide(ForgeDirection.UP), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, getPos().up(), Coord4D.get(this));
 	}
 
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlockToAir(getPos().up());
+		worldObj.setBlockToAir(getPos());
 	}
 }

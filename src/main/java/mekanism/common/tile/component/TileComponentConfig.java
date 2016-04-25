@@ -70,9 +70,11 @@ public class TileComponentConfig implements ITileComponent
 		
 		for(EnumFacing f : EnumFacing.VALUES)
 		{
-			if(getConfig(type)[f.ordinal()] == dataIndex)
+			EnumFacing side = MekanismUtils.getBaseOrientation(f, facing);
+
+			if(getConfig(type)[side.ordinal()] == dataIndex)
 			{
-				ret.add(MekanismUtils.getBaseOrientation(f, facing));
+				ret.add(f);
 			}
 		}
 		
@@ -141,7 +143,7 @@ public class TileComponentConfig implements ITileComponent
 	
 	public SideData getOutput(TransmissionType type, EnumFacing side)
 	{
-		int index = getConfig(type)[side];
+		int index = getConfig(type)[side.ordinal()];
 		
 		if(index == -1)
 		{

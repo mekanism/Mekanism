@@ -516,7 +516,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 			{
 				if(!world.isRemote)
 				{
-					entityplayer.openGui(Mekanism.instance, 33, world, , pos.getX(), pos.getY(), pos.getZ());
+					entityplayer.openGui(Mekanism.instance, 33, world, pos.getX(), pos.getY(), pos.getZ());
 				}
 				
 				return true;
@@ -530,9 +530,9 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 			{
 				if(!world.isRemote)
 				{
-					if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+					if(owner == null || entityplayer.getName().equals(owner))
 					{
-						entityplayer.openGui(Mekanism.instance, 57, world, x, y, z);
+						entityplayer.openGui(Mekanism.instance, 57, world, pos.getX(), pos.getY(), pos.getZ());
 					}
 					else {
 						SecurityUtils.displayNoAccess(entityplayer);
@@ -554,19 +554,19 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 					
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, x, y, z, false);
+						dismantleBlock(world, pos, false);
 						return true;
 					}
 	
 					if(MekanismUtils.isBCWrench(tool))
 					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
 					}
 	
-					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][bin.facing];
+					int change = bin.facing.rotateY().ordinal();
 	
 					bin.setFacing((short)change);
-					world.notifyBlocksOfNeighborChange(x, y, z, this);
+					world.notifyNeighborsOfStateChange(pos, this);
 				}
 				
 				return true;
@@ -603,7 +603,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 								bin.addTicks = 5;
 							}
 	
-							((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
+							((EntityPlayerMP)entityplayer).sendContainerToPlayer(entityplayer.openContainer);
 						}
 					}
 				}
@@ -799,7 +799,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 					return 12;
 			}
 		}
-		else if(blockType == BasicBlock.BASIC_BLOCK_2)
+		else if(getBasicBlock() == BasicBlock.BASIC_BLOCK_2)
 		{
 			if(metadata == 5)
 			{
@@ -888,7 +888,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 			
 			if(tileEntity instanceof TileEntitySecurityDesk)
 			{
-				((TileEntitySecurityDesk)tileEntity).owner = entityliving.getCommandSenderName();
+				((TileEntitySecurityDesk)tileEntity).owner = placer.getName();
 			}
 
 			if(tileEntity instanceof IBoundingBlock)
@@ -918,18 +918,18 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
 			((IBoundingBlock)tileEntity).onBreak();
 		}
 
-		super.breakBlock(world, x, y, z, block, meta);
+		super.breakBlock(world, pos, state);
 		
-		world.removeTileEntity(x, y, z);
+		world.removeTileEntity(pos);
 	}
 
 	@Override

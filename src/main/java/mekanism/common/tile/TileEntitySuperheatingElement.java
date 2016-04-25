@@ -10,7 +10,9 @@ import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 
-public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
+import net.minecraft.util.ITickable;
+
+public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock implements ITickable
 {
 	public boolean prevHot;
 	
@@ -33,14 +35,8 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock
 		
 		if(packet && !worldObj.isRemote)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}
-	}
-	
-	@Override
-	public boolean canUpdate()
-	{
-		return true;
 	}
 	
 	@Override
@@ -57,7 +53,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock
 			
 			if(prevHot != newHot)
 			{
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 				
 				prevHot = newHot;
 			}

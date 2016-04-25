@@ -13,17 +13,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderSecurityDesk extends TileEntitySpecialRenderer
+public class RenderSecurityDesk extends TileEntitySpecialRenderer<TileEntitySecurityDesk>
 {
 	private ModelSecurityDesk model = new ModelSecurityDesk();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntitySecurityDesk)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntitySecurityDesk tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntitySecurityDesk tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
@@ -39,7 +34,7 @@ public class RenderSecurityDesk extends TileEntitySpecialRenderer
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, field_147501_a.field_147553_e);
+		model.render(0.0625F, rendererDispatcher.renderEngine);
 		GL11.glPopMatrix();
 	}
 }

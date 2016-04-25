@@ -76,7 +76,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		else {
 			if(hasSecurity(itemstack))
 			{
-				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getCommandSenderName(), getOwner(itemstack)));
+				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
 				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack));
 				
 				if(SecurityUtils.isOverridden(itemstack))
@@ -127,7 +127,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 				
 				if(getOwner(stack) == null)
 				{
-					security.getSecurity().setOwner(player.getCommandSenderName());
+					security.getSecurity().setOwner(player.getName());
 				}
 			}
 
@@ -369,9 +369,9 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public String getOwner(ItemStack stack) 
 	{
-		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("owner"))
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("owner"))
 		{
-			return stack.stackTagCompound.getString("owner");
+			return stack.getTagCompound().getString("owner");
 		}
 		
 		return null;
@@ -380,40 +380,40 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public void setOwner(ItemStack stack, String owner) 
 	{
-		if(stack.stackTagCompound == null)
+		if(!stack.hasTagCompound())
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
 		if(owner == null || owner.isEmpty())
 		{
-			stack.stackTagCompound.removeTag("owner");
+			stack.getTagCompound().removeTag("owner");
 			return;
 		}
 		
-		stack.stackTagCompound.setString("owner", owner);
+		stack.getTagCompound().setString("owner", owner);
 	}
 
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(!stack.hasTagCompound())
 		{
 			return SecurityMode.PUBLIC;
 		}
 
-		return SecurityMode.values()[stack.stackTagCompound.getInteger("security")];
+		return SecurityMode.values()[stack.getTagCompound().getInteger("security")];
 	}
 
 	@Override
 	public void setSecurity(ItemStack stack, SecurityMode mode) 
 	{
-		if(stack.stackTagCompound == null)
+		if(!stack.hasTagCompound())
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		stack.stackTagCompound.setInteger("security", mode.ordinal());
+		stack.getTagCompound().setInteger("security", mode.ordinal());
 	}
 
 	@Override
@@ -421,7 +421,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean hasOwner(ItemStack stack)
 	{

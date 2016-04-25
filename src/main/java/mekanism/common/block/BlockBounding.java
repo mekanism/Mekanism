@@ -70,11 +70,11 @@ public class BlockBounding extends Block
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		super.breakBlock(world, x, y, z, block, meta);
+		super.breakBlock(world, pos, state);
 		
-		world.removeTileEntity(x, y, z);
+		world.removeTileEntity(pos);
 	}
 
 	@Override
@@ -113,11 +113,11 @@ public class BlockBounding extends Block
 	}
 	
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getBlockHardness(World world, BlockPos pos)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getBlockHardness(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
+			return world.getBlockState(tileEntity.mainPos).getBlock().getBlockHardness(world, tileEntity.mainPos);
 		} catch(Exception e) {
 			return blockHardness;
 		}

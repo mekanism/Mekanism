@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -12,9 +12,10 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage, IMessage>
 {
@@ -48,11 +49,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 		else if(message.packetType == PersonalChestPacketType.CLIENT_OPEN)
 		{
 			try {
-				int x = message.coord4D != null ? message.coord4D.xCoord : 0;
-				int y = message.coord4D != null ? message.coord4D.yCoord : 0;
-				int z = message.coord4D != null ? message.coord4D.zCoord : 0;
-
-				Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock, x, y, z);
+				Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock, message.coord4D == null ? BlockPos.ORIGIN : message.coord4D);
 			} catch(Exception e) {
 				Mekanism.logger.error("Error while handling electric chest open packet.");
 				e.printStackTrace();
@@ -119,10 +116,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
-						dataStream.writeInt(coord4D.dimensionId);
+						coord4D.write(dataStream);
 					}
 	
 					break;
@@ -131,10 +125,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
-						dataStream.writeInt(coord4D.dimensionId);
+						coord4D.write(dataStream);
 					}
 	
 					break;

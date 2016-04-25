@@ -28,7 +28,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(SecurityUtils.getOwnerDisplay(entityplayer.getCommandSenderName(), getOwner(itemstack)));
+		list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
 		
 		if(getFrequency(itemstack) != null)
 		{
@@ -52,7 +52,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		{
 			if(getOwner(itemstack) == null)
 			{
-				setOwner(itemstack, entityplayer.getCommandSenderName());
+				setOwner(itemstack, entityplayer.getName());
 				entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
 			}
 			else {
@@ -99,9 +99,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	@Override
 	public String getOwner(ItemStack stack) 
 	{
-		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("owner"))
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("owner"))
 		{
-			return stack.stackTagCompound.getString("owner");
+			return stack.getTagCompound().getString("owner");
 		}
 		
 		return null;
@@ -115,11 +115,11 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		
 		if(owner == null || owner.isEmpty())
 		{
-			stack.stackTagCompound.removeTag("owner");
+			stack.getTagCompound().removeTag("owner");
 			return;
 		}
 		
-		stack.stackTagCompound.setString("owner", owner);
+		stack.getTagCompound().setString("owner", owner);
 	}
 	
 	@Override
@@ -130,9 +130,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	
 	public boolean isPrivateMode(ItemStack stack) 
 	{
-		if(stack.stackTagCompound != null)
+		if(stack.hasTagCompound())
 		{
-			return stack.stackTagCompound.getBoolean("private");
+			return stack.getTagCompound().getBoolean("private");
 		}
 		
 		return false;
@@ -140,19 +140,19 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 
 	public void setPrivateMode(ItemStack stack, boolean isPrivate) 
 	{
-		if(stack.stackTagCompound == null)
+		if(!stack.hasTagCompound())
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		stack.stackTagCompound.setBoolean("private", isPrivate);
+		stack.getTagCompound().setBoolean("private", isPrivate);
 	}
 	
 	public String getFrequency(ItemStack stack) 
 	{
-		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("frequency"))
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("frequency"))
 		{
-			return stack.stackTagCompound.getString("frequency");
+			return stack.getTagCompound().getString("frequency");
 		}
 		
 		return null;
@@ -160,17 +160,17 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 
 	public void setFrequency(ItemStack stack, String frequency) 
 	{
-		if(stack.stackTagCompound == null)
+		if(!stack.hasTagCompound())
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
 		if(frequency == null || frequency.isEmpty())
 		{
-			stack.stackTagCompound.removeTag("frequency");
+			stack.getTagCompound().removeTag("frequency");
 			return;
 		}
 		
-		stack.stackTagCompound.setString("frequency", frequency);
+		stack.getTagCompound().setString("frequency", frequency);
 	}
 }

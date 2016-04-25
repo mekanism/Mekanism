@@ -9,28 +9,23 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer
+public class RenderSolarNeutronActivator extends TileEntitySpecialRenderer<TileEntitySolarNeutronActivator>
 {
 	private ModelSolarNeutronActivator model = new ModelSolarNeutronActivator();
 	
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntitySolarNeutronActivator)tileEntity, x, y, z, partialTick);
-	}
-	
-	private void renderAModelAt(TileEntitySolarNeutronActivator tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntitySolarNeutronActivator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
 		
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal())
 		{
 			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;

@@ -419,7 +419,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	{
 		for(Coord4D coord : structureFound.internalLocations)
 		{
-			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			TileEntity tile = coord.getTileEntity(pointer.getWorld());
 			
 			if(tile instanceof TileEntityInternalMultiblock)
 			{
@@ -434,7 +434,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	{
 		for(Coord4D coord : structure.internalLocations)
 		{
-			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			TileEntity tile = coord.getTileEntity(pointer.getWorld());
 			
 			if(tile instanceof TileEntityInternalMultiblock)
 			{
@@ -445,7 +445,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	public void killInnerNode(Coord4D coord)
 	{
-		TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+		TileEntity tile = coord.getTileEntity(pointer.getWorld());
 		
 		if(tile instanceof TileEntityInternalMultiblock)
 		{

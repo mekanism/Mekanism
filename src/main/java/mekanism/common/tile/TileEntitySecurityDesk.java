@@ -17,7 +17,6 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock
 {
@@ -235,7 +234,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -280,14 +279,14 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).getFromSide(ForgeDirection.UP), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, getPos().up(), Coord4D.get(this));
 	}
 
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlockToAir(getPos().up());
+		worldObj.setBlockToAir(getPos());
 	}
 	
 	@Override

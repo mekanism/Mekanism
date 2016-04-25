@@ -466,7 +466,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			entity.isDead = true;
 		}
 		else {
-			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			entity.setLocationAndAngles(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, entity.rotationYaw, entity.rotationPitch);
 			Mekanism.packetHandler.sendToReceivers(new EntityMoveMessage(entity), new Range4D(new Coord4D(entity)));
 		}
 	}

@@ -629,7 +629,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 				{
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, x, y, z, false);
+						dismantleBlock(world, pos, false);
 						
 						return true;
 					}
@@ -659,7 +659,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 					}
 	
 					tileEntity.setFacing((short)change);
-					world.notifyBlocksOfNeighborChange(x, y, z, this);
+					world.notifyNeighborsOfStateChange(pos, this);
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -676,7 +676,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 			switch(type)
 			{
 				case PERSONAL_CHEST:
-					if(!entityplayer.isSneaking() && !world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN))
+					if(!entityplayer.isSneaking() && !world.isSideSolid(pos.up(), EnumFacing.DOWN))
 					{
 						TileEntityPersonalChest chest = (TileEntityPersonalChest)tileEntity;
 						
@@ -706,7 +706,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 								}
 							} 
 							else {
-								entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+								entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 							}
 						}
 						else {
@@ -738,7 +738,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 					{
 						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
 						
-						if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+						if(owner == null || entityplayer.getName().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 						}
@@ -755,7 +755,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 					{
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
-							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 						}
 						else {
 							SecurityUtils.displayNoAccess(entityplayer);

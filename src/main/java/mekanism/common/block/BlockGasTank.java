@@ -88,9 +88,9 @@ public class BlockGasTank extends BlockContainer
 	}
 	
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getBlockHardness(World world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if(tile instanceof ISecurityTile)
 		{
@@ -149,7 +149,7 @@ public class BlockGasTank extends BlockContainer
 			{
 				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					entityplayer.openGui(Mekanism.instance, 10, world, x, y, z);
+					entityplayer.openGui(Mekanism.instance, 10, world, pos.getX(), pos.getY(), pos.getZ());
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -237,7 +237,7 @@ public class BlockGasTank extends BlockContainer
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
 		
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.hasTagCompound())
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}

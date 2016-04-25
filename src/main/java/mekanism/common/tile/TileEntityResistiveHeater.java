@@ -121,7 +121,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	}
 	
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
 		return EnumSet.of(MekanismUtils.getLeft(facing), MekanismUtils.getRight(facing));
 	}

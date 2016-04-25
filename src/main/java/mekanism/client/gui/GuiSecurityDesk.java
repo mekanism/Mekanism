@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +26,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiSecurityDesk extends GuiMekanism
@@ -70,7 +71,7 @@ public class GuiSecurityDesk extends GuiMekanism
 
 		removeButton = new GuiButton(0, guiWidth + 13, guiHeight + 81, 122, 20, LangUtils.localize("gui.remove"));
 		
-		trustedField = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 69, 86, 11);
+		trustedField = new GuiTextField(1, fontRendererObj, guiWidth + 35, guiHeight + 69, 86, 11);
 		trustedField.setMaxStringLength(MAX_LENGTH);
 		trustedField.setEnableBackgroundDrawing(false);
 		
@@ -86,7 +87,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			return;
 		}
 		
-		ArrayList data = new ArrayList();
+		ArrayList<Object> data = new ArrayList<Object>();
 		data.add(0);
 		data.add(trusted);
 		
@@ -132,7 +133,7 @@ public class GuiSecurityDesk extends GuiMekanism
 	}
 	
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		
@@ -145,7 +146,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
 			
-			if(tileEntity.frequency != null && tileEntity.owner != null && tileEntity.owner.equals(mc.thePlayer.getCommandSenderName()))
+			if(tileEntity.frequency != null && tileEntity.owner != null && tileEntity.owner.equals(mc.thePlayer.getName()))
 			{
 				if(xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79)
 				{
@@ -154,7 +155,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		            SoundHandler.playSound("gui.button.press");
 				}
 				
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<Object>();
 				
 				if(xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75)
 				{
@@ -197,7 +198,7 @@ public class GuiSecurityDesk extends GuiMekanism
 	}
 	
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!trustedField.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -222,7 +223,7 @@ public class GuiSecurityDesk extends GuiMekanism
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -234,7 +235,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			{
 				if(tileEntity != null)
 				{
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<Object>();
 					data.add(1);
 					data.add(tileEntity.frequency.trusted.get(selection));
 					
@@ -255,7 +256,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		int yAxis = (mouseY-(height-ySize)/2);
 
 		String ownerText = EnumColor.RED + tileEntity.owner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.owner) : LangUtils.localize("gui.noOwner");
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
 		fontRendererObj.drawString(ownerText, (xSize - 7) - fontRendererObj.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		
@@ -308,7 +309,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		if(tileEntity.frequency != null && tileEntity.owner != null && mc.thePlayer.getCommandSenderName().equals(tileEntity.owner))
+		if(tileEntity.frequency != null && tileEntity.owner != null && mc.thePlayer.getName().equals(tileEntity.owner))
 		{
 			drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
 			

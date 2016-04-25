@@ -96,7 +96,7 @@ public class GuiTransporterConfig extends GuiMekanism
 
 			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getFront(i));
 
-			if(configurable.getConfig().getOutput(TransmissionType.ITEM, i) != TileComponentConfig.EMPTY)
+			if(configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.getFront(i)) != TileComponentConfig.EMPTY)
 			{
 				if(color != null)
 				{
@@ -154,7 +154,7 @@ public class GuiTransporterConfig extends GuiMekanism
 
 			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getFront(i));
 
-			if(configurable.getConfig().getOutput(TransmissionType.ITEM, i) != TileComponentConfig.EMPTY)
+			if(configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.getFront(i)) != TileComponentConfig.EMPTY)
 			{
 				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 				{

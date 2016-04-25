@@ -513,14 +513,14 @@ public final class MekanismUtils
 		{
 			switch(side)
 			{
-				case(DOWN):
-					return NORTH;
-				case(UP):
-					return SOUTH;
-				case(NORTH):
-					return UP;
-				case(SOUTH):
-					return DOWN;
+				case DOWN:
+					return EnumFacing.NORTH;
+				case UP:
+					return EnumFacing.SOUTH;
+				case NORTH:
+					return EnumFacing.UP;
+				case SOUTH:
+					return EnumFacing.DOWN;
 				default:
 					return side;
 			}
@@ -529,14 +529,14 @@ public final class MekanismUtils
 		{
 			switch(side)
 			{
-				case(DOWN):
-					return SOUTH;
-				case(UP):
-					return NORTH;
-				case(NORTH):
-					return DOWN;
-				case(SOUTH):
-					return UP;
+				case DOWN:
+					return EnumFacing.SOUTH;
+				case UP:
+					return EnumFacing.NORTH;
+				case NORTH:
+					return EnumFacing.DOWN;
+				case SOUTH:
+					return EnumFacing.UP;
 				default:
 					return side;
 			}
@@ -806,13 +806,13 @@ public final class MekanismUtils
 	 * @param boundingLocation - coordinates of bounding block
 	 * @param orig - original block
 	 */
-	public static void makeBoundingBlock(World world, Coord4D boundingLocation, Coord4D orig)
+	public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig)
 	{
 		world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getDefaultState());
 
 		if(!world.isRemote)
 		{
-			((TileEntityBoundingBlock)boundingLocation.getTileEntity(world)).setMainLocation(orig);
+			((TileEntityBoundingBlock)world.getTileEntity(boundingLocation)).setMainLocation(orig);
 		}
 	}
 

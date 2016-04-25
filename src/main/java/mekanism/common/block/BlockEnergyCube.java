@@ -185,9 +185,9 @@ public class BlockEnergyCube extends BlockContainer
 	}
 	
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getBlockHardness(World world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if(tile instanceof ISecurityTile)
 		{
@@ -217,20 +217,20 @@ public class BlockEnergyCube extends BlockContainer
 				{
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, x, y, z, false);
+						dismantleBlock(world, pos, false);
 						
 						return true;
 					}
 	
 					if(MekanismUtils.isBCWrench(tool))
 	                {
-	                    ((IToolWrench) tool).wrenchUsed(entityplayer, x, y, z);
+	                    ((IToolWrench) tool).wrenchUsed(entityplayer, pos);
 	                }
 	
-					int change = ForgeDirection.ROTATION_MATRIX[side][tileEntity.facing];
+					int change = tileEntity.facing.rotateAround(side.getAxis()).ordinal();
 	
 					tileEntity.setFacing((short)change);
-					world.notifyBlocksOfNeighborChange(x, y, z, this);
+					world.notifyNeighborsOfStateChange(pos, this);
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -246,7 +246,7 @@ public class BlockEnergyCube extends BlockContainer
 			{
 				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					entityplayer.openGui(Mekanism.instance, 8, world, x, y, z);
+					entityplayer.openGui(Mekanism.instance, 8, world, pos.getX(), pos.getY(), pos.getZ());
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -300,7 +300,7 @@ public class BlockEnergyCube extends BlockContainer
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
 		
-		if(itemStack.stackTagCompound == null)
+		if(!itemStack.hasTagCompound())
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}

@@ -28,11 +28,11 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		super.breakBlock(world, x, y, z, block, meta);
+		super.breakBlock(world, pos, state);
 		
-		world.removeTileEntity(x, y, z);
+		world.removeTileEntity(pos);
 	}
 
 	@Override

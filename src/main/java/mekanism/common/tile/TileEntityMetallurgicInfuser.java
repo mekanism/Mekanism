@@ -266,7 +266,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
+		return EnumSet.of(facing.getOpposite());
 	}
 
 	@Override

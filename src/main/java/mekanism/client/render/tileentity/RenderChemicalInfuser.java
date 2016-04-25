@@ -16,12 +16,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer<TileEntityC
 	private ModelChemicalInfuser model = new ModelChemicalInfuser();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityChemicalInfuser)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityChemicalInfuser tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityChemicalInfuser tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 1.5F);

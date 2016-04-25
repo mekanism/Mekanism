@@ -9,8 +9,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -394,7 +394,7 @@ public class ModelEnergyCube extends ModelBase
 		GL11.glPopMatrix();
 	}
 	
-	public void renderSide(float size, ForgeDirection side, IOState state, EnergyCubeTier tier, TextureManager renderer)
+	public void renderSide(float size, EnumFacing side, IOState state, EnergyCubeTier tier, TextureManager renderer)
 	{
 		if(state != IOState.OFF)
 		{

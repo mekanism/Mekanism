@@ -6,9 +6,9 @@ import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMessage>
 {
@@ -20,7 +20,7 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
 		
 		if(entity != null)
 		{
-			entity.setLocationAndAngles(message.pos.xPos, message.pos.yPos, message.pos.zPos, entity.rotationYaw, entity.rotationPitch);
+			entity.setLocationAndAngles(message.pos.xCoord, message.pos.yCoord, message.pos.zCoord, entity.rotationYaw, entity.rotationPitch);
 		}
 		
 		return null;
@@ -44,10 +44,10 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
 		public void toBytes(ByteBuf dataStream)
 		{
 			dataStream.writeInt(entityId);
-			
-			dataStream.writeFloat((float)pos.xPos);
-			dataStream.writeFloat((float)pos.yPos);
-			dataStream.writeFloat((float)pos.zPos);
+
+			dataStream.writeFloat((float)pos.xCoord);
+			dataStream.writeFloat((float)pos.yCoord);
+			dataStream.writeFloat((float)pos.zCoord);
 		}
 	
 		@Override

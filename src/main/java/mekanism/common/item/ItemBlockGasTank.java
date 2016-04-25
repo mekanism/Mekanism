@@ -94,7 +94,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 				
 				if(getOwner(stack) == null)
 				{
-					security.getSecurity().setOwner(player.getCommandSenderName());
+					security.getSecurity().setOwner(player.getName());
 				}
 			}
 
@@ -102,7 +102,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			
 			if(!world.isRemote)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
 			}
 		}
 
@@ -129,7 +129,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		else {
 			if(hasSecurity(itemstack))
 			{
-				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getCommandSenderName(), getOwner(itemstack)));
+				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
 				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack));
 				
 				if(SecurityUtils.isOverridden(itemstack))
@@ -335,9 +335,9 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public String getOwner(ItemStack stack) 
 	{
-		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("owner"))
+		if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("owner"))
 		{
-			return stack.stackTagCompound.getString("owner");
+			return stack.getTagCompound().getString("owner");
 		}
 		
 		return null;
@@ -346,40 +346,40 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public void setOwner(ItemStack stack, String owner) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
 		if(owner == null || owner.isEmpty())
 		{
-			stack.stackTagCompound.removeTag("owner");
+			stack.getTagCompound().removeTag("owner");
 			return;
 		}
 		
-		stack.stackTagCompound.setString("owner", owner);
+		stack.getTagCompound().setString("owner", owner);
 	}
 
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			return SecurityMode.PUBLIC;
 		}
 
-		return SecurityMode.values()[stack.stackTagCompound.getInteger("security")];
+		return SecurityMode.values()[stack.getTagCompound().getInteger("security")];
 	}
 
 	@Override
 	public void setSecurity(ItemStack stack, SecurityMode mode) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		stack.stackTagCompound.setInteger("security", mode.ordinal());
+		stack.getTagCompound().setInteger("security", mode.ordinal());
 	}
 
 	@Override

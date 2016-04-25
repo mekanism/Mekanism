@@ -10,9 +10,9 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, IMessage> 
 {
@@ -29,7 +29,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 			{
 				String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
 				
-				if(owner != null && player.getCommandSenderName().equals(owner))
+				if(owner != null && player.getName().equals(owner))
 				{
 					((ISecurityTile)tileEntity).getSecurity().setMode(message.value);
 				}
@@ -77,10 +77,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 			
 			if(packetType == SecurityPacketType.BLOCK)
 			{
-				dataStream.writeInt(coord4D.xCoord);
-				dataStream.writeInt(coord4D.yCoord);
-				dataStream.writeInt(coord4D.zCoord);
-				dataStream.writeInt(coord4D.dimensionId);
+				coord4D.write(dataStream);
 			}
 	
 			dataStream.writeInt(value.ordinal());

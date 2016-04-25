@@ -15,12 +15,6 @@ public class TileEntityInternalMultiblock extends TileEntityBasicBlock
 	public void onUpdate() {}
 	
 	@Override
-	public boolean canUpdate()
-	{
-		return false;
-	}
-	
-	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
@@ -35,7 +29,7 @@ public class TileEntityInternalMultiblock extends TileEntityBasicBlock
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

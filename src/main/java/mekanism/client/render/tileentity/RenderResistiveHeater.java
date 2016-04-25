@@ -9,27 +9,22 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderResistiveHeater extends TileEntitySpecialRenderer
+public class RenderResistiveHeater extends TileEntitySpecialRenderer<TileEntityResistiveHeater>
 {
 	private ModelResistiveHeater model = new ModelResistiveHeater();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityResistiveHeater)tileEntity, x, y, z, partialTick);
-	}
-
-	private void renderAModelAt(TileEntityResistiveHeater tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityResistiveHeater tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal())
 		{
 			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
@@ -38,7 +33,7 @@ public class RenderResistiveHeater extends TileEntitySpecialRenderer
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tileEntity.isActive, field_147501_a.field_147553_e);
+		model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine);
 		GL11.glPopMatrix();
 	}
 }

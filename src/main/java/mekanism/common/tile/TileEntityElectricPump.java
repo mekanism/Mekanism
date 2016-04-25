@@ -149,12 +149,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(!worldObj.isRemote && fluidTank.getFluid() != null)
 		{
-			TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.UP).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(worldObj);
 
 			if(tileEntity instanceof IFluidHandler)
 			{
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256*(upgradeComponent.getUpgrades(Upgrade.SPEED)+1), fluidTank.getFluidAmount()));
-				fluidTank.drain(((IFluidHandler)tileEntity).fill(ForgeDirection.DOWN, toDrain, true), true);
+				fluidTank.drain(((IFluidHandler)tileEntity).fill(EnumFacing.DOWN, toDrain, true), true);
 			}
 		}
 	}

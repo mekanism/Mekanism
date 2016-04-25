@@ -33,7 +33,7 @@ public class RenderChargepad extends TileEntitySpecialRenderer<TileEntityChargep
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, field_147501_a.field_147553_e);
+		model.render(0.0625F, rendererDispatcher.renderEngine);
 		GL11.glPopMatrix();
 	}
 }

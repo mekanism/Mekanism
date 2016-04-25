@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implements IHeatTransfer, ISecurityTile, IActiveState
 {
@@ -59,7 +59,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 		
@@ -71,7 +71,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 			
@@ -155,12 +155,12 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -188,7 +188,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -226,7 +226,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side) 
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return 1000;
 	}
@@ -253,15 +253,15 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side) 
+	public boolean canConnectHeat(EnumFacing side)
 	{
 		return true;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side) 
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
 		if(adj instanceof IHeatTransfer)
 		{
