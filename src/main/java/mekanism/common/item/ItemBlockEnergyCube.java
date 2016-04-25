@@ -113,7 +113,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public EnergyCubeTier getEnergyCubeTier(ItemStack itemstack)
 	{
-		if(itemstack.getTagCompound() == null)
+		if(!itemstack.hasTagCompound())
 		{
 			return EnergyCubeTier.BASIC;
 		}
@@ -129,7 +129,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public void setEnergyCubeTier(ItemStack itemstack, EnergyCubeTier tier)
 	{
-		if(itemstack.getTagCompound() == null)
+		if(!itemstack.hasTagCompound())
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
@@ -172,7 +172,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.getTagCompound() == null)
+			if(!itemStack.hasTagCompound())
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
@@ -188,7 +188,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.getTagCompound() == null)
+			if(!itemStack.hasTagCompound())
 			{
 				return null;
 			}
@@ -202,12 +202,12 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
+		if(!itemStack.hasTagCompound())
 		{
 			return 0;
 		}
 
-		return electricityStored = itemStack.getTagCompound().getDouble("electricity");
+		return itemStack.getTagCompound().getDouble("electricity");
 	}
 
 	@Override
@@ -218,7 +218,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 			return;
 		}
 		
-		if(itemStack.getTagCompound() == null)
+		if(!itemStack.hasTagCompound())
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}

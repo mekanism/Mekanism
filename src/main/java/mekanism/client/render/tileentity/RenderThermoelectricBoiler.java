@@ -21,11 +21,11 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
+public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEntityBoilerCasing>
 {
 	private static Map<RenderData, DisplayInteger[]> cachedLowerFluids = new HashMap<RenderData, DisplayInteger[]>();
 	private static Map<RenderData, DisplayInteger> cachedUpperFluids = new HashMap<RenderData, DisplayInteger>();
@@ -35,12 +35,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 	private Fluid WATER = FluidRegistry.WATER;
 	
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityBoilerCasing)tileEntity, x, y, z, partialTick);
-	}
-
-	public void renderAModelAt(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null && tileEntity.structure.upperRenderLocation != null)
 		{
@@ -49,7 +44,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				RenderData data = new RenderData();
 
 				data.location = tileEntity.structure.renderLocation;
-				data.height = (tileEntity.structure.upperRenderLocation.yCoord-1)-tileEntity.structure.renderLocation.yCoord;
+				data.height = (tileEntity.structure.upperRenderLocation.getY()-1)-tileEntity.structure.renderLocation.getY();
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
 
@@ -59,12 +54,12 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				{
 					push();
 
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					GL11.glTranslated(getX(data.location.getX()), getY(data.location.getY()), getZ(data.location.getZ()));
 
 					MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.waterStored.getFluid());
 
-					DisplayInteger[] displayList = getLowerDisplay(data, tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj());
+					DisplayInteger[] displayList = getLowerDisplay(data, tileEntity.structure.waterStored.getFluid(), tileEntity.getWorld());
 
 					if(tileEntity.structure.waterStored.getFluid().isGaseous())
 					{
@@ -84,11 +79,11 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 					{
 						push();
 
-						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
+						GL11.glTranslated(getX(valveData.location.getX()), getY(valveData.location.getY()), getZ(valveData.location.getZ()));
 
 						MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
 
-						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj()).render();
+						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.waterStored.getFluid(), tileEntity.getWorld()).render();
 
 						MekanismRenderer.glowOff();
 						MekanismRenderer.resetColor();
@@ -103,7 +98,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				RenderData data = new RenderData();
 
 				data.location = tileEntity.structure.upperRenderLocation;
-				data.height = (tileEntity.structure.renderLocation.yCoord+tileEntity.structure.volHeight-2)-(tileEntity.structure.upperRenderLocation.yCoord);
+				data.height = (tileEntity.structure.renderLocation.getY()+tileEntity.structure.volHeight-2)-(tileEntity.structure.upperRenderLocation.getY());
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
 
@@ -113,12 +108,12 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				{
 					push();
 					
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					GL11.glTranslated(getX(data.location.getX()), getY(data.location.getY()), getZ(data.location.getZ()));
 					
 					MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.steamStored.getFluid());
 	
-					DisplayInteger display = getUpperDisplay(data, tileEntity.structure.steamStored.getFluid(), tileEntity.getWorldObj());
+					DisplayInteger display = getUpperDisplay(data, tileEntity.structure.steamStored.getFluid(), tileEntity.getWorld());
 	
 					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.steamStored.amount / (float)tileEntity.clientSteamCapacity)+MekanismRenderer.GAS_RENDER_BASE));
 					display.render();
@@ -157,7 +152,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+		toReturn.setTexture(fluid.getStill());
 
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -168,7 +163,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getIcon() != null)
+			if(fluid.getStill() != null)
 			{
 				toReturn.minX = 0 + .01;
 				toReturn.minY = 0 + .01;
@@ -196,14 +191,14 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+		toReturn.setTexture(fluid.getStill());
 
 		final int stages = getStages(data.height);
 		DisplayInteger display = DisplayInteger.createAndStart();
 
 		cachedUpperFluids.put(data, display);
 		
-		if(STEAM.getIcon() != null)
+		if(STEAM.getStill() != null)
 		{
 			toReturn.minX = 0 + .01;
 			toReturn.minY = 0 + .01;
@@ -230,7 +225,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getFlowingIcon());
+		toReturn.setTexture(fluid.getFlowing());
 
 		DisplayInteger display = DisplayInteger.createAndStart();
 
@@ -310,7 +305,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 			}
 		}
 
-		if(fluid.getFlowingIcon() != null)
+		if(fluid.getFlowing() != null)
 		{
 			MekanismRenderer.renderObject(toReturn);
 		}
@@ -322,7 +317,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 	private int getValveFluidHeight(ValveRenderData data)
 	{
-		return data.valveLocation.yCoord - data.location.yCoord;
+		return data.valveLocation.getY() - data.location.getY();
 	}
 
 	private int getStages(int height)

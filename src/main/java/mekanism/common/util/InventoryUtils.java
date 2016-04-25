@@ -539,4 +539,13 @@ public final class InventoryUtils
 
 		return false;
 	}
+
+	/*TODO From CCLib -- go back to that version when we're using dependencies again*/
+	public static boolean canStack(ItemStack stack1, ItemStack stack2) {
+		return stack1 == null || stack2 == null ||
+				(stack1.getItem() == stack2.getItem() &&
+						(!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage()) &&
+						ItemStack.areItemStackTagsEqual(stack2, stack1)) &&
+						stack1.isStackable();
+	}
 }

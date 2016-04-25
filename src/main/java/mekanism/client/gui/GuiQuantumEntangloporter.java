@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +29,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiQuantumEntangloporter extends GuiMekanism
@@ -90,7 +91,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		setButton = new GuiButton(2, guiWidth + 27, guiHeight + 116, 60, 20, LangUtils.localize("gui.set"));
 		deleteButton = new GuiButton(3, guiWidth + 89, guiHeight + 116, 60, 20, LangUtils.localize("gui.delete"));
 		
-		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
+		frequencyField = new GuiTextField(4, fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
 		frequencyField.setMaxStringLength(MAX_LENGTH);
 		frequencyField.setEnableBackgroundDrawing(false);
 		
@@ -194,7 +195,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 	}
 	
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		
@@ -217,7 +218,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 	}
 	
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!frequencyField.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -242,7 +243,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -299,7 +300,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (tileEntity.owner != null ? tileEntity.owner : LangUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
 		
 		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);

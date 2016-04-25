@@ -126,7 +126,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 	
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("tile.GasTank" + tier.getBaseTier().getName() + ".name");
 	}

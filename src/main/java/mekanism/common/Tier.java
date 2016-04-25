@@ -577,7 +577,7 @@ public final class Tier
 			return BASIC;
 		}
 	}
-	
+	*/
 	public static enum FluidTankTier implements ITier
 	{
 		BASIC(14000, 400),
@@ -711,7 +711,6 @@ public final class Tier
 			dataStream.writeInt(storage);
 		}
 	}
-*/
 
 	public static void init()
 	{
@@ -776,6 +775,5 @@ public final class Tier
 		public void readConfig(ByteBuf dataStream);
 		
 		public void writeConfig(ByteBuf dataStream);
-*/
 	}
 }

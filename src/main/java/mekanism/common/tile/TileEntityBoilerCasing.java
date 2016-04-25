@@ -170,7 +170,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 		if(!player.isSneaking() && structure != null)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			player.openGui(Mekanism.instance, 54, worldObj, xCoord, yCoord, zCoord);
+			player.openGui(Mekanism.instance, 54, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
 			
 			return true;
 		}
@@ -221,7 +221,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			if(structure.waterStored != null)
 			{
 				data.add(1);
-				data.add(structure.waterStored.getFluid().getName()());
+				data.add(structure.waterStored.getFluid().getName());
 				data.add(structure.waterStored.amount);
 			}
 			else {
@@ -231,7 +231,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			if(structure.steamStored != null)
 			{
 				data.add(1);
-				data.add(structure.steamStored.getFluid().getName()());
+				data.add(structure.steamStored.getFluid().getName());
 				data.add(structure.steamStored.amount);
 			}
 			else {
@@ -263,6 +263,26 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 		}
 
 		return data;
+	}
+
+	public int getScaledWaterLevel(int i)
+	{
+		if(clientWaterCapacity == 0 || structure.waterStored == null)
+		{
+			return 0;
+		}
+
+		return structure.waterStored.amount*i / clientWaterCapacity;
+	}
+
+	public int getScaledSteamLevel(int i)
+	{
+		if(clientSteamCapacity == 0 || structure.steamStored == null)
+		{
+			return 0;
+		}
+
+		return structure.steamStored.amount*i / clientSteamCapacity;
 	}
 
 	@Override
@@ -309,7 +329,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 				{
 					ValveData data = new ValveData();
 					data.location = Coord4D.read(dataStream);
-					data.side = ForgeDirection.getOrientation(dataStream.readInt());
+					data.side = EnumFacing.getFront(dataStream.readInt());
 					
 					valveViewing.add(data);
 
@@ -398,7 +418,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	}
 	
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("gui.thermoelectricBoiler");
 	}

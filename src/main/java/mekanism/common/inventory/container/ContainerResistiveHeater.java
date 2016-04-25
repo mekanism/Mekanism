@@ -34,7 +34,7 @@ public class ContainerResistiveHeater extends Container
 		}
 
 		tileEntity.open(inventory.player);
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class ContainerResistiveHeater extends Container
 		super.onContainerClosed(entityplayer);
 
 		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 	}
 
 	@Override

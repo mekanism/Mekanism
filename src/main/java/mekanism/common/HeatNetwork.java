@@ -7,7 +7,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.multipart.MultipartTransmitter;
+//import mekanism.common.multipart.MultipartTransmitter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -77,6 +77,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 		{
 			for(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters)
 			{
+				/*
 				if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart() instanceof IHeatTransfer)
 				{
 					IHeatTransfer heatTransmitter = (IHeatTransfer)((MultipartTransmitter)transmitter).getPart();
@@ -84,15 +85,18 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 					newHeatTransferred += d[0];
 					newHeatLost += d[1];
 				}
+				*/
 			}
 			
 			for(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters)
 			{
+/*
 				if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart() instanceof IHeatTransfer)
 				{
 					IHeatTransfer heatTransmitter = (IHeatTransfer)((MultipartTransmitter)transmitter).getPart();
 					newSumTemp += heatTransmitter.applyTemperatureChange();
 				}
+*/
 			}
 		}
 		

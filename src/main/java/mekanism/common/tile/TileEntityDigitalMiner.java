@@ -867,7 +867,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		if(clientActive != isActive)
 		{
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 

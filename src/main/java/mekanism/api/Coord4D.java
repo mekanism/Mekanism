@@ -21,8 +21,6 @@ import net.minecraft.util.Vec3i;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 /**
  * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes

@@ -104,7 +104,7 @@ public class InventoryFrequency extends Frequency
 		if(storedFluid.getFluid() != null)
 		{
 			data.add(true);
-			data.add(storedFluid.getFluid().getFluidID());
+			data.add(storedFluid.getFluid().getFluid().getName());
 			data.add(storedFluid.getFluidAmount());
 		}
 		else {

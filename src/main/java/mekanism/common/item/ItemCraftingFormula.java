@@ -4,29 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import codechicken.lib.inventory.InventoryUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCraftingFormula extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[3];
+//	public IIcon[] icons = new IIcon[3];
 	
 	public ItemCraftingFormula()
 	{
 		super();
 	}
 	
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register)
@@ -42,14 +41,15 @@ public class ItemCraftingFormula extends ItemMekanism
 	{
 		return getInventory(stack) == null ? icons[0] : (isInvalid(stack) ? icons[1] : icons[2]);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean requiresMultipleRenderPasses()
 	{
 		return true;
 	}
-	
+*/
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
@@ -104,7 +104,7 @@ public class ItemCraftingFormula extends ItemMekanism
 			setInventory(stack, null);
 			setInvalid(stack, false);
 			
-			((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
+			((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 		
 			return stack;
 		}
@@ -132,32 +132,32 @@ public class ItemCraftingFormula extends ItemMekanism
 	
 	public boolean isInvalid(ItemStack stack)
 	{
-		if(stack.stackTagCompound == null)
+		if(!stack.hasTagCompound())
 		{
 			return false;
 		}
 		
-		return stack.stackTagCompound.getBoolean("invalid");
+		return stack.getTagCompound().getBoolean("invalid");
 	}
 	
 	public void setInvalid(ItemStack stack, boolean invalid)
 	{
-		if(stack.stackTagCompound == null)
+		if(!stack.hasTagCompound())
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		stack.stackTagCompound.setBoolean("invalid", invalid);
+		stack.getTagCompound().setBoolean("invalid", invalid);
 	}
 	
 	public ItemStack[] getInventory(ItemStack stack)
 	{
-		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("Items"))
+		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("Items"))
 		{
 			return null;
 		}
 		
-		NBTTagList tagList = stack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+		NBTTagList tagList = stack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 		ItemStack[] inventory = new ItemStack[9];
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
@@ -176,14 +176,14 @@ public class ItemCraftingFormula extends ItemMekanism
 	
 	public void setInventory(ItemStack stack, ItemStack[] inv)
 	{
-		if(stack.stackTagCompound == null)
+		if(!stack.hasTagCompound())
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
 		if(inv == null)
 		{
-			stack.stackTagCompound.removeTag("Items");
+			stack.getTagCompound().removeTag("Items");
 			return;
 		}
 		
@@ -200,6 +200,6 @@ public class ItemCraftingFormula extends ItemMekanism
 			}
 		}
 
-		stack.stackTagCompound.setTag("Items", tagList);
+		stack.getTagCompound().setTag("Items", tagList);
 	}
 }

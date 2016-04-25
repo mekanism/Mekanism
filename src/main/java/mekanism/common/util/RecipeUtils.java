@@ -14,7 +14,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.ITierItem;
-import mekanism.common.block.BlockBasic.BasicType;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.recipe.ShapedMekanismRecipe;
@@ -27,6 +27,9 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeUtils 
@@ -190,7 +193,7 @@ public class RecipeUtils
 			}
 		}
 		
-		if(BasicType.get(toReturn) == BasicType.BIN)
+		if(BasicBlockType.get(toReturn) == BasicBlockType.BIN)
 		{
 			int foundCount = 0;
 			ItemStack foundType = null;
@@ -199,7 +202,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(BasicType.get(itemstack) == BasicType.BIN)
+				if(BasicBlockType.get(itemstack) == BasicBlockType.BIN)
 				{
 					InventoryBin binInv = new InventoryBin(itemstack);
 					

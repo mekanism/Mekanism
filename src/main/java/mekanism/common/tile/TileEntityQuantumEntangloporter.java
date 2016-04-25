@@ -33,7 +33,7 @@ import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -53,7 +53,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	public List<Frequency> publicCache = new ArrayList<Frequency>();
 	public List<Frequency> privateCache = new ArrayList<Frequency>();
 
-	public static final EnumSet<ForgeDirection> nothing = EnumSet.noneOf(ForgeDirection.class);
+	public static final EnumSet<EnumFacing> nothing = EnumSet.noneOf(EnumFacing.class);
 	
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
@@ -325,7 +325,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -376,13 +376,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
 		return !hasFrequency() ? nothing : configComponent.getSidesForData(TransmissionType.ENERGY, facing, 2);
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
 		return !hasFrequency() ? nothing : configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
 	}
@@ -415,13 +415,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return !hasFrequency() ? 0 : frequency.storedFluid.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(hasFrequency() && resource.isFluidEqual(frequency.storedFluid.getFluid()))
 		{
@@ -432,7 +432,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(hasFrequency())
 		{
@@ -443,9 +443,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if(hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from.ordinal(), facing).ioState == IOState.INPUT)
+		if(hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT)
 		{
 			return frequency.storedFluid.getFluid() == null || fluid == frequency.storedFluid.getFluid().getFluid();
 		}
@@ -454,9 +454,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		if(hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from.ordinal(), facing).ioState == IOState.OUTPUT)
+		if(hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT)
 		{
 			return frequency.storedFluid.getFluid() == null || fluid == frequency.storedFluid.getFluid().getFluid();
 		}
@@ -465,11 +465,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		if(hasFrequency())
 		{
-			if(configComponent.getOutput(TransmissionType.FLUID, from.ordinal(), facing).ioState != IOState.OFF)
+			if(configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState != IOState.OFF)
 			{
 				return new FluidTankInfo[] {frequency.storedFluid.getInfo()};
 			}
@@ -479,33 +479,33 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		return !hasFrequency() ? 0 : frequency.storedGas.receive(stack, doTransfer);
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(EnumFacing side, GasStack stack)
 	{
 		return receiveGas(side, stack, true);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return !hasFrequency() ? null : frequency.storedGas.draw(amount, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(EnumFacing side, int amount)
 	{
 		return drawGas(side, amount, true);
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		if(hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).ioState == IOState.INPUT)
+		if(hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.INPUT)
 		{
 			return frequency.storedGas.getGasType() == null || type == frequency.storedGas.getGasType();
 		}
@@ -514,9 +514,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		if(hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).ioState == IOState.OUTPUT)
+		if(hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OUTPUT)
 		{
 			return frequency.storedGas.getGasType() == null || type == frequency.storedGas.getGasType();
 		}
@@ -569,7 +569,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side) 
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return 1000;
 	}
@@ -600,17 +600,17 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side) 
+	public boolean canConnectHeat(EnumFacing side)
 	{
-		return hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side.ordinal(), facing).ioState != IOState.OFF;
+		return hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, facing).ioState != IOState.OFF;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side) 
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
-		if(hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side.ordinal(), facing).ioState == IOState.INPUT)
+		if(hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, facing).ioState == IOState.INPUT)
 		{
 			if(adj instanceof IHeatTransfer)
 			{
@@ -622,13 +622,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public boolean canInsertItem(int slotID, ItemStack itemstack, int side)
+	public boolean canInsertItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.INPUT;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		if(hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState != IOState.OFF)
 		{
@@ -639,7 +639,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.OUTPUT;
 	}
@@ -662,7 +662,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int getOrientation() 
+	public EnumFacing getOrientation()
 	{
 		return facing;
 	}
@@ -674,9 +674,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side) 
+	public boolean canTubeConnect(EnumFacing side)
 	{
-		return frequency != null && configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).ioState != IOState.OFF;
+		return frequency != null && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState != IOState.OFF;
 	}
 	
 	private static final String[] methods = new String[] {"setFrequency"};

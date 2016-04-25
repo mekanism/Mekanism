@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.Random;
 
+import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;

@@ -422,11 +422,11 @@ public class ClientTickHandler
 					}
 					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
 					{
-						if((!mc.gameSettings.keyBindJump.getIsKeyPressed() && !mc.gameSettings.keyBindSneak.getIsKeyPressed()) || (mc.gameSettings.keyBindJump.getIsKeyPressed() && mc.gameSettings.keyBindSneak.getIsKeyPressed()) || mc.currentScreen != null)
+						if((!mc.gameSettings.keyBindJump.isPressed() && !mc.gameSettings.keyBindSneak.isPressed()) || (mc.gameSettings.keyBindJump.isPressed() && mc.gameSettings.keyBindSneak.isPressed()) || mc.currentScreen != null)
 						{
 							return !player.onGround;
 						}
-						else if(mc.gameSettings.keyBindSneak.getIsKeyPressed() && mc.currentScreen == null)
+						else if(mc.gameSettings.keyBindSneak.isPressed() && mc.currentScreen == null)
 						{
 							return !player.onGround;
 						}

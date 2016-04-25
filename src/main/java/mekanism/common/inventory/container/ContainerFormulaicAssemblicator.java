@@ -11,8 +11,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerFormulaicAssemblicator extends Container
 {
@@ -82,7 +82,7 @@ public class ContainerFormulaicAssemblicator extends Container
 		}
 
 		tileEntity.open(inventory.player);
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class ContainerFormulaicAssemblicator extends Container
 		super.onContainerClosed(entityplayer);
 
 		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class ContainerFormulaicAssemblicator extends Container
 					return null;
 				}
 			}
-			else if(tileEntity.formula == null || tileEntity.formula.isIngredient(tileEntity.getWorldObj(), slotStack))
+			else if(tileEntity.formula == null || tileEntity.formula.isIngredient(tileEntity.getWorld(), slotStack))
 			{
 				if(!mergeItemStack(slotStack, 2, 20, false))
 				{

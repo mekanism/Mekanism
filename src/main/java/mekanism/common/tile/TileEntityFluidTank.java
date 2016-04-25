@@ -147,7 +147,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	}
 	
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("tile.FluidTank" + tier.getBaseTier().getName() + ".name");
 	}

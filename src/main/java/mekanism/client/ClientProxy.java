@@ -85,18 +85,12 @@ import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderFluidicPlenisher;
 import mekanism.client.render.tileentity.RenderGasTank;
-import mekanism.client.render.tileentity.RenderLaser;
 import mekanism.client.render.tileentity.RenderLaserAmplifier;
 import mekanism.client.render.tileentity.RenderLaserTractorBeam;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
-import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
-import mekanism.client.render.tileentity.RenderObsidianTNT;
-import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
-import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
-import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
@@ -465,7 +459,7 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.Crystal);
 		registerItemRender(MekanismItems.FreeRunners);
 		registerItemRender(MekanismItems.ArmoredJetpack);
-		registerItemRender(MekanismItems.FilterCard);
+		registerItemRender(MekanismItems.ConfigurationCard);
 		registerItemRender(MekanismItems.SeismicReader);
 		registerItemRender(MekanismItems.Substrate);
 		registerItemRender(MekanismItems.Polyethene);
@@ -586,18 +580,18 @@ public class ClientProxy extends CommonProxy
 			case 37:
 				return new GuiChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer)tileEntity);
 			case 38:
-				ItemStack itemStack1 = player.getCurrentEquippedItem().copy();
+				ItemStack itemStack1 = player.getCurrentEquippedItem();
 
 				if(itemStack1 != null && itemStack1.getItem() instanceof ItemSeismicReader)
 				{
-					return new GuiSeismicReader(world, new Coord4D(player), itemStack1);
+					return new GuiSeismicReader(world, new Coord4D(player), itemStack1.copy());
 				}
 			case 39:
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 			case 40:
 				return new GuiPRC(player.inventory, (TileEntityPRC)tileEntity);
 			case 41:
-				return new GuiPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
+				return new GuiFluidTank(player.inventory, (TileEntityFluidTank)tileEntity);
 			case 42:
 				return new GuiFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
 			case 43:
@@ -607,7 +601,7 @@ public class ClientProxy extends CommonProxy
 			case 45:
 				return new GuiLaserTractorBeam(player.inventory, (TileEntityLaserTractorBeam)tileEntity);
 			case 46:
-				return new GuiEntangledBlock(player.inventory, (TileEntityEntangledBlock)tileEntity);
+				return new GuiQuantumEntangloporter(player.inventory, (TileEntityQuantumEntangloporter)tileEntity);
 			case 47:
 				return new GuiSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator)tileEntity);
 			case 48:

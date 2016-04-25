@@ -30,9 +30,10 @@ import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
-import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
+import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
@@ -41,9 +42,10 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
+import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
@@ -141,17 +143,17 @@ public class BlockStateMachine extends BlockStateFacing
 		CHEMICAL_CRYSTALLIZER(MachineBlock.MACHINE_BLOCK_2, 8, "ChemicalCrystallizer", 37, TileEntityChemicalCrystallizer.class, true, true, true, Plane.HORIZONTAL, true),
 		SEISMIC_VIBRATOR(MachineBlock.MACHINE_BLOCK_2, 9, "SeismicVibrator", 39, TileEntitySeismicVibrator.class, true, true, false, Plane.HORIZONTAL, true),
 		PRESSURIZED_REACTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 10, "PressurizedReactionChamber", 40, TileEntityPRC.class, true, true, false, Plane.HORIZONTAL, true),
-		PORTABLE_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "PortableTank", 41, TileEntityPortableTank.class, false, true, false, never, true),
+		FLUID_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "PortableTank", 41, TileEntityFluidTank.class, false, true, false, never, true),
 		FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, TileEntityFluidicPlenisher.class, true, true, false, Plane.HORIZONTAL, true),
 		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false, always, false),
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false, always, true),
 		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false, always, true),
-		QUANTUM_ENTANGLOPORTER(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityEntangledBlock.class, true, false, false, Plane.HORIZONTAL, true),
+		QUANTUM_ENTANGLOPORTER(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityQuantumEntangloporter.class, true, false, false, Plane.HORIZONTAL, true),
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false, Plane.HORIZONTAL, true),
 		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false, never, true),
 		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false, Plane.HORIZONTAL, true),
-		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, false, false),
-		FORMULAIC_ASSEMBLICATOR(MachineBlock.MACHINE_BLOCK_3, 5, "FormulaicAssemblicator", 56, TileEntityFormulaicAssemblicator.class, true, false, true);
+		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, false, false, always, true),
+		FORMULAIC_ASSEMBLICATOR(MachineBlock.MACHINE_BLOCK_3, 5, "FormulaicAssemblicator", 56, TileEntityFormulaicAssemblicator.class, true, false, true, always, true);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -206,7 +208,7 @@ public class BlockStateMachine extends BlockStateFacing
 
 			for(MachineType type : MachineType.values())
 			{
-				if(type != ENTANGLED_BLOCK && type != AMBIENT_ACCUMULATOR)
+				if(type != QUANTUM_ENTANGLOPORTER && type != AMBIENT_ACCUMULATOR)
 				{
 					ret.add(type);
 				}

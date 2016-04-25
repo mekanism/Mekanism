@@ -152,7 +152,7 @@ public class MekanismRenderer
 
 		RenderDynamicTank.resetDisplayInts();
 		RenderThermalEvaporationController.resetDisplayInts();
-		RenderPortableTank.resetDisplayInts();
+		RenderFluidTank.resetDisplayInts();
 	}
 
 	public static void initFluidTextures(TextureMap map) {

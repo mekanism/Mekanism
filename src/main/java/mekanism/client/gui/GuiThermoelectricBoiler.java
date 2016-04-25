@@ -24,8 +24,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiThermoelectricBoiler extends GuiMekanism
@@ -83,7 +83,7 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 5, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 5, 0x404040);
 		
 		renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils.getTemperatureDisplay(tileEntity.structure.temperature, TemperatureUnit.AMBIENT), 43, 30, 0x00CD00, 90);
 		renderScaledText(LangUtils.localize("gui.boilRate") + ": " + tileEntity.structure.lastBoilRate + " mB/t", 43, 39, 0x00CD00, 90);
@@ -151,7 +151,7 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 			}
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-			drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
+			//TODO drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
 			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)

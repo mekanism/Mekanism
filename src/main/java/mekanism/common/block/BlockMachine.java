@@ -10,6 +10,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
@@ -43,6 +44,7 @@ import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -337,7 +339,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		else if(tileEntity instanceof TileEntityQuantumEntangloporter)
 		{
 			TileEntityQuantumEntangloporter entangloporter = (TileEntityQuantumEntangloporter)tileEntity;
-			entangloporter.owner = entityliving.getCommandSenderName();
+			entangloporter.owner = placer.getName();
 		}
 
 		if(tileEntity instanceof IBoundingBlock)
@@ -699,12 +701,12 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						
 						if(teleporter.owner == null)
 						{
-							teleporter.owner = entityplayer.getCommandSenderName();
+							teleporter.owner = entityplayer.getName();
 						}
 						
-						if(teleporter.owner.equals(entityplayer.getCommandSenderName()) || MekanismUtils.isOp((EntityPlayerMP)entityplayer))
+						if(teleporter.owner.equals(entityplayer.getName()) || MekanismUtils.isOp((EntityPlayerMP)entityplayer))
 						{
-							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 						}
 						else {
 							entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.entangloporter.noAccess")));
@@ -1107,7 +1109,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
 	{
-		setBlockBoundsBasedOnState(world, x, y, z);
+		setBlockBoundsBasedOnState(world, pos);
 		
 		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
 		{

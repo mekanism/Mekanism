@@ -14,7 +14,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class ItemConfigurationCard extends ItemMekanism
@@ -33,13 +35,13 @@ public class ItemConfigurationCard extends ItemMekanism
 		
 		list.add(EnumColor.GREY + LangUtils.localize("gui.data") + ": " + EnumColor.INDIGO + LangUtils.localize(getDataType(itemstack)));
 	}
-	
+
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 			
 			if(tileEntity instanceof IConfigCardAccess)
 			{
@@ -138,35 +140,35 @@ public class ItemConfigurationCard extends ItemMekanism
 	
 	public void setData(ItemStack itemstack, NBTTagCompound data)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.hasTagCompound())
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
 		if(data != null)
 		{
-			itemstack.stackTagCompound.setTag("data", data);
+			itemstack.getTagCompound().setTag("data", data);
 		}
 		else {
-			itemstack.stackTagCompound.removeTag("data");
+			itemstack.getTagCompound().removeTag("data");
 		}
 	}
 
 	public NBTTagCompound getData(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.hasTagCompound())
 		{
 			return null;
 		}
 		
-		NBTTagCompound data = itemstack.stackTagCompound.getCompoundTag("data");
+		NBTTagCompound data = itemstack.getTagCompound().getCompoundTag("data");
 		
 		if(data.hasNoTags())
 		{
 			return null;
 		}
 		else {
-			return itemstack.stackTagCompound.getCompoundTag("data");
+			return itemstack.getTagCompound().getCompoundTag("data");
 		}
 	}
 

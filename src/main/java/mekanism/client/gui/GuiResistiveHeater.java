@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +30,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiResistiveHeater extends GuiMekanism
@@ -76,7 +77,7 @@ public class GuiResistiveHeater extends GuiMekanism
 		
 		String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
 		
-		energyUsageField = new GuiTextField(fontRendererObj, guiWidth + 49, guiHeight + 52, 66, 11);
+		energyUsageField = new GuiTextField(0, fontRendererObj, guiWidth + 49, guiHeight + 52, 66, 11);
 		energyUsageField.setMaxStringLength(7);
 		energyUsageField.setEnableBackgroundDrawing(false);
 		energyUsageField.setText(prevEnergyUsage);
@@ -85,7 +86,7 @@ public class GuiResistiveHeater extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize / 2) - (fontRendererObj.getStringWidth(tileEntity.getInventoryName()) / 2), 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), (xSize / 2) - (fontRendererObj.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
 		
 		renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils.getTemperatureDisplay(tileEntity.temperature, TemperatureUnit.AMBIENT), 50, 25, 0x00CD00, 76);
@@ -143,7 +144,7 @@ public class GuiResistiveHeater extends GuiMekanism
 	}
 	
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -163,7 +164,7 @@ public class GuiResistiveHeater extends GuiMekanism
 	}
 	
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!energyUsageField.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{

@@ -179,7 +179,7 @@ public class RenderTickHandler
 							Pos3D motion = vec.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
 							
 							Pos3D v = playerPos.clone().translate(vec);
-							spawnAndSetParticle("bubble", world, v.xPos, v.yPos, v.zPos, motion.xPos, motion.yPos + 0.2, motion.zPos);
+							spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.xCoord, v.yCoord, v.zCoord, motion.xCoord, motion.yCoord + 0.2, motion.zCoord);
 						}
 					}
 				}

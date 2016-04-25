@@ -156,11 +156,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				@Override
 				public final boolean isValid(Coord4D coord) 
 				{
-					return coord.getY() < initDisperser.getY() && (coord.isAirBlock(pointer.getWorld()) || isViableNode(coord));
-					return coord.yCoord >= renderLocation.yCoord-1 && coord.yCoord < initDisperser.yCoord && 
-							coord.xCoord >= renderLocation.xCoord && coord.xCoord < renderLocation.xCoord+volLength && 
-							coord.zCoord >= renderLocation.zCoord && coord.zCoord < renderLocation.zCoord+volWidth &&
-							(coord.isAirBlock(pointer.getWorldObj()) || isViableNode(coord.xCoord, coord.yCoord, coord.zCoord));
+					return coord.getY() >= renderLocation.getY()-1 && coord.getY() < initDisperser.getY() &&
+							coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX()+volLength &&
+							coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ()+volWidth &&
+							(coord.isAirBlock(pointer.getWorld()) || isViableNode(coord));
 				}
 			}).calculate(initAir);
 			
@@ -173,7 +172,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			int steamHeight = (structure.renderLocation.getY()+structure.volHeight-2)-initDisperser.getY();
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
 			
-			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord+1, structure.renderLocation.zCoord);
+			structure.upperRenderLocation = new Coord4D(structure.renderLocation.getX(), initDisperser.getY()+1, structure.renderLocation.getZ());
 			
 			return true;
 		}

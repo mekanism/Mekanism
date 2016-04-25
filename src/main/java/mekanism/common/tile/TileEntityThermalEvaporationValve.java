@@ -110,7 +110,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side) 
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return 0;
 	}
@@ -139,13 +139,13 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side) 
+	public boolean canConnectHeat(EnumFacing side)
 	{
 		return getController() != null;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side) 
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		return null;
 	}

@@ -3,7 +3,6 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.common.Tier.BaseTier;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

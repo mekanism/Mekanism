@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,8 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiFormulaicAssemblicator extends GuiMekanism
@@ -65,7 +66,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		
 		if(xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91)
@@ -199,7 +200,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					GL11.glPushMatrix();
 					GL11.glEnable(GL11.GL_LIGHTING);
 					MekanismRenderer.blendOn();
-					itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), stack, guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition);
+					itemRender.renderItemAndEffectIntoGUI(stack, guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition);
 					MekanismRenderer.blendOff();
 					GL11.glDisable(GL11.GL_LIGHTING);
 					GL11.glPopMatrix();
@@ -217,7 +218,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 	}
 	
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 

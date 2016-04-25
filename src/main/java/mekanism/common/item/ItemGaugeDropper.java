@@ -19,8 +19,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidContainerItem
 {
@@ -65,14 +65,14 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	}
 	
 	@Override
-	public boolean onItemRightClick(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		if(player.isSneaking() && !world.isRemote)
 		{
 			setGas(stack, null);
 			setFluid(stack, null);
 			
-			((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
+			((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 		
 			return stack;
 		}

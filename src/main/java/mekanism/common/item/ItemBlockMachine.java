@@ -1006,22 +1006,22 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public BaseTier getBaseTier(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(!itemstack.hasTagCompound())
 		{
 			return BaseTier.BASIC;
 		}
 
-		return BaseTier.values()[itemstack.stackTagCompound.getInteger("tier")];
+		return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
 	}
 
 	@Override
 	public void setBaseTier(ItemStack itemstack, BaseTier tier)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(!itemstack.hasTagCompound())
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setInteger("tier", tier.ordinal());
+		itemstack.getTagCompound().setInteger("tier", tier.ordinal());
 	}
 }

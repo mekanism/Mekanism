@@ -44,6 +44,7 @@ import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
@@ -1269,7 +1270,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater", new ResourceLocation("mekanism:heavy_water"), new ResourceLocation("mekanism:heavy_water")));
-		FluidRegistry.registerFluid(new Fluid("steam").setGaseous(true));
+		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:steam"), new ResourceLocation("mekanism:steam")).setGaseous(true));
 		
 		for(Resource resource : Resource.values())
 		{

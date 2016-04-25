@@ -10,12 +10,14 @@ import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -138,12 +140,13 @@ public class CommonPlayerTickHandler
 	public static boolean isOnGround(EntityPlayer player)
 	{
 		int x = MathHelper.floor_double(player.posX);
-		int y = (int)Math.round(player.posY-player.yOffset - 1);
+		int y = (int)Math.round(player.posY - 1);
 		int z = MathHelper.floor_double(player.posZ);
-		
-		Block b = player.worldObj.getBlock(x, y, z);
-		AxisAlignedBB box = b.getCollisionBoundingBoxFromPool(player.worldObj, x, y, z);
-		AxisAlignedBB playerBox = player.boundingBox.copy().offset(0, -0.01, 0);
+
+		BlockPos pos = new BlockPos(x, y, z);
+		IBlockState s = player.worldObj.getBlockState(pos);
+		AxisAlignedBB box = s.getBlock().getCollisionBoundingBox(player.worldObj, pos, s);
+		AxisAlignedBB playerBox = player.getCollisionBoundingBox().offset(0, -0.01, 0);
 		
 		return box != null && playerBox.intersectsWith(box);
 	}

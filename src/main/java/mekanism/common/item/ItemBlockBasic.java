@@ -221,8 +221,8 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 				return null;
 			}
 			
-			int newCount = stack.stackTagCompound.getInteger("newCount");
-			stack.stackTagCompound.removeTag("newCount");
+			int newCount = stack.getTagCompound().getInteger("newCount");
+			stack.getTagCompound().removeTag("newCount");
 
             ItemStack ret = stack.copy();
             ret.getTagCompound().setInteger("itemCount", newCount);
@@ -315,7 +315,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 		
 		if(type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
 		{
-			return getTier(itemstack).getLocalizedName() + " " + super.getItemStackDisplayName(itemstack);
+			return getBaseTier(itemstack).getLocalizedName() + " " + super.getItemStackDisplayName(itemstack);
 		}
 		
 		return super.getItemStackDisplayName(itemstack);

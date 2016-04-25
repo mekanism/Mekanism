@@ -15,7 +15,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -27,6 +27,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess
 {
@@ -231,13 +232,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	                    	container = null;
 	                    }
 
-	                    if(container != null && !stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
+	                    if(container != null/*TODO && !stack.getItem().doesContainerItemLeaveCraftingGrid(stack)*/)
 	                    {
-	                    	if(!stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
+	                    	/*TODOif(!stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
 	                    	{
 	                    		inventory[i] = container.copy();
 	                    	}
-	                    	else {
+	                    	else*/ {
 	                    		boolean move = tryMoveToOutput(container.copy(), false);
 	                    		
 	                    		if(move)
@@ -461,13 +462,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	}
 	
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -646,7 +647,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	}
 
 	@Override
-	public int getOrientation()
+	public EnumFacing getOrientation()
 	{
 		return facing;
 	}

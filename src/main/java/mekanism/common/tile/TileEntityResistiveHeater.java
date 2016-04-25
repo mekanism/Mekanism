@@ -10,7 +10,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
@@ -19,7 +19,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl
 {
@@ -62,7 +62,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 		
@@ -178,7 +178,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 
@@ -213,7 +213,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side) 
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return 1000;
 	}
@@ -240,15 +240,15 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side) 
+	public boolean canConnectHeat(EnumFacing side)
 	{
 		return true;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side) 
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
 		if(adj instanceof IHeatTransfer)
 		{
@@ -265,7 +265,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;

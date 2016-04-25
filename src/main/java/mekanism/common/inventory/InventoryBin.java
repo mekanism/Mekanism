@@ -3,7 +3,7 @@ package mekanism.common.inventory;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Tier.BinTier;
 import mekanism.common.base.ITierItem;
-import mekanism.common.block.BlockBasic.BasicType;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -76,7 +76,7 @@ public class InventoryBin
 			return false;
 		}
 
-		if(BasicType.get(stack) == BasicType.BIN)
+		if(BasicBlockType.get(stack) == BasicBlockType.BIN)
 		{
 			return false;
 		}
