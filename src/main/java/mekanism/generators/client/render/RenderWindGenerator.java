@@ -34,7 +34,7 @@ public class RenderWindGenerator extends TileEntitySpecialRenderer<TileEntityWin
 		if(!Mekanism.proxy.isPaused() &&
 				tileEntity.getWorld().canBlockSeeTheSky(tileEntity.getPos().getX(), tileEntity.getPos().getY()+4, tileEntity.getPos().getZ()))
 		{
-			tileEntity.angle = (tileEntity.angle+((tileEntity.getPos().getY()+4)/256F)*8) % 360;
+			tileEntity.angle = (tileEntity.angle+((tileEntity.getPos().getY()+4F)/256F)*8) % 360;
 		}
 
 		model.render(0.0625F, tileEntity.angle);

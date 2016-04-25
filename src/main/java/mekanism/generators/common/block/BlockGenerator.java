@@ -17,11 +17,15 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsItems;
 import mekanism.generators.common.MekanismGenerators;
@@ -47,7 +51,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -125,6 +131,14 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	{
 		return !GeneratorType.getFromMetadata(meta).hasModel;
 	}
+	
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+		setBlockBoundsBasedOnState(world, x, y, z);
+		
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+    }
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -250,6 +264,19 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	{
 		return i;
 	}
+	
+	@Override
+	public float getBlockHardness(World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof ISecurityTile)
+		{
+			return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
+		}
+		
+		return blockHardness;
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -281,8 +308,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+(??)						world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+(??)						world.spawnParticle("flame", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.25, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
@@ -296,8 +323,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom + iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom + iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.75, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
@@ -311,8 +338,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.5, y+.2, z+.25, 0.0D, 0.0D, 0.0D);
@@ -326,8 +353,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.5, y+.2, z+.75, 0.0D, 0.0D, 0.0D);
@@ -425,30 +452,30 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(entityplayer.isSneaking())
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					dismantleBlock(world, x, y, z, false);
-					return true;
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(world, x, y, z, false);
+						
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					}
+	
+					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
+	
+					tileEntity.setFacing((short)change);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-				{
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
 				}
-
-				int change = EnumFacing.ROTATION_MATRIX[EnumFacing.UP.ordinal()][tileEntity.facing];
-
-				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				
 				return true;
-			}
-		}
-
-		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(GeneratorsBlocks.Generator, 1, 2)))
-		{
-			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != side)
-			{
-				return false;
 			}
 		}
 		
@@ -523,7 +550,14 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(MekanismGenerators.instance, guiId, world, x, y, z);
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
+				{
+					entityplayer.openGui(MekanismGenerators.instance, guiId, world, x, y, z);
+				}
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
@@ -637,9 +671,25 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(x, y, z));
 
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+		
 		if(tileEntity == null)
 		{
 			return null;
+		}
+		
+		if(tileEntity instanceof ISecurityTile)
+		{
+			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+			
+			if(securityItem.hasSecurity(itemStack))
+			{
+				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			}
 		}
 
 		if(tileEntity instanceof TileEntityElectricBlock)

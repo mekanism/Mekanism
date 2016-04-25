@@ -19,6 +19,8 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -43,7 +45,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank, IUpgradeTile, IRedstoneControl
+public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank, IUpgradeTile, IRedstoneControl, ISecurityTile
 {
 	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
 	public Set<Coord4D> usedNodes = new HashSet<Coord4D>();
@@ -70,6 +72,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntityFluidicPlenisher()
 	{
@@ -108,7 +111,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				}
 			}
 			
-			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid().getFluid().canBePlacedInWorld())
+			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid().canBePlacedInWorld())
 			{
 				if(!finishedCalc)
 				{
@@ -559,5 +562,11 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	public boolean canPulse()
 	{
 		return false;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

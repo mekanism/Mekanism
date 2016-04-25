@@ -14,12 +14,15 @@ import mekanism.common.SideData;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
 public class TileComponentConfig implements ITileComponent
 {
+	public static SideData EMPTY = new SideData("Empty", EnumColor.BLACK, InventoryUtils.EMPTY);
+	
 	public TileEntityContainerBlock tileEntity;
 	
 	public Map<Integer, byte[]> sideConfigs = new HashMap<Integer, byte[]>();
@@ -133,12 +136,19 @@ public class TileComponentConfig implements ITileComponent
 	
 	public SideData getOutput(TransmissionType type, EnumFacing side, EnumFacing facing)
 	{
-		return getOutputs(type).get(getConfig(type)[MekanismUtils.getBaseOrientation(side, facing).ordinal()]);
+		return getOutput(type, MekanismUtils.getBaseOrientation(side, facing));
 	}
 	
 	public SideData getOutput(TransmissionType type, EnumFacing side)
 	{
-		return getOutputs(type).get(getConfig(type)[side.ordinal()]);
+		int index = getConfig(type)[side];
+		
+		if(index == -1)
+		{
+			return EMPTY;
+		}
+		
+		return getOutputs(type).get(index);
 	}
 	
 	public boolean supports(TransmissionType type)
@@ -215,6 +225,9 @@ public class TileComponentConfig implements ITileComponent
 			data.add(ejecting.get(type.ordinal()));
 		}
 	}
+	
+	@Override
+	public void invalidate() {}
 	
 	public boolean isEjecting(TransmissionType type)
 	{

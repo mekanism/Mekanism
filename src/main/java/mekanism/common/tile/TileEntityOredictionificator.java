@@ -17,6 +17,8 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +30,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, ISpecialConfigData, ISustainedData
+public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile
 {
 	public static final int MAX_LENGTH = 24;
 	
@@ -39,6 +41,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public boolean didProcess;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntityOredictionificator()
 	{
@@ -63,7 +67,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			
 			didProcess = false;
 			
-			if(inventory[0] != null && getValidName(inventory[0]) != null)
+			if(MekanismUtils.canFunction(this) && inventory[0] != null && getValidName(inventory[0]) != null)
 			{
 				ItemStack result = getResult(inventory[0]);
 				
@@ -405,6 +409,12 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	public boolean canPulse()
 	{
 		return true;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 	
 	public static class OredictionificatorFilter

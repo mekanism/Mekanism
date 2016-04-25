@@ -25,6 +25,8 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.OxidationRecipe;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -35,7 +37,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 
-public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IUpgradeTile, ISustainedData, ITankManager
+public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IUpgradeTile, ISustainedData, ITankManager, ISecurityTile
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 
@@ -66,6 +68,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityChemicalOxidizer()
 	{
@@ -402,5 +405,11 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	public Object[] getTanks() 
 	{
 		return new Object[] {gasTank};
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity() 
+	{
+		return securityComponent;
 	}
 }

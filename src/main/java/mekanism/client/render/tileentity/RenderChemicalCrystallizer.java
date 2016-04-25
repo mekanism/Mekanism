@@ -44,7 +44,7 @@ public class RenderChemicalCrystallizer extends TileEntitySpecialRenderer<TileEn
 		tileEntity.spin = (tileEntity.spin + (tileEntity.spinSpeed*0.1F)) % 1;
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.renderWithRotation(0.0625F, tileEntity.spin);
+		model.render(0.0625F);
 		GL11.glPopMatrix();
 
 		MekanismRenderer.machineRenderer.renderTileEntityAt(tileEntity, x, y, z, partialTick, destroyStage);

@@ -232,7 +232,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		if(getInv() == null)
+		if(getInv() == null || !canReceiveEnergy(from))
 		{
 			return 0;
 		}
@@ -259,7 +259,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canConnectEnergy(from);
+		return canReceiveEnergy(from);
 	}
 
 	@Override
@@ -320,7 +320,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
-		if(getInv() == null)
+		if(getInv() == null || !canReceiveEnergy(side))
 		{
 			return 0;
 		}
@@ -336,7 +336,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canReceiveEnergy(side);
+		return getInv().canBoundReceiveEnergy(Coord4D.get(this), side);
 	}
 
 	@Override
@@ -355,7 +355,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Method(modid = "IC2")
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage)
 	{
-		if(getInv() == null)
+		if(getInv() == null || !canReceiveEnergy(directionFrom))
 		{
 			return amount;
 		}

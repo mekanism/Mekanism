@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiNumberGauge;
 import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
@@ -67,6 +68,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(level);
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiDetectionTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 	}

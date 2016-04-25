@@ -22,12 +22,11 @@ import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage
-{
+{	
 	public TileEntityTurbineCasing() 
 	{
 		this("TurbineCasing");
@@ -87,19 +86,21 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 						structure.clientFlow = 0;
 					}
 					
-					TileEntity tile = structure.complex.getTileEntity(worldObj);
+					float newRotation = (float)flowRate;
+					boolean needsRotationUpdate = false;
 					
-					if(tile instanceof TileEntityRotationalComplex)
+					if(Math.abs(newRotation-structure.clientRotation) > SynchronizedTurbineData.ROTATION_THRESHOLD)
 					{
-						((TileEntityRotationalComplex)tile).setRotation((float)flowRate);
+						structure.clientRotation = newRotation;
+						needsRotationUpdate = true;
 					}
 					
-					if(structure.needsRenderUpdate())
+					if(structure.needsRenderUpdate() || needsRotationUpdate)
 					{
 						sendPacketToRenderer();
 					}
 					
-					structure.prevFluid = structure.fluidStored;
+					structure.prevFluid = structure.fluidStored != null ? structure.fluidStored.copy() : null;
 				}
 			}
 		}
@@ -187,6 +188,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			if(isRendering)
 			{
 				structure.complex.write(data);
+				data.add(structure.clientRotation);
 			}
 		}
 
@@ -221,6 +223,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			if(isRendering)
 			{
 				structure.complex = Coord4D.read(dataStream);
+				
+				structure.clientRotation = dataStream.readFloat();
+				SynchronizedTurbineData.clientRotationMap.put(structure.inventoryID, structure.clientRotation);
 			}
 		}
 	}

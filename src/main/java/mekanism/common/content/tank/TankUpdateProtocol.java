@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.block.BlockBasic.BasicType;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
@@ -78,6 +78,8 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 	@Override
 	protected void onFormed()
 	{
+		super.onFormed();
+		
 		if(structureFound.fluidStored != null)
 		{
 			structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);

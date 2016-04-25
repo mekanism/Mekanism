@@ -68,6 +68,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 1:6: Pressure Disperser
  * 1:7: Boiler Casing
  * 1:8: Boiler Valve
+ * 1:9: Security Desk
  * @author AidanBrady
  *
  */
@@ -236,12 +237,20 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState metadata)
 	{
-		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, metadata);
-
-		if(place)
+		boolean place = true;
+		
+		BasicBlockType type = BasicBlockType.get(stack);
+		
+		if(type == BasicType.SECURITY_DESK)
 		{
-			BasicBlockType type = BasicBlockType.get(stack);
+			if(y+1 > 255 || !world.getBlock(x, y+1, z).isReplaceable(world, x, y+1, z))
+			{
+				place = false;
+			}
+		}
 
+		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
+		{
 			if(type == BasicBlockType.BIN && stack.getTagCompound() != null)
 			{
 				TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(pos);

@@ -74,15 +74,14 @@ import mekanism.common.recipe.ShapelessMekanismRecipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
-import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityPressureDisperser;
-import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
@@ -186,11 +185,13 @@ public class Mekanism
 	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<SynchronizedBoilerData>("thermoelectricBoiler");
 	
 	/** FrequencyManagers for various networks */
-	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, "Teleporter");
+	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
 	public static Map<String, FrequencyManager> privateTeleporters = new HashMap<String, FrequencyManager>();
 	
-	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, "Entangloporter");
+	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
 	public static Map<String, FrequencyManager> privateEntangloporters = new HashMap<String, FrequencyManager>();
+	
+	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -358,7 +359,7 @@ public class Mekanism
 		BlockStateMachine.MachineType.ELECTRIC_PUMP.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 12),
 			" B ", "ECE", "OOO", Character.valueOf('B'), Items.bucket, Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('O'), "ingotOsmium"
 		));
-		BlockStateMachine.MachineType.ELECTRIC_CHEST.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 13),
+		BlockStateMachine.MachineType.PERSONAL_CHEST.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 13),
 			"SGS", "CcC", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "blockGlass", Character.valueOf('C'), Blocks.chest, Character.valueOf('c'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
 		));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 4, 9),
@@ -531,6 +532,13 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapelessMekanismRecipe(new ItemStack(MekanismItems.CraftingFormula), new Object[] {
 			Items.paper, MekanismUtils.getControlCircuit(BaseTier.BASIC)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 9), new Object[] {
+			"SGS", "CIC", "STS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "blockGlass", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ELITE), Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), 
+			Character.valueOf('T'), MekanismItems.TeleportationCore
+		}));
+		MachineType.FUELWOOD_HEATER.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock3, 1, 6), new Object[] {
+			"SCS", "FHF", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('F'), Blocks.furnace, Character.valueOf('H'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8)
 		}));
 		
 		//Energy Cube recipes
@@ -1169,10 +1177,8 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
 		GameRegistry.registerTileEntity(TileEntityThermalEvaporationValve.class, "SalinationValve"); //TODO rename
 		GameRegistry.registerTileEntity(TileEntityThermalEvaporationBlock.class, "SalinationTank"); //TODO rename
-		GameRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter");
 		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
 		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
-		GameRegistry.registerTileEntity(TileEntityFormulaicAssemblicator.class, "FormulaicAssemblicator");
 		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 

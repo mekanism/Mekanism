@@ -10,11 +10,13 @@ import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -28,6 +30,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -38,15 +41,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiFormulaicAssemblicator extends GuiMekanism
 {
 	public TileEntityFormulaicAssemblicator tileEntity;
+	
+	public ResourceLocation guiLocation = MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png");
 
 	public GuiFormulaicAssemblicator(InventoryPlayer inventory, TileEntityFormulaicAssemblicator tentity)
 	{
 		super(tentity, new ContainerFormulaicAssemblicator(inventory, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png")));
-		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png")));
-		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png")));
-		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png"), 159, 15));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, guiLocation));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, guiLocation));
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, guiLocation));
+		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, guiLocation));
+		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, guiLocation));
+		guiElements.add(new GuiPowerBar(this, tileEntity, guiLocation, 159, 15));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
@@ -54,8 +61,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
 				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png")));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png"), 151, 75).with(SlotOverlay.POWER));
+		}, this, guiLocation));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 151, 75).with(SlotOverlay.POWER));
 		
 		ySize+=64;
 	}
@@ -100,7 +107,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png"));
+		mc.renderEngine.bindTexture(guiLocation);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
@@ -181,11 +188,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 86, guiHeight + 43, 176, 48, display, 16);
 		}
 		
-		if(tileEntity.isRecipe)
-		{
-			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
-			drawTexturedModalRect(guiWidth + 90, guiHeight + 25, 2, 39, 14, 12);
-		}
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
+		drawTexturedModalRect(guiWidth + 90, guiHeight + 25, tileEntity.isRecipe ? 2 : 20, 39, 14, 12);
 		
 		if(tileEntity.formula != null)
 		{
@@ -196,10 +200,16 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				if(stack != null)
 				{
 					Slot slot = (Slot)inventorySlots.inventorySlots.get(i+20);
-					
 					GL11.glPushMatrix();
+					
+					if(slot.getStack() == null || !slot.getStack().isItemEqual(stack))
+					{
+						drawGradientRect(guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition, guiWidth + slot.xDisplayPosition + 16, guiHeight + slot.yDisplayPosition + 16, -2137456640, -2137456640);
+					}
+					
 					GL11.glEnable(GL11.GL_LIGHTING);
 					MekanismRenderer.blendOn();
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
 					itemRender.renderItemAndEffectIntoGUI(stack, guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition);
 					MekanismRenderer.blendOff();
 					GL11.glDisable(GL11.GL_LIGHTING);

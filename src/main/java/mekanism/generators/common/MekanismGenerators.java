@@ -232,6 +232,12 @@ public class MekanismGenerators implements IModule
 		generators.turbineVentGasFlow = dataStream.readDouble();
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
 	}
+	
+	@Override
+	public void resetClient()
+	{
+		SynchronizedTurbineData.clientRotationMap.clear();
+	}
 
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event)

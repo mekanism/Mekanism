@@ -135,10 +135,10 @@ public class MekanismRenderer
 			{
 				if(gas.getUnlocalizedName().contains("clean"))
 				{
-					gas.setIcon(event.map,"mekanism:blocks/LiquidCleanOre");
+					gas.setIcon(event.map,"mekanism:liquid/LiquidCleanOre");
 				}
 				else {
-					gas.setIcon(event.map,"mekanism:blocks/LiquidOre");
+					gas.setIcon(event.map,"mekanism:liquid/LiquidOre");
 				}
 			}
 		}
@@ -238,7 +238,7 @@ public class MekanismRenderer
 					
 					for(DefIcon def : defaults)
 					{
-						if(def.icons.contains(side.ordinal()+6))
+						if(def.icons.contains(side.ordinal()+6) && def.overridesInactive)
 						{
 							textures[side.ordinal()+6] = def.defIcon;
 							found = true;
@@ -274,6 +274,10 @@ public class MekanismRenderer
 		
 		public List<Integer> icons = new ArrayList<Integer>();
 		
+		/** If this DefIcon should be prioritized over a machine's side-specific off texture 
+		 * if no on texture is present. */
+		public boolean overridesInactive = true;
+		
 		public DefIcon(TextureAtlasSprite icon, int... is)
 		{
 			defIcon = icon;
@@ -282,6 +286,13 @@ public class MekanismRenderer
 			{
 				icons.add(i);
 			}
+		}
+		
+		public DefIcon setOverrides(boolean b)
+		{
+			overridesInactive = b;
+			
+			return this;
 		}
 		
 		public static DefIcon getAll(TextureAtlasSprite icon)
@@ -570,6 +581,7 @@ public class MekanismRenderer
             GL11.glColor4f(red, green, blue, 1.0F);
         }
 
+        GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
     }
     
@@ -594,11 +606,11 @@ public class MekanismRenderer
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-    	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
+    	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 3));
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 3));
+    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
@@ -639,11 +651,11 @@ public class MekanismRenderer
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
+	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
+	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);

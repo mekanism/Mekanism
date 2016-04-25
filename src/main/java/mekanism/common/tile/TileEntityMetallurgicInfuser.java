@@ -32,8 +32,10 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -42,7 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess
+public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
 {
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
@@ -81,12 +83,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	public TileEntityMetallurgicInfuser()
 	{
 		super("machine.metalinfuser", "MetallurgicInfuser", BlockStateMachine.MachineType.METALLURGIC_INFUSER.baseEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {2}));
@@ -95,7 +98,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Infuse", EnumColor.PURPLE, new int[] {1}));
 		
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 0, 0, 3, 1, 2});
-		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = new ItemStack[5];
 		
@@ -104,6 +106,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 	
 	@Override
@@ -231,6 +235,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
 		factory.recipeType = type;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
+		factory.securityComponent.readFrom(securityComponent);
 		
 		for(TransmissionType transmission : configComponent.transmissions)
 		{
@@ -261,7 +266,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
+		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
 
 	@Override
@@ -511,7 +516,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public boolean renderUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
@@ -549,6 +554,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 
 	@Override

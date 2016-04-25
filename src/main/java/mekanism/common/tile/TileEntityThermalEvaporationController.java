@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.ISalinationSolar;
+import mekanism.api.IEvaporationSolar;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.client.SparkleAnimation.INodeChecker;
@@ -49,7 +49,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
 
 	public Set<Coord4D> tankParts = new HashSet<Coord4D>();
-	public ISalinationSolar[] solars = new ISalinationSolar[4];
+	public IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
 	public boolean temperatureSet = false;
 	
@@ -322,7 +322,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		
 		int ret = 0;
 		
-		for(ISalinationSolar solar : solars)
+		for(IEvaporationSolar solar : solars)
 		{
 			if(solar != null && solar.seesSun())
 			{
@@ -531,9 +531,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
 	public boolean addSolarPanel(TileEntity tile, int i)
 	{
-		if(tile instanceof ISalinationSolar && !tile.isInvalid())
+		if(tile instanceof IEvaporationSolar && !tile.isInvalid())
 		{
-			solars[i] = (ISalinationSolar)tile;
+			solars[i] = (IEvaporationSolar)tile;
 			return true;
 		}
 		else {
@@ -700,7 +700,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		}
 		
 		tankParts.clear();
-		solars = new ISalinationSolar[] {null, null, null, null};
+		solars = new IEvaporationSolar[] {null, null, null, null};
 	}
 	
 	@Override

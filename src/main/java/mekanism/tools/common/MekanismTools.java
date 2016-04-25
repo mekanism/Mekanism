@@ -550,6 +550,9 @@ public class MekanismTools implements IModule
 	{
 		tools.armorSpawnRate = dataStream.readDouble();
 	}
+	
+	@Override
+	public void resetClient() {}
 
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event)

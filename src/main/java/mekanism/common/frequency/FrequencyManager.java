@@ -255,7 +255,7 @@ public class FrequencyManager
 							iter.remove();
 						}
 						else {
-							Frequency freq = ((IFrequencyHandler)tile).getFrequency();
+							Frequency freq = ((IFrequencyHandler)tile).getFrequency(this);
 							
 							if(freq == null || !freq.equals(iterFreq))
 							{

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -192,6 +193,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				data.add(getSynchronizedData().volLength);
 
 				getSynchronizedData().renderLocation.write(data);
+				data.add(getSynchronizedData().inventoryID);
 			}
 			else {
 				data.add(false);
@@ -223,6 +225,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				getSynchronizedData().volLength = dataStream.readInt();
 
 				getSynchronizedData().renderLocation = Coord4D.read(dataStream);
+				getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
 			}
 		}
 	}

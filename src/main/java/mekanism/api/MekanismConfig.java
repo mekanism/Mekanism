@@ -17,7 +17,6 @@ public class MekanismConfig
 		public static boolean voiceServerEnabled = true;
 		public static boolean cardboardSpawners = true;
 		public static boolean enableWorldRegeneration = true;
-		public static boolean creativeOverrideElectricChest = true;
 		public static boolean spawnBabySkeletons = true;
 		public static int obsidianTNTBlastRadius = 12;
 		public static int osmiumPerChunk = 12;
@@ -64,6 +63,7 @@ public class MekanismConfig
 		public static double energyPerHeat = 1000;
 		public static double maxEnergyPerSteam = 100;
 		public static double superheatingHeatTransfer = 10000;
+		public static double heatPerFuelTick = 1;
 	}
 
 	public static class client

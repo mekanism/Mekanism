@@ -7,12 +7,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -20,8 +23,11 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 
@@ -48,21 +54,19 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile
 {
 	private MinecraftServer server = MinecraftServer.getServer();
 
 	public AxisAlignedBB teleportBounds = null;
 
-	public Set<Entity> didTeleport = new HashSet<Entity>();
+	public Set<UUID> didTeleport = new HashSet<UUID>();
 
 	public int teleDelay = 0;
 
 	public boolean shouldRender;
 
 	public boolean prevShouldRender;
-	
-	public String owner;
 	
 	public Frequency frequency;
 	
@@ -73,11 +77,17 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	/** This teleporter's current status. */
 	public byte status = 0;
+	
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public TileComponentSecurity securityComponent;
 
 	public TileEntityTeleporter()
 	{
 		super("Teleporter", BlockStateMachine.MachineType.TELEPORTER.baseEnergy);
 		inventory = new ItemStack[1];
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -112,12 +122,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			{
 				if(frequency != null && !frequency.valid)
 				{
-					frequency = manager.validateFrequency(owner, Coord4D.get(this), frequency);
+					frequency = manager.validateFrequency(getSecurity().getOwner(), Coord4D.get(this), frequency);
 				}
 				
 				if(frequency != null)
 				{
-					frequency = manager.update(owner, Coord4D.get(this), frequency);
+					frequency = manager.update(getSecurity().getOwner(), Coord4D.get(this), frequency);
 				}
 			}
 			else {
@@ -126,7 +136,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			
 			status = canTeleport();
 
-			if(status == 1 && teleDelay == 0)
+			if(MekanismUtils.canFunction(this) && status == 1 && teleDelay == 0)
 			{
 				teleport();
 			}
@@ -152,8 +162,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public Frequency getFrequency()
+	public Frequency getFrequency(FrequencyManager manager)
 	{
+		if(manager == Mekanism.securityFrequencies)
+		{
+			return getSecurity().getFrequency();
+		}
+		
 		return frequency;
 	}
 	
@@ -169,11 +184,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public void setFrequency(String name, boolean publicFreq)
 	{
-		if(name.equals(frequency.name))
-		{
-			return;
-		}
-		
 		FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
 		manager.deactivate(Coord4D.get(this));
 		
@@ -188,7 +198,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			}
 		}
 		
-		Frequency freq = new Frequency(name, owner).setPublic(publicFreq);
+		Frequency freq = new Frequency(name, getSecurity().getOwner()).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = freq;
@@ -198,7 +208,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public FrequencyManager getManager(Frequency freq)
 	{
-		if(owner == null || freq == null)
+		if(getSecurity().getOwner() == null || freq == null)
 		{
 			return null;
 		}
@@ -208,14 +218,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			return Mekanism.publicTeleporters;
 		}
 		else {
-			if(!Mekanism.privateTeleporters.containsKey(owner))
+			if(!Mekanism.privateTeleporters.containsKey(getSecurity().getOwner()))
 			{
-				FrequencyManager manager = new FrequencyManager(Frequency.class, owner);
-				Mekanism.privateTeleporters.put(owner, manager);
+				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwner());
+				Mekanism.privateTeleporters.put(getSecurity().getOwner(), manager);
 				manager.createOrLoad(worldObj);
 			}
 			
-			return Mekanism.privateTeleporters.get(owner);
+			return Mekanism.privateTeleporters.get(getSecurity().getOwner());
 		}
 	}
 	
@@ -268,14 +278,20 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public void cleanTeleportCache()
 	{
-		List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds);
-		Set<Entity> teleportCopy = (Set<Entity>)((HashSet<Entity>)didTeleport).clone();
-
-		for(Entity entity : teleportCopy)
+		List<UUID> list = new ArrayList<UUID>();
+		
+		for(Entity e : (List<Entity>)worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds))
 		{
-			if(!list.contains(entity))
+			list.add(e.getPersistentID());
+		}
+		
+		Set<UUID> teleportCopy = (Set<UUID>)((HashSet<UUID>)didTeleport).clone();
+
+		for(UUID id : teleportCopy)
+		{
+			if(!list.contains(id))
 			{
-				didTeleport.remove(entity);
+				didTeleport.remove(id);
 			}
 		}
 	}
@@ -359,7 +375,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 			if(teleporter != null)
 			{
-				teleporter.didTeleport.add(entity);
+				teleporter.didTeleport.add(entity.getPersistentID());
 				teleporter.teleDelay = 5;
 
 				if(entity instanceof EntityPlayerMP)
@@ -444,10 +460,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			{
 				e.copyDataFromOld(entity/*, true*/);
 				world.spawnEntityInWorld(e);
-				teleporter.didTeleport.add(e);
+				teleporter.didTeleport.add(e.getPersistentID());
 			}
 
 			entity.isDead = true;
+		}
+		else {
+			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			Mekanism.packetHandler.sendToReceivers(new EntityMoveMessage(entity), new Range4D(new Coord4D(entity)));
 		}
 	}
 
@@ -495,7 +515,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 		for(Entity entity : entities)
 		{
-			if(!didTeleport.contains(entity))
+			if(!didTeleport.contains(entity.getPersistentID()))
 			{
 				ret.add(entity);
 			}
@@ -545,10 +565,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		super.readFromNBT(nbtTags);
 		
-		if(nbtTags.hasKey("owner"))
-		{
-			owner = nbtTags.getString("owner");
-		}
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		
 		if(nbtTags.hasKey("frequency"))
 		{
@@ -562,10 +579,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		super.writeToNBT(nbtTags);
 		
-		if(owner != null)
-		{
-			nbtTags.setString("owner", owner);
-		}
+		nbtTags.setInteger("controlType", controlType.ordinal());
 		
 		if(frequency != null)
 		{
@@ -598,7 +612,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 				
 				if(manager != null)
 				{
-					manager.remove(freq, owner);
+					manager.remove(freq, getSecurity().getOwner());
 				}
 			}
 			
@@ -606,14 +620,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		}
 
 		super.handlePacketData(dataStream);
-		
-		if(dataStream.readBoolean())
-		{
-			owner = PacketHandler.readString(dataStream);
-		}
-		else {
-			owner = null;
-		}
 		
 		if(dataStream.readBoolean())
 		{
@@ -625,6 +631,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 		status = dataStream.readByte();
 		shouldRender = dataStream.readBoolean();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		publicCache.clear();
 		privateCache.clear();
@@ -649,15 +656,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		super.getNetworkedData(data);
 		
-		if(owner != null)
-		{
-			data.add(true);
-			data.add(owner);
-		}
-		else {
-			data.add(false);
-		}
-		
 		if(frequency != null)
 		{
 			data.add(true);
@@ -669,6 +667,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 		data.add(status);
 		data.add(shouldRender);
+		data.add(controlType.ordinal());
 		
 		data.add(Mekanism.publicTeleporters.getFrequencies().size());
 		
@@ -763,5 +762,29 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			ForgeChunkManager.releaseTicket(chunkTicket);
 			chunkTicket = null;
 		}
+	}
+
+	@Override
+	public RedstoneControl getControlType()
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type)
+	{
+		controlType = type;
+	}
+
+	@Override
+	public boolean canPulse() 
+	{
+		return false;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

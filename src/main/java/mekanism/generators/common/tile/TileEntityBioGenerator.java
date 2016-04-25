@@ -3,7 +3,6 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.FluidSlot;
@@ -209,12 +208,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		super.getNetworkedData(data);
 		data.add(bioFuelSlot.fluidStored);
 		return data;
-	}
-
-	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
-	{
-		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
 	}
 
     private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};

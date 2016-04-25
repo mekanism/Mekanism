@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.common.inventory.container.ContainerLaserTractorBeam;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.util.LangUtils;
@@ -17,6 +18,8 @@ public class GuiLaserTractorBeam extends GuiMekanism
 	{
 		super(tentity, new ContainerLaserTractorBeam(inventory, tentity));
 		tileEntity = tentity;
+		
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiFullInv.png")));
 	}
 
 	@Override

@@ -24,6 +24,8 @@ import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -37,7 +39,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, ISpecialConfigData, ISustainedData
+public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, ISpecialConfigData, ISustainedData, ISecurityTile
 {
 	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 
@@ -60,6 +62,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public boolean clientActive;
 
 	public final double ENERGY_PER_ITEM = 5;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityLogisticalSorter()
 	{
@@ -586,6 +590,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public boolean canSetFacing(int facing)
 	{
 		return true;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 
 	@Override

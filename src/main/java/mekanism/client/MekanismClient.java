@@ -6,6 +6,8 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IModule;
+import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey.KeyMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -48,8 +50,13 @@ public class MekanismClient extends Mekanism
 		Mekanism.gasmaskOn.clear();
 		Mekanism.flamethrowerActive.clear();
 		Mekanism.activeVibrators.clear();
-
-		//TileEntityRotationalComplex.clientRotationMap.clear();
+		
+		SynchronizedBoilerData.clientHotMap.clear();
+		
+		for(IModule module : Mekanism.modulesLoaded)
+		{
+			module.resetClient();
+		}
 
 		SoundHandler.soundMaps.clear();
 

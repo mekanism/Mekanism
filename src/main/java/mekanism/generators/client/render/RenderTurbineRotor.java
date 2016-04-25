@@ -4,7 +4,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelTurbine;
-import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
+import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -43,9 +43,9 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 		int baseIndex = tileEntity.clientIndex*2;
 		float rotateSpeed = 0.0F;
 		
-		if(tileEntity.multiblockUUID != null && TileEntityRotationalComplex.clientRotationMap.containsKey(tileEntity.multiblockUUID))
+		if(tileEntity.multiblockUUID != null && SynchronizedTurbineData.clientRotationMap.containsKey(tileEntity.multiblockUUID))
 		{
-			rotateSpeed = TileEntityRotationalComplex.clientRotationMap.get(tileEntity.multiblockUUID);
+			rotateSpeed = SynchronizedTurbineData.clientRotationMap.get(tileEntity.multiblockUUID);
 		}
 		
 		if(!Mekanism.proxy.isPaused())

@@ -166,8 +166,6 @@ public class ModelWindGenerator extends ModelBase
 		plateConnector2.render(size);
 		plateConnector.render(size);
 		plate.render(size);
-		bladeCap.render(size);
-		bladeCenter.render(size);
 		baseRim.render(size);
 		base.render(size);
 		wire.render(size);
@@ -187,12 +185,18 @@ public class ModelWindGenerator extends ModelBase
 		setRotation(blade3a, 0F, 0F, getRotation(getAbsoluteAngle(angle + 60)));
 		setRotation(blade3b, 0F, 0F, 0.0349066F + getRotation(getAbsoluteAngle(angle + 60)));
 		
+		setRotation(bladeCap, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
+		setRotation(bladeCenter, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
+		
 		blade1a.render(size);
 		blade2a.render(size);
 		blade3a.render(size);
 		blade1b.render(size);
 		blade2b.render(size);
 		blade3b.render(size);
+		
+		bladeCap.render(size);
+		bladeCenter.render(size);
 	}
 
 	public float getRotation(double angle) 

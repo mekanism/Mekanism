@@ -2,13 +2,16 @@ package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -57,19 +60,22 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			{
 				if(bp.equals(configurable.getPos()))
 				{
-					EnumColor color = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation()).color;
-	
-					push();
-	
-					MekanismRenderer.color(color, 0.6F);
-	
-					bindTexture(MekanismRenderer.getBlocksTexture());
-					GL11.glTranslatef((float)x, (float)y, (float)z);
-	
-					int display = getOverlayDisplay(pos.sideHit, type).display;
-					GL11.glCallList(display);
-	
-					pop();
+					SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
+					
+					if(data != TileComponentConfig.EMPTY)
+					{
+						push();
+		
+						MekanismRenderer.color(data.color, 0.6F);
+		
+						bindTexture(MekanismRenderer.getBlocksTexture());
+						GL11.glTranslatef((float)x, (float)y, (float)z);
+		
+						int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), type).display;
+						GL11.glCallList(display);
+		
+						pop();
+					}
 				}
 			}
 		}

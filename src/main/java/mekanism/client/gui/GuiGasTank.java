@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -35,6 +36,7 @@ public class GuiGasTank extends GuiMekanism
 		super(tentity, new ContainerGasTank(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
 		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png"), 7, 7).with(SlotOverlay.PLUS));

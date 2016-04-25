@@ -37,4 +37,9 @@ public interface IModule
 	 * @param dataStream - the incoming ByteBuf of the sync packet
 	 */
 	public void readConfig(ByteBuf dataStream) throws IOException;
+	
+	/**
+	 * Called when the player returns to the main menu.
+	 */
+	public void resetClient();
 }

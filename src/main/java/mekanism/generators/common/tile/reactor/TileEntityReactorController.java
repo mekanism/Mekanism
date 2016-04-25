@@ -35,8 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState, IHasSound, ISoundSource
 {
 	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
-	public static final int MAX_STEAM = MAX_WATER * 1000;
-
+	public static final int MAX_STEAM = MAX_WATER * 100;
 	public static final int MAX_FUEL = 1 * FluidContainerRegistry.BUCKET_VOLUME;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);

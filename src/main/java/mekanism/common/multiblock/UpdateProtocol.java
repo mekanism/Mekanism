@@ -184,7 +184,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		volume += locations.size();
 
-		if(volume >= 27 && volume <= 5832 && locations.size() >= 26)
+		if(Math.abs(xmax-xmin)+1 <= 18 && Math.abs(xmax-xmin)+1 <= 18 && Math.abs(zmax-zmin)+1 <= 18)
 		{
 			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
@@ -193,7 +193,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				structure.volLength = Math.abs(xmax-xmin)+1;
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
-				structure.volume = volume;
+				structure.volume = structure.volLength*structure.volHeight*structure.volWidth;
 				structure.renderLocation = Coord4D.get(tile).add(0, 1, 0);
 				structure.minLocation = Coord4D.get(tile).add(xmin, ymin, zmin);
 				structure.maxLocation = Coord4D.get(tile).add(xmax, ymax, zmax);
@@ -415,13 +415,43 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	protected abstract void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<T> cache, MultiblockCache<T> merge);
 	
-	protected void onFormed() {}
+	protected void onFormed() 
+	{
+		for(Coord4D coord : structureFound.internalLocations)
+		{
+			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			
+			if(tile instanceof TileEntityInternalMultiblock)
+			{
+				((TileEntityInternalMultiblock)tile).setMultiblock(structureFound.inventoryID);
+			}
+		}
+	}
 	
 	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 	
-	public void onStructureDestroyed(T structure) {}
+	public void onStructureDestroyed(T structure) 
+	{
+		for(Coord4D coord : structure.internalLocations)
+		{
+			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			
+			if(tile instanceof TileEntityInternalMultiblock)
+			{
+				((TileEntityInternalMultiblock)tile).setMultiblock(null);
+			}
+		}
+	}
 	
-	public void killInnerNode(Coord4D coord) {}
+	public void killInnerNode(Coord4D coord)
+	{
+		TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+		
+		if(tile instanceof TileEntityInternalMultiblock)
+		{
+			((TileEntityInternalMultiblock)tile).setMultiblock(null);
+		}
+	}
 
 	/**
 	 * Runs the protocol and updates all nodes that make a part of the multiblock.

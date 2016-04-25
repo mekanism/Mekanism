@@ -12,6 +12,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class Frequency
 {
+	public static final String TELEPORTER = "Teleporter";
+	
 	public String name;
 	public String owner;
 	

@@ -35,7 +35,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.dynamicTankEasterEgg);
 			dataStream.writeBoolean(general.voiceServerEnabled);
 			dataStream.writeBoolean(general.cardboardSpawners);
-			dataStream.writeBoolean(general.creativeOverrideElectricChest);
 			dataStream.writeBoolean(general.spawnBabySkeletons);
 			dataStream.writeInt(general.obsidianTNTDelay);
 			dataStream.writeInt(general.obsidianTNTBlastRadius);
@@ -72,6 +71,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.energyPerHeat);
 			dataStream.writeDouble(general.maxEnergyPerSteam);
 			dataStream.writeDouble(general.superheatingHeatTransfer);
+			dataStream.writeDouble(general.heatPerFuelTick);
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
@@ -122,7 +122,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.dynamicTankEasterEgg = dataStream.readBoolean();
 			general.voiceServerEnabled = dataStream.readBoolean();
 			general.cardboardSpawners = dataStream.readBoolean();
-			general.creativeOverrideElectricChest = dataStream.readBoolean();
 			general.spawnBabySkeletons = dataStream.readBoolean();
 			general.obsidianTNTDelay = dataStream.readInt();
 			general.obsidianTNTBlastRadius = dataStream.readInt();
@@ -159,6 +158,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.energyPerHeat = dataStream.readDouble();
 			general.maxEnergyPerSteam = dataStream.readDouble();
 			general.superheatingHeatTransfer = dataStream.readDouble();
+			general.heatPerFuelTick = dataStream.readDouble();
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{

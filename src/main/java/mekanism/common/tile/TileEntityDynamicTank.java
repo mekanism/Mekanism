@@ -8,7 +8,6 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.block.BlockBasic;
@@ -59,7 +58,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			if(structure != null && clientHasStructure && isRendering)
 			{
 				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/clientCapacity;
-
+				
 				if(Math.abs(prevScale - targetScale) > 0.01)
 				{
 					prevScale = (9*prevScale + targetScale)/10;
@@ -116,7 +115,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 						sendPacketToRenderer();
 					}
 					
-					structure.prevFluid = structure.fluidStored;
+					structure.prevFluid = structure.prevFluid != null ? structure.fluidStored.copy() : null;
 					
 					manageInventory();
 				}
@@ -289,14 +288,14 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 		}
 	}
 
-	public int getScaledFluidLevel(int i)
+	public int getScaledFluidLevel(long i)
 	{
 		if(clientCapacity == 0 || structure.fluidStored == null)
 		{
 			return 0;
 		}
 
-		return structure.fluidStored.amount*i / clientCapacity;
+		return (int)(structure.fluidStored.amount*i / clientCapacity);
 	}
 
 	@Override

@@ -14,17 +14,23 @@ public class RecipeFormula
 	
 	public ItemStack[] input = new ItemStack[9];
 	
-	public RecipeFormula(ItemStack[] inv)
+	public IRecipe recipe = null;
+	
+	public RecipeFormula(World world, ItemStack[] inv)
 	{
-		this(inv, 0);
+		this(world, inv, 0);
 	}
 	
-	public RecipeFormula(ItemStack[] inv, int start)
+	public RecipeFormula(World world, ItemStack[] inv, int start)
 	{
 		for(int i = 0; i < 9; i++)
 		{
 			input[i] = StackUtils.size(inv[start+i], 1);
 		}
+		
+		resetToRecipe();
+		
+		recipe = RecipeUtils.getRecipeFromGrid(dummy, world);
 	}
 	
 	private void resetToRecipe()
@@ -35,46 +41,31 @@ public class RecipeFormula
 		}
 	}
 	
-	public boolean matches(World world, ItemStack[] input, int start)
+	public boolean matches(World world, ItemStack[] newInput, int start)
 	{
-		resetToRecipe();
-		
-		IRecipe origRecipe = RecipeUtils.getRecipeFromGrid(dummy, world);
-		
 		for(int i = 0; i < 9; i++)
 		{
-			dummy.setInventorySlotContents(i, input[start+i]);
+			dummy.setInventorySlotContents(i, newInput[start+i]);
 		}
 		
-		IRecipe newRecipe = RecipeUtils.getRecipeFromGrid(dummy, world);
-		
-		return origRecipe == newRecipe;
+		return recipe.matches(dummy, world);
 	}
 	
 	public boolean isIngredientInPos(World world, ItemStack stack, int i)
 	{
 		resetToRecipe();
-		
-		IRecipe origRecipe = RecipeUtils.getRecipeFromGrid(dummy, world);
 		dummy.setInventorySlotContents(i, stack);
-		IRecipe newRecipe = RecipeUtils.getRecipeFromGrid(dummy, world);
 		
-		return origRecipe == newRecipe;
+		return recipe.matches(dummy, world);
 	}
 	
 	public boolean isIngredient(World world, ItemStack stack)
 	{
-		resetToRecipe();
-		
-		IRecipe origRecipe = RecipeUtils.getRecipeFromGrid(dummy, world);
-		
 		for(int i = 0; i < 9; i++)
 		{
 			dummy.setInventorySlotContents(i, stack);
 			
-			IRecipe newRecipe = RecipeUtils.getRecipeFromGrid(dummy, world);
-			
-			if(origRecipe == newRecipe)
+			if(recipe.matches(dummy, world))
 			{
 				return true;
 			}
@@ -92,9 +83,7 @@ public class RecipeFormula
 	
 	public IRecipe getRecipe(World world)
 	{
-		resetToRecipe();
-		
-		return RecipeUtils.getRecipeFromGrid(dummy, world);
+		return recipe;
 	}
 	
 	public boolean isFormulaEqual(World world, RecipeFormula formula)

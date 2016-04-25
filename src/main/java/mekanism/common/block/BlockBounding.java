@@ -68,6 +68,14 @@ public class BlockBounding extends Block
 			return false;
 		}
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	{
+		super.breakBlock(world, x, y, z, block, meta);
+		
+		world.removeTileEntity(x, y, z);
+	}
 
 	@Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
@@ -102,6 +110,17 @@ public class BlockBounding extends Block
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
 			state1.getBlock().onNeighborBlockChange(world, tileEntity.mainPos, state1, this);
 		} catch(Exception e) {}
+	}
+	
+	@Override
+	public float getBlockHardness(World world, int x, int y, int z)
+	{
+		try {
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getBlockHardness(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+		} catch(Exception e) {
+			return blockHardness;
+		}
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -93,6 +94,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 		// Add common Mekanism gui elements
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
 	}
 
 	public int getScroll()

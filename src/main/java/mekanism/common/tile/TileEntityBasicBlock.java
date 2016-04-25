@@ -16,8 +16,12 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +34,7 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2")
-public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler
+public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler, IFrequencyHandler
 {
 	/** The direction this block is facing. */
 	public EnumFacing facing;
@@ -137,6 +141,17 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		}
 
 		return data;
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		for(ITileComponent component : components)
+		{
+			component.invalidate();
+		}
 	}
 
 	@Override
@@ -283,5 +298,16 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public void onAdded() 
 	{
 		updatePower();
+	}
+	
+	@Override
+	public Frequency getFrequency(FrequencyManager manager)
+	{
+		if(manager == Mekanism.securityFrequencies && this instanceof ISecurityTile)
+		{
+			return ((ISecurityTile)this).getSecurity().getFrequency();
+		}
+		
+		return null;
 	}
 }

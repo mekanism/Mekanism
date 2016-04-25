@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -37,12 +38,13 @@ public class GuiGasGenerator extends GuiMekanism
 		super(new ContainerGasGenerator(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate) + "/t",
+						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate*tileEntity.clientUsed) + "/t",
 						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
@@ -65,6 +67,8 @@ public class GuiGasGenerator extends GuiMekanism
 
 		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		String s = LangUtils.localize("gui.burnRate") + ": " + tileEntity.clientUsed;
+		fontRendererObj.drawString(s, xSize - 8 - fontRendererObj.getStringWidth(s), (ySize - 96) + 2, 0x404040);
 	}
 
 	@Override

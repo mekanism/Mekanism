@@ -13,6 +13,8 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -21,7 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor
+public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor, ISecurityTile
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
@@ -33,6 +35,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	public double diggingProgress;
 
 	public static int[] availableSlotIDs = InventoryUtils.getIntRange(0, 26);
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityLaserTractorBeam()
 	{
@@ -216,5 +220,11 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 			collectedEnergy = dataStream.readDouble();
 			lastFired = dataStream.readDouble();
 		}
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

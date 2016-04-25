@@ -226,4 +226,7 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		Upgrade.saveMap(upgrades, nbtTags);
 	}
+	
+	@Override
+	public void invalidate() {}
 }

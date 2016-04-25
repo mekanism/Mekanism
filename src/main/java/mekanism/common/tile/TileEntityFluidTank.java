@@ -15,6 +15,8 @@ import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
@@ -37,7 +39,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.ArrayList;
 
-public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager
+public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile
 {
 	public boolean isActive;
 
@@ -59,6 +61,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public float prevScale;
 	
 	public boolean needsPacket;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntityFluidTank() 
 	{
@@ -573,5 +577,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public Object[] getTanks() 
 	{
 		return new Object[] {fluidTank};
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

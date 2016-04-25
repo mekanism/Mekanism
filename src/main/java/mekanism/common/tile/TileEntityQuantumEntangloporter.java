@@ -23,8 +23,10 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
@@ -39,10 +41,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandler, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration
+public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandler, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration, ISecurityTile
 {
-	public String owner;
-	
 	public InventoryFrequency frequency;
 	
 	public double heatToAbsorb = 0;
@@ -57,6 +57,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	public TileEntityQuantumEntangloporter()
 	{
@@ -85,6 +86,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 		ejectorComponent.setOutputData(TransmissionType.FLUID, configComponent.getOutputs(TransmissionType.FLUID).get(2));
 		ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -112,13 +115,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			{
 				if(frequency != null && !frequency.valid)
 				{
-					frequency = (InventoryFrequency)manager.validateFrequency(owner, Coord4D.get(this), frequency);
+					frequency = (InventoryFrequency)manager.validateFrequency(getSecurity().getOwner(), Coord4D.get(this), frequency);
 					markDirty();
 				}
 				
 				if(frequency != null)
 				{
-					frequency = (InventoryFrequency)manager.update(owner, Coord4D.get(this), frequency);
+					frequency = (InventoryFrequency)manager.update(getSecurity().getOwner(), Coord4D.get(this), frequency);
 					
 					if(frequency == null)
 					{
@@ -162,14 +165,19 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public Frequency getFrequency()
+	public Frequency getFrequency(FrequencyManager manager)
 	{
+		if(manager == Mekanism.securityFrequencies)
+		{
+			return getSecurity().getFrequency();
+		}
+		
 		return frequency;
 	}
 	
 	public FrequencyManager getManager(Frequency freq)
 	{
-		if(owner == null || freq == null)
+		if(getSecurity().getOwner() == null || freq == null)
 		{
 			return null;
 		}
@@ -179,24 +187,19 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			return Mekanism.publicEntangloporters;
 		}
 		else {
-			if(!Mekanism.privateEntangloporters.containsKey(owner))
+			if(!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwner()))
 			{
-				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, owner);
-				Mekanism.privateEntangloporters.put(owner, manager);
+				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwner());
+				Mekanism.privateEntangloporters.put(getSecurity().getOwner(), manager);
 				manager.createOrLoad(worldObj);
 			}
 			
-			return Mekanism.privateEntangloporters.get(owner);
+			return Mekanism.privateEntangloporters.get(getSecurity().getOwner());
 		}
 	}
 	
 	public void setFrequency(String name, boolean publicFreq)
 	{
-		if(name.equals(frequency))
-		{
-			return;
-		}
-		
 		FrequencyManager manager = getManager(new InventoryFrequency(name, null).setPublic(publicFreq));
 		manager.deactivate(Coord4D.get(this));
 		
@@ -207,11 +210,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 				frequency = (InventoryFrequency)freq;
 				frequency.activeCoords.add(Coord4D.get(this));
 				
+				markDirty();
+				
 				return;
 			}
 		}
 		
-		Frequency freq = new InventoryFrequency(name, owner).setPublic(publicFreq);
+		Frequency freq = new InventoryFrequency(name, getSecurity().getOwner()).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = (InventoryFrequency)freq;
@@ -225,11 +230,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		super.readFromNBT(nbtTags);
 		
-		if(nbtTags.hasKey("owner"))
-		{
-			owner = nbtTags.getString("owner");
-		}
-		
 		if(nbtTags.hasKey("frequency"))
 		{
 			frequency = new InventoryFrequency(nbtTags.getCompoundTag("frequency"));
@@ -241,11 +241,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	public void writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
-		
-		if(owner != null)
-		{
-			nbtTags.setString("owner", owner);
-		}
 		
 		if(frequency != null)
 		{
@@ -278,7 +273,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 				
 				if(manager != null)
 				{
-					manager.remove(freq, owner);
+					manager.remove(freq, getSecurity().getOwner());
 				}
 			}
 			
@@ -289,14 +284,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		
 		lastTransferLoss = dataStream.readDouble();
 		lastEnvironmentLoss = dataStream.readDouble();
-		
-		if(dataStream.readBoolean())
-		{
-			owner = PacketHandler.readString(dataStream);
-		}
-		else {
-			owner = null;
-		}
 		
 		if(dataStream.readBoolean())
 		{
@@ -331,15 +318,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		
 		data.add(lastTransferLoss);
 		data.add(lastEnvironmentLoss);
-		
-		if(owner != null)
-		{
-			data.add(true);
-			data.add(owner);
-		}
-		else {
-			data.add(false);
-		}
 		
 		if(frequency != null)
 		{
@@ -671,6 +649,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	public TileComponentEjector getEjector() 
 	{
 		return ejectorComponent;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 
 	@Override

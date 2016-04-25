@@ -1,77 +1,22 @@
 package mekanism.generators.common.tile.turbine;
 
-import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
-import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityRotationalComplex extends TileEntityBasicBlock
-{
-	public static Map<String, Float> clientRotationMap = new HashMap<String, Float>();
-	
-	public static final float ROTATION_THRESHOLD = 0.001F;
-	
-	public String multiblockUUID;
-	public float rotation;
-	
+public class TileEntityRotationalComplex extends TileEntityInternalMultiblock
+{	
 	@Override
-	public void onUpdate() {}
-	
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
-	}
-	
-	@Override
-	public void handlePacketData(ByteBuf dataStream)
-	{
-		super.handlePacketData(dataStream);
-		
-		rotation = dataStream.readFloat();
-		
-		if(dataStream.readBoolean())
-		{
-			multiblockUUID = PacketHandler.readString(dataStream);
-			clientRotationMap.put(multiblockUUID, rotation);
-		}
-		else {
-			multiblockUUID = null;
-		}
-	}
-
-	@Override
-	public ArrayList getNetworkedData(ArrayList data)
-	{
-		super.getNetworkedData(data);
-		
-		data.add(rotation);
-		
-		if(multiblockUUID != null)
-		{
-			data.add(true);
-			data.add(multiblockUUID);
-		}
-		else {
-			data.add(false);
-		}
-		
-		return data;
-	}
-	
 	public void setMultiblock(String id)
 	{
-		multiblockUUID = id;
+		if(id == null && multiblockUUID != null)
+		{
+			SynchronizedTurbineData.clientRotationMap.remove(multiblockUUID);
+		}
+		
+		super.setMultiblock(id);
 		
 		Coord4D coord = Coord4D.get(this).getFromSide(EnumFacing.DOWN);
 		TileEntity tile = coord.getTileEntity(worldObj);
@@ -79,15 +24,6 @@ public class TileEntityRotationalComplex extends TileEntityBasicBlock
 		if(tile instanceof TileEntityTurbineRotor)
 		{
 			((TileEntityTurbineRotor)tile).updateRotors();
-		}
-	}
-	
-	public void setRotation(float newRotation)
-	{
-		if(Math.abs(newRotation-rotation) > ROTATION_THRESHOLD)
-		{
-			rotation = newRotation;
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 		}
 	}
 }

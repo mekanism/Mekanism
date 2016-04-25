@@ -20,6 +20,7 @@ import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -136,17 +137,23 @@ public class GuiSideConfiguration extends GuiMekanism
 
 			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.getFront(i));
 
-			if(data.color != EnumColor.GREY)
+			if(data != TileComponentConfig.EMPTY)
 			{
-				MekanismRenderer.color(data.color);
-			}
-
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
-			{
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+				if(data.color != EnumColor.GREY)
+				{
+					MekanismRenderer.color(data.color);
+				}
+				
+				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+				{
+					drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+				}
+				else {
+					drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+				}
 			}
 			else {
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
 			}
 		}
 
@@ -179,9 +186,12 @@ public class GuiSideConfiguration extends GuiMekanism
 
 			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.getFront(i));
 
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+			if(data != TileComponentConfig.EMPTY)
 			{
-				drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
+				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+				{
+					drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
+				}
 			}
 		}
 

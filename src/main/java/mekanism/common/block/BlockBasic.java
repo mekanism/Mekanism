@@ -13,6 +13,7 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
@@ -26,13 +27,16 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -88,6 +92,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 1:6: Pressure Disperser
  * 1:7: Boiler Casing
  * 1:8: Boiler Valve
+ * 1:9: Security Desk
  * @author AidanBrady
  *
  */
@@ -212,14 +217,10 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
 				icons[6][0] = register.registerIcon(ICON_BASE);
 				
-				MekanismRenderer.loadDynamicTextures(register, "BinBasic", binIcons[0], DefIcon.getActivePair(register.registerIcon("mekanism:BinBasicSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinBasicTop"), 0), new DefIcon(register.registerIcon("mekanism:BinBasicTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "BinAdvanced", binIcons[1], DefIcon.getActivePair(register.registerIcon("mekanism:BinAdvancedSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinAdvancedTop"), 0), new DefIcon(register.registerIcon("mekanism:BinAdvancedTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "BinElite", binIcons[2], DefIcon.getActivePair(register.registerIcon("mekanism:BinEliteSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinEliteTop"), 0), new DefIcon(register.registerIcon("mekanism:BinEliteTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "BinUltimate", binIcons[3], DefIcon.getActivePair(register.registerIcon("mekanism:BinUltimateSide"), 3, 4, 5),
-						new DefIcon(register.registerIcon("mekanism:BinUltimateTop"), 0), new DefIcon(register.registerIcon("mekanism:BinUltimateTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "bin/BinBasic", binIcons[0], new DefIcon(register.registerIcon("mekanism:bin/BinBasicTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinBasicTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "bin/BinAdvanced", binIcons[1], new DefIcon(register.registerIcon("mekanism:bin/BinAdvancedTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinAdvancedTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "bin/BinElite", binIcons[2], new DefIcon(register.registerIcon("mekanism:bin/BinEliteTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinEliteTopOn"), 6));
+				MekanismRenderer.loadDynamicTextures(register, "bin/BinUltimate", binIcons[3], new DefIcon(register.registerIcon("mekanism:bin/BinUltimateTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinUltimateTopOn"), 6));
 				
 				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
@@ -247,6 +248,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[5][0] = new CTMData("ctm/SuperheatingElement", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
+				ctms[5][1] = new CTMData("ctm/SuperheatingElementOn", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
 				ctms[7][0] = new CTMData("ctm/BoilerCasing", this, Arrays.asList(7, 8)).registerIcons(register);
 				ctms[8][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(7, 8)).registerIcons(register);
 				
@@ -265,8 +267,11 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				icons[4][2] = ctms[4][2].mainTextureData.icon;
 				icons[4][3] = ctms[4][3].mainTextureData.icon;
 				icons[5][0] = ctms[5][0].mainTextureData.icon;
+				icons[5][1] = ctms[5][1].mainTextureData.icon;
 				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = ctms[8][0].mainTextureData.icon;
+				
+				icons[9][0] = register.registerIcon(ICON_BASE);
 				
 				break;
 		}
@@ -313,6 +318,15 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 					case 4:
 						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(pos);
 						return icons[meta][tileEntity2.tier.ordinal()];
+					case 5:
+						TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)world.getTileEntity(x, y, z);
+						
+						if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
+						{
+							return icons[meta][SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 1 : 0];
+						}
+						
+						return icons[meta][0];
 					default:
 						return getIcon(side, meta);
 				}
@@ -397,6 +411,8 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 			case BASIC_BLOCK_1:
 				switch(meta)
 				{
+					case 10:
+						return false;
 					case 9:
 					case 11:
 						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(pos);
@@ -425,7 +441,9 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				{
 					case 1:
 					case 2:
-						TileEntityInductionCasing tileEntity = (TileEntityInductionCasing)world.getTileEntity(pos);
+					case 7:
+					case 8:
+						TileEntityMultiblock tileEntity = (TileEntityMultiblock)world.getTileEntity(pos);
 
 						if(tileEntity != null)
 						{
@@ -491,17 +509,36 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				return true;
 			}
 		}
-		
-		if(world.isRemote)
-		{
-			return true;
-		}
 
 		if(tile instanceof TileEntityThermalEvaporationController)
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(Mekanism.instance, 33, world, pos.getX(), pos.getY(), pos.getZ());
+				if(!world.isRemote)
+				{
+					entityplayer.openGui(Mekanism.instance, 33, world, , pos.getX(), pos.getY(), pos.getZ());
+				}
+				
+				return true;
+			}
+		}
+		else if(tile instanceof TileEntitySecurityDesk)
+		{
+			String owner = ((TileEntitySecurityDesk)tile).owner;
+			
+			if(!entityplayer.isSneaking())
+			{
+				if(!world.isRemote)
+				{
+					if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+					{
+						entityplayer.openGui(Mekanism.instance, 57, world, x, y, z);
+					}
+					else {
+						SecurityUtils.displayNoAccess(entityplayer);
+					}
+				}
+				
 				return true;
 			}
 		}
@@ -511,57 +548,63 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 
 			if(entityplayer.getCurrentEquippedItem() != null && MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
-				Item tool = entityplayer.getCurrentEquippedItem().getItem();
-				
-				if(entityplayer.isSneaking())
+				if(!world.isRemote)
 				{
-					dismantleBlock(world, pos, false);
-					return true;
+					Item tool = entityplayer.getCurrentEquippedItem().getItem();
+					
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(world, x, y, z, false);
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					}
+	
+					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][bin.facing];
+	
+					bin.setFacing((short)change);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-				{
-					((IToolWrench)tool).wrenchUsed(entityplayer, pos);
-				}
-
-				int change = bin.facing.rotateY().ordinal();
-
-				bin.setFacing((short)change);
-				world.notifyNeighborsOfStateChange(pos, this);
 				
 				return true;
 			}
 
-			if(bin.getItemCount() < bin.tier.storage)
+			if(!world.isRemote)
 			{
-				if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
+				if(bin.getItemCount() < bin.tier.storage)
 				{
-					if(entityplayer.getCurrentEquippedItem() != null)
+					if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
 					{
-						ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
-						entityplayer.setCurrentItemOrArmor(0, remain);
-						bin.addTicks = 5;
-					}
-				}
-				else if(bin.addTicks > 0 && bin.getItemCount() > 0)
-				{
-					ItemStack[] inv = entityplayer.inventory.mainInventory;
-
-					for(int i = 0; i < inv.length; i++)
-					{
-						if(bin.getItemCount() == bin.tier.storage)
+						if(entityplayer.getCurrentEquippedItem() != null)
 						{
-							break;
-						}
-
-						if(inv[i] != null)
-						{
-							ItemStack remain = bin.add(inv[i]);
-							inv[i] = remain;
+							ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
+							entityplayer.setCurrentItemOrArmor(0, remain);
 							bin.addTicks = 5;
 						}
-
-						((EntityPlayerMP)entityplayer).sendContainerToPlayer(entityplayer.openContainer);
+					}
+					else if(bin.addTicks > 0 && bin.getItemCount() > 0)
+					{
+						ItemStack[] inv = entityplayer.inventory.mainInventory;
+	
+						for(int i = 0; i < inv.length; i++)
+						{
+							if(bin.getItemCount() == bin.tier.storage)
+							{
+								break;
+							}
+	
+							if(inv[i] != null)
+							{
+								ItemStack remain = bin.add(inv[i]);
+								inv[i] = remain;
+								bin.addTicks = 5;
+							}
+	
+							((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
+						}
 					}
 				}
 			}
@@ -570,10 +613,20 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 		}
 		else if(tile instanceof IMultiblock)
 		{
+			if(world.isRemote)
+			{
+				return true;
+			}
+			
 			return ((IMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
 		}
 		else if(tile instanceof IStructuralMultiblock)
 		{
+			if(world.isRemote)
+			{
+				return true;
+			}
+			
 			return ((IStructuralMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
 		}
 
@@ -746,6 +799,20 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 					return 12;
 			}
 		}
+		else if(blockType == BasicBlock.BASIC_BLOCK_2)
+		{
+			if(metadata == 5)
+			{
+				TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)tileEntity;
+				
+				if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
+				{
+					return SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 15 : 0;
+				}
+				
+				return 0;
+			}
+		}
 
 		return 0;
 	}
@@ -818,6 +885,11 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 
 			tileEntity.setFacing((short)change);
 			tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
+			
+			if(tileEntity instanceof TileEntitySecurityDesk)
+			{
+				((TileEntitySecurityDesk)tileEntity).owner = entityliving.getCommandSenderName();
+			}
 
 			if(tileEntity instanceof IBoundingBlock)
 			{
@@ -843,6 +915,21 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 				((IStructuralMultiblock)tileEntity).update();
 			}
 		}
+	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+		if(tileEntity instanceof IBoundingBlock)
+		{
+			((IBoundingBlock)tileEntity).onBreak();
+		}
+
+		super.breakBlock(world, x, y, z, block, meta);
+		
+		world.removeTileEntity(x, y, z);
 	}
 
 	@Override
@@ -1011,6 +1098,17 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 		{
 			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(pos);
 			return ctms[meta][tileEntity.tier.ordinal()];
+		}
+		else if(type == BasicType.SUPERHEATING_ELEMENT)
+		{
+			TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)world.getTileEntity(x, y, z);
+			
+			if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
+			{
+				return ctms[meta][SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 1 : 0];
+			}
+			
+			return ctms[meta][0];
 		}
 
 		return ctms[meta][0];

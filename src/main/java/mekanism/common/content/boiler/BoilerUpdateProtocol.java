@@ -66,6 +66,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				}
 				else if(tile instanceof TileEntitySuperheatingElement)
 				{
+					structure.internalLocations.add(coord);
 					elements.add(coord);
 				}
 			}
@@ -225,6 +226,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	@Override
 	protected void onFormed()
 	{
+		super.onFormed();
+		
 		if((structureFound).waterStored != null)
 		{
 			(structureFound).waterStored.amount = Math.min((structureFound).waterStored.amount, structureFound.waterVolume*WATER_PER_TANK);

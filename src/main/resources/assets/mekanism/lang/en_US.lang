@@ -114,6 +114,7 @@ tile.BasicBlock2.SuperheatingElement.name=Superheating Element
 tile.BasicBlock2.PressureDisperser.name=Pressure Disperser
 tile.BasicBlock2.BoilerCasing.name=Boiler Casing
 tile.BasicBlock2.BoilerValve.name=Boiler Valve
+tile.BasicBlock2.SecurityDesk.name=Security Desk
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
@@ -126,7 +127,7 @@ tile.MachineBlock.PurificationChamber.name=Purification Chamber
 tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
 tile.MachineBlock.Teleporter.name=Teleporter
 tile.MachineBlock.ElectricPump.name=Electric Pump
-tile.MachineBlock.ElectricChest.name=Electric Chest
+tile.MachineBlock.PersonalChest.name=Personal Chest
 tile.MachineBlock.Chargepad.name=Chargepad
 tile.MachineBlock.LogisticalSorter.name=Logistical Sorter
 tile.MachineBlock.DigitalMiner.name=Digital Miner
@@ -156,6 +157,7 @@ tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
 tile.MachineBlock3.Oredictionificator.name=Oredictionificator
 tile.MachineBlock3.ResistiveHeater.name=Resistive Heater
 tile.MachineBlock3.FormulaicAssemblicator.name=Formulaic Assemblicator
+tile.MachineBlock3.FuelwoodHeater.name=Fuelwood Heater
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
@@ -540,6 +542,20 @@ gui.autoModeToggle=Turn Auto-Mode
 gui.craftSingle=Craft Single Item
 gui.craftAvailable=Craft Available Items
 gui.fillEmpty=Fill/Empty Grid
+gui.noOwner=No Owner
+gui.securityOverride=Security Override
+gui.remove=Remove
+gui.trustedPlayers=Trusted Players
+gui.publicMode=Public Mode
+gui.privateMode=Private Mode
+gui.trustedMode=Trusted Mode
+gui.securityOffline=Security Offline
+gui.noAccessDesc=You don't have access.
+gui.overridden=Overridden
+gui.nowOwn=You now own this item.
+gui.frequency=Frequency
+gui.mode=Mode
+gui.burnRate=Burn Rate
 
 gui.reactor.injectionRate=Injection Rate
 
@@ -630,8 +646,6 @@ gui.logisticalSorter.default=Default
 gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Round-robin
 
-gui.electricChest.editPassword=Edit Password
-
 gui.teleporter.notReady=Not ready
 gui.teleporter.ready=Ready
 gui.teleporter.noFrame=No frame
@@ -662,6 +676,11 @@ gui.digitalMiner.missingBlock=Missing block
 recipe.mekanismShaped=Shaped
 recipe.mekanismShapeless=Shapeless
 
+//Security types
+security.public=Public
+security.private=Private
+security.trusted=Trusted
+
 //Item and block tooltip text
 tooltip.configurator.configurate=Configurate
 tooltip.configurator.empty=Empty
@@ -671,7 +690,6 @@ tooltip.configurator.pumpReset=Reset Electric Pump calculation
 tooltip.configurator.toggleDiverter=Diverter mode changed to
 tooltip.configurator.toggleMode=%s behavior bumped to
 tooltip.configurator.viewMode=Current %s behavior
-tooltip.configurator.unauth=This chest is locked
 tooltip.configurator.noLink=No link
 tooltip.configurator.linkMsg=Bound to
 tooltip.configurator.dim=dimension
@@ -775,6 +793,7 @@ tooltip.SuperheatingElement=A modular, somewhat dangerous radiator that is capab
 tooltip.PressureDisperser=A block used disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.
 tooltip.BoilerCasing=A pressure-resistant, dense casing used in the creation of a Thermoelectric Boiler multiblock.
 tooltip.BoilerValve=A valve that can be placed on a Thermoelectric Boiler multiblock, allowing for the insertion of energy and water along with the extraction of produced steam.
+tooltip.SecurityDesk=A central control hub for managing the security of all your owned machinery.
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into two of their dust counterparts, as well as perform many other operations.
 tooltip.OsmiumCompressor=A fairly advanced machine used to compress osmium into various dusts in order to create their ingot counterparts.
@@ -786,7 +805,7 @@ tooltip.PurificationChamber=An advanced machine capable of processing ores into 
 tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based furnace that runs off of energy.
 tooltip.Teleporter=A machine capable of teleporting players to various locations defined by another teleporter.
 tooltip.ElectricPump=An advanced, upgradeable pump, capable of extracting any type of fluid.
-tooltip.ElectricChest=A portable, 54-slot chest that uses energy to lock itself from others by means of password protection.
+tooltip.PersonalChest=A 54-slot chest that can be opened anywhere- even from your own inventory.
 tooltip.Chargepad=A universal chargepad that can charge any energized item from any mod.
 tooltip.LogisticalSorter=A filter-based, advanced sorting machine that can auto-eject specified items out of and into adjacent inventories and Logistical Transporters.
 tooltip.RotaryCondensentrator=A machine capable of converting gasses into their fluid form and vice versa.
@@ -810,6 +829,7 @@ tooltip.Oredictionificator=A machine used to unify and translate between various
 tooltip.Factory=A machine that serves as an upgrade to regular machinery, allowing for multiple processing operations to occur at once.
 tooltip.ResistiveHeater=A condensed, coiled resistor capable of converting electrical energy directly into heat energy.
 tooltip.FormulaicAssemblicator=A machine that uses energy to rapidly craft items and blocks from Crafting Formulas. Doubles as an advanced crafting bench.
+tooltip.FuelwoodHeater=A machine that is capable of producing large quantities of heat energy by burning combustible items.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or other burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the sun to produce energy.

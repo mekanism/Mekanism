@@ -21,15 +21,17 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.EnumFacing;
 
-public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess
+public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
 {
 	/** How much energy this machine uses per tick, un-upgraded. */
 	public double BASE_ENERGY_PER_TICK;
@@ -69,6 +71,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
@@ -89,6 +92,8 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		ticksRequired = baseTicksRequired;
 		guiLocation = location;
 		isActive = false;
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -291,5 +296,11 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }
