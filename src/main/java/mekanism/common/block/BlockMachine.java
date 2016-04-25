@@ -537,7 +537,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 							list.add(stack);
 						}
 
-						if(general.prefilledPortableTanks)
+						if(general.prefilledFluidTanks)
 						{
 							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
 							{

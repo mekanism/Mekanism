@@ -44,7 +44,8 @@ public class MekanismConfig
 		public static boolean blacklistIC2;
 		public static boolean blacklistRF;
 		public static boolean destroyDisabledBlocks;
-		public static boolean prefilledPortableTanks;
+		public static boolean prefilledFluidTanks;
+		public static boolean prefilledGasTanks;
 		public static double armoredJetpackDamageRatio;
 		public static int armoredJetpackDamageMax;
 		public static boolean aestheticWorldDamage;
