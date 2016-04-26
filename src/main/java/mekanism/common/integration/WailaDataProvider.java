@@ -8,6 +8,7 @@ import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
@@ -69,6 +70,10 @@ public class WailaDataProvider implements IWailaDataProvider
 		else if(tile instanceof TileEntityGasTank)
 		{
 			currenttip.set(0, EnumColor.WHITE + ((TileEntityGasTank)tile).getInventoryName());
+		}
+		else if(tile instanceof TileEntityBin)
+		{
+			currenttip.set(0, EnumColor.WHITE + ((TileEntityBin)tile).getInventoryName());
 		}
 		else if(tile instanceof TileEntityBoundingBlock)
 		{
