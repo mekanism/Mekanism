@@ -156,7 +156,7 @@ public class ItemConfigurationCard extends ItemMekanism
 
 	public NBTTagCompound getData(ItemStack itemstack)
 	{
-		if(itemstack.hasTagCompound())
+		if(!itemstack.hasTagCompound())
 		{
 			return null;
 		}

@@ -15,6 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -45,14 +46,14 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 	@Override
 	public void renderTileEntityAt(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
-/*
+
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 2.5F);
 
 		bindTexture(baseTexture);
 
-		switch(tileEntity.facing.ordinal()) */
-/*TODO: switch the enum*//*
+		switch(tileEntity.facing.ordinal())
+/*TODO: switch the enum*/
 
 		{
 			case 0:
@@ -74,16 +75,16 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tileEntity.tier, field_147501_a.field_147553_e);
+		model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine);
 		
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			bindTexture(baseTexture);
-			model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side.ordinal()).ioState, tileEntity.tier, field_147501_a.field_147553_e);
+			model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, tileEntity.tier, rendererDispatcher.renderEngine);
 		}
 		
 		GL11.glPopMatrix();
-*/
+
 
 		if(tileEntity.getEnergy()/tileEntity.getMaxEnergy() > 0.1)
 		{
@@ -111,6 +112,6 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 			GL11.glPopMatrix();
 		}
 		
-		//MekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);
+		MekanismRenderer.machineRenderer.renderTileEntityAt(tileEntity, x, y, z, partialTick, destroyStage);
 	}
 }
