@@ -41,7 +41,6 @@ import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -763,16 +762,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	}
 
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
-		if(tile instanceof ISecurityTile)
-		{
-			return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
-		}
-		
-		return blockHardness;
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, x, y, z) : 0.0F;
 	}
 	
 	@Override

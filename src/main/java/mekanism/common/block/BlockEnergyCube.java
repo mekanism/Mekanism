@@ -12,7 +12,6 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
@@ -139,16 +138,11 @@ public class BlockEnergyCube extends BlockContainer
 	}
 	
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
-		if(tile instanceof ISecurityTile)
-		{
-			return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
-		}
-		
-		return blockHardness;
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, x, y, z) : 0.0F;
 	}
 
 	@Override

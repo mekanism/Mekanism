@@ -84,13 +84,13 @@ public class BlockBounding extends Block
 	}
 	
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getBlockHardness(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getPlayerRelativeBlockHardness(player, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
 		} catch(Exception e) {
-			return blockHardness;
+			return super.getPlayerRelativeBlockHardness(player, world, x, y, z);
 		}
 	}
 
