@@ -10,6 +10,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -59,6 +61,14 @@ public class WailaDataProvider implements IWailaDataProvider
 		else if(tile instanceof TileEntityFactory)
 		{
 			currenttip.set(0, EnumColor.WHITE + ((TileEntityFactory)tile).getInventoryName());
+		}
+		else if(tile instanceof TileEntityFluidTank)
+		{
+			currenttip.set(0, EnumColor.WHITE + ((TileEntityFluidTank)tile).getInventoryName());
+		}
+		else if(tile instanceof TileEntityGasTank)
+		{
+			currenttip.set(0, EnumColor.WHITE + ((TileEntityGasTank)tile).getInventoryName());
 		}
 		else if(tile instanceof TileEntityBoundingBlock)
 		{
