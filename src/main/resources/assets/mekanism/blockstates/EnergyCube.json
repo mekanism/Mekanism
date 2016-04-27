@@ -13,11 +13,11 @@
       "west":  {"y": -90}
     },
     "tier": {
-      "basic": {"textures": {"all": "mekanism:blocks/models/energy_cube_basic"}},
-      "advanced": {"textures": {"all": "mekanism:blocks/models/energy_cube_advanced"}},
-      "elite": {"textures": {"all": "mekanism:blocks/models/energy_cube_elite"}},
-      "ultimate": {"textures": {"all": "mekanism:blocks/models/energy_cube_ultimate"}},
-      "creative": {"textures": {"all": "mekanism:blocks/models/energy_cube_creative"}}
+      "basic": {"textures": {"all": "mekanism:blocks/models/energy_cube"}},
+      "advanced": {"textures": {"all": "mekanism:blocks/models/energy_cube"}},
+      "elite": {"textures": {"all": "mekanism:blocks/models/energy_cube"}},
+      "ultimate": {"textures": {"all": "mekanism:blocks/models/energy_cube"}},
+      "creative": {"textures": {"all": "mekanism:blocks/models/energy_cube"}}
     },
     "inventory": [{}]
   }

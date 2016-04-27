@@ -449,8 +449,6 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.FactoryInstaller);
 		registerItemRender(MekanismItems.OtherDust);
 
-		MekanismBlocks.registerRender();
-
 		OBJLoader.instance.addDomain("mekanism");
 
 		Mekanism.logger.info("Render registrations complete.");
