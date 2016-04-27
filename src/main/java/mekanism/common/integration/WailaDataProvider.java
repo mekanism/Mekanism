@@ -36,6 +36,9 @@ public class WailaDataProvider implements IWailaDataProvider
 		registrar.registerHeadProvider(provider, TileEntityInductionProvider.class);
 		registrar.registerHeadProvider(provider, TileEntityFactory.class);
 		registrar.registerHeadProvider(provider, TileEntityBoundingBlock.class);
+		registrar.registerHeadProvider(provider, TileEntityFluidTank.class);
+		registrar.registerHeadProvider(provider, TileEntityGasTank.class);
+		registrar.registerHeadProvider(provider, TileEntityBin.class);
 	}
 	
 	@Override
