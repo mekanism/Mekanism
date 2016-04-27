@@ -1266,7 +1266,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				num = ((Double)arguments[0]).intValue();
 			}
-			else if(arguments[0] instanceof String && (method != 6 && method != 7))
+			else if(arguments[0] instanceof String && (method != 5 && method != 6))
 			{
 				num = Integer.parseInt((String)arguments[0]);
 			}

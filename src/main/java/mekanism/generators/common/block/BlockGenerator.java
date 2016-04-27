@@ -19,7 +19,6 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
@@ -266,16 +265,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 	
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
-		if(tile instanceof ISecurityTile)
-		{
-			return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
-		}
-		
-		return blockHardness;
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, x, y, z) : 0.0F;
 	}
 
 	@Override

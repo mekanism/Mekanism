@@ -34,7 +34,6 @@ import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -587,7 +586,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 							list.add(stack);
 						}
 
-						if(general.prefilledPortableTanks)
+						if(general.prefilledFluidTanks)
 						{
 							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
 							{
@@ -808,16 +807,11 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	}
 
 	@Override
-	public float getBlockHardness(World world, BlockPos pos)
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, BlockPos pos)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		
-		if(tile instanceof ISecurityTile)
-		{
-			return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
-		}
-		
-		return blockHardness;
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, pos) : 0.0F;
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -189,18 +190,20 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		{
 			ItemStack empty = new ItemStack(this);
 			setBaseTier(empty, tier.getBaseTier());
-			setGas(empty, null);
 			list.add(empty);
 		}
 
-		for(Gas type : GasRegistry.getRegisteredGasses())
+		if(general.prefilledGasTanks)
 		{
-			if(type.isVisible())
+			for(Gas type : GasRegistry.getRegisteredGasses())
 			{
-				ItemStack filled = new ItemStack(this);
-				setBaseTier(filled, BaseTier.ULTIMATE);
-				setGas(filled, new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)));
-				list.add(filled);
+				if(type.isVisible())
+				{
+					ItemStack filled = new ItemStack(this);
+					setBaseTier(filled, BaseTier.ULTIMATE);
+					setGas(filled, new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)));
+					list.add(filled);
+				}
 			}
 		}
 	}

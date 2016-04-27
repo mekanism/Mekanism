@@ -13,7 +13,6 @@ import mekanism.common.block.states.BlockStateGasTank;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
@@ -127,16 +126,11 @@ public class BlockGasTank extends BlockContainer
 	}
 	
 	@Override
-	public float getBlockHardness(World world, BlockPos pos)
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, BlockPos pos)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		
-		if(tile instanceof ISecurityTile)
-		{
-			return SecurityUtils.getSecurity((ISecurityTile)tile) == SecurityMode.PUBLIC ? blockHardness : -1;
-		}
-		
-		return blockHardness;
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, pos) : 0.0F;
 	}
 
 	@Override
