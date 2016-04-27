@@ -1,7 +1,5 @@
 package mekanism.client.model;
 
-import org.lwjgl.opengl.GL11;
-
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -9,6 +7,9 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -168,9 +169,11 @@ public class ModelResistiveHeater extends ModelBase
 	
 	public void render(float size, boolean on, TextureManager manager)
 	{
+		GL11.glPushMatrix();
+		MekanismRenderer.blendOn();
+		
 		doRender(size);
 		
-		GL11.glPushMatrix();
 		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
 		GL11.glScalef(1.001F, 1.001F, 1.001F);
 		GL11.glTranslatef(0, -0.0011F, 0);
@@ -179,6 +182,7 @@ public class ModelResistiveHeater extends ModelBase
 		doRender(size);
 		
 		MekanismRenderer.glowOff();
+		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
 
