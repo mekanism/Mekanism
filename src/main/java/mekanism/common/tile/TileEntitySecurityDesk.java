@@ -17,7 +17,10 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock
 {
@@ -299,5 +302,12 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		}
 		
 		return null;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 }
