@@ -8,17 +8,20 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 
 public class BlockStatePlastic extends BlockState
 {
 	public static PropertyEnum<EnumDyeColor> colorProperty = PropertyEnum.create("color", EnumDyeColor.class);
-	public static PropertyEnum<PlasticBlockType> typeProperty = PropertyEnum.create("type", PlasticBlockType.class);
 
 	public BlockStatePlastic(BlockPlastic block)
 	{
-		super(block, colorProperty, typeProperty);
+		super(block, colorProperty);
 	}
 
 	public static enum PlasticBlockType implements IStringSerializable
@@ -35,4 +38,18 @@ public class BlockStatePlastic extends BlockState
 			return name().toLowerCase();
 		}
 	}
+
+	public static class PlasticBlockStateMapper extends StateMapperBase
+	{
+		@Override
+		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		{
+			PlasticBlockType type = ((BlockPlastic)state.getBlock()).type;
+			String property = "type=" + type.getName();
+
+			ResourceLocation baseLocation = new ResourceLocation("mekanism", "plastic_block");
+			return new ModelResourceLocation(baseLocation, property);
+		}
+	}
+
 }

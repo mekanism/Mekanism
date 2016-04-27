@@ -446,6 +446,7 @@ public class ModelEnergyCube extends ModelBase
 
 			cube = new ModelRenderer(this, 0, 0);
 			cube.addBox(-8, -8, -8, 16, 16, 16);
+			cube.setRotationPoint(0, 0, 0);
 			cube.setTextureSize(32, 32);
 			cube.mirror = true;
 		}

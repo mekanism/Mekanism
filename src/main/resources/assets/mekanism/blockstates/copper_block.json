@@ -1,14 +1,13 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:portable_tank"
+    "model": "cube_all",
+    "textures": {
+      "all": "mekanism:blocks/CopperBlock"
+    }
   },
   "variants": {
     "normal": [{}],
-    "active": {
-      "true": {},
-      "false": {}
-    },
     "inventory": [{}]
   }
 }

@@ -106,6 +106,7 @@ public class ModelQuantumEntangloporter extends ModelBase
 		energyCubeCore.setRotationPoint(0F, 16F, 0F);
 		energyCubeCore.setTextureSize(128, 64);
 		energyCubeCore.mirror = true;
+		//TODO
 		setRotation(energyCubeCore, 0.7132579F, 0.403365F, 0.645384F);
 		frameEdge1 = new ModelRenderer(this, 0, 16);
 		frameEdge1.addBox(0F, 0F, 0F, 1, 10, 1);

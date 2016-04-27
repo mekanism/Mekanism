@@ -53,12 +53,12 @@ version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUI
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
-    mappings = "stable_20"
+    mappings = "stable_22"
     runDir = "run"
 }
 
@@ -115,9 +115,11 @@ task generatorsJar(type: Jar) {
     }
 }
 
+/*
 coreJar.dependsOn('reobf')
 toolsJar.dependsOn('reobf')
 generatorsJar.dependsOn('reobf')
+*/
 
 task MDKZip(type: Zip) {
     baseName = 'MDK'

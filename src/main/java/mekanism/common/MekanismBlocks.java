@@ -21,6 +21,7 @@ import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockCardboardBox;
@@ -32,16 +33,19 @@ import mekanism.common.item.ItemBlockPlastic;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.renderer.block.statemap.BlockStateMapper;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.gen.structure.StructureVillagePieces.Road;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javafx.scene.effect.Glow;
 
 @ObjectHolder("Mekanism")
 public class MekanismBlocks
@@ -67,6 +71,7 @@ public class MekanismBlocks
 
 	private static final IStateMapper machineMapper = new MachineBlockStateMapper();
 	private static final IStateMapper basicMapper = new BasicBlockStateMapper();
+	private static final IStateMapper plasticMapper = new PlasticBlockStateMapper();
 
 
 
@@ -93,18 +98,29 @@ public class MekanismBlocks
 		GameRegistry.registerBlock(RoadPlasticBlock, ItemBlockPlastic.class, "RoadPlasticBlock");
 		GameRegistry.registerBlock(PlasticFence, ItemBlockPlastic.class, "PlasticFence");
 		GameRegistry.registerBlock(SaltBlock, "SaltBlock");
+
+		ModelLoader.setCustomStateMapper(MachineBlock, machineMapper);
+		ModelLoader.setCustomStateMapper(MachineBlock2, machineMapper);
+		ModelLoader.setCustomStateMapper(MachineBlock3, machineMapper);
+		ModelLoader.setCustomStateMapper(BasicBlock, basicMapper);
+		ModelLoader.setCustomStateMapper(BasicBlock2, basicMapper);
+		ModelLoader.setCustomStateMapper(PlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(SlickPlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(GlowPlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(ReinforcedPlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(RoadPlasticBlock, plasticMapper);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public static void registerRender()
 	{
 		ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		
+
 		for(MachineType type : BlockStateMachine.MachineType.values())
 		{
 			mesher.register(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), "inventory"));
 		}
-		
+
 		for(BasicBlockType type : BasicBlockType.values())
 		{
 			mesher.register(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), "inventory"));
@@ -184,12 +200,5 @@ public class MekanismBlocks
 				new ResourceLocation("mekanism", "induction_provider")
 		);
 
-		Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().registerBlockWithStateMapper(MachineBlock, machineMapper);
-		Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().registerBlockWithStateMapper(MachineBlock2, machineMapper);
-		Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().registerBlockWithStateMapper(MachineBlock3, machineMapper);
-		Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().registerBlockWithStateMapper(BasicBlock, basicMapper);
-		Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().registerBlockWithStateMapper(BasicBlock2, basicMapper);
 	}
-
-
 }

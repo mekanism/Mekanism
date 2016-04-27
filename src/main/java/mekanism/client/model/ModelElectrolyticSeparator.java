@@ -78,6 +78,7 @@ public class ModelElectrolyticSeparator extends ModelBase
 		tube2.setRotationPoint(5F, 12F, -0.5F);
 		tube2.setTextureSize(128, 64);
 		tube2.mirror = true;
+		//TODO
 		setRotation(tube2, 0F, 0F, -0.5235988F);
 		tube1 = new ModelRenderer(this, 0, 0);
 		tube1.addBox(-3F, -1F, 0F, 3, 1, 1);

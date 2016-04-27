@@ -23,6 +23,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
+
 public class BlockPlastic extends Block
 {
 	public PlasticBlockType type;
@@ -38,8 +40,6 @@ public class BlockPlastic extends Block
 		{
 			slipperiness = 0.98F;
 		}
-
-		setDefaultState(blockState.getBaseState().withProperty(BlockStatePlastic.typeProperty, type));
 	}
 
 	@Override
@@ -51,13 +51,13 @@ public class BlockPlastic extends Block
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(BlockStatePlastic.colorProperty, EnumDyeColor.byMetadata(meta));
+		return this.getDefaultState().withProperty(colorProperty, EnumDyeColor.byMetadata(meta));
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return state.getValue(BlockStatePlastic.colorProperty).getMetadata();
+		return state.getValue(colorProperty).getMetadata();
 	}
 
 
@@ -127,8 +127,9 @@ public class BlockPlastic extends Block
 	@Override
 	public int getRenderColor(IBlockState state)
 	{
-		EnumColor colour = EnumColor.DYES[getMetaFromState(state)];
-		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
+		EnumDyeColor color = state.getValue(colorProperty);
+		EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
+		return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
 	}
 
 	@Override

@@ -72,6 +72,7 @@ public class ModelSolarNeutronActivator extends ModelBase
 		panel3.setRotationPoint(-2.75F, -4.95F, 8F);
 		panel3.setTextureSize(128, 64);
 		panel3.mirror = true;
+		//TODO
 		setRotation(panel3, -0.1082104F, 0.0279253F, 0.2617994F);
 		port = new ModelRenderer(this, 0, 45);
 		port.addBox(0F, 0F, 0F, 8, 8, 1);
@@ -84,48 +85,56 @@ public class ModelSolarNeutronActivator extends ModelBase
 		panel1.addBox(0F, 0F, -16F, 6, 1, 16);
 		panel1.setRotationPoint(2.75F, -4.95F, 8F);
 		panel1.setTextureSize(128, 64);
+		//TODO
 		setRotation(panel1, -0.1082104F, -0.0279253F, -0.2617994F);
 		panel2 = new ModelRenderer(this, 84, 15);
 		panel2.addBox(0F, 0F, -16F, 6, 1, 16);
 		panel2.setRotationPoint(-3F, -5F, 8F);
 		panel2.setTextureSize(128, 64);
 		panel2.mirror = true;
+		//TODO
 		setRotation(panel2, -0.1047198F, 0F, 0F);
 		panelBase = new ModelRenderer(this, 28, 45);
 		panelBase.addBox(0F, 1F, -16F, 6, 1, 14);
 		panelBase.setRotationPoint(-3F, -5F, 9F);
 		panelBase.setTextureSize(128, 64);
 		panelBase.mirror = true;
+		//TODO
 		setRotation(panelBase, -0.1047198F, 0F, 0F);
 		panelBraceLeft2 = new ModelRenderer(this, 64, 15);
 		panelBraceLeft2.addBox(-4F, 0.5F, -5F, 5, 1, 2);
 		panelBraceLeft2.setRotationPoint(-3F, -5F, 9F);
 		panelBraceLeft2.setTextureSize(128, 64);
 		panelBraceLeft2.mirror = true;
+		//TODO
 		setRotation(panelBraceLeft2, -0.1047198F, 0F, 0.2505517F);
 		panelBraceRight2 = new ModelRenderer(this, 64, 15);
 		panelBraceRight2.addBox(-1F, 0.5F, -5F, 5, 1, 2);
 		panelBraceRight2.setRotationPoint(3F, -5F, 9F);
 		panelBraceRight2.setTextureSize(128, 64);
 		panelBraceRight2.mirror = true;
+		//TODO
 		setRotation(panelBraceRight2, -0.1047198F, 0F, -0.2555938F);
 		panelBraceLeft1 = new ModelRenderer(this, 64, 15);
 		panelBraceLeft1.addBox(-4F, 0.5F, -15F, 5, 1, 2);
 		panelBraceLeft1.setRotationPoint(-3F, -5F, 9F);
 		panelBraceLeft1.setTextureSize(128, 64);
 		panelBraceLeft1.mirror = true;
+		//TODO
 		setRotation(panelBraceLeft1, -0.1047198F, 0F, 0.2505517F);
 		panelBraceRight1 = new ModelRenderer(this, 64, 15);
 		panelBraceRight1.addBox(-1F, 0.5F, -15F, 5, 1, 2);
 		panelBraceRight1.setRotationPoint(3F, -5F, 9F);
 		panelBraceRight1.setTextureSize(128, 64);
 		panelBraceRight1.mirror = true;
+		//TODO
 		setRotation(panelBraceRight1, -0.1047198F, 0F, -0.2555938F);
 		panelBrace = new ModelRenderer(this, 56, 18);
 		panelBrace.addBox(0F, 1.2F, -10F, 2, 2, 9);
 		panelBrace.setRotationPoint(-1F, -5F, 8F);
 		panelBrace.setTextureSize(128, 64);
 		panelBrace.mirror = true;
+		//TODO
 		setRotation(panelBrace, -0.1047198F, 0F, 0F);
 		bridge = new ModelRenderer(this, 65, 1);
 		bridge.addBox(0F, 0F, 0F, 12, 1, 13);
@@ -138,36 +147,42 @@ public class ModelSolarNeutronActivator extends ModelBase
 		platform.setRotationPoint(-0.5F, 8F, -2.5F);
 		platform.setTextureSize(128, 64);
 		platform.mirror = true;
+		//TODO
 		setRotation(platform, -0.1047198F, 0F, 0F);
 		hole2 = new ModelRenderer(this, 0, 6);
 		hole2.addBox(1F, 0F, 0F, 1, 2, 1);
 		hole2.setRotationPoint(-0.5F, 8F, -2.5F);
 		hole2.setTextureSize(128, 64);
 		hole2.mirror = true;
+		//TODO
 		setRotation(hole2, -0.1047198F, 0F, 0F);
 		hole4 = new ModelRenderer(this, 0, 3);
 		hole4.addBox(-1F, 0F, 1F, 3, 2, 1);
 		hole4.setRotationPoint(-0.5F, 8F, -2.5F);
 		hole4.setTextureSize(128, 64);
 		hole4.mirror = true;
+		//TODO
 		setRotation(hole4, -0.1047198F, 0F, 0F);
 		hole1 = new ModelRenderer(this, 0, 3);
 		hole1.addBox(-1F, 0F, -1F, 3, 2, 1);
 		hole1.setRotationPoint(-0.5F, 8F, -2.5F);
 		hole1.setTextureSize(128, 64);
 		hole1.mirror = true;
+		//TODO
 		setRotation(hole1, -0.1047198F, 0F, 0F);
 		hole3 = new ModelRenderer(this, 0, 6);
 		hole3.addBox(-1F, 0F, 0F, 1, 2, 1);
 		hole3.setRotationPoint(-0.5F, 8F, -2.5F);
 		hole3.setTextureSize(128, 64);
 		hole3.mirror = true;
+		//TODO
 		setRotation(hole3, -0.1047198F, 0F, 0F);
 		brace2 = new ModelRenderer(this, 0, 11);
 		brace2.addBox(0F, 0F, 0F, 1, 1, 2);
 		brace2.setRotationPoint(1F, 9.5F, -7.1F);
 		brace2.setTextureSize(128, 64);
 		brace2.mirror = true;
+		//TODO
 		setRotation(brace2, 0.1745329F, 0F, 0F);
 		tube2c = new ModelRenderer(this, 0, 9);
 		tube2c.addBox(0F, 0F, 0F, 1, 1, 1);
@@ -216,6 +231,7 @@ public class ModelSolarNeutronActivator extends ModelBase
 		brace1.setRotationPoint(-2F, 9.5F, -7.1F);
 		brace1.setTextureSize(128, 64);
 		brace1.mirror = true;
+		//TODO
 		setRotation(brace1, 0.1745329F, 0F, 0F);
 		tank = new ModelRenderer(this, 0, 0);
 		tank.addBox(0F, 0F, 0F, 16, 9, 16);
@@ -228,6 +244,7 @@ public class ModelSolarNeutronActivator extends ModelBase
 		laser.setRotationPoint(-1F, -5F, 8F);
 		laser.setTextureSize(128, 64);
 		laser.mirror = true;
+		//TODO
 		setRotation(laser, -0.1117011F, 0F, 0F);
 		base = new ModelRenderer(this, 0, 25);
 		base.addBox(0F, 0F, 0F, 16, 4, 16);
@@ -342,6 +359,7 @@ public class ModelSolarNeutronActivator extends ModelBase
 		laserBeamToggle.setRotationPoint(-1F, -5F, 8F);
 		laserBeamToggle.setTextureSize(128, 64);
 		laserBeamToggle.mirror = true;
+		//TODO
 		setRotation(laserBeamToggle, -0.1117011F, 0F, 0F);
 	}
 

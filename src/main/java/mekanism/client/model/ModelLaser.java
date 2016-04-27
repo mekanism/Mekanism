@@ -114,6 +114,7 @@ public class ModelLaser extends ModelBase
 		wire.setRotationPoint(-1.5F, 11F, -0.5F);
 		wire.setTextureSize(64, 32);
 		wire.mirror = true;
+		//TODO
 		setRotation(wire, 0F, 0F, 0.1919862F);
 		rod3 = new ModelRenderer(this, 0, 9);
 		rod3.addBox(0F, 0F, 0F, 1, 5, 1);

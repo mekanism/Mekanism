@@ -50,36 +50,42 @@ public class ModelSecurityDesk extends ModelBase
 		led.setRotationPoint(-7F, 5F, 4F);
 		led.setTextureSize(128, 64);
 		led.mirror = true;
+		//TODO
 		setRotation(led, -0.4712389F, 0F, 0F);
 		monitorBack = new ModelRenderer(this, 82, 0);
 		monitorBack.addBox(1F, -3F, 0F, 12, 6, 1);
 		monitorBack.setRotationPoint(-7F, 5F, 4F);
 		monitorBack.setTextureSize(128, 64);
 		monitorBack.mirror = true;
+		//TODO
 		setRotation(monitorBack, -0.4712389F, 0F, 0F);
 		keyboard = new ModelRenderer(this, 64, 27);
 		keyboard.addBox(0F, 0F, 0F, 10, 1, 5);
 		keyboard.setRotationPoint(-5F, 10.5F, -6F);
 		keyboard.setTextureSize(128, 64);
 		keyboard.mirror = true;
+		//TODO
 		setRotation(keyboard, 0.0872665F, 0F, 0F);
 		monitor = new ModelRenderer(this, 64, 10);
 		monitor.addBox(0F, -5F, -2F, 14, 10, 2);
 		monitor.setRotationPoint(-7F, 5F, 4F);
 		monitor.setTextureSize(128, 64);
 		monitor.mirror = true;
+		//TODO
 		setRotation(monitor, -0.4712389F, 0F, 0F);
 		standNeck = new ModelRenderer(this, 96, 7);
 		standNeck.addBox(0F, -7F, -1F, 2, 7, 1);
 		standNeck.setRotationPoint(-1F, 10F, 6F);
 		standNeck.setTextureSize(128, 64);
 		standNeck.mirror = true;
+		//TODO
 		setRotation(standNeck, 0.0698132F, 0F, 0F);
 		standBase = new ModelRenderer(this, 64, 22);
 		standBase.addBox(0F, 0F, -4F, 8, 1, 4);
 		standBase.setRotationPoint(-4F, 10F, 6F);
 		standBase.setTextureSize(128, 64);
 		standBase.mirror = true;
+		//TODO
 		setRotation(standBase, 0.1047198F, 0F, 0F);
 		deskMiddle = new ModelRenderer(this, 0, 23);
 		deskMiddle.addBox(0F, 0F, 0F, 14, 1, 14);
@@ -92,6 +98,7 @@ public class ModelSecurityDesk extends ModelBase
 		monitorScreen.setRotationPoint(-7F, 5F, 4F);
 		monitorScreen.setTextureSize(128, 64);
 		monitorScreen.mirror = true;
+		//TODO
 		setRotation(monitorScreen, -0.4712389F, 0F, 0F);
 	}
 

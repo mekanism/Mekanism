@@ -1,7 +1,7 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "mekanism:blocks/enrichment_chamber"
+        "front": "mekanism:blocks/enrichment_chamber/EnrichmentChamberFront"
     }
 }
 

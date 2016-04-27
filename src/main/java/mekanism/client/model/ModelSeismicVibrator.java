@@ -106,6 +106,7 @@ public class ModelSeismicVibrator extends ModelBase
 		arm3.setRotationPoint(-1F, 7F, 3F);
 		arm3.setTextureSize(128, 64);
 		arm3.mirror = true;
+		//TODO
 		setRotation(arm3, -0.3665191F, 0F, 0F);
 		plate2 = new ModelRenderer(this, 48, 0);
 		plate2.addBox(0F, 0F, 0F, 4, 2, 4);
@@ -136,6 +137,7 @@ public class ModelSeismicVibrator extends ModelBase
 		frameBack5.setRotationPoint(7.5F, 7F, 6.49F);
 		frameBack5.setTextureSize(128, 64);
 		frameBack5.mirror = true;
+		//TODO
 		setRotation(frameBack5, 0F, 0F, 0.837758F);
 		pole3 = new ModelRenderer(this, 0, 34);
 		pole3.addBox(0F, 0F, 0F, 1, 25, 1);
@@ -148,6 +150,7 @@ public class ModelSeismicVibrator extends ModelBase
 		frameRight5.setRotationPoint(6.485F, 7F, -7.5F);
 		frameRight5.setTextureSize(128, 64);
 		frameRight5.mirror = true;
+		//TODO
 		setRotation(frameRight5, 0.837758F, 0F, 0F);
 		baseRight = new ModelRenderer(this, 38, 18);
 		baseRight.mirror = true;
@@ -184,30 +187,35 @@ public class ModelSeismicVibrator extends ModelBase
 		frameRight4.setRotationPoint(6.49F, 7F, 7.5F);
 		frameRight4.setTextureSize(128, 64);
 		frameRight4.mirror = true;
+		//TODO
 		setRotation(frameRight4, -0.837758F, 0F, 0F);
 		frameRight1 = new ModelRenderer(this, 4, 34);
 		frameRight1.addBox(0F, 0F, 0F, 1, 19, 1);
 		frameRight1.setRotationPoint(6.485F, -6F, -7.5F);
 		frameRight1.setTextureSize(128, 64);
 		frameRight1.mirror = true;
+		//TODO
 		setRotation(frameRight1, 0.837758F, 0F, 0F);
 		frameRight2 = new ModelRenderer(this, 4, 34);
 		frameRight2.addBox(0F, 0F, -1F, 1, 19, 1);
 		frameRight2.setRotationPoint(6.49F, -6F, 7.5F);
 		frameRight2.setTextureSize(128, 64);
 		frameRight2.mirror = true;
+		//TODO
 		setRotation(frameRight2, -0.837758F, 0F, 0F);
 		frameLeft5 = new ModelRenderer(this, 4, 34);
 		frameLeft5.addBox(0F, 0F, 0F, 1, 19, 1);
 		frameLeft5.setRotationPoint(-7.485F, 7F, -7.5F);
 		frameLeft5.setTextureSize(128, 64);
 		frameLeft5.mirror = true;
+		//TODO
 		setRotation(frameLeft5, 0.837758F, 0F, 0F);
 		frameLeft4 = new ModelRenderer(this, 4, 34);
 		frameLeft4.addBox(0F, 0F, -1F, 1, 19, 1);
 		frameLeft4.setRotationPoint(-7.49F, 7F, 7.5F);
 		frameLeft4.setTextureSize(128, 64);
 		frameLeft4.mirror = true;
+		//TODO
 		setRotation(frameLeft4, -0.837758F, 0F, 0F);
 		frameBack3 = new ModelRenderer(this, 36, 52);
 		frameBack3.addBox(0F, 0F, 0F, 13, 1, 1);
@@ -220,12 +228,14 @@ public class ModelSeismicVibrator extends ModelBase
 		frameLeft2.setRotationPoint(-7.485F, -6F, -7.5F);
 		frameLeft2.setTextureSize(128, 64);
 		frameLeft2.mirror = true;
+		//TODO
 		setRotation(frameLeft2, 0.837758F, 0F, 0F);
 		frameLeft1 = new ModelRenderer(this, 4, 34);
 		frameLeft1.addBox(0F, 0F, -1F, 1, 19, 1);
 		frameLeft1.setRotationPoint(-7.49F, -6F, 7.5F);
 		frameLeft1.setTextureSize(128, 64);
 		frameLeft1.mirror = true;
+		//TODO
 		setRotation(frameLeft1, -0.837758F, 0F, 0F);
 		pole2 = new ModelRenderer(this, 0, 34);
 		pole2.addBox(0F, 0F, 0F, 1, 25, 1);
@@ -238,18 +248,21 @@ public class ModelSeismicVibrator extends ModelBase
 		frameBack1.setRotationPoint(7.5F, -6F, 6.49F);
 		frameBack1.setTextureSize(128, 64);
 		frameBack1.mirror = true;
+		//TODO
 		setRotation(frameBack1, 0F, 0F, 0.837758F);
 		frameBack2 = new ModelRenderer(this, 4, 34);
 		frameBack2.addBox(0F, 0F, 0F, 1, 19, 1);
 		frameBack2.setRotationPoint(-7.5F, -6F, 6.49F);
 		frameBack2.setTextureSize(128, 64);
 		frameBack2.mirror = true;
+		//TODO
 		setRotation(frameBack2, 0F, 0F, -0.837758F);
 		frameBack4 = new ModelRenderer(this, 4, 34);
 		frameBack4.addBox(0F, 0F, 0F, 1, 19, 1);
 		frameBack4.setRotationPoint(-7.5F, 7F, 6.49F);
 		frameBack4.setTextureSize(128, 64);
 		frameBack4.mirror = true;
+		//TODO
 		setRotation(frameBack4, 0F, 0F, -0.837758F);
 		frameLeft3 = new ModelRenderer(this, 64, 27);
 		frameLeft3.addBox(0F, 0F, 0F, 1, 1, 13);

@@ -5,8 +5,12 @@ import java.util.Random;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.base.IActiveState;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
+import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateGasTank;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -18,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -30,8 +35,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import buildcraft.api.tools.IToolWrench;
+
+import static mekanism.common.block.states.BlockStateFacing.facingProperty;
 
 public class BlockGasTank extends BlockContainer
 {
@@ -43,6 +51,37 @@ public class BlockGasTank extends BlockContainer
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStateGasTank(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState();
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return 0;
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
+		{
+			state = state.withProperty(facingProperty, ((TileEntityBasicBlock)tile).facing);
+		}
+		return state;
+	}
+
+
 
 /*
 	@Override

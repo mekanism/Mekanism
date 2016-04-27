@@ -96,12 +96,14 @@ public class ModelChemicalInfuser extends ModelBase
 		pipeAngle2.setRotationPoint(5F, 13.01F, -2F);
 		pipeAngle2.setTextureSize(128, 64);
 		pipeAngle2.mirror = true;
+		//TODO
 		setRotation(pipeAngle2, 0F, 0.7853982F, 0F);
 		connectorAngle = new ModelRenderer(this, 40, 45);
 		connectorAngle.addBox(0F, 0F, 0F, 2, 8, 2);
 		connectorAngle.setRotationPoint(-1F, 13F, 5F);
 		connectorAngle.setTextureSize(128, 64);
 		connectorAngle.mirror = true;
+		//TODO
 		setRotation(connectorAngle, -0.4886922F, 0F, 0F);
 		pipe2 = new ModelRenderer(this, 40, 35);
 		pipe2.addBox(0F, 0F, 0F, 1, 6, 4);
@@ -192,30 +194,35 @@ public class ModelChemicalInfuser extends ModelBase
 		pipeAngle1.setRotationPoint(-5F, 13.01F, -2F);
 		pipeAngle1.setTextureSize(128, 64);
 		pipeAngle1.mirror = true;
+		//TODO
 		setRotation(pipeAngle1, 0F, -0.7853982F, 0F);
 		exhaust4 = new ModelRenderer(this, 0, 9);
 		exhaust4.addBox(0F, 0F, 0F, 1, 1, 1);
 		exhaust4.setRotationPoint(-1.33F, 11.5F, -6.2F);
 		exhaust4.setTextureSize(128, 64);
 		exhaust4.mirror = true;
+		//TODO
 		setRotation(exhaust4, 0.3490659F, 0F, 0F);
 		exhaust3 = new ModelRenderer(this, 0, 9);
 		exhaust3.addBox(0F, 0F, 0F, 1, 1, 1);
 		exhaust3.setRotationPoint(-3F, 11.5F, -6.2F);
 		exhaust3.setTextureSize(128, 64);
 		exhaust3.mirror = true;
+		//TODO
 		setRotation(exhaust3, 0.3490659F, 0F, 0F);
 		exhaust2 = new ModelRenderer(this, 0, 9);
 		exhaust2.addBox(0F, 0F, 0F, 1, 1, 1);
 		exhaust2.setRotationPoint(2F, 11.5F, -6.2F);
 		exhaust2.setTextureSize(128, 64);
 		exhaust2.mirror = true;
+		//TODO
 		setRotation(exhaust2, 0.3490659F, 0F, 0F);
 		exhaust1 = new ModelRenderer(this, 0, 9);
 		exhaust1.addBox(0F, 0F, 0F, 1, 1, 1);
 		exhaust1.setRotationPoint(0.33F, 11.5F, -6.2F);
 		exhaust1.setTextureSize(128, 64);
 		exhaust1.mirror = true;
+		//TODO
 		setRotation(exhaust1, 0.3490659F, 0F, 0F);
 	}
 

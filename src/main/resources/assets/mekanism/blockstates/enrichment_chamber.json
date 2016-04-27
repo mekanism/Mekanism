@@ -4,18 +4,22 @@
     "model": "mekanism:machine",
     "textures": {
       "sides": "mekanism:blocks/SteelCasing",
-      "front": "mekanism:blocks/EnrichmentChamberFront"
+      "front": "mekanism:blocks/enrichment_chamber/EnrichmentChamberFront",
+      "east": "mekanism:blocks/enrichment_chamber/EnrichmentChamberRight",
+      "west": "mekanism:blocks/enrichment_chamber/EnrichmentChamberLeft",
+      "north": "mekanism:blocks/enrichment_chamber/EnrichmentChamberBack",
+      "up": "mekanism:blocks/enrichment_chamber/EnrichmentChamberTop"
     }
   },
   "variants": {
     "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+      "north": {"y": 180},
+      "south": {},
+      "east":  {"y": -90},
+      "west":  {"y": 90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/EnrichmentChamberFrontOn"}},
+      "true": {"textures": {"front": "mekanism:blocks/enrichment_chamber/EnrichmentChamberFrontOn"}},
       "false": {}
     },
     "inventory": [{}]

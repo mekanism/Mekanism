@@ -66,6 +66,7 @@ public class ModelChemicalWasher extends ModelBase
 		pipe2b.setRotationPoint(-3.49F, 14F, -3.5F);
 		pipe2b.setTextureSize(128, 64);
 		pipe2b.mirror = true;
+		//TODO
 		setRotation(pipe2b, 0.837758F, 0F, 0F);
 		portRight = new ModelRenderer(this, 48, 0);
 		portRight.addBox(0F, 0F, 0F, 1, 8, 8);
@@ -108,6 +109,7 @@ public class ModelChemicalWasher extends ModelBase
 		pipe2.setRotationPoint(-2.51F, 14F, -3.5F);
 		pipe2.setTextureSize(128, 64);
 		pipe2.mirror = true;
+		//TODO
 		setRotation(pipe2, 0.837758F, 0F, 0F);
 		tankLeft = new ModelRenderer(this, 0, 36);
 		tankLeft.addBox(0F, 0F, 0F, 7, 10, 8);
@@ -144,6 +146,7 @@ public class ModelChemicalWasher extends ModelBase
 		tubeLeft1.setRotationPoint(-6F, 8.5F, 4F);
 		tubeLeft1.setTextureSize(128, 64);
 		tubeLeft1.mirror = true;
+		//TODO
 		setRotation(tubeLeft1, 0.6806784F, 0F, 0F);
 		tubeLeft2 = new ModelRenderer(this, 30, 36);
 		tubeLeft2.addBox(0F, 0F, 0F, 1, 1, 8);
@@ -156,24 +159,28 @@ public class ModelChemicalWasher extends ModelBase
 		tubeRight3.setRotationPoint(6F, 10F, -2.5F);
 		tubeRight3.setTextureSize(128, 64);
 		tubeRight3.mirror = true;
+		//TODO
 		setRotation(tubeRight3, 0F, 0F, 0.3141593F);
 		tubeRight1 = new ModelRenderer(this, 30, 39);
 		tubeRight1.addBox(0F, -1F, 0F, 1, 2, 1);
 		tubeRight1.setRotationPoint(6F, 10F, -6.5F);
 		tubeRight1.setTextureSize(128, 64);
 		tubeRight1.mirror = true;
+		//TODO
 		setRotation(tubeRight1, 0F, 0F, 0.3141593F);
 		tubeRight2 = new ModelRenderer(this, 30, 39);
 		tubeRight2.addBox(0F, -1F, 0F, 1, 2, 1);
 		tubeRight2.setRotationPoint(6F, 10F, -4.5F);
 		tubeRight2.setTextureSize(128, 64);
 		tubeRight2.mirror = true;
+		//TODO
 		setRotation(tubeRight2, 0F, 0F, 0.3141593F);
 		tubeLeft3 = new ModelRenderer(this, 30, 36);
 		tubeLeft3.addBox(0F, 0F, 0F, 1, 2, 1);
 		tubeLeft3.setRotationPoint(-6F, 9.5F, -4F);
 		tubeLeft3.setTextureSize(128, 64);
 		tubeLeft3.mirror = true;
+		//TODO
 		setRotation(tubeLeft3, 0F, 0F, -0.8203047F);
 	}
 
