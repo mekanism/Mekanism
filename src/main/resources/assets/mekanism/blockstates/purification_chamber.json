@@ -4,7 +4,11 @@
     "model": "mekanism:machine",
     "textures": {
       "sides": "mekanism:blocks/SteelCasing",
-      "front": "mekanism:blocks/PurificationChamberFront"
+      "front": "mekanism:blocks/purification_chamber/PurificationChamberFront",
+      "west": "mekanism:blocks/purification_chamber/PurificationChamberRight",
+      "east": "mekanism:blocks/purification_chamber/PurificationChamberLeft",
+      "south": "mekanism:blocks/purification_chamber/PurificationChamberBack",
+      "up": "mekanism:blocks/purification_chamber/PurificationChamberTop"
     }
   },
   "variants": {
@@ -15,7 +19,7 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/PurificationChamberFrontOn"}},
+      "true": {"textures": {"front": "mekanism:blocks/purification_chamber/PurificationChamberFrontOn"}},
       "false": {}
     },
     "inventory": [{}]

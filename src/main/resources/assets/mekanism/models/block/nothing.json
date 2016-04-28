@@ -1,10 +1,10 @@
 {
     "elements": [
-        {
-            "__comment": "nothing",
-            "from": [0, 0, 0],
-            "to": [0, 0, 0],
-            "faces": {}
+        {   "from": [ 0, 0, 0 ],
+            "to": [ 0, 0, 0 ],
+            "faces": {
+                "down":  { "texture": "#down", "cullface": "down" }
+            }
         }
     ]
 }

@@ -4,7 +4,11 @@
     "model": "mekanism:machine",
     "textures": {
       "sides": "mekanism:blocks/SteelCasing",
-      "front": "mekanism:blocks/CombinerFront"
+      "front": "mekanism:blocks/combiner/CombinerFront",
+      "west": "mekanism:blocks/combiner/CombinerRight",
+      "east": "mekanism:blocks/combiner/CombinerLeft",
+      "south": "mekanism:blocks/combiner/CombinerBack",
+      "up": "mekanism:blocks/combiner/CombinerTop"
     }
   },
   "variants": {
@@ -15,7 +19,7 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/CombinerFrontOn"}},
+      "true": {"textures": {"front": "mekanism:blocks/combiner/CombinerFrontOn"}},
       "false": {}
     },
     "inventory": [{}]

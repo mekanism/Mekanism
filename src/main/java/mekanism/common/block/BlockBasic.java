@@ -52,6 +52,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.EnumSkyBlock;
@@ -637,6 +638,13 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		return BasicBlockType.get(world.getBlockState(pos)) != BasicBlockType.STRUCTURAL_GLASS;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public EnumWorldBlockLayer getBlockLayer()
+	{
+		return EnumWorldBlockLayer.CUTOUT;
 	}
 
 	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)

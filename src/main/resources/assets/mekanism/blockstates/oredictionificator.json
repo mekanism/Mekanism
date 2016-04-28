@@ -1,0 +1,28 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "front": "mekanism:blocks/oredictionificator/OredictionificatorFront",
+      "west": "mekanism:blocks/oredictionificator/OredictionificatorRight",
+      "east": "mekanism:blocks/oredictionificator/OredictionificatorLeft",
+      "south": "mekanism:blocks/oredictionificator/OredictionificatorBack",
+      "up": "mekanism:blocks/oredictionificator/OredictionificatorTop",
+      "down": "mekanism:blocks/oredictionificator/OredictionificatorBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {"textures": {"front": "mekanism:blocks/oredictionificator/OredictionificatorFrontOn"}},
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

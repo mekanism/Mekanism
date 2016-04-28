@@ -4,7 +4,11 @@
     "model": "mekanism:machine",
     "textures": {
       "sides": "mekanism:blocks/SteelCasing",
-      "front": "mekanism:blocks/EnergizedSmelterFront"
+      "front": "mekanism:blocks/energized_smelter/EnergizedSmelterFront",
+      "west": "mekanism:blocks/energized_smelter/EnergizedSmelterRight",
+      "east": "mekanism:blocks/energized_smelter/EnergizedSmelterLeft",
+      "south": "mekanism:blocks/energized_smelter/EnergizedSmelterBack",
+      "up": "mekanism:blocks/energized_smelter/EnergizedSmelterTop"
     }
   },
   "variants": {
@@ -15,7 +19,7 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/EnergizedSmelterFrontOn"}},
+      "true": {"textures": {"front": "mekanism:blocks/energized_smelter/EnergizedSmelterFrontOn"}},
       "false": {}
     },
     "inventory": [{}]

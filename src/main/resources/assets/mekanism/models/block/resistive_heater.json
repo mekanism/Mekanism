@@ -262,7 +262,7 @@
         }
     ],
     "textures": {
-        "all": "...",
+        "all": "mekanism:blocks/models/resistive_heater",
         "particle": "..."
     }
 }

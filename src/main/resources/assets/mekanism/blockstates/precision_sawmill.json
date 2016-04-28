@@ -4,7 +4,11 @@
     "model": "mekanism:machine",
     "textures": {
       "sides": "mekanism:blocks/SteelCasing",
-      "front": "mekanism:blocks/PrecisionSawmillFront"
+      "front": "mekanism:blocks/precision_sawmill/PrecisionSawmillFront",
+      "west": "mekanism:blocks/precision_sawmill/PrecisionSawmillRight",
+      "east": "mekanism:blocks/precision_sawmill/PrecisionSawmillLeft",
+      "south": "mekanism:blocks/precision_sawmill/PrecisionSawmillBack",
+      "up": "mekanism:blocks/precision_sawmill/PrecisionSawmillTop"
     }
   },
   "variants": {
@@ -15,7 +19,7 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/PrecisionSawmillFrontOn"}},
+      "true": {"textures": {"front": "mekanism:blocks/precision_sawmill/PrecisionSawmillFrontOn"}},
       "false": {}
     },
     "inventory": [{}]

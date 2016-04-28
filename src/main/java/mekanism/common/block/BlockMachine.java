@@ -100,6 +100,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
@@ -174,7 +175,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 
 	public static BlockMachine getBlockMachine(MachineBlock block)
 	{
-		return new BlockMachine() {
+		return new BlockMachine()
+		{
 			@Override
 			public MachineBlock getMachineBlock()
 			{
@@ -198,7 +200,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		MachineType type = MachineType.get(getMachineBlock(), meta&0xF);
+		MachineType type = MachineType.get(getMachineBlock(), meta & 0xF);
 
 		return getDefaultState().withProperty(getProperty(), type);
 	}
@@ -327,8 +329,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 			if(height >= 65)
 			{
 				change = 1;
-			}
-			else if(height <= -65)
+			} else if(height <= -65)
 			{
 				change = 0;
 			}
@@ -338,10 +339,18 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		{
 			switch(side)
 			{
-				case 0: change = 2; break;
-				case 1: change = 5; break;
-				case 2: change = 3; break;
-				case 3: change = 4; break;
+				case 0:
+					change = 2;
+					break;
+				case 1:
+					change = 5;
+					break;
+				case 2:
+					change = 3;
+					break;
+				case 3:
+					change = 4;
+					break;
 			}
 		}
 
@@ -435,7 +444,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		if(client.enableAmbientLighting)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
-	
+
 			if(tileEntity instanceof IActiveState)
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
@@ -574,11 +583,11 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 							((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
 							list.add(stack);
 						}
-						
+
 						break;
 					case FLUID_TANK:
 						ItemBlockMachine itemMachine = (ItemBlockMachine)item;
-						
+
 						for(FluidTankTier tier : FluidTankTier.values())
 						{
 							ItemStack stack = new ItemStack(item, 1, type.meta);
@@ -590,15 +599,18 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						{
 							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
 							{
-								try { //Prevent bad IDs
+								try
+								{ //Prevent bad IDs
 									ItemStack filled = new ItemStack(item, 1, type.meta);
 									itemMachine.setBaseTier(filled, BaseTier.ULTIMATE);
 									itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
 									list.add(filled);
-								} catch(Exception e) {}
+								} catch(Exception e)
+								{
+								}
 							}
 						}
-						
+
 						break;
 					default:
 						list.add(new ItemStack(item, 1, type.meta));
@@ -629,17 +641,17 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 					if(entityplayer.isSneaking())
 					{
 						dismantleBlock(world, pos, false);
-						
+
 						return true;
 					}
-	
+
 					if(MekanismUtils.isBCWrench(tool))
 					{
 						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
 					}
-	
+
 					int change = tileEntity.facing.rotateY().ordinal();
-	
+
 					if(tileEntity instanceof TileEntityLogisticalSorter)
 					{
 						if(!((TileEntityLogisticalSorter)tileEntity).hasInventory())
@@ -647,7 +659,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 							for(EnumFacing dir : EnumFacing.VALUES)
 							{
 								TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
-	
+
 								if(tile instanceof IInventory)
 								{
 									change = dir.getOpposite().ordinal();
@@ -656,14 +668,14 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 							}
 						}
 					}
-	
+
 					tileEntity.setFacing((short)change);
 					world.notifyNeighborsOfStateChange(pos, this);
-				}
-				else {
+				} else
+				{
 					SecurityUtils.displayNoAccess(entityplayer);
 				}
-				
+
 				return true;
 			}
 		}
@@ -678,18 +690,18 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 					if(!entityplayer.isSneaking() && !world.isSideSolid(pos.up(), EnumFacing.DOWN))
 					{
 						TileEntityPersonalChest chest = (TileEntityPersonalChest)tileEntity;
-						
+
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
 							MekanismUtils.openPersonalChestGui((EntityPlayerMP)entityplayer, chest, null, true);
-						}
-						else {
+						} else
+						{
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
-						
+
 						return true;
 					}
-					
+
 					break;
 				case FLUID_TANK:
 					if(!entityplayer.isSneaking())
@@ -703,18 +715,18 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 									entityplayer.inventory.markDirty();
 									return true;
 								}
-							} 
-							else {
+							} else
+							{
 								entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 							}
-						}
-						else {
+						} else
+						{
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
-						
+
 						return true;
 					}
-					
+
 					break;
 				case LOGISTICAL_SORTER:
 					if(!entityplayer.isSneaking())
@@ -722,32 +734,32 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
 							LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
-						}
-						else {
+						} else
+						{
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
-						
+
 						return true;
 					}
-					
+
 					break;
 				case TELEPORTER:
 				case QUANTUM_ENTANGLOPORTER:
 					if(!entityplayer.isSneaking())
 					{
 						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
-						
+
 						if(owner == null || entityplayer.getName().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
-						}
-						else {
+						} else
+						{
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
-						
+
 						return true;
 					}
-					
+
 					break;
 				default:
 					if(!entityplayer.isSneaking() && type.guiId != -1)
@@ -755,18 +767,18 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
-						}
-						else {
+						} else
+						{
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
-						
+
 						return true;
 					}
-					
+
 					break;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -793,7 +805,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	{
 		return false;
 	}
-	
+
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
@@ -804,6 +816,13 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public int getRenderType()
 	{
 		return 3;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public EnumWorldBlockLayer getBlockLayer()
+	{
+		return EnumWorldBlockLayer.CUTOUT;
 	}
 
 	@Override

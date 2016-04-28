@@ -4,7 +4,11 @@
     "model": "mekanism:machine",
     "textures": {
       "sides": "mekanism:blocks/SteelCasing",
-      "front": "mekanism:blocks/OsmiumCompressorFront"
+      "front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFront",
+      "west": "mekanism:blocks/osmium_compressor/OsmiumCompressorRight",
+      "east": "mekanism:blocks/osmium_compressor/OsmiumCompressorLeft",
+      "south": "mekanism:blocks/osmium_compressor/OsmiumCompressorBack",
+      "up": "mekanism:blocks/osmium_compressor/OsmiumCompressorTop"
     }
   },
   "variants": {
@@ -15,7 +19,7 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/OsmiumCompressorFrontOn"}},
+      "true": {"textures": {"front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFrontOn"}},
       "false": {}
     },
     "inventory": [{}]
