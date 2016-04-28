@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoundingBlock;
+import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityGasTank;
@@ -39,6 +40,7 @@ public class WailaDataProvider implements IWailaDataProvider
 		registrar.registerHeadProvider(provider, TileEntityFluidTank.class);
 		registrar.registerHeadProvider(provider, TileEntityGasTank.class);
 		registrar.registerHeadProvider(provider, TileEntityBin.class);
+		registrar.registerHeadProvider(provider, TileEntityEnergyCube.class);
 	}
 	
 	@Override
@@ -77,6 +79,10 @@ public class WailaDataProvider implements IWailaDataProvider
 		else if(tile instanceof TileEntityBin)
 		{
 			currenttip.set(0, EnumColor.WHITE + ((TileEntityBin)tile).getInventoryName());
+		}
+		else if(tile instanceof TileEntityEnergyCube)
+		{
+			currenttip.set(0, EnumColor.WHITE + ((TileEntityEnergyCube)tile).getInventoryName());
 		}
 		else if(tile instanceof TileEntityBoundingBlock)
 		{

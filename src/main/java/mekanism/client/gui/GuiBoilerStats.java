@@ -12,7 +12,6 @@ import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiGraph;
 import mekanism.client.gui.element.GuiGraph.GraphDataHandler;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -43,8 +42,9 @@ public class GuiBoilerStats extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String loss = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss, TemperatureUnit.KELVIN);
-				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + loss + "/t");
+				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, unit);
+				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png")));
 		guiElements.add(boilGraph = new GuiGraph(this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png"), 8, 83, 160, 36, new GraphDataHandler() {

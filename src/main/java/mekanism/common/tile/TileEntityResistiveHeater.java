@@ -42,7 +42,6 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	
 	public float soundScale = 1;
 	
-	public double lastTransferLoss;
 	public double lastEnvironmentLoss;
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -101,7 +100,6 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 			double[] loss = simulateHeat();
 			applyTemperatureChange();
 			
-			lastTransferLoss = loss[0];
 			lastEnvironmentLoss = loss[1];
 			
 			float newSoundScale = (float)Math.max(0, (toUse/1E5));
@@ -182,7 +180,6 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		soundScale = dataStream.readFloat();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
-		lastTransferLoss = dataStream.readDouble();
 		lastEnvironmentLoss = dataStream.readDouble();
 		
 		if(updateDelay == 0 && clientActive != isActive)
@@ -205,7 +202,6 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		data.add(soundScale);
 		data.add(controlType.ordinal());
 		
-		data.add(lastTransferLoss);
 		data.add(lastEnvironmentLoss);
 		
 		return data;

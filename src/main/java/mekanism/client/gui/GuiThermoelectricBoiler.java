@@ -70,8 +70,9 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String loss = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss, TemperatureUnit.KELVIN);
-				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + loss + "/t");
+				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, unit);
+				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermoelectricBoiler.png")));
 	}

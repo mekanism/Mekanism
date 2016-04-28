@@ -38,7 +38,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
 	
-	public double lastTransferLoss;
 	public double lastEnvironmentLoss;
 	
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
@@ -109,7 +108,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 			double[] loss = simulateHeat();
 			applyTemperatureChange();
 			
-			lastTransferLoss = loss[0];
 			lastEnvironmentLoss = loss[1];
 			
 			setActive(burning);
@@ -148,7 +146,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 		burnTime = dataStream.readInt();
 		maxBurnTime = dataStream.readInt();
 		
-		lastTransferLoss = dataStream.readDouble();
 		lastEnvironmentLoss = dataStream.readDouble();
 		
 		if(updateDelay == 0 && clientActive != isActive)
@@ -169,7 +166,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 		data.add(burnTime);
 		data.add(maxBurnTime);
 		
-		data.add(lastTransferLoss);
 		data.add(lastEnvironmentLoss);
 		
 		return data;
