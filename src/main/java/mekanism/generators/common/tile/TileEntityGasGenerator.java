@@ -47,7 +47,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public void onUpdate()
 	{
 		super.onUpdate();
-
+		
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.charge(1, this);
@@ -81,10 +81,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 					}
 				}
 			}
-
+			
 			boolean operate = canOperate();
 			
-			if(operate && getEnergy() < getMaxEnergy())
+			if(operate && getEnergy()+generationRate < getMaxEnergy())
 			{
 				setActive(true);
 				
@@ -99,7 +99,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				
 				int toUse = getToUse();
 				
-				output = generationRate*getToUse()*2;
+				output = Math.max(general.FROM_H2*2, generationRate*getToUse()*2);
 				
 				int total = burnTicks + fuelTank.getStored()*maxBurnTicks;
 				total -= toUse;
