@@ -167,7 +167,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	{
 		if(!worldObj.isRemote)
 		{
-			energyUsage = dataStream.readInt();
+			energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
 			maxEnergy = energyUsage * 400;
 			
 			return;
