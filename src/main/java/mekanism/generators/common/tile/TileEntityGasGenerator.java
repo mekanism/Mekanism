@@ -82,7 +82,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				}
 			}
 
-			if(canOperate())
+			boolean operate = canOperate();
+			
+			if(operate && getEnergy() < getMaxEnergy())
 			{
 				setActive(true);
 				
@@ -112,8 +114,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				burnTicks = total % maxBurnTicks;
 				clientUsed = toUse;
 			}
-			else {
-				reset();
+			else {				
+				if(!operate)
+				{
+					reset();
+				}
+				
+				clientUsed = 0;
 				setActive(false);
 			}
 		}
@@ -125,7 +132,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		maxBurnTicks = 0;
 		generationRate = 0;
 		output = general.FROM_H2*2;
-		clientUsed = 0;
 	}
 	
 	public int getToUse()
@@ -182,7 +188,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canOperate()
 	{
-		return getEnergy() < getMaxEnergy() && (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
+		return (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
 	}
 
 	/**
