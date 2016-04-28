@@ -1279,7 +1279,7 @@ public final class MekanismUtils
 	 */
 	public static String getTemperatureDisplay(double T, TemperatureUnit unit)
 	{
-		double TK = unit.convertToK(T);
+		double TK = unit.convertToK(T, true);
 		
 		switch(general.tempUnit)
 		{

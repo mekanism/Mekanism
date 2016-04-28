@@ -52,7 +52,7 @@ public class FusionReactor implements IFusionReactor
 	public double heatToAbsorb = 0;
 
 	//Reaction characteristics
-	public static double burnTemperature = TemperatureUnit.AMBIENT.convertFromK(1E8);
+	public static double burnTemperature = TemperatureUnit.AMBIENT.convertFromK(1E8, true);
 	public static double burnRatio = 1;
 	public static double energyPerFuel = 5E6;
 	public int injectionRate = 0;
