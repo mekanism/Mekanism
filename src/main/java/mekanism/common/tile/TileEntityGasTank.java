@@ -64,7 +64,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	{
 		super("GasTank");
 		
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS);
+		configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Fill", EnumColor.DARK_BLUE, new int[] {0}));

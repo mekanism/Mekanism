@@ -70,7 +70,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getPlasmaTemp());
+				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getPlasmaTemp(), true);
 			}
 
 			@Override
@@ -104,7 +104,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getCaseTemp());
+				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getCaseTemp(), true);
 			}
 
 			@Override

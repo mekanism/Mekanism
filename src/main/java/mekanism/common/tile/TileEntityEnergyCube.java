@@ -55,7 +55,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	{
 		super("EnergyCube", 0);
 		
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Charge", EnumColor.DARK_BLUE, new int[] {0}));

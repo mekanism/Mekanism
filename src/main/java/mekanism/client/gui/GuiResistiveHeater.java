@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.util.ListUtils;
 import mekanism.api.util.UnitDisplayUtils;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
@@ -62,9 +63,10 @@ public class GuiResistiveHeater extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, TemperatureUnit.KELVIN);
-				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, TemperatureUnit.KELVIN);
-				return ListUtils.asList(LangUtils.localize("gui.transferred") + ": " + transfer + "/t", LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+				System.out.println(tileEntity.lastEnvironmentLoss);
+				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss*unit.intervalSize, false, unit);
+				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png")));
 	}
@@ -92,7 +94,7 @@ public class GuiResistiveHeater extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
 		
 		renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils.getTemperatureDisplay(tileEntity.temperature, TemperatureUnit.AMBIENT), 50, 25, 0x00CD00, 76);
-		renderScaledText(LangUtils.localize("gui.usage") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.energyUsage), 50, 41, 0x00CD00, 76);
+		renderScaledText(LangUtils.localize("gui.usage") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.energyUsage) + "/t", 50, 41, 0x00CD00, 76);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

@@ -47,7 +47,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public void onUpdate()
 	{
 		super.onUpdate();
-
+		
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.charge(1, this);
@@ -81,8 +81,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 					}
 				}
 			}
-
-			if(canOperate())
+			
+			boolean operate = canOperate();
+			
+			if(operate && getEnergy()+generationRate < getMaxEnergy())
 			{
 				setActive(true);
 				
@@ -97,7 +99,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				
 				int toUse = getToUse();
 				
-				output = generationRate*getToUse()*2;
+				output = Math.max(general.FROM_H2*2, generationRate*getToUse()*2);
 				
 				int total = burnTicks + fuelTank.getStored()*maxBurnTicks;
 				total -= toUse;
@@ -112,8 +114,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				burnTicks = total % maxBurnTicks;
 				clientUsed = toUse;
 			}
-			else {
-				reset();
+			else {				
+				if(!operate)
+				{
+					reset();
+				}
+				
+				clientUsed = 0;
 				setActive(false);
 			}
 		}
@@ -125,7 +132,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		maxBurnTicks = 0;
 		generationRate = 0;
 		output = general.FROM_H2*2;
-		clientUsed = 0;
 	}
 	
 	public int getToUse()
@@ -182,7 +188,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canOperate()
 	{
-		return getEnergy() < getMaxEnergy() && (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
+		return (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
 	}
 
 	/**

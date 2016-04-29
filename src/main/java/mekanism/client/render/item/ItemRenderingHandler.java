@@ -65,6 +65,8 @@ public class ItemRenderingHandler// implements IItemRenderer
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 
+			MekanismRenderer.blendOn();
+			
 			energyCube.render(0.0625F, tier, mc.renderEngine);
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -72,6 +74,8 @@ public class ItemRenderingHandler// implements IItemRenderer
 				mc.renderEngine.bindTexture(RenderEnergyCube.baseTexture);
 				energyCube.renderSide(0.0625F, side, side == ForgeDirection.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, mc.renderEngine);
 			}
+			
+			MekanismRenderer.blendOff();
 
 			GL11.glPushMatrix();
 			GL11.glTranslated(0.0, 1.0, 0.0);

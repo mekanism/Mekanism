@@ -77,9 +77,11 @@ public class ModelChargepad extends ModelBase
 	
 	public void render(float size, TextureManager manager)
 	{
+		GL11.glPushMatrix();
+		MekanismRenderer.blendOn();
+		
 		doRender(size);
 		
-		GL11.glPushMatrix();
 		manager.bindTexture(OVERLAY);
 		GL11.glScalef(1.001F, 1.001F, 1.001F);
 		GL11.glTranslatef(0, -0.0011F, 0);
@@ -88,6 +90,7 @@ public class ModelChargepad extends ModelBase
 		doRender(size);
 		
 		MekanismRenderer.glowOff();
+		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
 
