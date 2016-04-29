@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "mekanism:blocks/SolarEvaporationBlock"
+      "all": "mekanism:blocks/SalinationValve"
     }
   },
   "variants": {

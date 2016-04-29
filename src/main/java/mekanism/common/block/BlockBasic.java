@@ -148,6 +148,22 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 		BlockStateBasic.BasicBlockType type = state.getValue(getProperty());
 		return type.meta;
 	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
+		{
+			state = state.withProperty(BlockStateBasic.facingProperty, ((TileEntityBasicBlock)tile).facing);
+		}
+		if(tile instanceof IActiveState)
+		{
+			state = state.withProperty(BlockStateBasic.activeProperty, ((IActiveState)tile).getActive());
+		}
+		return state;
+	}
+
 /*
 	@Override
 	public IIcon getIcon(ItemStack stack, int side)
@@ -809,7 +825,7 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 		}
 		else if(getBasicBlock() == BasicBlock.BASIC_BLOCK_2)
 		{
-			if(metadata == 5)
+			if(metadata == 5 && tileEntity instanceof TileEntitySuperheatingElement)
 			{
 				TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)tileEntity;
 				
