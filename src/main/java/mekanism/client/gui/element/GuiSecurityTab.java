@@ -3,6 +3,7 @@ package mekanism.client.gui.element;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.util.ListUtils;
+import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -10,6 +11,7 @@ import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -57,17 +59,17 @@ public class GuiSecurityTab extends GuiElement
 		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 32, 0, 0, 26, 26);
 
 		SecurityMode mode = getSecurity();
-		SecurityFrequency freq = getFrequency();
+		SecurityData data = MekanismClient.clientSecurityMap.get(getOwner());
 		
-		if(freq != null && freq.override)
+		if(data != null && data.override)
 		{
-			mode = freq.securityMode;
+			mode = data.mode;
 		}
 		
 		int renderX = 26 + (18*mode.ordinal());
 
 		if(getOwner() != null && getOwner().equals(mc.thePlayer.getCommandSenderName()) && 
-				(getFrequency() == null || !getFrequency().override))
+				(data == null || !data.override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 			{
@@ -91,12 +93,12 @@ public class GuiSecurityTab extends GuiElement
 
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 		{
-			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem()) : SecurityUtils.getSecurityDisplay(tileEntity);
+			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
 			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
 			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getCommandSenderName(), getOwner());
 			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 			
-			if(isItem ? SecurityUtils.isOverridden(getItem()) : SecurityUtils.isOverridden(tileEntity))
+			if(isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT))
 			{
 				displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis); 
 			}

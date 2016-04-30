@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import cpw.mods.fml.relauncher.Side;
 
 public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory, ITierItem, ISecurityItem
 {
@@ -135,9 +136,9 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			if(hasSecurity(itemstack))
 			{
 				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getCommandSenderName(), getOwner(itemstack)));
-				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack));
+				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 				
-				if(SecurityUtils.isOverridden(itemstack))
+				if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
 				{
 					list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
 				}

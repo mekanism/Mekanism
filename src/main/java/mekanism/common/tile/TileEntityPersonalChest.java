@@ -6,6 +6,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.relauncher.Side;
 
 public class TileEntityPersonalChest extends TileEntityContainerBlock implements ISecurityTile
 {
@@ -76,7 +77,7 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if(side == 0 || SecurityUtils.getSecurity(this) != SecurityMode.PUBLIC)
+		if(side == 0 || SecurityUtils.getSecurity(this, Side.SERVER) != SecurityMode.PUBLIC)
 		{
 			return InventoryUtils.EMPTY;
 		}

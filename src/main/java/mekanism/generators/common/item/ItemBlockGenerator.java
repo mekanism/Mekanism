@@ -129,9 +129,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 				if(hasSecurity(itemstack))
 				{
 					list.add(SecurityUtils.getOwnerDisplay(entityplayer.getCommandSenderName(), getOwner(itemstack)));
-					list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack));
+					list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 					
-					if(SecurityUtils.isOverridden(itemstack))
+					if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
 					{
 						list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
 					}
