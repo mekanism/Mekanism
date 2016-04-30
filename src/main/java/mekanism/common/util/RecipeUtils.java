@@ -157,7 +157,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 				
-				if(itemstack.getItem() instanceof ISecurityItem)
+				if(itemstack != null && itemstack.getItem() instanceof ISecurityItem)
 				{
 					((ISecurityItem)toReturn.getItem()).setOwner(toReturn, ((ISecurityItem)itemstack.getItem()).getOwner(itemstack));
 					((ISecurityItem)toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem)itemstack.getItem()).getSecurity(itemstack));

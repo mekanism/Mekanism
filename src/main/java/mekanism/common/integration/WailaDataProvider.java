@@ -8,6 +8,7 @@ import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
@@ -37,6 +38,7 @@ public class WailaDataProvider implements IWailaDataProvider
 		registrar.registerHeadProvider(provider, TileEntityInductionProvider.class);
 		registrar.registerHeadProvider(provider, TileEntityFactory.class);
 		registrar.registerHeadProvider(provider, TileEntityBoundingBlock.class);
+		registrar.registerHeadProvider(provider, TileEntityAdvancedBoundingBlock.class);
 		registrar.registerHeadProvider(provider, TileEntityFluidTank.class);
 		registrar.registerHeadProvider(provider, TileEntityGasTank.class);
 		registrar.registerHeadProvider(provider, TileEntityBin.class);
