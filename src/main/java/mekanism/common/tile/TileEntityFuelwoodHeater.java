@@ -178,6 +178,12 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	}
 	
 	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		return new int[] {0};
+	}
+	
+	@Override
 	public void setActive(boolean active)
 	{
 		isActive = active;
