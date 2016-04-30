@@ -27,7 +27,7 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 	
 	public static boolean inputContains(ItemStack container, ItemStack contained)
 	{
-		if(container.stackSize >= contained.stackSize)
+		if(container != null && container.stackSize >= contained.stackSize)
 		{
 			if(MekanismUtils.getOreDictName(container).contains("treeSapling"))
 			{
