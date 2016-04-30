@@ -127,7 +127,6 @@ public class BlockEnergyCube extends BlockContainer
 		for(EnergyCubeTier tier : EnergyCubeTier.values())
 		{
 			ItemStack discharged = new ItemStack(this);
-			discharged.setItemDamage(100);
 			((ItemBlockEnergyCube)discharged.getItem()).setEnergyCubeTier(discharged, tier);
 			list.add(discharged);
 			ItemStack charged = new ItemStack(this);

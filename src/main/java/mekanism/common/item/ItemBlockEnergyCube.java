@@ -55,7 +55,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		super(block);
 		metaBlock = block;
 		setMaxStackSize(1);
-		setMaxDamage(100);
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
@@ -90,7 +89,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	{
 		ItemStack stack = new ItemStack(this);
 		setEnergyCubeTier(stack, tier);
-		stack.setItemDamage(100);
 		
 		return stack;
 	}
