@@ -15,23 +15,31 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
+//import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+/*
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
 import codechicken.multipart.JItemMultiPart;
 import codechicken.multipart.TMultiPart;
+*/
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemPartTransmitter extends JItemMultiPart
+import mcmultipart.item.ItemMultiPart;
+import mcmultipart.multipart.IMultipart;
+
+public class ItemPartTransmitter extends ItemMultiPart
 {
 	public ItemPartTransmitter()
 	{
@@ -41,21 +49,18 @@ public class ItemPartTransmitter extends JItemMultiPart
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-
-	@Override
-	public TMultiPart newPart(ItemStack stack, EntityPlayer player, World world, BlockCoord coord, int face, Vector3 vecHit)
+	public IMultipart createPart(World world, BlockPos pos, EnumFacing dir, Vec3 hit, ItemStack stack, EntityPlayer player)
 	{
 		TransmitterType type = TransmitterType.values()[stack.getItemDamage()];
 
+/*
 		if(type.getTransmission() != TransmissionType.ITEM)
 		{
-			Coord4D obj = new Coord4D(coord.x, coord.y, coord.z, world.provider.dimensionId);
+			Coord4D obj = new Coord4D(pos, world.provider.getDimensionId());
 
-			List<DynamicNetwork> networks = new ArrayList<>();
+			List<DynamicNetwork> networks = new ArrayList<DynamicNetwork>();
 
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.values())
 			{
 				TileEntity tile = obj.offset(side).getTileEntity(world);
 
@@ -65,6 +70,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 				}
 			}
 		}
+*/
 
 		return PartTransmitter.getPartType(TransmitterType.values()[getDamage(stack)]);
 	}
@@ -77,7 +83,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
@@ -163,19 +169,12 @@ public class ItemPartTransmitter extends JItemMultiPart
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List listToAddTo)
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> listToAddTo)
 	{
 		for(TransmitterType type : TransmitterType.values())
 		{
 			listToAddTo.add(new ItemStack(item, 1, type.ordinal()));
 		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getSpriteNumber()
-	{
-		return 0;
 	}
 
 	@Override

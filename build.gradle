@@ -17,17 +17,6 @@ buildscript {
     }
 }
 
-repositories {
-    maven {
-        name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
-    }
-    maven {
-        name 'ForgeFS'
-        url 'http://files.minecraftforge.net/maven'
-     }
-}
-
 apply plugin: 'idea'
 
 idea {
@@ -38,6 +27,21 @@ idea {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+
+repositories {
+    maven {
+        name 'CB Maven FS'
+        url "http://chickenbones.net/maven/"
+    }
+    maven {
+        name 'ForgeFS'
+        url 'http://files.minecraftforge.net/maven'
+    }
+    maven {
+        name 'amadornes'
+        url "http://maven.amadornes.com/"
+    }
+}
 
 // Define properties file
 ext.configFile = file "build.properties"
@@ -58,8 +62,12 @@ targetCompatibility = '1.8'
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
-    mappings = "stable_22"
+    mappings = "${config.mappings_version}"
     runDir = "run"
+}
+
+dependencies {
+    deobfCompile "MCMultiPart:MCMultiPart:${config.mcmp_version}:universal"
 }
 
 processResources

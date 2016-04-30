@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.multipart.TransmitterType;
 import mekanism.common.util.LangUtils;
 
 import net.minecraft.util.IStringSerializable;
@@ -253,7 +254,7 @@ public final class Tier
 			guiLocation = gui;
 		}
 	}
-/*
+
 	public static enum CableTier implements ITier
 	{
 		BASIC(3200, TransmitterType.UNIVERSAL_CABLE_BASIC),
@@ -577,7 +578,7 @@ public final class Tier
 			return BASIC;
 		}
 	}
-	*/
+
 	public static enum FluidTankTier implements ITier
 	{
 		BASIC(14000, 400),

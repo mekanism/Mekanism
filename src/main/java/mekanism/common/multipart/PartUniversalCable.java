@@ -20,14 +20,19 @@ import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
+//import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+//import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+/*
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
+*/
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
 import net.minecraftforge.fml.relauncher.Side;
@@ -53,7 +58,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public void update()
 	{
-		if(world().isRemote)
+		if(getWorld().isRemote)
 		{
 			double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
 
@@ -65,14 +70,14 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		else {
 			updateShare();
 
-			List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
+			List<EnumFacing> sides = getConnections(ConnectionType.PULL);
 
 			if(!sides.isEmpty())
 			{
-				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tile());
+				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
 				double canDraw = tier.cableCapacity/10F;
 
-				for(ForgeDirection side : sides)
+				for(EnumFacing side : sides)
 				{
 					if(connectedOutputters[side.ordinal()] != null)
 					{
@@ -135,7 +140,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
             if(last != lastWrite)
             {
                 lastWrite = last;
-                MekanismUtils.saveChunk(tile());
+                markDirty();
             }
         }
     }
@@ -158,9 +163,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public void load(NBTTagCompound nbtTags)
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
-		super.load(nbtTags);
+		super.readFromNBT(nbtTags);
 
 		buffer.amount = nbtTags.getDouble("cacheEnergy");
 		if(buffer.amount < 0) buffer.amount = 0;
@@ -168,9 +173,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public void save(NBTTagCompound nbtTags)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.save(nbtTags);
+		super.writeToNBT(nbtTags);
 		
 		nbtTags.setDouble("cacheEnergy", lastWrite);
 		nbtTags.setInteger("tier", tier.ordinal());
@@ -182,7 +187,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		return "mekanism:universal_cable_" + tier.name().toLowerCase();
 	}
 
-	public static void registerIcons(IIconRegister register)
+	public static void registerIcons(TextureMap register)
 	{
 		cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
 				"UniversalCableElite", "UniversalCableUltimate"});
@@ -191,19 +196,19 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public IIcon getCenterIcon(boolean opaque)
+	public TextureAtlasSprite getCenterIcon(boolean opaque)
 	{
 		return cableIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIcon(boolean opaque)
+	public TextureAtlasSprite getSideIcon(boolean opaque)
 	{
 		return cableIcons.getSideIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIconRotated(boolean opaque)
+	public TextureAtlasSprite getSideIconRotated(boolean opaque)
 	{
 		return cableIcons.getSideIcon(4+tier.ordinal());
 	}
@@ -221,11 +226,12 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public boolean isValidAcceptor(TileEntity acceptor, ForgeDirection side)
+	public boolean isValidAcceptor(TileEntity acceptor, EnumFacing side)
 	{
-		return CableUtils.isValidAcceptorOnSide(tile(), acceptor, side);
+		return CableUtils.isValidAcceptorOnSide((TileEntity)getContainer(), acceptor, side);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float frame, int pass)
@@ -235,6 +241,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}
 	}
+*/
 
 	@Override
 	public EnergyNetwork createNewNetwork()
@@ -242,12 +249,14 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		return new EnergyNetwork();
 	}
 
+/*
 	@Override
-	public void onChunkUnload()
+	public void onUnloaded()
 	{
 		takeShare();
-		super.onChunkUnload();
+		super.onUnloaded();
 	}
+*/
 
 	@Override
 	public Object getBuffer()
@@ -266,7 +275,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(canReceiveEnergy(from))
 		{
@@ -277,25 +286,25 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return canConnect(from);
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from)
+	public int getEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getEnergy() * general.TO_TE);
 	}
 
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getMaxEnergy() * general.TO_TE);
 	}
@@ -307,7 +316,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
 		if(!canReceiveEnergy(side))
 		{
@@ -321,7 +330,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
+	public boolean canReceiveEnergy(EnumFacing side)
 	{
 		return getConnectionType(side) == ConnectionType.NORMAL;
 	}
@@ -381,7 +390,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public EnergyAcceptorWrapper getCachedAcceptor(ForgeDirection side)
+	public EnergyAcceptorWrapper getCachedAcceptor(EnumFacing side)
 	{
 		ConnectionType type = connectionTypes[side.ordinal()];
 
@@ -410,18 +419,18 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 	
 	@Override
-	public void readDesc(MCDataInput packet)
+	public void readUpdatePacket(PacketBuffer packet)
 	{
 		tier = CableTier.values()[packet.readInt()];
 		
-		super.readDesc(packet);
+		super.writeUpdatePacket(packet);
 	}
 
 	@Override
-	public void writeDesc(MCDataOutput packet)
+	public void writeUpdatePacket(PacketBuffer packet)
 	{
 		packet.writeInt(tier.ordinal());
 		
-		super.writeDesc(packet);
+		super.writeUpdatePacket(packet);
 	}
 }

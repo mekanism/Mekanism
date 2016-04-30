@@ -275,31 +275,31 @@ public class TransporterStack
 		}
 	}
 
-	public int getSide(ILogisticalTransporter transporter)
+	public EnumFacing getSide(ILogisticalTransporter transporter)
 	{
 		if(progress < 50)
 		{
 			if(getPrev(transporter) != null)
 			{
-				return transporter.coord().sideDifference(getPrev(transporter)).ordinal();
+				return transporter.coord().sideDifference(getPrev(transporter));
 			}
 		}
 		else if(progress == 50)
 		{
 			if(getNext(transporter) != null)
 			{
-				return getNext(transporter).sideDifference(transporter.coord()).ordinal();
+				return getNext(transporter).sideDifference(transporter.coord());
 			}
 		}
 		else if(progress > 50)
 		{
 			if(getNext(transporter) != null)
 			{
-				return getNext(transporter).sideDifference(transporter.coord()).ordinal();
+				return getNext(transporter).sideDifference(transporter.coord());
 			}
 		}
 
-		return 0;
+		return EnumFacing.DOWN;
 	}
 
 	public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from)

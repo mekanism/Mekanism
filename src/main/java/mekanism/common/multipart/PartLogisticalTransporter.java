@@ -26,20 +26,25 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
+//import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
+//import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+/*
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
+*/
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -80,7 +85,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		return TransmissionType.ITEM;
 	}
 
-	public static void registerIcons(IIconRegister register)
+	public static void registerIcons(TextureMap register)
 	{
 		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporterBasic", "LogisticalTransporterAdvanced", "LogisticalTransporterElite", "LogisticalTransporterUltimate", "RestrictiveTransporter", 
 				"DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
@@ -90,6 +95,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 				"DiversionTransporterVertical", "DiversionTransporterHorizontal"});
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
@@ -99,18 +105,19 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
 		}
 	}
-	
+
 	@Override
 	public void onWorldSeparate()
 	{
 		super.onWorldSeparate();
 		
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
-			PathfinderCache.onChanged(Coord4D.get(tile()));
+			PathfinderCache.onChanged(new Coord4D(getPos(), getWorld().provider.getDimensionId()));
 		}
 	}
-	
+*/
+
 	@Override
 	protected boolean isValidTransmitter(TileEntity tileEntity)
 	{
@@ -125,25 +132,25 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public IIcon getCenterIcon(boolean opaque)
+	public TextureAtlasSprite getCenterIcon(boolean opaque)
 	{
 		return transporterIcons.getCenterIcon(opaque ? tier.ordinal() : (getTransmitter().color != null ? 7 : 6));
 	}
 
 	@Override
-	public IIcon getSideIcon(boolean opaque)
+	public TextureAtlasSprite getSideIcon(boolean opaque)
 	{
 		return transporterIcons.getSideIcon(opaque ? tier.ordinal() : (getTransmitter().color != null ? 11 : 10));
 	}
 
 	@Override
-	public IIcon getSideIconRotated(boolean opaque)
+	public TextureAtlasSprite getSideIconRotated(boolean opaque)
 	{
 		return transporterIcons.getSideIcon(opaque ? 4+tier.ordinal() : (getTransmitter().color != null ? 13 : 12));
 	}
 
 	@Override
-	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
+	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
 		return TransporterUtils.isValidAcceptorOnSide(tile, side);
 	}
@@ -168,14 +175,14 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		{
 			boolean did = false;
 
-			for(ForgeDirection side : getConnections(ConnectionType.PULL))
+			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
-				TileEntity tile = Coord4D.get(tile()).offset(side).getTileEntity(world());
+				TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
 
 				if(tile instanceof IInventory)
 				{
 					IInventory inv = (IInventory)tile;
-					InvStack stack = InventoryUtils.takeTopItem(inv, side.ordinal(), tier.pullAmount);
+					InvStack stack = InventoryUtils.takeTopItem(inv, side, tier.pullAmount);
 
 					if(stack != null && stack.getStack() != null)
 					{
@@ -200,19 +207,21 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		}
 	}
 
+/*
 	@Override
 	public void onWorldJoin()
 	{
 		super.onWorldJoin();
 
-		if(world().isRemote)
+		if(getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(tile())));
+			Mekanism.packetHandler.sendToServer(new DataRequestMessage(new Coord4D(getPos(), getWorld().provider.getDimensionId())));
 		}
 		else {
-			PathfinderCache.onChanged(Coord4D.get(tile()));
+			PathfinderCache.onChanged(getPos());
 		}
 	}
+*/
 
 	@Override
 	public InventoryNetwork createNewNetwork()
@@ -249,7 +258,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 
 			if(prev != getTransmitter().getColor())
 			{
-				tile().markRender();
+				markRenderUpdate();
 			}
 
 			getTransmitter().transit.clear();
@@ -284,7 +293,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -308,9 +317,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		return data;
 	}
 
-	public ArrayList getSyncPacket(TransporterStack stack, boolean kill)
+	public ArrayList<Object> getSyncPacket(TransporterStack stack, boolean kill)
 	{
-		ArrayList data = new ArrayList();
+		ArrayList<Object> data = new ArrayList<Object>();
 
 		data.add(1);
 		data.add(kill);
@@ -325,9 +334,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public void load(NBTTagCompound nbtTags)
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
-		super.load(nbtTags);
+		super.readFromNBT(nbtTags);
 		
 		tier = TransporterTier.values()[nbtTags.getInteger("tier")];
 
@@ -350,9 +359,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public void save(NBTTagCompound nbtTags)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.save(nbtTags);
+		super.writeToNBT(nbtTags);
 		
 		nbtTags.setInteger("tier", tier.ordinal());
 
@@ -377,20 +386,20 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	protected boolean onConfigure(EntityPlayer player, int part, int side)
+	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
 		TransporterUtils.incrementColor(getTransmitter());
 		refreshConnections();
 		notifyTileChange();
-		PathfinderCache.onChanged(Coord4D.get(tile()));
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tile())));
+		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld().provider.getDimensionId()));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld().provider.getDimensionId()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld().provider.getDimensionId())));
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
 		return true;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		super.onRightClick(player, side);
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : "None")));
@@ -414,7 +423,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	{
 		super.onRemoved();
 
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
 			for(TransporterStack stack : getTransmitter().transit)
 			{
@@ -469,18 +478,18 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 	
 	@Override
-	public void readDesc(MCDataInput packet)
+	public void readUpdatePacket(PacketBuffer packet)
 	{
 		tier = TransporterTier.values()[packet.readInt()];
 		
-		super.readDesc(packet);
+		super.writeUpdatePacket(packet);
 	}
 
 	@Override
-	public void writeDesc(MCDataOutput packet)
+	public void writeUpdatePacket(PacketBuffer packet)
 	{
 		packet.writeInt(tier.ordinal());
 		
-		super.writeDesc(packet);
+		super.writeUpdatePacket(packet);
 	}
 }

@@ -12,7 +12,9 @@ import mekanism.api.transmitters.TransmissionType;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 /**
  * A handy class containing several utilities for efficient gas transfer.
@@ -23,11 +25,16 @@ public final class GasTransmission
 {
 	public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity, Collection<EnumFacing> sides)
 	{
+		return getConnectedAcceptors(tileEntity.getPos(), tileEntity.getWorld(), sides);
+	}
+
+	public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Collection<EnumFacing> sides)
+	{
 		IGasHandler[] acceptors = new IGasHandler[] {null, null, null, null, null, null};
 
 		for(EnumFacing orientation : sides)
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
+			TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
 
 			if(acceptor instanceof IGasHandler)
 			{
@@ -45,7 +52,12 @@ public final class GasTransmission
 	 */
 	public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity)
 	{
-		return getConnectedAcceptors(tileEntity, Arrays.asList(EnumFacing.VALUES));
+		return getConnectedAcceptors(tileEntity.getPos(), tileEntity.getWorld(), Arrays.asList(EnumFacing.VALUES));
+	}
+
+	public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world)
+	{
+		return getConnectedAcceptors(pos, world, Arrays.asList(EnumFacing.VALUES));
 	}
 
 	/**

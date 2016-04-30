@@ -1,20 +1,26 @@
 package mekanism.common.multipart;
 
 import java.util.Collections;
+import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.common.MekanismItems;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
+//import net.minecraft.util.IIcon;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+/*
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.AxisAlignedBB;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
@@ -26,25 +32,35 @@ import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
+*/
+import mcmultipart.block.TileMultipart;
+import mcmultipart.microblock.IMicroblock;
+import mcmultipart.microblock.IMicroblock.IFaceMicroblock;
+import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.IOccludingPart;
+import mcmultipart.multipart.Multipart;
+import mcmultipart.multipart.PartSlot;
+import mcmultipart.raytrace.PartMOP;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIconHitEffects
+public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconHitEffects
 {
 	public EnumColor colour = EnumColor.WHITE;
-	public ForgeDirection side = ForgeDirection.DOWN;
+	public EnumFacing side = EnumFacing.DOWN;
 
-	public static Cuboid6[] bounds = new Cuboid6[6];
+	public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
 
 	static
 	{
-		Cuboid6 cuboid = new Cuboid6(0.25, 0, 0.25, 0.75, 0.125, 0.75);
-		Translation fromOrigin = new Translation(Vector3.center);
-		Translation toOrigin = (Translation)fromOrigin.inverse();
+		AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
+//		Translation fromOrigin = new Translation(Vector3.center);
+//		Translation toOrigin = (Translation)fromOrigin.inverse();
 		
 		for(int i = 0; i < 6; i++)
 		{
-			bounds[i] = cuboid.copy().apply(toOrigin).apply(Rotation.sideRotations[i]).apply(fromOrigin);
+			bounds[i] = cuboid;//.copy().apply(toOrigin).apply(Rotation.sideRotations[i]).apply(fromOrigin);
 		}
 	}
 
@@ -53,7 +69,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 		super();
 	}
 
-	public PartGlowPanel(EnumColor colour, ForgeDirection side)
+	public PartGlowPanel(EnumColor colour, EnumFacing side)
 	{
 		super();
 		setColour(colour);
@@ -61,9 +77,9 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	}
 
 	@Override
-	public Cuboid6 getBounds()
+	public void addSelectionBoxes(List<AxisAlignedBB> list)
 	{
-		return bounds[side.ordinal()];
+		list.add(bounds[side.ordinal()]);
 	}
 
 	@Override
@@ -77,59 +93,60 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 		colour = newColour;
 	}
 
-	public void setOrientation(ForgeDirection newSide)
+	public void setOrientation(EnumFacing newSide)
 	{
 		side = newSide;
 	}
 	
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborTileChange(EnumFacing side)
 	{
-		if(!world().isRemote && !canStay())
+		if(!getWorld().isRemote && !canStay())
 		{
-			TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
-			tile().remPart(this);
+			//TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), Vector3.fromTileEntityCenter(tile()));
+			getContainer().removePart(this);
 		}
 	}
 
 	@Override
-	public void onPartChanged(TMultiPart other)
+	public void onPartChanged(IMultipart other)
 	{
-		if(!world().isRemote && !canStay())
+		if(!getWorld().isRemote && !canStay())
 		{
-			TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
-			tile().remPart(this);
+			//TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), Vector3.fromTileEntityCenter(tile()));
+			getContainer().removePart(this);
 		}
 	}
 
 	@Override
-	public void writeDesc(MCDataOutput data)
+	public void writeUpdatePacket(PacketBuffer data)
 	{
 		data.writeInt(side.ordinal());
 		data.writeInt(colour.getMetaValue());
 	}
 
 	@Override
-	public void readDesc(MCDataInput data)
+	public void readUpdatePacket(PacketBuffer data)
 	{
-		side = ForgeDirection.getOrientation(data.readInt());
+		side = EnumFacing.getFront(data.readInt());
 		colour = EnumColor.DYES[data.readInt()];
 	}
 
 	@Override
-	public void save(NBTTagCompound nbt)
+	public void writeToNBT(NBTTagCompound nbt)
 	{
 		nbt.setInteger("side", side.ordinal());
 		nbt.setInteger("colour", colour.getMetaValue());
 	}
 
 	@Override
-	public void load(NBTTagCompound nbt)
+	public void readFromNBT(NBTTagCompound nbt)
 	{
-		side = ForgeDirection.getOrientation(nbt.getInteger("side"));
+		side = EnumFacing.getFront(nbt.getInteger("side"));
 		colour = EnumColor.DYES[nbt.getInteger("colour")];
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean renderStatic(Vector3 pos, int pass)
@@ -142,6 +159,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 		
 		return false;
 	}
+*/
 
 	@Override
 	public int getLightValue()
@@ -150,29 +168,26 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	}
 
 	@Override
-	public Iterable<Cuboid6> getOcclusionBoxes()
+	public void addOcclusionBoxes(List<AxisAlignedBB> list)
 	{
-		return getCollisionBoxes();
+		addSelectionBoxes(list);
 	}
 
+/*
 	@Override
-	public boolean occlusionTest(TMultiPart other)
-	{
-		return NormalOcclusionTest.apply(this, other);
-	}
-
-	@Override
-	public IIcon getBreakingIcon(Object subPart, int side)
+	public TextureAtlasSprite getBreakingIcon(Object subPart, EnumFacing side)
 	{
 		return RenderGlowPanel.icon;
 	}
 
 	@Override
-	public IIcon getBrokenIcon(int side)
+	public TextureAtlasSprite getBrokenIcon(EnumFacing side)
 	{
 		return RenderGlowPanel.icon;
 	}
+*/
 
+/*
 	@Override
 	public void addHitEffects(MovingObjectPosition hit, EffectRenderer effectRenderer)
 	{
@@ -184,28 +199,23 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	{
 		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}
+*/
 
 	@Override
-	public Iterable<ItemStack> getDrops()
+	public List<ItemStack> getDrops()
 	{
-		return Collections.singletonList(pickItem(null));
+		return Collections.singletonList(getPickBlock(null, null));
 	}
 
 	@Override
-	public ItemStack pickItem(MovingObjectPosition hit)
+	public ItemStack getPickBlock(EntityPlayer player, PartMOP hit)
 	{
 		return new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue());
 	}
 
-	@Override
-	public boolean doesTick()
-	{
-		return false;
-	}
-
 	public boolean canStay()
 	{
-		Coord4D adj = Coord4D.get(tile()).offset(side);
-		return world().isSideSolid(adj.xCoord, adj.yCoord, adj.zCoord, side.getOpposite()) || tile().partMap(side.ordinal()) instanceof HollowMicroblock;
+		Coord4D adj = new Coord4D(getPos().offset(side), getWorld().provider.getDimensionId());
+		return getWorld().isSideSolid(adj, side.getOpposite()) || (getContainer().getPartInSlot(PartSlot.getFaceSlot(side)) instanceof IFaceMicroblock && ((IFaceMicroblock)getContainer().getPartInSlot(PartSlot.getFaceSlot(side))).isFaceHollow());
 	}
 }

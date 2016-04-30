@@ -14,7 +14,7 @@ import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements ITransmitterTile<A, N>, IAlloyInteraction
 {
@@ -33,12 +33,13 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		return transmitterDelegate;
 	}
 
+/*
 	@Override
 	public void onWorldJoin()
 	{
 		super.onWorldJoin();
 		
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
 			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
 		}
@@ -48,19 +49,21 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 
 		unloaded = false;
 	}
+*/
 
 	public abstract N createNewNetwork();
 
 	public abstract N createNetworkByMerging(Collection<N> networks);
 
+/*
 	@Override
-	public void onChunkUnload()
+	public void onUnloaded()
 	{
-		super.onChunkUnload();
+		super.onUnloaded();
 
 		unloaded = true;
 		
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
 			getTransmitter().takeShare();
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
@@ -73,7 +76,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	@Override
 	public void preRemove()
 	{
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
@@ -83,6 +86,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		
 		super.preRemove();
 	}
+*/
 
 	@Override
 	public void markDirtyTransmitters()
@@ -96,7 +100,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	}
 
 	@Override
-	public void markDirtyAcceptor(ForgeDirection side)
+	public void markDirtyAcceptor(EnumFacing side)
 	{
 		super.markDirtyAcceptor(side);
 		
@@ -106,7 +110,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		}
 	}
 
-	public A getCachedAcceptor(ForgeDirection side)
+	public A getCachedAcceptor(EnumFacing side)
 	{
 		ConnectionType type = connectionTypes[side.ordinal()];
 		
@@ -132,7 +136,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 				{
 					if(o1 instanceof IGridTransmitter && o2 instanceof IGridTransmitter)
 					{
-						Coord4D thisCoord = Coord4D.get(tile());
+						Coord4D thisCoord = new Coord4D(getPos(), getWorld().provider.getDimensionId());
 						
 						Coord4D o1Coord = ((IGridTransmitter)o1).coord();
 						Coord4D o2Coord = ((IGridTransmitter)o2).coord();

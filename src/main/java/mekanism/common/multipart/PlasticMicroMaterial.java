@@ -1,18 +1,22 @@
 package mekanism.common.multipart;
 
 import net.minecraft.block.Block;
-import codechicken.microblock.BlockMicroMaterial;
+import net.minecraft.block.state.IBlockState;
+
+import mcmultipart.microblock.BlockMicroMaterial;
 
 public class PlasticMicroMaterial extends BlockMicroMaterial
 {
-	public PlasticMicroMaterial(Block block, int meta)
+	public PlasticMicroMaterial(IBlockState state, int hardness)
 	{
-		super(block, meta);
+		super(state, hardness);
 	}
 
+/*
 	@Override
 	public int getColour(int pass)
 	{
 		return block().getRenderColor(meta()) << 8 | 0xFF;
 	}
+*/
 }

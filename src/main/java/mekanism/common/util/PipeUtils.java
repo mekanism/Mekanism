@@ -8,7 +8,9 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitterTile;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -51,11 +53,16 @@ public final class PipeUtils
 	 */
 	public static IFluidHandler[] getConnectedAcceptors(TileEntity tileEntity)
 	{
+		return getConnectedAcceptors(tileEntity.getPos(), tileEntity.getWorld());
+	}
+
+	public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world)
+	{
 		IFluidHandler[] acceptors = new IFluidHandler[] {null, null, null, null, null, null};
 
 		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
+			TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
 
 			if(acceptor instanceof IFluidHandler)
 			{

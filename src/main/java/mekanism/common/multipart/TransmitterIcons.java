@@ -1,41 +1,42 @@
 package mekanism.common.multipart;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
 
 public class TransmitterIcons
 {
-	private IIcon[] sideIcons;
-	private IIcon[] centerIcons;
+	private TextureAtlasSprite[] sideIcons;
+	private TextureAtlasSprite[] centerIcons;
 
 	public TransmitterIcons(int numCentres, int numSides)
 	{
-		sideIcons = new IIcon[numSides];
-		centerIcons = new IIcon[numCentres];
+		sideIcons = new TextureAtlasSprite[numSides];
+		centerIcons = new TextureAtlasSprite[numCentres];
 	}
 
-	public void registerCenterIcons(IIconRegister register, String[] filenames)
+	public void registerCenterIcons(TextureMap register, String[] filenames)
 	{
 		for(int i = 0; i < centerIcons.length; i++)
 		{
-			centerIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+			centerIcons[i] = register.registerSprite(new ResourceLocation("mekanism:models/" + filenames[i]));
 		}
 	}
 
-	public void registerSideIcons(IIconRegister register, String[] filenames)
+	public void registerSideIcons(TextureMap register, String[] filenames)
 	{
 		for(int i = 0; i < sideIcons.length; i++)
 		{
-			sideIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+			sideIcons[i] = register.registerSprite(new ResourceLocation("mekanism:models/" + filenames[i]));
 		}
 	}
 
-	public IIcon getSideIcon(int n)
+	public TextureAtlasSprite getSideIcon(int n)
 	{
 		return sideIcons[n];
 	}
 
-	public IIcon getCenterIcon(int n)
+	public TextureAtlasSprite getCenterIcon(int n)
 	{
 		return centerIcons[n];
 	}

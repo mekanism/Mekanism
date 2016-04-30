@@ -33,6 +33,9 @@ import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.multipart.ItemGlowPanel;
+import mekanism.common.multipart.ItemPartTransmitter;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -82,8 +85,8 @@ public class MekanismItems
 	public static final ItemGaugeDropper GaugeDropper = (ItemGaugeDropper)new ItemGaugeDropper().setUnlocalizedName("GaugeDropper");
 	public static final Item ConfigurationCard = new ItemConfigurationCard().setUnlocalizedName("ConfigurationCard");
 	public static final Item CraftingFormula = new ItemCraftingFormula().setUnlocalizedName("CraftingFormula");
-//	public static final Item PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
-//	public static final Item GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
+	public static final Item PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
+	public static final Item GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
 	public static final ItemScubaTank ScubaTank = (ItemScubaTank)new ItemScubaTank().setUnlocalizedName("ScubaTank");
 	public static final ItemGasMask GasMask = (ItemGasMask)new ItemGasMask().setUnlocalizedName("GasMask");
 	public static final ItemJetpack Jetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("Jetpack");
@@ -108,7 +111,7 @@ public class MekanismItems
 	 */
 	public static void register()
 	{
-//		GameRegistry.registerItem(PartTransmitter, "PartTransmitter");
+		GameRegistry.registerItem(PartTransmitter, "PartTransmitter");
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");
 		GameRegistry.registerItem(Dust, "Dust");
 		GameRegistry.registerItem(Ingot, "Ingot");
@@ -158,7 +161,7 @@ public class MekanismItems
 		GameRegistry.registerItem(Substrate, "Substrate");
 		GameRegistry.registerItem(Polyethene, "Polyethene");
 		GameRegistry.registerItem(BioFuel, "BioFuel");
-//		GameRegistry.registerItem(GlowPanel, "GlowPanel");
+		GameRegistry.registerItem(GlowPanel, "GlowPanel");
 		GameRegistry.registerItem(Flamethrower, "Flamethrower");
 		GameRegistry.registerItem(GaugeDropper, "GaugeDropper");
 		GameRegistry.registerItem(FactoryInstaller, "FactoryInstaller");

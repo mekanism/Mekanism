@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
+
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 
 public class PathfinderCache 
 {
 	public static Map<PathData, List<Coord4D>> cachedPaths = new HashMap<PathData, List<Coord4D>>();
 	
-	public static void onChanged(Coord4D location)
+	public static void onChanged(BlockPos location)
 	{
 		reset();
 	}

@@ -1,7 +1,9 @@
 package mekanism.common.multipart;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+//import net.minecraft.util.IIcon;
 
 public class PartRestrictiveTransporter extends PartLogisticalTransporter
 {
@@ -18,19 +20,19 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public IIcon getCenterIcon(boolean opaque)
+	public TextureAtlasSprite getCenterIcon(boolean opaque)
 	{
 		return transporterIcons.getCenterIcon(4);
 	}
 
 	@Override
-	public IIcon getSideIcon(boolean opaque)
+	public TextureAtlasSprite getSideIcon(boolean opaque)
 	{
 		return transporterIcons.getSideIcon(8);
 	}
 
 	@Override
-	public IIcon getSideIconRotated(boolean opaque)
+	public TextureAtlasSprite getSideIconRotated(boolean opaque)
 	{
 		return transporterIcons.getSideIcon(9);
 	}
@@ -48,7 +50,7 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	}
 	
 	@Override
-	protected boolean onConfigure(EntityPlayer player, int part, int side)
+	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
 		return false;
 	}

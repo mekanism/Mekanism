@@ -61,6 +61,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.OreDictManager;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
@@ -1358,7 +1359,7 @@ public class Mekanism
 		registerOreDict();
 
 		//Set up multiparts
-//TODO reinstate Multipart support with MCMultipart		new MultipartMekanism();
+		new MultipartMekanism();
 		
 		//Integrate with Waila
 		FMLInterModComms.sendMessage("Waila", "register", "mekanism.common.integration.WailaDataProvider.register");

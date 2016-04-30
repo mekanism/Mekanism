@@ -6,23 +6,29 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.common.ColourRGBA;
 import mekanism.common.HeatNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
 import mekanism.common.util.HeatUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
+//import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+//import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+/*
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+*/
 
 public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, HeatNetwork> implements IHeatTransfer
 {
@@ -70,7 +76,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
     @Override
     public void updateShare() {}
 
-	public static void registerIcons(IIconRegister register)
+	public static void registerIcons(TextureMap register)
 	{
 		conductorIcons.registerCenterIcons(register, new String[] {"ThermodynamicConductorBasic", "ThermodynamicConductorAdvanced",
 				"ThermodynamicConductorElite", "ThermodynamicConductorUltimate"});
@@ -79,19 +85,19 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 
 	@Override
-	public IIcon getCenterIcon(boolean opaque)
+	public TextureAtlasSprite getCenterIcon(boolean opaque)
 	{
 		return conductorIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIcon(boolean opaque)
+	public TextureAtlasSprite getSideIcon(boolean opaque)
 	{
 		return conductorIcons.getSideIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIconRotated(boolean opaque)
+	public TextureAtlasSprite getSideIconRotated(boolean opaque)
 	{
 		return conductorIcons.getSideIcon(4+tier.ordinal());
 	}
@@ -103,7 +109,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 
 	@Override
-	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
+	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
 		return tile instanceof IHeatTransfer && ((IHeatTransfer)tile).canConnectHeat(side.getOpposite());
 	}
@@ -121,9 +127,9 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
 			temperature += 10000; //TODO remove
 		}
@@ -131,6 +137,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 		return true;
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
@@ -140,49 +147,52 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}
 	}
+*/
 
 	@Override
-	public void load(NBTTagCompound nbtTags)
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
-		super.load(nbtTags);
+		super.readFromNBT(nbtTags);
 
 		temperature = nbtTags.getDouble("temperature");
 	}
 
 	@Override
-	public void save(NBTTagCompound nbtTags)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.save(nbtTags);
+		super.writeToNBT(nbtTags);
 
 		nbtTags.setDouble("temperature", temperature);
 	}
 
 	public void sendTemp()
 	{
-		MCDataOutput packet = getWriteStream();
+/*
+		PacketBuffer packet = getWriteStream();
 		packet.writeBoolean(true);
 		packet.writeDouble(temperature);
+*/
 	}
 
 	@Override
-	public void writeDesc(MCDataOutput packet)
+	public void writeUpdatePacket(PacketBuffer packet)
 	{
 		packet.writeBoolean(false);
 		
-		super.writeDesc(packet);
+		super.writeUpdatePacket(packet);
 		
 		packet.writeInt(tier.ordinal());
 	}
 
 	@Override
-	public void readDesc(MCDataInput packet)
+	public void readUpdatePacket(PacketBuffer packet)
 	{
 		if(packet.readBoolean())
 		{
 			temperature = packet.readDouble();
 		}
 		else {
-			super.readDesc(packet);
+			super.writeUpdatePacket(packet);
 			
 			tier = ConductorTier.values()[packet.readInt()];
 		}
@@ -206,7 +216,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side)
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return tier.inverseConductionInsulation;
 	}
@@ -239,17 +249,17 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side)
+	public boolean canConnectHeat(EnumFacing side)
 	{
 		return true;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side)
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		if(connectionMapContainsSide(getAllCurrentConnections(), side))
 		{
-			TileEntity adj = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+			TileEntity adj = getWorld().getTileEntity(getPos().offset(side));
 			
 			if(adj instanceof IHeatTransfer)
 			{

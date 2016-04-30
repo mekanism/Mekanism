@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,19 +24,29 @@ import mekanism.common.Tier;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+//import net.minecraft.util.IIcon;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.util.ForgeDirection;
-import codechicken.lib.data.MCDataInput;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+/*import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.raytracer.ExtendedMOP;
-import codechicken.lib.raytracer.IndexedCuboid6;
+import codechicken.lib.raytracer.AxisAlignedBB;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Cuboid6;
@@ -47,19 +58,30 @@ import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.PartMap;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TSlottedPart;
+import codechicken.multipart.IMultipart;
+import codechicken.multipart.TSlottedPart;*/
+import mcmultipart.block.TileMultipart;
+import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.IOccludingPart;
+import mcmultipart.multipart.ISlottedPart;
+import mcmultipart.multipart.ISlottedPart.ISlotOccludingPart;
+import mcmultipart.multipart.Multipart;
+import mcmultipart.multipart.PartSlot;
+import mcmultipart.raytrace.PartMOP;
+import mcmultipart.raytrace.RayTraceUtils;
+import mcmultipart.raytrace.RayTraceUtils.RayTraceResultPart;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, ISidedHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, INeighborTileChange
+public abstract class PartSidedPipe extends Multipart implements ISlottedPart, IOccludingPart, ISlotOccludingPart, /*ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
-	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
-	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
+	public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
+	public static AxisAlignedBB[] largeSides = new AxisAlignedBB[7];
 
 	public int delayTicks;
 
-	public ForgeDirection testingSide = null;
+	public EnumFacing testingSide = null;
 
 	public byte currentAcceptorConnections = 0x00;
 	public byte currentTransmitterConnections = 0x00;
@@ -76,24 +98,24 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	static
 	{
-		smallSides[0] = new IndexedCuboid6(0, new Cuboid6(0.3, 0.0, 0.3, 0.7, 0.3, 0.7));
-		smallSides[1] = new IndexedCuboid6(1, new Cuboid6(0.3, 0.7, 0.3, 0.7, 1.0, 0.7));
-		smallSides[2] = new IndexedCuboid6(2, new Cuboid6(0.3, 0.3, 0.0, 0.7, 0.7, 0.3));
-		smallSides[3] = new IndexedCuboid6(3, new Cuboid6(0.3, 0.3, 0.7, 0.7, 0.7, 1.0));
-		smallSides[4] = new IndexedCuboid6(4, new Cuboid6(0.0, 0.3, 0.3, 0.3, 0.7, 0.7));
-		smallSides[5] = new IndexedCuboid6(5, new Cuboid6(0.7, 0.3, 0.3, 1.0, 0.7, 0.7));
-		smallSides[6] = new IndexedCuboid6(6, new Cuboid6(0.3, 0.3, 0.3, 0.7, 0.7, 0.7));
+		smallSides[0] = new AxisAlignedBB(0.3, 0.0, 0.3, 0.7, 0.3, 0.7);
+		smallSides[1] = new AxisAlignedBB(0.3, 0.7, 0.3, 0.7, 1.0, 0.7);
+		smallSides[2] = new AxisAlignedBB(0.3, 0.3, 0.0, 0.7, 0.7, 0.3);
+		smallSides[3] = new AxisAlignedBB(0.3, 0.3, 0.7, 0.7, 0.7, 1.0);
+		smallSides[4] = new AxisAlignedBB(0.0, 0.3, 0.3, 0.3, 0.7, 0.7);
+		smallSides[5] = new AxisAlignedBB(0.7, 0.3, 0.3, 1.0, 0.7, 0.7);
+		smallSides[6] = new AxisAlignedBB(0.3, 0.3, 0.3, 0.7, 0.7, 0.7);
 
-		largeSides[0] = new IndexedCuboid6(0, new Cuboid6(0.25, 0.0, 0.25, 0.75, 0.25, 0.75));
-		largeSides[1] = new IndexedCuboid6(1, new Cuboid6(0.25, 0.75, 0.25, 0.75, 1.0, 0.75));
-		largeSides[2] = new IndexedCuboid6(2, new Cuboid6(0.25, 0.25, 0.0, 0.75, 0.75, 0.25));
-		largeSides[3] = new IndexedCuboid6(3, new Cuboid6(0.25, 0.25, 0.75, 0.75, 0.75, 1.0));
-		largeSides[4] = new IndexedCuboid6(4, new Cuboid6(0.0, 0.25, 0.25, 0.25, 0.75, 0.75));
-		largeSides[5] = new IndexedCuboid6(5, new Cuboid6(0.75, 0.25, 0.25, 1.0, 0.75, 0.75));
-		largeSides[6] = new IndexedCuboid6(6, new Cuboid6(0.25, 0.25, 0.25, 0.75, 0.75, 0.75));
+		largeSides[0] = new AxisAlignedBB(0.25, 0.0, 0.25, 0.75, 0.25, 0.75);
+		largeSides[1] = new AxisAlignedBB(0.25, 0.75, 0.25, 0.75, 1.0, 0.75);
+		largeSides[2] = new AxisAlignedBB(0.25, 0.25, 0.0, 0.75, 0.75, 0.25);
+		largeSides[3] = new AxisAlignedBB(0.25, 0.25, 0.75, 0.75, 0.75, 1.0);
+		largeSides[4] = new AxisAlignedBB(0.0, 0.25, 0.25, 0.25, 0.75, 0.75);
+		largeSides[5] = new AxisAlignedBB(0.75, 0.25, 0.25, 1.0, 0.75, 0.75);
+		largeSides[6] = new AxisAlignedBB(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
 	}
 
-	public static TMultiPart getPartType(TransmitterType type)
+	public static IMultipart getPartType(TransmitterType type)
 	{
 		switch(type)
 		{
@@ -146,27 +168,27 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 	}
 
-	public static boolean connectionMapContainsSide(byte connections, ForgeDirection side)
+	public static boolean connectionMapContainsSide(byte connections, EnumFacing side)
 	{
 		byte tester = (byte)(1 << side.ordinal());
 		return (connections & tester) > 0;
 	}
 
-	public static byte setConnectionBit(byte connections, boolean toSet, ForgeDirection side)
+	public static byte setConnectionBit(byte connections, boolean toSet, EnumFacing side)
 	{
 		return (byte)((connections & ~(byte)(1 << side.ordinal())) | (byte)((toSet?1:0) << side.ordinal()));
 	}
 
-	public abstract IIcon getCenterIcon(boolean opaque);
+	public abstract TextureAtlasSprite getCenterIcon(boolean opaque);
 
-	public abstract IIcon getSideIcon(boolean opaque);
+	public abstract TextureAtlasSprite getSideIcon(boolean opaque);
 
-	public abstract IIcon getSideIconRotated(boolean opaque);
+	public abstract TextureAtlasSprite getSideIconRotated(boolean opaque);
 
 	@Override
 	public void update()
 	{
-		if(world().isRemote)
+		if(getWorld().isRemote)
 		{
 			if(delayTicks == 5)
 			{
@@ -179,7 +201,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			}
 		}
 
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
 			if(forceUpdate)
 			{
@@ -189,7 +211,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			
 			if(sendDesc)
 			{
-				sendDescUpdate();
+				sendUpdatePacket();
 				sendDesc = false;
 			}
 		}
@@ -210,7 +232,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return false;
 	}
 
-	public IIcon getIconForSide(ForgeDirection side, boolean opaque)
+	public TextureAtlasSprite getIconForSide(EnumFacing side, boolean opaque)
 	{
 		ConnectionType type = getConnectionType(side);
 
@@ -220,19 +242,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			{
 				return getCenterIcon(opaque);
 			}
-			else if(getAllCurrentConnections() == 3 && side != ForgeDirection.DOWN && side != ForgeDirection.UP)
+			else if(getAllCurrentConnections() == 3 && side != EnumFacing.DOWN && side != EnumFacing.UP)
 			{
 				return getSideIcon(opaque);
 			}
-			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.DOWN || side == ForgeDirection.UP))
+			else if(getAllCurrentConnections() == 12 && (side == EnumFacing.DOWN || side == EnumFacing.UP))
 			{
 				return getSideIcon(opaque);
 			}
-			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.EAST || side == ForgeDirection.WEST))
+			else if(getAllCurrentConnections() == 12 && (side == EnumFacing.EAST || side == EnumFacing.WEST))
 			{
 				return getSideIconRotated(opaque);
 			}
-			else if(getAllCurrentConnections() == 48 && side != ForgeDirection.EAST && side != ForgeDirection.WEST)
+			else if(getAllCurrentConnections() == 48 && side != EnumFacing.EAST && side != EnumFacing.WEST)
 			{
 				return getSideIconRotated(opaque);
 			}
@@ -253,11 +275,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return connections;
 		}
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			if(canConnectMutual(side))
 			{
-				TileEntity tileEntity = Coord4D.get(tile()).offset(side).getTileEntity(world());
+				TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
 				if(tileEntity instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))
 				{
@@ -269,7 +291,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return connections;
 	}
 
-	public boolean getPossibleAcceptorConnection(ForgeDirection side)
+	public boolean getPossibleAcceptorConnection(EnumFacing side)
 	{
 		if(handlesRedstone() && redstoneReactive && redstonePowered)
 		{
@@ -278,7 +300,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(canConnectMutual(side))
 		{
-			TileEntity tileEntity = Coord4D.get(tile()).offset(side).getTileEntity(world());
+			TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
 			if(isValidAcceptor(tileEntity, side))
 			{
@@ -300,16 +322,16 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return false;
 	}
 
-	public boolean getPossibleTransmitterConnection(ForgeDirection side)
+	public boolean getPossibleTransmitterConnection(EnumFacing side)
 	{
-		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile())))
+		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos())))
 		{
 			return false;
 		}
 
 		if(canConnectMutual(side))
 		{
-			TileEntity tileEntity = Coord4D.get(tile()).offset(side).getTileEntity(world());
+			TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
 			if(tileEntity instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))
 			{
@@ -329,19 +351,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return connections;
 		}
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			if(canConnectMutual(side))
 			{
-				Coord4D coord = Coord4D.get(tile()).getFromSide(side);
+				Coord4D coord = new Coord4D(getPos()).offset(side);
 				
-				if(!world().isRemote && !coord.exists(world()))
+				if(!getWorld().isRemote && !coord.exists(getWorld()))
 				{
 					forceUpdate = true;
 					continue;
 				}
 				
-				TileEntity tileEntity = coord.getTileEntity(world());
+				TileEntity tileEntity = coord.getTileEntity(getWorld());
 
 				if(isValidAcceptor(tileEntity, side))
 				{
@@ -376,67 +398,69 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return true;
 	}
 
+/*
 	@Override
-	public boolean occlusionTest(TMultiPart other)
+	public boolean occlusionTest(IMultipart other)
 	{
 		return NormalOcclusionTest.apply(this, other);
 	}
+*/
 
 	@Override
-	public Iterable<IndexedCuboid6> getSubParts()
+	public void addSelectionBoxes(List<AxisAlignedBB> list)
 	{
-		Set<IndexedCuboid6> subParts = new HashSet<IndexedCuboid6>();
-
-		if(tile() != null)
+		if(getContainer() != null)
 		{
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.values())
 			{
 				int ord = side.ordinal();
 				byte connections = getAllCurrentConnections();
 
 				if(connectionMapContainsSide(connections, side) || side == testingSide)
 				{
-					subParts.add(getTransmitterType().getSize() == Size.SMALL ? smallSides[ord] : largeSides[ord]);
+					list.add(getTransmitterType().getSize() == Size.SMALL ? smallSides[ord] : largeSides[ord]);
 				}
 			}
 		}
 
-		subParts.add(getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6]);
-
-		return subParts;
+		list.add(getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6]);
 	}
 
 	public abstract TransmitterType getTransmitterType();
 
 	@Override
-	public Iterable<Cuboid6> getCollisionBoxes()
+	public void addCollisionBoxes(AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity)
 	{
-		Set<Cuboid6> collisionBoxes = new HashSet<Cuboid6>();
-		collisionBoxes.addAll((Collection<? extends Cuboid6>)getSubParts());
-
-		return collisionBoxes;
+		addSelectionBoxes(list);
 	}
 
 	@Override
-	public Iterable<Cuboid6> getOcclusionBoxes()
+	public void addOcclusionBoxes(List<AxisAlignedBB> list)
 	{
-		return getCollisionBoxes();
+		addSelectionBoxes(list);
 	}
 
 	@Override
-	public int getSlotMask()
+	public EnumSet<PartSlot> getSlotMask()
 	{
-		return PartMap.CENTER.mask;
+		return EnumSet.of(PartSlot.CENTER);
 	}
 
 	@Override
-	public IIcon getBreakingIcon(Object subPart, int side)
+	public EnumSet<PartSlot> getOccludedSlots()
+	{
+		return EnumSet.of(PartSlot.CENTER); //TODO implement properly
+	}
+
+/*
+	@Override
+	public TextureAtlasSprite getBreakingIcon(Object subPart, EnumFacing side)
 	{
 		return getCenterIcon(true);
 	}
 
 	@Override
-	public IIcon getBrokenIcon(int side)
+	public TextureAtlasSprite getBrokenIcon(EnumFacing side)
 	{
 		return getCenterIcon(true);
 	}
@@ -448,9 +472,9 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public int getHollowSize(int side)
+	public int getHollowSize(EnumFacing side)
 	{
-		ForgeDirection direction = ForgeDirection.getOrientation(side);
+		EnumFacing direction = EnumFacing.getOrientation(side);
 
 		if(connectionMapContainsSide(getAllCurrentConnections(), direction) || direction == testingSide)
 		{
@@ -489,20 +513,21 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}
+*/
 
-	public abstract boolean isValidAcceptor(TileEntity tile, ForgeDirection side);
+	public abstract boolean isValidAcceptor(TileEntity tile, EnumFacing side);
 
 	@Override
-	public boolean canConnectMutual(ForgeDirection side)
+	public boolean canConnectMutual(EnumFacing side)
 	{
 		if(!canConnect(side)) return false;
 
-		TileEntity tile = Coord4D.get(tile()).offset(side).getTileEntity(world());
+		TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
 		return (!(tile instanceof IBlockableConnection) || ((IBlockableConnection)tile).canConnect(side.getOpposite()));
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection side)
+	public boolean canConnect(EnumFacing side)
 	{
 		if(handlesRedstone() && redstoneReactive && redstonePowered)
 		{
@@ -510,14 +535,14 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 
 		testingSide = side;
-		boolean unblocked = tile().canReplacePart(this, this);
+		boolean unblocked = getContainer().canReplacePart(this, this);
 		testingSide = null;
 		
 		return unblocked;
 	}
 
 	@Override
-	public void readDesc(MCDataInput packet)
+	public void readUpdatePacket(PacketBuffer packet)
 	{
 		currentTransmitterConnections = packet.readByte();
 		currentAcceptorConnections = packet.readByte();
@@ -527,15 +552,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			connectionTypes[i] = ConnectionType.values()[packet.readInt()];
 		}
 
-		if(tile() != null)
-		{
-			tile().internalPartChange(this);
-			tile().markRender();
-		}
+		notifyPartUpdate();
+		markRenderUpdate();
 	}
 
 	@Override
-	public void writeDesc(MCDataOutput packet)
+	public void writeUpdatePacket(PacketBuffer packet)
 	{
 		packet.writeByte(currentTransmitterConnections);
 		packet.writeByte(currentAcceptorConnections);
@@ -547,9 +569,9 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public void load(NBTTagCompound nbtTags)
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
-		super.load(nbtTags);
+		super.readFromNBT(nbtTags);
 
 		redstoneReactive = nbtTags.getBoolean("redstoneReactive");
 
@@ -560,9 +582,9 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public void save(NBTTagCompound nbtTags)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.save(nbtTags);
+		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("redstoneReactive", redstoneReactive);
 
@@ -573,19 +595,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public boolean activate(EntityPlayer player, MovingObjectPosition part, ItemStack item)
+	public boolean onActivated(EntityPlayer player, ItemStack stack, PartMOP hit)
 	{
-		if(item == null)
+		if(stack == null)
 		{
 			return false;
 		}
 
-		if(MekanismUtils.hasUsableWrench(player, x(), y(), z()) && player.isSneaking())
+		if(MekanismUtils.hasUsableWrench(player, getPos()) && player.isSneaking())
 		{
-			if(!world().isRemote)
+			if(!getWorld().isRemote)
 			{
-				tile().dropItems(getDrops());
-				tile().remPart(this);
+				//TODO tile().dropItems(getDrops());
+				getContainer().removePart(this);
 			}
 
 			return true;
@@ -595,36 +617,30 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public Iterable<ItemStack> getDrops()
+	public List<ItemStack> getDrops()
 	{
-		return Collections.singletonList(pickItem(null));
+		return Collections.singletonList(getPickBlock(null, null));
 	}
 
 	@Override
-	public ItemStack pickItem(MovingObjectPosition hit)
+	public ItemStack getPickBlock(EntityPlayer player, PartMOP hit)
 	{
 		return new ItemStack(MekanismItems.PartTransmitter, 1, getTransmitterType().ordinal());
 	}
-
-	@Override
-	public boolean doesTick()
-	{
-		return true;
-	}
-
+	
 	protected void onRefresh() {}
 
 	public void refreshConnections()
 	{
 		if(redstoneReactive)
 		{
-			redstonePowered = MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
+			redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos()));
 		}
 		else {
 			redstonePowered = false;
 		}
 
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
 			byte possibleTransmitters = getPossibleTransmitterConnections();
 			byte possibleAcceptors = getPossibleAcceptorConnections();
@@ -639,11 +655,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 	}
 
-	public void refreshConnections(ForgeDirection side)
+	public void refreshConnections(EnumFacing side)
 	{
 		if(redstoneReactive)
 		{
-			redstonePowered = MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
+			redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos()));
 		}
 		else {
 			redstonePowered = false;
@@ -652,7 +668,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		boolean possibleTransmitter = getPossibleTransmitterConnection(side);
 		boolean possibleAcceptor = getPossibleAcceptorConnection(side);
 
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
 			if((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(), side))
 			{
@@ -664,7 +680,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 	}
 
-	protected void onModeChange(ForgeDirection side)
+	protected void onModeChange(EnumFacing side)
 	{
 		markDirtyAcceptor(side);
 	}
@@ -674,7 +690,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		notifyTileChange();
 	}
 
-	protected void markDirtyAcceptor(ForgeDirection side) {}
+	protected void markDirtyAcceptor(EnumFacing side) {}
 
 	@Override
 	public void onAdded()
@@ -684,6 +700,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		refreshConnections();
 	}
 
+/*TODO onLoad()?
 	@Override
 	public void onChunkLoad()
 	{
@@ -692,15 +709,16 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		refreshConnections();
 		notifyTileChange();
 	}
+*/
 	
 	@Override
-	public void onNeighborTileChanged(int side, boolean weak) 
+	public void onNeighborTileChange(EnumFacing side) 
 	{
-		refreshConnections(ForgeDirection.getOrientation(side));
+		refreshConnections(side);
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborBlockChange(Block block)
 	{
 		if(handlesRedstone())
 		{
@@ -715,7 +733,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public void onPartChanged(TMultiPart part)
+	public void onPartChanged(IMultipart part)
 	{
 		super.onPartChanged(part);
 		
@@ -732,12 +750,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void handlePacketData(ByteBuf dataStream) throws Exception {}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		return data;
 	}
 
-	public ConnectionType getConnectionType(ForgeDirection side)
+	public ConnectionType getConnectionType(EnumFacing side)
 	{
 		if(!connectionMapContainsSide(getAllCurrentConnections(), side))
 		{
@@ -751,11 +769,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return connectionTypes[side.ordinal()];
 	}
 
-	public List<ForgeDirection> getConnections(ConnectionType type)
+	public List<EnumFacing> getConnections(ConnectionType type)
 	{
-		List<ForgeDirection> sides = new ArrayList<ForgeDirection>();
+		List<EnumFacing> sides = new ArrayList<EnumFacing>();
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			if(getConnectionType(side) == type)
 			{
@@ -766,7 +784,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return sides;
 	}
 
-	public CCModel getModelForSide(ForgeDirection side, boolean internal)
+/*
+	public String getModelForSide(EnumFacing side, boolean internal)
 	{
 		String sideName = side.name().toLowerCase();
 		String typeName = getConnectionType(side).name().toUpperCase();
@@ -786,13 +805,14 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			}
 		}
 	}
+*/
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
-			ExtendedMOP hit = (ExtendedMOP)RayTracer.retraceBlock(world(), player, x(), y(), z());
+			PartMOP hit = reTrace(getWorld(), getPos(), player);
 	
 			if(hit == null)
 			{
@@ -803,7 +823,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
 				sendDesc = true;
 	
-				onModeChange(ForgeDirection.getOrientation(hit.subHit));
+				onModeChange(EnumFacing.getFront(hit.subHit));
 				player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
 	
 				return true;
@@ -816,7 +836,16 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return true;
 	}
 
-	protected boolean onConfigure(EntityPlayer player, int part, int side)
+	private PartMOP reTrace(World world, BlockPos pos, EntityPlayer player) {
+
+		Vec3 start = RayTraceUtils.getStart(player);
+		Vec3 end = RayTraceUtils.getEnd(player);
+		RayTraceResultPart result = ((TileMultipart)world.getTileEntity(pos)).getPartContainer().collisionRayTrace(start, end);
+		return result == null ? null : result.hit;
+	}
+
+
+	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
 		return false;
 	}
@@ -827,9 +856,9 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!world().isRemote && handlesRedstone())
+		if(!getWorld().isRemote && handlesRedstone())
 		{
 			redstoneReactive ^= true;
 			refreshConnections();
@@ -859,14 +888,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 	}
 
-	@Override
-	public boolean weakTileChanges() 
-	{
-		return false;
-	}
-
 	public void notifyTileChange()
 	{
-		MekanismUtils.notifyLoadedNeighborsOfTileChange(world(), Coord4D.get(tile()));
+		MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), new Coord4D(getPos()));
 	}
 }

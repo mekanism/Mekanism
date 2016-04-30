@@ -2,7 +2,8 @@ package mekanism.common.multipart;
 
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Tier.BaseTier;
-import net.minecraft.util.IIcon;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public enum TransmitterType
 {
@@ -73,7 +74,7 @@ public enum TransmitterType
 		return transmissionType;
 	}
 
-	public IIcon getCenterIcon(boolean opaque)
+	public TextureAtlasSprite getCenterIcon(boolean opaque)
 	{
 		if(!transparencyRender)
 		{
@@ -84,7 +85,7 @@ public enum TransmitterType
 		}
 	}
 
-	public IIcon getSideIcon(boolean opaque)
+	public TextureAtlasSprite getSideIcon(boolean opaque)
 	{
 		if(!transparencyRender)
 		{

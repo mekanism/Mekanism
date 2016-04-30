@@ -17,7 +17,10 @@ import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IEnergyWrapper;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
+
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -90,11 +93,16 @@ public final class CableUtils
 	 */
 	public static TileEntity[] getConnectedOutputters(TileEntity tileEntity)
 	{
+		return getConnectedOutputters(tileEntity.getPos(), tileEntity.getWorld());
+	}
+
+	public static TileEntity[] getConnectedOutputters(BlockPos pos, World world)
+	{
 		TileEntity[] outputters = new TileEntity[] {null, null, null, null, null, null};
 
 		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
-			TileEntity outputter = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
+			TileEntity outputter = world.getTileEntity(pos.offset(orientation));
 
 			if(isOutputter(outputter, orientation))
 			{

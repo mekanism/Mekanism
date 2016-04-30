@@ -10,20 +10,25 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
+//import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+//import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+/*
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
+*/
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -49,13 +54,13 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@Override
 	public void update()
 	{
-		if(!world().isRemote)
+		if(!getWorld().isRemote)
 		{
             updateShare();
             
-			IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());
+			IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(getPos(), getWorld());
 
-			for(ForgeDirection side : getConnections(ConnectionType.PULL))
+			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
 				if(connectedAcceptors[side.ordinal()] != null)
 				{
@@ -87,7 +92,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
             if((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getFluid() == last.getFluid())) || (last == null && lastWrite != null))
             {
                 lastWrite = last;
-                MekanismUtils.saveChunk(tile());
+                markDirty();
             }
         }
     }
@@ -111,9 +116,9 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onUnloaded()
 	{
-		if(!world().isRemote && getTransmitter().hasTransmitterNetwork())
+		if(!getWorld().isRemote && getTransmitter().hasTransmitterNetwork())
 		{
 			if(lastWrite != null && getTransmitter().getTransmitterNetwork().buffer != null)
 			{
@@ -126,13 +131,13 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 			}
 		}
 
-		super.onChunkUnload();
+		super.onUnloaded();
 	}
 
 	@Override
-	public void load(NBTTagCompound nbtTags)
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
-		super.load(nbtTags);
+		super.readFromNBT(nbtTags);
 		
 		tier = Tier.PipeTier.values()[nbtTags.getInteger("tier")];
 		buffer.setCapacity(getCapacity());
@@ -147,9 +152,9 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public void save(NBTTagCompound nbtTags)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.save(nbtTags);
+		super.writeToNBT(nbtTags);
 
 		if(lastWrite != null && lastWrite.amount > 0)
 		{
@@ -168,7 +173,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		return "mekanism:mechanical_pipe_" + tier.name().toLowerCase();
 	}
 
-	public static void registerIcons(IIconRegister register)
+	public static void registerIcons(TextureMap register)
 	{
 		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipeBasic", "MechanicalPipeAdvanced", "MechanicalPipeElite", "MechanicalPipeUltimate"});
 		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeVerticalBasic", "MechanicalPipeVerticalAdvanced", "MechanicalPipeVerticalElite", "MechanicalPipeVerticalUltimate",
@@ -176,19 +181,19 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public IIcon getCenterIcon(boolean opaque)
+	public TextureAtlasSprite getCenterIcon(boolean opaque)
 	{
 		return pipeIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIcon(boolean opaque)
+	public TextureAtlasSprite getSideIcon(boolean opaque)
 	{
 		return pipeIcons.getSideIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIconRotated(boolean opaque)
+	public TextureAtlasSprite getSideIconRotated(boolean opaque)
 	{
 		return pipeIcons.getSideIcon(4+tier.ordinal());
 	}
@@ -206,7 +211,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public boolean isValidAcceptor(TileEntity acceptor, ForgeDirection side)
+	public boolean isValidAcceptor(TileEntity acceptor, EnumFacing side)
 	{
 		return PipeUtils.isValidAcceptorOnSide(acceptor, side);
 	}
@@ -223,6 +228,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		return new FluidNetwork(networks);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
@@ -232,6 +238,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}
 	}
+*/
 
 	@Override
 	public int getCapacity()
@@ -256,7 +263,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		if(getConnectionType(from) == ConnectionType.NORMAL)
 		{
@@ -267,31 +274,31 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		return getConnectionType(from) == ConnectionType.NORMAL;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		if(getConnectionType(from) != ConnectionType.NONE)
 		{
@@ -334,18 +341,18 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 	
 	@Override
-	public void readDesc(MCDataInput packet)
+	public void readUpdatePacket(PacketBuffer packet)
 	{
 		tier = PipeTier.values()[packet.readInt()];
 		
-		super.readDesc(packet);
+		super.writeUpdatePacket(packet);
 	}
 
 	@Override
-	public void writeDesc(MCDataOutput packet)
+	public void writeUpdatePacket(PacketBuffer packet)
 	{
 		packet.writeInt(tier.ordinal());
 		
-		super.writeDesc(packet);
+		super.writeUpdatePacket(packet);
 	}
 }

@@ -1,18 +1,26 @@
 package mekanism.common.multipart;
 
-import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_1;
-import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_2;
+import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
+import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import net.minecraft.item.ItemStack;
+/*
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
-import net.minecraft.fml.common.event.FMLInterModComms;
+*/
+import mcmultipart.microblock.BlockMicroMaterial;
+import mcmultipart.microblock.MicroblockRegistry;
+import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.IPartFactory;
+import mcmultipart.multipart.MultipartRegistry;
+
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 public class MultipartMekanism implements IPartFactory
 {
@@ -23,7 +31,7 @@ public class MultipartMekanism implements IPartFactory
 
 	public void init()
 	{
-		MultiPartRegistry.registerParts(this, new String[] {"mekanism:universal_cable_basic",
+		MultipartRegistry.registerPartFactory(this, "mekanism:universal_cable_basic",
 				"mekanism:universal_cable_advanced", "mekanism:universal_cable_elite",
 				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
 				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
@@ -35,8 +43,9 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter", 
 				"mekanism:thermodynamic_conductor_basic", "mekanism:thermodynamic_conductor_advanced",
 				"mekanism:thermodynamic_conductor_elite", "mekanism:thermodynamic_conductor_ultimate",
-				"mekanism:glow_panel"});
+				"mekanism:glow_panel");
 
+/*
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.IConfigurable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.energy.IStrictEnergyAcceptor");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.gas.IGasHandler");
@@ -48,12 +57,13 @@ public class MultipartMekanism implements IPartFactory
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.base.ILogisticalTransporter");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.base.ITileNetwork");
 		MultipartGenerator.registerPassThroughInterface("cofh.api.energy.IEnergyHandler");
+*/
 
 		registerMicroMaterials();
 	}
 
 	@Override
-	public TMultiPart createPart(String name, boolean client)
+	public IMultipart createPart(String name, boolean client)
 	{
 		if(name.equals("mekanism:universal_cable"))
 		{
@@ -163,11 +173,11 @@ public class MultipartMekanism implements IPartFactory
 	{
 		for(int i = 0; i < 16; i++)
 		{
-			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.PlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.PlasticBlock, i));
-			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.GlowPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.GlowPlasticBlock, i));
-			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.SlickPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.SlickPlasticBlock, i));
-			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.ReinforcedPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.ReinforcedPlasticBlock, i));
-			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.RoadPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.RoadPlasticBlock, i));
+//			MicroblockRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.PlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.PlasticBlock, i));
+//			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.GlowPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.GlowPlasticBlock, i));
+//			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.SlickPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.SlickPlasticBlock, i));
+//			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.ReinforcedPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.ReinforcedPlasticBlock, i));
+//			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.RoadPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.RoadPlasticBlock, i));
 
 			FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock, 1, i));
 			

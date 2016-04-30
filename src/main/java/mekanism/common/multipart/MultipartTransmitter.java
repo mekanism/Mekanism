@@ -10,7 +10,10 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.transmitters.Transmitter;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+
+import mcmultipart.block.TileMultipart;
+import mcmultipart.multipart.IMultipartContainer;
 
 public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Transmitter<A, N>
 {
@@ -30,17 +33,17 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	@Override
 	public World world()
 	{
-		return getPart().world();
+		return getPart().getWorld();
 	}
 
 	@Override
 	public Coord4D coord()
 	{
-		return new Coord4D(getPart().x(), getPart().y(), getPart().z(), getPart().world().provider.dimensionId);
+		return new Coord4D(getPart().getPos(), getPart().getWorld().provider.getDimensionId());
 	}
 
 	@Override
-	public Coord4D getAdjacentConnectableTransmitterCoord(ForgeDirection side)
+	public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side)
 	{
 		Coord4D sideCoord = coord().offset(side);
 
@@ -65,7 +68,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	}
 
 	@Override
-	public A getAcceptor(ForgeDirection side)
+	public A getAcceptor(EnumFacing side)
 	{
 		return getPart().getCachedAcceptor(side);
 	}
@@ -73,7 +76,16 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	@Override
 	public boolean isValid()
 	{
-		return getPart().tile() != null && !getPart().tile().isInvalid() && !getPart().unloaded && coord().exists(world());
+		IMultipartContainer cont = getPart().getContainer();
+		if(cont == null)
+			return false;
+
+		if(cont instanceof TileEntity && ((TileEntity)cont).isInvalid())
+		{
+			return false;
+		}
+
+		return !getPart().unloaded && coord().exists(world());
 	}
 
 	@Override

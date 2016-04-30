@@ -23,7 +23,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class MultipartTransporter extends MultipartTransmitter<IInventory, InventoryNetwork> implements ILogisticalTransporter
 {
@@ -91,7 +91,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 
 						if(!stack.isFinal(this))
 						{
-							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))))
+							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), stack.getSide(this)))
 							{
 								ITransporterTile nextTile = (ITransporterTile)next.getTileEntity(world());
 								nextTile.getTransmitter().entityEntering(stack, stack.progress%100);
@@ -182,7 +182,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 						TileEntity next = stack.getNext(this).getTileEntity(world());
 						boolean recalculate = false;
 
-						if(!stack.canInsertToTransporter(next, ForgeDirection.getOrientation(stack.getSide(this))))
+						if(!stack.canInsertToTransporter(next, stack.getSide(this)))
 						{
 							recalculate = true;
 						}
@@ -203,7 +203,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			{
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, true)), new Range4D(coord()));
 				transit.remove(stack);
-				MekanismUtils.saveChunk(getPart().tile());
+				MekanismUtils.saveChunk((TileEntity)getPart().getContainer()); //TODO
 			}
 
 			for(TransporterStack stack : needsSync)
@@ -220,7 +220,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 
 	private boolean checkSideForInsert(TransporterStack stack)
 	{
-		ForgeDirection side = ForgeDirection.getOrientation(stack.getSide(this));
+		EnumFacing side = stack.getSide(this);
 
 		return getPart().getConnectionType(side) == ConnectionType.NORMAL || getPart().getConnectionType(side) == ConnectionType.PUSH;
 	}
@@ -264,7 +264,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 
 	private ItemStack insert_do(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min, boolean force)
 	{
-		ForgeDirection from = coord().sideDifference(original).getOpposite();
+		EnumFacing from = coord().sideDifference(original).getOpposite();
 
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -287,7 +287,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			{
 				transit.add(stack);
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-				MekanismUtils.saveChunk(getPart().tile());
+				MekanismUtils.saveChunk((TileEntity)getPart().getContainer()); //TODO
 			}
 
 			return rejected;
@@ -299,7 +299,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	@Override
 	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
-		ForgeDirection from = coord().sideDifference(Coord4D.get(outputter)).getOpposite();
+		EnumFacing from = coord().sideDifference(Coord4D.get(outputter)).getOpposite();
 
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -322,7 +322,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			{
 				transit.add(stack);
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-				MekanismUtils.saveChunk(getPart().tile());
+				MekanismUtils.saveChunk((TileEntity)getPart().getContainer()); //TODO
 			}
 
 			return rejected;
@@ -337,7 +337,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 		stack.progress = progress;
 		transit.add(stack);
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-		MekanismUtils.saveChunk(getPart().tile());
+		MekanismUtils.saveChunk((TileEntity)getPart().getContainer()); //TODO
 	}
 
 	@Override
@@ -353,7 +353,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side)
+	public boolean canEmitTo(TileEntity tileEntity, EnumFacing side)
 	{
 		if(!getPart().canConnect(side))
 		{
@@ -364,7 +364,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side)
+	public boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side)
 	{
 		if(!getPart().canConnect(side))
 		{
@@ -381,13 +381,13 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public boolean canConnectMutual(ForgeDirection side)
+	public boolean canConnectMutual(EnumFacing side)
 	{
 		return getPart().canConnectMutual(side);
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection side)
+	public boolean canConnect(EnumFacing side)
 	{
 		return getPart().canConnect(side);
 	}

@@ -11,11 +11,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+//import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
 {
@@ -34,19 +36,19 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public IIcon getCenterIcon(boolean opaque)
+	public TextureAtlasSprite getCenterIcon(boolean opaque)
 	{
 		return transporterIcons.getCenterIcon(5);
 	}
 	
 	@Override
-	public IIcon getSideIcon(boolean opaque)
+	public TextureAtlasSprite getSideIcon(boolean opaque)
 	{
 		return transporterIcons.getSideIcon(opaque ? 14 : (getTransmitter().color != null ? 11 : 10));
 	}
 	
 	@Override
-	public IIcon getSideIconRotated(boolean opaque)
+	public TextureAtlasSprite getSideIconRotated(boolean opaque)
 	{
 		return transporterIcons.getSideIcon(opaque ? 15 : (getTransmitter().color != null ? 13 : 12));
 	}
@@ -58,17 +60,17 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public void load(NBTTagCompound nbtTags)
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
-		super.load(nbtTags);
+		super.readFromNBT(nbtTags);
 
 		modes = nbtTags.getIntArray("modes");
 	}
 
 	@Override
-	public void save(NBTTagCompound nbtTags)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.save(nbtTags);
+		super.writeToNBT(nbtTags);
 
 		nbtTags.setIntArray("modes", modes);
 	}
@@ -87,7 +89,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		data = super.getNetworkedData(data);
 
@@ -102,9 +104,9 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public ArrayList getSyncPacket(TransporterStack stack, boolean kill)
+	public ArrayList<Object> getSyncPacket(TransporterStack stack, boolean kill)
 	{
-		ArrayList data = super.getSyncPacket(stack, kill);
+		ArrayList<Object> data = super.getSyncPacket(stack, kill);
 
 		data.add(modes[0]);
 		data.add(modes[1]);
@@ -117,12 +119,12 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	protected boolean onConfigure(EntityPlayer player, int part, int side)
+	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
-		int newMode = (modes[side] + 1) % 3;
+		int newMode = (modes[side.ordinal()] + 1) % 3;
 		String description = "ERROR";
 
-		modes[side] = newMode;
+		modes[side.ordinal()] = newMode;
 
 		switch(newMode)
 		{
@@ -138,16 +140,17 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		}
 
 		refreshConnections();
-		tile().notifyPartChange(this);
+		notifyPartUpdate();
 		notifyTileChange();
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tile())));
+		Coord4D coord = new Coord4D(getPos(), getWorld().provider.getDimensionId());
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<Object>())), new Range4D(coord));
 
 		return true;
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection side)
+	public boolean canConnect(EnumFacing side)
 	{
 		if(!super.canConnect(side))
 		{
@@ -155,9 +158,9 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		}
 
 		int mode = modes[side.ordinal()];
-		boolean redstone = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+		int redstone = getWorld().isBlockIndirectlyGettingPowered(getPos());
 
-		if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+		if((mode == 2 && redstone > 0) || (mode == 1 && redstone == 0))
 		{
 			return false;
 		}
