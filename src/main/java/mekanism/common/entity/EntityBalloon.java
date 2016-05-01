@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,11 +44,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		setSize(0.25F, 0.25F);
 		motionY = 0.04;
 
-		dataWatcher.addObject(2, (byte)0); /* Is latched */
-		dataWatcher.addObject(3, 0); /* Latched X */
-		dataWatcher.addObject(4, 0); /* Latched Y */
-		dataWatcher.addObject(5, 0); /* Latched Z */
-		dataWatcher.addObject(6, -1); /* Latched entity ID */
+		dataWatcher.addObject(5, (byte)0); /* Is latched */
+		dataWatcher.addObject(6, 0); /* Latched X */
+		dataWatcher.addObject(7, 0); /* Latched Y */
+		dataWatcher.addObject(8, 0); /* Latched Z */
+		dataWatcher.addObject(9, -1); /* Latched entity ID */
 	}
 
 	public EntityBalloon(World world, double x, double y, double z, EnumColor c)
@@ -78,11 +77,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		color = c;
 
-		dataWatcher.updateObject(2, (byte)2); /* Is latched */
-		dataWatcher.updateObject(3, 0); /* Latched X */
-		dataWatcher.updateObject(4, 0); /* Latched Y */
-		dataWatcher.updateObject(5, 0); /* Latched Z */
-		dataWatcher.updateObject(6, entity.getEntityId()); /* Latched entity ID */
+		dataWatcher.updateObject(5, (byte)2); /* Is latched */
+		dataWatcher.updateObject(6, 0); /* Latched X */
+		dataWatcher.updateObject(7, 0); /* Latched Y */
+		dataWatcher.updateObject(8, 0); /* Latched Z */
+		dataWatcher.updateObject(9, entity.getEntityId()); /* Latched entity ID */
 	}
 
 	public EntityBalloon(World world, Coord4D obj, EnumColor c)
@@ -98,11 +97,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		color = c;
 
-		dataWatcher.updateObject(2, (byte)1); /* Is latched */
-		dataWatcher.updateObject(3, latched != null ? latched.getX() : 0); /* Latched X */
-		dataWatcher.updateObject(4, latched != null ? latched.getY() : 0); /* Latched Y */
-		dataWatcher.updateObject(5, latched != null ? latched.getZ() : 0); /* Latched Z */
-		dataWatcher.updateObject(6, -1); /* Latched entity ID */
+		dataWatcher.updateObject(5, (byte)1); /* Is latched */
+		dataWatcher.updateObject(6, latched != null ? latched.getX() : 0); /* Latched X */
+		dataWatcher.updateObject(7, latched != null ? latched.getY() : 0); /* Latched Y */
+		dataWatcher.updateObject(8, latched != null ? latched.getZ() : 0); /* Latched Z */
+		dataWatcher.updateObject(9, -1); /* Latched entity ID */
 	}
 
 	@Override
@@ -120,17 +119,17 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		if(worldObj.isRemote)
 		{
-			if(dataWatcher.getWatchableObjectByte(2) == 1)
+			if(dataWatcher.getWatchableObjectByte(5) == 1)
 			{
-				latched = new Coord4D(dataWatcher.getWatchableObjectInt(3), dataWatcher.getWatchableObjectInt(4), dataWatcher.getWatchableObjectInt(5), worldObj.provider.getDimensionId());
+				latched = new Coord4D(dataWatcher.getWatchableObjectInt(6), dataWatcher.getWatchableObjectInt(7), dataWatcher.getWatchableObjectInt(8), worldObj.provider.getDimensionId());
 			}
 			else {
 				latched = null;
 			}
 
-			if(dataWatcher.getWatchableObjectByte(2) == 2)
+			if(dataWatcher.getWatchableObjectByte(5) == 2)
 			{
-				latchedEntity = (EntityLivingBase)worldObj.getEntityByID(dataWatcher.getWatchableObjectInt(6));
+				latchedEntity = (EntityLivingBase)worldObj.getEntityByID(dataWatcher.getWatchableObjectInt(9));
 			}
 			else {
 				latchedEntity = null;
@@ -146,11 +145,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 			if(ticksExisted == 1)
 			{
-				dataWatcher.updateObject(2, new Byte(latched != null ? (byte)1 : (latchedEntity != null ? (byte)2 : (byte)0))); /* Is latched */
-				dataWatcher.updateObject(3, new Integer(latched != null ? latched.getX() : 0)); /* Latched X */
-				dataWatcher.updateObject(4, new Integer(latched != null ? latched.getY() : 0)); /* Latched Y */
-				dataWatcher.updateObject(5, new Integer(latched != null ? latched.getZ() : 0)); /* Latched Z */
-				dataWatcher.updateObject(6, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1)); /* Latched entity ID */
+				dataWatcher.updateObject(5, new Byte(latched != null ? (byte)1 : (latchedEntity != null ? (byte)2 : (byte)0))); /* Is latched */
+				dataWatcher.updateObject(6, new Integer(latched != null ? latched.getX() : 0)); /* Latched X */
+				dataWatcher.updateObject(7, new Integer(latched != null ? latched.getY() : 0)); /* Latched Y */
+				dataWatcher.updateObject(8, new Integer(latched != null ? latched.getZ() : 0)); /* Latched Z */
+				dataWatcher.updateObject(9, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1)); /* Latched entity ID */
 			}
 		}
 
@@ -160,14 +159,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			{
 				latched = null;
 
-				dataWatcher.updateObject(2, (byte)0); /* Is latched */
+				dataWatcher.updateObject(5, (byte)0); /* Is latched */
 			}
 
 			if(latchedEntity != null && (latchedEntity.getHealth() <= 0 || latchedEntity.isDead || !worldObj.loadedEntityList.contains(latchedEntity)))
 			{
 				latchedEntity = null;
 
-				dataWatcher.updateObject(2, (byte)0); /* Is latched */
+				dataWatcher.updateObject(5, (byte)0); /* Is latched */
 			}
 		}
 
@@ -440,12 +439,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			return latched != null || latchedEntity != null;
 		}
 		else {
-			return dataWatcher.getWatchableObjectByte(2) > 0;
+			return dataWatcher.getWatchableObjectByte(5) > 0;
 		}
 	}
 
 	public boolean isLatchedToEntity()
 	{
-		return dataWatcher.getWatchableObjectByte(2) == 2 && latchedEntity != null;
+		return dataWatcher.getWatchableObjectByte(5) == 2 && latchedEntity != null;
 	}
 }
