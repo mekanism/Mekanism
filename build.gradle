@@ -67,7 +67,7 @@ minecraft {
 }
 
 dependencies {
-    deobfCompile "MCMultiPart:MCMultiPart:${config.mcmp_version}:universal"
+    deobfCompile "MCMultiPart:MCMultiPart-experimental:${config.mcmp_version}:universal"
 }
 
 processResources

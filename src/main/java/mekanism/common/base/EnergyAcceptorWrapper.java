@@ -1,6 +1,8 @@
 package mekanism.common.base;
 
 import ic2.api.energy.tile.IEnergySink;
+
+import mekanism.api.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -22,9 +24,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		
 		EnergyAcceptorWrapper wrapper = null;
 		
-		if(tileEntity instanceof IStrictEnergyAcceptor)
+		if(tileEntity.hasCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null))
 		{
-			wrapper = new MekanismAcceptor((IStrictEnergyAcceptor)tileEntity);
+			wrapper = new MekanismAcceptor(tileEntity.getCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null));
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{

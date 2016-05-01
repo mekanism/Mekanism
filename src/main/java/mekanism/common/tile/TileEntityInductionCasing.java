@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -19,6 +20,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration
 {
@@ -211,5 +213,19 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 			default:
 				return new Object[] {"Unknown command."};
 		}
+	}
+
+	@Override
+	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
+	{
+		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing)
+	{
+		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
+			return (T) this;
+		return super.getCapability(capability, facing);
 	}
 }

@@ -5,6 +5,7 @@ import ic2.api.energy.tile.IEnergySource;
 import java.util.Collection;
 import java.util.List;
 
+import mekanism.api.Capabilities;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
@@ -35,6 +36,8 @@ import codechicken.lib.vec.Vector3;
 */
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
+
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -83,21 +86,19 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 					{
 						TileEntity outputter = connectedOutputters[side.ordinal()];
 
-						if(outputter instanceof ICableOutputter && outputter instanceof IStrictEnergyStorage)
+						if(outputter.hasCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && outputter.hasCapability(Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
 						{
-							if(((ICableOutputter)outputter).canOutputTo(side.getOpposite()))
-							{
-								double received = Math.min(((IStrictEnergyStorage)outputter).getEnergy(), canDraw);
-								double toDraw = received;
+							IStrictEnergyStorage storage = outputter.getCapability(Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
+							double received = Math.min(storage.getEnergy(), canDraw);
+							double toDraw = received;
 
-								if(received > 0)
-								{
-									toDraw -= takeEnergy(received, true);
-								}
-								
-								((IStrictEnergyStorage)outputter).setEnergy(((IStrictEnergyStorage)outputter).getEnergy() - toDraw);
+							if(received > 0)
+							{
+								toDraw -= takeEnergy(received, true);
 							}
-						} 
+
+							storage.setEnergy(storage.getEnergy() - toDraw);
+						}
 						else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
 						{
 							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(canDraw*general.TO_TE), true) * general.FROM_TE;
@@ -228,7 +229,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public boolean isValidAcceptor(TileEntity acceptor, EnumFacing side)
 	{
-		return CableUtils.isValidAcceptorOnSide((TileEntity)getContainer(), acceptor, side);
+		return CableUtils.isValidAcceptorOnSide(getWorld().getTileEntity(getPos()), acceptor, side);
 	}
 
 /*
@@ -423,7 +424,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		tier = CableTier.values()[packet.readInt()];
 		
-		super.writeUpdatePacket(packet);
+		super.readUpdatePacket(packet);
 	}
 
 	@Override
@@ -433,4 +434,21 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		
 		super.writeUpdatePacket(packet);
 	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
+				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
+				|| super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
+			return (T) this;
+		return super.getCapability(capability, facing);
+	}
+
 }

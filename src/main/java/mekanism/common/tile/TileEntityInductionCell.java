@@ -4,11 +4,13 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.Capabilities;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityInductionCell extends TileEntityBasicBlock implements IStrictEnergyStorage
 {
@@ -83,4 +85,19 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	{
 		return tier.maxEnergy;
 	}
+
+	@Override
+	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
+	{
+		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing)
+	{
+		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
+			return (T) this;
+		return super.getCapability(capability, facing);
+	}
+
 }

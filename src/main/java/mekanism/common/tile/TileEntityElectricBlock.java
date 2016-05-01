@@ -10,8 +10,10 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import mekanism.api.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.util.MekanismUtils;
@@ -19,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Method;
 
 public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IEnergyWrapper
@@ -396,5 +399,21 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		setEnergy(getEnergy() + toUse);
 
 		return toUse;
+	}
+
+	@Override
+	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
+	{
+		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
+				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
+				|| super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing)
+	{
+		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
+			return (T) this;
+		return super.getCapability(capability, facing);
 	}
 }

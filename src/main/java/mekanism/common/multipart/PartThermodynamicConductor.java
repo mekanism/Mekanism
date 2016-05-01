@@ -192,7 +192,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 			temperature = packet.readDouble();
 		}
 		else {
-			super.writeUpdatePacket(packet);
+			super.readUpdatePacket(packet);
 			
 			tier = ConductorTier.values()[packet.readInt()];
 		}

@@ -345,7 +345,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	{
 		tier = PipeTier.values()[packet.readInt()];
 		
-		super.writeUpdatePacket(packet);
+		super.readUpdatePacket(packet);
 	}
 
 	@Override

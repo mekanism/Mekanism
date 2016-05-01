@@ -74,7 +74,7 @@ import mcmultipart.raytrace.RayTraceUtils.RayTraceResultPart;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class PartSidedPipe extends Multipart implements ISlottedPart, IOccludingPart, ISlotOccludingPart, /*ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
+public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
 	public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
 	public static AxisAlignedBB[] largeSides = new AxisAlignedBB[7];
@@ -439,7 +439,7 @@ public abstract class PartSidedPipe extends Multipart implements ISlottedPart, I
 	{
 		addSelectionBoxes(list);
 	}
-
+/*
 	@Override
 	public EnumSet<PartSlot> getSlotMask()
 	{
@@ -452,7 +452,7 @@ public abstract class PartSidedPipe extends Multipart implements ISlottedPart, I
 		return EnumSet.of(PartSlot.CENTER); //TODO implement properly
 	}
 
-/*
+
 	@Override
 	public TextureAtlasSprite getBreakingIcon(Object subPart, EnumFacing side)
 	{
@@ -535,7 +535,7 @@ public abstract class PartSidedPipe extends Multipart implements ISlottedPart, I
 		}
 
 		testingSide = side;
-		boolean unblocked = getContainer().canReplacePart(this, this);
+		boolean unblocked = true;//getContainer().canReplacePart(this, this);
 		testingSide = null;
 		
 		return unblocked;
@@ -700,16 +700,14 @@ public abstract class PartSidedPipe extends Multipart implements ISlottedPart, I
 		refreshConnections();
 	}
 
-/*TODO onLoad()?
 	@Override
-	public void onChunkLoad()
+	public void onLoaded()
 	{
-		super.onChunkLoad();
+		super.onLoaded();
 		
-		refreshConnections();
-		notifyTileChange();
+		//refreshConnections(); TODO causes StackOverflow. Why?
+		//notifyTileChange();
 	}
-*/
 	
 	@Override
 	public void onNeighborTileChange(EnumFacing side) 

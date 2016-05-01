@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
@@ -29,7 +30,7 @@ public final class CableUtils
 {
 	public static boolean isEnergyAcceptor(TileEntity tileEntity)
 	{
-		return (tileEntity instanceof IStrictEnergyAcceptor ||
+		return tileEntity != null && (tileEntity.hasCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver));
 	}
@@ -73,7 +74,7 @@ public final class CableUtils
 	 */
 	public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, EnumFacing side)
 	{
-		if(isCable(tile))
+		if(tile == null || isCable(tile))
 		{
 			return false;
 		}
@@ -127,9 +128,9 @@ public final class CableUtils
 			return false;
 		}
 
-		if(tileEntity instanceof IStrictEnergyAcceptor)
+		if(tileEntity.hasCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
 		{
-			if(((IStrictEnergyAcceptor)tileEntity).canReceiveEnergy(side.getOpposite()))
+			if(tileEntity.getCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()).canReceiveEnergy(side.getOpposite()))
 			{
 				return true;
 			}
@@ -234,9 +235,9 @@ public final class CableUtils
 	{
 		double sent = 0;
 
-		if(tileEntity instanceof IStrictEnergyAcceptor)
+		if(tileEntity.hasCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
 		{
-			IStrictEnergyAcceptor acceptor = (IStrictEnergyAcceptor)tileEntity;
+			IStrictEnergyAcceptor acceptor = tileEntity.getCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite());
 
 			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{

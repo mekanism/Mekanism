@@ -352,7 +352,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	{
 		tier = TubeTier.values()[packet.readInt()];
 		
-		super.writeUpdatePacket(packet);
+		super.readUpdatePacket(packet);
 	}
 
 	@Override

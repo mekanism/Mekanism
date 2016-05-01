@@ -482,7 +482,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	{
 		tier = TransporterTier.values()[packet.readInt()];
 		
-		super.writeUpdatePacket(packet);
+		super.readUpdatePacket(packet);
 	}
 
 	@Override
