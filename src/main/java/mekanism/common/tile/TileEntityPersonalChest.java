@@ -7,6 +7,7 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class TileEntityPersonalChest extends TileEntityContainerBlock implements ISecurityTile
 {
@@ -77,7 +78,7 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == EnumFacing.DOWN || SecurityUtils.getSecurity(this) != SecurityMode.PUBLIC)
+		if(side == EnumFacing.DOWN || SecurityUtils.getSecurity(this, Side.SERVER) != SecurityMode.PUBLIC)
 		{
 			return InventoryUtils.EMPTY;
 		}

@@ -157,6 +157,7 @@ tile.MachineBlock3.SolarNeutronActivator.name=Solarneutronenaktivator
 tile.MachineBlock3.Oredictionificator.name=Oredictionificator
 tile.MachineBlock3.ResistiveHeater.name=Stromwärmeheizung
 tile.MachineBlock3.FormulaicAssemblicator.name=Formelfertigungsfabrikator
+tile.MachineBlock3.FuelwoodHeater.name=Feuerholzverfeuerer
 
 //Plastic
 tile.PlasticBlock.name=Plastikblock
@@ -828,6 +829,7 @@ tooltip.Oredictionificator=Eine Maschine, verwendet, um zwischen verschiedenen i
 tooltip.Factory=Eine Maschine, die als Upgrade zu gewöhnlichen Machinen dient; erlaubt das Ausführen mehrerer Operationen auf einmal.
 tooltip.ResistiveHeater=Ein dichter, gewundener Widerstand, der elektrische Energie direkt in Wärme umwandeln kann.
 tooltip.FormulaicAssemblicator=Eine Maschine, die mithilfe von Energie mit hohem Tempo Items und Blöcke nach Fertigungsformeln fertigt. Fungiert auch als Werkbank.
+tooltip.FuelwoodHeater=Eine Maschine, die große Mengen an Wärmeenergie durch das Verbrennen brennbarer Dinge erzeugt.
 
 tooltip.HeatGenerator=Ein Generator, der die Wärme aus Lava oder !nanderen Brennstoffen zur Energieerzeugung nutzt.
 tooltip.SolarGenerator=Ein Generator, der die Energie der Sonne !nzur Energieerzeugung nutzt.

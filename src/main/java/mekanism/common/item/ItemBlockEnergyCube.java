@@ -58,7 +58,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		super(block);
 		metaBlock = block;
 		setMaxStackSize(1);
-		setMaxDamage(100);
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
@@ -77,9 +76,9 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 			if(hasSecurity(itemstack))
 			{
 				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
-				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack));
+				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 				
-				if(SecurityUtils.isOverridden(itemstack))
+				if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
 				{
 					list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
 				}
@@ -93,7 +92,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	{
 		ItemStack stack = new ItemStack(this);
 		setEnergyCubeTier(stack, tier);
-		stack.setItemDamage(100);
 		
 		return stack;
 	}

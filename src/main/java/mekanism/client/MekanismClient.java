@@ -1,5 +1,8 @@
 package mekanism.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.MekanismConfig.general;
@@ -9,12 +12,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey.KeyMessage;
+import mekanism.common.security.SecurityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 
 public class MekanismClient extends Mekanism
 {
+	public static Map<String, SecurityData> clientSecurityMap = new HashMap<String, SecurityData>();
+	
 	public static VoiceClient voiceClient;
 
 	public static long ticksPassed = 0;
@@ -32,6 +38,8 @@ public class MekanismClient extends Mekanism
 
 	public static void reset()
 	{
+		clientSecurityMap.clear();
+		
 		if(general.voiceServerEnabled)
 		{
 			if(MekanismClient.voiceClient != null)

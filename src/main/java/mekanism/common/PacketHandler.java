@@ -59,6 +59,8 @@ import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
+import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity;
@@ -138,6 +140,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.SERVER);
 		netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
 		netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
+		netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Side.CLIENT);
 	}
 	
 	/**
@@ -270,6 +273,20 @@ public class PacketHandler
 	public void sendTo(IMessage message, EntityPlayerMP player)
 	{
 		netHandler.sendTo(message, player);
+	}
+	
+	/**
+	 * Send this message to everyone connected to the server.
+	 * @param message - message to send
+	 */
+	public void sendToAll(IMessage message)
+	{
+		MinecraftServer server = MinecraftServer.getServer();
+		
+		for(EntityPlayerMP player : server.getConfigurationManager().playerEntityList)
+		{
+			sendTo(message, player);
+		}
 	}
 
 	/**

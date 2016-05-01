@@ -10,9 +10,12 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
+import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -167,6 +170,8 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 				if(frequency != null)
 				{
 					frequency.override = !frequency.override;
+					
+					Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, owner, new SecurityData(frequency)));
 				}
 			}
 			else if(type == 3)
@@ -174,6 +179,8 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 				if(frequency != null)
 				{
 					frequency.securityMode = SecurityMode.values()[dataStream.readInt()];
+					
+					Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, owner, new SecurityData(frequency)));
 				}
 			}
 			

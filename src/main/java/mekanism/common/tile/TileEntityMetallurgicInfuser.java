@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -261,12 +260,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		factory.upgraded = true;
 		
 		factory.markDirty();
-	}
-	
-	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
-	{
-		return EnumSet.of(facing.getOpposite());
 	}
 
 	@Override
