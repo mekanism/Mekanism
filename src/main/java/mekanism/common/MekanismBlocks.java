@@ -6,7 +6,9 @@ import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHIN
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_3;
 
+import mekanism.api.EnumColor;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockBounding;
@@ -24,6 +26,8 @@ import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateOre;
+import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 import mekanism.common.item.ItemBlockBasic;
@@ -115,14 +119,35 @@ public class MekanismBlocks
 		ModelLoader.setCustomStateMapper(ReinforcedPlasticBlock, plasticMapper);
 		ModelLoader.setCustomStateMapper(RoadPlasticBlock, plasticMapper);
 
-		for(MachineType type : BlockStateMachine.MachineType.values())
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
+
+		for(MachineType type : MachineType.values())
 		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), "active=false,facing=north"));
 		}
 
 		for(BasicBlockType type : BasicBlockType.values())
 		{
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), "inventory"));
+		}
+
+		for(EnumColor color : EnumColor.DYES)
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(PlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=plastic"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(SlickPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=slick"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(GlowPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=glow"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ReinforcedPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=reinforced"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(RoadPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=road"));
+		}
+
+		for(EnumOreType ore : EnumOreType.values())
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(OreBlock), ore.ordinal(), new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
+		}
+
+		for(GasTankTier tier : GasTankTier.values())
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(GasTank), tier.ordinal(), new ModelResourceLocation("mekanism:GasTank", "inventory")); //TODO tier states
 		}
 
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(EnergyCube), new ItemMeshDefinition() {
@@ -134,10 +159,5 @@ public class MekanismBlocks
 				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
 			}
 		});
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static void registerRender()
-	{
 	}
 }
