@@ -12,7 +12,6 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
 import mekanism.common.util.HeatUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -74,8 +73,8 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	{
 		conductorIcons.registerCenterIcons(register, new String[] {"ThermodynamicConductorBasic", "ThermodynamicConductorAdvanced",
 				"ThermodynamicConductorElite", "ThermodynamicConductorUltimate"});
-		conductorIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
-				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
+		conductorIcons.registerSideIcons(register, new String[] {"ThermodynamicConductorVerticalBasic", "ThermodynamicConductorVerticalAdvanced", "ThermodynamicConductorVerticalElite", "ThermodynamicConductorVerticalUltimate",
+				"ThermodynamicConductorHorizontalBasic", "ThermodynamicConductorHorizontalAdvanced", "ThermodynamicConductorHorizontalElite", "ThermodynamicConductorHorizontalUltimate"});
 	}
 
 	@Override
@@ -118,17 +117,6 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	public String getType()
 	{
 		return "mekanism:thermodynamic_conductor_" + tier.name().toLowerCase();
-	}
-
-	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
-	{
-		if(!world().isRemote)
-		{
-			temperature += 10000; //TODO remove
-		}
-		
-		return true;
 	}
 
 	@Override

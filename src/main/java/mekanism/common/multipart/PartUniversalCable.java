@@ -186,8 +186,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
 				"UniversalCableElite", "UniversalCableUltimate"});
-		cableIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
-				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
+		cableIcons.registerSideIcons(register, new String[] {"UniversalCableVerticalBasic", "UniversalCableVerticalAdvanced", "UniversalCableVerticalElite", "UniversalCableVerticalUltimate",
+				"UniversalCableHorizontalBasic", "UniversalCableHorizontalAdvanced", "UniversalCableHorizontalElite", "UniversalCableHorizontalUltimate"});
 	}
 
 	@Override

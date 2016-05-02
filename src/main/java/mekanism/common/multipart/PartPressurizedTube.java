@@ -177,8 +177,8 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	public static void registerIcons(IIconRegister register)
 	{
 		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
-		tubeIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
-				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
+		tubeIcons.registerSideIcons(register, new String[] {"PressurizedTubeVerticalBasic", "PressurizedTubeVerticalAdvanced", "PressurizedTubeVerticalElite", "PressurizedTubeVerticalUltimate",
+				"PressurizedTubeHorizontalBasic", "PressurizedTubeHorizontalAdvanced", "PressurizedTubeHorizontalElite", "PressurizedTubeHorizontalUltimate"});
 	}
 
 	@Override
