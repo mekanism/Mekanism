@@ -19,7 +19,7 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorFrontOn"}},
+      "true": {},
       "false": {}
     },
     "inventory": [{}]

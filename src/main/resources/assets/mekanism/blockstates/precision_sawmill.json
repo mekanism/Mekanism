@@ -8,7 +8,8 @@
       "west": "mekanism:blocks/precision_sawmill/PrecisionSawmillRight",
       "east": "mekanism:blocks/precision_sawmill/PrecisionSawmillLeft",
       "south": "mekanism:blocks/precision_sawmill/PrecisionSawmillBack",
-      "up": "mekanism:blocks/precision_sawmill/PrecisionSawmillTop"
+      "up": "mekanism:blocks/precision_sawmill/PrecisionSawmillTop",
+      "down": "mekanism:blocks/precision_sawmill/PrecisionSawmillBottom"
     }
   },
   "variants": {
@@ -19,7 +20,15 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/precision_sawmill/PrecisionSawmillFrontOn"}},
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/precision_sawmill/PrecisionSawmillFrontOn",
+          "west": "mekanism:blocks/precision_sawmill/PrecisionSawmillRightOn",
+          "east": "mekanism:blocks/precision_sawmill/PrecisionSawmillLeftOn",
+          "south": "mekanism:blocks/precision_sawmill/PrecisionSawmillBackOn",
+          "up": "mekanism:blocks/precision_sawmill/PrecisionSawmillTopOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]

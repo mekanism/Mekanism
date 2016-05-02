@@ -5,10 +5,11 @@
     "textures": {
       "sides": "mekanism:blocks/SteelCasing",
       "front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFront",
-      "west": "mekanism:blocks/osmium_compressor/OsmiumCompressorRight",
-      "east": "mekanism:blocks/osmium_compressor/OsmiumCompressorLeft",
+      "west": "mekanism:blocks/osmium_compressor/OsmiumCompressorLeft",
+      "east": "mekanism:blocks/osmium_compressor/OsmiumCompressorRight",
       "south": "mekanism:blocks/osmium_compressor/OsmiumCompressorBack",
-      "up": "mekanism:blocks/osmium_compressor/OsmiumCompressorTop"
+      "up": "mekanism:blocks/osmium_compressor/OsmiumCompressorTop",
+      "down": "mekanism:blocks/osmium_compressor/OsmiumCompressorBottom"
     }
   },
   "variants": {
@@ -19,7 +20,15 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFrontOn"}},
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFrontOn",
+          "west": "mekanism:blocks/osmium_compressor/OsmiumCompressorLeftOn",
+          "east": "mekanism:blocks/osmium_compressor/OsmiumCompressorRightOn",
+          "south": "mekanism:blocks/osmium_compressor/OsmiumCompressorBackOn",
+          "up": "mekanism:blocks/osmium_compressor/OsmiumCompressorTopOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]

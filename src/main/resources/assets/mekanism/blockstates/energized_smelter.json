@@ -8,7 +8,8 @@
       "west": "mekanism:blocks/energized_smelter/EnergizedSmelterRight",
       "east": "mekanism:blocks/energized_smelter/EnergizedSmelterLeft",
       "south": "mekanism:blocks/energized_smelter/EnergizedSmelterBack",
-      "up": "mekanism:blocks/energized_smelter/EnergizedSmelterTop"
+      "up": "mekanism:blocks/energized_smelter/EnergizedSmelterTop",
+      "down": "mekanism:blocks/energized_smelter/EnergizedSmelterBottom"
     }
   },
   "variants": {
@@ -19,7 +20,16 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/energized_smelter/EnergizedSmelterFrontOn"}},
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/energized_smelter/EnergizedSmelterFrontOn",
+          "west": "mekanism:blocks/energized_smelter/EnergizedSmelterRightOn",
+          "east": "mekanism:blocks/energized_smelter/EnergizedSmelterLeftOn",
+          "south": "mekanism:blocks/energized_smelter/EnergizedSmelterBackOn",
+          "up": "mekanism:blocks/energized_smelter/EnergizedSmelterTopOn",
+          "down": "mekanism:blocks/energized_smelter/EnergizedSmelterBottomOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]

@@ -8,7 +8,8 @@
       "west": "mekanism:blocks/purification_chamber/PurificationChamberRight",
       "east": "mekanism:blocks/purification_chamber/PurificationChamberLeft",
       "south": "mekanism:blocks/purification_chamber/PurificationChamberBack",
-      "up": "mekanism:blocks/purification_chamber/PurificationChamberTop"
+      "up": "mekanism:blocks/purification_chamber/PurificationChamberTop",
+      "down": "mekanism:blocks/purification_chamber/PurificationChamberBottom"
     }
   },
   "variants": {
@@ -18,8 +19,16 @@
       "east":  {"y": 90},
       "west":  {"y": -90}
     },
-    "active": {
-      "true": {"textures": {"front": "mekanism:blocks/purification_chamber/PurificationChamberFrontOn"}},
+      "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/purification_chamber/PurificationChamberFrontOn",
+          "west": "mekanism:blocks/purification_chamber/PurificationChamberRightOn",
+          "east": "mekanism:blocks/purification_chamber/PurificationChamberLeftOn",
+          "south": "mekanism:blocks/purification_chamber/PurificationChamberBackOn",
+          "up": "mekanism:blocks/purification_chamber/PurificationChamberTopOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]
