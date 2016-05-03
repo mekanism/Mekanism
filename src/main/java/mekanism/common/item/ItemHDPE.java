@@ -3,11 +3,12 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.common.Mekanism;
+import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class ItemHDPE extends ItemMekanism
+public class ItemHDPE extends ItemMekanism implements IMetaItem
 {
 	public ItemHDPE()
 	{
@@ -16,23 +17,18 @@ public class ItemHDPE extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
-/*
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
-		for(int i = 0; i < PlasticItem.values().length; i++)
-		{
-			icons[i] = register.registerIcon("mekanism:" + PlasticItem.values()[i].getName());
-		}
+		return PlasticItem.values()[meta].getName();
 	}
-
+	
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public int getVariants()
 	{
-		return icons[meta];
+		return PlasticItem.values().length;
 	}
-*/
-
+	
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> itemList)
 	{

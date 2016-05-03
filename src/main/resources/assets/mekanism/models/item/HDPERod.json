@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/Polyethene"
+        "layer0": "mekanism:items/HDPERod"
     }
 }
-

@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
+import mekanism.common.base.IMetaItem;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.BlockDispenser;
@@ -17,17 +18,29 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 
-public class ItemBalloon extends ItemMekanism
+public class ItemBalloon extends ItemMekanism implements IMetaItem
 {
 	public ItemBalloon()
 	{
 		super();
 		setHasSubtypes(true);
 		BlockDispenser.dispenseBehaviorRegistry.putObject(this, new DispenserBehavior());
+	}
+	
+	@Override
+	public String getTexture(int meta)
+	{
+		return EnumColor.DYES[meta].getOreDictName() + "Balloon";
+	}
+	
+	@Override
+	public int getVariants()
+	{
+		return EnumColor.DYES.length;
 	}
 
 	public EnumColor getColor(ItemStack stack)

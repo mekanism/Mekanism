@@ -3,11 +3,12 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class ItemControlCircuit extends ItemMekanism
+public class ItemControlCircuit extends ItemMekanism implements IMetaItem
 {
 	public ItemControlCircuit()
 	{
@@ -15,25 +16,18 @@ public class ItemControlCircuit extends ItemMekanism
 		setHasSubtypes(true);
 	}
 
-/*
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
-		for(BaseTier tier : BaseTier.values())
-		{
-			if(tier.isObtainable())
-			{
-				icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getName() + "ControlCircuit");
-			}
-		}
+		return BaseTier.values()[meta].getName() + "ControlCircuit";
 	}
-
+	
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public int getVariants()
 	{
-		return icons[meta];
+		return BaseTier.values().length-1;
 	}
-
+	
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
@@ -45,7 +39,6 @@ public class ItemControlCircuit extends ItemMekanism
 			}
 		}
 	}
-*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)
