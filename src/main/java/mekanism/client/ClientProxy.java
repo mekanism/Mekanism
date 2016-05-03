@@ -1,6 +1,8 @@
 package mekanism.client;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
@@ -91,7 +93,6 @@ import mekanism.client.render.tileentity.RenderPersonalChest;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
 import mekanism.client.render.tileentity.RenderQuantumEntangloporter;
 import mekanism.client.render.tileentity.RenderResistiveHeater;
-import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderSecurityDesk;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
@@ -99,11 +100,10 @@ import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -173,9 +173,11 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -186,7 +188,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -403,6 +404,7 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.SpeedUpgrade);
 		registerItemRender(MekanismItems.EnergyUpgrade);
 		registerItemRender(MekanismItems.FilterUpgrade);
+		registerItemRender(MekanismItems.MufflingUpgrade);
 		registerItemRender(MekanismItems.GasUpgrade);
 		registerItemRender(MekanismItems.Robit);
 		registerItemRender(MekanismItems.AtomicDisassembler);
@@ -454,7 +456,27 @@ public class ClientProxy extends CommonProxy
 
 	public void registerItemRender(Item item)
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+		ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+		
+		if(item instanceof IMetaItem)
+		{
+			IMetaItem metaItem = (IMetaItem)item;
+			List<ModelResourceLocation> variants = new ArrayList<ModelResourceLocation>();
+			
+			for(int i = 0; i < metaItem.getVariants(); i++)
+			{
+				ModelResourceLocation loc = new ModelResourceLocation("mekanism:" + metaItem.getTexture(i), "inventory");
+				mesher.register(item, i, loc);
+				variants.add(loc);
+				ModelBakery.addVariantName(item, "mekanism:" + metaItem.getTexture(i));
+			}
+			
+			//ModelBakery.registerItemVariants(item, variants.toArray(new ModelResourceLocation[] {}));
+			
+			return;
+		}
+		
+		mesher.register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 
 	@Override

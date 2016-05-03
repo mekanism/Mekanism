@@ -1,10 +1,15 @@
 package mekanism.common.item;
 
+import java.util.List;
+
 import mekanism.common.Mekanism;
 import mekanism.common.Resource;
+import mekanism.common.base.IMetaItem;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class ItemDirtyDust extends ItemMekanism
+public class ItemDirtyDust extends ItemMekanism implements IMetaItem
 {
 	public ItemDirtyDust()
 	{
@@ -12,21 +17,17 @@ public class ItemDirtyDust extends ItemMekanism
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
-/*
+	
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
-		for(int i = 0; i < Resource.values().length; i++)
-		{
-			icons[i] = register.registerIcon("mekanism:Dirty" + Resource.values()[i].getName() + "Dust");
-		}
+		return "Dirty" + Resource.values()[meta].getName() + "Dust";
 	}
-
+	
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public int getVariants()
 	{
-		return icons[meta];
+		return Resource.values().length;
 	}
 
 	@Override
@@ -37,7 +38,6 @@ public class ItemDirtyDust extends ItemMekanism
 			itemList.add(new ItemStack(item, 1, counter));
 		}
 	}
-*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)

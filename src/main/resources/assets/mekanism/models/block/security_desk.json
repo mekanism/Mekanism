@@ -132,7 +132,7 @@
         }
     ],
     "textures": {
-        "all": "...",
+        "all": "mekanism:blocks/models/security_desk",
         "particle": "..."
     }
 }

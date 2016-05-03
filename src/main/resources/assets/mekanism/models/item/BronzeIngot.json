@@ -1,7 +1,7 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/Ingot"
+        "layer0": "mekanism:items/BronzeIngot"
     }
 }
 

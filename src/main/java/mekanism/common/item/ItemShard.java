@@ -1,9 +1,14 @@
 package mekanism.common.item;
 
+import java.util.List;
+
 import mekanism.common.Resource;
+import mekanism.common.base.IMetaItem;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class ItemShard extends ItemMekanism
+public class ItemShard extends ItemMekanism implements IMetaItem
 {
 	public ItemShard()
 	{
@@ -11,20 +16,16 @@ public class ItemShard extends ItemMekanism
 		setHasSubtypes(true);
 	}
 
-/*
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
-		for(int i = 0; i < Resource.values().length; i++)
-		{
-			icons[i] = register.registerIcon("mekanism:" + Resource.values()[i].getName() + "Shard");
-		}
+		return Resource.values()[meta].getName() + "Shard";
 	}
-
+	
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public int getVariants()
 	{
-		return icons[meta];
+		return Resource.values().length;
 	}
 
 	@Override
@@ -35,7 +36,6 @@ public class ItemShard extends ItemMekanism
 			itemList.add(new ItemStack(item, 1, counter));
 		}
 	}
-*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)
