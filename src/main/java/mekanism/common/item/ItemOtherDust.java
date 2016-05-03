@@ -12,7 +12,7 @@ public class ItemOtherDust extends ItemMekanism
 {
 	public IIcon[] icons = new IIcon[256];
 	
-	public static String[] subtypes = {"Diamond", "Steel", "Lead", 
+	public static String[] subtypes = {"Diamond", "Steel", "null", 
 									  "Sulfur", "Lithium", "RefinedObsidian",
 									  "Obsidian"};
 	
