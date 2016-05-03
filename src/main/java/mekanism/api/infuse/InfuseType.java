@@ -1,7 +1,5 @@
 package mekanism.api.infuse;
 
-import mekanism.common.Resource;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;

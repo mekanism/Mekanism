@@ -6,8 +6,8 @@ import java.util.Set;
 import mekanism.api.util.BlockInfo;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class MekanismAPI
 {

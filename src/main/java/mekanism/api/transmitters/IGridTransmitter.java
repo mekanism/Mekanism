@@ -3,7 +3,6 @@ package mekanism.api.transmitters;
 import java.util.Collection;
 
 import mekanism.api.Coord4D;
-
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 

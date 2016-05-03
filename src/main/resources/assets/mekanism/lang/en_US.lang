@@ -232,7 +232,7 @@ item.steelDust.name=Steel Dust
 item.copperDust.name=Copper Dust
 item.tinDust.name=Tin Dust
 item.silverDust.name=Silver Dust
-item.leadDust.name=Lead Dust
+//empty
 item.sulfurDust.name=Sulfur Dust
 item.lithiumDust.name=Lithium Dust
 
