@@ -160,6 +160,11 @@ public class MekanismRenderer
 			
 			for(int i = 0; i < metaItem.getVariants(); i++)
 			{
+				if(metaItem.getTexture(i) == null)
+				{
+					continue;
+				}
+				
 				ModelResourceLocation loc = new ModelResourceLocation(domain + ":" + metaItem.getTexture(i), "inventory");
 				mesher.register(item, i, loc);
 				variants.add(loc);

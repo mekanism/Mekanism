@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -18,37 +19,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCraftingFormula extends ItemMekanism
 {
-//	public IIcon[] icons = new IIcon[3];
-	
+	public static ModelResourceLocation MODEL = new ModelResourceLocation("mekanism:CraftingFormula", "inventory");
+	public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation("mekanism:CraftingFormulaInvalid", "inventory");
+	public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation("mekanism:CraftingFormulaEncoded", "inventory");
+
 	public ItemCraftingFormula()
 	{
 		super();
 	}
-	
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		icons[0] = register.registerIcon("mekanism:CraftingFormula");
-		icons[1] = register.registerIcon("mekanism:CraftingFormulaInvalid");
-		icons[2] = register.registerIcon("mekanism:CraftingFormulaEncoded");
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(ItemStack stack, int pass)
-	{
-		return getInventory(stack) == null ? icons[0] : (isInvalid(stack) ? icons[1] : icons[2]);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean requiresMultipleRenderPasses()
-	{
-		return true;
-	}
-*/
 
 	@Override
 	@SideOnly(Side.CLIENT)

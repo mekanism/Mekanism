@@ -1,8 +1,11 @@
 package mekanism.common.item;
 
+import java.util.List;
+
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.IMetaItem;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricMachine;
@@ -10,14 +13,16 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class ItemFactoryInstaller extends ItemMekanism
+public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 {
 	public ItemFactoryInstaller()
 	{
@@ -122,20 +127,16 @@ public class ItemFactoryInstaller extends ItemMekanism
 		return 5+tier.processes+operation;
 	}
 	
-/*
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
-		for(FactoryTier tier : FactoryTier.values())
-		{
-			icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getBaseTier().getName() + "FactoryInstaller");
-		}
+		return FactoryTier.values()[meta].getBaseTier().getName() + "FactoryInstaller";
 	}
 	
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public int getVariants()
 	{
-		return icons[meta];
+		return FactoryTier.values().length;
 	}
 
 	@Override
@@ -146,7 +147,6 @@ public class ItemFactoryInstaller extends ItemMekanism
 			itemList.add(new ItemStack(item, 1, tier.ordinal()));
 		}
 	}
-*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)

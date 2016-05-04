@@ -11,14 +11,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemWalkieTalkie extends ItemMekanism
 {
-	public static ModelResourceLocation OFF = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
+	public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
 	
-	public static Map<Integer, ModelResourceLocation> models = new HashMap<Integer, ModelResourceLocation>();
+	public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<Integer, ModelResourceLocation>();
 	
 	public ItemWalkieTalkie()
 	{
@@ -37,19 +35,13 @@ public class ItemWalkieTalkie extends ItemMekanism
 	
 	public static ModelResourceLocation getModel(int channel)
 	{
-		if(models.get(channel) == null)
+		if(CHANNEL_MODELS.get(channel) == null)
 		{
-			models.put(channel, new ModelResourceLocation("mekanism:WalkieTalkie_ch" + channel, "inventory"));
+			CHANNEL_MODELS.put(channel, new ModelResourceLocation("mekanism:WalkieTalkie_ch" + channel, "inventory"));
 		}
 		
-		return models.get(channel);
+		return CHANNEL_MODELS.get(channel);
 	}
-	
-	@SideOnly(Side.CLIENT)
-    public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining)
-    {
-		return getOn(stack) ? getModel(getChannel(stack)) : OFF;
-    }
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player)

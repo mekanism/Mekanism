@@ -44,10 +44,7 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.capabilities.CableOutputter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.StrictEnergyAcceptor;
-import mekanism.common.capabilities.StrictEnergyStorage;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
@@ -98,19 +95,14 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -1288,11 +1280,11 @@ public class Mekanism
 			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setCleanGas(clean).setVisible(false));
 		}
 		
-		Mekanism.proxy.preInit();
-
 		//Register blocks and items
 		MekanismItems.register();
 		MekanismBlocks.register();
+		
+		Mekanism.proxy.preInit();
 
 		//Register infuses
         InfuseRegistry.registerInfuseType(new InfuseType("CARBON", "mekanism:infuse/Carbon").setUnlocalizedName("carbon"));

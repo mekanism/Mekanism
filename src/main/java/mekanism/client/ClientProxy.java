@@ -108,6 +108,7 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
@@ -171,10 +172,12 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -184,6 +187,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -420,7 +424,6 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.DirtyDust);
 		registerItemRender(MekanismItems.Configurator);
 		registerItemRender(MekanismItems.NetworkReader);
-		registerItemRender(MekanismItems.WalkieTalkie);
 		registerItemRender(MekanismItems.Jetpack);
 		registerItemRender(MekanismItems.Dictionary);
 		registerItemRender(MekanismItems.GasMask);
@@ -447,12 +450,15 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.FactoryInstaller);
 		registerItemRender(MekanismItems.OtherDust);
 		
-		ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF);
+		ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF_MODEL);
 		
 		for(int i = 0; i <= 9; i++)
 		{
 			ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.getModel(i));
 		}
+		
+		ModelBakery.registerItemVariants(MekanismItems.CraftingFormula, ItemCraftingFormula.MODEL, 
+				ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
 
 		Mekanism.logger.info("Render registrations complete.");
 	}
@@ -672,6 +678,45 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		MekanismRenderer.init();
+		
+		ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack) 
+			{
+				if(stack != null && stack.getItem() instanceof ItemWalkieTalkie)
+				{
+					ItemWalkieTalkie item = (ItemWalkieTalkie)stack.getItem();
+					
+					if(item.getOn(stack))
+					{
+						return ItemWalkieTalkie.CHANNEL_MODELS.get(item.getChannel(stack));
+					}
+				}
+				
+				return ItemWalkieTalkie.OFF_MODEL;
+			}
+		});
+		
+		ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack) 
+			{
+				if(stack != null && stack.getItem() instanceof ItemCraftingFormula)
+				{
+					ItemCraftingFormula item = (ItemCraftingFormula)stack.getItem();
+					
+					if(item.getInventory(stack) == null)
+					{
+						return ItemCraftingFormula.MODEL;
+					}
+					else {
+						return item.isInvalid(stack) ? ItemCraftingFormula.INVALID_MODEL : ItemCraftingFormula.ENCODED_MODEL;
+					}
+				}
+				
+				return ItemCraftingFormula.MODEL;
+			}
+		});
 	}
 
 	@Override

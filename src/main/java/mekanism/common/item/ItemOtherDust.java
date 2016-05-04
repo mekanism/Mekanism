@@ -21,9 +21,9 @@ public class ItemOtherDust extends ItemMekanism implements IMetaItem
 	@Override
 	public String getTexture(int meta)
 	{
-		if(meta > 1)
+		if(meta == 2)
 		{
-			meta++;
+			return null;
 		}
 		
 		return subtypes[meta] + "Dust";
@@ -32,7 +32,7 @@ public class ItemOtherDust extends ItemMekanism implements IMetaItem
 	@Override
 	public int getVariants()
 	{
-		return subtypes.length-1;
+		return subtypes.length;
 	}
 
 	@Override
