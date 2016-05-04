@@ -458,7 +458,7 @@ public final class TransporterPathfinder
 					}
 				}
 
-				if(currentNode == null && start.distanceTo(currentNode) > maxSearchDistance) //TODO: This is definitely a mistake, not sure if should be != null or || though.
+				if(currentNode == null || start.distanceTo(currentNode) > maxSearchDistance)
 				{
 					break;
 				}
