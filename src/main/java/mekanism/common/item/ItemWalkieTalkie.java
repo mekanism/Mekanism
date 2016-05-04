@@ -1,16 +1,25 @@
 package mekanism.common.item;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemWalkieTalkie extends ItemMekanism
 {
+	public static ModelResourceLocation OFF = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
+	
+	public static Map<Integer, ModelResourceLocation> models = new HashMap<Integer, ModelResourceLocation>();
+	
 	public ItemWalkieTalkie()
 	{
 		super();
@@ -25,30 +34,22 @@ public class ItemWalkieTalkie extends ItemMekanism
 		list.add((getOn(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.localize("gui." + (getOn(itemstack) ? "on" : "off")));
 		list.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(itemstack));
 	}
-
-/*
-	@Override
-	public IIcon getIconIndex(ItemStack itemStack)
+	
+	public static ModelResourceLocation getModel(int channel)
 	{
-		if(!getOn(itemStack))
+		if(models.get(channel) == null)
 		{
-			return icons[0];
+			models.put(channel, new ModelResourceLocation("mekanism:WalkieTalkie_ch" + channel, "inventory"));
 		}
-
-		return icons[getChannel(itemStack)];
+		
+		return models.get(channel);
 	}
-
-	@Override
-	public void registerIcons(IIconRegister register)
-	{
-		icons[0] = register.registerIcon("mekanism:WalkieTalkieOff");
-
-		for(int i = 1; i <= 9; i++)
-		{
-			icons[i] = register.registerIcon("mekanism:WalkieTalkie_ch" + i);
-		}
-	}
-*/
+	
+	@SideOnly(Side.CLIENT)
+    public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining)
+    {
+		return getOn(stack) ? getModel(getChannel(stack)) : OFF;
+    }
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player)
@@ -59,6 +60,12 @@ public class ItemWalkieTalkie extends ItemMekanism
 		}
 
 		return itemStack;
+	}
+	
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		return !ItemStack.areItemsEqual(oldStack, newStack);
 	}
 
 	public void setOn(ItemStack itemStack, boolean on)
