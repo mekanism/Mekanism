@@ -13,7 +13,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.Tier.BinTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITransporterTile;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -31,7 +31,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
-import io.netty.buffer.ByteBuf;
+
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import net.minecraftforge.fml.common.Optional.Interface;
 
@@ -197,11 +197,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				if(bottomStack != null && isActive)
 				{
-					TileEntity tile = Coord4D.get(this).offset(EnumFacing.getFront(0)).getTileEntity(worldObj);
+					TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 
-					if(tile instanceof ITransporterTile)
+					if(tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
 					{
-						ILogisticalTransporter transporter = ((ITransporterTile)tile).getTransmitter();
+						ILogisticalTransporter transporter = tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
 
 						ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
 

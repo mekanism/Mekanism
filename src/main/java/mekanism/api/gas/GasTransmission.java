@@ -7,8 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.capabilities.Capabilities;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -89,7 +90,7 @@ public final class GasTransmission
 	 */
 	public static boolean canConnect(TileEntity tileEntity, EnumFacing side)
 	{
-		if(tileEntity instanceof ITubeConnection && (!(tileEntity instanceof ITransmitterTile) || TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), TransmissionType.GAS)))
+		if(tileEntity instanceof ITubeConnection && (!(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) || TransmissionType.checkTransmissionType(tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), TransmissionType.GAS)))
 		{
 			if(((ITubeConnection)tileEntity).canTubeConnect(side.getOpposite()))
 			{

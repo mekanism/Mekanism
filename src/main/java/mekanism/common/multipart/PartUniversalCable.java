@@ -5,15 +5,12 @@ import ic2.api.energy.tile.IEnergySource;
 import java.util.Collection;
 import java.util.List;
 
-import mekanism.api.Capabilities;
-import mekanism.api.MekanismConfig.client;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
-import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
@@ -38,8 +35,6 @@ import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
 
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {

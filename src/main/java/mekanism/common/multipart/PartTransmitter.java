@@ -8,15 +8,15 @@ import java.util.LinkedHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.capabilities.Capabilities;
+
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraft.util.EnumFacing;
 
-public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements ITransmitterTile<A, N>, IAlloyInteraction
+public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements IAlloyInteraction
 {
 	public MultipartTransmitter<A, N> transmitterDelegate;
 
@@ -27,7 +27,6 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		transmitterDelegate = new MultipartTransmitter<>(this);
 	}
 
-	@Override
 	public MultipartTransmitter<A, N> getTransmitter()
 	{
 		return transmitterDelegate;
@@ -194,4 +193,18 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public abstract void takeShare();
 
     public abstract void updateShare();
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.GRID_TRANSMITTER_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.GRID_TRANSMITTER_CAPABILITY)
+			return (T) getTransmitter();
+		return super.getCapability(capability, side);
+	}
 }

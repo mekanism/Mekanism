@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityMultiblock;
@@ -39,9 +39,9 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 				((TileEntityMultiblock)tileEntity).sendStructure = true;
 			}
 
-			if(tileEntity instanceof ITransmitterTile)
+			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 
 				if(transmitter.hasTransmitterNetwork())
 				{

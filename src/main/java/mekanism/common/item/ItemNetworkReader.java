@@ -9,8 +9,9 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.capabilities.Capabilities;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -36,13 +37,13 @@ public class ItemNetworkReader extends ItemEnergized
 			TileEntity tileEntity = world.getTileEntity(pos);
 			boolean drain = !player.capabilities.isCreativeMode;
 
-			if(getEnergy(stack) >= ENERGY_PER_USE)
+			if(getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null)
 			{
-				if(tileEntity instanceof ITransmitterTile)
+				if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 				{
 					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 	
-					IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+					IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
 	
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
@@ -67,7 +68,7 @@ public class ItemNetworkReader extends ItemEnergized
 
 					return true;
 				}
-				else if(tileEntity != null)
+				else
 				{
 					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 					
@@ -76,10 +77,12 @@ public class ItemNetworkReader extends ItemEnergized
 					for(EnumFacing iterSide : EnumFacing.VALUES)
 					{
 						Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
+
+						TileEntity tile = coord.getTileEntity(world);
 						
-						if(coord.getTileEntity(world) instanceof ITransmitterTile)
+						if(tile != null && tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
 						{
-							IGridTransmitter transmitter = ((ITransmitterTile)coord.getTileEntity(world)).getTransmitter();
+							IGridTransmitter transmitter = tile.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
 							
 							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.offset(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
 							{

@@ -13,12 +13,12 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -41,9 +41,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof ITransmitterTile)
+			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 				DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
 				network.register();
 				transmitter.setTransmitterNetwork(network);
@@ -52,9 +52,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				{
 					TileEntity tile = coord.getTileEntity(player.worldObj);
 
-					if(tile instanceof ITransmitterTile)
+					if(tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
-						((ITransmitterTile)tile).getTransmitter().setTransmitterNetwork(network);
+						tile.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null).setTransmitterNetwork(network);
 					}
 				}
 				
@@ -65,9 +65,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof ITransmitterTile)
+			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 				
 				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.ENERGY)
 				{
@@ -79,9 +79,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof ITransmitterTile)
+			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 				
 				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.GAS)
 				{
@@ -101,11 +101,11 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof ITransmitterTile)
+			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 				
-				if(transmitter.hasTransmitterNetwork() && ((ITransmitterTile)tileEntity).getTransmitter().getTransmissionType() == TransmissionType.FLUID)
+				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.FLUID)
 				{
 					FluidNetwork net = ((IGridTransmitter<IFluidHandler, FluidNetwork>)transmitter).getTransmitterNetwork();
 

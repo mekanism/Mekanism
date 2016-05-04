@@ -13,7 +13,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.InventoryNetwork.AcceptorData;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITransporterTile;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
@@ -72,7 +72,7 @@ public final class TransporterPathfinder
 					return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 				}
 				else {
-					Destination newPath = TransporterPathfinder.getNewBasePath(((ITransporterTile)start.getTileEntity(worldObj)).getTransmitter(), transportStack, 0);
+					Destination newPath = TransporterPathfinder.getNewBasePath(start.getTileEntity(worldObj).getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null), transportStack, 0);
 					
 					if(newPath != null && TransporterManager.didEmit(transportStack.itemStack, newPath.rejected))
 					{
@@ -188,9 +188,9 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = location.getTileEntity(world);
 				
-				if(tile instanceof ITransporterTile)
+				if(tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null))
 				{
-					score += ((ITransporterTile)tile).getTransmitter().getCost();
+					score += tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).getCost();
 				}
 			}
 			
@@ -270,14 +270,14 @@ public final class TransporterPathfinder
 		{
 			TileEntity tile = path.get(i).getTileEntity(world);
 			
-			if(!(tile instanceof ITransporterTile))
+			if(!tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null))
 			{
 				return false;
 			}
 			
-			ITransporterTile transporterTile = (ITransporterTile)tile;
+			ILogisticalTransporter transporter = tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 			
-			if(transporterTile.getTransmitter() == null || (transporterTile.getTransmitter().getColor() != null && transporterTile.getTransmitter().getColor() != stack.color))
+			if(transporter == null || (transporter.getColor() != null && transporter.getColor() != stack.color))
 			{
 				return false;
 			}
@@ -473,7 +473,7 @@ public final class TransporterPathfinder
 					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction))
 					{
 						TileEntity tile = neighbor.getTileEntity(worldObj);
-						double tentativeG = gScore.get(currentNode) + ((ITransporterTile)tile).getTransmitter().getCost();
+						double tentativeG = gScore.get(currentNode) + tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()).getCost();
 
 						if(closedSet.contains(neighbor))
 						{

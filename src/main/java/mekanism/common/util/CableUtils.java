@@ -9,12 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.Capabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IEnergyWrapper;
 import net.minecraft.tileentity.TileEntity;
@@ -37,9 +35,9 @@ public final class CableUtils
 
 	public static boolean isCable(TileEntity tileEntity)
 	{
-		if(tileEntity instanceof ITransmitterTile)
+		if(tileEntity != null && tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 		{
-			return TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), TransmissionType.ENERGY);
+			return TransmissionType.checkTransmissionType(tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null), TransmissionType.ENERGY);
 		}
 		return false;
 	}
@@ -116,14 +114,16 @@ public final class CableUtils
 
 	public static boolean isOutputter(TileEntity tileEntity, EnumFacing side)
 	{
-		return (tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite())) ||
+		return tileEntity != null && (
+				(tileEntity.hasCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && tileEntity.getCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite())) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
-				(MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()));
+				(MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()))
+		);
 	}
 
 	public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, EnumFacing side)
 	{
-		if(tileEntity instanceof ITransmitterTile)
+		if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 		{
 			return false;
 		}
@@ -142,9 +142,9 @@ public final class CableUtils
 				return true;
 			}
 		}
-		else if(tileEntity instanceof ICableOutputter)
+		else if(tileEntity.hasCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()))
 		{
-			if(((ICableOutputter)tileEntity).canOutputTo(side.getOpposite()))
+			if(tileEntity.getCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite()))
 			{
 				return true;
 			}

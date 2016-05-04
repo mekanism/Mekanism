@@ -16,9 +16,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.api.energy.ICableOutputter;
-import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -48,6 +45,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.CableOutputter;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.StrictEnergyAcceptor;
 import mekanism.common.capabilities.StrictEnergyStorage;
 import mekanism.common.chunkloading.ChunkManager;
@@ -1305,7 +1303,7 @@ public class Mekanism
 		InfuseRegistry.registerInfuseType(new InfuseType("BIO", "mekanism:infuse/Bio").setUnlocalizedName("bio"));
 		InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", "mekanism:infuse/Obsidian").setUnlocalizedName("obsidian"));
 
-		registerCapabilities();
+		Capabilities.registerCapabilities();
 	}
 	
 	@EventHandler
@@ -1417,56 +1415,6 @@ public class Mekanism
 		Mekanism.proxy.updateConfigRecipes();
 		
 		logger.info("Hooking complete.");
-	}
-
-	public void registerCapabilities()
-	{
-		CapabilityManager.INSTANCE.register(IStrictEnergyStorage.class, new IStorage<IStrictEnergyStorage>() {
-			@Override
-			public NBTBase writeNBT(Capability<IStrictEnergyStorage> capability, IStrictEnergyStorage instance, EnumFacing side)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setDouble("maxEnergy", instance.getMaxEnergy());
-				tag.setDouble("energyStored", instance.getEnergy());
-				return tag;
-			}
-
-			@Override
-			public void readNBT(Capability<IStrictEnergyStorage> capability, IStrictEnergyStorage instance, EnumFacing side, NBTBase nbt)
-			{
-				if(nbt instanceof NBTTagCompound)
-					instance.setEnergy(((NBTTagCompound)nbt).getDouble("energyStored"));
-			}
-		}, StrictEnergyStorage.class);
-		CapabilityManager.INSTANCE.register(IStrictEnergyAcceptor.class, new IStorage<IStrictEnergyAcceptor>() {
-			@Override
-			public NBTBase writeNBT(Capability<IStrictEnergyAcceptor> capability, IStrictEnergyAcceptor instance, EnumFacing side)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setDouble("maxEnergy", instance.getMaxEnergy());
-				tag.setDouble("energyStored", instance.getEnergy());
-				return tag;
-			}
-
-			@Override
-			public void readNBT(Capability<IStrictEnergyAcceptor> capability, IStrictEnergyAcceptor instance, EnumFacing side, NBTBase nbt)
-			{
-				if(nbt instanceof NBTTagCompound)
-					instance.setEnergy(((NBTTagCompound)nbt).getDouble("energyStored"));
-			}
-		}, StrictEnergyAcceptor.class);
-		CapabilityManager.INSTANCE.register(ICableOutputter.class, new IStorage<ICableOutputter>() {
-			@Override
-			public NBTBase writeNBT(Capability<ICableOutputter> capability, ICableOutputter instance, EnumFacing side)
-			{
-				return new NBTTagCompound();
-			}
-
-			@Override
-			public void readNBT(Capability<ICableOutputter> capability, ICableOutputter instance, EnumFacing side, NBTBase nbt)
-			{
-			}
-		}, CableOutputter.class);
 	}
 	
 	@SubscribeEvent

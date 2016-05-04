@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.Capabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
@@ -346,15 +346,19 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
+		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
+				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+				|| super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing)
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
+		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
+			return (T) this;
+		if(capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
 			return (T) this;
 		return super.getCapability(capability, facing);
 	}

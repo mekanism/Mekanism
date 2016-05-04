@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.Capabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.util.LangUtils;
@@ -99,5 +99,4 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 			return (T) this;
 		return super.getCapability(capability, facing);
 	}
-
 }

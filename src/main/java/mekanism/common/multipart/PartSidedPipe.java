@@ -3,12 +3,8 @@ package mekanism.common.multipart;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -16,17 +12,15 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +34,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 //import net.minecraft.util.IIcon;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 /*import codechicken.lib.data.MCDataInput;
@@ -63,16 +56,10 @@ import codechicken.multipart.TSlottedPart;*/
 import mcmultipart.block.TileMultipart;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.IOccludingPart;
-import mcmultipart.multipart.ISlottedPart;
-import mcmultipart.multipart.ISlottedPart.ISlotOccludingPart;
 import mcmultipart.multipart.Multipart;
-import mcmultipart.multipart.PartSlot;
 import mcmultipart.raytrace.PartMOP;
 import mcmultipart.raytrace.RayTraceUtils;
 import mcmultipart.raytrace.RayTraceUtils.RayTraceResultPart;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
@@ -281,7 +268,9 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			{
 				TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
-				if(tileEntity instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))
+				if(tileEntity != null && tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+						&& TransmissionType.checkTransmissionType(tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
+						&& isValidTransmitter(tileEntity))
 				{
 					connections |= 1 << side.ordinal();
 				}
@@ -333,7 +322,9 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		{
 			TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
-			if(tileEntity instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))
+			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+					&& TransmissionType.checkTransmissionType(tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
+					&& isValidTransmitter(tileEntity))
 			{
 				return true;
 			}

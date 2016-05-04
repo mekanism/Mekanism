@@ -5,10 +5,9 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.util.ListUtils;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITransporterTile;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -38,9 +37,9 @@ public final class TransporterUtils
 		{
 			TileEntity tile = tileEntity.coord().offset(orientation).getTileEntity(tileEntity.world());
 
-			if(tile instanceof ITransporterTile)
+			if(tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, orientation.getOpposite()))
 			{
-				ILogisticalTransporter otherTransporter = ((ITransporterTile)tile).getTransmitter();
+				ILogisticalTransporter otherTransporter = tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, orientation.getOpposite());
 
 				if(otherTransporter.getColor() == null || tileEntity.getColor() == null || otherTransporter.getColor() == tileEntity.getColor())
 				{
@@ -54,7 +53,7 @@ public final class TransporterUtils
 
 	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
-		if(tile instanceof ITransmitterTile || !(tile instanceof IInventory))
+		if(tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || !(tile instanceof IInventory))
 		{
 			return false;
 		}
@@ -151,7 +150,7 @@ public final class TransporterUtils
 		{
 			TileEntity inventory = transporter.coord().offset(orientation).getTileEntity(transporter.world());
 
-			if(inventory instanceof IInventory && !(inventory instanceof ITransmitterTile))
+			if(inventory instanceof IInventory && !(inventory.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, orientation.getOpposite())))
 			{
 				inventories[orientation.ordinal()] = (IInventory)inventory;
 			}

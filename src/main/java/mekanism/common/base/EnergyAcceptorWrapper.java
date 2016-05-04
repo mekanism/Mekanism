@@ -2,7 +2,7 @@ package mekanism.common.base;
 
 import ic2.api.energy.tile.IEnergySink;
 
-import mekanism.api.Capabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;

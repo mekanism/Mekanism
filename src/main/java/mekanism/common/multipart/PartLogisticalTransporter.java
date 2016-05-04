@@ -9,19 +9,17 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITransporterTile;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -38,6 +36,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 //import net.minecraft.util.IIcon;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraft.util.EnumFacing;
 /*
@@ -45,10 +44,8 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
 */
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork> implements ITransporterTile
+public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork>
 {
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
 
@@ -121,7 +118,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	protected boolean isValidTransmitter(TileEntity tileEntity)
 	{
-		ILogisticalTransporter transporter = ((ITransporterTile)tileEntity).getTransmitter();
+		ILogisticalTransporter transporter = tileEntity.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 
 		if(getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor())
 		{
@@ -491,5 +488,19 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		packet.writeInt(tier.ordinal());
 		
 		super.writeUpdatePacket(packet);
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY)
+			return (T) getTransmitter();
+		return super.getCapability(capability, side);
 	}
 }

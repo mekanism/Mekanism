@@ -15,8 +15,8 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ITransporterTile;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
@@ -91,7 +91,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
 				TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
 
-				if(back instanceof IInventory && (front instanceof ITransporterTile || front instanceof IInventory))
+				if(back instanceof IInventory && (front != null && front.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()) || front instanceof IInventory))
 				{
 					IInventory inventory = InventoryUtils.checkChestInv((IInventory)back);
 
@@ -177,9 +177,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		ItemStack used = null;
 
-		if(front instanceof ITransporterTile)
+		if(front.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 		{
-			ILogisticalTransporter transporter = ((ITransporterTile)front).getTransmitter();
+			ILogisticalTransporter transporter = front.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
 
 			if(!roundRobin)
 			{

@@ -10,11 +10,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.Capabilities;
-import mekanism.api.Coord4D;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -372,7 +369,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
-		if(Coord4D.get(this).offset(direction).getTileEntity(worldObj) instanceof ITransmitterTile)
+		TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
+		if(tile == null || tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
 		{
 			return amount;
 		}
@@ -402,17 +400,20 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
+				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
 				|| super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing)
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
+		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
+			return (T) this;
+		if(capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
 			return (T) this;
 		return super.getCapability(capability, facing);
 	}

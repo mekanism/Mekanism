@@ -23,9 +23,9 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ITransporterTile;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -301,9 +301,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					getTopEject(true, remains);
 				}
-				else if(getEjectInv() instanceof ITransporterTile)
+				else if(getEjectInv().hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), ((ITransporterTile)getEjectInv()).getTransmitter(), getTopEject(false, null), null, true, 0);
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), getEjectInv().getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, null), null, true, 0);
 
 					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{

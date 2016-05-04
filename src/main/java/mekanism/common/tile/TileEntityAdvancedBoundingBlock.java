@@ -5,6 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import cofh.api.energy.IEnergyHandler;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -469,4 +471,21 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		
 		return getInv().getDataType();
 	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
+				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
+				|| super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
+			return (T) this;
+		return super.getCapability(capability, facing);
+	}
+
 }
