@@ -3,7 +3,6 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -26,6 +25,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergyCube>
 {
+	public static int[][] COLORS = new int[][] {new int[] {100, 210, 125}, new int[] {215, 85, 70}, new int[] {80, 125, 230},
+												new int[] {154, 120, 200}, new int[] {0, 0, 0}};
+	
 	private ModelEnergyCube model = new ModelEnergyCube();
 	private ModelEnergyCore core = new ModelEnergyCore();
 	
@@ -95,11 +97,11 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 			MekanismRenderer.blendOn();
 			MekanismRenderer.glowOn();
 
-			EnumColor c = tileEntity.tier.getBaseTier().getColor();
+			int[] c = COLORS[tileEntity.tier.getBaseTier().ordinal()];
 
 			GL11.glPushMatrix();
 			GL11.glScalef(0.4F, 0.4F, 0.4F);
-			GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), (float)(tileEntity.getEnergy() / tileEntity.getMaxEnergy()));
+			GL11.glColor4f((float)c[0]/255F, (float)c[1]/255F, (float)c[2]/255F, (float)(tileEntity.getEnergy() / tileEntity.getMaxEnergy()));
 			GL11.glTranslatef(0, (float)Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
 			GL11.glRotatef((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
 			GL11.glRotatef(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
