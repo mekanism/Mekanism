@@ -151,7 +151,7 @@ public class TileComponentConfig implements ITileComponent
 		}
 		else if(index > getOutputs(type).size()-1)
 		{
-			index = getConfig(type)[side] = 0;
+			index = getConfig(type)[side.ordinal()] = 0;
 		}
 		
 		return getOutputs(type).get(index);

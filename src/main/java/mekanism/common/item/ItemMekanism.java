@@ -10,12 +10,4 @@ public class ItemMekanism extends Item
 		super();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
-/*
-	@Override
-	public void registerIcons(IIconRegister register)
-	{
-		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
-	}
-*/
 }

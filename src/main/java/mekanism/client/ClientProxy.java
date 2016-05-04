@@ -113,6 +113,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
@@ -450,6 +451,13 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.GaugeDropper);
 		registerItemRender(MekanismItems.FactoryInstaller);
 		registerItemRender(MekanismItems.OtherDust);
+		
+		ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF);
+		
+		for(int i = 0; i <= 9; i++)
+		{
+			ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.getModel(i));
+		}
 
 		Mekanism.logger.info("Render registrations complete.");
 	}
@@ -470,8 +478,6 @@ public class ClientProxy extends CommonProxy
 				variants.add(loc);
 				ModelBakery.addVariantName(item, "mekanism:" + metaItem.getTexture(i));
 			}
-			
-			//ModelBakery.registerItemVariants(item, variants.toArray(new ModelResourceLocation[] {}));
 			
 			return;
 		}
