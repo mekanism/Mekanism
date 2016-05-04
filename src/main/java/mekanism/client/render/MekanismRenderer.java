@@ -10,48 +10,42 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
-import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
-import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.ObfuscatedNames;
-import mekanism.common.base.ISpecialBounds;
+import mekanism.common.base.IMetaItem;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.google.common.collect.Maps;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
@@ -154,8 +148,33 @@ public class MekanismRenderer
 		RenderThermalEvaporationController.resetDisplayInts();
 		RenderFluidTank.resetDisplayInts();
 	}
+	
+	public static void registerItemRender(String domain, Item item)
+	{
+		ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+		
+		if(item instanceof IMetaItem)
+		{
+			IMetaItem metaItem = (IMetaItem)item;
+			List<ModelResourceLocation> variants = new ArrayList<ModelResourceLocation>();
+			
+			for(int i = 0; i < metaItem.getVariants(); i++)
+			{
+				ModelResourceLocation loc = new ModelResourceLocation(domain + ":" + metaItem.getTexture(i), "inventory");
+				mesher.register(item, i, loc);
+				variants.add(loc);
+				ModelBakery.addVariantName(item, domain + ":" + metaItem.getTexture(i));
+			}
+			
+			return;
+		}
+		
+		mesher.register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+	}
 
-	public static void initFluidTextures(TextureMap map) {
+
+	public static void initFluidTextures(TextureMap map) 
+	{
 		missingIcon = map.getMissingSprite();
 
 		textureMap.clear();

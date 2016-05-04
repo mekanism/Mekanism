@@ -1,8 +1,6 @@
 package mekanism.client;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
@@ -101,7 +99,6 @@ import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
-import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -174,12 +171,10 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -461,28 +456,10 @@ public class ClientProxy extends CommonProxy
 
 		Mekanism.logger.info("Render registrations complete.");
 	}
-
+	
 	public void registerItemRender(Item item)
 	{
-		ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		
-		if(item instanceof IMetaItem)
-		{
-			IMetaItem metaItem = (IMetaItem)item;
-			List<ModelResourceLocation> variants = new ArrayList<ModelResourceLocation>();
-			
-			for(int i = 0; i < metaItem.getVariants(); i++)
-			{
-				ModelResourceLocation loc = new ModelResourceLocation("mekanism:" + metaItem.getTexture(i), "inventory");
-				mesher.register(item, i, loc);
-				variants.add(loc);
-				ModelBakery.addVariantName(item, "mekanism:" + metaItem.getTexture(i));
-			}
-			
-			return;
-		}
-		
-		mesher.register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+		MekanismRenderer.registerItemRender("mekanism", item);
 	}
 
 	@Override

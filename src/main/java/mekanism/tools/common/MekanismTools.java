@@ -20,7 +20,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -77,10 +76,10 @@ public class MekanismTools implements IModule
 		
 		//Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
 		MinecraftForge.EVENT_BUS.register(this);
-		FMLCommonHandler.instance().bus().register(this);
 
 		//Load the proxy
 		proxy.loadConfiguration();
+		proxy.registerRenderInformation();
 		
 		//Load this module
 		addRecipes();
