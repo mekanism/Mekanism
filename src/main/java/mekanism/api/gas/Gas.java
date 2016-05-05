@@ -147,9 +147,7 @@ public class Gas
 	public Gas setIcon(TextureMap map, String location)
 	{
 		iconLocation = new ResourceLocation(location);
-
 		sprite = map.registerSprite(iconLocation);
-
 		from_fluid = false;
 		
 		return this;

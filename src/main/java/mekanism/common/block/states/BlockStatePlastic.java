@@ -51,5 +51,4 @@ public class BlockStatePlastic extends BlockState
 			return new ModelResourceLocation(baseLocation, property);
 		}
 	}
-
 }

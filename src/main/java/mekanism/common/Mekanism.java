@@ -1269,8 +1269,8 @@ public class Mekanism
 		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 		
-		FluidRegistry.registerFluid(new Fluid("heavyWater", new ResourceLocation("mekanism:heavy_water"), new ResourceLocation("mekanism:heavy_water")));
-		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:steam"), new ResourceLocation("mekanism:steam")).setGaseous(true));
+		FluidRegistry.registerFluid(new Fluid("heavyWater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater")));
+		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true));
 		
 		for(Resource resource : Resource.values())
 		{
@@ -1287,13 +1287,13 @@ public class Mekanism
 		Mekanism.proxy.preInit();
 
 		//Register infuses
-        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", "mekanism:infuse/Carbon").setUnlocalizedName("carbon"));
-        InfuseRegistry.registerInfuseType(new InfuseType("TIN", "mekanism:infuse/Tin").setUnlocalizedName("tin"));
-        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", "mekanism:infuse/Diamond").setUnlocalizedName("diamond"));
-        InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", "mekanism:infuse/Redstone").setUnlocalizedName("redstone"));
-        InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", "mekanism:infuse/Fungi").setUnlocalizedName("fungi"));
-		InfuseRegistry.registerInfuseType(new InfuseType("BIO", "mekanism:infuse/Bio").setUnlocalizedName("bio"));
-		InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", "mekanism:infuse/Obsidian").setUnlocalizedName("obsidian"));
+        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", new ResourceLocation("mekanism:blocks/infuse/Carbon")).setUnlocalizedName("carbon"));
+        InfuseRegistry.registerInfuseType(new InfuseType("TIN", new ResourceLocation("mekanism:blocks/infuse/Tin")).setUnlocalizedName("tin"));
+        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", new ResourceLocation("mekanism:blocks/infuse/Diamond")).setUnlocalizedName("diamond"));
+        InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", new ResourceLocation("mekanism:blocks/infuse/Redstone")).setUnlocalizedName("redstone"));
+        InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", new ResourceLocation("mekanism:blocks/infuse/Fungi")).setUnlocalizedName("fungi"));
+		InfuseRegistry.registerInfuseType(new InfuseType("BIO", new ResourceLocation("mekanism:blocks/infuse/Bio")).setUnlocalizedName("bio"));
+		InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation("mekanism:blocks/infuse/Obsidian")).setUnlocalizedName("obsidian"));
 
 		Capabilities.registerCapabilities();
 	}

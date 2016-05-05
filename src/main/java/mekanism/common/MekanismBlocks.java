@@ -19,6 +19,7 @@ import mekanism.common.block.BlockObsidianTNT;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
+import mekanism.common.block.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
@@ -70,8 +71,7 @@ public class MekanismBlocks
 	private static final IStateMapper machineMapper = new MachineBlockStateMapper();
 	private static final IStateMapper basicMapper = new BasicBlockStateMapper();
 	private static final IStateMapper plasticMapper = new PlasticBlockStateMapper();
-
-
+	private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
 
 	/**
 	 * Adds and registers all blocks.
@@ -107,13 +107,14 @@ public class MekanismBlocks
 		ModelLoader.setCustomStateMapper(GlowPlasticBlock, plasticMapper);
 		ModelLoader.setCustomStateMapper(ReinforcedPlasticBlock, plasticMapper);
 		ModelLoader.setCustomStateMapper(RoadPlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(PlasticFence, fenceMapper);
 
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
 
 		for(MachineType type : MachineType.values())
 		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), "active=false,facing=north"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), (type.hasActiveTexture() ? "active=false," : "") + "facing=north"));
 		}
 
 		for(BasicBlockType type : BasicBlockType.values())
@@ -147,6 +148,7 @@ public class MekanismBlocks
 			{
 				EnergyCubeTier tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
 				ResourceLocation baseLocation = new ResourceLocation("mekanism", "EnergyCube");
+				
 				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
 			}
 		});

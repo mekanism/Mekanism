@@ -11,11 +11,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -37,8 +40,7 @@ public class BlockPlasticFence extends BlockFence
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(NORTH, false).withProperty(EAST, false)
-				.withProperty(WEST, false).withProperty(SOUTH, false).withProperty(colorProperty, EnumDyeColor.byMetadata(meta));
+		return this.getDefaultState().withProperty(colorProperty, EnumDyeColor.byMetadata(meta));
 	}
 
 	@Override
@@ -66,13 +68,29 @@ public class BlockPlasticFence extends BlockFence
     @Override
     public int getRenderColor(IBlockState state)
     {
-        EnumColor colour = EnumColor.AQUA;
-        return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
+		EnumDyeColor color = state.getValue(colorProperty);
+		EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
+		
+		return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
     }
 
 	@Override
 	public int damageDropped(IBlockState state)
 	{
 		return getMetaFromState(state);
+	}
+	
+	public static class PlasticFenceStateMapper extends StateMapperBase
+	{
+		@Override
+		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		{
+			String properties = "east=" + state.getValue(EAST) + ",";
+			properties += "north=" + state.getValue(NORTH) + ",";
+			properties += "south=" + state.getValue(SOUTH) + ",";
+			properties += "west=" + state.getValue(WEST);
+			ResourceLocation baseLocation = new ResourceLocation("mekanism", "PlasticFence");
+			return new ModelResourceLocation(baseLocation, properties);
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package mekanism.common.block;
 
+import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
+
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -8,7 +10,6 @@ import mekanism.common.block.states.BlockStatePlastic;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,8 +23,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
 
 public class BlockPlastic extends Block
 {
@@ -59,7 +58,6 @@ public class BlockPlastic extends Block
 	{
 		return state.getValue(colorProperty).getMetadata();
 	}
-
 
 /*
 	@Override
@@ -129,6 +127,7 @@ public class BlockPlastic extends Block
 	{
 		EnumDyeColor color = state.getValue(colorProperty);
 		EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
+		
 		return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
 	}
 

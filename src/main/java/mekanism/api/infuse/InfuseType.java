@@ -11,29 +11,27 @@ import net.minecraft.util.StatCollector;
  */
 public final class InfuseType
 {
-	/** The name of this infusion */
+	/** The name of this infusion. */
 	public String name;
 
 	/** This infuse GUI's icon */
-	public ResourceLocation icon;
+	public ResourceLocation iconResource;
 
+	/** The texture representing this infuse type. */
 	public TextureAtlasSprite sprite;
-	
-	/** The location of this infuse GUI's icon */
-	public String textureLocation;
 
 	/** The unlocalized name of this type. */
 	public String unlocalizedName;
 
-	public InfuseType(String s, String tex)
+	public InfuseType(String s, ResourceLocation res)
 	{
 		name = s;
-		textureLocation = tex;
+		iconResource = res;
 	}
 	
-	public void setIcon(ResourceLocation i)
+	public void setIcon(TextureAtlasSprite tex)
 	{
-		icon = i;
+		sprite = tex;
 	}
 
 	public InfuseType setUnlocalizedName(String name)
