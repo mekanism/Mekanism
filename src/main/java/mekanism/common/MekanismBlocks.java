@@ -5,6 +5,10 @@ import static mekanism.common.block.states.BlockStateBasic.BasicBlock.BASIC_BLOC
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_3;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mekanism.api.EnumColor;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.GasTankTier;
@@ -119,8 +123,31 @@ public class MekanismBlocks
 
 		for(MachineType type : MachineType.values())
 		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), 
-					(type.hasActiveTexture() ? "active=false," : "") + (type.hasRotations() ? "facing=north" : "")));
+			List<String> entries = new ArrayList<String>();
+			
+			if(type.hasActiveTexture())
+			{
+				entries.add("active=false");
+			}
+			
+			if(type.hasRotations())
+			{
+				entries.add("facing=north");
+			}
+			
+			String properties = new String();
+			
+			for(int i = 0; i < entries.size(); i++)
+			{
+				properties += entries.get(i);
+				
+				if(i < entries.size()-1)
+				{
+					properties += ",";
+				}
+			}
+			
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), properties));
 		}
 
 		for(BasicBlockType type : BasicBlockType.values())
