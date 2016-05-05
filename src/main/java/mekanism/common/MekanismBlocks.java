@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.client.ClientProxy;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.IEnergyCube;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
@@ -123,31 +125,65 @@ public class MekanismBlocks
 
 		for(MachineType type : MachineType.values())
 		{
-			List<String> entries = new ArrayList<String>();
+			List<ModelResourceLocation> modelsToAdd = new ArrayList<ModelResourceLocation>();
+			String resource = "mekanism:" + type.getName();
+			RecipeType recipePointer = null;
 			
-			if(type.hasActiveTexture())
+			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
-				entries.add("active=false");
+				recipePointer = RecipeType.values()[0];
+				resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
 			}
 			
-			if(type.hasRotations())
+			while(true)
 			{
-				entries.add("facing=north");
-			}
-			
-			String properties = new String();
-			
-			for(int i = 0; i < entries.size(); i++)
-			{
-				properties += entries.get(i);
-				
-				if(i < entries.size()-1)
+				if(ClientProxy.machineResources.get(resource) == null)
 				{
-					properties += ",";
+					List<String> entries = new ArrayList<String>();
+					
+					if(type.hasActiveTexture())
+					{
+						entries.add("active=false");
+					}
+					
+					if(type.hasRotations())
+					{
+						entries.add("facing=north");
+					}
+					
+					String properties = new String();
+					
+					for(int i = 0; i < entries.size(); i++)
+					{
+						properties += entries.get(i);
+						
+						if(i < entries.size()-1)
+						{
+							properties += ",";
+						}
+					}
+					
+					ModelResourceLocation model = new ModelResourceLocation(resource, properties);
+					
+					ClientProxy.machineResources.put(resource, model);
+					modelsToAdd.add(model);
+					
+					if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+					{
+						if(recipePointer.ordinal() < RecipeType.values().length-1)
+						{
+							recipePointer = RecipeType.values()[recipePointer.ordinal()+1];
+							resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
+							
+							continue;
+						}
+					}
 				}
+				
+				break;
 			}
 			
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), properties));
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(type.typeBlock.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[] {}));
 		}
 
 		for(BasicBlockType type : BasicBlockType.values())
@@ -169,7 +205,7 @@ public class MekanismBlocks
 		{
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(), new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
 		}
-
+		
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.EnergyCube), new ItemMeshDefinition() {
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack)
@@ -191,5 +227,32 @@ public class MekanismBlocks
 				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
 			}
 		});
+		
+		ItemMeshDefinition mesher = new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				MachineType type = MachineType.get(stack);
+				
+				if(type != null)
+				{
+					String resource = "mekanism:" + type.getName();
+					
+					if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+					{
+						RecipeType recipe = RecipeType.values()[((ItemBlockMachine)stack.getItem()).getRecipeType(stack)];
+						resource = "mekanism:" + type.getName() + "_" + recipe.getName();
+					}
+					
+					return ClientProxy.machineResources.get(resource);
+				}
+				
+				return null;
+			}
+		};
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock), mesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), mesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), mesher);
 	}
 }

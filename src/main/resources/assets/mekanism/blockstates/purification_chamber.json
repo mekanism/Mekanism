@@ -19,7 +19,7 @@
       "east":  {"y": 90},
       "west":  {"y": -90}
     },
-      "active": {
+    "active": {
       "true": {
         "textures": {
           "front": "mekanism:blocks/purification_chamber/PurificationChamberFrontOn",

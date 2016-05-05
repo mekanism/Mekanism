@@ -11,6 +11,7 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -73,14 +74,12 @@ public class BlockStateMachine extends BlockStateFacing
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
 	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
+	public static final PropertyEnum<RecipeType> recipeProperty = PropertyEnum.create("recipe", RecipeType.class);
 
 	public BlockStateMachine(BlockMachine block, PropertyEnum typeProperty)
 	{
-		super(block, typeProperty, activeProperty, tierProperty);
+		super(block, typeProperty, activeProperty, tierProperty, recipeProperty);
 	}
-
-	public static final Predicate<EnumFacing> never = Predicates.<EnumFacing>alwaysFalse();
-	public static final Predicate<EnumFacing> always = Predicates.<EnumFacing>alwaysTrue();
 
 	public static enum MachineBlock
 	{
@@ -129,11 +128,11 @@ public class BlockStateMachine extends BlockStateFacing
 		METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "MetallurgicInfuser", 12, TileEntityMetallurgicInfuser.class, true, true, true, Plane.HORIZONTAL, false),
 		PURIFICATION_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 9, "PurificationChamber", 15, TileEntityPurificationChamber.class, true, false, true, Plane.HORIZONTAL, true),
 		ENERGIZED_SMELTER(MachineBlock.MACHINE_BLOCK_1, 10, "EnergizedSmelter", 16, TileEntityEnergizedSmelter.class, true, false, true, Plane.HORIZONTAL, true),
-		TELEPORTER(MachineBlock.MACHINE_BLOCK_1, 11, "Teleporter", 13, TileEntityTeleporter.class, true, false, false, never, false),
+		TELEPORTER(MachineBlock.MACHINE_BLOCK_1, 11, "Teleporter", 13, TileEntityTeleporter.class, true, false, false, Predicates.alwaysFalse(), false),
 		ELECTRIC_PUMP(MachineBlock.MACHINE_BLOCK_1, 12, "ElectricPump", 17, TileEntityElectricPump.class, true, true, false, Plane.HORIZONTAL, false),
 		PERSONAL_CHEST(MachineBlock.MACHINE_BLOCK_1, 13, "PersonalChest", -1, TileEntityPersonalChest.class, true, true, false, Plane.HORIZONTAL, false),
 		CHARGEPAD(MachineBlock.MACHINE_BLOCK_1, 14, "Chargepad", -1, TileEntityChargepad.class, true, true, false, Plane.HORIZONTAL, false),
-		LOGISTICAL_SORTER(MachineBlock.MACHINE_BLOCK_1, 15, "LogisticalSorter", -1, TileEntityLogisticalSorter.class, false, true, false, always, true),
+		LOGISTICAL_SORTER(MachineBlock.MACHINE_BLOCK_1, 15, "LogisticalSorter", -1, TileEntityLogisticalSorter.class, false, true, false, Predicates.alwaysTrue(), true),
 		ROTARY_CONDENSENTRATOR(MachineBlock.MACHINE_BLOCK_2, 0, "RotaryCondensentrator", 7, TileEntityRotaryCondensentrator.class, true, true, false, Plane.HORIZONTAL, false),
 		CHEMICAL_OXIDIZER(MachineBlock.MACHINE_BLOCK_2, 1, "ChemicalOxidizer", 29, TileEntityChemicalOxidizer.class, true, true, true, Plane.HORIZONTAL, true),
 		CHEMICAL_INFUSER(MachineBlock.MACHINE_BLOCK_2, 2, "ChemicalInfuser", 30, TileEntityChemicalInfuser.class, true, true, false, Plane.HORIZONTAL, true),
@@ -145,18 +144,18 @@ public class BlockStateMachine extends BlockStateFacing
 		CHEMICAL_CRYSTALLIZER(MachineBlock.MACHINE_BLOCK_2, 8, "ChemicalCrystallizer", 37, TileEntityChemicalCrystallizer.class, true, true, true, Plane.HORIZONTAL, true),
 		SEISMIC_VIBRATOR(MachineBlock.MACHINE_BLOCK_2, 9, "SeismicVibrator", 39, TileEntitySeismicVibrator.class, true, true, false, Plane.HORIZONTAL, true),
 		PRESSURIZED_REACTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 10, "PressurizedReactionChamber", 40, TileEntityPRC.class, true, true, false, Plane.HORIZONTAL, true),
-		FLUID_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "FluidTank", 41, TileEntityFluidTank.class, false, true, false, never, true),
+		FLUID_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "FluidTank", 41, TileEntityFluidTank.class, false, true, false, Predicates.alwaysFalse(), true),
 		FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, TileEntityFluidicPlenisher.class, true, true, false, Plane.HORIZONTAL, true),
-		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false, always, false),
-		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false, always, true),
-		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false, always, true),
+		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false, Predicates.alwaysTrue(), false),
+		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false, Predicates.alwaysTrue(), true),
+		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false, Predicates.alwaysTrue(), true),
 		QUANTUM_ENTANGLOPORTER(MachineBlock.MACHINE_BLOCK_3, 0, "QuantumEntangloporter", 46, TileEntityQuantumEntangloporter.class, true, false, false, Plane.HORIZONTAL, true),
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false, Plane.HORIZONTAL, true),
-		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false, never, true),
+		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false, Predicates.alwaysFalse(), true),
 		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false, Plane.HORIZONTAL, true),
-		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, false, false, always, true),
-		FORMULAIC_ASSEMBLICATOR(MachineBlock.MACHINE_BLOCK_3, 5, "FormulaicAssemblicator", 56, TileEntityFormulaicAssemblicator.class, true, false, true, always, true),
-		FUELWOOD_HEATER(MachineBlock.MACHINE_BLOCK_3, 6, "FuelwoodHeater", 58, TileEntityFuelwoodHeater.class, false, false, false, always, true);
+		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, false, false, Predicates.alwaysTrue(), true),
+		FORMULAIC_ASSEMBLICATOR(MachineBlock.MACHINE_BLOCK_3, 5, "FormulaicAssemblicator", 56, TileEntityFormulaicAssemblicator.class, true, false, true, Predicates.alwaysTrue(), true),
+		FUELWOOD_HEATER(MachineBlock.MACHINE_BLOCK_3, 6, "FuelwoodHeater", 58, TileEntityFuelwoodHeater.class, false, false, false, Predicates.alwaysTrue(), true);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -413,6 +412,7 @@ public class BlockStateMachine extends BlockStateFacing
 			BlockMachine block = (BlockMachine)state.getBlock();
 			MachineType type = state.getValue(block.getProperty());
 			StringBuilder builder = new StringBuilder();
+			String nameOverride = null;
 			
 			if(type.hasActiveTexture())
 			{
@@ -440,13 +440,20 @@ public class BlockStateMachine extends BlockStateFacing
 					return new ModelResourceLocation("builtin/missing", "missing");
 				}
 			}
+			
+			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+			{
+				RecipeType recipe = state.getValue(recipeProperty);
+				
+				nameOverride = type.getName() + "_" + recipe.getName();
+			}
 
 			if(builder.length() == 0)
 			{
 				builder.append("normal");
 			}
 
-			ResourceLocation baseLocation = new ResourceLocation("mekanism", type.getName());
+			ResourceLocation baseLocation = new ResourceLocation("mekanism", nameOverride != null ? nameOverride : type.getName());
 			
 			return new ModelResourceLocation(baseLocation, builder.toString());
 		}

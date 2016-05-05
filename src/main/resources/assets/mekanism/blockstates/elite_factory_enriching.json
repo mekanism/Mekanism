@@ -19,7 +19,15 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {},
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/elite/enriching/EliteEnrichingFactoryFrontOn",
+          "south": "mekanism:blocks/factory/elite/enriching/EliteEnrichingFactoryBackOn",
+          "west": "mekanism:blocks/factory/elite/enriching/EliteEnrichingFactoryRightOn",
+          "east": "mekanism:blocks/factory/elite/enriching/EliteEnrichingFactoryLeftOn",
+          "up": "mekanism:blocks/factory/elite/enriching/EliteEnrichingFactoryTopOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]

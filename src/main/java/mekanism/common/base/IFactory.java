@@ -6,6 +6,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.StackUtils;
 import mekanism.common.InfuseStorage;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -20,9 +21,8 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-
-import static mekanism.common.block.states.BlockStateMachine.MachineType;
 
 /**
  * Internal interface for managing various Factory types.
@@ -45,20 +45,20 @@ public interface IFactory
 	 */
 	public void setRecipeType(int type, ItemStack itemStack);
 
-	public static enum RecipeType
+	public static enum RecipeType implements IStringSerializable
 	{
-		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, false, Recipe.ENERGIZED_SMELTER),
-		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER.getStack(), false, false, Recipe.ENRICHMENT_CHAMBER),
-		CRUSHING("Crushing", "crusher", MachineType.CRUSHER.getStack(), false, false, Recipe.CRUSHER),
-		COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, false, Recipe.OSMIUM_COMPRESSOR),
-		COMBINING("Combining", "combiner", MachineType.COMBINER.getStack(), true, false, Recipe.COMBINER),
-		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, true, Recipe.PURIFICATION_CHAMBER),
-		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
-		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER.getStack(), false, false, Recipe.METALLURGIC_INFUSER);
+		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, false, false, Recipe.ENERGIZED_SMELTER),
+		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, false, false, Recipe.ENRICHMENT_CHAMBER),
+		CRUSHING("Crushing", "crusher", MachineType.CRUSHER, false, false, Recipe.CRUSHER),
+		COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR, true, false, Recipe.OSMIUM_COMPRESSOR),
+		COMBINING("Combining", "combiner", MachineType.COMBINER, true, false, Recipe.COMBINER),
+		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER, true, true, Recipe.PURIFICATION_CHAMBER),
+		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER, true, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
+		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, false, false, Recipe.METALLURGIC_INFUSER);
 
 		private String name;
 		private ResourceLocation sound;
-		private ItemStack stack;
+		private MachineType type;
 		private boolean usesFuel;
 		private boolean fuelSpeed;
 		private Recipe recipe;
@@ -170,7 +170,6 @@ public interface IFactory
 				if(((Map.Entry)obj).getKey() instanceof AdvancedMachineInput)
 				{
 					Map.Entry entry = (Map.Entry)obj;
-
 					ItemStack stack = ((AdvancedMachineInput)entry.getKey()).itemStack;
 
 					if(StackUtils.equalsWildcard(stack, itemStack))
@@ -187,7 +186,7 @@ public interface IFactory
 		{
 			if(cacheTile == null)
 			{
-				MachineType type = MachineType.get(Block.getBlockFromItem(getStack().getItem()), getStack().getItemDamage());
+				MachineType type = MachineType.get(getStack());
 				cacheTile = (TileEntityAdvancedElectricMachine)type.create();
 			}
 
@@ -201,7 +200,7 @@ public interface IFactory
 
 		public ItemStack getStack()
 		{
-			return stack;
+			return type.getStack();
 		}
 		
 		public String getUnlocalizedName()
@@ -229,14 +228,20 @@ public interface IFactory
 			return fuelSpeed;
 		}
 
-		private RecipeType(String s, String s1, ItemStack is, boolean b, boolean b1, Recipe r)
+		private RecipeType(String s, String s1, MachineType t, boolean b, boolean b1, Recipe r)
 		{
 			name = s;
 			sound = new ResourceLocation("mekanism", "tile.machine." + s1);
-			stack = is;
+			type = t;
 			usesFuel = b;
 			fuelSpeed = b1;
 			recipe = r;
+		}
+
+		@Override
+		public String getName() 
+		{
+			return name().toLowerCase();
 		}
 	}
 }

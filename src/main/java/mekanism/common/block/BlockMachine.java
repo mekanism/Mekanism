@@ -195,10 +195,13 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 			state = state.withProperty(BlockStateMachine.tierProperty, ((TileEntityFluidTank)tile).tier.getBaseTier());
 		}
 		
+		if(tile instanceof TileEntityFactory)
+		{
+			state = state.withProperty(BlockStateMachine.recipeProperty, ((TileEntityFactory)tile).recipeType);
+		}
+		
 		return state;
 	}
-
-
 
 /*
 	@Override

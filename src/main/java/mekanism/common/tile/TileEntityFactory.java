@@ -769,13 +769,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		clientActive = dataStream.readBoolean();
 		RecipeType oldRecipe = recipeType;
 		recipeType = RecipeType.values()[dataStream.readInt()];
-		upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
-
-		if(recipeType != oldRecipe)
-		{
-			secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-		}
-		
+		upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());		
 		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		sorting = dataStream.readBoolean();
@@ -783,6 +777,16 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		lastUsage = dataStream.readDouble();
 		infuseStored.amount = dataStream.readInt();
 		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+		
+		if(recipeType != oldRecipe)
+		{
+			secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+			
+			if(!upgraded)
+			{
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
+		}
 
 		for(int i = 0; i < tier.processes; i++)
 		{

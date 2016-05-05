@@ -3,17 +3,20 @@ package mekanism.common.item;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IRedstoneControl;
@@ -28,6 +31,7 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -363,6 +367,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 				factory.secondaryEnergyPerTick = factory.getSecondaryEnergyPerTick(recipeType);
 				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType());
+				
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
 			}
 
 			if(tileEntity instanceof ISustainedTank)

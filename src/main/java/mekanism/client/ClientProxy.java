@@ -1,6 +1,8 @@
 package mekanism.client;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
@@ -206,6 +208,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
+	public static Map<String, ModelResourceLocation> machineResources = new HashMap<String, ModelResourceLocation>();
+	
 	@Override
 	public void loadConfiguration()
 	{
