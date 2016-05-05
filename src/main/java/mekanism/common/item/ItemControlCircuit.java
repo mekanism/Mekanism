@@ -19,7 +19,7 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem
 	@Override
 	public String getTexture(int meta)
 	{
-		return BaseTier.values()[meta].getName() + "ControlCircuit";
+		return BaseTier.values()[meta].getSimpleName() + "ControlCircuit";
 	}
 	
 	@Override
@@ -43,6 +43,6 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + BaseTier.values()[item.getItemDamage()].getName() + "ControlCircuit";
+		return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName() + "ControlCircuit";
 	}
 }

@@ -99,7 +99,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public String getItemStackDisplayName(ItemStack itemstack)
 	{
-		return LangUtils.localize("tile.EnergyCube" + getEnergyCubeTier(itemstack).getBaseTier().getName() + ".name");
+		return LangUtils.localize("tile.EnergyCube" + getEnergyCubeTier(itemstack).getBaseTier().getSimpleName() + ".name");
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.getTagCompound().setString("tier", tier.getBaseTier().getName());
+		itemstack.getTagCompound().setString("tier", tier.getBaseTier().getSimpleName());
 	}
 
 	@Override

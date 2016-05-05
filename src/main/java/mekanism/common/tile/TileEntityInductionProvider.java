@@ -18,7 +18,7 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	
 	public String getName()
 	{
-		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".InductionProvider" + tier.getBaseTier().getName() + ".name");
+		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".InductionProvider" + tier.getBaseTier().getSimpleName() + ".name");
 	}
 	
 	@Override

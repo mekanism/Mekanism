@@ -308,7 +308,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 			
 			if(type == BasicBlockType.BIN || type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
 			{
-				name += getBaseTier(itemstack).getName();
+				name += getBaseTier(itemstack).getSimpleName();
 			}
 			
 			return name;

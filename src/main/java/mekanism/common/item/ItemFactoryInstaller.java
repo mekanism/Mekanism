@@ -130,7 +130,7 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 	@Override
 	public String getTexture(int meta)
 	{
-		return FactoryTier.values()[meta].getBaseTier().getName() + "FactoryInstaller";
+		return FactoryTier.values()[meta].getBaseTier().getSimpleName() + "FactoryInstaller";
 	}
 	
 	@Override
@@ -151,6 +151,6 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + BaseTier.values()[item.getItemDamage()].getName().toLowerCase() + "FactoryInstaller";
+		return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName().toLowerCase() + "FactoryInstaller";
 	}
 }

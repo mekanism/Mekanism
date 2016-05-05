@@ -5,12 +5,10 @@ import java.util.Random;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGasTank;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -20,7 +18,6 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,8 +34,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import buildcraft.api.tools.IToolWrench;
-
-import static mekanism.common.block.states.BlockStateFacing.facingProperty;
 
 public class BlockGasTank extends BlockContainer
 {
@@ -60,7 +55,7 @@ public class BlockGasTank extends BlockContainer
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState();
+		return getDefaultState();
 	}
 
 	@Override
@@ -73,23 +68,24 @@ public class BlockGasTank extends BlockContainer
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
 		TileEntity tile = worldIn.getTileEntity(pos);
-		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
+		
+		if(tile instanceof TileEntityGasTank)
 		{
-			state = state.withProperty(facingProperty, ((TileEntityBasicBlock)tile).facing);
+			TileEntityGasTank tank = (TileEntityGasTank)tile;
+			
+			if(tank.facing != null)
+			{
+				state = state.withProperty(BlockStateFacing.facingProperty, tank.facing);
+			}
+
+			if(tank.tier != null)
+			{
+				state = state.withProperty(BlockStateGasTank.typeProperty, tank.tier);
+			}
 		}
+		
 		return state;
 	}
-
-
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		blockIcon = register.registerIcon("mekanism:SteelCasing");
-	}
-*/
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)

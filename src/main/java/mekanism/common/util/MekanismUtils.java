@@ -352,7 +352,7 @@ public final class MekanismUtils
 	 */
 	public static Object getControlCircuit(BaseTier tier)
 	{
-		return general.controlCircuitOreDict ? "circuit" + tier.getName() : new ItemStack(MekanismItems.ControlCircuit, 1, tier.ordinal());
+		return general.controlCircuitOreDict ? "circuit" + tier.getSimpleName() : new ItemStack(MekanismItems.ControlCircuit, 1, tier.ordinal());
 	}
 	
 	/**

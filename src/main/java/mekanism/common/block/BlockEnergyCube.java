@@ -33,14 +33,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import buildcraft.api.tools.IToolWrench;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import buildcraft.api.tools.IToolWrench;
 
 /**
  * Block class for handling multiple energy cube block IDs.
@@ -84,9 +83,11 @@ public class BlockEnergyCube extends BlockContainer
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
 		TileEntity tile = worldIn.getTileEntity(pos);
+		
 		if(tile instanceof TileEntityEnergyCube)
 		{
 			TileEntityEnergyCube cube = (TileEntityEnergyCube)tile;
+			
 			if(cube.facing != null)
 			{
 				state = state.withProperty(BlockStateFacing.facingProperty, cube.facing);
@@ -100,15 +101,6 @@ public class BlockEnergyCube extends BlockContainer
 
 		return state;
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) 
-	{
-		blockIcon = register.registerIcon(BlockBasic.ICON_BASE);
-	}
-*/
 
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)

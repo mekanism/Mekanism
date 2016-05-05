@@ -10,6 +10,7 @@ import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -71,10 +72,11 @@ import com.google.common.base.Predicates;
 public class BlockStateMachine extends BlockStateFacing
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
+	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 
 	public BlockStateMachine(BlockMachine block, PropertyEnum typeProperty)
 	{
-		super(block, typeProperty, activeProperty);
+		super(block, typeProperty, activeProperty, tierProperty);
 	}
 
 	public static final Predicate<EnumFacing> never = Predicates.<EnumFacing>alwaysFalse();

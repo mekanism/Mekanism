@@ -103,7 +103,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public String getName()
 	{
-		return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getName() + ".name");
+		return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getSimpleName() + ".name");
 	}
 
 	@Override
@@ -236,7 +236,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setString("tier", tier.getBaseTier().getName());
+		nbtTags.setString("tier", tier.getBaseTier().getSimpleName());
 		nbtTags.setInteger("controlType", controlType.ordinal());
 	}
 

@@ -8,7 +8,6 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.util.LangUtils;
-
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
@@ -26,7 +25,7 @@ public final class Tier
 	/** The default tiers used in Mekanism.
 	 * @author aidancbrady
 	 */
-	public static enum BaseTier
+	public static enum BaseTier implements IStringSerializable
 	{
 		BASIC("Basic", EnumColor.BRIGHT_GREEN),
 		ADVANCED("Advanced", EnumColor.DARK_RED),
@@ -34,14 +33,14 @@ public final class Tier
 		ULTIMATE("Ultimate", EnumColor.PURPLE),
 		CREATIVE("Creative", EnumColor.BLACK);
 		
-		public String getName()
+		public String getSimpleName()
 		{
 			return name;
 		}
 		
 		public String getLocalizedName()
 		{
-			return LangUtils.localize("tier." + getName());
+			return LangUtils.localize("tier." + getSimpleName());
 		}
 		
 		public EnumColor getColor()
@@ -61,6 +60,12 @@ public final class Tier
 		{
 			name = s;
 			color = c;
+		}
+		
+		@Override
+		public String getName()
+		{
+			return name().toLowerCase();
 		}
 	}
 	
@@ -88,7 +93,7 @@ public final class Tier
 		{
 			for(EnergyCubeTier tier : values())
 			{
-				if(tierName.contains(tier.getBaseTier().getName()))
+				if(tierName.contains(tier.getBaseTier().getSimpleName()))
 				{
 					return tier;
 				}
@@ -102,8 +107,8 @@ public final class Tier
 		{
 			if(this != CREATIVE)
 			{
-				maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeMaxEnergy", baseMaxEnergy).getDouble();
-				output = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeOutput", baseOutput).getDouble();
+				maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "EnergyCubeMaxEnergy", baseMaxEnergy).getDouble();
+				output = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "EnergyCubeOutput", baseOutput).getDouble();
 			}
 		}
 		
@@ -164,7 +169,7 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "InductionCellMaxEnergy", baseMaxEnergy).getDouble();
+			maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "InductionCellMaxEnergy", baseMaxEnergy).getDouble();
 		}
 		
 		@Override
@@ -204,7 +209,7 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "InductionProviderOutput", baseOutput).getDouble();
+			output = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "InductionProviderOutput", baseOutput).getDouble();
 		}
 		
 		@Override
@@ -233,7 +238,7 @@ public final class Tier
 		{
 			for(FactoryTier tier : values())
 			{
-				if(tierName.contains(tier.getBaseTier().getName()))
+				if(tierName.contains(tier.getBaseTier().getSimpleName()))
 				{
 					return tier;
 				}
@@ -283,7 +288,7 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			cableCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "CableCapacity", baseCapacity).getInt();
+			cableCapacity = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "CableCapacity", baseCapacity).getInt();
 		}
 
 		@Override
@@ -344,8 +349,8 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			pipeCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "PipeCapacity", baseCapacity).getInt();
-			pipePullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "PipePullAmount", basePull).getInt();
+			pipeCapacity = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "PipeCapacity", baseCapacity).getInt();
+			pipePullAmount = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "PipePullAmount", basePull).getInt();
 		}
 
 		@Override
@@ -408,8 +413,8 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			tubeCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "TubeCapacity", baseCapacity).getInt();
-			tubePullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "TubePullAmount", basePull).getInt();
+			tubeCapacity = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "TubeCapacity", baseCapacity).getInt();
+			tubePullAmount = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "TubePullAmount", basePull).getInt();
 		}
 
 		@Override
@@ -472,8 +477,8 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			pullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "TransporterPullAmount", basePull).getInt();
-			speed = Mekanism.configuration.get("tier", getBaseTier().getName() + "TransporterSpeed", baseSpeed).getInt();
+			pullAmount = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "TransporterPullAmount", basePull).getInt();
+			speed = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "TransporterSpeed", baseSpeed).getInt();
 		}
 
 		@Override
@@ -544,9 +549,9 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			inverseConduction = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorInverseConduction", baseConduction).getDouble();
-			inverseHeatCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorHeatCapacity", baseHeatCapacity).getDouble();
-			inverseConductionInsulation = Mekanism.configuration.get("tier", getBaseTier().getName() + "ConductorConductionInsulation", baseConductionInsulation).getDouble();
+			inverseConduction = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "ConductorInverseConduction", baseConduction).getDouble();
+			inverseHeatCapacity = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "ConductorHeatCapacity", baseHeatCapacity).getDouble();
+			inverseConductionInsulation = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "ConductorConductionInsulation", baseConductionInsulation).getDouble();
 		}
 
 		@Override
@@ -607,8 +612,8 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			storage = Mekanism.configuration.get("tier", getBaseTier().getName() + "FluidTankStorage", baseStorage).getInt();
-			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "FluidTankOutput", baseOutput).getInt();
+			storage = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "FluidTankStorage", baseStorage).getInt();
+			output = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "FluidTankOutput", baseOutput).getInt();
 		}
 
 		@Override
@@ -626,7 +631,7 @@ public final class Tier
 		}
 	}
 
-	public static enum GasTankTier implements ITier
+	public static enum GasTankTier implements ITier, IStringSerializable
 	{
 		BASIC(64000, 256),
 		ADVANCED(128000, 512),
@@ -654,8 +659,8 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			storage = Mekanism.configuration.get("tier", getBaseTier().getName() + "GasTankStorage", baseStorage).getInt();
-			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "GasTankOutput", baseOutput).getInt();
+			storage = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "GasTankStorage", baseStorage).getInt();
+			output = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "GasTankOutput", baseOutput).getInt();
 		}
 
 		@Override
@@ -670,6 +675,12 @@ public final class Tier
 		{
 			dataStream.writeInt(storage);
 			dataStream.writeInt(output);
+		}
+		
+		@Override
+		public String getName()
+		{
+			return name().toLowerCase();
 		}
 	}
 	
@@ -697,7 +708,7 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			storage = Mekanism.configuration.get("tier", getBaseTier().getName() + "BinStorage", baseStorage).getInt();
+			storage = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "BinStorage", baseStorage).getInt();
 		}
 
 		@Override

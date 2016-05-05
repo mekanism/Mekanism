@@ -24,8 +24,8 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.security.ISecurityItem;
@@ -50,22 +50,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import cofh.api.energy.IEnergyContainerItem;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import cofh.api.energy.IEnergyContainerItem;
 
 /**
  * Item class for handling multiple machine block IDs.
@@ -153,16 +153,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			BaseTier tier = type == BlockStateMachine.MachineType.BASIC_FACTORY ? BaseTier.BASIC : (type == BlockStateMachine.MachineType.ADVANCED_FACTORY ? BaseTier.ADVANCED : BaseTier.ELITE);
 
-            if(StatCollector.canTranslate("tile." + tier.getName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory"))
+            if(StatCollector.canTranslate("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory"))
             {
-                return LangUtils.localize("tile." + tier.getName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory");
+                return LangUtils.localize("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory");
             }
 
 			return tier.getLocalizedName() + " " + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName() + " " + super.getItemStackDisplayName(itemstack);
 		}
 		else if(type == MachineType.FLUID_TANK)
 		{
-			return LangUtils.localize("tile.FluidTank" + getBaseTier(itemstack).getName() + ".name");
+			return LangUtils.localize("tile.FluidTank" + getBaseTier(itemstack).getSimpleName() + ".name");
 		}
 		
 		return super.getItemStackDisplayName(itemstack);
@@ -387,6 +387,19 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		}
 
 		return false;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public int getColorFromItemStack(ItemStack stack, int renderPass)
+	{
+		if(MachineType.get(stack) == MachineType.FLUID_TANK)
+		{
+			EnumColor color = getBaseTier(stack).getColor();
+			
+			return (int)(color.getColor(0)*255) << 16 | (int)(color.getColor(1)*255) << 8 | (int)(color.getColor(2)*255);
+		}
+		
+		return super.getColorFromItemStack(stack, renderPass);
 	}
 
 	@Override

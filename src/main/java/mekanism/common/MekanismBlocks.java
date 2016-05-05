@@ -119,7 +119,8 @@ public class MekanismBlocks
 
 		for(MachineType type : MachineType.values())
 		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), (type.hasActiveTexture() ? "active=false," : "") + "facing=north"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.typeBlock.getBlock()), type.meta, new ModelResourceLocation("mekanism:" + type.getName(), 
+					(type.hasActiveTexture() ? "active=false," : "") + (type.hasRotations() ? "facing=north" : "")));
 		}
 
 		for(BasicBlockType type : BasicBlockType.values())
@@ -142,17 +143,23 @@ public class MekanismBlocks
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(), new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
 		}
 
-		for(GasTankTier tier : GasTankTier.values())
-		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GasTank), tier.ordinal(), new ModelResourceLocation("mekanism:GasTank", "inventory")); //TODO tier states
-		}
-
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.EnergyCube), new ItemMeshDefinition() {
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack)
 			{
 				EnergyCubeTier tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
 				ResourceLocation baseLocation = new ResourceLocation("mekanism", "EnergyCube");
+				
+				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
+			}
+		});
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				GasTankTier tier = GasTankTier.values()[((ItemBlockGasTank)stack.getItem()).getBaseTier(stack).ordinal()];
+				ResourceLocation baseLocation = new ResourceLocation("mekanism", "GasTank");
 				
 				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
 			}

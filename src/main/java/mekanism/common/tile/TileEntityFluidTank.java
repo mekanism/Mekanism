@@ -153,7 +153,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public String getName()
 	{
-		return LangUtils.localize("tile.FluidTank" + tier.getBaseTier().getName() + ".name");
+		return LangUtils.localize("tile.FluidTank" + tier.getBaseTier().getSimpleName() + ".name");
 	}
 	
 	private void activeEmit()
@@ -428,7 +428,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public boolean renderUpdate()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

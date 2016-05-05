@@ -40,7 +40,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 		{
 			for(EnergyCubeTier tier : EnergyCubeTier.values())
 			{
-				resources.put(tier, MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.getBaseTier().getName() + ".png"));
+				resources.put(tier, MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.getBaseTier().getSimpleName() + ".png"));
 			}
 		}
 	}

@@ -133,7 +133,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public String getName()
 	{
-		return LangUtils.localize("tile.GasTank" + tier.getBaseTier().getName() + ".name");
+		return LangUtils.localize("tile.GasTank" + tier.getBaseTier().getSimpleName() + ".name");
 	}
 
 	@Override
