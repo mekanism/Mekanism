@@ -185,7 +185,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	public void registerBlockIcons(IIconRegister register)
 	{
 		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
-		DefIcon def = DefIcon.getAll(BASE_ICON);
+		DefIcon def = DefIcon.getAll(BASE_ICON).setOverrides(false);
 		
 		switch(blockType)
 		{
