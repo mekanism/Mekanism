@@ -19,15 +19,6 @@ public class BlockSalt extends Block
         setStepSound(soundTypeSand);
     }
 
-/*
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister register)
-    {
-        blockIcon = register.registerIcon("mekanism:SaltBlock");
-    }
-*/
-
     @Override
     public Item getItemDropped(IBlockState state, Random random, int fortune)
     {

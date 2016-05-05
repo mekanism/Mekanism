@@ -1,0 +1,7 @@
+{
+    "parent": "block/fence_n",
+    "textures": {
+        "texture": "mekanism:blocks/PlasticFence",
+        "tintindex": 0
+    }
+}

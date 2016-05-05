@@ -5,7 +5,6 @@ import static mekanism.common.block.states.BlockStateBasic.BasicBlock.BASIC_BLOC
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_3;
-
 import mekanism.api.EnumColor;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.GasTankTier;
@@ -16,17 +15,15 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.BlockMachine;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
-import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.BlockObsidianTNT;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
-import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.block.states.BlockStateOre;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
@@ -38,23 +35,15 @@ import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.gen.structure.StructureVillagePieces.Road;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import javafx.scene.effect.Glow;
 
 @ObjectHolder("Mekanism")
 public class MekanismBlocks
@@ -120,6 +109,7 @@ public class MekanismBlocks
 		ModelLoader.setCustomStateMapper(RoadPlasticBlock, plasticMapper);
 
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
 
 		for(MachineType type : MachineType.values())
 		{
@@ -138,6 +128,7 @@ public class MekanismBlocks
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(GlowPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=glow"));
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ReinforcedPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=reinforced"));
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(RoadPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=road"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(PlasticFence), color.getMetaValue(), new ModelResourceLocation("mekanism:PlasticFence", "inventory"));
 		}
 
 		for(EnumOreType ore : EnumOreType.values())
