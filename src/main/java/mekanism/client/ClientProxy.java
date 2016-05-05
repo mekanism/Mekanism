@@ -190,6 +190,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -631,10 +632,10 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadUtilities();
 		
-		FMLCommonHandler.instance().bus().register(new ClientConnectionHandler());
-		FMLCommonHandler.instance().bus().register(new ClientPlayerTracker());
-		FMLCommonHandler.instance().bus().register(new ClientTickHandler());
-		FMLCommonHandler.instance().bus().register(new RenderTickHandler());
+		MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
+		MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
+		MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
+		MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
 		
 		new MekanismKeyHandler();
 

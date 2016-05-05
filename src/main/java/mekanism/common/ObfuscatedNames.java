@@ -2,7 +2,6 @@ package mekanism.common;
 
 public final class ObfuscatedNames
 {
-	public static String[] TextureManager_listTickables = new String[] {"listTickables", "field_110583_b", "c"};
 	public static String[] Minecraft_timer = new String[] {"timer", "field_71428_T", "S"};
 	public static String[] GuiContainer_xSize = new String[] {"xSize", "field_146999_f", "c"};
 	public static String[] GuiContainer_ySize = new String[] {"ySize", "field_147000_g", "d"};
@@ -12,4 +11,6 @@ public final class ObfuscatedNames
 	public static String[] SoundHandler_sndManager = new String[] {"sndManager", "field_147694_f"};
 	public static String[] SoundManager_sndSystem = new String[] {"sndSystem", "field_148620_e"};
 	public static String[] SoundManager_invPlayingSounds = new String[] {"invPlayingSounds", "field_148630_i"};
+	public static String[] AbstractClientPlayer_getPlayerInfo = new String[] {"getPlayerInfo", "func_110303_q"};
+	public static String[] NetworkPlayerInfo_locationCape = new String[] {"locationCape", "field_178862_f"};
 }

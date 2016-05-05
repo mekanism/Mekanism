@@ -4,6 +4,7 @@ import static mekanism.client.sound.SoundHandler.Channel.FLAMETHROWER;
 import static mekanism.client.sound.SoundHandler.Channel.GASMASK;
 import static mekanism.client.sound.SoundHandler.Channel.JETPACK;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
@@ -33,13 +35,12 @@ import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
-
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -135,7 +136,6 @@ public class ClientTickHandler
 				{
 					AbstractClientPlayer player = (AbstractClientPlayer)entityPlayer;
 
-/*TODO I don't think this is possible any more.
 						if(StringUtils.stripControlCodes(player.getName()).equals("mikeacttck"))
 						{
 							CapeBufferDownload download = mikeDownload.get(player.getName());
@@ -152,8 +152,8 @@ public class ClientTickHandler
 								{
 									continue;
 								}
-
-								//TODO player.func_152121_a(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
+								
+								setCape(player, download.getResourceLocation());
 							}
 						}
 						else if(StringUtils.stripControlCodes(player.getName()).equals("aidancbrady"))
@@ -172,8 +172,8 @@ public class ClientTickHandler
 								{
 									continue;
 								}
-
-								//TODO player.skinAvailable(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
+								
+								setCape(player, download.getResourceLocation());
 							}
 						}
 						else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.getName())))
@@ -192,11 +192,10 @@ public class ClientTickHandler
 								{
 									continue;
 								}
-
-								//TODO player.skinAvailable(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
+								
+								setCape(player, download.getResourceLocation());
 							}
 						}
-*/
 				}
 			}
 
@@ -386,6 +385,20 @@ public class ClientTickHandler
 				}
 			}
 		}
+	}
+	
+	public static void setCape(AbstractClientPlayer player, ResourceLocation cape)
+	{
+		try {
+			Method m = MekanismUtils.getPrivateMethod(AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_getPlayerInfo);
+			Object obj = m.invoke(player);
+			
+			if(obj instanceof NetworkPlayerInfo)
+			{
+				NetworkPlayerInfo info = (NetworkPlayerInfo)obj;
+				MekanismUtils.setPrivateValue(info, cape, NetworkPlayerInfo.class, ObfuscatedNames.NetworkPlayerInfo_locationCape);
+			}
+		} catch(Exception e) {}
 	}
 
 	public static void killDeadNetworks()
