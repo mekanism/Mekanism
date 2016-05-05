@@ -332,43 +332,6 @@ public class ClientProxy extends CommonProxy
 //TODO		RenderPartTransmitter.init();
 //TODO		RenderGlowPanel.init();
 
-		//Register entity rendering handlers
-		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {
-			@Override
-			public Render<EntityObsidianTNT> createRenderFor(RenderManager manager)
-			{
-				return new RenderObsidianTNTPrimed(manager);
-			}
-		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new IRenderFactory<EntityRobit>() {
-			@Override
-			public Render<EntityRobit> createRenderFor(RenderManager manager)
-			{
-				return new RenderRobit(manager);
-			}
-		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new IRenderFactory<EntityBalloon>() {
-			@Override
-			public Render<EntityBalloon> createRenderFor(RenderManager manager)
-			{
-				return new RenderBalloon(manager);
-			}
-		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new IRenderFactory<EntityBabySkeleton>() {
-			@Override
-			public Render<EntitySkeleton> createRenderFor(RenderManager manager)
-			{
-				return new RenderSkeleton(manager);
-			}
-		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, new IRenderFactory<EntityFlame>() {
-			@Override
-			public Render<? super EntityFlame> createRenderFor(RenderManager manager)
-			{
-				return new RenderFlame(manager);
-			}
-		});
-
 		//Register item handler
 //TODO		ItemRenderingHandler handler = new ItemRenderingHandler();
 
@@ -683,6 +646,44 @@ public class ClientProxy extends CommonProxy
 	{
 		MekanismRenderer.init();
 		
+		//Register entity rendering handlers
+		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {
+			@Override
+			public Render<EntityObsidianTNT> createRenderFor(RenderManager manager)
+			{
+				return new RenderObsidianTNTPrimed(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new IRenderFactory<EntityRobit>() {
+			@Override
+			public Render<EntityRobit> createRenderFor(RenderManager manager)
+			{
+				return new RenderRobit(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new IRenderFactory<EntityBalloon>() {
+			@Override
+			public Render<EntityBalloon> createRenderFor(RenderManager manager)
+			{
+				return new RenderBalloon(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new IRenderFactory<EntityBabySkeleton>() {
+			@Override
+			public Render<EntitySkeleton> createRenderFor(RenderManager manager)
+			{
+				return new RenderSkeleton(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, new IRenderFactory<EntityFlame>() {
+			@Override
+			public Render<? super EntityFlame> createRenderFor(RenderManager manager)
+			{
+				return new RenderFlame(manager);
+			}
+		});
+		
+		//Walkie Talkie dynamic texture
 		ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, new ItemMeshDefinition() {
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) 
@@ -701,6 +702,7 @@ public class ClientProxy extends CommonProxy
 			}
 		});
 		
+		//Crafting Formula dynamic texture
 		ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, new ItemMeshDefinition() {
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) 

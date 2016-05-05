@@ -55,7 +55,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage>
 
 			if(robit != null)
 			{
-				robit.setName(message.name);
+				robit.setCustomNameTag(message.name);
 			}
 		}
 		else if(message.activeType == RobitPacketType.GO_HOME)

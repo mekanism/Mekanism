@@ -29,7 +29,7 @@ public class RenderRobit extends RenderLiving<EntityRobit>
 				robit.texTick = !robit.texTick;
 			}
 		}
-
+		
 		return MekanismUtils.getResource(ResourceType.RENDER, "Robit" + (robit.texTick ? "2" : "") + ".png");
 	}
 }

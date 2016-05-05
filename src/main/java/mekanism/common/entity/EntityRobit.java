@@ -39,15 +39,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
-import cofh.api.energy.IEnergyContainerItem;
 import net.minecraftforge.fml.common.Optional.Interface;
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
-import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
+import cofh.api.energy.IEnergyContainerItem;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = "Galacticraft API")
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
@@ -121,11 +117,11 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		super.entityInit();
 
-		dataWatcher.addObject(12, ""); /* Electricity */
-		dataWatcher.addObject(13, ""); /* Owner */
-		dataWatcher.addObject(14, (byte)0); /* Follow */
-		dataWatcher.addObject(15, ""); /* Name */
-		dataWatcher.addObject(16, (byte)0); /* Drop Pickup */
+		dataWatcher.addObject(16, ""); /* Electricity */
+		dataWatcher.addObject(17, ""); /* Owner */
+		dataWatcher.addObject(18, (byte)0); /* Follow */
+		//unused
+		dataWatcher.addObject(20, (byte)0); /* Drop Pickup */
 	}
 
 	public double getRoundedTravelEnergy()
@@ -459,7 +455,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		setEnergy(nbtTags.getDouble("electricityStored"));
 
-		setName(nbtTags.getString("name"));
+		setCustomNameTag(nbtTags.getString("name"));
 
 		if(nbtTags.hasKey("owner"))
 		{
@@ -522,7 +518,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public double getEnergy()
 	{
 		try {
-			return Double.parseDouble(dataWatcher.getWatchableObjectString(12));
+			return Double.parseDouble(dataWatcher.getWatchableObjectString(16));
 		} catch(Exception e) {
 			return 0;
 		}
@@ -530,7 +526,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public void setEnergy(double energy)
 	{
-		dataWatcher.updateObject(12, Double.toString(Math.max(Math.min(energy, MAX_ELECTRICITY), 0)));
+		dataWatcher.updateObject(16, Double.toString(Math.max(Math.min(energy, MAX_ELECTRICITY), 0)));
 	}
 
 	public EntityPlayer getOwner()
@@ -540,42 +536,32 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public String getOwnerName()
 	{
-		return dataWatcher.getWatchableObjectString(13);
+		return dataWatcher.getWatchableObjectString(17);
 	}
 
 	public void setOwner(String username)
 	{
-		dataWatcher.updateObject(13, username);
+		dataWatcher.updateObject(17, username);
 	}
 
 	public boolean getFollowing()
 	{
-		return dataWatcher.getWatchableObjectByte(14) == 1;
+		return dataWatcher.getWatchableObjectByte(18) == 1;
 	}
 
 	public void setFollowing(boolean follow)
 	{
-		dataWatcher.updateObject(14, follow ? (byte)1 : (byte)0);
-	}
-
-//	public String getName()
-//	{
-//		return dataWatcher.getWatchableObjectString(15);
-//	}
-
-	public void setName(String name)
-	{
-		dataWatcher.updateObject(15, name);
+		dataWatcher.updateObject(18, follow ? (byte)1 : (byte)0);
 	}
 
 	public boolean getDropPickup()
 	{
-		return dataWatcher.getWatchableObjectByte(16) == 1;
+		return dataWatcher.getWatchableObjectByte(20) == 1;
 	}
 
 	public void setDropPickup(boolean pickup)
 	{
-		dataWatcher.updateObject(16, pickup ? (byte)1 : (byte)0);
+		dataWatcher.updateObject(20, pickup ? (byte)1 : (byte)0);
 	}
 
 	@Override
@@ -645,18 +631,6 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public String getName()
-	{
-		return "Robit";
-	}
-	
-	@Override
-	public boolean hasCustomName()
-	{
-	    return true;
-	}
-
-	@Override
 	public int getInventoryStackLimit()
 	{
 		return 64;
@@ -683,29 +657,23 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		return true;
 	}
 
-	@Override//TODO
+	@Override
 	public int getField(int id)
 	{
 		return 0;
 	}
 
-	@Override//TODO
-	public void setField(int id, int value)
-	{
+	@Override
+	public void setField(int id, int value) {}
 
-	}
-
-	@Override//TODO
+	@Override
 	public int getFieldCount()
 	{
 		return 0;
 	}
 
-	@Override//TODO
-	public void clear()
-	{
-
-	}
+	@Override
+	public void clear() {}
 
 	@Override
 	public void setInventory(NBTTagList nbtTags, Object... data)
@@ -747,14 +715,6 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		return tagList;
 	}
-
-/*
-	@Override
-    public String getName()
-	{
-		return getName().isEmpty() ? "Robit" : getName();
-	}
-*/
 
 	@Override
 	public boolean canBreath()

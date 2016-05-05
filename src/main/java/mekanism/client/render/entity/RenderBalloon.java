@@ -8,13 +8,11 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderBalloon extends Render<EntityBalloon>
@@ -37,17 +35,19 @@ public class RenderBalloon extends Render<EntityBalloon>
 	@Override
 	public void doRender(EntityBalloon balloon, double x, double y, double z, float f, float partialTick)
 	{
+		double renderPosX = x - (balloon.lastTickPosX + (balloon.posX - balloon.lastTickPosX)*partialTick);
+		double renderPosY = y - (balloon.lastTickPosY + (balloon.posY - balloon.lastTickPosY)*partialTick);
+		double renderPosZ = z - (balloon.lastTickPosZ + (balloon.posZ - balloon.lastTickPosZ)*partialTick);
+		
 		if(balloon.isLatchedToEntity())
 		{
 			x = (balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.posX - balloon.latchedEntity.lastTickPosX)*partialTick);
 			y = (balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY)*partialTick);
 			z = (balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ)*partialTick);
 
-/*TODO
-			x -= RenderManager.renderPosX;
-			y -= RenderManager.renderPosY;
-			z -= RenderManager.renderPosZ;
-*/
+			x += renderPosX;
+			y += renderPosY;
+			z += renderPosZ;
 
 			y += balloon.getAddedHeight();
 		}

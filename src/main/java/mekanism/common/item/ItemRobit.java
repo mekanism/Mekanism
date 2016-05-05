@@ -54,7 +54,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 					robit.setEnergy(getEnergy(itemstack));
 					robit.setOwner(entityplayer.getName());
 					robit.setInventory(getInventory(itemstack));
-					robit.setName(getName(itemstack));
+					robit.setCustomNameTag(getName(itemstack));
 
 					world.spawnEntityInWorld(robit);
 				}
