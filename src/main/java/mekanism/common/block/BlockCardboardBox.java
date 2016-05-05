@@ -1,15 +1,18 @@
 package mekanism.common.block;
 
+import static mekanism.common.block.states.BlockStateCardboardBox.storageProperty;
+
 import java.util.Random;
 
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.block.states.BlockStateCardboardBox;
 import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,10 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockCardboardBox extends BlockContainer
 {
@@ -36,30 +36,24 @@ public class BlockCardboardBox extends BlockContainer
 		setHardness(0.5F);
 		setResistance(1F);
 	}
-
-/*
+	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	protected BlockState createBlockState()
 	{
-		icons[0] = register.registerIcon("mekanism:CardboardBoxTop");
-		icons[1] = register.registerIcon("mekanism:CardboardBoxSide");
-		icons[2] = register.registerIcon("mekanism:CardboardBoxSideStorage");
+		return new BlockStateCardboardBox(this);
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
+	public IBlockState getStateFromMeta(int meta)
 	{
-		if(side == 0 || side == 1)
-		{
-			return icons[0];
-		}
-		else {
-			return meta == 0 ? icons[1] : icons[2];
-		}
+		return getDefaultState().withProperty(storageProperty, meta == 1);
 	}
-*/
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return state.getValue(storageProperty) == true ? 1 : 0;
+	}
 
 	@Override
 	public boolean isReplaceable(World world, BlockPos pos)
@@ -107,7 +101,7 @@ public class BlockCardboardBox extends BlockContainer
 				{
 					data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), entityplayer, new ItemStack(data.block, 1, data.meta));
 				}
-
+				
 				float motion = 0.7F;
 				double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 				double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -120,6 +114,12 @@ public class BlockCardboardBox extends BlockContainer
 		}
 
 		return false;
+	}
+	
+	@Override
+	public int getRenderType()
+	{
+		return 3;
 	}
 
 	@Override

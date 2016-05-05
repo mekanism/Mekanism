@@ -27,14 +27,6 @@ public class ItemBlockPlastic extends ItemBlock
 		return i;
 	}
 
-/*
-	@Override
-	public IIcon getIconFromDamage(int i)
-	{
-		return metaBlock.getIcon(2, i);
-	}
-*/
-
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
@@ -61,6 +53,6 @@ public class ItemBlockPlastic extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack stack, int renderPass)
 	{
-		return this.metaBlock.getRenderColor(this.metaBlock.getStateFromMeta(stack.getMetadata()));
+		return metaBlock.getRenderColor(metaBlock.getStateFromMeta(stack.getMetadata()));
 	}
 }

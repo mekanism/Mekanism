@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockPlastic extends Block
 {
 	public PlasticBlockType type;
+	
 	public BlockPlastic(PlasticBlockType blockType)
 	{
 		super(Material.wood);
@@ -50,7 +51,7 @@ public class BlockPlastic extends Block
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(colorProperty, EnumDyeColor.byMetadata(meta));
+		return getDefaultState().withProperty(colorProperty, EnumDyeColor.byMetadata(meta));
 	}
 
 	@Override
@@ -58,34 +59,6 @@ public class BlockPlastic extends Block
 	{
 		return state.getValue(colorProperty).getMetadata();
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		if(this == MekanismBlocks.PlasticBlock)
-		{
-			blockIcon = register.registerIcon("mekanism:PlasticBlock");
-		}
-		else if(this == MekanismBlocks.SlickPlasticBlock)
-		{
-			blockIcon = register.registerIcon("mekanism:SlickPlasticBlock");
-		}
-		else if(this == MekanismBlocks.GlowPlasticBlock)
-		{
-			blockIcon = register.registerIcon("mekanism:GlowPlasticBlock");
-		}
-		else if(this == MekanismBlocks.ReinforcedPlasticBlock)
-		{
-			blockIcon = register.registerIcon("mekanism:ReinforcedPlasticBlock");
-		}
-		else if(this == MekanismBlocks.RoadPlasticBlock)
-		{
-			blockIcon = register.registerIcon("mekanism:RoadPlasticBlock");
-		}
-	}
-*/
 
 	@Override
 	public Vec3 modifyAcceleration(World world, BlockPos pos, Entity e, Vec3 motion)
@@ -97,6 +70,7 @@ public class BlockPlastic extends Block
 			double a = Math.atan2(motion.xCoord, motion.zCoord);
 			return new Vec3(motion.xCoord + Math.sin(a) * boost * slipperiness, motion.yCoord, motion.zCoord + Math.cos(a) * boost * slipperiness);
 		}
+		
 		return motion;
 	}
 
