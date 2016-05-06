@@ -14,8 +14,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
@@ -37,9 +37,9 @@ import net.minecraftforge.fml.common.Optional.Method;
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler, IFrequencyHandler
 {
 	/** The direction this block is facing. */
-	public EnumFacing facing;
+	public EnumFacing facing = EnumFacing.NORTH;
 
-	public EnumFacing clientFacing;
+	public EnumFacing clientFacing = facing;
 
 	public HashSet<EntityPlayer> openedThisTick = new HashSet<EntityPlayer>();
 

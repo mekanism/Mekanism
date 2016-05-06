@@ -8,7 +8,8 @@
       "west": "mekanism:blocks/crusher/CrusherRight",
       "east": "mekanism:blocks/crusher/CrusherLeft",
       "south": "mekanism:blocks/crusher/CrusherBack",
-      "up": "mekanism:blocks/crusher/CrusherTop"
+      "up": "mekanism:blocks/crusher/CrusherTop",
+      "down": "mekanism:blocks/crusher/CrusherBottom"
     }
   },
   "variants": {
@@ -19,7 +20,15 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/crusher/CrusherFrontOn"}},
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/crusher/CrusherFrontOn",
+          "west": "mekanism:blocks/crusher/CrusherRightOn",
+          "east": "mekanism:blocks/crusher/CrusherLeftOn",
+          "south": "mekanism:blocks/crusher/CrusherBackOn",
+          "up": "mekanism:blocks/crusher/CrusherTopOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]

@@ -8,7 +8,8 @@
       "west": "mekanism:blocks/combiner/CombinerRight",
       "east": "mekanism:blocks/combiner/CombinerLeft",
       "south": "mekanism:blocks/combiner/CombinerBack",
-      "up": "mekanism:blocks/combiner/CombinerTop"
+      "up": "mekanism:blocks/combiner/CombinerTop",
+      "down": "mekanism:blocks/combiner/CombinerBottom"
     }
   },
   "variants": {
@@ -19,7 +20,15 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/combiner/CombinerFrontOn"}},
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/combiner/CombinerFrontOn",
+          "west": "mekanism:blocks/combiner/CombinerRightOn",
+          "east": "mekanism:blocks/combiner/CombinerLeftOn",
+          "south": "mekanism:blocks/combiner/CombinerBackOn",
+          "up": "mekanism:blocks/combiner/CombinerTopOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]

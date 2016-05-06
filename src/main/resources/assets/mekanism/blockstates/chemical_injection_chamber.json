@@ -8,7 +8,8 @@
       "west": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberRight",
       "east": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberLeft",
       "south": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberBack",
-      "up": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberTop"
+      "up": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberTop",
+      "down": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberBottom"
     }
   },
   "variants": {
@@ -19,7 +20,15 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberFrontOn"}},
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberFrontOn",
+          "west": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberRightOn",
+          "east": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberLeftOn",
+          "south": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberBackOn",
+          "up": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberTopOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]
