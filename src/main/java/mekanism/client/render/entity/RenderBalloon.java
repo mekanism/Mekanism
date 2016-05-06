@@ -60,7 +60,6 @@ public class RenderBalloon extends Render<EntityBalloon>
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		GL11.glRotatef(180, 1, 0, 0);
-		GL11.glTranslatef(0, 0.9F, 0);
 
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
 

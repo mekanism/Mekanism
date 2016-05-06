@@ -261,7 +261,7 @@ public class ClientTickHandler
 						{
 							SoundHandler.addSound(player, JETPACK, client.replaceSoundsWhenResuming);
 						}
-						
+
 						SoundHandler.playSound(player, JETPACK);
 					}
 				}

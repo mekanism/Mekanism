@@ -40,7 +40,6 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		ignoreFrustumCheck = true;
 		preventEntitySpawning = true;
 		setPosition(posX + 0.5F, posY + 3F, posZ + 0.5F);
-//TODO		yOffset = height / 2.0F;
 		setSize(0.25F, 0.25F);
 		motionY = 0.04;
 
@@ -89,7 +88,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		this(world);
 
 		latched = obj;
-		setPosition(latched.getX() + 0.5F, latched.getY() + 2.8F, latched.getZ() + 0.5F);
+		setPosition(latched.getX() + 0.5F, latched.getY() + 1.9F, latched.getZ() + 0.5F);
 
 		prevPosX = posX;
 		prevPosY = posY;
@@ -218,7 +217,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	
 	public double getAddedHeight()
 	{
-		return latchedEntity.height + (latchedEntity instanceof EntityPlayer ? 0.25F : 1.7F);
+		return latchedEntity.height + 0.8;
 	}
 
 	private int getFloor(EntityLivingBase entity)
@@ -272,7 +271,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	@SideOnly(Side.CLIENT)
 	private void doParticle()
 	{
-		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
+		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
 
 		EntityFX fx = new EntityReddustFX.Factory().getEntityFX(0, worldObj, pos.xCoord, pos.yCoord, pos.zCoord, 0, 0, 0);
 		fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));

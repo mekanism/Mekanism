@@ -110,12 +110,7 @@ public class RenderTickHandler
 							continue;
 						}
 
-						Pos3D playerPos = new Pos3D(p);
-
-						if(p != mc.thePlayer)
-						{
-							playerPos = playerPos.translate(0, 1.7, 0);
-						}
+						Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
 
 						float random = (rand.nextFloat() - 0.5F) * 0.1F;
 
