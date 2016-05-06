@@ -40,7 +40,6 @@ public class ModelChisel implements IModel {
     private Variant model;
     private Map<String, Variant> models = Maps.newHashMap();;
     
-    private String face;
     private Map<EnumFacing, String> overrides = Maps.newHashMap();
     
     private transient ChiselFace faceObj;
@@ -52,6 +51,13 @@ public class ModelChisel implements IModel {
     private transient Map<IBlockState, IBakedModel> stateMap = Maps.newHashMap();
     
     private transient List<ResourceLocation> textures = Lists.newArrayList();
+    
+    public String modelName;
+    
+    public ModelChisel(String name)
+    {
+    	modelName = name;
+    }
     
     @Override
     public Collection<ResourceLocation> getDependencies() {
@@ -81,6 +87,16 @@ public class ModelChisel implements IModel {
     public IModelState getDefaultState() {
         return TRSRTransformation.identity();
     }
+    
+    void load() {
+        if (faceObj != null) {
+            return;
+        }
+        System.out.println("LOADING MODEL");
+        faceObj = TextureStitcher.createFace(modelName);
+        faceObj.getTextureList().forEach(t -> textures.addAll(t.getTextures()));
+        overridesObj.values().forEach(f -> f.getTextureList().forEach(t -> textures.addAll(t.getTextures())));
+    }
 
     public ChiselFace getDefaultFace() {
         return faceObj;
@@ -99,6 +115,7 @@ public class ModelChisel implements IModel {
         
         final String capture = stateStr;
         if (modelsObj.containsKey(stateStr)) {
+        	System.out.println("LOAD STATE MAP")
             stateMap.computeIfAbsent(state, s -> modelsObj.get(capture));
         }
         

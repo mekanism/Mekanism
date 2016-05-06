@@ -118,7 +118,7 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
         for (EnumFacing facing : EnumFacing.VALUES){
             ChiselFace face = model.getFace(facing);
 
-            int quadGoal = ctx == null ? 1 : Ordering.natural().max(FluentIterable.from(face.getTextureList()).transform(tex -> tex.getType().getQuadsPerSide()));
+            int quadGoal = ctx == null ? 1 : Ordering.natural().max(FluentIterable.from(face.getTextureList()).transform(tex -> CTM.QUADS_PER_SIDE));
             IBakedModel baked = model.getModel(state);
             List<BakedQuad> origFaceQuads = baked.getFaceQuads(facing);
             List<BakedQuad> origGeneralQuads = FluentIterable.from(baked.getGeneralQuads()).filter(q -> q.getFace() == facing).toList();

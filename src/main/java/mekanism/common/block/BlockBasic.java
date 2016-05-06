@@ -5,6 +5,8 @@ import java.util.Random;
 
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.client.render.ctm.CTMBlockRenderContext;
+import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.client.render.ctm.PropertyCTMRenderContext;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
@@ -14,6 +16,7 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
@@ -53,6 +56,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -91,7 +95,7 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICustomBlockIcon
+public abstract class BlockBasic extends Block implements ICTMBlock//TODO? implements ICustomBlockIcon
 {
 	public static final PropertyCTMRenderContext ctmProperty = new PropertyCTMRenderContext();
 	
@@ -145,16 +149,34 @@ public abstract class BlockBasic extends Block//TODO? implements IBlockCTM, ICus
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
 		TileEntity tile = worldIn.getTileEntity(pos);
+		
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
 		{
-			state = state.withProperty(BlockStateBasic.facingProperty, ((TileEntityBasicBlock)tile).facing);
+			state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).facing);
 		}
+		
 		if(tile instanceof IActiveState)
 		{
 			state = state.withProperty(BlockStateBasic.activeProperty, ((IActiveState)tile).getActive());
 		}
+		
 		return state;
 	}
+	
+	@SideOnly(Side.CLIENT)
+    @Override
+    public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
+	{
+        if(stateIn.getBlock() == null || stateIn.getBlock().getMaterial() == Material.air) 
+        {
+            return stateIn;
+        }
+        
+        IExtendedBlockState state = (IExtendedBlockState) stateIn;
+        CTMBlockRenderContext ctx = new CTMBlockRenderContext(w, pos);
+
+        return state.withProperty(ctmProperty, ctx);
+    }
 
 /*
 	@Override

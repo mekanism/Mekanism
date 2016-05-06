@@ -66,6 +66,7 @@ import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
+import mekanism.client.render.ctm.TextureStitcher;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
@@ -435,7 +436,7 @@ public class ClientProxy extends CommonProxy
 	{
 		MekanismRenderer.registerItemRender("mekanism", item);
 	}
-
+	
 	@Override
 	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
@@ -646,6 +647,8 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		MekanismRenderer.init();
+		
+		MinecraftForge.EVENT_BUS.register(new TextureStitcher());
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {

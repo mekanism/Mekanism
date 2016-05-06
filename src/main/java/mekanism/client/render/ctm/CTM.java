@@ -66,6 +66,8 @@ import static mekanism.client.render.ctm.Dir.*;
  * -CptRageToaster-
  */
 public class CTM {
+	public static int REQUIRED_TEXTURES = 2;
+	public static int QUADS_PER_SIDE = 4;
 	
     /**
      * The Uvs for the specific "magic number" value

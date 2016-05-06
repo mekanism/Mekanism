@@ -16,15 +16,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class ChiselTextureCTM {
 
-	@Getter
-    protected BlockRenderTypeCTM type;
     @Getter
     protected EnumWorldBlockLayer layer;
 
     protected TextureSpriteCallback[] sprites;
     
-    public ChiselTextureCTM(BlockRenderTypeCTM type, EnumWorldBlockLayer layer, TextureSpriteCallback[] sprites) {
-    	this.type = type;
+    public ChiselTextureCTM(EnumWorldBlockLayer layer, TextureSpriteCallback[] sprites) {
         this.layer = layer;
         this.sprites = sprites;
     }
