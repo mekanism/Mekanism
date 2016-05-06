@@ -14,8 +14,8 @@ import mekanism.api.util.UnitDisplayUtils.TempType;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -98,13 +98,11 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
-import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
@@ -133,9 +131,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
@@ -399,7 +397,7 @@ public class CommonProxy implements IGuiProvider
 	 */
 	public void loadUtilities() 
 	{
-		FMLCommonHandler.instance().bus().register(Mekanism.worldTickHandler);
+		MinecraftForge.EVENT_BUS.register(Mekanism.worldTickHandler);
 	}
 
 	/**

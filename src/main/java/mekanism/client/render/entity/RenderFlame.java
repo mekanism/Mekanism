@@ -2,17 +2,18 @@ package mekanism.client.render.entity;
 
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.entity.EntityFlame;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderFlame extends Render<EntityFlame>
@@ -40,6 +41,7 @@ public class RenderFlame extends Render<EntityFlame>
         GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F, 0.0F, 1.0F);
         
         Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         
         int i = 0;
         float f2 = 0.0F;
@@ -55,16 +57,15 @@ public class RenderFlame extends Render<EntityFlame>
 
         for(int j = 0; j < 4; j++)
         {
-            GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
             GL11.glNormal3f(0.0F, 0.0F, scale);
-/*TODO
-            tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV(-8D, -2D, 0.0D, f2, f4);
-            tessellator.addVertexWithUV(8D, -2D, 0.0D, f3, f4);
-            tessellator.addVertexWithUV(8D, 2D, 0.0D, f3, f5);
-            tessellator.addVertexWithUV(-8D, 2D, 0.0D, f2, f5);
+            
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+            worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex((double)f2, (double)f4).endVertex();
+            worldrenderer.pos(8.0D, -2.0D, 0.0D).tex((double)f3, (double)f4).endVertex();
+            worldrenderer.pos(8.0D, 2.0D, 0.0D).tex((double)f3, (double)f5).endVertex();
+            worldrenderer.pos(-8.0D, 2.0D, 0.0D).tex((double)f2, (double)f5).endVertex();
             tessellator.draw();
-*/
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);

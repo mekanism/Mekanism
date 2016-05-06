@@ -6,7 +6,7 @@ import java.util.HashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -37,7 +37,7 @@ public class TransmitterNetworkRegistry
 		{
 			loaderRegistered = true;
 
-			FMLCommonHandler.instance().bus().register(INSTANCE);
+			MinecraftForge.EVENT_BUS.register(INSTANCE);
 		}
 	}
 

@@ -24,10 +24,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
@@ -52,14 +51,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 		Pos3D playerPos = new Pos3D(player).translate(0, 1.6, 0);
 		Pos3D flameVec = new Pos3D(1, 1, 1);
 		
-		flameVec.multiply(new Pos3D(player.getLook(90)));
-		flameVec.rotateYaw(6);
+		flameVec = flameVec.multiply(new Pos3D(player.getLookVec())).rotateYaw(6);
 		
-		Pos3D mergedVec = playerPos.clone().translate(flameVec);
+		Pos3D mergedVec = playerPos.translate(flameVec);
 		setPosition(mergedVec.xCoord, mergedVec.yCoord, mergedVec.zCoord);
 		
-		Pos3D motion = new Pos3D(0.4, 0.4, 0.4);
-		motion.multiply(new Pos3D(player.getLookVec()));
+		Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(player.getLookVec()));
 		
 		setHeading(motion);
 		
@@ -167,7 +164,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 
         if(mop != null)
         {
-            if(mop.entityHit != null && !mop.entityHit.isImmuneToFire())
+            if(mop.typeOfHit == MovingObjectType.ENTITY && mop.entityHit != null && !mop.entityHit.isImmuneToFire())
             {
             	if(mop.entityHit instanceof EntityItem && mode != ItemFlamethrower.FlamethrowerMode.COMBAT)
             	{
@@ -183,7 +180,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
             		burn(mop.entityHit);
             	}
             }
-            else {
+            else if(mop.typeOfHit == MovingObjectType.BLOCK)
+            {
                 IBlockState state = worldObj.getBlockState(mop.getBlockPos());
 				Block block = state.getBlock();
                 boolean fluid = MekanismUtils.isFluid(worldObj, new Coord4D(mop)) || MekanismUtils.isDeadFluid(worldObj, new Coord4D(mop));
@@ -241,15 +239,15 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 		
 		ItemStack result = FurnaceRecipes.instance().getSmeltingResult(block.getStack(worldObj));
 		
-		if(result != null)
+		if(result != null && result.getItem() != null)
 		{
 			if(!worldObj.isRemote)
 			{
 				IBlockState state = block.getBlockState(worldObj);
 				Block b = state.getBlock();
+				Block newBlock = Block.getBlockFromItem(result.getItem());
 
-				
-				if(Block.getBlockFromItem(result.getItem()) != Blocks.air)
+				if(newBlock != null && newBlock != Blocks.air)
 				{
 					worldObj.setBlockState(block, Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
 				}

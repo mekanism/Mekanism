@@ -1,6 +1,5 @@
 package mekanism.client.render;
 
-import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
@@ -22,9 +21,7 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -117,36 +114,34 @@ public class RenderTickHandler
 
 						if(p != mc.thePlayer)
 						{
-							playerPos.translate(0, 1.7, 0);
+							playerPos = playerPos.translate(0, 1.7, 0);
 						}
 
 						float random = (rand.nextFloat() - 0.5F) * 0.1F;
 
 						Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
-
 						Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
-
 						Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
 
 						Pos3D rLeft = vLeft.scale(random);
-						Pos3D rRight = vRight.clone().scale(random);
+						Pos3D rRight = vRight.scale(random);
 
-						Pos3D mLeft = vLeft.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						Pos3D mRight = vRight.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						Pos3D mCenter = vCenter.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
 
-						mLeft.translate(rLeft);
-						mRight.translate(rRight);
+						mLeft = mLeft.translate(rLeft);
+						mRight = mRight.translate(rRight);
 
-						Pos3D v = playerPos.clone().translate(vLeft);
+						Pos3D v = playerPos.translate(vLeft);
 						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
 						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
 
-						v = playerPos.clone().translate(vRight);
+						v = playerPos.translate(vRight);
 						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
 						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
 
-						v = playerPos.clone().translate(vCenter);
+						v = playerPos.translate(vCenter);
 						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
 						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
 					}
@@ -169,16 +164,16 @@ public class RenderTickHandler
 
 							if(p != mc.thePlayer)
 							{
-								playerPos.translate(0, 1.7, 0);
+								playerPos = playerPos.translate(0, 1.7, 0);
 							}
 							
 							float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
 							float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
 							
 							Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(90))).translate(0, -0.2, 0);
-							Pos3D motion = vec.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+							Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
 							
-							Pos3D v = playerPos.clone().translate(vec);
+							Pos3D v = playerPos.translate(vec);
 							spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.xCoord, v.yCoord, v.zCoord, motion.xCoord, motion.yCoord + 0.2, motion.zCoord);
 						}
 					}

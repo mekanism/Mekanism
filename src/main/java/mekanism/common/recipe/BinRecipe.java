@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
@@ -22,7 +22,7 @@ public class BinRecipe implements IRecipe
 	{
 		if(!registered)
 		{
-			FMLCommonHandler.instance().bus().register(this);
+			MinecraftForge.EVENT_BUS.register(this);
 			registered = true;
 		}
 	}

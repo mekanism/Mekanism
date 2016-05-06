@@ -1308,8 +1308,8 @@ public class Mekanism
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());
 		
 		//Register player tracker
-		FMLCommonHandler.instance().bus().register(new CommonPlayerTracker());
-		FMLCommonHandler.instance().bus().register(new CommonPlayerTickHandler());
+		MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
+		MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
 		
 		//Initialization notification
 		logger.info("Version " + versionNumber + " initializing...");
@@ -1321,7 +1321,6 @@ public class Mekanism
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkManager());
 		
 		//Register to receive subscribed events
-		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		//Register this module's GUI handler in the simple packet protocol

@@ -75,7 +75,7 @@ public class MekanismGenerators implements IModule
 		
 		//Set up the GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 
 		//Load the proxy
 		proxy.loadConfiguration();

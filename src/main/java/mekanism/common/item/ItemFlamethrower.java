@@ -14,8 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemFlamethrower extends ItemMekanism implements IGasItem
 {
@@ -43,12 +41,6 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
         list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 	
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-*/
-
 	public void useGas(ItemStack stack)
 	{
 		setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount - 1));

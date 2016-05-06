@@ -1157,6 +1157,12 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	}
 
 	@Override
+	public boolean isFullCube()
+    {
+        return false;
+    }
+	
+	@Override
 	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
 	{
 		setBlockBoundsBasedOnState(world, pos);

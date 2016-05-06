@@ -322,7 +322,7 @@ public class ClientTickHandler
 				}
 				else if(jetpack.getMode(mc.thePlayer.getEquipmentInSlot(3)) == JetpackMode.HOVER)
 				{
-					if((!mc.gameSettings.keyBindJump.isPressed() && !mc.gameSettings.keyBindSneak.isPressed()) || (mc.gameSettings.keyBindJump.isPressed() && mc.gameSettings.keyBindSneak.isPressed()) || mc.currentScreen != null)
+					if((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) || (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null)
 					{
 						if(mc.thePlayer.motionY > 0)
 						{
@@ -337,11 +337,11 @@ public class ClientTickHandler
 						}
 					}
 					else {
-						if(mc.gameSettings.keyBindJump.isPressed() && mc.currentScreen == null)
+						if(mc.gameSettings.keyBindJump.isKeyDown() && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.2D);
 						}
-						else if(mc.gameSettings.keyBindSneak.isPressed() && mc.currentScreen == null)
+						else if(mc.gameSettings.keyBindSneak.isKeyDown() && mc.currentScreen == null)
 						{
 							if(!CommonPlayerTickHandler.isOnGround(mc.thePlayer))
 							{
@@ -429,17 +429,17 @@ public class ClientTickHandler
 
 				if(jetpack.getGas(stack) != null)
 				{
-					if((mc.gameSettings.keyBindJump.isPressed() && jetpack.getMode(stack) == JetpackMode.NORMAL) && mc.currentScreen == null)
+					if((mc.gameSettings.keyBindJump.isKeyDown() && jetpack.getMode(stack) == JetpackMode.NORMAL) && mc.currentScreen == null)
 					{
 						return true;
 					}
 					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
 					{
-						if((!mc.gameSettings.keyBindJump.isPressed() && !mc.gameSettings.keyBindSneak.isPressed()) || (mc.gameSettings.keyBindJump.isPressed() && mc.gameSettings.keyBindSneak.isPressed()) || mc.currentScreen != null)
+						if((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) || (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null)
 						{
 							return !player.onGround;
 						}
-						else if(mc.gameSettings.keyBindSneak.isPressed() && mc.currentScreen == null)
+						else if(mc.gameSettings.keyBindSneak.isKeyDown() && mc.currentScreen == null)
 						{
 							return !player.onGround;
 						}
@@ -491,7 +491,7 @@ public class ClientTickHandler
 		
 		if(hasFlamethrower(player))
 		{
-			if(mc.gameSettings.keyBindUseItem.isPressed())
+			if(mc.gameSettings.keyBindUseItem.isKeyDown())
 			{
 				return true;
 			}
