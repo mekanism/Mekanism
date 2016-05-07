@@ -61,6 +61,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 	public int clientAmount;
 
+	@Override
+	public void update()
+	{
+		super.update();
+	}
+
 	public void sortStacks()
 	{
 		if(getItemCount() == 0 || itemType == null)
