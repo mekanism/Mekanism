@@ -19,7 +19,6 @@ MDK.zip
 gradlew
 *.txt
 
-*.mtl
 *.blend1
 *.blend2
 /bin

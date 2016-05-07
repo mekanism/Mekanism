@@ -191,6 +191,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -428,6 +429,8 @@ public class ClientProxy extends CommonProxy
 		
 		ModelBakery.registerItemVariants(MekanismItems.CraftingFormula, ItemCraftingFormula.MODEL, 
 				ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
+
+		OBJLoader.instance.addDomain("mekanism");
 
 		Mekanism.logger.info("Render registrations complete.");
 	}

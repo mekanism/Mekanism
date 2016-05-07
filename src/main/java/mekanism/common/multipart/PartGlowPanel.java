@@ -7,6 +7,10 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.common.MekanismItems;
+import mekanism.common.block.states.BlockStateFacing;
+
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +21,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3;
 /*
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
@@ -33,6 +38,7 @@ import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 */
+import mcmultipart.MCMultiPartMod;
 import mcmultipart.block.TileMultipart;
 import mcmultipart.microblock.IMicroblock;
 import mcmultipart.microblock.IMicroblock.IFaceMicroblock;
@@ -41,6 +47,7 @@ import mcmultipart.multipart.IOccludingPart;
 import mcmultipart.multipart.Multipart;
 import mcmultipart.multipart.PartSlot;
 import mcmultipart.raytrace.PartMOP;
+import mcmultipart.util.TransformationHelper;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -55,12 +62,11 @@ public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconH
 	static
 	{
 		AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
-//		Translation fromOrigin = new Translation(Vector3.center);
-//		Translation toOrigin = (Translation)fromOrigin.inverse();
-		
-		for(int i = 0; i < 6; i++)
+		Vec3 fromOrigin = new Vec3(-0.5, -0.5, -0.5);
+
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			bounds[i] = cuboid;//.copy().apply(toOrigin).apply(Rotation.sideRotations[i]).apply(fromOrigin);
+			bounds[side.ordinal()] = TransformationHelper.rotate(cuboid.offset(fromOrigin.xCoord, fromOrigin.yCoord, fromOrigin.zCoord), side).offset(-fromOrigin.xCoord, -fromOrigin.zCoord, -fromOrigin.zCoord);
 		}
 	}
 
@@ -217,5 +223,23 @@ public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconH
 	{
 		Coord4D adj = new Coord4D(getPos().offset(side), getWorld().provider.getDimensionId());
 		return getWorld().isSideSolid(adj, side.getOpposite()) || (getContainer().getPartInSlot(PartSlot.getFaceSlot(side)) instanceof IFaceMicroblock && ((IFaceMicroblock)getContainer().getPartInSlot(PartSlot.getFaceSlot(side))).isFaceHollow());
+	}
+
+	@Override
+	public String getModelPath()
+	{
+		return getType();
+	}
+
+	@Override
+	public BlockState createBlockState()
+	{
+		return new BlockStateFacing(MCMultiPartMod.multipart);
+	}
+
+	@Override
+	public IBlockState getExtendedState(IBlockState state)
+	{
+		return state.withProperty(BlockStateFacing.facingProperty, side);
 	}
 }
