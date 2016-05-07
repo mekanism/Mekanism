@@ -268,8 +268,8 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			{
 				TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
-				if(tileEntity != null && tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
-						&& TransmissionType.checkTransmissionType(tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
+				if(tileEntity != null && MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+						&& TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
 						&& isValidTransmitter(tileEntity))
 				{
 					connections |= 1 << side.ordinal();
@@ -322,8 +322,8 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		{
 			TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
-			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
-					&& TransmissionType.checkTransmissionType(tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
+			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+					&& TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
 					&& isValidTransmitter(tileEntity))
 			{
 				return true;

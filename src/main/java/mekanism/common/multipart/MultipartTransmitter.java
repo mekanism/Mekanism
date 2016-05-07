@@ -8,6 +8,8 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.Transmitter;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -53,9 +55,9 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 			return null;
 		}
 
-		if(potentialTransmitterTile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
+		if(MekanismUtils.hasCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 		{
-			IGridTransmitter transmitter = potentialTransmitterTile.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
+			IGridTransmitter transmitter = MekanismUtils.getCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
 
 			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()))
 			{
@@ -98,9 +100,9 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	{
 		TileEntity tile = from.getTileEntity(world());
 		
-		if(tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+		if(MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 		{
-			IGridTransmitter transmitter = tile.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+			IGridTransmitter transmitter = MekanismUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 			
 			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()));
 			{

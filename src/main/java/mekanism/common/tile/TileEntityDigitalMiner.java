@@ -301,9 +301,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					getTopEject(true, remains);
 				}
-				else if(getEjectInv().hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
+				else if(MekanismUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), getEjectInv().getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, null), null, true, 0);
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), MekanismUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, null), null, true, 0);
 
 					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{
@@ -322,7 +322,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getSmallPacket(new ArrayList())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getSmallPacket(new ArrayList<Object>())), (EntityPlayerMP)player);
 				}
 			}
 
@@ -923,7 +923,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return data;
 	}
 
-	public ArrayList getSmallPacket(ArrayList<Object> data)
+	public ArrayList<Object> getSmallPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 

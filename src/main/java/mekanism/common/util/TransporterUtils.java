@@ -37,9 +37,9 @@ public final class TransporterUtils
 		{
 			TileEntity tile = tileEntity.coord().offset(orientation).getTileEntity(tileEntity.world());
 
-			if(tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, orientation.getOpposite()))
+			if(MekanismUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, orientation.getOpposite()))
 			{
-				ILogisticalTransporter otherTransporter = tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, orientation.getOpposite());
+				ILogisticalTransporter otherTransporter = MekanismUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, orientation.getOpposite());
 
 				if(otherTransporter.getColor() == null || tileEntity.getColor() == null || otherTransporter.getColor() == tileEntity.getColor())
 				{
@@ -53,7 +53,7 @@ public final class TransporterUtils
 
 	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
-		if(tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || !(tile instanceof IInventory))
+		if(MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || !(tile instanceof IInventory))
 		{
 			return false;
 		}
@@ -150,7 +150,7 @@ public final class TransporterUtils
 		{
 			TileEntity inventory = transporter.coord().offset(orientation).getTileEntity(transporter.world());
 
-			if(inventory instanceof IInventory && !(inventory.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, orientation.getOpposite())))
+			if(inventory instanceof IInventory && !(MekanismUtils.hasCapability(inventory, Capabilities.GRID_TRANSMITTER_CAPABILITY, orientation.getOpposite())))
 			{
 				inventories[orientation.ordinal()] = (IInventory)inventory;
 			}

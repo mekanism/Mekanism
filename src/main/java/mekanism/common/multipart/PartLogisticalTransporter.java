@@ -23,6 +23,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 //import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -118,7 +119,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	protected boolean isValidTransmitter(TileEntity tileEntity)
 	{
-		ILogisticalTransporter transporter = tileEntity.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+		ILogisticalTransporter transporter = MekanismUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 
 		if(getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor())
 		{

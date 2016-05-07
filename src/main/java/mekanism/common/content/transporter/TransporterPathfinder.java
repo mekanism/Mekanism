@@ -19,6 +19,8 @@ import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.Dest
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -72,7 +74,7 @@ public final class TransporterPathfinder
 					return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 				}
 				else {
-					Destination newPath = TransporterPathfinder.getNewBasePath(start.getTileEntity(worldObj).getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null), transportStack, 0);
+					Destination newPath = TransporterPathfinder.getNewBasePath(MekanismUtils.getCapability(start.getTileEntity(worldObj), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null), transportStack, 0);
 					
 					if(newPath != null && TransporterManager.didEmit(transportStack.itemStack, newPath.rejected))
 					{
@@ -188,9 +190,9 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = location.getTileEntity(world);
 				
-				if(tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null))
+				if(MekanismUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null))
 				{
-					score += tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).getCost();
+					score += MekanismUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).getCost();
 				}
 			}
 			
@@ -270,12 +272,12 @@ public final class TransporterPathfinder
 		{
 			TileEntity tile = path.get(i).getTileEntity(world);
 			
-			if(!tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null))
+			if(!MekanismUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null))
 			{
 				return false;
 			}
 			
-			ILogisticalTransporter transporter = tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+			ILogisticalTransporter transporter = MekanismUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 			
 			if(transporter == null || (transporter.getColor() != null && transporter.getColor() != stack.color))
 			{
@@ -473,7 +475,7 @@ public final class TransporterPathfinder
 					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction))
 					{
 						TileEntity tile = neighbor.getTileEntity(worldObj);
-						double tentativeG = gScore.get(currentNode) + tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()).getCost();
+						double tentativeG = gScore.get(currentNode) + MekanismUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()).getCost();
 
 						if(closedSet.contains(neighbor))
 						{

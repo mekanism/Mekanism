@@ -23,7 +23,7 @@ public class HeatUtils
 				source.transferHeatTo(-heatToTransfer);
 				sink.transferHeatTo(heatToTransfer);
 				
-				if(!(sink instanceof ICapabilityProvider && ((ICapabilityProvider)sink).hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())))
+				if(!(sink instanceof ICapabilityProvider && MekanismUtils.hasCapability((ICapabilityProvider)sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())))
 				{
 					heatTransferred[0] += heatToTransfer;
 				}

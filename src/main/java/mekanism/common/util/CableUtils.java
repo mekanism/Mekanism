@@ -28,16 +28,16 @@ public final class CableUtils
 {
 	public static boolean isEnergyAcceptor(TileEntity tileEntity)
 	{
-		return tileEntity != null && (tileEntity.hasCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null) ||
+		return tileEntity != null && (MekanismUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver));
 	}
 
 	public static boolean isCable(TileEntity tileEntity)
 	{
-		if(tileEntity != null && tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+		if(tileEntity != null && MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 		{
-			return TransmissionType.checkTransmissionType(tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null), TransmissionType.ENERGY);
+			return TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null), TransmissionType.ENERGY);
 		}
 		return false;
 	}
@@ -115,7 +115,7 @@ public final class CableUtils
 	public static boolean isOutputter(TileEntity tileEntity, EnumFacing side)
 	{
 		return tileEntity != null && (
-				(tileEntity.hasCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && tileEntity.getCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite())) ||
+				(MekanismUtils.hasCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && MekanismUtils.getCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite())) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()))
 		);
@@ -123,14 +123,14 @@ public final class CableUtils
 
 	public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, EnumFacing side)
 	{
-		if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
+		if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 		{
 			return false;
 		}
 
-		if(tileEntity.hasCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
+		if(MekanismUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
 		{
-			if(tileEntity.getCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()).canReceiveEnergy(side.getOpposite()))
+			if(MekanismUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()).canReceiveEnergy(side.getOpposite()))
 			{
 				return true;
 			}
@@ -142,9 +142,9 @@ public final class CableUtils
 				return true;
 			}
 		}
-		else if(tileEntity.hasCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()))
+		else if(MekanismUtils.hasCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()))
 		{
-			if(tileEntity.getCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite()))
+			if(MekanismUtils.getCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite()))
 			{
 				return true;
 			}
@@ -235,9 +235,9 @@ public final class CableUtils
 	{
 		double sent = 0;
 
-		if(tileEntity.hasCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
+		if(MekanismUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
 		{
-			IStrictEnergyAcceptor acceptor = tileEntity.getCapability(Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite());
+			IStrictEnergyAcceptor acceptor = MekanismUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite());
 
 			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{

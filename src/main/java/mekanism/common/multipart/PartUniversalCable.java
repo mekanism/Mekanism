@@ -81,9 +81,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 					{
 						TileEntity outputter = connectedOutputters[side.ordinal()];
 
-						if(outputter.hasCapability(Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && outputter.hasCapability(Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
+						if(MekanismUtils.hasCapability(outputter, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && MekanismUtils.hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
 						{
-							IStrictEnergyStorage storage = outputter.getCapability(Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
+							IStrictEnergyStorage storage = MekanismUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
 							double received = Math.min(storage.getEnergy(), canDraw);
 							double toDraw = received;
 

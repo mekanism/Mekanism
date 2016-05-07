@@ -20,6 +20,8 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
@@ -41,9 +43,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+				IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 				DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
 				network.register();
 				transmitter.setTransmitterNetwork(network);
@@ -52,9 +54,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				{
 					TileEntity tile = coord.getTileEntity(player.worldObj);
 
-					if(tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+					if(MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
-						tile.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null).setTransmitterNetwork(network);
+						MekanismUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).setTransmitterNetwork(network);
 					}
 				}
 				
@@ -65,9 +67,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+				IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 				
 				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.ENERGY)
 				{
@@ -79,9 +81,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+				IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 				
 				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.GAS)
 				{
@@ -101,9 +103,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+				IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 				
 				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.FLUID)
 				{
