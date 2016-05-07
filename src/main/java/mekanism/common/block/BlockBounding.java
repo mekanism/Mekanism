@@ -148,6 +148,12 @@ public class BlockBounding extends Block
 	}
 
 	@Override
+	public boolean isFullCube()
+	{
+		return false;
+	}
+
+	@Override
 	public boolean hasTileEntity(IBlockState state)
 	{
 		return true;
