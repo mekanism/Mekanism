@@ -245,14 +245,12 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		return new EnergyNetwork();
 	}
 
-/*
 	@Override
 	public void onUnloaded()
 	{
 		takeShare();
 		super.onUnloaded();
 	}
-*/
 
 	@Override
 	public Object getBuffer()

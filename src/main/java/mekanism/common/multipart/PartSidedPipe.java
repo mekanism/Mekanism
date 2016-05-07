@@ -683,9 +683,12 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	protected void markDirtyAcceptor(EnumFacing side) {}
 
+	public abstract void onWorldJoin();
+
 	@Override
 	public void onAdded()
 	{
+		onWorldJoin();
 		super.onAdded();
 		
 		refreshConnections();
@@ -694,6 +697,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public void onLoaded()
 	{
+		onWorldJoin();
 		super.onLoaded();
 		
 		//refreshConnections(); TODO causes StackOverflow. Why?
