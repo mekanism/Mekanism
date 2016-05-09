@@ -128,7 +128,7 @@ public class Coord4D extends BlockPos
 
 		TileEntity tile = world.getTileEntity(this);
 		
-		return (tile != null && tile.hasWorldObj()) ? tile : null;
+		return (tile != null && tile.hasWorldObj() && !tile.isInvalid()) ? tile : null;
 	}
 
 	/**
@@ -227,7 +227,7 @@ public class Coord4D extends BlockPos
 	 */
 	public Coord4D offset(EnumFacing facing, int n)
 	{
-		return (facing == null || n == 0) ? this : new Coord4D(this.getX() + facing.getFrontOffsetX() * n, this.getY() + facing.getFrontOffsetY() * n, this.getZ() + facing.getFrontOffsetZ() * n);
+		return (facing == null || n == 0) ? this : new Coord4D(getX() + facing.getFrontOffsetX() * n, getY() + facing.getFrontOffsetY() * n, getZ() + facing.getFrontOffsetZ() * n, dimensionId);
 	}
 
 	public ItemStack getStack(IBlockAccess world)
@@ -280,7 +280,7 @@ public class Coord4D extends BlockPos
 	 */
 	public Coord4D difference(Vec3i vec)
 	{
-		return vec.getX() == 0 && vec.getY() == 0 && vec.getZ() == 0 ? this : new Coord4D(this.getX() - vec.getX(), this.getY() - vec.getY(), this.getZ() - vec.getZ());	
+		return vec.getX() == 0 && vec.getY() == 0 && vec.getZ() == 0 ? this : new Coord4D(getX() - vec.getX(), getY() - vec.getY(), getZ() - vec.getZ(), dimensionId);	
 	}
 
 	/**

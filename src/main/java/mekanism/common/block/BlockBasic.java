@@ -953,6 +953,8 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		{
 			((IBoundingBlock)tileEntity).onBreak();
 		}
+		
+		System.out.println(world.getTileEntity(pos));
 
 		super.breakBlock(world, pos, state);
 		

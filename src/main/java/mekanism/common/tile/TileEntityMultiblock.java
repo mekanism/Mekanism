@@ -14,11 +14,14 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -64,7 +67,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			{
 				if(!prevStructure)
 				{
-					Mekanism.proxy.doMultiblockSparkle(this);
+					//Mekanism.proxy.doMultiblockSparkle(this);
 				}
 			}
 
@@ -133,6 +136,19 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			}
 		}
 	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
+    {
+		boolean b = super.shouldRefresh(world, pos, oldState, newSate);
+		
+		if(!world.isRemote)
+		{
+			System.out.println(b);
+		}
+		
+		return b;
+    }
 	
 	@Override
 	public void doUpdate()
