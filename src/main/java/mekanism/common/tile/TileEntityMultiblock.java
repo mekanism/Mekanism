@@ -204,7 +204,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 
 	@Override
-	public void  (ByteBuf dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
 
