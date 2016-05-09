@@ -4,11 +4,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.Value;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -29,34 +24,31 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
 
-@ToString(of = { "vertPos", "vertUv" })
-public class Quad {
-    
+public class Quad
+{    
     public static final ISubmap TOP_LEFT = new Submap(8, 8, 0, 0);
     public static final ISubmap TOP_RIGHT = new Submap(8, 8, 8, 0);
     public static final ISubmap BOTTOM_LEFT = new Submap(8, 8, 0, 8);
     public static final ISubmap BOTTOM_RIGHT = new Submap(8, 8, 8, 8);
     
-    @Value
-    public static class Vertex {
+    public static class Vertex 
+    {
         Vector3f pos;
         Vector2f uvs;
     }
 
     private static final TextureAtlasSprite BASE = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(TextureMap.LOCATION_MISSING_TEXTURE.toString());
     
-    @ToString
-    public class UVs {
-        
-        @Getter
+    public class UVs 
+    {
         private float minU, minV, maxU, maxV;
         
-        @Getter
         private final TextureAtlasSprite sprite;
         
         private final Vector2f[] data;
         
-        private UVs(Vector2f... data) {
+        private UVs(Vector2f... data)
+        {
             this(BASE, data);
         }
         
@@ -134,6 +126,11 @@ public class Quad {
         public UVs relativize() {
             return relativize(sprite);
         }
+        
+        public TextureAtlasSprite getSprite()
+        {
+        	return sprite;
+        }
 
         public UVs relativize(TextureAtlasSprite sprite) {
             Vector2f min = new Vector2f(sprite.getMinU(), sprite.getMinV());
@@ -190,8 +187,7 @@ public class Quad {
     private final Vector2f[] vertUv;
         
     // Technically nonfinal, but treated as such except in constructor
-    @Getter
-    private UVs uvs;
+    private UVs uvsObj;
     
     private final Builder builder;
     
@@ -199,16 +195,17 @@ public class Quad {
         this.vertPos = verts;
         this.vertUv = uvs;
         this.builder = builder;
-        this.uvs = new UVs(uvs);
+        this.uvsObj = new UVs(uvs);
     }
     
     private Quad(Vector3f[] verts, UVs uvs, Builder builder) {
         this(verts, uvs.vectorize(), builder);
-        this.uvs = new UVs(uvs.getSprite(), vertUv);
+        this.uvsObj = new UVs(uvs.getSprite(), vertUv);
     }
-
-    public void compute() {
-
+    
+    public UVs getUVs()
+    {
+    	return uvsObj;
     }
 
     public Quad[] subdivide(int count) {
@@ -235,7 +232,7 @@ public class Quad {
     @Nullable
     private Pair<Quad, Quad> divide(boolean vertical) {
         float min, max;
-        UVs uvs = getUvs().normalize();
+        UVs uvs = uvsObj.normalize();
         if (vertical) {
             min = uvs.minV;
             max = uvs.maxV;
@@ -249,7 +246,7 @@ public class Quad {
                         
             int firstIndex = 0;
             for (int i = 0; i < vertUv.length; i++) {
-                if (vertUv[i].y == getUvs().minV && vertUv[i].x == getUvs().minU) {
+                if (vertUv[i].y == uvsObj.minV && vertUv[i].x == uvsObj.minU) {
                     firstIndex = i;
                     break;
                 }
@@ -305,7 +302,7 @@ public class Quad {
     public Quad rotate(int amount) {
         Vector2f[] uvs = new Vector2f[4];
 
-        TextureAtlasSprite s = getUvs().getSprite();
+        TextureAtlasSprite s = uvsObj.getSprite();
 
         for (int i = 0; i < 4; i++) {
             Vector2f normalized = new Vector2f(normalize(s.getMinU(), s.getMaxU(), vertUv[i].x), normalize(s.getMinV(), s.getMaxV(), vertUv[i].y));
@@ -332,14 +329,14 @@ public class Quad {
         }
 
         Quad ret = new Quad(vertPos, uvs, builder);
-        ret.uvs = new UVs(getUvs().getSprite(), ret.vertUv);
+        ret.uvsObj = new UVs(uvsObj.getSprite(), ret.vertUv);
         return ret;
     }
 
     public Quad derotate() {
         int start = 0;
         for (int i = 0; i < 4; i++) {
-            if (vertUv[i].x <= getUvs().minU && vertUv[i].y <= getUvs().minV) {
+            if (vertUv[i].x <= uvsObj.minU && vertUv[i].y <= uvsObj.minV) {
                 start = i;
                 break;
             }
@@ -383,11 +380,11 @@ public class Quad {
     }
     
     public Quad transformUVs(TextureAtlasSprite sprite, ISubmap submap) {
-        return new Quad(vertPos, getUvs().transform(sprite, submap), builder);
+        return new Quad(vertPos, uvsObj.transform(sprite, submap), builder);
     }
     
     public Quad grow() {
-        return new Quad(vertPos, getUvs().normalizeQuadrant(), builder);
+        return new Quad(vertPos, uvsObj.normalizeQuadrant(), builder);
     }
     
     public static Quad from(BakedQuad baked, VertexFormat fmt) {
@@ -396,17 +393,36 @@ public class Quad {
         return b.build().derotate(); // for now we will ignore rotated UVs
     }
     
-    @RequiredArgsConstructor
-    public static class Builder implements IVertexConsumer {
-
-        @Getter
+    public static class Builder implements IVertexConsumer 
+    {
+    	public Builder(VertexFormat fmt)
+    	{
+    		vertexFormat = fmt;
+    	}
+    	
         private final VertexFormat vertexFormat;
 
-        @Setter
         private int quadTint;
 
-        @Setter
         private EnumFacing quadOrientation;
+        
+        @Override
+        public void setQuadTint(int tint)
+        {
+        	quadTint = tint;
+        }
+        
+        @Override
+        public void setQuadOrientation(EnumFacing orientation)
+        {
+        	quadOrientation = orientation;
+        }
+        
+        @Override
+        public VertexFormat getVertexFormat()
+        {
+        	return vertexFormat;
+        }
 
         @Override
         public void setQuadColored() {}

@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
@@ -38,7 +37,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	public void loopThrough(TileEntity tile)
 	{
-		World worldObj = tile.getWorld();
+		World worldObj = pointer.getWorld();
 
 		int origX = tile.getPos().getX(), origY = tile.getPos().getY(), origZ = tile.getPos().getZ();
 
@@ -220,8 +219,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			Coord4D coord = Coord4D.get(tile).offset(side);
-			TileEntity tileEntity = coord.getTileEntity(tile.getWorld());
-
+			TileEntity tileEntity = coord.getTileEntity(pointer.getWorld());
+			
 			if(isViableNode(coord))
 			{
 				if(!iteratedNodes.contains(tileEntity))
@@ -319,6 +318,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	public boolean isViableNode(BlockPos pos)
 	{
 		TileEntity tile = pointer.getWorld().getTileEntity(pos);
+		
+		if(tile == null || !tile.hasWorldObj())
+		{
+			return false;
+		}
 
 		if(tile instanceof IStructuralMultiblock)
 		{
@@ -548,7 +552,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 					
 					if(toUse == null)
 					{
-						toUse = obj.clone();
+						toUse = obj;
 					}
 				}
 				else if(tileEntity instanceof IStructuralMultiblock)

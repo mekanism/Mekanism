@@ -168,7 +168,6 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory");
 		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
 		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
-		//GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
@@ -195,7 +194,6 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
 		GameRegistry.registerTileEntity(TileEntityFluidTank.class, "PortableTank"); //TODO rename
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
-		//GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
 		GameRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam");
 		GameRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator");

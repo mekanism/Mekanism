@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "mekanism:blocks/InductionCasing"
+      "all": "mekanism:blocks/ctm/"
     }
   },
   "variants": {

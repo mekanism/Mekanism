@@ -30,11 +30,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2")
-public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler, IFrequencyHandler
+public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler, IFrequencyHandler, ITickable
 {
 	/** The direction this block is facing. */
 	public EnumFacing facing = EnumFacing.NORTH;

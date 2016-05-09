@@ -30,7 +30,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
  */
 public class Coord4D extends BlockPos
 {
-
 	public int dimensionId;
 
 	/**
@@ -127,7 +126,9 @@ public class Coord4D extends BlockPos
 			return null;
 		}
 
-		return world.getTileEntity(this);
+		TileEntity tile = world.getTileEntity(this);
+		
+		return (tile != null && tile.hasWorldObj()) ? tile : null;
 	}
 
 	/**
@@ -172,9 +173,7 @@ public class Coord4D extends BlockPos
 	 */
 	public void write(ArrayList<Object> data)
 	{
-		data.add(getX());
-		data.add(getY());
-		data.add(getZ());
+		data.add(toLong());
 		data.add(dimensionId);
 	}
 	
@@ -281,7 +280,8 @@ public class Coord4D extends BlockPos
 	 */
 	public Coord4D difference(Vec3i vec)
 	{
-		return vec.getX() == 0 && vec.getY() == 0 && vec.getZ() == 0 ? this : new Coord4D(this.getX() - vec.getX(), this.getY() - vec.getY(), this.getZ() - vec.getZ());	}
+		return vec.getX() == 0 && vec.getY() == 0 && vec.getZ() == 0 ? this : new Coord4D(this.getX() - vec.getX(), this.getY() - vec.getY(), this.getZ() - vec.getZ());	
+	}
 
 	/**
 	 * A method used to find the EnumFacing represented by the distance of the defined Coord4D. Most likely won't have many
@@ -397,12 +397,6 @@ public class Coord4D extends BlockPos
 	}
 
 	@Override
-	public Coord4D clone()
-	{
-		return new Coord4D(getX(), getY(), getZ(), dimensionId);
-	}
-
-	@Override
 	public String toString()
 	{
 		return "[Coord4D: " + getX() + ", " + getY() + ", " + getZ() + ", dim=" + dimensionId + "]";
@@ -419,7 +413,6 @@ public class Coord4D extends BlockPos
 				) && !(obj instanceof Coord4D && ((Coord4D)obj).dimensionId != dimensionId);
 	}
 
-/*
 	@Override
 	public int hashCode()
 	{
@@ -430,5 +423,4 @@ public class Coord4D extends BlockPos
 		code = 31 * code + dimensionId;
 		return code;
 	}
-*/
 }

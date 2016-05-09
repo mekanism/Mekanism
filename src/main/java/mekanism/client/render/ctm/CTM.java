@@ -1,5 +1,13 @@
 package mekanism.client.render.ctm;
 
+import static mekanism.client.render.ctm.Dir.BOTTOM;
+import static mekanism.client.render.ctm.Dir.BOTTOM_LEFT;
+import static mekanism.client.render.ctm.Dir.BOTTOM_RIGHT;
+import static mekanism.client.render.ctm.Dir.LEFT;
+import static mekanism.client.render.ctm.Dir.RIGHT;
+import static mekanism.client.render.ctm.Dir.TOP;
+import static mekanism.client.render.ctm.Dir.TOP_LEFT;
+import static mekanism.client.render.ctm.Dir.TOP_RIGHT;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -8,12 +16,11 @@ import java.util.EnumMap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.world.IBlockAccess;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
-
-import static mekanism.client.render.ctm.Dir.*;
 
 // @formatter:off
 /**
@@ -254,26 +261,30 @@ public class CTM {
      *            The state to check against for connection.
      * @return True if the given block can connect to the given location on the given side.
      */
-    public boolean isConnected(IBlockAccess world, BlockPos current, BlockPos connection, EnumFacing dir, IBlockState state) {
-
-//      if (CTMLib.chiselLoaded() && connectionBlocked(world, x, y, z, dir.ordinal())) {
-//          return false;
-//      }
-      
+    public boolean isConnected(IBlockAccess world, BlockPos current, BlockPos connection, EnumFacing dir, IBlockState state) 
+    {
         BlockPos pos2 = connection.add(dir.getDirectionVec());
 
         boolean disableObscured = disableObscuredFaceCheck.or(disableObscuredFaceCheckConfig);
 
         IBlockState con = getBlockOrFacade(world, connection, dir);
         IBlockState obscuring = disableObscured ? null : getBlockOrFacade(world, pos2, dir);
+        
+        CTMData data = ((ICTMBlock)state.getBlock()).getCTMData(state);
 
         // no block or a bad API user
         if (con == null) {
             return false;
         }
 
-        // TODO VERY TEMPORARY
-        boolean ret = con.getBlock() == state.getBlock();
+        boolean ret = false;
+        
+        if(con.getBlock() instanceof ICTMBlock)
+        {
+            String state2 = ((IStringSerializable)con.getValue(((ICTMBlock)con.getBlock()).getTypeProperty())).getName();
+            
+            ret = data.acceptableBlockStates.contains(state2);
+        }
 
         // no block obscuring this face
         if (obscuring == null) {
@@ -285,14 +296,6 @@ public class CTM {
 
         return ret;
     }
-
-//    private boolean connectionBlocked(IBlockAccess world, int x, int y, int z, int side) {
-//        Block block = world.getBlock(x, y, z);
-//        if (block instanceof IConnectable) {
-//            return !((IConnectable) block).canConnectCTM(world, x, y, z, side);
-//        }
-//        return false;
-//    }
 
 	public IBlockState getBlockOrFacade(IBlockAccess world, BlockPos pos, EnumFacing side) {
 		IBlockState state = world.getBlockState(pos);

@@ -66,7 +66,7 @@ import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.ctm.TextureStitcher;
+import mekanism.client.render.ctm.CTMRegistry;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
@@ -648,7 +648,7 @@ public class ClientProxy extends CommonProxy
 	{
 		MekanismRenderer.init();
 		
-		MinecraftForge.EVENT_BUS.register(new TextureStitcher());
+		MinecraftForge.EVENT_BUS.register(new CTMRegistry());
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {

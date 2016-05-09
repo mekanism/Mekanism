@@ -90,10 +90,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 					getManager().updateCache(this);
 				}
 			}
-
+			
 			if(structure == null && ticker == 5)
 			{
-				update();
+				doUpdate();
 			}
 
 			if(prevStructure == (structure == null))
@@ -135,7 +135,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 	
 	@Override
-	public void update()
+	public void doUpdate()
 	{
 		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))
 		{
@@ -204,7 +204,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 
 	@Override
-	public void handlePacketData(ByteBuf dataStream)
+	public void  (ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
 

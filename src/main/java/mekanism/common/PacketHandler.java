@@ -71,10 +71,7 @@ import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
@@ -86,8 +83,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-
-import scala.tools.nsc.Global.Run;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -161,6 +156,10 @@ public class PacketHandler
 				{
 					output.writeShort((Short)data);
 				}
+				else if(data instanceof Long)
+				{
+					output.writeLong((Long)data);
+				}
 				else if(data instanceof Boolean)
 				{
 					output.writeBoolean((Boolean)data);
@@ -211,8 +210,7 @@ public class PacketHandler
 				{
 					encode(((ArrayList)data).toArray(), output);
 				}
-				else
-				{
+				else {
 					throw new RuntimeException("Un-encodable data passed to encode(): " + data);
 				}
 			}

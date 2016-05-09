@@ -16,8 +16,8 @@ import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 
 public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 {
@@ -149,7 +149,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			}
 			
 			//Gradle build requires these fields to be final
-			final Coord4D renderLocation = structure.renderLocation.clone();
+			final Coord4D renderLocation = structure.renderLocation;
 			final int volLength = structure.volLength;
 			final int volWidth = structure.volWidth;
 			

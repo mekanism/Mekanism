@@ -228,7 +228,7 @@ public class MekanismBlocks
 			}
 		});
 		
-		ItemMeshDefinition mesher = new ItemMeshDefinition() {
+		ItemMeshDefinition machineMesher = new ItemMeshDefinition() {
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack)
 			{
@@ -251,8 +251,34 @@ public class MekanismBlocks
 			}
 		};
 		
-		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock), mesher);
-		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), mesher);
-		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), mesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock), machineMesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), machineMesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), machineMesher);
+		
+		ItemMeshDefinition basicMesher = new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				MachineType type = MachineType.get(stack);
+				
+				if(type != null)
+				{
+					String resource = "mekanism:" + type.getName();
+					
+					if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+					{
+						RecipeType recipe = RecipeType.values()[((ItemBlockMachine)stack.getItem()).getRecipeType(stack)];
+						resource = "mekanism:" + type.getName() + "_" + recipe.getName();
+					}
+					
+					return ClientProxy.machineResources.get(resource);
+				}
+				
+				return null;
+			}
+		};
+		
+		//ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
+		//ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
 	}
 }

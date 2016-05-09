@@ -8,5 +8,5 @@ public interface IMultiblock<T extends SynchronizedData<T>>
 	
 	public boolean onActivate(EntityPlayer player);
 	
-	public void update();
+	public void doUpdate();
 }

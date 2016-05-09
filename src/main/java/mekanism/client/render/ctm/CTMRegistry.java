@@ -19,18 +19,22 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class TextureStitcher {
-
+public class CTMRegistry 
+{
     private static List<TextureSpriteCallback> textures = new ArrayList<TextureSpriteCallback>();
 
 	private IBakedModel baseModel;
 	public static ResourceLocation baseResource = new ResourceLocation("mekanism:block/ctm_block");
 	
-	public static String[] ctmTypes = new String[] {"dynamic_tank"};
+	public static String[] ctmTypes = new String[] {"dynamic_tank", "structural_glass", "dynamic_valve", "teleporter", "teleporter_frame", "induction_casing", "induction_port_input", "induction_port_output",
+		"induction_cell_basic", "induction_cell_advanced", "induction_cell_elite", "induction_cell_ultimate", "induction_provider_basic", "induction_provider_advanced", "induction_provider_elite",
+		"induction_provider_ultimate", "thermal_evaporation_controller", "thermal_evaporation_controller_on", "thermal_evaporation_valve", "superheating_element", "superheating_element_on", "reactor_port",
+		"reactor_neutron_capture", "reactor_logic_adapter", "reactor_laser_focus", "reactor_glass", "reactor_frame", "reactor_controller_on", "reactor_controller_off", "boiler_casing", "boiler_valve",
+		"electromagnetic_coil", "thermal_evaporation_valve", "thermal_evaporation_block", "turbine_casing", "turbine_vent", "turbine_valve"};
 	
 	public static Map<String, ChiselTextureCTM> textureCache = new HashMap<String, ChiselTextureCTM>();
 	
-	public TextureStitcher()
+	public CTMRegistry()
 	{
 		if(textureCache.isEmpty())
 		{
@@ -42,8 +46,10 @@ public class TextureStitcher {
 	}
 	
     @SubscribeEvent
-    public void onTextureStitch(TextureStitchEvent.Pre event) {
-        for (TextureSpriteCallback callback : textures) {
+    public void onTextureStitch(TextureStitchEvent.Pre event) 
+    {
+        for(TextureSpriteCallback callback : textures) 
+        {
             callback.stitch(event.map);
         }
     }
@@ -54,7 +60,7 @@ public class TextureStitcher {
         IModel model = event.modelLoader.getModel(baseResource);
         baseModel = model.bake(new TRSRTransformation(ModelRotation.X0_Y0), Attributes.DEFAULT_BAKED_FORMAT, r -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(r.toString()));
         
-        for (String ctm : ctmTypes) 
+        for(String ctm : ctmTypes) 
         {
         	ModelChisel chiselModel = new ModelChisel(baseModel, ctm);
         	chiselModel.load();
@@ -78,15 +84,5 @@ public class TextureStitcher {
     	register(callbacks[1]);
     	
     	return new ChiselTextureCTM(EnumWorldBlockLayer.SOLID, callbacks);
-    }
-    
-    public static ChiselFace createFace(String name)
-    {
-    	ChiselFace face = new ChiselFace();
-    	
-    	face.addTexture(textureCache.get(name));
-    	face.setLayer(EnumWorldBlockLayer.SOLID);
-    	
-    	return face;
     }
 }

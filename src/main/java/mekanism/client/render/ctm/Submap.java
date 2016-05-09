@@ -1,18 +1,45 @@
 package mekanism.client.render.ctm;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-@Getter
-@AllArgsConstructor
-public class Submap implements ISubmap {
-
+public class Submap implements ISubmap 
+{
     private final float width, height;
     private final float xOffset, yOffset;
 
     private final SubmapNormalized normalized = new SubmapNormalized(this);
+    
+    public Submap(float w, float h, float x, float y)
+    {
+    	width = w;
+    	height = h;
+    	xOffset = x;
+    	yOffset = y;
+    }
+    
+    @Override
+    public float getXOffset()
+    {
+    	return xOffset;
+    }
+    
+    @Override
+    public float getYOffset()
+    {
+    	return yOffset;
+    }
+    
+    @Override
+    public float getWidth()
+    {
+    	return width;
+    }
+    
+    @Override
+    public float getHeight()
+    {
+    	return height;
+    }
 
     @Override
     public float getInterpolatedU(TextureAtlasSprite sprite, float u) {
@@ -41,10 +68,14 @@ public class Submap implements ISubmap {
 
     private static final float FACTOR = 16f;
 
-    @RequiredArgsConstructor
-    private static class SubmapNormalized implements ISubmap {
-
+    private static class SubmapNormalized implements ISubmap 
+    {
         private final ISubmap parent;
+        
+        public SubmapNormalized(ISubmap submap)
+        {
+        	parent = submap;
+        }
 
         @Override
         public float getXOffset() {

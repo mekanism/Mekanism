@@ -32,13 +32,13 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 	}
 	
 	@Override
-	public void update()
+	public void doUpdate()
 	{
 		if(master != null)
 		{
 			if(master.getTileEntity(worldObj) instanceof IMultiblock)
 			{
-				((IMultiblock)master.getTileEntity(worldObj)).update();
+				((IMultiblock)master.getTileEntity(worldObj)).doUpdate();
 			}
 			else {
 				master = null;
@@ -49,7 +49,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 			
 			if(multiblock != null)
 			{
-				multiblock.update();
+				multiblock.doUpdate();
 			}
 		}
 	}

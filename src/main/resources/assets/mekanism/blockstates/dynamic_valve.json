@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "mekanism:blocks/DynamicValve"
+      "all": "mekanism:blocks/ctm/dynamic_valve"
     }
   },
   "variants": {

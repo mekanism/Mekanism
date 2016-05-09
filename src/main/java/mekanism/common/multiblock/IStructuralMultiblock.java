@@ -12,5 +12,5 @@ public interface IStructuralMultiblock
 	
 	public void setController(Coord4D coord);
 	
-	public void update();
+	public void doUpdate();
 }

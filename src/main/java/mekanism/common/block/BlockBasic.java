@@ -3,9 +3,11 @@ package mekanism.common.block;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
+import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.client.render.ctm.PropertyCTMRenderContext;
 import mekanism.common.Mekanism;
@@ -17,6 +19,7 @@ import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
@@ -27,6 +30,7 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -99,12 +103,16 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 {
 	public static final PropertyCTMRenderContext ctmProperty = new PropertyCTMRenderContext();
 	
+	public CTMData[][] ctmData = new CTMData[16][4];
+	
 	public BlockBasic()
 	{
 		super(Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
+		
+		initCTMs();
 	}
 
 	public static BlockBasic getBlockBasic(BasicBlock block)
@@ -120,6 +128,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 
 	public abstract BasicBlock getBasicBlock();
 
+	@Override
 	public BlockState createBlockState()
 	{
 		return new BlockStateBasic(this, getProperty());
@@ -160,6 +169,34 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 			state = state.withProperty(BlockStateBasic.activeProperty, ((IActiveState)tile).getActive());
 		}
 		
+		if(tile instanceof TileEntityInductionCell)
+		{
+			state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityInductionCell)tile).tier.getBaseTier());
+		}
+		
+		if(tile instanceof TileEntityInductionProvider)
+		{
+			state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityInductionProvider)tile).tier.getBaseTier());
+		}
+		
+		if(tile instanceof TileEntityInductionPort)
+		{
+			state = state.withProperty(BlockStateBasic.activeProperty, ((TileEntityInductionPort)tile).mode);
+		}
+		
+		if(tile instanceof TileEntitySuperheatingElement)
+		{
+			TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)tile;
+			boolean active = false;
+			
+			if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
+			{
+				active = SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID);
+			}
+			
+			state = state.withProperty(BlockStateBasic.activeProperty, active);
+		}
+		
 		return state;
 	}
 	
@@ -172,7 +209,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
             return stateIn;
         }
         
-        IExtendedBlockState state = (IExtendedBlockState) stateIn;
+        IExtendedBlockState state = (IExtendedBlockState)stateIn;
         CTMBlockRenderContext ctx = new CTMBlockRenderContext(w, pos);
 
         return state.withProperty(ctmProperty, ctx);
@@ -208,7 +245,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 
 			if(neighborBlock == this && tileEntity instanceof IMultiblock)
 			{
-				((IMultiblock)tileEntity).update();
+				((IMultiblock)tileEntity).doUpdate();
 			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
@@ -218,96 +255,48 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 			
 			if(tileEntity instanceof IStructuralMultiblock)
 			{
-				((IStructuralMultiblock)tileEntity).update();
+				((IStructuralMultiblock)tileEntity).doUpdate();
 			}
 		}
 	}
 
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void initCTMs()
 	{
-		switch(blockType)
+		switch(getBasicBlock())
 		{
 			case BASIC_BLOCK_1:
-				ctms[7][0] = new CTMData("ctm/TeleporterFrame", this, Arrays.asList(7)).addOtherBlockConnectivities(MekanismBlocks.MachineBlock, Arrays.asList(11)).registerIcons(register);
-				ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
-				ctms[10][0] = new CTMData("ctm/StructuralGlass", this, Arrays.asList(10)).registerIcons(register);
-				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
+				ctmData[7][0] = new CTMData(BasicBlockType.TELEPORTER_FRAME, MachineType.TELEPORTER);
+				ctmData[9][0] = new CTMData(BasicBlockType.DYNAMIC_TANK, BasicBlockType.DYNAMIC_VALVE);
+				ctmData[10][0] = new CTMData(BasicBlockType.STRUCTURAL_GLASS);
+				ctmData[11][0] = new CTMData(BasicBlockType.DYNAMIC_TANK, BasicBlockType.DYNAMIC_VALVE);
 
-				ctms[14][0] = new CTMData("ctm/ThermalEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/ThermalEvaporationController").registerIcons(register);
-				ctms[14][1] = new CTMData("ctm/ThermalEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/ThermalEvaporationControllerOn").registerIcons(register);
-				ctms[15][0] = new CTMData("ctm/ThermalEvaporationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+				ctmData[14][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
+				ctmData[14][1] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
+				ctmData[15][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
 
-				icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
-				icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
-				icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
-				icons[3][0] = register.registerIcon("mekanism:CoalBlock");
-				icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
-				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
-				icons[6][0] = register.registerIcon(ICON_BASE);
-				
-				MekanismRenderer.loadDynamicTextures(register, "bin/BinBasic", binIcons[0], new DefIcon(register.registerIcon("mekanism:bin/BinBasicTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinBasicTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "bin/BinAdvanced", binIcons[1], new DefIcon(register.registerIcon("mekanism:bin/BinAdvancedTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinAdvancedTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "bin/BinElite", binIcons[2], new DefIcon(register.registerIcon("mekanism:bin/BinEliteTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinEliteTopOn"), 6));
-				MekanismRenderer.loadDynamicTextures(register, "bin/BinUltimate", binIcons[3], new DefIcon(register.registerIcon("mekanism:bin/BinUltimateTop"), 0), new DefIcon(register.registerIcon("mekanism:bin/BinUltimateTopOn"), 6));
-				
-				icons[7][0] = ctms[7][0].mainTextureData.icon;
-				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
-				icons[9][0] = ctms[9][0].mainTextureData.icon;
-				icons[10][0] = ctms[10][0].mainTextureData.icon;
-				icons[11][0] = ctms[11][0].mainTextureData.icon;
-				icons[12][0] = register.registerIcon("mekanism:CopperBlock");
-				icons[13][0] = register.registerIcon("mekanism:TinBlock");
-				icons[14][0] = ctms[14][0].facingOverride.icon;
-				icons[14][1] = ctms[14][1].facingOverride.icon;
-				icons[14][2] = ctms[14][0].mainTextureData.icon;
-				icons[15][0] = ctms[15][0].mainTextureData.icon;
 				break;
 			case BASIC_BLOCK_2:
-				ctms[0][0] = new CTMData("ctm/ThermalEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
-				ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
-				ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(1, 2)).registerIcons(register);
-				ctms[2][1] = new CTMData("ctm/InductionPortOutput", this, Arrays.asList(1, 2)).registerIcons(register);
-				ctms[3][0] = new CTMData("ctm/InductionCellBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[3][1] = new CTMData("ctm/InductionCellAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[3][2] = new CTMData("ctm/InductionCellElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[3][3] = new CTMData("ctm/InductionCellUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[4][0] = new CTMData("ctm/InductionProviderBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[4][1] = new CTMData("ctm/InductionProviderAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				ctms[5][0] = new CTMData("ctm/SuperheatingElement", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
-				ctms[5][1] = new CTMData("ctm/SuperheatingElementOn", this, Arrays.asList(5)).registerIcons(register).setRenderConvexConnections();
-				ctms[7][0] = new CTMData("ctm/BoilerCasing", this, Arrays.asList(7, 8)).registerIcons(register);
-				ctms[8][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(7, 8)).registerIcons(register);
-				
-				icons[6][0] = register.registerIcon("mekanism:PressureDisperser");
-				
-				icons[0][0] = ctms[0][0].mainTextureData.icon;
-				icons[1][0] = ctms[1][0].mainTextureData.icon;
-				icons[2][0] = ctms[2][0].mainTextureData.icon;
-				icons[2][1] = ctms[2][1].mainTextureData.icon;
-				icons[3][0] = ctms[3][0].mainTextureData.icon;
-				icons[3][1] = ctms[3][1].mainTextureData.icon;
-				icons[3][2] = ctms[3][2].mainTextureData.icon;
-				icons[3][3] = ctms[3][3].mainTextureData.icon;
-				icons[4][0] = ctms[4][0].mainTextureData.icon;
-				icons[4][1] = ctms[4][1].mainTextureData.icon;
-				icons[4][2] = ctms[4][2].mainTextureData.icon;
-				icons[4][3] = ctms[4][3].mainTextureData.icon;
-				icons[5][0] = ctms[5][0].mainTextureData.icon;
-				icons[5][1] = ctms[5][1].mainTextureData.icon;
-				icons[7][0] = ctms[7][0].mainTextureData.icon;
-				icons[8][0] = ctms[8][0].mainTextureData.icon;
-				
-				icons[9][0] = register.registerIcon(ICON_BASE);
-				
+				ctmData[0][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
+				ctmData[1][0] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
+				ctmData[2][0] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
+				ctmData[2][1] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
+				ctmData[3][0] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
+				ctmData[3][1] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
+				ctmData[3][2] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
+				ctmData[3][3] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
+				ctmData[4][0] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
+				ctmData[4][1] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
+				ctmData[4][2] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
+				ctmData[4][3] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
+				ctmData[5][0] = new CTMData(BasicBlockType.SUPERHEATING_ELEMENT).setRenderConvexConnections();
+				ctmData[5][1] = new CTMData(BasicBlockType.SUPERHEATING_ELEMENT).setRenderConvexConnections();
+				ctmData[7][0] = new CTMData(BasicBlockType.BOILER_CASING, BasicBlockType.BOILER_VALVE);
+				ctmData[8][0] = new CTMData(BasicBlockType.BOILER_CASING, BasicBlockType.BOILER_VALVE);
+
 				break;
 		}
 	}
-
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, BlockPos pos, int side)
@@ -884,7 +873,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		{
 			return null;
 		}
-
+		
 		return BasicBlockType.get(state).create();
 	}
 
@@ -945,12 +934,12 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 
 			if(tileEntity instanceof IMultiblock)
 			{
-				((IMultiblock)tileEntity).update();
+				((IMultiblock)tileEntity).doUpdate();
 			}
 			
 			if(tileEntity instanceof IStructuralMultiblock)
 			{
-				((IStructuralMultiblock)tileEntity).update();
+				((IStructuralMultiblock)tileEntity).doUpdate();
 			}
 		}
 	}
@@ -1058,22 +1047,20 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		return itemStack;
 	}
 
-/*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, int side)
+	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		Coord4D obj = new Coord4D(pos).offset(EnumFacing.getFront(side).getOpposite());
+		Coord4D obj = new Coord4D(pos).offset(EnumFacing.getFront(side.ordinal()).getOpposite());
 		
-		if(BasicBlockType.get(this, world.getBlockMetadata(x, y, z)) == BasicBlockType.STRUCTURAL_GLASS)
+		if(BasicBlockType.get(world.getBlockState(obj)) == BasicBlockType.STRUCTURAL_GLASS)
 		{
-			return ctms[10][0].shouldRenderSide(world, pos, side);
+			return ctmData[10][0].shouldRenderSide(world, pos, side);
 		}
 		else {
 			return super.shouldSideBeRendered(world, pos, side);
 		}
 	}
-*/
 
 	@Override
 	public EnumFacing[] getValidRotations(World world, BlockPos pos)
@@ -1114,6 +1101,41 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public CTMData getCTMData(IBlockState state)
+	{
+		return ctmData[getMetaFromState(state)][0];
+	}
+	
+	@Override
+	public String getOverrideTexture(IBlockState state)
+	{
+		BasicBlockType type = state.getValue(getBasicBlock().getProperty());
+		
+		if(type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
+		{
+			return type.getName() + "_" + state.getValue(BlockStateBasic.tierProperty).getName();
+		}
+		
+		if(type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER)
+		{
+			return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "_on" : "");
+		}
+		
+		if(type == BasicBlockType.INDUCTION_PORT)
+		{
+			return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "output" : "input");
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public PropertyEnum<BasicBlockType> getTypeProperty()
+	{
+		return getBasicBlock().getProperty();
 	}
 
 /*

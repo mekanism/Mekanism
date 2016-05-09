@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "mekanism:blocks/TeleporterFrame"
+      "all": "mekanism:blocks/ctm/teleporter_frame"
     }
   },
   "variants": {

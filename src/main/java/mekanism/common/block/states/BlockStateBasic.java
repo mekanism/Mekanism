@@ -2,6 +2,7 @@ package mekanism.common.block.states;
 
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -42,10 +43,11 @@ import com.google.common.base.Predicates;
 public class BlockStateBasic extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
+	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 
 	public BlockStateBasic(BlockBasic block, PropertyEnum<BasicBlockType> typeProperty)
 	{
-		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty}, new IUnlistedProperty[] {BlockBasic.ctmProperty});
+		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty}, new IUnlistedProperty[] {BlockBasic.ctmProperty});
 	}
 
 	public static enum BasicBlock
@@ -154,7 +156,7 @@ public class BlockStateBasic extends ExtendedBlockState
 			return null;
 		}
 
-		public static  BasicBlockType get(BasicBlock blockType, int metadata)
+		public static BasicBlockType get(BasicBlock blockType, int metadata)
 		{
 			BasicBlockType firstTry = values()[blockType.ordinal() << 4 | metadata];
 			if(firstTry.blockType == blockType && firstTry.meta == metadata)
