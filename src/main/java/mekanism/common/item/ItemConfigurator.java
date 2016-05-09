@@ -32,13 +32,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
-import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
+import buildcraft.api.tools.IToolWrench;
+import cofh.api.item.IToolHammer;
 
 @InterfaceList({
 	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
@@ -69,7 +69,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		{
 			Block block = world.getBlockState(pos).getBlock();
 			TileEntity tile = world.getTileEntity(pos);
-
+			
 			if(getState(stack).isConfigurating()) //Configurate
 			{
 				if(tile instanceof ISideConfiguration && ((ISideConfiguration)tile).getConfig().supports(getState(stack).getTransmission()))

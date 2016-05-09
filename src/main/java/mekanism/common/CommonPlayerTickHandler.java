@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.GasStack;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.ItemFlamethrower;

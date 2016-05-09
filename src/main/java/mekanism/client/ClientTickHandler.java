@@ -13,13 +13,13 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.IClientTicker;
+import mekanism.api.ObfuscatedNames;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.GasStack;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;

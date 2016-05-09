@@ -2,8 +2,8 @@ package mekanism.client.gui.element;
 
 import java.util.List;
 
+import mekanism.api.ObfuscatedNames;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

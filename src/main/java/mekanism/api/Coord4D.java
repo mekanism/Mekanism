@@ -3,7 +3,9 @@ package mekanism.api;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -20,6 +22,7 @@ import net.minecraft.util.Vec3i;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.Chunk.EnumCreateEntityType;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 /**
@@ -43,6 +46,11 @@ public class Coord4D extends BlockPos
 		super(x, y, z);
 
 		dimensionId = 0;
+	}
+	
+	public Coord4D(int x, int y, int z, World world)
+	{
+		this(x, y, z, world.provider.getDimensionId());
 	}
 
 	public Coord4D(double x, double y, double z)
@@ -130,7 +138,42 @@ public class Coord4D extends BlockPos
 		
 		return (tile != null && tile.hasWorldObj() && !tile.isInvalid()) ? tile : null;
 	}
-
+	
+	public TileEntity safeTileGet(World world)
+	{
+		if(!exists(world))
+		{
+			return null;
+		}
+		
+		TileEntity tile = world.getChunkFromBlockCoords(this).getTileEntity(this, EnumCreateEntityType.CHECK);
+		
+		if(tile != null)
+		{
+			return tile;
+		}
+		
+		for(TileEntity iter : world.loadedTileEntityList)
+		{
+			if(!iter.isInvalid() && iter.getPos().equals(this))
+			{
+				return iter;
+			}
+		}
+		
+		List<TileEntity> added = (List<TileEntity>)MekanismUtils.getPrivateValue(world, World.class, ObfuscatedNames.World_addedTileEntityList);
+		
+		for(TileEntity iter : added)
+		{
+			if(!iter.isInvalid() && iter.getPos().equals(this))
+			{
+				return iter;
+			}
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Gets the Block value of the block representing this Coord4D.
 	 * @param world - world this Coord4D is in

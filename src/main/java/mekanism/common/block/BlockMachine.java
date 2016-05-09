@@ -1085,20 +1085,6 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		
 		return super.getRenderColor(state);
 	}
-	
-	@Override
-	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
-	{
-		TileEntity tileEntity = world.getTileEntity(pos);
-
-		if(!world.isRemote)
-		{
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onAdded();
-			}
-		}
-	}
 
 	@Override
 	public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)

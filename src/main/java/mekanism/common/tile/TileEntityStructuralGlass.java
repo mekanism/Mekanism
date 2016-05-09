@@ -19,9 +19,11 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 	{
 		if(master != null)
 		{
-			if(master.getTileEntity(worldObj) instanceof IMultiblock)
+			TileEntity masterTile = master.safeTileGet(worldObj);
+			
+			if(masterTile instanceof IMultiblock)
 			{
-				return ((IMultiblock)master.getTileEntity(worldObj)).onActivate(player);
+				return ((IMultiblock)masterTile).onActivate(player);
 			}
 			else {
 				master = null;
@@ -36,9 +38,11 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 	{
 		if(master != null)
 		{
-			if(master.getTileEntity(worldObj) instanceof IMultiblock)
+			TileEntity masterTile = master.safeTileGet(worldObj);
+			
+			if(masterTile instanceof IMultiblock)
 			{
-				((IMultiblock)master.getTileEntity(worldObj)).doUpdate();
+				((IMultiblock)masterTile).doUpdate();
 			}
 			else {
 				master = null;
@@ -84,13 +88,13 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 			for(EnumFacing side : EnumFacing.VALUES)
 			{
 				Coord4D coord = pos.offset(side);
-				TileEntity tile = coord.getTileEntity(worldObj);
+				TileEntity tile = coord.safeTileGet(worldObj);
 				
 				if(!iterated.contains(coord))
 				{
 					if(tile instanceof IMultiblock)
 					{
-						found = (IMultiblock)coord.getTileEntity(worldObj);
+						found = (IMultiblock)tile;
 						return;
 					}
 					else if(tile instanceof IStructuralMultiblock)

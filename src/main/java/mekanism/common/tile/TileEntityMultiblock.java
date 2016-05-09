@@ -18,10 +18,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -51,6 +53,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public TileEntityMultiblock(String name)
 	{
 		super(name);
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		System.out.println("CREATE");
 	}
 	
 	@Override
@@ -67,7 +72,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			{
 				if(!prevStructure)
 				{
-					//Mekanism.proxy.doMultiblockSparkle(this);
+					Mekanism.proxy.doMultiblockSparkle(this);
 				}
 			}
 
@@ -111,8 +116,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				for(EnumFacing side : EnumFacing.VALUES)
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
+					TileEntity tile = obj.safeTileGet(worldObj);
 
-					if(!obj.isAirBlock(worldObj) && (obj.getTileEntity(worldObj) == null || obj.getTileEntity(worldObj).getClass() != getClass()))
+					if(!obj.isAirBlock(worldObj) && (tile == null || tile.getClass() != getClass()))
 					{
 						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
 					}
@@ -170,7 +176,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			for(Coord4D obj : getSynchronizedData().locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(worldObj);
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.safeTileGet(worldObj);
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{

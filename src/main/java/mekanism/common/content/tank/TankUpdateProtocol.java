@@ -90,7 +90,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 	{
 		for(Coord4D obj : structure.locations)
 		{
-			if(obj.getTileEntity(pointer.getWorld()) instanceof TileEntityDynamicValve)
+			if(obj.safeTileGet(pointer.getWorld()) instanceof TileEntityDynamicValve)
 			{
 				ValveData data = new ValveData();
 				data.location = obj;

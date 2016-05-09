@@ -291,7 +291,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	public boolean isViableNode(int x, int y, int z)
 	{
-		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
+		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimensionId()).safeTileGet(pointer.getWorld());
 
 		if(tile instanceof IStructuralMultiblock)
 		{
@@ -316,7 +316,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	public boolean isViableNode(BlockPos pos)
 	{
-		TileEntity tile = pointer.getWorld().getTileEntity(pos);
+		TileEntity tile = new Coord4D(pos, pointer.getWorld().provider.getDimensionId()).safeTileGet(pointer.getWorld());
 		
 		if(tile == null || !tile.hasWorldObj() || tile.isInvalid())
 		{
@@ -422,7 +422,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	{
 		for(Coord4D coord : structureFound.internalLocations)
 		{
-			TileEntity tile = coord.getTileEntity(pointer.getWorld());
+			TileEntity tile = coord.safeTileGet(pointer.getWorld());
 			
 			if(tile instanceof TileEntityInternalMultiblock)
 			{
@@ -437,7 +437,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	{
 		for(Coord4D coord : structure.internalLocations)
 		{
-			TileEntity tile = coord.getTileEntity(pointer.getWorld());
+			TileEntity tile = coord.safeTileGet(pointer.getWorld());
 			
 			if(tile instanceof TileEntityInternalMultiblock)
 			{
@@ -448,7 +448,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	public void killInnerNode(Coord4D coord)
 	{
-		TileEntity tile = coord.getTileEntity(pointer.getWorld());
+		TileEntity tile = coord.safeTileGet(pointer.getWorld());
 		
 		if(tile instanceof TileEntityInternalMultiblock)
 		{
@@ -469,12 +469,12 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			{
 				if(!structureFound.locations.contains(coord))
 				{
-					System.out.println("No contain " + coord + " " + coord.getTileEntity(pointer.getWorld()));
+					System.out.println("No contain " + coord + " " + coord.safeTileGet(pointer.getWorld()));
 					System.out.println(coord.getBlockState(pointer.getWorld()).getBlock());
 					
 					for(Coord4D newCoord : iteratedNodes)
 					{
-						TileEntity tile = newCoord.getTileEntity(pointer.getWorld());
+						TileEntity tile = newCoord.safeTileGet(pointer.getWorld());
 						
 						if(tile instanceof TileEntityMultiblock)
 						{
@@ -500,7 +500,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntity tileEntity = obj.getTileEntity(pointer.getWorld());
+				TileEntity tileEntity = obj.safeTileGet(pointer.getWorld());
 
 				if(tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock)tileEntity).cachedID != null)
 				{
@@ -540,7 +540,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			cache.apply((T)structureFound);
 			
 			structureFound.inventoryID = idToUse;
-			
+			System.out.println("Success");
 			onFormed();
 			
 			List<IStructuralMultiblock> structures = new ArrayList<IStructuralMultiblock>();
@@ -548,7 +548,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntity tileEntity = obj.getTileEntity(pointer.getWorld());
+				TileEntity tileEntity = obj.safeTileGet(pointer.getWorld());
 
 				if(tileEntity instanceof TileEntityMultiblock)
 				{
@@ -573,9 +573,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			}
 		}
 		else {
+			System.out.println("No structure");
 			for(Coord4D coord : iteratedNodes)
 			{
-				TileEntity tile = coord.getTileEntity(pointer.getWorld());
+				TileEntity tile = coord.safeTileGet(pointer.getWorld());
 				
 				if(tile instanceof TileEntityMultiblock)
 				{

@@ -851,20 +851,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		
 		return type != null && type.tileEntityClass != null;
 	}
-	
-	@Override
-	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
-	{
-		TileEntity tileEntity = world.getTileEntity(pos);
-
-		if(!world.isRemote)
-		{
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onAdded();
-			}
-		}
-	}
 
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
@@ -886,7 +872,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 			int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 			int height = Math.round(placer.rotationPitch);
 			int change = 3;
-
+			
 			if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
 			{
 				if(height >= 65)
@@ -953,8 +939,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		{
 			((IBoundingBlock)tileEntity).onBreak();
 		}
-		
-		System.out.println(world.getTileEntity(pos));
 
 		super.breakBlock(world, pos, state);
 		

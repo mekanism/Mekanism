@@ -12,7 +12,6 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -35,7 +34,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	@Override
 	public boolean isValidInnerNode(int x, int y, int z)
 	{
-		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
+		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld()).safeTileGet(pointer.getWorld());
 		
 		if(tile != null && (tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider))
 		{
@@ -81,7 +80,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	{
 		for(Coord4D coord : innerNodes)
 		{
-			TileEntity tile = coord.getTileEntity(pointer.getWorld());
+			TileEntity tile = coord.safeTileGet(pointer.getWorld());
 			
 			if(tile instanceof TileEntityInductionCell)
 			{

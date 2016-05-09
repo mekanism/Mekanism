@@ -96,6 +96,14 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	}
 	
 	@Override
+	public void updateContainingBlockInfo()
+	{
+		super.updateContainingBlockInfo();
+		
+		onAdded();
+	}
+	
+	@Override
 	public void onChunkLoad()
 	{
 		markDirty();

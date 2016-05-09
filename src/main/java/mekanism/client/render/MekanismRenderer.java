@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
+import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
@@ -17,7 +18,6 @@ import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;

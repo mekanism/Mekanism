@@ -11,6 +11,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk.EnumCreateEntityType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -63,7 +64,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 			if(server != null)
 			{
 				World world = server.worldServerForDimension(coord4D.dimensionId);
-				PacketHandler.log("Sending TileEntity packet from coordinate " + coord4D + " (" + coord4D.getTileEntity(world) + ")");
+				PacketHandler.log("Sending TileEntity packet from coordinate " + coord4D + " (" + coord4D.safeTileGet(world) + ")");
 			}
 			
 			PacketHandler.encode(new Object[] {parameters}, dataStream);

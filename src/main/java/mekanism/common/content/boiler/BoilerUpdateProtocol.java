@@ -43,7 +43,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			return true;
 		}
 
-		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
+		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld()).safeTileGet(pointer.getWorld());
 		
 		return tile instanceof TileEntityPressureDisperser || tile instanceof TileEntitySuperheatingElement;
 	}
@@ -58,7 +58,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			
 			for(Coord4D coord : innerNodes)
 			{
-				TileEntity tile = coord.getTileEntity(pointer.getWorld());
+				TileEntity tile = coord.safeTileGet(pointer.getWorld());
 				
 				if(tile instanceof TileEntityPressureDisperser)
 				{
@@ -89,7 +89,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				for(int z = 1; z < structure.volWidth-1; z++)
 				{
 					Coord4D coord4D = pos.add(x, 0, z);
-					TileEntity tile = pointer.getWorld().getTileEntity(coord4D);
+					TileEntity tile = coord4D.safeTileGet(pointer.getWorld());
 					
 					if(!(tile instanceof TileEntityPressureDisperser))
 					{
@@ -112,7 +112,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 					@Override
 					public boolean isValid(Coord4D coord) 
 					{
-						return coord.getTileEntity(pointer.getWorld()) instanceof TileEntitySuperheatingElement;
+						return coord.safeTileGet(pointer.getWorld()) instanceof TileEntitySuperheatingElement;
 					}
 				}).calculate(elements.iterator().next());
 			}
@@ -244,7 +244,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	{
 		for(Coord4D obj : structure.locations)
 		{
-			if(obj.getTileEntity(pointer.getWorld()) instanceof TileEntityBoilerValve)
+			if(obj.safeTileGet(pointer.getWorld()) instanceof TileEntityBoilerValve)
 			{
 				ValveData data = new ValveData();
 				data.location = obj;
