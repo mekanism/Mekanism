@@ -17,8 +17,6 @@ public class CTMData
 	
 	public boolean renderConvexConnections = false;
 	
-	public String facingOverride;
-	
 	public CTMData(IStringSerializable... states)
 	{
 		for(IStringSerializable state : states)
@@ -31,17 +29,6 @@ public class CTMData
 	{
 		renderConvexConnections = true;
 		return this;
-	}
-	
-	public CTMData setFacingOverride(String s)
-	{
-		facingOverride= s;
-		return this;
-	}
-	
-	public boolean hasFacingOverride()
-	{
-		return facingOverride != null;
 	}
 	
 	@SideOnly(Side.CLIENT)

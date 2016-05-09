@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.common.util.MekanismUtils;
+import mekanism.api.util.ReflectionUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -51,6 +51,11 @@ public class Coord4D extends BlockPos
 	public Coord4D(int x, int y, int z, World world)
 	{
 		this(x, y, z, world.provider.getDimensionId());
+	}
+	
+	public Coord4D(Vec3i pos, World world)
+	{
+		this(pos, world.provider.getDimensionId());
 	}
 
 	public Coord4D(double x, double y, double z)
@@ -161,7 +166,7 @@ public class Coord4D extends BlockPos
 			}
 		}
 		
-		List<TileEntity> added = (List<TileEntity>)MekanismUtils.getPrivateValue(world, World.class, ObfuscatedNames.World_addedTileEntityList);
+		List<TileEntity> added = (List<TileEntity>)ReflectionUtils.getPrivateValue(world, World.class, ObfuscatedNames.World_addedTileEntityList);
 		
 		for(TileEntity iter : added)
 		{

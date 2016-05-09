@@ -248,7 +248,7 @@ public class FrequencyManager
 						iter.remove();
 					}
 					else {
-						TileEntity tile = coord.getTileEntity(world);
+						TileEntity tile = coord.safeTileGet(world);
 						
 						if(!(tile instanceof IFrequencyHandler))
 						{

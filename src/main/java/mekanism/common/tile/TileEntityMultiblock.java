@@ -55,7 +55,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		super(name);
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-		System.out.println("CREATE");
+		Thread.dumpStack();
 	}
 	
 	@Override
@@ -83,12 +83,14 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			for(EntityPlayer player : playersUsing)
 			{
-				player.closeScreen();
+				System.out.println(worldObj.isRemote + " " + clientHasStructure + " " + structure);
+				//player.closeScreen();
 			}
 		}
 
 		if(!worldObj.isRemote)
 		{
+			//System.out.println(pos + " " + structure);
 			if(structure == null)
 			{
 				isRendering = false;
@@ -131,6 +133,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 			if(structure != null)
 			{
+				//System.out.println("Whee " + structure + " " + isInvalid());
 				getSynchronizedData().didTick = false;
 
 				if(getSynchronizedData().inventoryID != null)
@@ -201,7 +204,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 		data.add(isRendering);
 		data.add(structure != null);
-
+		
 		if(structure != null && isRendering)
 		{
 			if(sendStructure)
@@ -237,7 +240,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 		isRendering = dataStream.readBoolean();
 		clientHasStructure = dataStream.readBoolean();
-
+		
 		if(clientHasStructure && isRendering)
 		{
 			if(dataStream.readBoolean())

@@ -39,7 +39,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 		
 		for(Coord4D obj : inventories.get(id).locations)
 		{
-			TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(world);
+			TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.safeTileGet(world);
 
 			if(tileEntity != null)
 			{
@@ -83,7 +83,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 			{
 				if(obj.dimensionId == world.provider.getDimensionId() && obj.exists(world))
 				{
-					TileEntity tileEntity = obj.getTileEntity(world);
+					TileEntity tileEntity = obj.safeTileGet(world);
 
 					if(!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock)tileEntity).getManager() != this || (getStructureId(((TileEntityMultiblock<?>)tileEntity)) != null && getStructureId(((TileEntityMultiblock)tileEntity)) != inventoryID))
 					{

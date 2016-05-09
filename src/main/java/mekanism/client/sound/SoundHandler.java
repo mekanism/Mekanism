@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.ObfuscatedNames;
-import mekanism.common.util.MekanismUtils;
+import mekanism.api.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
@@ -118,7 +118,7 @@ public class SoundHandler
 	public static SoundManager getSoundManager()
 	{
 		try {
-			return (SoundManager)MekanismUtils.getPrivateValue(mc.getSoundHandler(), net.minecraft.client.audio.SoundHandler.class, ObfuscatedNames.SoundHandler_sndManager);
+			return (SoundManager)ReflectionUtils.getPrivateValue(mc.getSoundHandler(), net.minecraft.client.audio.SoundHandler.class, ObfuscatedNames.SoundHandler_sndManager);
 		} catch(Exception e) {
 			return null;
 		}
@@ -130,7 +130,7 @@ public class SoundHandler
 		if(invPlayingSounds == null)
 		{
 			try {
-				invPlayingSounds = (Map<ISound, String>)MekanismUtils.getPrivateValue(getSoundManager(), net.minecraft.client.audio.SoundManager.class, ObfuscatedNames.SoundManager_invPlayingSounds);
+				invPlayingSounds = (Map<ISound, String>)ReflectionUtils.getPrivateValue(getSoundManager(), net.minecraft.client.audio.SoundManager.class, ObfuscatedNames.SoundManager_invPlayingSounds);
 			} catch(Exception e) {
 				invPlayingSounds = null;
 			}

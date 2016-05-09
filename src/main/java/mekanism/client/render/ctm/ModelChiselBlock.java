@@ -8,7 +8,6 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import mekanism.common.block.BlockBasic;
-import mekanism.common.block.states.BlockStateFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -136,9 +135,9 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
             ICTMBlock block = (ICTMBlock)state.getBlock();
             CTMData data = block.getCTMData(state);
             
-            if(block.getOverrideTexture(state) != null)
+            if(block.getOverrideTexture(state, facing) != null)
             {
-            	face = CTMRegistry.textureCache.get(block.getOverrideTexture(state));
+            	face = CTMRegistry.textureCache.get(block.getOverrideTexture(state, facing));
             }
 
             int quadGoal = ctx == null ? 1 : CTM.QUADS_PER_SIDE;
@@ -156,15 +155,7 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
     {
         for(BakedQuad q : from)
         {
-        	ChiselTextureCTM toUse = tex;
-        	CTMData data = ((ICTMBlock)state.getBlock()).getCTMData(state);
-        	
-            if(data.hasFacingOverride() && q.getFace() == state.getValue(BlockStateFacing.facingProperty))
-            {
-            	toUse = CTMRegistry.textureCache.get(data.facingOverride);
-            }
-            
-            to.addAll(toUse.transformQuad(q, ctx == null ? null : ctx, quadGoal));
+            to.addAll(tex.transformQuad(q, ctx == null ? null : ctx, quadGoal));
         }
     }
 

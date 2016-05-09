@@ -5,8 +5,6 @@ import ic2.api.energy.EnergyNet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -75,6 +73,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
@@ -83,21 +82,19 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -988,73 +985,6 @@ public final class MekanismUtils
 		player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
 		player.openContainer.onCraftGuiOpened(player);
-	}
-
-	/**
-	 * Retrieves a private value from a defined class and field.
-	 * @param obj - the Object to retrieve the value from, null if static
-	 * @param c - Class to retrieve field value from
-	 * @param fields - possible names of field to iterate through
-	 * @return value as an Object, cast as necessary
-	 */
-	public static Object getPrivateValue(Object obj, Class c, String[] fields)
-	{
-		for(String field : fields)
-		{
-			try {
-				Field f = c.getDeclaredField(field);
-				f.setAccessible(true);
-				return f.get(obj);
-			} catch(Exception e) {
-				continue;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Sets a private value from a defined class and field to a new value.
-	 * @param obj - the Object to perform the operation on, null if static
-	 * @param value - value to set the field to
-	 * @param c - Class the operation will be performed on
-	 * @param fields - possible names of field to iterate through
-	 */
-	public static void setPrivateValue(Object obj, Object value, Class c, String[] fields)
-	{
-		for(String field : fields)
-		{
-			try {
-				Field f = c.getDeclaredField(field);
-				f.setAccessible(true);
-				f.set(obj, value);
-			} catch(Exception e) {
-				continue;
-			}
-		}
-	}
-
-	/**
-	 * Retrieves a private method from a class, sets it as accessible, and returns it.
-	 * @param c - Class the method is located in
-	 * @param methods - possible names of the method to iterate through
-	 * @param params - the Types inserted as parameters into the method
-	 * @return private method
-	 */
-	public static Method getPrivateMethod(Class c, String[] methods, Class... params)
-	{
-		for(String method : methods)
-		{
-			try {
-				Method m = c.getDeclaredMethod(method, params);
-				m.setAccessible(true);
-				return m;
-			} catch(Exception e) {
-				continue;
-			}
-		}
-
-		return null;
 	}
 
 	/**

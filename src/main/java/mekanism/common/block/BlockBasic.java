@@ -241,9 +241,9 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(pos);
+			TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
 
-			if(neighborBlock == this && tileEntity instanceof IMultiblock)
+			if(tileEntity instanceof IMultiblock)
 			{
 				((IMultiblock)tileEntity).doUpdate();
 			}
@@ -1096,7 +1096,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	}
 	
 	@Override
-	public String getOverrideTexture(IBlockState state)
+	public String getOverrideTexture(IBlockState state, EnumFacing side)
 	{
 		BasicBlockType type = state.getValue(getBasicBlock().getProperty());
 		
@@ -1107,7 +1107,10 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		
 		if(type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER)
 		{
-			return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "_on" : "");
+			if(side == state.getValue(BlockStateFacing.facingProperty))
+			{
+				return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "_on" : "");
+			}
 		}
 		
 		if(type == BasicBlockType.INDUCTION_PORT)

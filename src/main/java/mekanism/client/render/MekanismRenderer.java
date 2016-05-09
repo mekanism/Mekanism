@@ -14,12 +14,12 @@ import mekanism.api.gas.OreGas;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.ReflectionUtils;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.common.base.IMetaItem;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -765,32 +765,10 @@ public class MekanismRenderer
     	}
     }
     
-/*
-    public static TextureMap getTextureMap(int type)
-    {
-    	try {
-    		List<ITickable> l = (List<ITickable>)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, ObfuscatedNames.TextureManager_listTickables);
-    		
-    		for(ITickable t : l)
-    		{
-    			if(t instanceof TextureMap)
-    			{
-    				if(((TextureMap)t).getTextureType() == type)
-    				{
-    					return (TextureMap)t;
-    				}
-    			}
-    		}
-    	} catch(Exception e) {}
-    	
-    	return null;
-    }
-*/
-
     public static float getPartialTick()
     {
     	try {
-    		Timer t = (Timer)MekanismUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, ObfuscatedNames.Minecraft_timer);
+    		Timer t = (Timer)ReflectionUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, ObfuscatedNames.Minecraft_timer);
     		return t.renderPartialTicks;
     	} catch(Exception e) {}
     	
