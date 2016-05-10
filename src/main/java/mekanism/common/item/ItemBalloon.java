@@ -129,7 +129,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 
 				if(!world.isRemote)
 				{
-					world.spawnEntityInWorld(new EntityBalloon(world, new Coord4D(pos, world.provider.getDimensionId()), getColor(stack)));
+					world.spawnEntityInWorld(new EntityBalloon(world, new Coord4D(pos, world), getColor(stack)));
 					stack.stackSize--;
 				}
 			}
@@ -237,7 +237,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 				
 				if(!source.getWorld().isRemote)
 				{
-					source.getWorld().spawnEntityInWorld(new EntityBalloon(source.getWorld(), new Coord4D(new BlockPos(pos)), getColor(stack)));
+					source.getWorld().spawnEntityInWorld(new EntityBalloon(source.getWorld(), new Coord4D(new BlockPos(pos), source.getWorld()), getColor(stack)));
 				}
 			}
 			

@@ -76,7 +76,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			if(on)
 			{
 				MovingObjectPosition mop = LaserManager.fireLaserClient(this, facing, lastFired, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, worldObj);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -88,7 +88,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
@@ -128,7 +128,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				}
 
 				LaserInfo info = LaserManager.fireLaser(this, facing, firing, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, worldObj);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -140,7 +140,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{

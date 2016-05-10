@@ -88,7 +88,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		this(world);
 
 		latched = obj;
-		setPosition(latched.getX() + 0.5F, latched.getY() + 1.9F, latched.getZ() + 0.5F);
+		setPosition(latched.xCoord + 0.5F, latched.yCoord + 1.9F, latched.zCoord + 0.5F);
 
 		prevPosX = posX;
 		prevPosY = posY;
@@ -97,9 +97,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		color = c;
 
 		dataWatcher.updateObject(5, (byte)1); /* Is latched */
-		dataWatcher.updateObject(6, latched != null ? latched.getX() : 0); /* Latched X */
-		dataWatcher.updateObject(7, latched != null ? latched.getY() : 0); /* Latched Y */
-		dataWatcher.updateObject(8, latched != null ? latched.getZ() : 0); /* Latched Z */
+		dataWatcher.updateObject(6, latched != null ? latched.xCoord : 0); /* Latched X */
+		dataWatcher.updateObject(7, latched != null ? latched.yCoord : 0); /* Latched Y */
+		dataWatcher.updateObject(8, latched != null ? latched.zCoord : 0); /* Latched Z */
 		dataWatcher.updateObject(9, -1); /* Latched entity ID */
 	}
 
@@ -145,9 +145,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			if(ticksExisted == 1)
 			{
 				dataWatcher.updateObject(5, new Byte(latched != null ? (byte)1 : (latchedEntity != null ? (byte)2 : (byte)0))); /* Is latched */
-				dataWatcher.updateObject(6, new Integer(latched != null ? latched.getX() : 0)); /* Latched X */
-				dataWatcher.updateObject(7, new Integer(latched != null ? latched.getY() : 0)); /* Latched Y */
-				dataWatcher.updateObject(8, new Integer(latched != null ? latched.getZ() : 0)); /* Latched Z */
+				dataWatcher.updateObject(6, new Integer(latched != null ? latched.xCoord : 0)); /* Latched X */
+				dataWatcher.updateObject(7, new Integer(latched != null ? latched.yCoord : 0)); /* Latched Y */
+				dataWatcher.updateObject(8, new Integer(latched != null ? latched.zCoord : 0)); /* Latched Z */
 				dataWatcher.updateObject(9, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1)); /* Latched entity ID */
 			}
 		}

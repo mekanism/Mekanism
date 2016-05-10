@@ -1037,9 +1037,9 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		Coord4D obj = new Coord4D(pos).offset(EnumFacing.getFront(side.ordinal()).getOpposite());
+		BlockPos offsetPos = pos.offset(EnumFacing.getFront(side.ordinal()).getOpposite());
 		
-		if(BasicBlockType.get(world.getBlockState(obj)) == BasicBlockType.STRUCTURAL_GLASS)
+		if(BasicBlockType.get(world.getBlockState(offsetPos)) == BasicBlockType.STRUCTURAL_GLASS)
 		{
 			return ctmData[10][0].shouldRenderSide(world, pos, side);
 		}
@@ -1126,41 +1126,4 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	{
 		return getBasicBlock().getProperty();
 	}
-
-/*
-	@Override
-	public CTMData getCTMData(IBlockAccess world, BlockPos pos, int meta)
-	{
-		if(ctms[meta][1] != null && MekanismUtils.isActive(world, pos))
-		{
-			return ctms[meta][1];
-		}
-		
-		BasicBlockType type = BasicBlockType.get(this, world.getBlockMetadata(x, y, z));
-
-		if(type == BasicBlockType.INDUCTION_CELL)
-		{
-			TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(pos);
-			return ctms[meta][tileEntity.tier.ordinal()];
-		}
-		else if(type == BasicBlockType.INDUCTION_PROVIDER)
-		{
-			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(pos);
-			return ctms[meta][tileEntity.tier.ordinal()];
-		}
-		else if(type == BasicType.SUPERHEATING_ELEMENT)
-		{
-			TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)world.getTileEntity(x, y, z);
-			
-			if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
-			{
-				return ctms[meta][SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 1 : 0];
-			}
-			
-			return ctms[meta][0];
-		}
-
-		return ctms[meta][0];
-	}
-*/
 }

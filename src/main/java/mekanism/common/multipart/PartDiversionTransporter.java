@@ -143,7 +143,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		notifyPartUpdate();
 		notifyTileChange();
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-		Coord4D coord = new Coord4D(getPos(), getWorld().provider.getDimensionId());
+		Coord4D coord = new Coord4D(getPos(), getWorld());
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<Object>())), new Range4D(coord));
 
 		return true;

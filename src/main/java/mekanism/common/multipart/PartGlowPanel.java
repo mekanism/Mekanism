@@ -215,7 +215,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconH
 
 	public boolean canStay()
 	{
-		Coord4D adj = new Coord4D(getPos().offset(side), getWorld().provider.getDimensionId());
-		return getWorld().isSideSolid(adj, side.getOpposite()) || (getContainer().getPartInSlot(PartSlot.getFaceSlot(side)) instanceof IFaceMicroblock && ((IFaceMicroblock)getContainer().getPartInSlot(PartSlot.getFaceSlot(side))).isFaceHollow());
+		Coord4D adj = new Coord4D(getPos().offset(side), getWorld());
+		return getWorld().isSideSolid(adj.getPos(), side.getOpposite()) || (getContainer().getPartInSlot(PartSlot.getFaceSlot(side)) instanceof IFaceMicroblock && ((IFaceMicroblock)getContainer().getPartInSlot(PartSlot.getFaceSlot(side))).isFaceHollow());
 	}
 }

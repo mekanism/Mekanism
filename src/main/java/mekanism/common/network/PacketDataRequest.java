@@ -29,7 +29,7 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
-		TileEntity tileEntity = message.coord4D.safeTileGet(worldServer);
+		TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
 		
 		if(worldServer != null && tileEntity instanceof ITileNetwork)
 		{

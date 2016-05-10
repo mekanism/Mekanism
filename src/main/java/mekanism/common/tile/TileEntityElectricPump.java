@@ -184,7 +184,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					
 					if(shouldTake(fluid, wrapper))
 					{
-						worldObj.setBlockToAir(wrapper);
+						worldObj.setBlockToAir(wrapper.getPos());
 					}
 				}
 
@@ -207,7 +207,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 					if(shouldTake(fluid, wrapper))
 					{
-						worldObj.setBlockToAir(wrapper);
+						worldObj.setBlockToAir(wrapper.getPos());
 					}
 				}
 
@@ -233,7 +233,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 							
 							if(shouldTake(fluid, side))
 							{
-								worldObj.setBlockToAir(side);
+								worldObj.setBlockToAir(side.getPos());
 							}
 						}
 

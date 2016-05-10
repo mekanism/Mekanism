@@ -50,11 +50,11 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 				try {
 					if(message.packetType == SorterGuiPacket.CLIENT)
 					{
-						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D, -1));
+						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
 					}
 					else if(message.packetType == SorterGuiPacket.CLIENT_INDEX)
 					{
-						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D, message.index));
+						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
 					}
 
 					player.openContainer.windowId = message.windowId;

@@ -384,7 +384,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 		
-		TileEntity tile = new Coord4D(mainPos, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
+		TileEntity tile = new Coord4D(mainPos, worldObj).getTileEntity(worldObj);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
@@ -392,7 +392,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainPos, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)new Coord4D(mainPos, worldObj).getTileEntity(worldObj);
 	}
 
 	@Override

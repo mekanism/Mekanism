@@ -14,13 +14,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Rectangle;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiSeismicReader extends GuiScreen
@@ -43,7 +42,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public GuiSeismicReader(World world, Coord4D coord, ItemStack stack)
 	{
-		pos = new Coord4D(coord.getX(), Math.min(255, coord.getY()), coord.getZ());
+		pos = new Coord4D(coord.xCoord, Math.min(255, coord.yCoord), coord.zCoord);
 		worldObj = world;
 
 		itemStack = stack;
@@ -226,7 +225,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public void calculate()
 	{
-		for(BlockPos p = new BlockPos(pos.getX(), 0, pos.getZ()); p.getY() < pos.getY(); p = p.up())
+		for(BlockPos p = new BlockPos(pos.zCoord, 0, pos.zCoord); p.getY() < pos.yCoord; p = p.up())
 		{
 			IBlockState state = worldObj.getBlockState(p);
 			Block block = state.getBlock();

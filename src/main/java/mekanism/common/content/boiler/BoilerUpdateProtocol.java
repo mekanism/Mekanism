@@ -43,7 +43,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			return true;
 		}
 
-		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld()).safeTileGet(pointer.getWorld());
+		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimensionId()).getTileEntity(pointer.getWorld());
 		
 		return tile instanceof TileEntityPressureDisperser || tile instanceof TileEntitySuperheatingElement;
 	}
@@ -58,7 +58,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			
 			for(Coord4D coord : innerNodes)
 			{
-				TileEntity tile = coord.safeTileGet(pointer.getWorld());
+				TileEntity tile = coord.getTileEntity(pointer.getWorld());
 				
 				if(tile instanceof TileEntityPressureDisperser)
 				{
@@ -83,13 +83,13 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			final Coord4D initDisperser = dispersers.iterator().next();
 			
 			//Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
-			Coord4D pos = new Coord4D(structure.renderLocation.getX(), initDisperser.getY(), structure.renderLocation.getZ(), pointer.getWorld().provider.getDimensionId());
+			Coord4D pos = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord, structure.renderLocation.zCoord, pointer.getWorld().provider.getDimensionId());
 			for(int x = 1; x < structure.volLength-1; x++)
 			{
 				for(int z = 1; z < structure.volWidth-1; z++)
 				{
-					Coord4D coord4D = pos.add(x, 0, z);
-					TileEntity tile = coord4D.safeTileGet(pointer.getWorld());
+					Coord4D coord4D = pos.translate(x, 0, z);
+					TileEntity tile = coord4D.getTileEntity(pointer.getWorld());
 					
 					if(!(tile instanceof TileEntityPressureDisperser))
 					{
@@ -112,7 +112,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 					@Override
 					public boolean isValid(Coord4D coord) 
 					{
-						return coord.safeTileGet(pointer.getWorld()) instanceof TileEntitySuperheatingElement;
+						return coord.getTileEntity(pointer.getWorld()) instanceof TileEntitySuperheatingElement;
 					}
 				}).calculate(elements.iterator().next());
 			}
@@ -125,15 +125,14 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			Coord4D initAir = null;
 			int totalAir = 0;
 
-			pos = new Coord4D(structure.renderLocation, pointer.getWorld().provider.getDimensionId());
 			//Find the first available block in the structure for water storage (including casings)
 			for(int x = 0; x < structure.volLength; x++)
 			{
-				for(int y = 0; y < initDisperser.getY() - structure.renderLocation.getY(); y++)
+				for(int y = 0; y < initDisperser.yCoord - structure.renderLocation.yCoord; y++)
 				{
 					for(int z = 0; z < structure.volWidth; z++)
 					{
-						if(pointer.getWorld().isAirBlock(pos.add(x, y, z)) || isViableNode(pos.add(x, y, z)))
+						if(pointer.getWorld().isAirBlock(pos.translate(x, y, z).getPos()) || isViableNode(pos.translate(x, y, z).getPos()))
 						{
 							initAir = new Coord4D(x, y, z, pointer.getWorld().provider.getDimensionId());
 							totalAir++;
@@ -157,10 +156,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				@Override
 				public final boolean isValid(Coord4D coord) 
 				{
-					return coord.getY() >= renderLocation.getY()-1 && coord.getY() < initDisperser.getY() &&
-							coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX()+volLength &&
-							coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ()+volWidth &&
-							(coord.isAirBlock(pointer.getWorld()) || isViableNode(coord));
+					return coord.yCoord >= renderLocation.yCoord-1 && coord.yCoord < initDisperser.yCoord &&
+							coord.xCoord >= renderLocation.xCoord && coord.xCoord < renderLocation.xCoord+volLength &&
+							coord.zCoord >= renderLocation.zCoord && coord.zCoord < renderLocation.zCoord+volWidth &&
+							(coord.isAirBlock(pointer.getWorld()) || isViableNode(coord.getPos()));
 				}
 			}).calculate(initAir);
 			
@@ -170,10 +169,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
-			int steamHeight = (structure.renderLocation.getY()+structure.volHeight-2)-initDisperser.getY();
+			int steamHeight = (structure.renderLocation.yCoord+structure.volHeight-2)-initDisperser.yCoord;
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
 			
-			structure.upperRenderLocation = new Coord4D(structure.renderLocation.getX(), initDisperser.getY()+1, structure.renderLocation.getZ());
+			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord+1, structure.renderLocation.zCoord);
 			
 			return true;
 		}
@@ -244,7 +243,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	{
 		for(Coord4D obj : structure.locations)
 		{
-			if(obj.safeTileGet(pointer.getWorld()) instanceof TileEntityBoilerValve)
+			if(obj.getTileEntity(pointer.getWorld()) instanceof TileEntityBoilerValve)
 			{
 				ValveData data = new ValveData();
 				data.location = obj;

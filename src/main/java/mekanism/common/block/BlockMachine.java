@@ -9,6 +9,8 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.client.render.ctm.CTMData;
+import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
@@ -24,6 +26,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlock;
@@ -124,9 +127,9 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockMachine extends BlockContainer implements ISpecialBounds//, IBlockCTM, ICustomBlockIcon
+public abstract class BlockMachine extends BlockContainer implements ISpecialBounds, ICTMBlock//, ICustomBlockIcon
 {
-	//public CTMData[][] ctms = new CTMData[16][4];
+	public CTMData[][] ctmData = new CTMData[16][4];
 
 	public BlockMachine()
 	{
@@ -134,6 +137,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		setHardness(3.5F);
 		setResistance(16F);
 		setCreativeTab(Mekanism.tabMekanism);
+		
+		initCTMs();
 	}
 
 	public static BlockMachine getBlockMachine(MachineBlock block)
@@ -201,6 +206,18 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		}
 		
 		return state;
+	}
+	
+	public void initCTMs()
+	{
+		switch(getMachineBlock())
+		{
+			case MACHINE_BLOCK_1:
+				ctmData[11][0] = new CTMData(BasicBlockType.TELEPORTER_FRAME, MachineType.TELEPORTER);
+				
+				break;
+			default:
+		}
 	}
 
 /*
@@ -573,15 +590,12 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						{
 							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
 							{
-								try
-								{ //Prevent bad IDs
+								try { //Prevent bad IDs
 									ItemStack filled = new ItemStack(item, 1, type.meta);
 									itemMachine.setBaseTier(filled, BaseTier.ULTIMATE);
 									itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
 									list.add(filled);
-								} catch(Exception e)
-								{
-								}
+								} catch(Exception e) {}
 							}
 						}
 
@@ -645,8 +659,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 
 					tileEntity.setFacing((short)change);
 					world.notifyNeighborsOfStateChange(pos, this);
-				} else
-				{
+				} 
+				else {
 					SecurityUtils.displayNoAccess(entityplayer);
 				}
 
@@ -668,8 +682,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
 							MekanismUtils.openPersonalChestGui((EntityPlayerMP)entityplayer, chest, null, true);
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -689,12 +703,12 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 									entityplayer.inventory.markDirty();
 									return true;
 								}
-							} else
-							{
+							} 
+							else {
 								entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 							}
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -708,8 +722,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
 							LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -726,8 +740,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(owner == null || entityplayer.getName().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -760,6 +774,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		int metadata = getMetaFromState(state);
+		
 		if(BlockStateMachine.MachineType.get(getMachineBlock(), metadata) == null)
 		{
 			return null;
@@ -1177,6 +1192,24 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 			default:
 				return true;
 		}
+	}
+	
+	@Override
+	public CTMData getCTMData(IBlockState state)
+	{
+		return ctmData[getMetaFromState(state)][0];
+	}
+	
+	@Override
+	public String getOverrideTexture(IBlockState state, EnumFacing side)
+	{
+		return null;
+	}
+	
+	@Override
+	public PropertyEnum<MachineType> getTypeProperty()
+	{
+		return getMachineBlock().getProperty();
 	}
 
 	@Override

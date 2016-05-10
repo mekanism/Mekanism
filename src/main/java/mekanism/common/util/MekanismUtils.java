@@ -723,13 +723,13 @@ public final class MekanismUtils
 			{
 				IBlockState blockState = sideCoord.getBlockState(world);
 				Block block = blockState.getBlock();
-				boolean weakPower = block.shouldCheckWeakPower(world, coord, side);
+				boolean weakPower = block.shouldCheckWeakPower(world, coord.getPos(), side);
 				
 				if(weakPower && isDirectlyGettingPowered(world, sideCoord))
 				{
 					return true;
 				}
-				else if(!weakPower && block.getWeakPower(world, sideCoord, blockState, side) > 0)
+				else if(!weakPower && block.getWeakPower(world, sideCoord.getPos(), blockState, side) > 0)
 				{
 					return true;
 				}
@@ -753,7 +753,7 @@ public final class MekanismUtils
 			
 			if(sideCoord.exists(world))
 			{
-				if(world.getRedstonePower(coord, side) > 0)
+				if(world.getRedstonePower(coord.getPos(), side) > 0)
 				{
 					return true;
 				}
@@ -777,9 +777,9 @@ public final class MekanismUtils
 			if(offset.exists(world))
 			{
 				Block block1 = offset.getBlock(world);
-				block1.onNeighborChange(world, offset, coord);
+				block1.onNeighborChange(world, offset.getPos(), coord.getPos());
 				
-				if(block1.isNormalCube(world, offset))
+				if(block1.isNormalCube(world, offset.getPos()))
 				{
 					offset = offset.offset(dir);
 					
@@ -787,9 +787,9 @@ public final class MekanismUtils
 					{
 						block1 = offset.getBlock(world);
 
-						if(block1.getWeakChanges(world, offset))
+						if(block1.getWeakChanges(world, offset.getPos()))
 						{
-							block1.onNeighborChange(world, offset, coord);
+							block1.onNeighborChange(world, offset.getPos(), coord.getPos());
 						}
 					}
 				}
@@ -809,7 +809,7 @@ public final class MekanismUtils
 
 		if(!world.isRemote)
 		{
-			((TileEntityBoundingBlock)world.getTileEntity(boundingLocation)).setMainLocation(orig);
+			((TileEntityBoundingBlock)world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
 		}
 	}
 
@@ -825,7 +825,7 @@ public final class MekanismUtils
 
 		if(!world.isRemote)
 		{
-			((TileEntityAdvancedBoundingBlock)world.getTileEntity(boundingLocation)).setMainLocation(orig);
+			((TileEntityAdvancedBoundingBlock)world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
 		}
 	}
 
@@ -905,7 +905,7 @@ public final class MekanismUtils
 
 			if(state.getProperties().containsKey(BlockFluidBase.LEVEL) && state.getValue(BlockFluidBase.LEVEL) == 0)
 			{
-				return fluid.drain(world, pos, false);
+				return fluid.drain(world, pos.getPos(), false);
 			}
 		}
 
@@ -1233,7 +1233,7 @@ public final class MekanismUtils
 	 */
 	public static String getCoordDisplay(Coord4D obj)
 	{
-		return "[" + obj.getX() + ", " + obj.getY() + ", " + obj.getZ() + "]";
+		return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
 	}
 	
 	@SideOnly(Side.CLIENT)

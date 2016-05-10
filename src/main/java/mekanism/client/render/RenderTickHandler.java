@@ -51,7 +51,7 @@ public class RenderTickHandler
 	
 				if(pos != null)
 				{	
-					Coord4D obj = new Coord4D(pos.getBlockPos(), world.provider.getDimensionId());
+					Coord4D obj = new Coord4D(pos.getBlockPos(), world);
 	
 					if(MekanismAPI.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 					{

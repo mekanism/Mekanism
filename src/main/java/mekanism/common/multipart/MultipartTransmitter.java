@@ -38,7 +38,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	@Override
 	public Coord4D coord()
 	{
-		return new Coord4D(getPart().getPos(), getPart().getWorld().provider.getDimensionId());
+		return new Coord4D(getPart().getPos(), getPart().getWorld());
 	}
 
 	@Override

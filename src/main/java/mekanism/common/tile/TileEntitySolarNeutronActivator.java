@@ -268,7 +268,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).offset(EnumFacing.UP), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).offset(EnumFacing.UP).getPos(), Coord4D.get(this));
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 
 				push();
 
-				GL11.glTranslated(getX(renderLoc.getX()), getY(renderLoc.getY()), getZ(renderLoc.getZ()));
+				GL11.glTranslated(getX(renderLoc.xCoord), getY(renderLoc.yCoord), getZ(renderLoc.zCoord));
 
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
 

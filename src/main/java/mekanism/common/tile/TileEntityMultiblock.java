@@ -118,11 +118,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				for(EnumFacing side : EnumFacing.VALUES)
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
-					TileEntity tile = obj.safeTileGet(worldObj);
+					TileEntity tile = obj.getTileEntity(worldObj);
 
 					if(!obj.isAirBlock(worldObj) && (tile == null || tile.getClass() != getClass()))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos(), getPos());
 					}
 				}
 
@@ -179,7 +179,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			for(Coord4D obj : getSynchronizedData().locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.safeTileGet(worldObj);
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(worldObj);
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{

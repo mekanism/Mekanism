@@ -606,7 +606,7 @@ public class ClientProxy extends CommonProxy
 	{
 		if(Minecraft.getMinecraft().theWorld != null)
 		{
-			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord, mop);
+			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord.getPos(), mop);
 		}
 	}
 	

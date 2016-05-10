@@ -21,8 +21,8 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -104,7 +104,7 @@ public final class TransporterPathfinder
 			
 			while(true)
 			{
-				Coord4D coord = start.offset(side, count);
+				Coord4D coord = start.getFromSide(side, count);
 				
 				if(transportStack.canInsertToTransporter(coord.getTileEntity(worldObj), side))
 				{

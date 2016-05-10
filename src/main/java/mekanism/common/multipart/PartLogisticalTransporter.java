@@ -35,10 +35,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 //import net.minecraft.util.IIcon;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraft.util.EnumFacing;
 /*
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
@@ -388,8 +388,8 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		TransporterUtils.incrementColor(getTransmitter());
 		refreshConnections();
 		notifyTileChange();
-		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld().provider.getDimensionId()));
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld().provider.getDimensionId()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld().provider.getDimensionId())));
+		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld())));
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
 		return true;

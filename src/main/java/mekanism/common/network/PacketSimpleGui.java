@@ -87,7 +87,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	
 			Mekanism.packetHandler.sendTo(new SimpleGuiMessage(obj, handler, id, window), playerMP);
 	
-			playerMP.openContainer = handlers.get(handler).getServerGui(id, playerMP, world, obj);
+			playerMP.openContainer = handlers.get(handler).getServerGui(id, playerMP, world, obj.getPos());
 			playerMP.openContainer.windowId = window;
 			playerMP.openContainer.onCraftGuiOpened(playerMP);
 		}
@@ -95,7 +95,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 		@SideOnly(Side.CLIENT)
 		public static GuiScreen getGui(int handler, int id, EntityPlayer player, World world, Coord4D obj)
 		{
-			return (GuiScreen)handlers.get(handler).getClientGui(id, player, world, obj);
+			return (GuiScreen)handlers.get(handler).getClientGui(id, player, world, obj.getPos());
 		}
 	
 		@Override

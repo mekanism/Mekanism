@@ -134,7 +134,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
-								worldObj.setBlockState(below, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
+								worldObj.setBlockState(below.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 								
 								setEnergy(getEnergy() - energyPerTick);
 								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
@@ -184,7 +184,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				if(canReplace(coord, true, false))
 				{
-					worldObj.setBlockState(coord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
+					worldObj.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 
 					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 				}
@@ -231,7 +231,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			return isPathfinding;
 		}
 		
-		return coord.getBlock(worldObj).isReplaceable(worldObj, coord);
+		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.getPos());
 	}
 	
 	@Override

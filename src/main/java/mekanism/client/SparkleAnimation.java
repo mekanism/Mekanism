@@ -52,12 +52,12 @@ public class SparkleAnimation
 					{
 						for(int i = 0; i < 6; i++)
 						{
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + random.nextDouble(), coord.getY() + -.01, coord.getZ() + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + random.nextDouble(), coord.getY() + 1.01, coord.getZ() + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + random.nextDouble(), coord.getY() + random.nextDouble(), coord.getZ() + -.01, 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + random.nextDouble(), coord.getY() + random.nextDouble(), coord.getZ() + 1.01, 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + -.01, coord.getY() + random.nextDouble(), coord.getZ() + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.getX() + 1.01, coord.getY() + random.nextDouble(), coord.getZ() + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + random.nextDouble(), coord.yCoord + -.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + random.nextDouble(), coord.yCoord + 1.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + -.01, 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + 1.01, 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + -.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + 1.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
 						}
 					}
 				}

@@ -36,7 +36,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 
 		Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.facing);
 
-		if(tileEntity.getWorld().getBlockState(obj).getBlock().isSideSolid(tileEntity.getWorld(), obj, tileEntity.facing.getOpposite()))
+		if(obj.getBlockState(tileEntity.getWorld()).getBlock().isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite()))
 		{
 			return;
 		}
@@ -91,12 +91,12 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 
 	private void doLight(World world, Coord4D obj)
 	{
-		if(world.getBlockState(obj).getBlock().isOpaqueCube())
+		if(obj.getBlockState(world).getBlock().isOpaqueCube())
 		{
 			return;
 		}
 
-		int brightness = world.getLightFromNeighborsFor(EnumSkyBlock.SKY, obj);
+		int brightness = world.getLightFromNeighborsFor(EnumSkyBlock.SKY, obj.getPos());
 		int lightX = brightness % 65536;
 		int lightY = brightness / 65536;
 		float scale = 0.6F;

@@ -56,11 +56,11 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 				try {
 					if(message.packetType == MinerGuiPacket.CLIENT)
 					{
-						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D, -1));
+						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
 					}
 					else if(message.packetType == MinerGuiPacket.CLIENT_INDEX)
 					{
-						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D, message.index));
+						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
 					}
 
 					player.openContainer.windowId = message.windowId;

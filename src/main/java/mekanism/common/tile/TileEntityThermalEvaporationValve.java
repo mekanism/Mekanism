@@ -28,7 +28,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 
 					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos(), getPos());
 					}
 				}
 			}
