@@ -9,7 +9,6 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
-import mekanism.client.render.ctm.PropertyCTMRenderContext;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
@@ -101,8 +100,6 @@ import buildcraft.api.tools.IToolWrench;
  */
 public abstract class BlockBasic extends Block implements ICTMBlock//TODO? implements ICustomBlockIcon
 {
-	public static final PropertyCTMRenderContext ctmProperty = new PropertyCTMRenderContext();
-	
 	public CTMData[][] ctmData = new CTMData[16][4];
 	
 	public BlockBasic()
@@ -212,29 +209,8 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
         IExtendedBlockState state = (IExtendedBlockState)stateIn;
         CTMBlockRenderContext ctx = new CTMBlockRenderContext(w, pos);
 
-        return state.withProperty(ctmProperty, ctx);
+        return state.withProperty(BlockStateBasic.ctmProperty, ctx);
     }
-
-/*
-	@Override
-	public IIcon getIcon(ItemStack stack, int side)
-	{
-		if(BasicType.get(stack) == BasicType.BIN)
-		{
-			return binIcons[((ItemBlockBasic)stack.getItem()).getBaseTier(stack).ordinal()][side];
-		}
-		else if(BasicType.get(stack) == BasicType.INDUCTION_CELL)
-		{
-			return icons[3][((ItemBlockBasic)stack.getItem()).getBaseTier(stack).ordinal()];
-		}
-		else if(BasicType.get(stack) == BasicType.INDUCTION_PROVIDER)
-		{
-			return icons[4][((ItemBlockBasic)stack.getItem()).getBaseTier(stack).ordinal()];
-		}
-		
-		return getIcon(side, stack.getItemDamage());
-	}
-*/
 
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
@@ -1023,8 +999,10 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		{
 			if(side == state.getValue(BlockStateFacing.facingProperty))
 			{
-				System.out.println("Yeet");
 				return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "_on" : "");
+			}
+			else {
+				return "thermal_evaporation_block";
 			}
 		}
 		

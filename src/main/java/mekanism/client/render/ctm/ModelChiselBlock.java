@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import mekanism.common.block.BlockBasic;
+import mekanism.common.block.states.BlockStateBasic;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -109,7 +109,7 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
         if(stateIn.getBlock() instanceof ICTMBlock && stateIn instanceof IExtendedBlockState) 
         {
             IExtendedBlockState state = (IExtendedBlockState) stateIn;
-            CTMBlockRenderContext ctxList = state.getValue(BlockBasic.ctmProperty);
+            CTMBlockRenderContext ctxList = state.getValue(BlockStateBasic.ctmProperty);
             return createModel(stateIn, model, ctxList);
         } 
         else {

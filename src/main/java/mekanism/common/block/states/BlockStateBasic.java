@@ -1,5 +1,6 @@
 package mekanism.common.block.states;
 
+import mekanism.client.render.ctm.PropertyCTMRenderContext;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
@@ -44,10 +45,11 @@ public class BlockStateBasic extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
 	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
+	public static final PropertyCTMRenderContext ctmProperty = new PropertyCTMRenderContext();
 
 	public BlockStateBasic(BlockBasic block, PropertyEnum<BasicBlockType> typeProperty)
 	{
-		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty}, new IUnlistedProperty[] {BlockBasic.ctmProperty});
+		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
 	}
 
 	public static enum BasicBlock
@@ -97,7 +99,7 @@ public class BlockStateBasic extends ExtendedBlockState
 		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve.class, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		THERMAL_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "ThermalEvaporationController", TileEntityThermalEvaporationController.class, false, Plane.HORIZONTAL, true, false),
+		THERMAL_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "ThermalEvaporationController", TileEntityThermalEvaporationController.class, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve.class, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		THERMAL_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "ThermalEvaporationBlock", TileEntityThermalEvaporationBlock.class, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing.class, false, Predicates.<EnumFacing>alwaysFalse(), false, false),

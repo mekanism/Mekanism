@@ -55,6 +55,7 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -66,11 +67,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
-public class BlockStateMachine extends BlockStateFacing
+public class BlockStateMachine extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
 	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
@@ -78,7 +81,7 @@ public class BlockStateMachine extends BlockStateFacing
 
 	public BlockStateMachine(BlockMachine block, PropertyEnum typeProperty)
 	{
-		super(block, typeProperty, activeProperty, tierProperty, recipeProperty);
+		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty, recipeProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
 	}
 
 	public static enum MachineBlock
@@ -423,7 +426,7 @@ public class BlockStateMachine extends BlockStateFacing
 			
 			if(type.hasRotations())
 			{
-				EnumFacing facing = state.getValue(facingProperty);
+				EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
 				
 				if(type.canRotateTo(facing))
 				{
@@ -432,7 +435,7 @@ public class BlockStateMachine extends BlockStateFacing
 						builder.append(",");
 					}
 					
-					builder.append(facingProperty.getName());
+					builder.append(BlockStateFacing.facingProperty.getName());
 					builder.append("=");
 					builder.append(facing.getName());
 				}
