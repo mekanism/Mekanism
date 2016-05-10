@@ -75,7 +75,7 @@ import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
-import mekanism.client.render.item.FluidTankItemModel;
+import mekanism.client.render.item.CustomItemModelFactory;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -233,7 +233,7 @@ public class ClientProxy extends CommonProxy
 	public static Map<String, ModelResourceLocation> machineResources = new HashMap<String, ModelResourceLocation>();
 	public static Map<String, ModelResourceLocation> basicResources = new HashMap<String, ModelResourceLocation>();
 	
-	public static ModelResourceLocation TANK_MODEL = new ModelResourceLocation("mekanism:fluid_tank", "inventory");
+	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank"};
 	
 	@Override
 	public void loadConfiguration()
@@ -852,16 +852,20 @@ public class ClientProxy extends CommonProxy
 		HolidayManager.init();
 	}
 	
-   /* @SubscribeEvent
+	@SubscribeEvent
     public void onModelBake(ModelBakeEvent event) throws IOException 
     {
-        Object obj = event.modelRegistry.getObject(TANK_MODEL);
-   
-        if(obj instanceof IBakedModel)
-        {
-        	event.modelRegistry.putObject(TANK_MODEL, new FluidTankItemModel((IBakedModel)obj));
-        }
-    }*/
+		for(String s : CUSTOM_RENDERS)
+		{
+			ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
+	        Object obj = event.modelRegistry.getObject(model);
+	        
+	        if(obj instanceof IBakedModel)
+	        {
+	        	event.modelRegistry.putObject(model, new CustomItemModelFactory((IBakedModel)obj));
+	        }
+		}
+    }
 
 	@Override
 	public void preInit()

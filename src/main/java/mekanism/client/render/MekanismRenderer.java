@@ -10,7 +10,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
-import mekanism.api.gas.OreGas;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
@@ -26,11 +25,8 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
@@ -52,8 +48,6 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
 {
-	//private static RenderBlocks renderBlocks = new RenderBlocks();
-
 	public enum FluidType
 	{
 		STILL,
@@ -92,8 +86,6 @@ public class MekanismRenderer
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
-		initFluidTextures(event.map);
-
 		for(EnumColor color : EnumColor.values())
 		{
 			colors[color.ordinal()] = event.map.registerSprite(new ResourceLocation("mekanism:blocks/overlay/overlay_" + color.unlocalizedName));
@@ -107,36 +99,9 @@ public class MekanismRenderer
 		energyIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidEnergy"));
 		heatIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeat"));
 
-		GasRegistry.getGas("hydrogen").setIcon(event.map, "mekanism:blocks/liquid/LiquidHydrogen");
-		GasRegistry.getGas("oxygen").setIcon(event.map,"mekanism:blocks/liquid/LiquidOxygen");
-		GasRegistry.getGas("water").setIcon(event.map,"mekanism:blocks/liquid/LiquidSteam");
-		GasRegistry.getGas("chlorine").setIcon(event.map,"mekanism:blocks/liquid/LiquidChlorine");
-		GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map,"mekanism:blocks/liquid/LiquidSulfurDioxide");
-		GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map,"mekanism:blocks/liquid/LiquidSulfurTrioxide");
-		GasRegistry.getGas("sulfuricAcid").setIcon(event.map,"mekanism:blocks/liquid/LiquidSulfuricAcid");
-		GasRegistry.getGas("hydrogenChloride").setIcon(event.map,"mekanism:blocks/liquid/LiquidHydrogenChloride");
-		GasRegistry.getGas("liquidOsmium").setIcon(event.map,"mekanism:blocks/liquid/LiquidOsmium");
-		GasRegistry.getGas("liquidStone").setIcon(event.map,"mekanism:blocks/liquid/LiquidStone");
-		GasRegistry.getGas("ethene").setIcon(event.map,"mekanism:blocks/liquid/LiquidEthene");
-		GasRegistry.getGas("brine").setIcon(event.map,"mekanism:blocks/liquid/LiquidBrine");
-		GasRegistry.getGas("sodium").setIcon(event.map,"mekanism:blocks/liquid/LiquidSodium");
-		GasRegistry.getGas("deuterium").setIcon(event.map,"mekanism:blocks/liquid/LiquidDeuterium");
-		GasRegistry.getGas("tritium").setIcon(event.map,"mekanism:blocks/liquid/LiquidTritium");
-		GasRegistry.getGas("fusionFuelDT").setIcon(event.map,"mekanism:blocks/liquid/LiquidDT");
-		GasRegistry.getGas("lithium").setIcon(event.map,"mekanism:blocks/liquid/LiquidLithium");
-
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
-			if(gas instanceof OreGas)
-			{
-				if(gas.getUnlocalizedName().contains("clean"))
-				{
-					gas.setIcon(event.map,"mekanism:blocks/liquid/LiquidCleanOre");
-				}
-				else {
-					gas.setIcon(event.map,"mekanism:blocks/liquid/LiquidOre");
-				}
-			}
+			gas.updateIcon(event.map);
 		}
 
 		for(InfuseType type : InfuseRegistry.getInfuseMap().values())
@@ -154,6 +119,12 @@ public class MekanismRenderer
 		RenderDynamicTank.resetDisplayInts();
 		RenderThermalEvaporationController.resetDisplayInts();
 		RenderFluidTank.resetDisplayInts();
+	}
+	
+	@SubscribeEvent
+	public void onStitch(TextureStitchEvent.Post event)
+	{
+		initFluidTextures(event.map);
 	}
 	
 	public static void registerItemRender(String domain, Item item)
@@ -198,8 +169,6 @@ public class MekanismRenderer
 
 		for(Fluid fluid : FluidRegistry.getRegisteredFluids().values()) 
 		{
-			// TextureAtlasSprite toUse = null;
-
 			if(fluid.getFlowing() != null) 
 			{
 				String flow = fluid.getFlowing().toString();
@@ -213,7 +182,6 @@ public class MekanismRenderer
 					sprite = map.registerSprite(fluid.getStill());
 				}
 				
-				// toUse = sprite;
 				textureMap.get(FluidType.FLOWING).put(fluid, sprite);
 			}
 
@@ -230,12 +198,8 @@ public class MekanismRenderer
 					sprite = map.registerSprite(fluid.getStill());
 				}
 				
-				// toUse = sprite;
 				textureMap.get(FluidType.STILL).put(fluid, sprite);
 			}
-			// if (toUse != null) {
-			// textureMap.get(FluidType.FROZEN).put(fluid, toUse);
-			// }
 		}
 	}
 
@@ -251,124 +215,20 @@ public class MekanismRenderer
 		return map.containsKey(fluid) ? map.get(fluid) : missingIcon;
 	}
 
-	public static boolean blockIconExists(String texture) //Credit to CoFHCore
-	{
-		String[] split = texture.split(":");
-		texture = split[0] + ":textures/blocks/" + split[1] + ".png";
-		
-		try {
-			Minecraft.getMinecraft().getResourceManager().getAllResources(new ResourceLocation(texture));
-			return true;
-		} catch(Throwable t) {
-			return false;
-		}
-	}
-	
-	public static void loadDynamicTextures(TextureMap register, String name, TextureAtlasSprite[] textures, DefIcon... defaults)
-	{
-		for(EnumFacing side : EnumFacing.VALUES)
-		{
-			ResourceLocation tex = new ResourceLocation("mekanism:" + name + simpleSides[side.ordinal()]);
-			ResourceLocation texOn = new ResourceLocation(tex.toString() + "On");
-			
-			if(blockIconExists(tex.toString()))
-			{
-				textures[side.ordinal()] = register.registerSprite(tex);
-				
-				if(blockIconExists(texOn.toString()))
-				{
-					textures[side.ordinal()+6] = register.registerSprite(texOn);
-				}
-				else {
-					boolean found = false;
-					
-					for(DefIcon def : defaults)
-					{
-						if(def.icons.contains(side.ordinal()+6) && def.overridesInactive)
-						{
-							textures[side.ordinal()+6] = def.defIcon;
-							found = true;
-						}
-					}
-					
-					if(!found)
-					{
-						textures[side.ordinal()+6] = register.registerSprite(tex);
-					}
-				}
-			}
-			else {
-				for(DefIcon def : defaults)
-				{
-					if(def.icons.contains(side.ordinal()))
-					{
-						textures[side.ordinal()] = def.defIcon;
-					}
-					
-					if(def.icons.contains(side.ordinal()+6))
-					{
-						textures[side.ordinal()+6] = def.defIcon;
-					}
-				}
-			}
-		}
-	}
-	
-	public static class DefIcon
-	{
-		public TextureAtlasSprite defIcon;
-		
-		public List<Integer> icons = new ArrayList<Integer>();
-		
-		/** If this DefIcon should be prioritized over a machine's side-specific off texture 
-		 * if no on texture is present. */
-		public boolean overridesInactive = true;
-		
-		public DefIcon(TextureAtlasSprite icon, int... is)
-		{
-			defIcon = icon;
-			
-			for(int i : is)
-			{
-				icons.add(i);
-			}
-		}
-		
-		public DefIcon setOverrides(boolean b)
-		{
-			overridesInactive = b;
-			
-			return this;
-		}
-		
-		public static DefIcon getAll(TextureAtlasSprite icon)
-		{
-			return new DefIcon(icon, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-		}
-		
-		public static DefIcon getActivePair(TextureAtlasSprite icon, int... is)
-		{
-			DefIcon ret = new DefIcon(icon, is);
-			
-			for(int i : is)
-			{
-				ret.icons.add(i+6);
-			}
-			
-			return ret;
-		}
-	}
-    
 	public static class Model3D
 	{
-		public double minX;
-		public double minY;
-		public double minZ;
-		public double maxX;
-		public double maxY;
-		public double maxZ;
+		public double posX, posY, posZ;
 		
-		public ResourceLocation[] textures = new ResourceLocation[6];
+		public double minX, minY, minZ;
+		public double maxX, maxY, maxZ;
+		
+	    public double textureStartX = 0, textureStartY = 0, textureStartZ = 0;
+	    public double textureSizeX = 16, textureSizeY = 16, textureSizeZ = 16;
+	    public double textureOffsetX = 0, textureOffsetY = 0, textureOffsetZ = 0;
+	    
+	    public int[] textureFlips = new int[6];
+		
+		public TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
 		
 		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true, false};
 
@@ -383,6 +243,21 @@ public class MekanismRenderer
 	    	maxY = yPos;
 	    	maxZ = zPos;
 	    }
+	    
+	    public double sizeX()
+	    {
+	    	return maxX-minX;
+	    }
+	    
+	    public double sizeY()
+	    {
+	    	return maxY-minY;
+	    }
+	    
+	    public double sizeZ()
+	    {
+	    	return maxZ-minZ;
+	    }
 		
 		public void setSideRender(EnumFacing side, boolean value)
 		{
@@ -394,17 +269,17 @@ public class MekanismRenderer
 			return renderSides[side.ordinal()];
 		}
 
-		public ResourceLocation getBlockTextureFromSide(int i)
+		public TextureAtlasSprite getBlockTextureFromSide(int i)
 		{
 			return textures[i];
 		}
 		
-		public void setTexture(ResourceLocation tex)
+		public void setTexture(TextureAtlasSprite tex)
 		{
 			Arrays.fill(textures, tex);
 		}
 		
-		public void setTextures(ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation west, ResourceLocation east)
+		public void setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite west, TextureAtlasSprite east)
 		{
 			textures[0] = down;
 			textures[1] = up;
@@ -415,6 +290,15 @@ public class MekanismRenderer
 		}
 	}
 	
+	public static void prepFlowing(Model3D model, Fluid fluid)
+	{
+		TextureAtlasSprite still = getFluidTexture(fluid, FluidType.STILL);
+		TextureAtlasSprite flowing = getFluidTexture(fluid, FluidType.FLOWING);
+		
+		model.setTextures(still, still, flowing, flowing, flowing, flowing);
+		model.textureFlips = new int[] {0, 0, 2, 2, 2, 2};
+	}
+	
 	public static void renderObject(Model3D object)
 	{
 		if(object == null)
@@ -422,50 +306,10 @@ public class MekanismRenderer
 			return;
 		}
 		
-/*
-        renderBlocks.renderMaxX = object.maxX;
-        renderBlocks.renderMinX = object.minX;
-        renderBlocks.renderMaxY = object.maxY;
-        renderBlocks.renderMinY = object.minY;
-        renderBlocks.renderMaxZ = object.maxZ;
-        renderBlocks.renderMinZ = object.minZ;
-        
-        renderBlocks.enableAO = false;
-
-		Tessellator.instance.startDrawingQuads();
-
-		if(object.shouldSideRender(EnumFacing.DOWN))
-		{
-			renderBlocks.renderFaceYNeg(null, 0, 0, 0, object.getBlockTextureFromSide(0));
-		}
-
-		if(object.shouldSideRender(EnumFacing.UP))
-		{
-			renderBlocks.renderFaceYPos(null, 0, 0, 0, object.getBlockTextureFromSide(1));
-		}
-
-		if(object.shouldSideRender(EnumFacing.NORTH))
-		{
-			renderBlocks.renderFaceZNeg(null, 0, 0, 0, object.getBlockTextureFromSide(2));
-		}
-
-		if(object.shouldSideRender(EnumFacing.SOUTH))
-		{
-			renderBlocks.renderFaceZPos(null, 0, 0, 0, object.getBlockTextureFromSide(3));
-		}
-
-		if(object.shouldSideRender(EnumFacing.WEST))
-		{
-			renderBlocks.renderFaceXNeg(null, 0, 0, 0, object.getBlockTextureFromSide(4));
-		}
-
-		if(object.shouldSideRender(EnumFacing.EAST))
-		{
-			renderBlocks.renderFaceXPos(null, 0, 0, 0, object.getBlockTextureFromSide(5));
-		}
-		
-		Tessellator.instance.draw();
-*/
+		GL11.glPushMatrix();
+		GL11.glTranslated(object.minX, object.minY, object.minZ);
+		RenderResizableCuboid.INSTANCE.renderCube(object);
+		GL11.glPopMatrix();
 	}
 	
 	public static void color(EnumColor color)
@@ -558,164 +402,6 @@ public class MekanismRenderer
 		GL11.glCullFace(GL11.GL_BACK);
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
-    
-    /**
-     * Cleaned-up snip of ItemRenderer.renderItem() -- meant to render 2D items as equipped.
-     * @param item - ItemStack to render
-     */
-    public static void renderItem(ItemStack item)
-    {
-/*
-		ResourceLocation icon = item.getItem().getIconIndex(item);
-		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
-
-        if(icon == null)
-        {
-            GL11.glPopMatrix();
-            return;
-        }
-
-        texturemanager.bindTexture(texturemanager.getResourceLocation(item.getItemSpriteNumber()));
-        Tessellator tessellator = Tessellator.instance;
-        
-        float minU = icon.getMinU();
-        float maxU = icon.getMaxU();
-        float minV = icon.getMinV();
-        float maxV = icon.getMaxV();
-        
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glTranslatef(0.0F, -0.3F, 0.0F);
-        
-        GL11.glScalef(1.5F, 1.5F, 1.5F);
-        GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
-        
-        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
-
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-*/
-    }
-    
-/*
-    public static void prepareItemRender(RenderBlocks renderer, int metadata, Block block)
-    {
-    	if(!(block instanceof ISpecialBounds) || ((ISpecialBounds)block).doDefaultBoundSetting(metadata))
-		{
-			block.setBlockBoundsForItemRender();
-		}
-		
-		if(block instanceof ISpecialBounds)
-		{
-			((ISpecialBounds)block).setRenderBounds(block, metadata);
-		}
-		
-		if(!(block instanceof ISpecialBounds) || ((ISpecialBounds)block).doDefaultBoundSetting(metadata))
-		{
-			renderer.setRenderBoundsFromBlock(block);
-		}
-		else {
-			renderer.setRenderBounds(0, 0, 0, 1, 1, 1);
-		}
-
-        if(renderer.useInventoryTint)
-        {
-            int renderColor = block.getRenderColor(metadata);
-            float red = (renderColor >> 16 & 255) / 255.0F;
-            float green = (renderColor >> 8 & 255) / 255.0F;
-            float blue = (renderColor & 255) / 255.0F;
-            GL11.glColor4f(red, green, blue, 1.0F);
-        }
-
-        GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
-        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-    }
-    
-    public static void renderCustomItem(RenderBlocks renderer, ItemStack stack)
-    {
-    	Block block = Block.getBlockFromItem(stack.getItem());
-    	
-    	if(block instanceof ICustomBlockIcon)
-    	{
-    		ICustomBlockIcon custom = (ICustomBlockIcon)block;
-    		prepareItemRender(renderer, stack.getItemDamage(), Block.getBlockFromItem(stack.getItem()));
-    		
-            try {
-    	        Tessellator tessellator = Tessellator.instance;
-    	        tessellator.startDrawingQuads();
-    	        tessellator.setNormal(0.0F, -1.0F, 0.0F);
-    	        renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 0));
-    	        tessellator.draw();
-    	        tessellator.startDrawingQuads();
-    	        tessellator.setNormal(0.0F, 1.0F, 0.0F);
-    	        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 1));
-    	        tessellator.draw();
-    	        tessellator.startDrawingQuads();
-    	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-    	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 3));
-    	        tessellator.draw();
-    	        tessellator.startDrawingQuads();
-    	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
-    	        tessellator.draw();
-    	        tessellator.startDrawingQuads();
-    	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-    	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 4));
-    	        tessellator.draw();
-    	        tessellator.startDrawingQuads();
-    	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-    	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 5));
-    	        tessellator.draw();
-            } catch(Exception e) {}
-            
-            GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-    	}
-    }
-    
-	*/
-/*
-	 * Cleaned-up snip of RenderBlocks.renderBlockAsItem() -- used for rendering an item as an entity,
-	 * in a player's inventory, and in a player's hand.
-	 * @param renderer - RenderBlocks renderer to render the item with
-	 * @param metadata - block/item metadata
-	 * @param block - block to render
-	 *//*
-
-	public static void renderItem(RenderBlocks renderer, int metadata, Block block)
-	{
-		prepareItemRender(renderer, metadata, block);
-		
-        try {
-	        Tessellator tessellator = Tessellator.instance;
-	        tessellator.startDrawingQuads();
-	        tessellator.setNormal(0.0F, -1.0F, 0.0F);
-	        renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, metadata));
-	        tessellator.draw();
-	        tessellator.startDrawingQuads();
-	        tessellator.setNormal(0.0F, 1.0F, 0.0F);
-	        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, metadata));
-	        tessellator.draw();
-	        tessellator.startDrawingQuads();
-	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
-	        tessellator.draw();
-	        tessellator.startDrawingQuads();
-	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
-	        tessellator.draw();
-	        tessellator.startDrawingQuads();
-	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
-	        tessellator.draw();
-	        tessellator.startDrawingQuads();
-	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
-	        tessellator.draw();
-        } catch(Exception e) {}
-        
-        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-	}
-*/
 
 	public static void colorFluid(Fluid fluid)
 	{
@@ -773,20 +459,6 @@ public class MekanismRenderer
     	} catch(Exception e) {}
     	
     	return 0;
-    }
-    
-    public void drawTexturedModalRect(int par1, int par2, int par3, int par4, int par5, int par6)
-    {
-    	int zLevel = 0;
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
-        WorldRenderer worldRenderer = Tessellator.getInstance().getWorldRenderer();
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        worldRenderer.pos((par1 + 0), (par2 + par6), zLevel).tex(((par3 + 0) * f), ((par4 + par6) * f1)).endVertex();
-        worldRenderer.pos((par1 + par5), (par2 + par6), zLevel).tex(((par3 + par5) * f), ((par4 + par6) * f1)).endVertex();
-        worldRenderer.pos((par1 + par5), (par2 + 0), zLevel).tex(((par3 + par5) * f), ((par4 + 0) * f1)).endVertex();
-        worldRenderer.pos((par1 + 0), (par2 + 0), zLevel).tex(((par3 + 0) * f), ((par4 + 0) * f1)).endVertex();
-        worldRenderer.finishDrawing();
     }
     
     public static ResourceLocation getBlocksTexture()

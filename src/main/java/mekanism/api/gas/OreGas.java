@@ -9,7 +9,7 @@ public class OreGas extends Gas
 
 	public OreGas(String s, String name)
 	{
-		super(s);
+		super(s, "mekanism:blocks/liquid/Liquid" + (s.contains("clean") ? "Clean" : "") + "Ore");
 
 		oreName = name;
 	}

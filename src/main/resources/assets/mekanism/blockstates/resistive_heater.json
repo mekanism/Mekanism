@@ -11,7 +11,7 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {"textures": {"front": "mekanism:blocks/oredictionificator/OredictionificatorFrontOn"}},
+      "true": {},
       "false": {}
     },
     "inventory": [{}]

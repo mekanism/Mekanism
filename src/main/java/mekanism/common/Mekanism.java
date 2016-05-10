@@ -110,7 +110,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -1251,26 +1250,26 @@ public class Mekanism
 			logger.info("Detected Tekkit in root directory - hello, fellow user!");
 		}
 		
-		GasRegistry.register(new Gas("hydrogen")).registerFluid();
-		GasRegistry.register(new Gas("oxygen")).registerFluid();
-		GasRegistry.register(new Gas("water")).registerFluid();
-		GasRegistry.register(new Gas("chlorine")).registerFluid();
-		GasRegistry.register(new Gas("sulfurDioxideGas")).registerFluid();
-		GasRegistry.register(new Gas("sulfurTrioxideGas")).registerFluid();
-		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();
-		GasRegistry.register(new Gas("hydrogenChloride")).registerFluid();
-		GasRegistry.register(new Gas("liquidOsmium").setVisible(false));
-		GasRegistry.register(new Gas("liquidStone").setVisible(false));
-		GasRegistry.register(new Gas("ethene").registerFluid());
-		GasRegistry.register(new Gas("sodium").registerFluid());
-		GasRegistry.register(new Gas("brine").registerFluid());
-		GasRegistry.register(new Gas("deuterium")).registerFluid();
-		GasRegistry.register(new Gas("tritium")).registerFluid();
-		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
-		GasRegistry.register(new Gas("lithium")).registerFluid();
+		GasRegistry.register(new Gas("hydrogen", "mekanism:blocks/liquid/LiquidHydrogen")).registerFluid();
+		GasRegistry.register(new Gas("oxygen", "mekanism:blocks/liquid/LiquidOxygen")).registerFluid();
+		GasRegistry.register(new Gas("water", "mekanism:blocks/liquid/LiquidSteam")).registerFluid();
+		GasRegistry.register(new Gas("chlorine", "mekanism:blocks/liquid/LiquidChlorine")).registerFluid();
+		GasRegistry.register(new Gas("sulfurDioxideGas", "mekanism:blocks/liquid/LiquidSulfurDioxide")).registerFluid();
+		GasRegistry.register(new Gas("sulfurTrioxideGas", "mekanism:blocks/liquid/LiquidSulfurTrioxide")).registerFluid();
+		GasRegistry.register(new Gas("sulfuricAcid", "mekanism:blocks/liquid/LiquidSulfuricAcid")).registerFluid();
+		GasRegistry.register(new Gas("hydrogenChloride", "mekanism:blocks/liquid/LiquidHydrogenChloride")).registerFluid();
+		GasRegistry.register(new Gas("liquidOsmium", "mekanism:blocks/liquid/LiquidOsmium").setVisible(false));
+		GasRegistry.register(new Gas("liquidStone", "mekanism:blocks/liquid/LiquidStone").setVisible(false));
+		GasRegistry.register(new Gas("ethene", "mekanism:blocks/liquid/LiquidEthene").registerFluid());
+		GasRegistry.register(new Gas("sodium", "mekanism:blocks/liquid/LiquidSodium").registerFluid());
+		GasRegistry.register(new Gas("brine", "mekanism:blocks/liquid/LiquidBrine").registerFluid());
+		GasRegistry.register(new Gas("deuterium", "mekanism:blocks/liquid/LiquidDeuterium")).registerFluid();
+		GasRegistry.register(new Gas("tritium", "mekanism:blocks/liquid/LiquidTritium")).registerFluid();
+		GasRegistry.register(new Gas("fusionFuelDT", "mekanism:blocks/liquid/LiquidDT")).registerFluid();
+		GasRegistry.register(new Gas("lithium", "mekanism:blocks/liquid/LiquidLithium")).registerFluid();
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater")));
-		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true));
+		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")));//.setGaseous(true));
 		
 		for(Resource resource : Resource.values())
 		{

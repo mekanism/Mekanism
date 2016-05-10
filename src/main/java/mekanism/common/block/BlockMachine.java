@@ -327,6 +327,11 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random random)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		
+		if(tileEntity instanceof TileEntityFluidTank)
+		{
+			return;
+		}
 
 		if(MekanismUtils.isActive(world, pos) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
 		{

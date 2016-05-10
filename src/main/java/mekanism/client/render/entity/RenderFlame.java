@@ -26,6 +26,11 @@ public class RenderFlame extends Render<EntityFlame>
     @Override
     public void doRender(EntityFlame entity, double x, double y, double z, float f, float partialTick)
     {
+    	if(entity.ticksExisted < 1)
+    	{
+    		return;
+    	}
+    	
     	float alpha = (entity.ticksExisted+partialTick)/(float)EntityFlame.LIFESPAN;
     	float size = (float)Math.pow(2*alpha, 2);
     	

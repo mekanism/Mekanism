@@ -3,22 +3,19 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fluids.Fluid;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTank>
@@ -27,8 +24,6 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 	private static Map<Fluid, DisplayInteger[]> cachedValveFluids = new HashMap<Fluid, DisplayInteger[]>();
 	
 	private static int stages = 1400;
-	
-	private ModelFluidTank model = new ModelFluidTank();
 
 	@Override
 	public void renderTileEntityAt(TileEntityFluidTank tileEntity, double x, double y, double z, float partialTick, int destroyStage)
@@ -60,8 +55,8 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 				displayList[Math.min(stages-1, (int)(fluidScale*((float)stages-1)))].render();
 			}
 	
-			MekanismRenderer.glowOff();
 			MekanismRenderer.resetColor();
+			MekanismRenderer.glowOff();
 			
 			pop();
 		}
@@ -85,14 +80,6 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 			
 			pop();
 		}
-		
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 1.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank" + (active ? "On" : "") + ".png"));
-
-		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tier);
-		GL11.glPopMatrix();
 	}
 	
 	private void pop()
@@ -120,7 +107,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getFlowing());
+		MekanismRenderer.prepFlowing(toReturn, fluid);
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];
 		cachedValveFluids.put(fluid, displays);
@@ -157,7 +144,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getStill());
+		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];
 		cachedCenterFluids.put(fluid, displays);

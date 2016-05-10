@@ -6,6 +6,7 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
@@ -110,7 +111,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getStill());
+		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -157,7 +158,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getFlowing());
+		MekanismRenderer.prepFlowing(toReturn, fluid);
 
 		DisplayInteger display = DisplayInteger.createAndStart();
 

@@ -77,7 +77,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.stone;
-		toReturn.setTexture(GasRegistry.getGas("oxygen").getIcon());
+		toReturn.setTexture(GasRegistry.getGas("oxygen").getSprite());
 
 		DisplayInteger display = DisplayInteger.createAndStart();
 

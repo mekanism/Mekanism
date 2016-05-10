@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;
@@ -257,7 +258,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			
 			if(dataStream.readInt() == 1)
 			{
-				structure.fluidStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
+				structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
 			}
 			else {
 				structure.fluidStored = null;

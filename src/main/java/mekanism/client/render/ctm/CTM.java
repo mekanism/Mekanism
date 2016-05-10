@@ -273,13 +273,14 @@ public class CTM {
         CTMData data = ((ICTMBlock)state.getBlock()).getCTMData(state);
 
         // no block or a bad API user
-        if (con == null) {
+        if (con == null || data == null) 
+        {
             return false;
         }
 
         boolean ret = false;
         
-        if(con.getBlock() instanceof ICTMBlock)
+        if(con.getBlock() instanceof ICTMBlock && ((ICTMBlock)con.getBlock()).getCTMData(con) != null)
         {
             String state2 = ((IStringSerializable)con.getValue(((ICTMBlock)con.getBlock()).getTypeProperty())).getName();
             

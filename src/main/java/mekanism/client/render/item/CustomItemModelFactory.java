@@ -1,6 +1,5 @@
 package mekanism.client.render.item;
 
-import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -11,23 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.ISmartItemModel;
 
-public class FluidTankItemModel implements ISmartItemModel
+public class CustomItemModelFactory implements ISmartItemModel
 {
-	public static final int STAGES = 16;
-	
-	public static final HashMap<String, IBakedModel>[] MODELS = new HashMap[STAGES];
-	
-	static
-	{
-		for(int x = 0; x < STAGES; x++)
-		{
-			MODELS[x] = new HashMap<String, IBakedModel>();
-		}
-	}
-	
 	private IBakedModel baseModel;
 	
-	public FluidTankItemModel(IBakedModel base)
+	public CustomItemModelFactory(IBakedModel base)
 	{
 		baseModel = base;
 	}
@@ -35,7 +22,7 @@ public class FluidTankItemModel implements ISmartItemModel
 	@Override
 	public IBakedModel handleItemState(ItemStack stack) 
 	{
-		return null;
+		return new BakedCustomItemModel(baseModel, stack);
 	}
 	
 	@Override

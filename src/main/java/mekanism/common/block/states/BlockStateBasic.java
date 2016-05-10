@@ -44,7 +44,7 @@ import com.google.common.base.Predicates;
 public class BlockStateBasic extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
-	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
+	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class, BaseTier.BASIC, BaseTier.ADVANCED, BaseTier.ELITE, BaseTier.ULTIMATE);
 	public static final PropertyCTMRenderContext ctmProperty = new PropertyCTMRenderContext();
 
 	public BlockStateBasic(BlockBasic block, PropertyEnum<BasicBlockType> typeProperty)
