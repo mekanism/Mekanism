@@ -92,7 +92,7 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
     @Override
     public TextureAtlasSprite getParticleTexture() 
     {
-        return this.model.getDefaultFace().getParticle();
+        return model.getDefaultFace().getParticle();
     }
 
     @Override
@@ -120,7 +120,7 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
     @Override
     public IBakedModel handleItemState(ItemStack stack) 
     {
-        Block block = ((ItemBlock) stack.getItem()).getBlock();
+        Block block = ((ItemBlock)stack.getItem()).getBlock();
         return createModel(block.getDefaultState(), model, null);
     }
     
@@ -179,6 +179,7 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
             
             return thirdPersonTransform;
         }
+        
         return Pair.of(this, null);
     }
 }

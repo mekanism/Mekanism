@@ -469,9 +469,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			{
 				if(!structureFound.locations.contains(coord))
 				{
-					System.out.println("No contain " + coord + " " + coord.getTileEntity(pointer.getWorld()));
-					System.out.println(coord.getBlockState(pointer.getWorld()).getBlock());
-					
 					for(Coord4D newCoord : iteratedNodes)
 					{
 						TileEntity tile = newCoord.getTileEntity(pointer.getWorld());
@@ -538,9 +535,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			//TODO perhaps drop from pointer?
 
 			cache.apply((T)structureFound);
-			
 			structureFound.inventoryID = idToUse;
-			System.out.println("Success " + structureFound.locations.size());
+			
 			onFormed();
 			
 			List<IStructuralMultiblock> structures = new ArrayList<IStructuralMultiblock>();
@@ -573,7 +569,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			}
 		}
 		else {
-			int killed = 0;
 			for(Coord4D coord : iteratedNodes)
 			{
 				TileEntity tile = coord.getTileEntity(pointer.getWorld());
@@ -589,15 +584,12 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 					}
 					
 					tileEntity.structure = null;
-					killed++;
 				}
 				else if(tile instanceof IStructuralMultiblock)
 				{
 					((IStructuralMultiblock)tile).setController(null);
 				}
 			}
-			
-			System.out.println(killed + " KILLED");
 			
 			for(Coord4D coord : innerNodes)
 			{

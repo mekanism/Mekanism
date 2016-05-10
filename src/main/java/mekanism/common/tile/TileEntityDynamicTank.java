@@ -9,7 +9,6 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;

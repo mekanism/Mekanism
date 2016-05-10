@@ -39,9 +39,9 @@ public class CTMData
 		if(state.getBlock() instanceof ICTMBlock)
 		{
 			IStringSerializable serializable = (IStringSerializable)state.getValue(((ICTMBlock)state.getBlock()).getTypeProperty());
-			return acceptableBlockStates.contains(serializable.getName());
+			return !acceptableBlockStates.contains(serializable.getName());
 		}
 		
-		return false;
+		return true;
 	}
 }

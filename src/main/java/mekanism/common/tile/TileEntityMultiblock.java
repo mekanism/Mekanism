@@ -23,7 +23,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -53,9 +52,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public TileEntityMultiblock(String name)
 	{
 		super(name);
-		
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-		Thread.dumpStack();
 	}
 	
 	@Override

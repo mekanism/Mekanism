@@ -144,7 +144,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	{
 		BlockStateBasic.BasicBlockType type = BlockStateBasic.BasicBlockType.get(getBasicBlock(), meta&0xF);
 
-		return this.getDefaultState().withProperty(getProperty(), type);
+		return getDefaultState().withProperty(getProperty(), type);
 	}
 
 	@Override
@@ -296,92 +296,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 				break;
 		}
 	}
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, BlockPos pos, int side)
-	{
-		int meta = world.getBlockMetadata(pos);
-
-		switch(blockType)
-		{
-			case BASIC_BLOCK_1:
-				switch(meta)
-				{
-					case 6:
-						TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(pos);
-
-						boolean active = MekanismUtils.isActive(world, pos);
-						return binIcons[tileEntity.tier.ordinal()][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
-					case 14:
-						TileEntityThermalEvaporationController tileEntity1 = (TileEntityThermalEvaporationController)world.getTileEntity(pos);
-
-						if(side == tileEntity1.facing)
-						{
-							return MekanismUtils.isActive(world, pos) ? icons[meta][1] : icons[meta][0];
-						} 
-						else {
-							return icons[meta][2];
-						}
-					default:
-						return getIcon(side, meta);
-				}
-			case BASIC_BLOCK_2:
-				switch(meta)
-				{
-					case 2:
-						TileEntityInductionPort tileEntity = (TileEntityInductionPort)world.getTileEntity(pos);
-						return icons[meta][tileEntity.mode ? 1 : 0];
-					case 3:
-						TileEntityInductionCell tileEntity1 = (TileEntityInductionCell)world.getTileEntity(pos);
-						return icons[meta][tileEntity1.tier.ordinal()];
-					case 4:
-						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(pos);
-						return icons[meta][tileEntity2.tier.ordinal()];
-					case 5:
-						TileEntitySuperheatingElement element = (TileEntitySuperheatingElement)world.getTileEntity(x, y, z);
-						
-						if(element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null)
-						{
-							return icons[meta][SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 1 : 0];
-						}
-						
-						return icons[meta][0];
-					default:
-						return getIcon(side, meta);
-				}
-		}
-
-		return null;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		switch(blockType)
-		{
-			case BASIC_BLOCK_1:
-				switch(meta)
-				{
-					case 14:
-						if(side == 2)
-						{
-							return icons[meta][0];
-						} 
-						else {
-							return icons[meta][2];
-						}
-					default:
-						return icons[meta][0];
-				}
-			case BASIC_BLOCK_2:
-				return icons[meta][0];
-			default:
-				return icons[meta][0];
-		}
-	}
-*/
 
 	@Override
 	public int damageDropped(IBlockState state)
@@ -1037,7 +951,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		BlockPos offsetPos = pos.offset(EnumFacing.getFront(side.ordinal()).getOpposite());
+		BlockPos offsetPos = pos.offset(side.getOpposite());
 		
 		if(BasicBlockType.get(world.getBlockState(offsetPos)) == BasicBlockType.STRUCTURAL_GLASS)
 		{
@@ -1109,6 +1023,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		{
 			if(side == state.getValue(BlockStateFacing.facingProperty))
 			{
+				System.out.println("Yeet");
 				return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "_on" : "");
 			}
 		}

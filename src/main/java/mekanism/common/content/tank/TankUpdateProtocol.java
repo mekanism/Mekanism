@@ -64,6 +64,8 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 			((TankCache)cache).fluid.amount += ((TankCache)merge).fluid.amount;
 		}
 		
+		((TankCache)cache).editMode = ((TankCache)merge).editMode;
+		
 		List<ItemStack> rejects = StackUtils.getMergeRejects(((TankCache)cache).inventory, ((TankCache)merge).inventory);
 		
 		if(!rejects.isEmpty())
