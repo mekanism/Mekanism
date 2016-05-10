@@ -9,7 +9,11 @@
       "true": {"textures": {"all": "mekanism:blocks/models/fluid_tank_on"}},
       "false": {"textures": {"all": "mekanism:blocks/models/fluid_tank"}}
     },
-    "inventory": [{}]
+    "inventory": [{
+      "textures": {
+        "all": "mekanism:blocks/models/fluid_tank"
+      }
+    }]
   }
 }
 

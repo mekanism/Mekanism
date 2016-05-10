@@ -133,6 +133,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/security_desk",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
     }
 }

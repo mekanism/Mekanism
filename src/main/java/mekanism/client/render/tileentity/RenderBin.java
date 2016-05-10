@@ -5,18 +5,14 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityBin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.World;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
@@ -41,8 +37,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 			return;
 		}
 
-		doLight(tileEntity.getWorld(), obj);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+		MekanismRenderer.glowOn();
 
 		if(itemStack != null)
 		{
@@ -70,15 +65,11 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 			float scale = 0.03125F;
 			float scaler = 0.9F;
 
-			GL11.glScalef(scale*scaler, scale*scaler, 0);
+			GL11.glScalef(scale*scaler, scale*scaler, -0.0001F);
 			GL11.glRotatef(180, 0, 0, 1);
-
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 			renderItem.renderItemAndEffectIntoGUI(itemStack, 0, 0);
 
-			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
 
@@ -87,21 +78,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 			renderText(amount, tileEntity.facing, 0.02F, x, y - 0.31F, z);
 		}
 
-	}
-
-	private void doLight(World world, Coord4D obj)
-	{
-		if(obj.getBlockState(world).getBlock().isOpaqueCube())
-		{
-			return;
-		}
-
-		int brightness = world.getLightFromNeighborsFor(EnumSkyBlock.SKY, obj.getPos());
-		int lightX = brightness % 65536;
-		int lightY = brightness / 65536;
-		float scale = 0.6F;
-
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightX * scale, lightY * scale);
+		MekanismRenderer.glowOff();
 	}
 
 	@SuppressWarnings("incomplete-switch")

@@ -11,10 +11,6 @@
       "east":  {"y": 90},
       "west":  {"y": -90}
     },
-    "active": {
-      "true": {},
-      "false": {}
-    },
     "inventory": [{}]
   }
 }

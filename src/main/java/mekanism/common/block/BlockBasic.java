@@ -176,6 +176,11 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 			state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityInductionProvider)tile).tier.getBaseTier());
 		}
 		
+		if(tile instanceof TileEntityBin)
+		{
+			state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityBin)tile).tier.getBaseTier());
+		}
+		
 		if(tile instanceof TileEntityInductionPort)
 		{
 			state = state.withProperty(BlockStateBasic.activeProperty, ((TileEntityInductionPort)tile).mode);
@@ -1008,7 +1013,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 		
 		if(type == BasicBlockType.INDUCTION_PORT)
 		{
-			return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "output" : "input");
+			return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "_output" : "");
 		}
 		
 		return null;

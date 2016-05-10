@@ -226,19 +226,14 @@ public class CommonProxy implements IGuiProvider
 	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos) {}
 
 	/**
-	 * Register and load client-only render information.
+	 * Register and load client-only item render information.
 	 */
-	public void registerRenderInformation() {}
-
+	public void registerItemRenders() {}
+	
 	/**
-	 * Gets the armor index number from ClientProxy.
-	 * @param string - armor indicator
-	 * @return armor index number
+	 * Register and load client-only block render information.
 	 */
-	public int getArmorIndex(String string)
-	{
-		return 0;
-	}
+	public void registerBlockRenders() {}
 
 	/**
 	 * Set and load the mod's common configuration properties.

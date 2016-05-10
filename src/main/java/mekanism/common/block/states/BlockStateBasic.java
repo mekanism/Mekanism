@@ -91,7 +91,7 @@ public class BlockStateBasic extends ExtendedBlockState
 		COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, "CharcoalBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, "RefinedGlowstone", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, "SteelBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin.class, false, Plane.HORIZONTAL, true, false),
+		BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin.class, false, Plane.HORIZONTAL, true, true),
 		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
 		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", TileEntityDynamicTank.class, false, Predicates.<EnumFacing>alwaysFalse(), false, false),

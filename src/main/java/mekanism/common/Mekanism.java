@@ -1379,7 +1379,7 @@ public class Mekanism
 		packetHandler.initialize();
 
 		//Load proxy
-		proxy.registerRenderInformation();
+		proxy.registerItemRenders();
 		proxy.loadUtilities();
 		
 		//Completion notification

@@ -15,6 +15,20 @@
         "east=true,north=false,south=true,west=true": { "model": "mekanism:plastic_fence_nse", "y": 90, "uvlock": true },
         "east=false,north=true,south=true,west=true": { "model": "mekanism:plastic_fence_nse", "y": 180, "uvlock": true },
         "east=true,north=true,south=false,west=true": { "model": "mekanism:plastic_fence_nse", "y": 270, "uvlock": true },
-        "east=true,north=true,south=true,west=true": { "model": "mekanism:plastic_fence_nsew", "uvlock": true }
+        "east=true,north=true,south=true,west=true": { "model": "mekanism:plastic_fence_nsew", "uvlock": true },
+        "inventory": {
+            "model": "mekanism:plastic_fence_inventory",
+            "uvlock": true,
+            "transform": {
+                "thirdperson": {
+                    "rotation": [ 0, 0, 180 ],
+                    "translation": [ 0, 1.5, -2.75 ],
+                    "scale": [ 0.375, 0.375, 0.375 ]
+                },
+                "gui": {
+                    "rotation": [ 0, 90, 0 ]
+                }
+            }
+        }
     }
 }

@@ -1,10 +1,14 @@
 package mekanism.client;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
@@ -71,6 +75,7 @@ import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
+import mekanism.client.render.item.FluidTankItemModel;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -101,16 +106,27 @@ import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.Tier.GasTankTier;
+import mekanism.common.base.IEnergyCube;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.ItemBlockGasTank;
+import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
@@ -179,6 +195,7 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.monster.EntitySkeleton;
@@ -189,7 +206,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -197,6 +216,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -211,6 +231,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ClientProxy extends CommonProxy
 {
 	public static Map<String, ModelResourceLocation> machineResources = new HashMap<String, ModelResourceLocation>();
+	public static Map<String, ModelResourceLocation> basicResources = new HashMap<String, ModelResourceLocation>();
+	
+	public static ModelResourceLocation TANK_MODEL = new ModelResourceLocation("mekanism:fluid_tank", "inventory");
 	
 	@Override
 	public void loadConfiguration()
@@ -235,14 +258,6 @@ public class ClientProxy extends CommonProxy
 			Mekanism.configuration.save();
 		}
 	}
-
-/*
-	@Override
-	public int getArmorIndex(String string)
-	{
-		return RenderingRegistry.addNewArmourRendererPrefix(string);
-	}
-*/
 
 	@Override
 	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos)
@@ -329,42 +344,8 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void registerRenderInformation()
+	public void registerItemRenders()
 	{
-//TODO		RenderPartTransmitter.init();
-//TODO		RenderGlowPanel.init();
-
-		//Register item handler
-//TODO		ItemRenderingHandler handler = new ItemRenderingHandler();
-
-/*TODO
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.EnergyCube), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.Robit, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.WalkieTalkie, handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.GasTank), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.BasicBlock), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.Jetpack, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.ArmoredJetpack, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.PartTransmitter, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.GasMask, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.ScubaTank, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.Balloon, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.FreeRunners, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.AtomicDisassembler, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.GlowPanel, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.Flamethrower, handler);
-
-		//Register block handlers
-		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new PlasticRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new CTMRenderingHandler());
-*/
 //		registerItemRender(MekanismItems.PartTransmitter);
 		registerItemRender(MekanismItems.ElectricBow);
 		registerItemRender(MekanismItems.Dust);
@@ -428,8 +409,236 @@ public class ClientProxy extends CommonProxy
 		
 		ModelBakery.registerItemVariants(MekanismItems.CraftingFormula, ItemCraftingFormula.MODEL, 
 				ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
+	}
+	
+	@Override
+	public void registerBlockRenders()
+	{
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1, new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
 
-		Mekanism.logger.info("Render registrations complete.");
+		for(MachineType type : MachineType.values())
+		{
+			List<ModelResourceLocation> modelsToAdd = new ArrayList<ModelResourceLocation>();
+			String resource = "mekanism:" + type.getName();
+			RecipeType recipePointer = null;
+			
+			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+			{
+				recipePointer = RecipeType.values()[0];
+				resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
+			}
+			
+			while(true)
+			{
+				if(machineResources.get(resource) == null)
+				{
+					List<String> entries = new ArrayList<String>();
+					
+					if(type.hasActiveTexture())
+					{
+						entries.add("active=false");
+					}
+					
+					if(type.hasRotations())
+					{
+						entries.add("facing=north");
+					}
+					
+					String properties = new String();
+					
+					for(int i = 0; i < entries.size(); i++)
+					{
+						properties += entries.get(i);
+						
+						if(i < entries.size()-1)
+						{
+							properties += ",";
+						}
+					}
+					
+					if(type == MachineType.FLUID_TANK)
+					{
+						properties = "inventory";
+					}
+					
+					ModelResourceLocation model = new ModelResourceLocation(resource, properties);
+					
+					machineResources.put(resource, model);
+					modelsToAdd.add(model);
+					
+					if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+					{
+						if(recipePointer.ordinal() < RecipeType.values().length-1)
+						{
+							recipePointer = RecipeType.values()[recipePointer.ordinal()+1];
+							resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
+							
+							continue;
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(type.typeBlock.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[] {}));
+		}
+
+		for(BasicBlockType type : BasicBlockType.values())
+		{
+			List<ModelResourceLocation> modelsToAdd = new ArrayList<ModelResourceLocation>();
+			String resource = "mekanism:" + type.getName();
+			BaseTier tierPointer = null;
+			
+			if(type.tiers)
+			{
+				tierPointer = BaseTier.values()[0];
+				resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+			}
+			
+			while(true)
+			{
+				if(machineResources.get(resource) == null)
+				{
+					List<String> entries = new ArrayList<String>();
+					
+					if(type.hasActiveTexture())
+					{
+						entries.add("active=false");
+					}
+					
+					if(type.hasRotations() || type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER)
+					{
+						entries.add("facing=north");
+					}
+					
+					String properties = new String();
+					
+					for(int i = 0; i < entries.size(); i++)
+					{
+						properties += entries.get(i);
+						
+						if(i < entries.size()-1)
+						{
+							properties += ",";
+						}
+					}
+					
+					ModelResourceLocation model = new ModelResourceLocation(resource, properties);
+					
+					basicResources.put(resource, model);
+					modelsToAdd.add(model);
+					
+					if(type.tiers)
+					{
+						if(tierPointer.ordinal() < BaseTier.values().length-1)
+						{
+							tierPointer = BaseTier.values()[tierPointer.ordinal()+1];
+							resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+							
+							continue;
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[] {}));
+		}
+
+		for(EnumColor color : EnumColor.DYES)
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=plastic"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SlickPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=slick"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=glow"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ReinforcedPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=reinforced"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.RoadPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=road"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticFence), color.getMetaValue(), new ModelResourceLocation("mekanism:PlasticFence", "inventory"));
+		}
+
+		for(EnumOreType ore : EnumOreType.values())
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(), new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
+		}
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.EnergyCube), new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				EnergyCubeTier tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
+				ResourceLocation baseLocation = new ResourceLocation("mekanism", "EnergyCube");
+				
+				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
+			}
+		});
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				GasTankTier tier = GasTankTier.values()[((ItemBlockGasTank)stack.getItem()).getBaseTier(stack).ordinal()];
+				ResourceLocation baseLocation = new ResourceLocation("mekanism", "GasTank");
+				
+				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
+			}
+		});
+		
+		ItemMeshDefinition machineMesher = new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				MachineType type = MachineType.get(stack);
+				
+				if(type != null)
+				{
+					String resource = "mekanism:" + type.getName();
+					
+					if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+					{
+						RecipeType recipe = RecipeType.values()[((ItemBlockMachine)stack.getItem()).getRecipeType(stack)];
+						resource = "mekanism:" + type.getName() + "_" + recipe.getName();
+					}
+					
+					return machineResources.get(resource);
+				}
+				
+				return null;
+			}
+		};
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock), machineMesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), machineMesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), machineMesher);
+		
+		ItemMeshDefinition basicMesher = new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				BasicBlockType type = BasicBlockType.get(stack);
+				
+				if(type != null)
+				{
+					String resource = "mekanism:" + type.getName();
+					
+					if(type.tiers)
+					{
+						BaseTier tier = ((ItemBlockBasic)stack.getItem()).getBaseTier(stack);
+						resource = "mekanism:" + type.getName() + "_" + tier.getName();
+					}
+					
+					return basicResources.get(resource);
+				}
+				
+				return null;
+			}
+		};
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
 	}
 	
 	public void registerItemRender(Item item)
@@ -642,6 +851,17 @@ public class ClientProxy extends CommonProxy
 
 		HolidayManager.init();
 	}
+	
+   /* @SubscribeEvent
+    public void onModelBake(ModelBakeEvent event) throws IOException 
+    {
+        Object obj = event.modelRegistry.getObject(TANK_MODEL);
+   
+        if(obj instanceof IBakedModel)
+        {
+        	event.modelRegistry.putObject(TANK_MODEL, new FluidTankItemModel((IBakedModel)obj));
+        }
+    }*/
 
 	@Override
 	public void preInit()
@@ -649,6 +869,7 @@ public class ClientProxy extends CommonProxy
 		MekanismRenderer.init();
 		
 		MinecraftForge.EVENT_BUS.register(new CTMRegistry());
+		MinecraftForge.EVENT_BUS.register(this);
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {

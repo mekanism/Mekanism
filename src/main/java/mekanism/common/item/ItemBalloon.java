@@ -21,6 +21,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBalloon extends ItemMekanism implements IMetaItem
 {
@@ -34,13 +36,21 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	@Override
 	public String getTexture(int meta)
 	{
-		return EnumColor.DYES[meta].getOreDictName() + "Balloon";
+		return "Balloon";
 	}
 	
 	@Override
 	public int getVariants()
 	{
 		return EnumColor.DYES.length;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public int getColorFromItemStack(ItemStack stack, int renderPass)
+	{
+		EnumColor dye = getColor(stack);
+		
+		return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
 	}
 
 	public EnumColor getColor(ItemStack stack)
@@ -74,7 +84,10 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 			world.spawnEntityInWorld(new EntityBalloon(world, pos.xCoord-0.5, pos.yCoord-0.25, pos.zCoord-0.5, getColor(itemstack)));
 		}
 
-		itemstack.stackSize--;
+		if(!entityplayer.capabilities.isCreativeMode)
+		{
+			itemstack.stackSize--;
+		}
 
 		return itemstack;
 	}
@@ -242,6 +255,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 			}
 			
 			stack.stackSize--;
+			
 			return stack;
 		}
 	}
