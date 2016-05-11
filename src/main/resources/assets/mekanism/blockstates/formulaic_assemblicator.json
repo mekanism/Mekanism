@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorRight",
       "front": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorFront",
       "west": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorRight",
       "east": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorLeft",

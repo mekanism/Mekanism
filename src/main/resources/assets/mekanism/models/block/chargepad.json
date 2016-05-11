@@ -94,6 +94,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/chargepad",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
     }
 }

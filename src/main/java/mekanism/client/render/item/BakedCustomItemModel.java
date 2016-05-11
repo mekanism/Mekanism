@@ -7,11 +7,14 @@ import javax.vecmath.Matrix4f;
 
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelAtomicDisassembler;
+import mekanism.client.model.ModelChemicalCrystallizer;
+import mekanism.client.model.ModelChemicalDissolutionChamber;
 import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
+import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.model.ModelSolarNeutronActivator;
 import mekanism.client.render.ctm.ModelChiselBlock;
 import mekanism.client.render.tileentity.RenderBin;
@@ -74,6 +77,9 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 	public static ModelFlamethrower flamethrower = new ModelFlamethrower();
 	public static ModelChest personalChest = new ModelChest();
 	public static ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
+	public static ModelSeismicVibrator seismicVibrator = new ModelSeismicVibrator();
+	public static ModelChemicalDissolutionChamber chemicalDissolutionChamber = new ModelChemicalDissolutionChamber();
+	public static ModelChemicalCrystallizer chemicalCrystallizer = new ModelChemicalCrystallizer();
 	
 	public BakedCustomItemModel(IBakedModel model, ItemStack s)
 	{
@@ -141,6 +147,28 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 				GL11.glTranslatef(0.0F, -0.55F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
 				solarNeutronActivator.render(0.0625F);
+			}
+			else if(machineType == MachineType.SEISMIC_VIBRATOR)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glScalef(0.6F, 0.6F, 0.6F);
+				GL11.glTranslatef(0.0F, -0.55F, 0.0F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
+				seismicVibrator.render(0.0625F);
+			}
+			else if(machineType == MachineType.CHEMICAL_CRYSTALLIZER)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glTranslatef(0.05F, -1.02F, 0.05F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));
+				chemicalCrystallizer.render(0.0625F);
+			}
+			else if(machineType == MachineType.CHEMICAL_DISSOLUTION_CHAMBER)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glTranslatef(0.05F, -1.02F, 0.05F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
+				chemicalDissolutionChamber.render(0.0625F);
 			}
 			
 			return;
@@ -343,6 +371,11 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
         GlStateManager.scale(0.5F, 0.5F, 0.5F);
     	doRender(cameraTransformType);
     	GlStateManager.scale(2.0F, 2.0F, 2.0F);
+        GlStateManager.enableLighting();
+        GlStateManager.enableLight(0);
+        GlStateManager.enableLight(1);
+        GlStateManager.enableColorMaterial();
+        GlStateManager.colorMaterial(1032, 5634);
     	GlStateManager.popMatrix();
     	
         return Pair.of(this, null);

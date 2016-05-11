@@ -63,10 +63,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 	public double prevEnergy;
 
-	public float spinSpeed;
-
-	public float spin;
-
 	public final double BASE_ENERGY_USAGE = usage.chemicalCrystallizerUsage;
 
 	public double energyUsage = usage.chemicalCrystallizerUsage;

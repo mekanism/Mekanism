@@ -5,6 +5,7 @@ import java.util.HashMap;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -103,13 +105,13 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		{
 			return cachedOverlays.get(side).get(type);
 		}
-/*
+
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.stone;
 		toReturn.setTexture(MekanismRenderer.overlays.get(type));
-*/
+
 		DisplayInteger display = DisplayInteger.createAndStart();
-/*
+
 		if(cachedOverlays.containsKey(side))
 		{
 			cachedOverlays.get(side).put(type, display);
@@ -188,14 +190,9 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 				toReturn.maxZ = 1;
 				break;
 			}
-			default:
-			{
-				break;
-			}
 		}
 
 		MekanismRenderer.renderObject(toReturn);
-*/
 		display.endList();
 
 		return display;

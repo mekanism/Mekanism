@@ -94,6 +94,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/laser_amplifier",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
     }
 }

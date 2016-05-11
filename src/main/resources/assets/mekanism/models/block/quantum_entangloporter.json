@@ -523,6 +523,6 @@
     ],
     "textures": {
         "all": "...",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
     }
 }

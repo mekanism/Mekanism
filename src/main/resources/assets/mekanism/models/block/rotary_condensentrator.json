@@ -289,6 +289,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/rotary_condensentrator",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
     }
 }
