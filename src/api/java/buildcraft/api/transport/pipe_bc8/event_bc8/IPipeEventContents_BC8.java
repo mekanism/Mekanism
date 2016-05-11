@@ -3,7 +3,6 @@ package buildcraft.api.transport.pipe_bc8.event_bc8;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-
 import buildcraft.api.transport.pipe_bc8.IPipeContents;
 import buildcraft.api.transport.pipe_bc8.IPipeContentsEditable;
 import buildcraft.api.transport.pipe_bc8.IPipe_BC8;

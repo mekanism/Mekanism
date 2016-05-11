@@ -6,7 +6,6 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

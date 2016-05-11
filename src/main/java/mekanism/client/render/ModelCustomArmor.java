@@ -10,14 +10,14 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelCustomArmor extends ModelBiped
@@ -125,8 +125,8 @@ public class ModelCustomArmor extends ModelBiped
 		{
 			if(ModelCustomArmor.this.modelType != null)
 			{
-				GL11.glPushMatrix();
-				GL11.glTranslatef(0, 0, 0.06F);
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(0, 0, 0.06F);
 
 				mc.renderEngine.bindTexture(modelType.resource);
 
@@ -146,27 +146,27 @@ public class ModelCustomArmor extends ModelBiped
 					}
 					else if(biped.modelType == ArmorModel.GASMASK)
 					{
-						GL11.glTranslatef(0, 0, -0.05F);
+						GlStateManager.translate(0, 0, -0.05F);
 						ArmorModel.gasMaskModel.render(0.0625F);
 					}
 					else if(biped.modelType == ArmorModel.FREERUNNERS)
 					{
-						GL11.glScalef(1.02F, 1.02F, 1.02F);
+						GlStateManager.scale(1.02F, 1.02F, 1.02F);
 
 						if(partRender == biped.bipedLeftLeg)
 						{
-							GL11.glTranslatef(-0.1375F, -0.75F, -0.0625F);
+							GlStateManager.translate(-0.1375F, -0.75F, -0.0625F);
 							ArmorModel.freeRunnersModel.renderLeft(0.0625F);
 						}
 						else if(partRender == biped.bipedRightLeg)
 						{
-							GL11.glTranslatef(0.1375F, -0.75F, -0.0625F);
+							GlStateManager.translate(0.1375F, -0.75F, -0.0625F);
 							ArmorModel.freeRunnersModel.renderRight(0.0625F);
 						}
 					}
 				}
 
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}
 		}
 	}

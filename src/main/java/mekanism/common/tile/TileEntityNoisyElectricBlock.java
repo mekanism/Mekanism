@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import mekanism.api.MekanismConfig.client;
-import mekanism.api.Pos3D;
 import mekanism.client.HolidayManager;
 import mekanism.client.sound.ISoundSource;
 import mekanism.common.Upgrade;

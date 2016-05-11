@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,10 +13,12 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.opengl.GL11;
 
 public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
@@ -65,12 +66,12 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 			float reverse = 1/scale;
 			float yAdd = 4-(scale*8)/2F;
 			
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			
-			GL11.glScalef(scale, scale, scale);
+			GlStateManager.scale(scale, scale, scale);
 			fontRendererObj.drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
 			
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 	}
 

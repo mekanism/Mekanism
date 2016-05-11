@@ -9,9 +9,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-
-import io.netty.buffer.ByteBuf;
 
 public class TItemStackFilter extends TransporterFilter
 {

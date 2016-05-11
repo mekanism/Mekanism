@@ -8,14 +8,14 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelEnergyCube extends ModelBase
@@ -375,9 +375,9 @@ public class ModelEnergyCube extends ModelBase
 		corner2.render(size);
 		corner1.render(size);
 		
-		GL11.glPushMatrix();
-		GL11.glScalef(1.0001F, 1.0001F, 1.0001F);
-		GL11.glTranslatef(0, -0.00011F, 0);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(1.0001F, 1.0001F, 1.0001F);
+		GlStateManager.translate(0, -0.00011F, 0);
 		manager.bindTexture(RenderEnergyCube.resources.get(tier));
 		MekanismRenderer.glowOn();
 		
@@ -391,7 +391,7 @@ public class ModelEnergyCube extends ModelBase
 		corner1.render(size);
 		
 		MekanismRenderer.glowOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 	
 	public void renderSide(float size, EnumFacing side, IOState state, EnergyCubeTier tier, TextureManager renderer)

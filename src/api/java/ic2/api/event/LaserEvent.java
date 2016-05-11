@@ -4,10 +4,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
  * A bunch of Events to handle the power of the Mining Laser.

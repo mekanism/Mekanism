@@ -11,7 +11,6 @@ import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITileNetwork;
-
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 

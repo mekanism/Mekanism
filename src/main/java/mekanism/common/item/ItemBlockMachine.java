@@ -9,14 +9,14 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
-import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IRedstoneControl;

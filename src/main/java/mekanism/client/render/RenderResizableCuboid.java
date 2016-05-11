@@ -121,10 +121,10 @@ public class RenderResizableCuboid {
 
     /** This will render a cuboid from its middle. */
     public void renderCubeFromCentre(Model3D cuboid) {
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         GL11.glTranslated(-cuboid.sizeX() / 2d, -cuboid.sizeY() / 2d, -cuboid.sizeZ() / 2d);
         renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     public void renderCube(Model3D cuboid) {

@@ -35,7 +35,7 @@ public class GeneratorsItemRenderer implements IItemRenderer
 
 		if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
 		{
-			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+			GlStateManager.translate(0.5F, 0.5F, 0.5F);
 		}
 		
 		if(item.getItem() instanceof ItemBlockGenerator)

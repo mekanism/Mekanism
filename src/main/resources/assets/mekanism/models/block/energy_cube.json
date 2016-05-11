@@ -287,19 +287,6 @@
             }
         },
         {
-            "__comment": "cube",
-            "from": [4.8, 4.8, 4.8],
-            "to": [11.2, 11.2, 11.2],
-            "faces": {
-                "down":  {"uv": [24, 0, 16, 8], "texture": "#all"},
-                "up":    {"uv": [16, 8, 8, 0], "texture": "#all"},
-                "north": {"uv": [8, 8, 16, 16], "texture": "#all"},
-                "south": {"uv": [24, 8, 32, 16], "texture": "#all"},
-                "west":  {"uv": [16, 8, 24, 16], "texture": "#all"},
-                "east":  {"uv": [0, 8, 8, 16], "texture": "#all"}
-            }
-        },
-        {
             "__comment": "ledRight1",
             "from": [0.0999999999999996, 7.5, 2.5],
             "to": [1.1, 8.5, 3.5],

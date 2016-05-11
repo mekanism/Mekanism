@@ -9,6 +9,8 @@ package dan200.computercraft.api.filesystem;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import net.minecraft.world.World;
+
 /**
  * Represents a part of a virtual filesystem that can be mounted onto a computercraft using IComputerAccess.mount() or IComputerAccess.mountWritable(), that can also be written to.
  * Ready made implementations of this interface can be created using ComputerCraftAPI.createSaveDirMount(), or you're free to implement it yourselves!

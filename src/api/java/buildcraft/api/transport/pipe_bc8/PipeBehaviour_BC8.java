@@ -1,9 +1,8 @@
 package buildcraft.api.transport.pipe_bc8;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
-
-import io.netty.buffer.ByteBuf;
 
 /** An instance is created by instance of IBehaviourFactory per pipe block in world, and is registered with the pipe
  * event bus to listen and respond to events. */

@@ -8,7 +8,6 @@ import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-
 import buildcraft.api.statements.IActionInternal;
 import buildcraft.api.statements.IStatement;
 import buildcraft.api.statements.IStatementParameter;

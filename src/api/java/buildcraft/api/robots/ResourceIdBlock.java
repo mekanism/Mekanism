@@ -4,11 +4,11 @@
  * of the license located in http://www.mod-buildcraft.com/MMPL-1.0.txt */
 package buildcraft.api.robots;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import buildcraft.api.core.EnumPipePart;
 

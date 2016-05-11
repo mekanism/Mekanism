@@ -12,7 +12,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.world.IBlockAccess;
-import mekanism.client.render.ctm.CTM;
 
 /**
  * Think of this class as a "Two dimensional ForgeDirection, with diagonals".

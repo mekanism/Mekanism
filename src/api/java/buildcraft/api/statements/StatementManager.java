@@ -12,7 +12,6 @@ import java.util.Map;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-
 import buildcraft.api.core.BCLog;
 
 public final class StatementManager {

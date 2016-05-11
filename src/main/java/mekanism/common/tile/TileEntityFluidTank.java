@@ -37,8 +37,6 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-import java.util.ArrayList;
-
 public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile
 {
 	public boolean isActive;

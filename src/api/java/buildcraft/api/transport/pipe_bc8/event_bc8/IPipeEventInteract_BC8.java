@@ -3,7 +3,6 @@ package buildcraft.api.transport.pipe_bc8.event_bc8;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-
 import buildcraft.api.tools.IToolWrench;
 import buildcraft.api.transport.pipe_bc8.IPipeListener;
 

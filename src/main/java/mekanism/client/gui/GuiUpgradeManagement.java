@@ -16,13 +16,13 @@ import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiUpgradeManagement extends GuiMekanism
@@ -136,20 +136,20 @@ public class GuiUpgradeManagement extends GuiMekanism
 	
 	private void renderText(String text, int x, int y, float size, boolean scale)
 	{
-		GL11.glPushMatrix();
-		GL11.glScalef(size, size, size);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(size, size, size);
 		fontRendererObj.drawString(text, scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y, 0x00CD00);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 	
 	private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale)
 	{
-		GL11.glPushMatrix();
-		GL11.glScalef(size, size, size);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(size, size, size);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		itemRender.renderItemAndEffectIntoGUI(type.getStack(), scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	@Override

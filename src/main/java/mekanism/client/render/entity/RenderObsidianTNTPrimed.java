@@ -28,8 +28,8 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT>
 	public void doRender(EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		BlockRendererDispatcher renderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x, (float)y+0.5F, (float)z);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float)x, (float)y+0.5F, (float)z);
 
 		if(entityobsidiantnt.fuse - partialTicks + 1.0F < 10.0F)
         {
@@ -65,7 +65,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT>
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 		}
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	@Override

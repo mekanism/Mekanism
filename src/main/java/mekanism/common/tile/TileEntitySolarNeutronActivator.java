@@ -30,8 +30,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

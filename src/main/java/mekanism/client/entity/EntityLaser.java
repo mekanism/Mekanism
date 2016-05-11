@@ -4,19 +4,17 @@ import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class EntityLaser extends EntityFX
@@ -42,7 +40,7 @@ public class EntityLaser extends EntityFX
 	{
 		worldRendererIn.finishDrawing();
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_POLYGON_BIT + GL11.GL_ENABLE_BIT);
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		MekanismRenderer.glowOn();
@@ -52,7 +50,7 @@ public class EntityLaser extends EntityFX
 		float newY = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
 		float newZ = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
 
-		GL11.glTranslatef(newX, newY, newZ);
+		GlStateManager.translate(newX, newY, newZ);
 
 		switch(direction)
 		{
@@ -62,14 +60,15 @@ public class EntityLaser extends EntityFX
 				break;
 			case WEST:
 			case EAST:
-				GL11.glRotated(90, 0, 0, 1);
+				GlStateManager.rotate(90, 0, 0, 1);
 				break;
 			case NORTH:
 			case SOUTH:
-				GL11.glRotated(90, 1, 0, 0);
+				GlStateManager.rotate(90, 1, 0, 0);
 				break;
 		}
-		GL11.glRotated(45, 0, 1, 0);
+		
+		GlStateManager.rotate(45, 0, 1, 0);
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 		worldRendererIn.pos(-particleScale, -length/2, 0).tex(0, 0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
 		worldRendererIn.pos(-particleScale, length/2, 0).tex(0, 1).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
@@ -77,7 +76,7 @@ public class EntityLaser extends EntityFX
 		worldRendererIn.pos(particleScale, -length/2, 0).tex(1, 0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
 		worldRendererIn.finishDrawing();
 
-		GL11.glRotated(90, 0, 1, 0);
+		GlStateManager.rotate(90, 0, 1, 0);
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 		worldRendererIn.pos(-particleScale, -length/2, 0).tex(0, 0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
 		worldRendererIn.pos(-particleScale, length/2, 0).tex(0, 1).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
@@ -87,7 +86,7 @@ public class EntityLaser extends EntityFX
 		
 		MekanismRenderer.glowOff();
 		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 
 		Minecraft.getMinecraft().renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);

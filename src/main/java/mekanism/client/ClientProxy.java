@@ -233,7 +233,8 @@ public class ClientProxy extends CommonProxy
 	public static Map<String, ModelResourceLocation> machineResources = new HashMap<String, ModelResourceLocation>();
 	public static Map<String, ModelResourceLocation> basicResources = new HashMap<String, ModelResourceLocation>();
 	
-	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank"};
+	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
+		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower"};
 	
 	@Override
 	public void loadConfiguration()
@@ -525,6 +526,11 @@ public class ClientProxy extends CommonProxy
 						{
 							properties += ",";
 						}
+					}
+					
+					if(type == BasicBlockType.BIN)
+					{
+						properties = "inventory";
 					}
 					
 					ModelResourceLocation model = new ModelResourceLocation(resource, properties);

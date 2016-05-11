@@ -36,7 +36,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 			return;
 		}
 		
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Turbine.png"));
 		
@@ -56,22 +56,22 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 		
 		if(tileEntity.getHousedBlades() > 0)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glTranslated(x + 0.5, y - 1, z + 0.5);
-			GL11.glRotatef(tileEntity.rotationLower, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(tileEntity.rotationLower, 0.0F, 1.0F, 0.0F);
 			model.render(0.0625F, baseIndex);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		if(tileEntity.getHousedBlades() == 2)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glTranslated(x + 0.5, y - 0.5, z + 0.5);
-			GL11.glRotatef(tileEntity.rotationUpper, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(tileEntity.rotationUpper, 0.0F, 1.0F, 0.0F);
 			model.render(0.0625F, baseIndex+1);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

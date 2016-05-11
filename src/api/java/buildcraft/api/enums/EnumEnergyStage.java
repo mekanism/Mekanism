@@ -1,8 +1,8 @@
 package buildcraft.api.enums;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.util.IStringSerializable;
+
+import org.apache.commons.lang3.StringUtils;
 
 public enum EnumEnergyStage implements IStringSerializable {
     BLUE,

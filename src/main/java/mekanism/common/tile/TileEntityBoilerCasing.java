@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,10 +23,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IFluidContainerManager, IHeatTransfer
 {

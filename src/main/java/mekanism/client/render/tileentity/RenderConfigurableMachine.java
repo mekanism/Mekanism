@@ -2,32 +2,28 @@ package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
-import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntitySpecialRenderer<S>
@@ -44,7 +40,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 	@Override
 	public void renderTileEntityAt(S configurable, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 
 		EntityPlayer player = mc.thePlayer;
 		ItemStack itemStack = player.getCurrentEquippedItem();
@@ -69,7 +65,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 						MekanismRenderer.color(data.color, 0.6F);
 		
 						bindTexture(MekanismRenderer.getBlocksTexture());
-						GL11.glTranslatef((float)x, (float)y, (float)z);
+						GlStateManager.translate((float)x, (float)y, (float)z);
 		
 						int display = getOverlayDisplay(pos.sideHit, type).display;
 						GL11.glCallList(display);
@@ -80,7 +76,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			}
 		}
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void pop()
@@ -88,12 +84,12 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		GL11.glPopAttrib();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);

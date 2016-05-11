@@ -3,7 +3,6 @@ package mekanism.client.gui.element;
 import static java.lang.Math.min;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 

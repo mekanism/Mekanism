@@ -6,16 +6,18 @@
 
 package dan200.computercraft.api.turtle;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
+import javax.vecmath.Matrix4f;
+
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.vecmath.Matrix4f;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 
 /**

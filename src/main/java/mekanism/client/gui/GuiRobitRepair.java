@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -22,14 +24,11 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import io.netty.buffer.Unpooled;
-import org.apache.commons.io.Charsets;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiRobitRepair extends GuiMekanism implements ICrafting

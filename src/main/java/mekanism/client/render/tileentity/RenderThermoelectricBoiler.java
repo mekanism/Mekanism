@@ -12,6 +12,7 @@ import mekanism.client.render.tileentity.RenderDynamicTank.ValveRenderData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
@@ -129,12 +130,12 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 	private void pop()
 	{
 		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);

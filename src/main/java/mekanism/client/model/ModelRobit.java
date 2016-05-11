@@ -3,12 +3,12 @@ package mekanism.client.model;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelRobit extends ModelBase
@@ -132,8 +132,8 @@ public class ModelRobit extends ModelBase
 		super.render(entity, f, f1, f2, f3, f4, f5);
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
-		GL11.glPushMatrix();
-		GL11.glRotatef(180, 0.0F, 1.0F, 0.0F);
+		GlStateManager.pushMatrix();
+		GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
 
 		Body.render(f5);
 		Bottom.render(f5);
@@ -154,7 +154,7 @@ public class ModelRobit extends ModelBase
 		eyeLeft.render(f5);
 		MekanismRenderer.glowOff();
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public void render(float size)

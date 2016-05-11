@@ -2,7 +2,6 @@ package mekanism.common.multipart;
 
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Tier.BaseTier;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public enum TransmitterType

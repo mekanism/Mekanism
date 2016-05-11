@@ -1,10 +1,10 @@
 package li.cil.oc.api;
 
-import li.cil.oc.api.machine.Architecture;
-import li.cil.oc.api.machine.MachineHost;
-
 import java.util.Collection;
 import java.util.Collections;
+
+import li.cil.oc.api.machine.Architecture;
+import li.cil.oc.api.machine.MachineHost;
 
 /**
  * This API is intended for people who would like to implement custom computer

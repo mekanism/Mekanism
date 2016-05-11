@@ -21,16 +21,16 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiTransporterConfig extends GuiMekanism
@@ -135,7 +135,7 @@ public class GuiTransporterConfig extends GuiMekanism
 		
 		if(configurable.getEjector().getOutputColor() != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -144,7 +144,7 @@ public class GuiTransporterConfig extends GuiMekanism
 			//TODO itemRender.renderIcon(122, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		for(int i = 0; i < slotPosMap.size(); i++)

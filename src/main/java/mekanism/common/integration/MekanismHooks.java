@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import li.cil.oc.api.Driver;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;

@@ -49,11 +49,11 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		
 		for(ReactorLogic type : ReactorLogic.values())
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
 			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), type.getRenderStack(), 27, 35 + (22*type.ordinal()));
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 			
 			fontRendererObj.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34+(22*type.ordinal()), 0x404040);
 		}

@@ -2,12 +2,18 @@ package buildcraft.api.properties;
 
 import java.util.Map;
 
-import com.google.common.collect.Maps;
-
 import net.minecraft.util.EnumFacing;
-
 import buildcraft.api.core.EnumColor;
-import buildcraft.api.enums.*;
+import buildcraft.api.enums.EnumBlueprintType;
+import buildcraft.api.enums.EnumDecoratedBlock;
+import buildcraft.api.enums.EnumEnergyStage;
+import buildcraft.api.enums.EnumEngineType;
+import buildcraft.api.enums.EnumFillerPattern;
+import buildcraft.api.enums.EnumLaserTableType;
+import buildcraft.api.enums.EnumMachineState;
+import buildcraft.api.enums.EnumSpring;
+
+import com.google.common.collect.Maps;
 
 public final class BuildCraftProperties {
     public static final BuildCraftProperty<EnumFacing> BLOCK_FACING = BuildCraftProperty.create("facing", EnumFacing.Plane.HORIZONTAL.facings());

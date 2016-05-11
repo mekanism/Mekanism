@@ -4,10 +4,6 @@ import java.util.Collection;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenBase;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import net.minecraftforge.common.BiomeDictionary.Type;
 
 /**

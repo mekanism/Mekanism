@@ -3,19 +3,21 @@ package mekanism.common.multipart;
 import java.util.Collections;
 import java.util.List;
 
+import mcmultipart.microblock.IMicroblock.IFaceMicroblock;
+import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.IOccludingPart;
+import mcmultipart.multipart.Multipart;
+import mcmultipart.multipart.PartSlot;
+import mcmultipart.raytrace.PartMOP;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.render.RenderGlowPanel;
 import mekanism.common.MekanismItems;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 //import net.minecraft.util.IIcon;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.EnumFacing;
 /*
 import codechicken.lib.data.MCDataInput;
@@ -33,17 +35,6 @@ import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 */
-import mcmultipart.block.TileMultipart;
-import mcmultipart.microblock.IMicroblock;
-import mcmultipart.microblock.IMicroblock.IFaceMicroblock;
-import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.IOccludingPart;
-import mcmultipart.multipart.Multipart;
-import mcmultipart.multipart.PartSlot;
-import mcmultipart.raytrace.PartMOP;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconHitEffects
 {

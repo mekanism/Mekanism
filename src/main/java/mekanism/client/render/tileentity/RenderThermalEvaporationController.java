@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
@@ -60,12 +61,12 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 	private void pop()
 	{
 		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);

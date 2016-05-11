@@ -8,15 +8,15 @@ import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiDictionary extends GuiMekanism
@@ -43,11 +43,11 @@ public class GuiDictionary extends GuiMekanism
 
 		if(itemType != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
 			itemRender.renderItemAndEffectIntoGUI(itemType, 6, 6);
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -67,7 +67,7 @@ public class GuiDictionary extends GuiMekanism
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -77,7 +77,7 @@ public class GuiDictionary extends GuiMekanism
 
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

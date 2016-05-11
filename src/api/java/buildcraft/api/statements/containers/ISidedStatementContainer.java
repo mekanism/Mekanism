@@ -1,7 +1,6 @@
 package buildcraft.api.statements.containers;
 
 import net.minecraft.util.EnumFacing;
-
 import buildcraft.api.statements.IStatementContainer;
 
 /** Created by asie on 3/14/15. */

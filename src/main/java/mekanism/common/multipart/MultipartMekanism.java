@@ -2,10 +2,14 @@ package mekanism.common.multipart;
 
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
+import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.IPartFactory;
+import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 /*
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
@@ -14,13 +18,6 @@ import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
 */
-import mcmultipart.microblock.BlockMicroMaterial;
-import mcmultipart.microblock.MicroblockRegistry;
-import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.IPartFactory;
-import mcmultipart.multipart.MultipartRegistry;
-
-import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 public class MultipartMekanism implements IPartFactory
 {

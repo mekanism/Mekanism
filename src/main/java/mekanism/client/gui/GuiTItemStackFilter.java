@@ -20,15 +20,15 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiTItemStackFilter extends GuiMekanism
@@ -183,16 +183,16 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 		if(filter.itemType != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
 			itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 
 		if(filter.color != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -201,7 +201,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 			//TODO itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
@@ -270,7 +270,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -280,7 +280,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 	}
 

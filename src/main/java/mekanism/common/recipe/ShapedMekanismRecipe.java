@@ -1,7 +1,5 @@
 package mekanism.common.recipe;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import mekanism.common.Mekanism;

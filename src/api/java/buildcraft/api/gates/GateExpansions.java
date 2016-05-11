@@ -10,9 +10,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.HashBiMap;
-
 import net.minecraft.item.ItemStack;
+
+import com.google.common.collect.HashBiMap;
 
 public final class GateExpansions {
     private static final Map<String, IGateExpansion> expansions = new HashMap<String, IGateExpansion>();

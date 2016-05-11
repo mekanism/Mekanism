@@ -125,7 +125,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -136,7 +136,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 	private void pop()
 	{
 		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public void renderItem(TransmitterType type)
@@ -164,7 +164,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 
 	public void renderContents(PartLogisticalTransporter transporter, float partialTick, Vector3 vec)
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 
 		entityItem.age = 0;
 		entityItem.hoverStart = 0;
@@ -176,28 +176,28 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		{
 			if(stack != null)
 			{
-				GL11.glPushMatrix();
+				GlStateManager.pushMatrix();
 				entityItem.setEntityItemStack(stack.itemStack);
 
 				float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick*transporter.tier.speed);
 
 				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
-				GL11.glScalef(0.75F, 0.75F, 0.75F);
+				GlStateManager.scale(0.75F, 0.75F, 0.75F);
 
 				renderer.doRender(entityItem, 0, 0, 0, 0, 0);
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 
 				if(stack.color != null)
 				{
 					CCRenderState.changeTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
-					GL11.glPushMatrix();
+					GlStateManager.pushMatrix();
 					MekanismRenderer.glowOn();
 					GL11.glDisable(GL11.GL_CULL_FACE);
 					GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
-					GL11.glTranslatef((float)(vec.x + pos[0]), (float)(vec.y + pos[1] - entityItem.yOffset - ((stack.itemStack.getItem() instanceof ItemBlock) ? 0.1 : 0)), (float)(vec.z + pos[2]));
+					GlStateManager.translate((float)(vec.x + pos[0]), (float)(vec.y + pos[1] - entityItem.yOffset - ((stack.itemStack.getItem() instanceof ItemBlock) ? 0.1 : 0)), (float)(vec.z + pos[2]));
 					modelBox.render(0.0625F);
 					MekanismRenderer.glowOff();
-					GL11.glPopMatrix();
+					GlStateManager.popMatrix();
 				}
 			}
 		}
@@ -227,9 +227,9 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 
 					CCRenderState.changeTexture(mode == 0 ? MekanismRenderer.getItemsTexture() : MekanismRenderer.getBlocksTexture());
-					GL11.glTranslatef((float)vec.x, (float)vec.y, (float)vec.z);
-					GL11.glScalef(0.5F, 0.5F, 0.5F);
-					GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+					GlStateManager.translate((float)vec.x, (float)vec.y, (float)vec.z);
+					GlStateManager.scale(0.5F, 0.5F, 0.5F);
+					GlStateManager.translate(0.5F, 0.5F, 0.5F);
 
 					int display = getOverlayDisplay(world, side, mode).display;
 					GL11.glCallList(display);
@@ -239,7 +239,7 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 			}
 		}
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
@@ -678,12 +678,12 @@ public class RenderPartTransmitter //TODO implements IIconSelfRegister
 		GL11.glPopAttrib();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void pushTransporter()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);

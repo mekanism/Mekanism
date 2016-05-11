@@ -8,6 +8,7 @@ import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -108,12 +109,12 @@ public abstract class GuiElement
 			float reverse = 1/scale;
 			float yAdd = 4-(scale*8)/2F;
 			
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			
-			GL11.glScalef(scale, scale, scale);
+			GlStateManager.scale(scale, scale, scale);
 			getFontRenderer().drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
 			
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 	}
 

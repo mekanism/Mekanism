@@ -6,9 +6,9 @@
 
 package dan200.computercraft.api.media;
 
-import dan200.computercraft.api.filesystem.IMount;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import dan200.computercraft.api.filesystem.IMount;
 
 /**
  * Represents an item that can be placed in a disk drive and used by a Computer.

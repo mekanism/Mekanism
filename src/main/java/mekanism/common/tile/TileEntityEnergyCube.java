@@ -27,9 +27,8 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 
 public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile
 {

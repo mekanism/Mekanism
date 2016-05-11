@@ -6,7 +6,6 @@ package buildcraft.api.blueprints;
 
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-
 import buildcraft.api.core.IBox;
 
 /** This interface provide contextual information when building or initializing blueprint slots. */

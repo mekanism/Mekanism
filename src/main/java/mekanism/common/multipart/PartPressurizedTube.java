@@ -9,11 +9,9 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
-import mekanism.common.util.MekanismUtils;
 //import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -27,8 +25,6 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
 */
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {

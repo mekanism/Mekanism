@@ -62,9 +62,9 @@ public class ModelTurbine extends ModelBase
 
     public void render(float size, int index) 
     {
-    	GL11.glPushMatrix();
+    	GlStateManager.pushMatrix();
     	
-    	GL11.glRotatef(index*5, 0.0F, 1.0F, 0.0F);
+    	GlStateManager.rotate(index*5, 0.0F, 1.0F, 0.0F);
     	
     	float scale = index*0.5F;
     	float widthDiv = 16;
@@ -74,35 +74,35 @@ public class ModelTurbine extends ModelBase
         extension_east.render(size);
         extension_north.render(size);
         
-        GL11.glPushMatrix();
-        GL11.glTranslatef(-0.25F, 0.0F, 0.0F);
-        GL11.glScalef(1.0F + scale, 1.0F, 1.0F + scale/widthDiv);
-        GL11.glTranslatef(0.25F, 0.0F, 0.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-0.25F, 0.0F, 0.0F);
+        GlStateManager.scale(1.0F + scale, 1.0F, 1.0F + scale/widthDiv);
+        GlStateManager.translate(0.25F, 0.0F, 0.0F);
         blade_west.render(size);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0.25F, 0.0F, 0.0F);
-        GL11.glScalef(1.0F + scale, 1.0F, 1.0F + scale/widthDiv);
-        GL11.glTranslatef(-0.25F, 0.0F, 0.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.25F, 0.0F, 0.0F);
+        GlStateManager.scale(1.0F + scale, 1.0F, 1.0F + scale/widthDiv);
+        GlStateManager.translate(-0.25F, 0.0F, 0.0F);
         blade_east.render(size);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, 0.0F, -0.25F);
-        GL11.glScalef(1.0F + scale/widthDiv, 1.0F, 1.0F + scale);
-        GL11.glTranslatef(0.0F, 0.0F, 0.25F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0F, 0.0F, -0.25F);
+        GlStateManager.scale(1.0F + scale/widthDiv, 1.0F, 1.0F + scale);
+        GlStateManager.translate(0.0F, 0.0F, 0.25F);
         blade_north.render(size);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, 0.0F, 0.25F);
-        GL11.glScalef(1.0F + scale/widthDiv, 1.0F, 1.0F + scale);
-        GL11.glTranslatef(0.0F, 0.0F, -0.25F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0F, 0.0F, 0.25F);
+        GlStateManager.scale(1.0F + scale/widthDiv, 1.0F, 1.0F + scale);
+        GlStateManager.translate(0.0F, 0.0F, -0.25F);
         blade_south.render(size);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) 

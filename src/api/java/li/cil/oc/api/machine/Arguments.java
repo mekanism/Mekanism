@@ -1,8 +1,8 @@
 package li.cil.oc.api.machine;
 
-import net.minecraft.item.ItemStack;
-
 import java.util.Map;
+
+import net.minecraft.item.ItemStack;
 
 /**
  * This interface provides access to arguments passed to a {@link Callback}.

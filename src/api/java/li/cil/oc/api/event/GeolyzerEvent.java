@@ -1,12 +1,12 @@
 package li.cil.oc.api.event;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import li.cil.oc.api.driver.EnvironmentHost;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This event is fired by the geolyzer block/upgrade.

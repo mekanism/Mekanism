@@ -30,15 +30,15 @@ import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiChemicalCrystallizer extends GuiMekanism
@@ -127,11 +127,11 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 		if(renderStack != null)
 		{
 			try {
-				GL11.glPushMatrix();
+				GlStateManager.pushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 131, 14);
 				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			} catch(Exception e) {}
 		}
 

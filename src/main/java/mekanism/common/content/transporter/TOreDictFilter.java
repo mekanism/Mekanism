@@ -8,9 +8,6 @@ import mekanism.common.PacketHandler;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-
-import io.netty.buffer.ByteBuf;
 
 public class TOreDictFilter extends TransporterFilter
 {

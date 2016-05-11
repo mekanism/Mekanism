@@ -1,10 +1,10 @@
 package li.cil.oc.api.detail;
 
+import java.util.concurrent.Callable;
+
 import li.cil.oc.api.FileSystem;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-
-import java.util.concurrent.Callable;
 
 public interface ItemAPI {
     /**

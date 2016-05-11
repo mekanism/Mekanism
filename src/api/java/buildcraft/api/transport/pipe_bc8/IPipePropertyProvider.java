@@ -3,7 +3,6 @@ package buildcraft.api.transport.pipe_bc8;
 import java.util.Set;
 
 import net.minecraft.nbt.NBTBase;
-
 import buildcraft.api.core.INBTLoadable_BC8;
 import buildcraft.api.core.INetworkLoadable_BC8;
 

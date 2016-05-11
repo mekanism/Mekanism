@@ -20,8 +20,8 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import net.minecraftforge.fml.common.Loader;
+import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 public class TransporterManager
 {

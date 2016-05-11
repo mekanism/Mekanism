@@ -9,6 +9,7 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fluids.Fluid;
@@ -86,12 +87,12 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 	{
 		GL11.glPopAttrib();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);

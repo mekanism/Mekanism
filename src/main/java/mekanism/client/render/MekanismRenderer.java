@@ -22,6 +22,7 @@ import mekanism.common.base.IMetaItem;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -306,10 +307,10 @@ public class MekanismRenderer
 			return;
 		}
 		
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glTranslated(object.minX, object.minY, object.minZ);
 		RenderResizableCuboid.INSTANCE.renderCube(object);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 	
 	public static void color(EnumColor color)

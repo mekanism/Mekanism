@@ -20,8 +20,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MovingObjectPosition;
 
 public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IActiveState
 {
