@@ -687,6 +687,12 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	{
 		return false;
 	}
+	
+	@Override
+	public boolean isFullCube()
+	{
+		return false;
+	}
 
 	@Override
 	public int getRenderType()
