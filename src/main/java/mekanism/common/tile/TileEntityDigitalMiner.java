@@ -337,7 +337,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		Block block = obj.getBlock(worldObj);
 		int meta = obj.getMetadata(worldObj);
 		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, obj.xCoord, obj.yCoord, obj.zCoord).get();
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, this.xCoord, this.yCoord, this.zCoord).get();
 		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(obj.xCoord, obj.yCoord, obj.zCoord, worldObj, block, meta, dummy);
 		MinecraftForge.EVENT_BUS.post(event);
 		
