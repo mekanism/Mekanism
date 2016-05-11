@@ -120,7 +120,12 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			return;
 		}
 		
-		GlStateManager.translate(-0.5, -0.5, -0.5);
+		if(type == TransformType.GUI)
+		{
+			GlStateManager.scale(0.625, 0.625, 0.625);
+			GlStateManager.rotate(30.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.rotate(-45.0F, 0.0F, 1.0F, 0.0F);
+		}
 		
 		if(stack.getItem() == MekanismItems.Jetpack)
 		{
@@ -182,16 +187,15 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 
 			if(type == TransformType.THIRD_PERSON)
 			{
-				GlStateManager.rotate(-45, 0.0F, 1.0F, 0.0F);
+				GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
 				GlStateManager.rotate(50, 1.0F, 0.0F, 0.0F);
 				GlStateManager.scale(2.0F, 2.0F, 2.0F);
 				GlStateManager.translate(0.0F, -0.4F, 0.4F);
 			}
 			else if(type == TransformType.GUI)
 			{
-				GlStateManager.rotate(225, 0.0F, 1.0F, 0.0F);
-				GlStateManager.rotate(45, -1.0F, 0.0F, -1.0F);
-				GlStateManager.scale(0.6F, 0.6F, 0.6F);
+				GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+				GlStateManager.rotate(45, -1.0F, 0.0F, 0.0F);
 				GlStateManager.translate(0.0F, -0.2F, 0.0F);
 			}
 			else {
@@ -220,7 +224,8 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 					GlStateManager.rotate(55, 0.0F, 1.0F, 0.0F);
 				}
 				else {
-					GlStateManager.translate(0.0F, 0.5F, 0.0F);
+					GlStateManager.translate(0.0F, 0.7F, 0.0F);
+					GlStateManager.rotate(75, 0.0F, 1.0F, 0.0F);
 				}
 				
 				GlStateManager.scale(2.5F, 2.5F, 2.5F);
@@ -228,8 +233,9 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			}
 			else if(type == TransformType.GUI)
 			{
-				GlStateManager.translate(-0.6F, 0.0F, 0.0F);
-				GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(0.45F, -0.45F, 0.0F);
+				GlStateManager.rotate(-45, 0.0F, 1.0F, 0.0F);
+				GlStateManager.scale(1.4, 1.4, 1.4);
 			}
 			
 			flamethrower.render(0.0625F);
