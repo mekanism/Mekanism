@@ -101,6 +101,7 @@ import mekanism.client.render.tileentity.RenderQuantumEntangloporter;
 import mekanism.client.render.tileentity.RenderResistiveHeater;
 import mekanism.client.render.tileentity.RenderSecurityDesk;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
+import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
@@ -234,7 +235,8 @@ public class ClientProxy extends CommonProxy
 	public static Map<String, ModelResourceLocation> basicResources = new HashMap<String, ModelResourceLocation>();
 	
 	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
-		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower"};
+		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
+		"solar_neutron_activator"};
 	
 	@Override
 	public void loadConfiguration()
@@ -327,7 +329,7 @@ public class ClientProxy extends CommonProxy
 		//ClientRegistry.registerTileEntity(TileEntityLaser.class, "Laser", new RenderLaser());
 		ClientRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier", new RenderLaserAmplifier());
 		ClientRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam", new RenderLaserTractorBeam());
-		GameRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator");
+		ClientRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator", new RenderSolarNeutronActivator());
 		GameRegistry.registerTileEntity(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
 		GameRegistry.registerTileEntity(TileEntityInductionCasing.class, "InductionCasing");
 		GameRegistry.registerTileEntity(TileEntityInductionPort.class, "InductionPort");
@@ -460,7 +462,7 @@ public class ClientProxy extends CommonProxy
 						}
 					}
 					
-					if(type == MachineType.FLUID_TANK)
+					if(type == MachineType.FLUID_TANK || type == MachineType.PERSONAL_CHEST || type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
 					{
 						properties = "inventory";
 					}

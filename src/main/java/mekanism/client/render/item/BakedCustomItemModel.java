@@ -12,6 +12,7 @@ import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
+import mekanism.client.model.ModelSolarNeutronActivator;
 import mekanism.client.render.ctm.ModelChiselBlock;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderFluidTank;
@@ -33,6 +34,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -52,6 +54,7 @@ import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.fluids.Fluid;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
 
 public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 {
@@ -70,6 +73,8 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 	public static ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public static ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
 	public static ModelFlamethrower flamethrower = new ModelFlamethrower();
+	public static ModelChest personalChest = new ModelChest();
+	public static ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
 	
 	public BakedCustomItemModel(IBakedModel model, ItemStack s)
 	{
@@ -115,6 +120,28 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 				Fluid fluid = itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).getFluid() : null;
 				fluidTankRenderer.render(tier, fluid, targetScale, false, null, -0.5, -0.5, -0.5);
 				GlStateManager.popMatrix();
+			}
+			else if(machineType == MachineType.PERSONAL_CHEST)
+			{
+				GlStateManager.pushMatrix();
+
+				GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+				GlStateManager.translate(0, 1.0F, 1.0F);
+				GlStateManager.scale(1.0F, -1F, -1F);
+
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
+
+				personalChest.renderAll();
+				GlStateManager.popMatrix();
+			}
+			else if(machineType == MachineType.SOLAR_NEUTRON_ACTIVATOR)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glScalef(0.6F, 0.6F, 0.6F);
+				GL11.glTranslatef(0.0F, -0.55F, 0.0F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
+				solarNeutronActivator.render(0.0625F);
 			}
 			
 			return;
