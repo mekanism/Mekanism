@@ -217,7 +217,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 		{
 			data.add(structure.waterVolume*BoilerUpdateProtocol.WATER_PER_TANK);
 			data.add(structure.steamVolume*BoilerUpdateProtocol.STEAM_PER_TANK);
-			data.add(structure.editMode);
+			data.add(structure.editMode.ordinal());
 			data.add(structure.lastEnvironmentLoss);
 			data.add(structure.lastBoilRate);
 			data.add(structure.superheatingElements);

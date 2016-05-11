@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryRight",
       "front": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryFront",
       "south": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryBack",
       "west": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryRight",

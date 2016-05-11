@@ -726,12 +726,10 @@ public final class Tier
 
 	public static void init()
 	{
-/*
 		if(initiated)
 		{
 			return;
 		}
-*/
 
 		for(Class c : Tier.class.getDeclaredClasses())
 		{

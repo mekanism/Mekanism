@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/factory/basic/infusing/BasicInfusingFactoryRight",
       "front": "mekanism:blocks/factory/basic/infusing/BasicInfusingFactoryFront",
       "south": "mekanism:blocks/factory/basic/infusing/BasicInfusingFactoryBack",
       "west": "mekanism:blocks/factory/basic/infusing/BasicInfusingFactoryRight",

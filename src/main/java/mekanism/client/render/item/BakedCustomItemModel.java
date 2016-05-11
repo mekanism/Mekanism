@@ -36,7 +36,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -93,7 +92,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 				GlStateManager.pushMatrix();
 				ItemBlockBasic itemBasic = (ItemBlockBasic)stack.getItem();
 				InventoryBin inv = new InventoryBin(stack);
-				binRenderer.render(EnumFacing.NORTH, inv.getItemType(), inv.getItemCount(), -0.5, -0.5, -0.5);
+				binRenderer.render(EnumFacing.NORTH, inv.getItemType(), inv.getItemCount(), false, -0.5, -0.5, -0.5);
 				Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 				GlStateManager.enableRescaleNormal();
 		        GlStateManager.enableAlpha();
@@ -221,8 +220,9 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			}
 			else if(type == TransformType.GUI)
 			{
-				GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
-				GlStateManager.rotate(45, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(225, 0.0F, 1.0F, 0.0F);
+				GlStateManager.rotate(45, -1.0F, 0.0F, -1.0F);
+				GlStateManager.scale(0.6F, 0.6F, 0.6F);
 				GlStateManager.translate(0.0F, -0.2F, 0.0F);
 			}
 			else {
@@ -260,9 +260,8 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			}
 			else if(type == TransformType.GUI)
 			{
-				GlStateManager.translate(0.45F, -0.45F, 0.0F);
-				GlStateManager.rotate(-45, 0.0F, 1.0F, 0.0F);
-				GlStateManager.scale(1.4, 1.4, 1.4);
+				GlStateManager.translate(-0.6F, 0.0F, 0.0F);
+				GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
 			}
 			
 			flamethrower.render(0.0625F);
@@ -344,7 +343,6 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
         GlStateManager.scale(0.5F, 0.5F, 0.5F);
     	doRender(cameraTransformType);
     	GlStateManager.scale(2.0F, 2.0F, 2.0F);
-    	RenderHelper.enableStandardItemLighting();
     	GlStateManager.popMatrix();
     	
         return Pair.of(this, null);

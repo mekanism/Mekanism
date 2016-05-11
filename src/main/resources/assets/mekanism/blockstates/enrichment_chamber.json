@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/SteelCasing",
+      "sides": "mekanism:blocks/enrichment_chamber/EnrichmentChamberRight",
       "front": "mekanism:blocks/enrichment_chamber/EnrichmentChamberFront",
       "west": "mekanism:blocks/enrichment_chamber/EnrichmentChamberRight",
       "east": "mekanism:blocks/enrichment_chamber/EnrichmentChamberLeft",

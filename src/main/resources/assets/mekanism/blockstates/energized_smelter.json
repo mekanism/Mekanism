@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/SteelCasing",
+      "sides": "mekanism:blocks/energized_smelter/EnergizedSmelterRight",
       "front": "mekanism:blocks/energized_smelter/EnergizedSmelterFront",
       "west": "mekanism:blocks/energized_smelter/EnergizedSmelterRight",
       "east": "mekanism:blocks/energized_smelter/EnergizedSmelterLeft",

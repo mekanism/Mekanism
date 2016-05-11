@@ -126,13 +126,13 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			int totalAir = 0;
 
 			//Find the first available block in the structure for water storage (including casings)
-			for(int x = 0; x < structure.volLength; x++)
+			for(int x = structure.renderLocation.xCoord; x < structure.renderLocation.xCoord+structure.volLength; x++)
 			{
-				for(int y = 0; y < initDisperser.yCoord - structure.renderLocation.yCoord; y++)
+				for(int y = structure.renderLocation.yCoord; y < initDisperser.yCoord; y++)
 				{
-					for(int z = 0; z < structure.volWidth; z++)
+					for(int z = structure.renderLocation.zCoord; z < structure.renderLocation.zCoord+structure.volWidth; z++)
 					{
-						if(pointer.getWorld().isAirBlock(pos.translate(x, y, z).getPos()) || isViableNode(pos.translate(x, y, z).getPos()))
+						if(pointer.getWorld().isAirBlock(new BlockPos(x, y, z)) || isViableNode(x, y, z))
 						{
 							initAir = new Coord4D(x, y, z, pointer.getWorld().provider.getDimensionId());
 							totalAir++;

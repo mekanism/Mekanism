@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/SteelCasing",
+      "sides": "mekanism:blocks/purification_chamber/PurificationChamberRight",
       "front": "mekanism:blocks/purification_chamber/PurificationChamberFront",
       "west": "mekanism:blocks/purification_chamber/PurificationChamberRight",
       "east": "mekanism:blocks/purification_chamber/PurificationChamberLeft",

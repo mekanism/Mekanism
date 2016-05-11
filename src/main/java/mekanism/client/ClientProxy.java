@@ -304,7 +304,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank", new RenderGasTank());
 		ClientRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube", new RenderEnergyCube());
 		ClientRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump", new RenderElectricPump());
-		ClientRegistry.registerTileEntity(TileEntityPersonalChest.class, "ElectricChest", new RenderPersonalChest()); //TODO rename
+		ClientRegistry.registerTileEntity(TileEntityPersonalChest.class, "PersonalChest", new RenderPersonalChest());
 		ClientRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank", new RenderDynamicTank());
 		ClientRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve", new RenderDynamicTank());
 		ClientRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad", new RenderChargepad());
@@ -317,14 +317,14 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser", new RenderChemicalInfuser());
 		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine<TileEntityChemicalInjectionChamber>());
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
-		ClientRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "SalinationController", new RenderThermalEvaporationController()); //TODO rename
+		ClientRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "ThermalEvaporationController", new RenderThermalEvaporationController());
 		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine<TileEntityPrecisionSawmill>());
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
 		ClientRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer", new RenderChemicalCrystallizer());
 		ClientRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator", new RenderSeismicVibrator());
 		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderPressurizedReactionChamber());
-		ClientRegistry.registerTileEntity(TileEntityFluidTank.class, "PortableTank", new RenderFluidTank()); //TODO rename
+		ClientRegistry.registerTileEntity(TileEntityFluidTank.class, "FluidTank", new RenderFluidTank());
 		ClientRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher", new RenderFluidicPlenisher());
 		//ClientRegistry.registerTileEntity(TileEntityLaser.class, "Laser", new RenderLaser());
 		ClientRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier", new RenderLaserAmplifier());
@@ -405,7 +405,7 @@ public class ClientProxy extends CommonProxy
 		
 		ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF_MODEL);
 		
-		for(int i = 0; i <= 9; i++)
+		for(int i = 1; i <= 9; i++)
 		{
 			ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.getModel(i));
 		}
@@ -424,6 +424,11 @@ public class ClientProxy extends CommonProxy
 
 		for(MachineType type : MachineType.values())
 		{
+			if(!type.isValidMachine())
+			{
+				continue;
+			}
+			
 			List<ModelResourceLocation> modelsToAdd = new ArrayList<ModelResourceLocation>();
 			String resource = "mekanism:" + type.getName();
 			RecipeType recipePointer = null;
@@ -545,9 +550,13 @@ public class ClientProxy extends CommonProxy
 						if(tierPointer.ordinal() < BaseTier.values().length-1)
 						{
 							tierPointer = BaseTier.values()[tierPointer.ordinal()+1];
-							resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
 							
-							continue;
+							if(tierPointer.isObtainable())
+							{
+								resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+								
+								continue;
+							}
 						}
 					}
 				}

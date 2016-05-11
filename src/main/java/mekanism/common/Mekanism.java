@@ -1168,8 +1168,8 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
-		GameRegistry.registerTileEntity(TileEntityThermalEvaporationValve.class, "SalinationValve"); //TODO rename
-		GameRegistry.registerTileEntity(TileEntityThermalEvaporationBlock.class, "SalinationTank"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationValve.class, "ThermalEvaporationValve");
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationBlock.class, "ThermalEvaporationBlock");
 		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
 		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
 		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");

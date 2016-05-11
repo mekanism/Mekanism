@@ -213,13 +213,18 @@ public class BlockStateMachine extends ExtendedBlockState
 
 			for(MachineType type : MachineType.values())
 			{
-				if(type != QUANTUM_ENTANGLOPORTER && type != AMBIENT_ACCUMULATOR)
+				if(type.isValidMachine())
 				{
 					ret.add(type);
 				}
 			}
 
 			return ret;
+		}
+		
+		public boolean isValidMachine()
+		{
+			return this != AMBIENT_ACCUMULATOR;
 		}
 
 		public static MachineType get(Block block, int meta)

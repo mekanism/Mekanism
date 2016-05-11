@@ -145,13 +145,6 @@ import net.minecraftforge.fml.relauncher.FMLInjectionData;
  */
 public class CommonProxy implements IGuiProvider
 {
-/*
-	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int PLASTIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-*/
-
 	protected static WeakReference<EntityPlayer> dummyPlayer = new WeakReference<EntityPlayer>(null);
 
 	/**
@@ -171,7 +164,7 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
-		GameRegistry.registerTileEntity(TileEntityPersonalChest.class, "ElectricChest"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityPersonalChest.class, "PersonalChest");
 		GameRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank");
 		GameRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve");
 		GameRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad");
@@ -185,14 +178,14 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
-		GameRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "SalinationController"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "ThermalEvaporationController");
 		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
 		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
 		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
 		GameRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer");
 		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
-		GameRegistry.registerTileEntity(TileEntityFluidTank.class, "PortableTank"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityFluidTank.class, "FluidTank");
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
 		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
 		GameRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam");
@@ -377,7 +370,7 @@ public class CommonProxy implements IGuiProvider
 		usage.heavyWaterElectrolysisUsage = Mekanism.configuration.get("usage", "HeavyWaterElectrolysisUsage", 800D).getDouble();
 		usage.formulaicAssemblicatorUsage = Mekanism.configuration.get("usage", "FormulaicAssemblicatorUsage", 100D).getDouble();
 
-//TODO:		Tier.loadConfig();
+		Tier.loadConfig();
 		
 		if(Mekanism.configuration.hasChanged())
 		{

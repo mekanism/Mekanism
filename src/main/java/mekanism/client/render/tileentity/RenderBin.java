@@ -29,10 +29,10 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 			return;
 		}
 		
-		render(tileEntity.facing, tileEntity.itemType, tileEntity.clientAmount, x, y, z);
+		render(tileEntity.facing, tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
 	}
 	
-	public void render(EnumFacing facing, ItemStack itemType, int clientAmount, double x, double y, double z)
+	public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z)
 	{
 		String amount = "";
 
@@ -75,7 +75,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 			GlStateManager.popMatrix();
 		}
 
-		if(!amount.equals(""))
+		if(text && !amount.equals(""))
 		{
 			renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
 		}

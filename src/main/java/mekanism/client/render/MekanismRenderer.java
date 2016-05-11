@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -353,8 +352,6 @@ public class MekanismRenderer
         } catch(NoSuchFieldError e) {
         	optifineBreak = true;
         }
-        
-        RenderHelper.disableStandardItemLighting();
         
         float glowRatioX = Math.min((glow/15F)*240F + lightmapLastX, 240);
         float glowRatioY = Math.min((glow/15F)*240F + lightmapLastY, 240);

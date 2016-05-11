@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/bin/BinEliteRight",
       "front": "mekanism:blocks/bin/BinEliteFront",
       "west": "mekanism:blocks/bin/BinEliteRight",
       "east": "mekanism:blocks/bin/BinEliteLeft",

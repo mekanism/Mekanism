@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/SteelCasing",
+      "sides": "mekanism:blocks/precision_sawmill/PrecisionSawmillRight",
       "front": "mekanism:blocks/precision_sawmill/PrecisionSawmillFront",
       "west": "mekanism:blocks/precision_sawmill/PrecisionSawmillRight",
       "east": "mekanism:blocks/precision_sawmill/PrecisionSawmillLeft",
