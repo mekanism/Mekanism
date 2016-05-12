@@ -7,7 +7,6 @@ import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,15 +46,6 @@ public class BlockBounding extends Block
 		boolean isAdvanced = state.getValue(BlockStateBounding.advancedProperty);
 		return isAdvanced ? 1 : 0;
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) 
-	{
-		blockIcon = register.registerIcon(BlockBasic.ICON_BASE);
-	}
-*/
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
@@ -146,7 +136,7 @@ public class BlockBounding extends Block
 	{
 		return false;
 	}
-
+	
 	@Override
 	public boolean isFullCube()
 	{
@@ -166,8 +156,7 @@ public class BlockBounding extends Block
 		{
 			return new TileEntityAdvancedBoundingBlock();
 		}
-		else
-		{
+		else {
 			return new TileEntityBoundingBlock();
 		}
 	}

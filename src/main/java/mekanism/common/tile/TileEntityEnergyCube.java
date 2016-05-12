@@ -27,9 +27,8 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 
 public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile
 {
@@ -227,7 +226,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	{
 		super.readFromNBT(nbtTags);
 
-		tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
+		tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 	}
 
@@ -236,7 +235,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setString("tier", tier.getBaseTier().getSimpleName());
+		nbtTags.setInteger("tier", tier.ordinal());
 		nbtTags.setInteger("controlType", controlType.ordinal());
 	}
 

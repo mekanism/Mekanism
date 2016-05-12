@@ -2,7 +2,6 @@ package mekanism.client.render.particle;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityBubbleFX;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;

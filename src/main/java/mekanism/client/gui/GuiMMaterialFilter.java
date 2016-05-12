@@ -18,16 +18,16 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiMMaterialFilter extends GuiMekanism
@@ -128,20 +128,20 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 		if(filter.materialItem != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
 			itemRender.renderItemAndEffectIntoGUI(filter.materialItem, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		if(filter.replaceStack != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
 			itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
@@ -198,7 +198,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -208,12 +208,12 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -223,7 +223,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
 
 			GL11.glPopAttrib();
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 	}
 

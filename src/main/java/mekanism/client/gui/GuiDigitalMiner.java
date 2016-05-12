@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -30,13 +29,13 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiDigitalMiner extends GuiMekanism
@@ -183,7 +182,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		if(tileEntity.missingStack != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -194,7 +193,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);
 			
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		else {
 			mc.getTextureManager().bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));

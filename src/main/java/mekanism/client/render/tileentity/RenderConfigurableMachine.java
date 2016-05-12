@@ -2,8 +2,6 @@ package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
-import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -13,6 +11,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,12 +21,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntitySpecialRenderer<S>
@@ -44,7 +42,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 	@Override
 	public void renderTileEntityAt(S configurable, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 
 		EntityPlayer player = mc.thePlayer;
 		ItemStack itemStack = player.getCurrentEquippedItem();
@@ -69,10 +67,12 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 						MekanismRenderer.color(data.color, 0.6F);
 		
 						bindTexture(MekanismRenderer.getBlocksTexture());
-						GL11.glTranslatef((float)x, (float)y, (float)z);
+						GlStateManager.translate((float)x, (float)y, (float)z);
 		
 						int display = getOverlayDisplay(pos.sideHit, type).display;
 						GL11.glCallList(display);
+						
+						MekanismRenderer.resetColor();
 		
 						pop();
 					}
@@ -80,7 +80,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			}
 		}
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void pop()
@@ -88,12 +88,12 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		GL11.glPopAttrib();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -107,13 +107,13 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		{
 			return cachedOverlays.get(side).get(type);
 		}
-/*
+
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.stone;
 		toReturn.setTexture(MekanismRenderer.overlays.get(type));
-*/
+
 		DisplayInteger display = DisplayInteger.createAndStart();
-/*
+
 		if(cachedOverlays.containsKey(side))
 		{
 			cachedOverlays.get(side).put(type, display);
@@ -129,7 +129,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			case DOWN:
 			{
 				toReturn.minY = -.01;
-				toReturn.maxY = 0;
+				toReturn.maxY = -.001;
 
 				toReturn.minX = 0;
 				toReturn.minZ = 0;
@@ -139,7 +139,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			}
 			case UP:
 			{
-				toReturn.minY = 1;
+				toReturn.minY = 1.001;
 				toReturn.maxY = 1.01;
 
 				toReturn.minX = 0;
@@ -151,7 +151,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			case NORTH:
 			{
 				toReturn.minZ = -.01;
-				toReturn.maxZ = 0;
+				toReturn.maxZ = -.001;
 
 				toReturn.minX = 0;
 				toReturn.minY = 0;
@@ -161,7 +161,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			}
 			case SOUTH:
 			{
-				toReturn.minZ = 1;
+				toReturn.minZ = 1.001;
 				toReturn.maxZ = 1.01;
 
 				toReturn.minX = 0;
@@ -173,7 +173,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			case WEST:
 			{
 				toReturn.minX = -.01;
-				toReturn.maxX = 0;
+				toReturn.maxX = -.001;
 
 				toReturn.minY = 0;
 				toReturn.minZ = 0;
@@ -183,7 +183,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			}
 			case EAST:
 			{
-				toReturn.minX = 1;
+				toReturn.minX = 1.001;
 				toReturn.maxX = 1.01;
 
 				toReturn.minY = 0;
@@ -192,14 +192,9 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 				toReturn.maxZ = 1;
 				break;
 			}
-			default:
-			{
-				break;
-			}
 		}
 
 		MekanismRenderer.renderObject(toReturn);
-*/
 		display.endList();
 
 		return display;

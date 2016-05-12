@@ -3,11 +3,11 @@ package mekanism.client.model;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-
-import org.lwjgl.opengl.GL11;
-
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelJetpack extends ModelBase
@@ -187,7 +187,7 @@ public class ModelJetpack extends ModelBase
 		ExtendosupportL.render(size);
 		ExtendosupportR.render(size);
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
 		GL11.glEnable(GL11.GL_CULL_FACE);
@@ -196,11 +196,11 @@ public class ModelJetpack extends ModelBase
 		WingbladeL.render(size);
 		WingbladeR.render(size);
 
-		GL11.glColor4f(1, 1, 1, 1);
+		MekanismRenderer.resetColor();
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 
 		Packdoodad2.render(size);
 		Packdoodad3.render(size);

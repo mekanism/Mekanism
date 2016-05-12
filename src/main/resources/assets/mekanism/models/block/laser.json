@@ -68,7 +68,7 @@
         {
             "__comment": "wire",
             "from": [8.5, 8, 7.5],
-            "to": [9.5, 14, 8.5],
+            "to": [9.49, 13.99, 8.5],
             "faces": {
                 "down":  {"uv": [3.25, 2.25, 3, 2.5], "texture": "#all"},
                 "up":    {"uv": [3, 2.5, 2.75, 2.25], "texture": "#all"},
@@ -263,6 +263,13 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/laser",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
+    },
+    "display": {
+        "thirdperson": {
+            "rotation": [ 10, -45, 170 ],
+            "translation": [ 0, 1.5, -2.75 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        }
     }
 }

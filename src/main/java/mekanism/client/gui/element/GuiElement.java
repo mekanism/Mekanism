@@ -2,18 +2,18 @@ package mekanism.client.gui.element;
 
 import java.util.List;
 
+import mekanism.api.ObfuscatedNames;
+import mekanism.api.util.ReflectionUtils;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.ObfuscatedNames;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiElement
@@ -48,8 +48,8 @@ public abstract class GuiElement
 		if(guiObj instanceof GuiContainer)
 		{
 			try {
-				int size = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
-				MekanismUtils.setPrivateValue(guiObj, size + xSize, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
+				int size = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
+				ReflectionUtils.setPrivateValue(guiObj, size + xSize, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -61,8 +61,8 @@ public abstract class GuiElement
 		if(guiObj instanceof GuiContainer)
 		{
 			try {
-				int size = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
-				MekanismUtils.setPrivateValue(guiObj, size + ySize, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
+				int size = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
+				ReflectionUtils.setPrivateValue(guiObj, size + ySize, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -74,9 +74,9 @@ public abstract class GuiElement
 		if(guiObj instanceof GuiContainer)
 		{
 			try {
-				int left = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
+				int left = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 				System.out.println(left + " " + guiLeft);
-				MekanismUtils.setPrivateValue(guiObj, left + guiLeft, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
+				ReflectionUtils.setPrivateValue(guiObj, left + guiLeft, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -88,8 +88,8 @@ public abstract class GuiElement
 		if(guiObj instanceof GuiContainer)
 		{
 			try {
-				int top = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-				MekanismUtils.setPrivateValue(guiObj, top + guiTop, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+				int top = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+				ReflectionUtils.setPrivateValue(guiObj, top + guiTop, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -109,12 +109,12 @@ public abstract class GuiElement
 			float reverse = 1/scale;
 			float yAdd = 4-(scale*8)/2F;
 			
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			
-			GL11.glScalef(scale, scale, scale);
+			GlStateManager.scale(scale, scale, scale);
 			getFontRenderer().drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
 			
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 	}
 

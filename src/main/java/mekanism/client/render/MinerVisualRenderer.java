@@ -11,6 +11,7 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
 
@@ -26,7 +27,7 @@ public final class MinerVisualRenderer
 	
 	public static void render(TileEntityDigitalMiner miner)
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glTranslated(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
@@ -34,9 +35,10 @@ public final class MinerVisualRenderer
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 		mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 		getList(new MinerRenderData(miner)).render();
+		MekanismRenderer.resetColor();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 	
 	private static DisplayInteger getList(MinerRenderData data)
@@ -79,9 +81,9 @@ public final class MinerVisualRenderer
 	{
 		Model3D toReturn = new Model3D();
 		
-		toReturn.setBlockBounds(rel.getX() + 0.4, rel.getY() + 0.4, rel.getZ() + 0.4, rel.getX() + 0.6, rel.getY() + 0.6, rel.getZ() + 0.6);
+		toReturn.setBlockBounds(rel.xCoord + 0.4, rel.yCoord + 0.4, rel.zCoord + 0.4, rel.xCoord + 0.6, rel.yCoord + 0.6, rel.zCoord + 0.6);
 		toReturn.baseBlock = Blocks.water;
-		//toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
+		toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
 		
 		return toReturn;
 	}

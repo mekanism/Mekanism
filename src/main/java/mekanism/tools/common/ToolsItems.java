@@ -1,6 +1,5 @@
 package mekanism.tools.common;
 
-import mekanism.common.Mekanism;
 import mekanism.tools.item.ItemMekanismArmor;
 import mekanism.tools.item.ItemMekanismAxe;
 import mekanism.tools.item.ItemMekanismHoe;
@@ -108,60 +107,60 @@ public class ToolsItems
 		GlowstoneShovel = new ItemMekanismShovel(MekanismTools.toolGLOWSTONE).setUnlocalizedName("GlowstoneShovel");
 		GlowstoneHoe = new ItemMekanismHoe(MekanismTools.toolGLOWSTONE).setUnlocalizedName("GlowstoneHoe");
 		GlowstoneSword = new ItemMekanismSword(MekanismTools.toolGLOWSTONE).setUnlocalizedName("GlowstoneSword");
-		GlowstoneHelmet = new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 0).setUnlocalizedName("GlowstoneHelmet");
-		GlowstoneChestplate = new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 1).setUnlocalizedName("GlowstoneChestplate");
-		GlowstoneLeggings = new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 2).setUnlocalizedName("GlowstoneLeggings");
-		GlowstoneBoots = new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 3).setUnlocalizedName("GlowstoneBoots");
+		GlowstoneHelmet = new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 0).setUnlocalizedName("GlowstoneHelmet");
+		GlowstoneChestplate = new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 1).setUnlocalizedName("GlowstoneChestplate");
+		GlowstoneLeggings = new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 2).setUnlocalizedName("GlowstoneLeggings");
+		GlowstoneBoots = new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 3).setUnlocalizedName("GlowstoneBoots");
 		BronzePaxel = new ItemMekanismPaxel(MekanismTools.toolBRONZE2).setUnlocalizedName("BronzePaxel");
 		BronzePickaxe = new ItemMekanismPickaxe(MekanismTools.toolBRONZE).setUnlocalizedName("BronzePickaxe");
 		BronzeAxe = new ItemMekanismAxe(MekanismTools.toolBRONZE).setUnlocalizedName("BronzeAxe");
 		BronzeShovel = new ItemMekanismShovel(MekanismTools.toolBRONZE).setUnlocalizedName("BronzeShovel");
 		BronzeHoe = new ItemMekanismHoe(MekanismTools.toolBRONZE).setUnlocalizedName("BronzeHoe");
 		BronzeSword = new ItemMekanismSword(MekanismTools.toolBRONZE).setUnlocalizedName("BronzeSword");
-		BronzeHelmet = (new ItemMekanismArmor(MekanismTools.armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 0)).setUnlocalizedName("BronzeHelmet");
-		BronzeChestplate = (new ItemMekanismArmor(MekanismTools.armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 1)).setUnlocalizedName("BronzeChestplate");
-		BronzeLeggings = (new ItemMekanismArmor(MekanismTools.armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 2)).setUnlocalizedName("BronzeLeggings");
-		BronzeBoots = (new ItemMekanismArmor(MekanismTools.armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 3)).setUnlocalizedName("BronzeBoots");
+		BronzeHelmet = (new ItemMekanismArmor(MekanismTools.armorBRONZE, 0)).setUnlocalizedName("BronzeHelmet");
+		BronzeChestplate = (new ItemMekanismArmor(MekanismTools.armorBRONZE, 1)).setUnlocalizedName("BronzeChestplate");
+		BronzeLeggings = (new ItemMekanismArmor(MekanismTools.armorBRONZE, 2)).setUnlocalizedName("BronzeLeggings");
+		BronzeBoots = (new ItemMekanismArmor(MekanismTools.armorBRONZE, 3)).setUnlocalizedName("BronzeBoots");
 		OsmiumPaxel = new ItemMekanismPaxel(MekanismTools.toolOSMIUM2).setUnlocalizedName("OsmiumPaxel");
 		OsmiumPickaxe = new ItemMekanismPickaxe(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumPickaxe");
 		OsmiumAxe = new ItemMekanismAxe(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumAxe");
 		OsmiumShovel = new ItemMekanismShovel(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumShovel");
 		OsmiumHoe = new ItemMekanismHoe(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumHoe");
 		OsmiumSword = new ItemMekanismSword(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumSword");
-		OsmiumHelmet = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 0)).setUnlocalizedName("OsmiumHelmet");
-		OsmiumChestplate = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 1)).setUnlocalizedName("OsmiumChestplate");
-		OsmiumLeggings = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 2)).setUnlocalizedName("OsmiumLeggings");
-		OsmiumBoots = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 3)).setUnlocalizedName("OsmiumBoots");
+		OsmiumHelmet = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, 0)).setUnlocalizedName("OsmiumHelmet");
+		OsmiumChestplate = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, 1)).setUnlocalizedName("OsmiumChestplate");
+		OsmiumLeggings = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, 2)).setUnlocalizedName("OsmiumLeggings");
+		OsmiumBoots = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, 3)).setUnlocalizedName("OsmiumBoots");
 		ObsidianPaxel = new ItemMekanismPaxel(MekanismTools.toolOBSIDIAN2).setUnlocalizedName("ObsidianPaxel");
 		ObsidianPickaxe = new ItemMekanismPickaxe(MekanismTools.toolOBSIDIAN).setUnlocalizedName("ObsidianPickaxe");
 		ObsidianAxe = new ItemMekanismAxe(MekanismTools.toolOBSIDIAN).setUnlocalizedName("ObsidianAxe");
 		ObsidianShovel = new ItemMekanismShovel(MekanismTools.toolOBSIDIAN).setUnlocalizedName("ObsidianShovel");
 		ObsidianHoe = new ItemMekanismHoe(MekanismTools.toolOBSIDIAN).setUnlocalizedName("ObsidianHoe");
 		ObsidianSword = new ItemMekanismSword(MekanismTools.toolOBSIDIAN).setUnlocalizedName("ObsidianSword");
-		ObsidianHelmet = (new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 0)).setUnlocalizedName("ObsidianHelmet");
-		ObsidianChestplate = (new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 1)).setUnlocalizedName("ObsidianChestplate");
-		ObsidianLeggings = (new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 2)).setUnlocalizedName("ObsidianLeggings");
-		ObsidianBoots = (new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 3)).setUnlocalizedName("ObsidianBoots");
+		ObsidianHelmet = (new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 0)).setUnlocalizedName("ObsidianHelmet");
+		ObsidianChestplate = (new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 1)).setUnlocalizedName("ObsidianChestplate");
+		ObsidianLeggings = (new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 2)).setUnlocalizedName("ObsidianLeggings");
+		ObsidianBoots = (new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 3)).setUnlocalizedName("ObsidianBoots");
 		LazuliPaxel = new ItemMekanismPaxel(MekanismTools.toolLAZULI2).setUnlocalizedName("LazuliPaxel");
 		LazuliPickaxe = new ItemMekanismPickaxe(MekanismTools.toolLAZULI).setUnlocalizedName("LazuliPickaxe");
 		LazuliAxe = new ItemMekanismAxe(MekanismTools.toolLAZULI).setUnlocalizedName("LazuliAxe");
 		LazuliShovel = new ItemMekanismShovel(MekanismTools.toolLAZULI).setUnlocalizedName("LazuliShovel");
 		LazuliHoe = new ItemMekanismHoe(MekanismTools.toolLAZULI).setUnlocalizedName("LazuliHoe");
 		LazuliSword = new ItemMekanismSword(MekanismTools.toolLAZULI).setUnlocalizedName("LazuliSword");
-		LazuliHelmet = (new ItemMekanismArmor(MekanismTools.armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 0)).setUnlocalizedName("LazuliHelmet");
-		LazuliChestplate = (new ItemMekanismArmor(MekanismTools.armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 1)).setUnlocalizedName("LazuliChestplate");
-		LazuliLeggings = (new ItemMekanismArmor(MekanismTools.armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 2)).setUnlocalizedName("LazuliLeggings");
-		LazuliBoots = (new ItemMekanismArmor(MekanismTools.armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 3)).setUnlocalizedName("LazuliBoots");
+		LazuliHelmet = (new ItemMekanismArmor(MekanismTools.armorLAZULI, 0)).setUnlocalizedName("LazuliHelmet");
+		LazuliChestplate = (new ItemMekanismArmor(MekanismTools.armorLAZULI, 1)).setUnlocalizedName("LazuliChestplate");
+		LazuliLeggings = (new ItemMekanismArmor(MekanismTools.armorLAZULI, 2)).setUnlocalizedName("LazuliLeggings");
+		LazuliBoots = (new ItemMekanismArmor(MekanismTools.armorLAZULI, 3)).setUnlocalizedName("LazuliBoots");
 		SteelPaxel = new ItemMekanismPaxel(MekanismTools.toolSTEEL2).setUnlocalizedName("SteelPaxel");
 		SteelPickaxe = new ItemMekanismPickaxe(MekanismTools.toolSTEEL).setUnlocalizedName("SteelPickaxe");
 		SteelAxe = new ItemMekanismAxe(MekanismTools.toolSTEEL).setUnlocalizedName("SteelAxe");
 		SteelShovel = new ItemMekanismShovel(MekanismTools.toolSTEEL).setUnlocalizedName("SteelShovel");
 		SteelHoe = new ItemMekanismHoe(MekanismTools.toolSTEEL).setUnlocalizedName("SteelHoe");
 		SteelSword = new ItemMekanismSword(MekanismTools.toolSTEEL).setUnlocalizedName("SteelSword");
-		SteelHelmet = new ItemMekanismArmor(MekanismTools.armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 0).setUnlocalizedName("SteelHelmet");
-		SteelChestplate = new ItemMekanismArmor(MekanismTools.armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 1).setUnlocalizedName("SteelChestplate");
-		SteelLeggings = new ItemMekanismArmor(MekanismTools.armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 2).setUnlocalizedName("SteelLeggings");
-		SteelBoots = new ItemMekanismArmor(MekanismTools.armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 3).setUnlocalizedName("SteelBoots");
+		SteelHelmet = new ItemMekanismArmor(MekanismTools.armorSTEEL, 0).setUnlocalizedName("SteelHelmet");
+		SteelChestplate = new ItemMekanismArmor(MekanismTools.armorSTEEL, 1).setUnlocalizedName("SteelChestplate");
+		SteelLeggings = new ItemMekanismArmor(MekanismTools.armorSTEEL, 2).setUnlocalizedName("SteelLeggings");
+		SteelBoots = new ItemMekanismArmor(MekanismTools.armorSTEEL, 3).setUnlocalizedName("SteelBoots");
 	}
 
 	public static void setHarvestLevels()
@@ -290,5 +289,7 @@ public class ToolsItems
 		GameRegistry.registerItem(SteelChestplate, "SteelChestplate");
 		GameRegistry.registerItem(SteelLeggings, "SteelLeggings");
 		GameRegistry.registerItem(SteelBoots, "SteelBoots");
+		
+		MekanismTools.proxy.registerItemRenders();
 	}
 }

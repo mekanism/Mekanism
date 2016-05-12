@@ -30,8 +30,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -268,7 +268,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).offset(EnumFacing.UP), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).offset(EnumFacing.UP).getPos(), Coord4D.get(this));
 	}
 
 	@Override

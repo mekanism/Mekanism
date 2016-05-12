@@ -10,9 +10,9 @@ import mekanism.common.security.ISecurityTile;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import cofh.api.energy.IEnergyHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
+import cofh.api.energy.IEnergyHandler;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),

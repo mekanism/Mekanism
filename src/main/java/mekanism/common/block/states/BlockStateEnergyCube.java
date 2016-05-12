@@ -1,10 +1,7 @@
 package mekanism.common.block.states;
 
-import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.BlockEnergyCube;
-
-import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyEnum;
 
 /**

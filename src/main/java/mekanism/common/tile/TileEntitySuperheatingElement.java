@@ -9,7 +9,6 @@ import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.util.ITickable;
 
 public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock implements ITickable

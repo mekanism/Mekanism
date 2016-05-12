@@ -1,7 +1,6 @@
 package buildcraft.api.enums;
 
 import net.minecraft.item.ItemStack;
-
 import buildcraft.api.items.IBlueprintItem;
 
 public enum EnumBlueprintType {

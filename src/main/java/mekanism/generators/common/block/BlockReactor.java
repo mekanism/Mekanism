@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.common.CTMData;
+import mekanism.client.render.ctm.CTMData;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -23,20 +23,19 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
-import buildcraft.api.tools.IToolWrench;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import buildcraft.api.tools.IToolWrench;
+import codechicken.lib.render.TextureUtils.IIconRegister;
 
 public class BlockReactor extends BlockContainer implements IBlockCTM
 {

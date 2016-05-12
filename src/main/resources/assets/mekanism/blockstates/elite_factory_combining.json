@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryRight",
       "front": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryFront",
       "south": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryBack",
       "west": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryRight",

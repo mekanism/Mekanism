@@ -9,6 +9,9 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.client.render.ctm.CTMBlockRenderContext;
+import mekanism.client.render.ctm.CTMData;
+import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
@@ -24,6 +27,8 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlock;
@@ -71,6 +76,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -124,9 +130,9 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockMachine extends BlockContainer implements ISpecialBounds//, IBlockCTM, ICustomBlockIcon
+public abstract class BlockMachine extends BlockContainer implements ISpecialBounds, ICTMBlock//, ICustomBlockIcon
 {
-	//public CTMData[][] ctms = new CTMData[16][4];
+	public CTMData[][] ctmData = new CTMData[16][4];
 
 	public BlockMachine()
 	{
@@ -134,6 +140,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		setHardness(3.5F);
 		setResistance(16F);
 		setCreativeTab(Mekanism.tabMekanism);
+		
+		initCTMs();
 	}
 
 	public static BlockMachine getBlockMachine(MachineBlock block)
@@ -149,6 +157,21 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	}
 
 	public abstract MachineBlock getMachineBlock();
+	
+	@SideOnly(Side.CLIENT)
+    @Override
+    public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
+	{
+        if(stateIn.getBlock() == null || stateIn.getBlock().getMaterial() == Material.air) 
+        {
+            return stateIn;
+        }
+        
+        IExtendedBlockState state = (IExtendedBlockState)stateIn;
+        CTMBlockRenderContext ctx = new CTMBlockRenderContext(w, pos);
+
+        return state.withProperty(BlockStateBasic.ctmProperty, ctx);
+    }
 
 	public BlockState createBlockState()
 	{
@@ -202,88 +225,18 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		
 		return state;
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	
+	public void initCTMs()
 	{
-		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
-		DefIcon def = DefIcon.getAll(BASE_ICON).setOverrides(false);
-		
-		switch(blockType)
+		switch(getMachineBlock())
 		{
 			case MACHINE_BLOCK_1:
-				ctms[11][0] = new CTMData("ctm/Teleporter", this, Arrays.asList(11)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(7)).registerIcons(register);
-				
-				MekanismRenderer.loadDynamicTextures(register, "enrichment_chamber/" + MachineType.ENRICHMENT_CHAMBER.name, icons[0], def);
-				MekanismRenderer.loadDynamicTextures(register, "osmium_compressor/" + MachineType.OSMIUM_COMPRESSOR.name, icons[1], def);
-				MekanismRenderer.loadDynamicTextures(register, "combiner/" + MachineType.COMBINER.name, icons[2], def);
-				MekanismRenderer.loadDynamicTextures(register, "crusher/" + MachineType.CRUSHER.name, icons[3], def);
-				
-				for(RecipeType type : RecipeType.values())
-				{
-					MekanismRenderer.loadDynamicTextures(register, "factory/basic/" + type.getUnlocalizedName().toLowerCase() + "/" + BaseTier.BASIC.getName() + type.getUnlocalizedName() + MachineType.BASIC_FACTORY.name, factoryIcons[0][type.ordinal()],
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/basic/BasicFactoryFront"), 2).setOverrides(false),
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/basic/BasicFactoryTop"), 1).setOverrides(false), 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/basic/BasicFactoryBottom"), 0).setOverrides(false), 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/basic/BasicFactorySide"), 3, 4, 5).setOverrides(false));
-					MekanismRenderer.loadDynamicTextures(register, "factory/advanced/" + type.getUnlocalizedName().toLowerCase() + "/" + BaseTier.ADVANCED.getName() + type.getUnlocalizedName() + MachineType.ADVANCED_FACTORY.name, factoryIcons[1][type.ordinal()], 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/advanced/AdvancedFactoryFront"), 2).setOverrides(false), 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/advanced/AdvancedFactoryTop"), 1).setOverrides(false), 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/advanced/AdvancedFactoryBottom"), 0).setOverrides(false), 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/advanced/AdvancedFactorySide"), 3, 4, 5).setOverrides(false));
-					MekanismRenderer.loadDynamicTextures(register, "factory/elite/" + type.getUnlocalizedName().toLowerCase() + "/" + BaseTier.ELITE.getName() + type.getUnlocalizedName() + MachineType.ELITE_FACTORY.name, factoryIcons[2][type.ordinal()], 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/elite/EliteFactoryFront"), 2).setOverrides(false), 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/elite/EliteFactoryTop"), 1).setOverrides(false), 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/elite/EliteFactoryBottom"), 0).setOverrides(false), 
-							DefIcon.getActivePair(register.registerIcon("mekanism:factory/elite/EliteFactorySide"), 3, 4, 5).setOverrides(false));
-				}
-				
-				MekanismRenderer.loadDynamicTextures(register, "purification_chamber/" + MachineType.PURIFICATION_CHAMBER.name, icons[9], def);
-				MekanismRenderer.loadDynamicTextures(register, "energized_smelter/" + MachineType.ENERGIZED_SMELTER.name, icons[10], def);
-				icons[11][0] = ctms[11][0].mainTextureData.icon;
+				ctmData[11][0] = new CTMData(BasicBlockType.TELEPORTER_FRAME, MachineType.TELEPORTER);
 				
 				break;
-			case MACHINE_BLOCK_2:
-				MekanismRenderer.loadDynamicTextures(register, "chemical_injection_chamber/" + MachineType.CHEMICAL_INJECTION_CHAMBER.name, icons[3], def);
-				MekanismRenderer.loadDynamicTextures(register, "precision_sawmill/" + MachineType.PRECISION_SAWMILL.name, icons[5], def);
-				
-				break;
-			case MACHINE_BLOCK_3:
-				icons[0][0] = BASE_ICON;
-				icons[2][0] = BASE_ICON;
-				MekanismRenderer.loadDynamicTextures(register, "oredictionificator/" + MachineType.OREDICTIONIFICATOR.name, icons[3]);
-				icons[4][0] = BASE_ICON;
-				MekanismRenderer.loadDynamicTextures(register, "formulaic_assemblicator/" + MachineType.FORMULAIC_ASSEMBLICATOR.name, icons[5]);
-				MekanismRenderer.loadDynamicTextures(register, "fuelwood_heater/" + MachineType.FUELWOOD_HEATER.name, icons[6]);
-				
-				break;
+			default:
 		}
 	}
-	
-	@Override
-	public IIcon getIcon(ItemStack stack, int side)
-	{
-		MachineType type = MachineType.get(stack);
-		ItemBlockMachine item = (ItemBlockMachine)stack.getItem();
-		
-		if(type == MachineType.BASIC_FACTORY)
-		{
-			return factoryIcons[0][item.getRecipeType(stack)][side];
-		}
-		else if(type == MachineType.ADVANCED_FACTORY)
-		{
-			return factoryIcons[1][item.getRecipeType(stack)][side];
-		}
-		else if(type == MachineType.ELITE_FACTORY)
-		{
-			return factoryIcons[2][item.getRecipeType(stack)][side];
-		}
-		
-		return getIcon(side, stack.getItemDamage());
-	}
-*/
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
@@ -374,6 +327,11 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random random)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		
+		if(tileEntity instanceof TileEntityFluidTank)
+		{
+			return;
+		}
 
 		if(MekanismUtils.isActive(world, pos) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
 		{
@@ -431,107 +389,6 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		return 0;
 	}
 
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		switch(blockType)
-		{
-			case MACHINE_BLOCK_1:
-				switch(meta)
-				{
-					case 0:
-					case 1:
-					case 2:
-					case 3:
-					case 9:
-					case 10:
-						return icons[meta][side];
-					default:
-						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
-				}
-			case MACHINE_BLOCK_2:
-				switch(meta)
-				{
-					case 3:
-					case 5:
-						return icons[meta][side];
-					default:
-						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
-				}
-			case MACHINE_BLOCK_3:
-				switch(meta)
-				{
-					case 3:
-					case 5:
-					case 6:
-						return icons[meta][side];
-					default:
-						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
-				}
-			default:
-				return BASE_ICON;
-		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, BlockPos pos, int side)
-	{
-		int meta = world.getBlockMetadata(pos);
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-
-		switch(blockType)
-		{
-			case MACHINE_BLOCK_1:
-				switch(meta)
-				{
-					case 0:
-					case 1:
-					case 2:
-					case 3:
-					case 9:
-					case 10:
-						boolean active = MekanismUtils.isActive(world, pos);
-						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
-					case 5:
-					case 6:
-					case 7:
-						TileEntityFactory factory = (TileEntityFactory)tileEntity;
-						active = MekanismUtils.isActive(world, pos);
-						
-						return factoryIcons[factory.tier.ordinal()][factory.recipeType.ordinal()][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
-					default:
-						return icons[meta][0];
-				}
-			case MACHINE_BLOCK_2:
-				switch(meta)
-				{
-					case 3:
-					case 5:
-						boolean active = MekanismUtils.isActive(world, pos);
-						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
-					default:
-						return icons[meta][0];
-				}
-			case MACHINE_BLOCK_3:
-				switch(meta)
-				{
-					case 3:
-					case 5:
-					case 6:
-						boolean active = MekanismUtils.isActive(world, pos);
-						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
-					default:
-						return icons[meta][0];
-				}
-		}
-		
-		return null;
-	}
-*/
-
 	@Override
 	public int damageDropped(IBlockState state)
 	{
@@ -573,15 +430,12 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						{
 							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
 							{
-								try
-								{ //Prevent bad IDs
+								try { //Prevent bad IDs
 									ItemStack filled = new ItemStack(item, 1, type.meta);
 									itemMachine.setBaseTier(filled, BaseTier.ULTIMATE);
 									itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
 									list.add(filled);
-								} catch(Exception e)
-								{
-								}
+								} catch(Exception e) {}
 							}
 						}
 
@@ -645,8 +499,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 
 					tileEntity.setFacing((short)change);
 					world.notifyNeighborsOfStateChange(pos, this);
-				} else
-				{
+				} 
+				else {
 					SecurityUtils.displayNoAccess(entityplayer);
 				}
 
@@ -668,8 +522,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
 							MekanismUtils.openPersonalChestGui((EntityPlayerMP)entityplayer, chest, null, true);
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -689,12 +543,12 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 									entityplayer.inventory.markDirty();
 									return true;
 								}
-							} else
-							{
+							} 
+							else {
 								entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 							}
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -708,8 +562,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
 							LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -726,8 +580,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(owner == null || entityplayer.getName().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -760,6 +614,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		int metadata = getMetaFromState(state);
+		
 		if(BlockStateMachine.MachineType.get(getMachineBlock(), metadata) == null)
 		{
 			return null;
@@ -1085,20 +940,6 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		
 		return super.getRenderColor(state);
 	}
-	
-	@Override
-	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
-	{
-		TileEntity tileEntity = world.getTileEntity(pos);
-
-		if(!world.isRemote)
-		{
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onAdded();
-			}
-		}
-	}
 
 	@Override
 	public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)
@@ -1192,6 +1033,24 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 				return true;
 		}
 	}
+	
+	@Override
+	public CTMData getCTMData(IBlockState state)
+	{
+		return ctmData[getMetaFromState(state)][0];
+	}
+	
+	@Override
+	public String getOverrideTexture(IBlockState state, EnumFacing side)
+	{
+		return null;
+	}
+	
+	@Override
+	public PropertyEnum<MachineType> getTypeProperty()
+	{
+		return getMachineBlock().getProperty();
+	}
 
 	@Override
 	public void setRenderBounds(Block block, int metadata) {}
@@ -1255,22 +1114,4 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		
         return 0;
     }
-/*
-	@Override
-	public CTMData getCTMData(IBlockAccess world, BlockPos pos, int meta)
-	{
-		if(ctms[meta][1] != null && MekanismUtils.isActive(world, pos))
-		{
-			return ctms[meta][1];
-		}
-		
-		return ctms[meta][0];
-	}
-
-	@Override
-	public boolean shouldRenderBlock(IBlockAccess world, BlockPos pos, int meta)
-	{
-		return !MachineType.get(this, meta).hasModel;
-	}*/
-
 }

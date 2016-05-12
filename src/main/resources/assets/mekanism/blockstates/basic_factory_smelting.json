@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/factory/basic/smelting/BasicSmeltingFactoryRight",
       "front": "mekanism:blocks/factory/basic/smelting/BasicSmeltingFactoryFront",
       "south": "mekanism:blocks/factory/basic/smelting/BasicSmeltingFactoryBack",
       "west": "mekanism:blocks/factory/basic/smelting/BasicSmeltingFactoryRight",

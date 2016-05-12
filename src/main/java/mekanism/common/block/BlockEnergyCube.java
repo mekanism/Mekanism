@@ -7,8 +7,8 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateEnergyCube;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -165,10 +165,10 @@ public class BlockEnergyCube extends BlockContainer
 		for(EnergyCubeTier tier : EnergyCubeTier.values())
 		{
 			ItemStack discharged = new ItemStack(this);
-			((ItemBlockEnergyCube)discharged.getItem()).setEnergyCubeTier(discharged, tier);
+			((ItemBlockEnergyCube)discharged.getItem()).setBaseTier(discharged, tier.getBaseTier());
 			list.add(discharged);
 			ItemStack charged = new ItemStack(this);
-			((ItemBlockEnergyCube)charged.getItem()).setEnergyCubeTier(charged, tier);
+			((ItemBlockEnergyCube)charged.getItem()).setBaseTier(charged, tier.getBaseTier());
 			((ItemBlockEnergyCube)charged.getItem()).setEnergy(charged, tier.maxEnergy);
 			list.add(charged);
 		}
@@ -301,8 +301,8 @@ public class BlockEnergyCube extends BlockContainer
 			}
 		}
 
-		IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
-		energyCube.setEnergyCubeTier(itemStack, tileEntity.tier);
+		ITierItem tierItem = (ITierItem)itemStack.getItem();
+		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
 
 		IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
 		energizedItem.setEnergy(itemStack, tileEntity.electricityStored);

@@ -3,12 +3,10 @@ package mekanism.common.multipart;
 import java.util.Collection;
 
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 //import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -29,8 +27,6 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
 */
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandler
 {

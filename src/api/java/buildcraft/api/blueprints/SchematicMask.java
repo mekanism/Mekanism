@@ -14,7 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
-
 import buildcraft.api.core.BuildCraftAPI;
 
 public class SchematicMask extends SchematicBlockBase {

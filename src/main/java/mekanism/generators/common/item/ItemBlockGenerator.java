@@ -1,5 +1,8 @@
 package mekanism.generators.common.item;
 
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
+
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -14,13 +17,14 @@ import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
-
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -28,7 +32,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,10 +42,7 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 
 /**
  * Item class for handling multiple generator block IDs.
@@ -95,12 +97,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
-	{
-		return metaBlock.getIcon(2, i);
-	}
-
-	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		if(GeneratorType.getFromMetadata(itemstack.getItemDamage()) == null)
@@ -128,7 +124,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			{
 				if(hasSecurity(itemstack))
 				{
-					list.add(SecurityUtils.getOwnerDisplay(entityplayer.getCommandSenderName(), getOwner(itemstack)));
+					list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
 					list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 					
 					if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
@@ -165,14 +161,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
 		boolean place = true;
-		Block block = world.getBlock(x, y, z);
+		Block block = world.getBlockState(pos).getBlock();
 
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-			if(!(block.isReplaceable(world, x, y, z) && world.isAirBlock(x, y+1, z)))
+			if(!(block.isReplaceable(world, pos) && world.isAirBlock(pos.add(0, 1, 0))))
 			{
 				return false;
 			}
@@ -192,7 +188,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		}
 		else if(stack.getItemDamage() == GeneratorType.WIND_GENERATOR.meta)
 		{
-			if(!block.isReplaceable(world, x, y, z))
+			if(!block.isReplaceable(world, pos))
 			{
 				return false;
 			}
@@ -208,9 +204,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			}
 		}
 
-		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
+		if(place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state))
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 			
 			if(tileEntity instanceof ISecurityTile)
 			{
@@ -224,7 +220,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 				
 				if(getOwner(stack) == null)
 				{
-					security.getSecurity().setOwner(player.getCommandSenderName());
+					security.getSecurity().setOwner(player.getName());
 				}
 			}
 			
@@ -339,7 +335,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public void setFluidStack(FluidStack fluidStack, Object... data)
 	{
-		if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluidID() == 0)
+		if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null)
 		{
 			return;
 		}
@@ -491,9 +487,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public String getOwner(ItemStack stack) 
 	{
-		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("owner"))
+		if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("owner"))
 		{
-			return stack.stackTagCompound.getString("owner");
+			return stack.getTagCompound().getString("owner");
 		}
 		
 		return null;
@@ -502,40 +498,40 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public void setOwner(ItemStack stack, String owner) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
 		if(owner == null || owner.isEmpty())
 		{
-			stack.stackTagCompound.removeTag("owner");
+			stack.getTagCompound().removeTag("owner");
 			return;
 		}
 		
-		stack.stackTagCompound.setString("owner", owner);
+		stack.getTagCompound().setString("owner", owner);
 	}
 
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			return SecurityMode.PUBLIC;
 		}
 
-		return SecurityMode.values()[stack.stackTagCompound.getInteger("security")];
+		return SecurityMode.values()[stack.getTagCompound().getInteger("security")];
 	}
 
 	@Override
 	public void setSecurity(ItemStack stack, SecurityMode mode) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		stack.stackTagCompound.setInteger("security", mode.ordinal());
+		stack.getTagCompound().setInteger("security", mode.ordinal());
 	}
 
 	@Override

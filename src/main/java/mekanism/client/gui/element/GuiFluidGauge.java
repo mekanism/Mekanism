@@ -13,7 +13,6 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.LangUtils;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

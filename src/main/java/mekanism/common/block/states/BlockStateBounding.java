@@ -1,8 +1,6 @@
 package mekanism.common.block.states;
 
-import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockBounding;
-
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockState;
 

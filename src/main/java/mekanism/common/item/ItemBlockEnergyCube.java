@@ -14,9 +14,10 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ITierItem;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
@@ -39,17 +40,17 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import cofh.api.energy.IEnergyContainerItem;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import cofh.api.energy.IEnergyContainerItem;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
-public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IEnergyCube, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem
+public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem, ITierItem
 {
 	public Block metaBlock;
 
@@ -91,7 +92,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	public ItemStack getUnchargedItem(EnergyCubeTier tier)
 	{
 		ItemStack stack = new ItemStack(this);
-		setEnergyCubeTier(stack, tier);
+		setBaseTier(stack, tier.getBaseTier());
 		
 		return stack;
 	}
@@ -99,7 +100,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public String getItemStackDisplayName(ItemStack itemstack)
 	{
-		return LangUtils.localize("tile.EnergyCube" + getEnergyCubeTier(itemstack).getBaseTier().getSimpleName() + ".name");
+		return LangUtils.localize("tile.EnergyCube" + getBaseTier(itemstack).getSimpleName() + ".name");
 	}
 
 	@Override
@@ -110,7 +111,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		if(place)
 		{
 			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
-			tileEntity.tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
+			tileEntity.tier = EnergyCubeTier.values()[getBaseTier(stack).ordinal()];
 			tileEntity.electricityStored = getEnergy(stack);
 			
 			if(tileEntity instanceof ISecurityTile)
@@ -141,30 +142,25 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	}
 
 	@Override
-	public EnergyCubeTier getEnergyCubeTier(ItemStack itemstack)
+	public BaseTier getBaseTier(ItemStack itemstack)
 	{
 		if(!itemstack.hasTagCompound())
 		{
-			return EnergyCubeTier.BASIC;
+			return BaseTier.BASIC;
 		}
 
-		if(itemstack.getTagCompound().getString("tier") == null)
-		{
-			return EnergyCubeTier.BASIC;
-		}
-
-		return EnergyCubeTier.getFromName(itemstack.getTagCompound().getString("tier"));
+		return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
 	}
 
 	@Override
-	public void setEnergyCubeTier(ItemStack itemstack, EnergyCubeTier tier)
+	public void setBaseTier(ItemStack itemstack, BaseTier tier)
 	{
 		if(!itemstack.hasTagCompound())
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.getTagCompound().setString("tier", tier.getBaseTier().getSimpleName());
+		itemstack.getTagCompound().setInteger("tier", tier.ordinal());
 	}
 
 	@Override
@@ -243,7 +239,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(getEnergyCubeTier(itemStack) == EnergyCubeTier.CREATIVE && amount != Double.MAX_VALUE)
+		if(getBaseTier(itemStack) == BaseTier.CREATIVE && amount != Double.MAX_VALUE)
 		{
 			return;
 		}
@@ -260,7 +256,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return getEnergyCubeTier(itemStack).maxEnergy;
+		return EnergyCubeTier.values()[getBaseTier(itemStack).ordinal()].maxEnergy;
 	}
 
 	@Override

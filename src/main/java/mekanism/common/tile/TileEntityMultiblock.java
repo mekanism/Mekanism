@@ -14,11 +14,15 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -75,12 +79,14 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			for(EntityPlayer player : playersUsing)
 			{
-				player.closeScreen();
+				System.out.println(worldObj.isRemote + " " + clientHasStructure + " " + structure);
+				//player.closeScreen();
 			}
 		}
 
 		if(!worldObj.isRemote)
 		{
+			//System.out.println(pos + " " + structure);
 			if(structure == null)
 			{
 				isRendering = false;
@@ -90,10 +96,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 					getManager().updateCache(this);
 				}
 			}
-
+			
 			if(structure == null && ticker == 5)
 			{
-				update();
+				doUpdate();
 			}
 
 			if(prevStructure == (structure == null))
@@ -108,10 +114,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				for(EnumFacing side : EnumFacing.VALUES)
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
+					TileEntity tile = obj.getTileEntity(worldObj);
 
-					if(!obj.isAirBlock(worldObj) && (obj.getTileEntity(worldObj) == null || obj.getTileEntity(worldObj).getClass() != getClass()))
+					if(!obj.isAirBlock(worldObj) && (tile == null || tile.getClass() != getClass()))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos(), getPos());
 					}
 				}
 
@@ -122,6 +129,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 			if(structure != null)
 			{
+				//System.out.println("Whee " + structure + " " + isInvalid());
 				getSynchronizedData().didTick = false;
 
 				if(getSynchronizedData().inventoryID != null)
@@ -135,7 +143,20 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 	
 	@Override
-	public void update()
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
+    {
+		boolean b = super.shouldRefresh(world, pos, oldState, newSate);
+		
+		if(!world.isRemote)
+		{
+			System.out.println(b);
+		}
+		
+		return b;
+    }
+	
+	@Override
+	public void doUpdate()
 	{
 		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))
 		{
@@ -179,7 +200,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 		data.add(isRendering);
 		data.add(structure != null);
-
+		
 		if(structure != null && isRendering)
 		{
 			if(sendStructure)
@@ -215,7 +236,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 		isRendering = dataStream.readBoolean();
 		clientHasStructure = dataStream.readBoolean();
-
+		
 		if(clientHasStructure && isRendering)
 		{
 			if(dataStream.readBoolean())

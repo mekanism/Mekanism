@@ -1,6 +1,8 @@
 package mekanism.common;
 
+import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.GasStack;
+import mekanism.api.util.ReflectionUtils;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
@@ -8,8 +10,6 @@ import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -101,7 +101,7 @@ public class CommonPlayerTickHandler
 
 			if(player instanceof EntityPlayerMP)
 			{
-				MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
+				ReflectionUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 			}
 
 			jetpack.useGas(player.getEquipmentInSlot(3));

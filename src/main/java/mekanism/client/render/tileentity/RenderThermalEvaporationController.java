@@ -6,19 +6,20 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderThermalEvaporationController extends TileEntitySpecialRenderer<TileEntityThermalEvaporationController>
@@ -43,7 +44,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 
 				push();
 
-				GL11.glTranslated(getX(renderLoc.getX()), getY(renderLoc.getY()), getZ(renderLoc.getZ()));
+				GL11.glTranslated(getX(renderLoc.xCoord), getY(renderLoc.yCoord), getZ(renderLoc.zCoord));
 
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
 
@@ -60,12 +61,12 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 	private void pop()
 	{
 		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -83,7 +84,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getStill());
+		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -152,7 +153,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 			displays[i].endList();
 		}
 
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		MekanismRenderer.resetColor();
 
 		return displays;
 	}

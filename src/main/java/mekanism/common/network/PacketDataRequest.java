@@ -31,11 +31,10 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+		TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
 		
-		if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof ITileNetwork)
+		if(worldServer != null && tileEntity instanceof ITileNetwork)
 		{
-			TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
-
 			if(tileEntity instanceof TileEntityMultiblock)
 			{
 				((TileEntityMultiblock)tileEntity).sendStructure = true;

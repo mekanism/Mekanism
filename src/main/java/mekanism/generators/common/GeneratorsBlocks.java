@@ -11,9 +11,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("MekanismGenerators")
 public class GeneratorsBlocks
 {
-	public static final Block Generator = new BlockGenerator().setBlockName("Generator");
-	public static final Block Reactor = new BlockReactor().setBlockName("Reactor");
-	public static final Block ReactorGlass = new BlockReactor().setBlockName("ReactorGlass");
+	public static final Block Generator = new BlockGenerator().setUnlocalizedName("Generator");
+	public static final Block Reactor = new BlockReactor().setUnlocalizedName("Reactor");
+	public static final Block ReactorGlass = new BlockReactor().setUnlocalizedName("ReactorGlass");
 
 	public static void register()
 	{

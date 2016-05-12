@@ -105,19 +105,6 @@
             }
         },
         {
-            "__comment": "pipeToggle",
-            "from": [5, -8, 5],
-            "to": [11, 0, 11],
-            "faces": {
-                "down":  {"uv": [12.5, 11, 11, 12.5], "texture": "#all"},
-                "up":    {"uv": [11, 12.5, 9.5, 11], "texture": "#all"},
-                "north": {"uv": [9.5, 12.5, 11, 14.5], "texture": "#all"},
-                "south": {"uv": [12.5, 12.5, 14, 14.5], "texture": "#all"},
-                "west":  {"uv": [11, 12.5, 12.5, 14.5], "texture": "#all"},
-                "east":  {"uv": [8, 12.5, 9.5, 14.5], "texture": "#all"}
-            }
-        },
-        {
             "__comment": "bearingLeft",
             "from": [12, 6, 6],
             "to": [13, 10, 10],
@@ -198,6 +185,13 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/fluidic_plenisher",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
+    },
+    "display": {
+        "thirdperson": {
+            "rotation": [ 10, -45, 170 ],
+            "translation": [ 0, 1.5, -2.75 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        }
     }
 }

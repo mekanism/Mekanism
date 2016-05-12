@@ -6,13 +6,13 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderTurbineRotor extends TileEntitySpecialRenderer
@@ -24,7 +24,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 	private static final float BASE_SPEED = 512F;
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		renderAModelAt((TileEntityTurbineRotor)tileEntity, x, y, z, partialTick);
 	}
@@ -36,7 +36,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 			return;
 		}
 		
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Turbine.png"));
 		
@@ -56,22 +56,22 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 		
 		if(tileEntity.getHousedBlades() > 0)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glTranslated(x + 0.5, y - 1, z + 0.5);
-			GL11.glRotatef(tileEntity.rotationLower, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(tileEntity.rotationLower, 0.0F, 1.0F, 0.0F);
 			model.render(0.0625F, baseIndex);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		if(tileEntity.getHousedBlades() == 2)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glTranslated(x + 0.5, y - 0.5, z + 0.5);
-			GL11.glRotatef(tileEntity.rotationUpper, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(tileEntity.rotationUpper, 0.0F, 1.0F, 0.0F);
 			model.render(0.0625F, baseIndex+1);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

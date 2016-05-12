@@ -1,14 +1,15 @@
 package li.cil.oc.api.event;
 
+import java.util.Set;
+
 import li.cil.oc.api.driver.item.UpgradeRenderer;
 import li.cil.oc.api.internal.Agent;
 import li.cil.oc.api.internal.Robot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
+
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
-
-import java.util.Set;
 
 /**
  * Fired directly before the robot's chassis is rendered.

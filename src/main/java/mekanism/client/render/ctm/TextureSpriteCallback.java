@@ -9,16 +9,18 @@ import net.minecraft.util.ResourceLocation;
  * Callback when textures are stitched
  */
 @Getter
-public class TextureSpriteCallback {
-
+public class TextureSpriteCallback 
+{
     private ResourceLocation location;
     private TextureAtlasSprite sprite;
 
-    public TextureSpriteCallback(ResourceLocation loc) {
-        this.location = loc;
+    public TextureSpriteCallback(ResourceLocation loc) 
+    {
+        location = loc;
     }
 
-    public void stitch(TextureMap map) {
-        this.sprite = map.registerSprite(location);
+    public void stitch(TextureMap map) 
+    {
+        sprite = map.registerSprite(location);
     }
 }

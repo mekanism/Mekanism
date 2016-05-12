@@ -8,12 +8,12 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public final class BuildCraftAPI {
 

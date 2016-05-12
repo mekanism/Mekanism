@@ -14,19 +14,6 @@
             }
         },
         {
-            "__comment": "pipeToggleRingBack",
-            "from": [4.5, 4.5, 13],
-            "to": [11.5, 11.5, 14],
-            "faces": {
-                "down":  {"uv": [4.125, 3.75, 3.25, 3.875], "texture": "#all"},
-                "up":    {"uv": [3.25, 3.875, 2.375, 3.75], "texture": "#all"},
-                "north": {"uv": [2.375, 3.875, 3.25, 4.75], "texture": "#all"},
-                "south": {"uv": [3.375, 3.875, 4.25, 4.75], "texture": "#all"},
-                "west":  {"uv": [3.25, 3.875, 3.375, 4.75], "texture": "#all"},
-                "east":  {"uv": [2.25, 3.875, 2.375, 4.75], "texture": "#all"}
-            }
-        },
-        {
             "__comment": "powerConnectorFrame1",
             "from": [10, 10, 1],
             "to": [11, 11, 5],
@@ -37,19 +24,6 @@
                 "south": {"uv": [5.875, 3.125, 6, 3.25], "texture": "#all"},
                 "west":  {"uv": [5.375, 3.125, 5.875, 3.25], "texture": "#all"},
                 "east":  {"uv": [4.75, 3.125, 5.25, 3.25], "texture": "#all"}
-            }
-        },
-        {
-            "__comment": "pipeToggleBack",
-            "from": [5, 5, 11],
-            "to": [11, 11, 15],
-            "faces": {
-                "down":  {"uv": [2, 2.375, 1.25, 2.875], "texture": "#all"},
-                "up":    {"uv": [1.25, 2.875, 0.5, 2.375], "texture": "#all"},
-                "north": {"uv": [0.5, 2.875, 1.25, 3.625], "texture": "#all"},
-                "south": {"uv": [1.75, 2.875, 2.5, 3.625], "texture": "#all"},
-                "west":  {"uv": [1.25, 2.875, 1.75, 3.625], "texture": "#all"},
-                "east":  {"uv": [0, 2.875, 0.5, 3.625], "texture": "#all"}
             }
         },
         {
@@ -79,32 +53,6 @@
             }
         },
         {
-            "__comment": "pipeTogglePortLeft",
-            "from": [0, 4, 4],
-            "to": [1, 12, 12],
-            "faces": {
-                "down":  {"uv": [1.25, 4.75, 1.125, 5.75], "texture": "#all"},
-                "up":    {"uv": [1.125, 5.75, 1, 4.75], "texture": "#all"},
-                "north": {"uv": [1, 5.75, 1.125, 6.75], "texture": "#all"},
-                "south": {"uv": [2.125, 5.75, 2.25, 6.75], "texture": "#all"},
-                "west":  {"uv": [1.125, 5.75, 2.125, 6.75], "texture": "#all"},
-                "east":  {"uv": [0, 5.75, 1, 6.75], "texture": "#all"}
-            }
-        },
-        {
-            "__comment": "pipeToggleRingRight",
-            "from": [13, 4.5, 4.5],
-            "to": [14, 11.5, 11.5],
-            "faces": {
-                "down":  {"uv": [3.375, 4.75, 3.25, 5.625], "texture": "#all"},
-                "up":    {"uv": [3.25, 5.625, 3.125, 4.75], "texture": "#all"},
-                "north": {"uv": [3.125, 5.625, 3.25, 6.5], "texture": "#all"},
-                "south": {"uv": [4.125, 5.625, 4.25, 6.5], "texture": "#all"},
-                "west":  {"uv": [3.25, 5.625, 4.125, 6.5], "texture": "#all"},
-                "east":  {"uv": [2.25, 5.625, 3.125, 6.5], "texture": "#all"}
-            }
-        },
-        {
             "__comment": "powerConnectorFrame4",
             "from": [5, 5, 1],
             "to": [6, 6, 5],
@@ -115,32 +63,6 @@
                 "south": {"uv": [5.875, 3.125, 6, 3.25], "texture": "#all"},
                 "west":  {"uv": [5.375, 3.125, 5.875, 3.25], "texture": "#all"},
                 "east":  {"uv": [4.75, 3.125, 5.25, 3.25], "texture": "#all"}
-            }
-        },
-        {
-            "__comment": "pipeToggleRingLeft",
-            "from": [2, 4.5, 4.5],
-            "to": [3, 11.5, 11.5],
-            "faces": {
-                "down":  {"uv": [3.375, 4.75, 3.25, 5.625], "texture": "#all"},
-                "up":    {"uv": [3.25, 5.625, 3.125, 4.75], "texture": "#all"},
-                "north": {"uv": [3.125, 5.625, 3.25, 6.5], "texture": "#all"},
-                "south": {"uv": [4.125, 5.625, 4.25, 6.5], "texture": "#all"},
-                "west":  {"uv": [3.25, 5.625, 4.125, 6.5], "texture": "#all"},
-                "east":  {"uv": [2.25, 5.625, 3.125, 6.5], "texture": "#all"}
-            }
-        },
-        {
-            "__comment": "pipeTogglePortRight",
-            "from": [15, 4, 4],
-            "to": [16, 12, 12],
-            "faces": {
-                "down":  {"uv": [1.25, 4.75, 1.125, 5.75], "texture": "#all"},
-                "up":    {"uv": [1.125, 5.75, 1, 4.75], "texture": "#all"},
-                "north": {"uv": [1, 5.75, 1.125, 6.75], "texture": "#all"},
-                "south": {"uv": [2.125, 5.75, 2.25, 6.75], "texture": "#all"},
-                "west":  {"uv": [1.125, 5.75, 2.125, 6.75], "texture": "#all"},
-                "east":  {"uv": [0, 5.75, 1, 6.75], "texture": "#all"}
             }
         },
         {
@@ -196,45 +118,6 @@
             }
         },
         {
-            "__comment": "pumpPipe",
-            "from": [6, -8, 6],
-            "to": [10, 0, 10],
-            "faces": {
-                "down":  {"uv": [8, 0, 7.5, 0.5], "texture": "#all"},
-                "up":    {"uv": [7.5, 0.5, 7, 0], "texture": "#all"},
-                "north": {"uv": [7, 0.5, 7.5, 1.5], "texture": "#all"},
-                "south": {"uv": [8, 0.5, 8.5, 1.5], "texture": "#all"},
-                "west":  {"uv": [7.5, 0.5, 8, 1.5], "texture": "#all"},
-                "east":  {"uv": [6.5, 0.5, 7, 1.5], "texture": "#all"}
-            }
-        },
-        {
-            "__comment": "pipeTogglePortBack",
-            "from": [4, 4, 15],
-            "to": [12, 12, 16],
-            "faces": {
-                "down":  {"uv": [4.625, 2.625, 3.625, 2.75], "texture": "#all"},
-                "up":    {"uv": [3.625, 2.75, 2.625, 2.625], "texture": "#all"},
-                "north": {"uv": [2.625, 2.75, 3.625, 3.75], "texture": "#all"},
-                "south": {"uv": [3.75, 2.75, 4.75, 3.75], "texture": "#all"},
-                "west":  {"uv": [3.625, 2.75, 3.75, 3.75], "texture": "#all"},
-                "east":  {"uv": [2.5, 2.75, 2.625, 3.75], "texture": "#all"}
-            }
-        },
-        {
-            "__comment": "pipeToggleRight",
-            "from": [11, 5, 5],
-            "to": [15, 11, 11],
-            "faces": {
-                "down":  {"uv": [6, 4.75, 5.5, 5.5], "texture": "#all"},
-                "up":    {"uv": [5.5, 5.5, 5, 4.75], "texture": "#all"},
-                "north": {"uv": [5, 5.5, 5.5, 6.25], "texture": "#all"},
-                "south": {"uv": [6.25, 5.5, 6.75, 6.25], "texture": "#all"},
-                "west":  {"uv": [5.5, 5.5, 6.25, 6.25], "texture": "#all"},
-                "east":  {"uv": [4.25, 5.5, 5, 6.25], "texture": "#all"}
-            }
-        },
-        {
             "__comment": "powerConnectorFrame2",
             "from": [5, 10, 1],
             "to": [6, 11, 5],
@@ -246,23 +129,17 @@
                 "west":  {"uv": [5.375, 3.125, 5.875, 3.25], "texture": "#all"},
                 "east":  {"uv": [4.75, 3.125, 5.25, 3.25], "texture": "#all"}
             }
-        },
-        {
-            "__comment": "pipeToggleLeft",
-            "from": [1, 5, 5],
-            "to": [5, 11, 11],
-            "faces": {
-                "down":  {"uv": [6, 4.75, 5.5, 5.5], "texture": "#all"},
-                "up":    {"uv": [5.5, 5.5, 5, 4.75], "texture": "#all"},
-                "north": {"uv": [5, 5.5, 5.5, 6.25], "texture": "#all"},
-                "south": {"uv": [6.25, 5.5, 6.75, 6.25], "texture": "#all"},
-                "west":  {"uv": [5.5, 5.5, 6.25, 6.25], "texture": "#all"},
-                "east":  {"uv": [4.25, 5.5, 5, 6.25], "texture": "#all"}
-            }
         }
     ],
     "textures": {
         "all": "mekanism:blocks/models/electric_pump",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
+    },
+    "display": {
+        "thirdperson": {
+            "rotation": [ 10, -45, 170 ],
+            "translation": [ 0, 1.5, -2.75 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        }
     }
 }

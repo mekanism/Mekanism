@@ -79,7 +79,6 @@ public class MekanismTools implements IModule
 
 		//Load the proxy
 		proxy.loadConfiguration();
-		proxy.registerRenderInformation();
 		
 		//Load this module
 		addRecipes();

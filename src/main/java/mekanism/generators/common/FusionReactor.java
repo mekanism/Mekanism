@@ -106,7 +106,7 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void simulate()
 	{
-		if(controller.getWorldObj().isRemote)
+		if(controller.getWorld().isRemote)
 		{
 			lastPlasmaTemperature = plasmaTemperature;
 			lastCaseTemperature = caseTemperature;
@@ -324,8 +324,8 @@ public class FusionReactor implements IFusionReactor
 
 	public void kill()
 	{
-		AxisAlignedBB death_zone = AxisAlignedBB.getBoundingBox(controller.xCoord - 1, controller.yCoord - 3, controller.zCoord - 1 ,controller.xCoord + 2, controller.yCoord, controller.zCoord + 2);
-		List<Entity> entitiesToDie = controller.getWorldObj().getEntitiesWithinAABB(Entity.class, death_zone);
+		AxisAlignedBB death_zone = AxisAlignedBB.fromBounds(controller.getPos().getX() - 1, controller.getPos().getY() - 3, controller.getPos().getZ() - 1 ,controller.getPos().getX() + 2, controller.getPos().getY(), controller.getPos().getZ() + 2);
+		List<Entity> entitiesToDie = controller.getWorld().getEntitiesWithinAABB(Entity.class, death_zone);
 		
 		for(Entity entity : entitiesToDie)
 		{
@@ -347,9 +347,9 @@ public class FusionReactor implements IFusionReactor
 		formed = false;
 		burning = burning && keepBurning;
 		
-		if(!controller.getWorldObj().isRemote)
+		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.getDimensionId());
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimensionId());
 		}
 	}
 
@@ -385,9 +385,9 @@ public class FusionReactor implements IFusionReactor
 		
 		formed = true;
 		
-		if(!controller.getWorldObj().isRemote)
+		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.getDimensionId());
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimensionId());
 		}
 	}
 
@@ -403,7 +403,7 @@ public class FusionReactor implements IFusionReactor
 
 		for(int[] coords : positions)
 		{
-			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
+			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
 
 			if(tile instanceof IReactorBlock && ((IReactorBlock)tile).isFrame())
 			{
@@ -431,7 +431,7 @@ public class FusionReactor implements IFusionReactor
 
 		for(int[] coords : positions)
 		{
-			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
+			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
 
 			if(tile instanceof ILaserReceptor && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0)))
 			{
@@ -469,9 +469,10 @@ public class FusionReactor implements IFusionReactor
 			{
 				for(int z = -1; x <= 1; x++)
 				{
-					Block tile = centre.clone().translate(x, y, z).getBlock(controller.getWorldObj());
+					Coord4D trans = centre.translate(x, y, z);
+					Block tile = trans.getBlock(controller.getWorld());
 
-					if(!tile.isAir(controller.getWorldObj(), x, y, z))
+					if(!tile.isAir(controller.getWorld(), trans.getPos()))
 					{
 						return false;
 					}

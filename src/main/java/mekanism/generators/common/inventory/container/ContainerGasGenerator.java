@@ -43,7 +43,7 @@ public class ContainerGasGenerator extends Container
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 		tileEntity.close(entityplayer);
 	}
 

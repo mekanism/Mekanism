@@ -50,8 +50,8 @@ public class Chunk3D
 	 */
 	public Chunk3D(Coord4D coord)
 	{
-		xCoord = coord.getX() >> 4;
-		zCoord = coord.getZ() >> 4;
+		xCoord = coord.xCoord >> 4;
+		zCoord = coord.zCoord >> 4;
 		
 		dimensionId = coord.dimensionId;
 	}

@@ -2,10 +2,10 @@ package buildcraft.api;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
+
+import org.apache.commons.lang3.StringUtils;
 
 import buildcraft.api.core.BCLog;
 

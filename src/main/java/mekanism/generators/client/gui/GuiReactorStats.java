@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +23,10 @@ import mekanism.generators.client.gui.element.GuiFuelTab;
 import mekanism.generators.client.gui.element.GuiHeatTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorStats extends GuiMekanism
@@ -102,7 +102,7 @@ public class GuiReactorStats extends GuiMekanism
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 

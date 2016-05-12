@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/SteelCasing",
+      "sides": "mekanism:blocks/combiner/CombinerRight",
       "front": "mekanism:blocks/combiner/CombinerFront",
       "west": "mekanism:blocks/combiner/CombinerRight",
       "east": "mekanism:blocks/combiner/CombinerLeft",

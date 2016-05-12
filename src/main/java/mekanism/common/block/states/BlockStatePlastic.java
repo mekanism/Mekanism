@@ -1,11 +1,6 @@
 package mekanism.common.block.states;
 
-import mekanism.api.EnumColor;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockPlastic;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;

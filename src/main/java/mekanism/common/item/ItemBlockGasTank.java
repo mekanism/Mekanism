@@ -67,7 +67,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getItemStackDisplayName(ItemStack itemstack)
 	{
 		return LangUtils.localize("tile.GasTank" + getBaseTier(itemstack).getSimpleName() + ".name");
 	}

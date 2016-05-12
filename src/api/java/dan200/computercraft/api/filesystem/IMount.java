@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import net.minecraft.world.World;
+
 /**
  * Represents a read only part of a virtual filesystem that can be mounted onto a computercraft using IComputerAccess.mount().
  * Ready made implementations of this interface can be created using ComputerCraftAPI.createSaveDirMount() or ComputerCraftAPI.createResourceMount(), or you're free to implement it yourselves!

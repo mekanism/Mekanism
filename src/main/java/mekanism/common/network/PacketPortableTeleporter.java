@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ObfuscatedNames;
 import mekanism.api.Range4D;
+import mekanism.api.util.ReflectionUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -16,7 +17,6 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -114,7 +114,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							
 							if(player instanceof EntityPlayerMP)
 							{
-								MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
+								ReflectionUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 							}
 							
 							player.closeScreen();

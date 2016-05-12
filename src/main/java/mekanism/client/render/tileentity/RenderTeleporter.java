@@ -11,6 +11,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -31,7 +32,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 			GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslatef((float)x, (float)y, (float)z);
+			GlStateManager.translate((float)x, (float)y, (float)z);
 
 			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
 			int type = 0;
@@ -45,6 +46,8 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
 			int display = getOverlayDisplay(type).display;
 			GL11.glCallList(display);
+			
+			MekanismRenderer.resetColor();
 
 			pop();
 		}
@@ -55,12 +58,12 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 		GL11.glPopAttrib();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -77,7 +80,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.stone;
-		toReturn.setTexture(GasRegistry.getGas("oxygen").getIcon());
+		toReturn.setTexture(GasRegistry.getGas("oxygen").getSprite());
 
 		DisplayInteger display = DisplayInteger.createAndStart();
 

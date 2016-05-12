@@ -35,9 +35,10 @@ public class Gas
 	 * Creates a new Gas object with a defined name or key value.
 	 * @param s - name or key to associate this Gas with
 	 */
-	public Gas(String s)
+	public Gas(String s, String icon)
 	{
 		unlocalizedName = name = s;
+		iconLocation = new ResourceLocation(icon);
 	}
 
 	/**
@@ -144,9 +145,8 @@ public class Gas
 	 * @param i - IIcon to associate with this Gas
 	 * @return this Gas object
 	 */
-	public Gas setIcon(TextureMap map, String location)
+	public Gas updateIcon(TextureMap map)
 	{
-		iconLocation = new ResourceLocation(location);
 		sprite = map.registerSprite(iconLocation);
 		from_fluid = false;
 		

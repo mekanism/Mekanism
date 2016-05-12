@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryRight",
       "front": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryFront",
       "south": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryBack",
       "west": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryRight",

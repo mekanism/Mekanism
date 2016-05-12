@@ -3,11 +3,10 @@ package mekanism.client.model;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelGasMask extends ModelBase
@@ -251,7 +250,7 @@ public class ModelGasMask extends ModelBase
 		glassbackL.render(size);
 
 		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glColor4f(1, 1, 1, 1);
+		MekanismRenderer.resetColor();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 

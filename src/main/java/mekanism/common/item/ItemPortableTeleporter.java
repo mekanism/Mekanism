@@ -83,7 +83,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			neededEnergy+=10000;
 		}
 
-		int distance = (int)entity.getDistance(coords.getX(), coords.getY(), coords.getZ());
+		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
 
 		neededEnergy+=(distance*10);
 

@@ -88,19 +88,6 @@ public final class Tier
 			baseMaxEnergy = maxEnergy = max;
 			baseOutput = output = out;
 		}
-
-		public static EnergyCubeTier getFromName(String tierName)
-		{
-			for(EnergyCubeTier tier : values())
-			{
-				if(tierName.contains(tier.getBaseTier().getSimpleName()))
-				{
-					return tier;
-				}
-			}
-			
-			return BASIC;
-		}
 		
 		@Override
 		public void loadConfig()
@@ -726,12 +713,10 @@ public final class Tier
 
 	public static void init()
 	{
-/*
 		if(initiated)
 		{
 			return;
 		}
-*/
 
 		for(Class c : Tier.class.getDeclaredClasses())
 		{

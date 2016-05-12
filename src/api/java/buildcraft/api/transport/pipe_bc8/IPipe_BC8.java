@@ -4,7 +4,6 @@ import java.util.Map;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-
 import buildcraft.api.core.INBTLoadable_BC8;
 import buildcraft.api.transport.pipe_bc8.event_bc8.IPipeEvent_BC8;
 

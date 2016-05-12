@@ -23,8 +23,8 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 import org.apache.commons.lang3.tuple.Pair;
 

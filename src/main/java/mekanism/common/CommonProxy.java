@@ -145,13 +145,6 @@ import net.minecraftforge.fml.relauncher.FMLInjectionData;
  */
 public class CommonProxy implements IGuiProvider
 {
-/*
-	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int PLASTIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-*/
-
 	protected static WeakReference<EntityPlayer> dummyPlayer = new WeakReference<EntityPlayer>(null);
 
 	/**
@@ -168,51 +161,36 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory");
 		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
 		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
-		//GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
+		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
-		GameRegistry.registerTileEntity(TileEntityPersonalChest.class, "ElectricChest"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityPersonalChest.class, "PersonalChest");
 		GameRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank");
 		GameRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve");
 		GameRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad");
 		GameRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter");
 		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
 		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");
-		//GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
-		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
 		GameRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer");
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
-		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
-		GameRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "SalinationController"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "ThermalEvaporationController");
 		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
-		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
-		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
 		GameRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer");
 		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
-		GameRegistry.registerTileEntity(TileEntityFluidTank.class, "PortableTank"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityFluidTank.class, "FluidTank");
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
-		//GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
-		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
-		GameRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam");
 		GameRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator");
-		GameRegistry.registerTileEntity(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
-		GameRegistry.registerTileEntity(TileEntityInductionCasing.class, "InductionCasing");
-		GameRegistry.registerTileEntity(TileEntityInductionPort.class, "InductionPort");
-		GameRegistry.registerTileEntity(TileEntityInductionCell.class, "InductionCell");
-		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
-		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
-		GameRegistry.registerTileEntity(TileEntityStructuralGlass.class, "StructuralGlass");
 		GameRegistry.registerTileEntity(TileEntityFormulaicAssemblicator.class, "FormulaicAssemblicator");
 		GameRegistry.registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater");
 		GameRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing");
 		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");
 		GameRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk");
 		GameRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter");
-		GameRegistry.registerTileEntity(TileEntityFuelwoodHeater.class, "FuelwoodHeater");
+		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
 	}
 	
 	public void handleTeleporterUpdate(PortableTeleporterMessage message) {}
@@ -228,19 +206,14 @@ public class CommonProxy implements IGuiProvider
 	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos) {}
 
 	/**
-	 * Register and load client-only render information.
+	 * Register and load client-only item render information.
 	 */
-	public void registerRenderInformation() {}
-
+	public void registerItemRenders() {}
+	
 	/**
-	 * Gets the armor index number from ClientProxy.
-	 * @param string - armor indicator
-	 * @return armor index number
+	 * Register and load client-only block render information.
 	 */
-	public int getArmorIndex(String string)
-	{
-		return 0;
-	}
+	public void registerBlockRenders() {}
 
 	/**
 	 * Set and load the mod's common configuration properties.
@@ -384,7 +357,7 @@ public class CommonProxy implements IGuiProvider
 		usage.heavyWaterElectrolysisUsage = Mekanism.configuration.get("usage", "HeavyWaterElectrolysisUsage", 800D).getDouble();
 		usage.formulaicAssemblicatorUsage = Mekanism.configuration.get("usage", "FormulaicAssemblicatorUsage", 100D).getDouble();
 
-//TODO:		Tier.loadConfig();
+		Tier.loadConfig();
 		
 		if(Mekanism.configuration.hasChanged())
 		{

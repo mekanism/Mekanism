@@ -22,9 +22,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 
@@ -104,7 +104,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			}
 
 			ItemStack stack = new ItemStack(block, 1, meta);
-			Coord4D orig = new Coord4D(pos, player.worldObj.provider.getDimensionId());
+			Coord4D orig = new Coord4D(pos, player.worldObj);
 
 			List<String> names = MekanismUtils.getOreDictName(stack);
 
@@ -120,7 +120,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			if(getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode)
 			{
-				Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(pos, player.worldObj.provider.getDimensionId())).calc();
+				Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(pos, player.worldObj)).calc();
 
 				for(Coord4D coord : found)
 				{
@@ -131,11 +131,11 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 					Block block2 = coord.getBlock(player.worldObj);
 
-					block2.onBlockDestroyedByPlayer(player.worldObj, coord, state);
-					player.worldObj.playAuxSFXAtEntity(null, 2001, coord, meta << 12);
-					player.worldObj.setBlockToAir(coord);
-					block2.breakBlock(player.worldObj, coord, state);
-					block2.dropBlockAsItem(player.worldObj, coord, state, 0);
+					block2.onBlockDestroyedByPlayer(player.worldObj, coord.getPos(), state);
+					player.worldObj.playAuxSFXAtEntity(null, 2001, coord.getPos(), meta << 12);
+					player.worldObj.setBlockToAir(coord.getPos());
+					block2.breakBlock(player.worldObj, coord.getPos(), state);
+					block2.dropBlockAsItem(player.worldObj, coord.getPos(), state, 0);
 
 					setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
 				}

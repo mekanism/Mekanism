@@ -149,7 +149,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -180,9 +180,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return EnumFacing.getFront(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+		return side == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 
 	@Override
@@ -324,7 +324,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return FuelHandler.getFuel(type) != null && side != EnumFacing.getFront(facing);
+		return FuelHandler.getFuel(type) != null && side != facing;
 	}
 
 	@Override
@@ -348,7 +348,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side != EnumFacing.getFront(facing);
+		return side != facing;
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import java.net.InetSocketAddress;
 import mekanism.api.MekanismConfig.general;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
-
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.relauncher.Side;

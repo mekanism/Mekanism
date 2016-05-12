@@ -1,9 +1,9 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "cube_all",
+    "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/InductionCasing"
+      "all": "mekanism:blocks/ctm/induction_casing"
     }
   },
   "variants": {

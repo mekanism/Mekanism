@@ -53,9 +53,9 @@ public class ThreadMinerSearch extends Thread
 
 		for(int i = 0; i < size; i++)
 		{
-			int x = coord.getX()+i%diameter;
-			int z = coord.getY()+(i/diameter)%diameter;
-			int y = coord.getZ()+(i/diameter/diameter);
+			int x = coord.xCoord+i%diameter;
+			int z = coord.yCoord+(i/diameter)%diameter;
+			int y = coord.zCoord+(i/diameter/diameter);
 
 			if(tileEntity.isInvalid())
 			{

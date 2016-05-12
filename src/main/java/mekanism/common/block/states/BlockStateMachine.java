@@ -55,6 +55,7 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -66,11 +67,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
-public class BlockStateMachine extends BlockStateFacing
+public class BlockStateMachine extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
 	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
@@ -78,7 +81,7 @@ public class BlockStateMachine extends BlockStateFacing
 
 	public BlockStateMachine(BlockMachine block, PropertyEnum typeProperty)
 	{
-		super(block, typeProperty, activeProperty, tierProperty, recipeProperty);
+		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty, recipeProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
 	}
 
 	public static enum MachineBlock
@@ -149,13 +152,13 @@ public class BlockStateMachine extends BlockStateFacing
 		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false, Predicates.alwaysTrue(), false),
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false, Predicates.alwaysTrue(), true),
 		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false, Predicates.alwaysTrue(), true),
-		QUANTUM_ENTANGLOPORTER(MachineBlock.MACHINE_BLOCK_3, 0, "QuantumEntangloporter", 46, TileEntityQuantumEntangloporter.class, true, false, false, Plane.HORIZONTAL, true),
+		QUANTUM_ENTANGLOPORTER(MachineBlock.MACHINE_BLOCK_3, 0, "QuantumEntangloporter", 46, TileEntityQuantumEntangloporter.class, true, false, false, Predicates.alwaysTrue(), false),
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false, Plane.HORIZONTAL, true),
 		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false, Predicates.alwaysFalse(), true),
 		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false, Plane.HORIZONTAL, true),
-		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, false, false, Predicates.alwaysTrue(), true),
-		FORMULAIC_ASSEMBLICATOR(MachineBlock.MACHINE_BLOCK_3, 5, "FormulaicAssemblicator", 56, TileEntityFormulaicAssemblicator.class, true, false, true, Predicates.alwaysTrue(), true),
-		FUELWOOD_HEATER(MachineBlock.MACHINE_BLOCK_3, 6, "FuelwoodHeater", 58, TileEntityFuelwoodHeater.class, false, false, false, Predicates.alwaysTrue(), true);
+		RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true, false, false, Plane.HORIZONTAL, true),
+		FORMULAIC_ASSEMBLICATOR(MachineBlock.MACHINE_BLOCK_3, 5, "FormulaicAssemblicator", 56, TileEntityFormulaicAssemblicator.class, true, false, true, Plane.HORIZONTAL, true),
+		FUELWOOD_HEATER(MachineBlock.MACHINE_BLOCK_3, 6, "FuelwoodHeater", 58, TileEntityFuelwoodHeater.class, false, false, false, Plane.HORIZONTAL, true);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -210,13 +213,18 @@ public class BlockStateMachine extends BlockStateFacing
 
 			for(MachineType type : MachineType.values())
 			{
-				if(type != QUANTUM_ENTANGLOPORTER && type != AMBIENT_ACCUMULATOR)
+				if(type.isValidMachine())
 				{
 					ret.add(type);
 				}
 			}
 
 			return ret;
+		}
+		
+		public boolean isValidMachine()
+		{
+			return this != AMBIENT_ACCUMULATOR;
 		}
 
 		public static MachineType get(Block block, int meta)
@@ -400,7 +408,7 @@ public class BlockStateMachine extends BlockStateFacing
 		@Override
 		public boolean apply(MachineType input)
 		{
-			return input.typeBlock == machineBlock;
+			return input.typeBlock == machineBlock && input.isValidMachine();
 		}
 	}
 
@@ -423,7 +431,7 @@ public class BlockStateMachine extends BlockStateFacing
 			
 			if(type.hasRotations())
 			{
-				EnumFacing facing = state.getValue(facingProperty);
+				EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
 				
 				if(type.canRotateTo(facing))
 				{
@@ -432,7 +440,7 @@ public class BlockStateMachine extends BlockStateFacing
 						builder.append(",");
 					}
 					
-					builder.append(facingProperty.getName());
+					builder.append(BlockStateFacing.facingProperty.getName());
 					builder.append("=");
 					builder.append(facing.getName());
 				}

@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -73,7 +74,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				}
 				else if(fluid != null)
 				{
-					if(fluid != null && fluid.getFluidID() == FluidRegistry.LAVA.getID())
+					if(fluid != null && fluid.getFluid() == FluidRegistry.LAVA)
 					{
 						if(lavaTank.getFluid() == null || lavaTank.getFluid().amount+fluid.amount <= lavaTank.getCapacity())
 						{
@@ -152,7 +153,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(slotID == 0)
 		{
-			return getFuel(itemstack) > 0 || (FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluidID() == FluidRegistry.LAVA.getID());
+			return getFuel(itemstack) > 0 || (FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluid() == FluidRegistry.LAVA);
 		}
 		else if(slotID == 1)
 		{
@@ -191,7 +192,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -214,7 +215,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		{
 			Coord4D coord = Coord4D.get(this).offset(side);
 			
-			if(isLava(coord.xCoord, coord.yCoord, coord.zCoord))
+			if(isLava(coord.getPos()))
 			{
 				lavaBoost++;
 			}
@@ -228,9 +229,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		return (generators.heatGenerationLava * lavaBoost) + netherBoost;
 	}
 	
-	private boolean isLava(int x, int y, int z)
+	private boolean isLava(BlockPos pos)
 	{
-		return worldObj.getBlock(x, y, z) == Blocks.lava;
+		return worldObj.getBlockState(pos).getBlock() == Blocks.lava;
 	}
 
 	public int getFuel(ItemStack itemstack)
@@ -244,9 +245,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return EnumFacing.getFront(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+		return side == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 
 	/**
@@ -334,7 +335,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(resource.getFluidID() == FluidRegistry.LAVA.getID() && from != EnumFacing.getFront(facing))
+		if(resource.getFluid() == FluidRegistry.LAVA && from != facing)
 		{
 			return lavaTank.fill(resource, doFill);
 		}
@@ -357,7 +358,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return fluid == FluidRegistry.LAVA && from != EnumFacing.getFront(facing);
+		return fluid == FluidRegistry.LAVA && from != facing;
 	}
 
 	@Override
@@ -369,7 +370,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == EnumFacing.getFront(facing))
+		if(from == facing)
 		{
 			return PipeUtils.EMPTY;
 		}

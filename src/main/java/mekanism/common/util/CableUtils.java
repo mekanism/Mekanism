@@ -9,17 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.common.capabilities.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;

@@ -10,17 +10,17 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Rectangle;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiSeismicReader extends GuiScreen
@@ -43,7 +43,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public GuiSeismicReader(World world, Coord4D coord, ItemStack stack)
 	{
-		pos = new Coord4D(coord.getX(), Math.min(255, coord.getY()), coord.getZ());
+		pos = new Coord4D(coord.xCoord, Math.min(255, coord.yCoord), coord.zCoord);
 		worldObj = world;
 
 		itemStack = stack;
@@ -91,17 +91,17 @@ public class GuiSeismicReader extends GuiScreen
 		GL11.glColor3f(1, 1, 1);
 
 		// Fix the overlapping if > 100
-		GL11.glPushMatrix();
-		GL11.glTranslatef(guiWidth + 48, guiHeight + 87, 0);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(guiWidth + 48, guiHeight + 87, 0);
 		
 		if(currentLayer >= 100)
 		{
-			GL11.glTranslatef(0, 1, 0);
-			GL11.glScalef(0.7f, 0.7f, 0.7f);
+			GlStateManager.translate(0, 1, 0);
+			GlStateManager.scale(0.7f, 0.7f, 0.7f);
 		}
 		
 		fontRendererObj.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 
 		// Render the item stacks
 		for(int i = 0; i < 9; i++)
@@ -118,22 +118,22 @@ public class GuiSeismicReader extends GuiScreen
 					continue;
 				}
 				
-				GL11.glPushMatrix();
-				GL11.glTranslatef(centralX - 2, centralY - i * 16 + (22 * 2), 0);
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(centralX - 2, centralY - i * 16 + (22 * 2), 0);
 				
 				if(i < 4)
 				{
-					GL11.glTranslatef(0.2f, 2.5f, 0);
+					GlStateManager.translate(0.2f, 2.5f, 0);
 				}
 				
 				if(i != 4)
 				{
-					GL11.glTranslatef(1.5f, 0, 0);
-					GL11.glScalef(0.8f, 0.8f, 0.8f);
+					GlStateManager.translate(1.5f, 0, 0);
+					GlStateManager.scale(0.8f, 0.8f, 0.8f);
 				}
 				
 				itemRender.renderItemAndEffectIntoGUI(stack, 0, 0);
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}
 		}
 
@@ -158,23 +158,23 @@ public class GuiSeismicReader extends GuiScreen
 
 			renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
-			GL11.glPushMatrix();
-			GL11.glTranslatef(guiWidth + 72, guiHeight + 16, 0);
-			GL11.glScalef(renderScale, renderScale, renderScale);
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(guiWidth + 72, guiHeight + 16, 0);
+			GlStateManager.scale(renderScale, renderScale, renderScale);
 			fontRendererObj.drawString(capitalised, 0, 0, 0x919191);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 			
 			if(tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1)))
 			{
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
 				int fontLengthX = fontRendererObj.getStringWidth(capitalised) + 5;
 				int renderX = mouseX + 10, renderY = mouseY - 5;
-				GL11.glPushMatrix();
+				GlStateManager.pushMatrix();
 				GL11.glColor3f(1, 1, 1);
 				drawTexturedModalRect(renderX, renderY, 0, 0, fontLengthX, 16);
 				drawTexturedModalRect(renderX + fontLengthX, renderY, 0, 16, 2, 16);
 				fontRendererObj.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}
 		}
 
@@ -193,11 +193,11 @@ public class GuiSeismicReader extends GuiScreen
 			}
 		}
 
-		GL11.glPushMatrix();
-		GL11.glTranslatef(guiWidth + 72, guiHeight + 26, 0);
-		GL11.glScalef(0.70f, 0.70f, 0.70f);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(guiWidth + 72, guiHeight + 26, 0);
+		GlStateManager.scale(0.70f, 0.70f, 0.70f);
 		fontRendererObj.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		super.drawScreen(mouseX, mouseY, partialTick);
 	}
 
@@ -226,7 +226,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public void calculate()
 	{
-		for(BlockPos p = new BlockPos(pos.getX(), 0, pos.getZ()); p.getY() < pos.getY(); p = p.up())
+		for(BlockPos p = new BlockPos(pos.zCoord, 0, pos.zCoord); p.getY() < pos.yCoord; p = p.up())
 		{
 			IBlockState state = worldObj.getBlockState(p);
 			Block block = state.getBlock();

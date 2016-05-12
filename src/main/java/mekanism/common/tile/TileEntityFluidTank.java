@@ -9,6 +9,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
@@ -35,9 +36,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-
-import java.util.ArrayList;
 
 public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile
 {
@@ -330,7 +328,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		if(valve > 0)
 		{
-			valveFluid = FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream));
+			valveFluid = FluidRegistry.getFluid(PacketHandler.readString(dataStream));
 		}
 		else {
 			valveFluid = null;
@@ -338,7 +336,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		if(dataStream.readInt() == 1)
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
 		}
 		else {
 			fluidTank.setFluid(null);

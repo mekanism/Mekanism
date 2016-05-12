@@ -5,7 +5,6 @@ import ic2.api.energy.tile.IEnergySource;
 import java.util.Collection;
 import java.util.List;
 
-import mekanism.common.capabilities.Capabilities;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -16,6 +15,7 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 //import net.minecraft.client.renderer.texture.IIconRegister;
@@ -26,6 +26,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 //import net.minecraft.util.IIcon;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 /*
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
@@ -33,8 +34,6 @@ import codechicken.lib.vec.Vector3;
 */
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
-
-import net.minecraftforge.common.capabilities.Capability;
 
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {

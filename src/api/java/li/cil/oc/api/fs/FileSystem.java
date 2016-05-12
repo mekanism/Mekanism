@@ -1,8 +1,8 @@
 package li.cil.oc.api.fs;
 
-import li.cil.oc.api.Persistable;
-
 import java.io.FileNotFoundException;
+
+import li.cil.oc.api.Persistable;
 
 /**
  * Interface for file system driver compatible file systems.

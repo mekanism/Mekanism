@@ -77,12 +77,27 @@ import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
+import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
+import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
+import mekanism.common.tile.TileEntityChemicalInfuser;
+import mekanism.common.tile.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityElectrolyticSeparator;
+import mekanism.common.tile.TileEntityFuelwoodHeater;
+import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionPort;
+import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityLaser;
-import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.TileEntityLaserTractorBeam;
+import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.tile.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
@@ -110,7 +125,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -1169,12 +1183,26 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
-		GameRegistry.registerTileEntity(TileEntityThermalEvaporationValve.class, "SalinationValve"); //TODO rename
-		GameRegistry.registerTileEntity(TileEntityThermalEvaporationBlock.class, "SalinationTank"); //TODO rename
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationValve.class, "ThermalEvaporationValve");
+		GameRegistry.registerTileEntity(TileEntityThermalEvaporationBlock.class, "ThermalEvaporationBlock");
 		GameRegistry.registerTileEntity(TileEntityPressureDisperser.class, "PressureDisperser");
 		GameRegistry.registerTileEntity(TileEntitySuperheatingElement.class, "SuperheatingElement");
-		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
+		GameRegistry.registerTileEntity(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
+		GameRegistry.registerTileEntity(TileEntityInductionCasing.class, "InductionCasing");
+		GameRegistry.registerTileEntity(TileEntityInductionPort.class, "InductionPort");
+		GameRegistry.registerTileEntity(TileEntityInductionCell.class, "InductionCell");
+		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
+		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
+		GameRegistry.registerTileEntity(TileEntityStructuralGlass.class, "StructuralGlass");
+		GameRegistry.registerTileEntity(TileEntityFuelwoodHeater.class, "FuelwoodHeater");
+		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
+		GameRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam");
+		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
+		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
+		GameRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer");
+		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
+		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
@@ -1251,26 +1279,26 @@ public class Mekanism
 			logger.info("Detected Tekkit in root directory - hello, fellow user!");
 		}
 		
-		GasRegistry.register(new Gas("hydrogen")).registerFluid();
-		GasRegistry.register(new Gas("oxygen")).registerFluid();
-		GasRegistry.register(new Gas("water")).registerFluid();
-		GasRegistry.register(new Gas("chlorine")).registerFluid();
-		GasRegistry.register(new Gas("sulfurDioxideGas")).registerFluid();
-		GasRegistry.register(new Gas("sulfurTrioxideGas")).registerFluid();
-		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();
-		GasRegistry.register(new Gas("hydrogenChloride")).registerFluid();
-		GasRegistry.register(new Gas("liquidOsmium").setVisible(false));
-		GasRegistry.register(new Gas("liquidStone").setVisible(false));
-		GasRegistry.register(new Gas("ethene").registerFluid());
-		GasRegistry.register(new Gas("sodium").registerFluid());
-		GasRegistry.register(new Gas("brine").registerFluid());
-		GasRegistry.register(new Gas("deuterium")).registerFluid();
-		GasRegistry.register(new Gas("tritium")).registerFluid();
-		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
-		GasRegistry.register(new Gas("lithium")).registerFluid();
+		GasRegistry.register(new Gas("hydrogen", "mekanism:blocks/liquid/LiquidHydrogen")).registerFluid();
+		GasRegistry.register(new Gas("oxygen", "mekanism:blocks/liquid/LiquidOxygen")).registerFluid();
+		GasRegistry.register(new Gas("water", "mekanism:blocks/liquid/LiquidSteam")).registerFluid();
+		GasRegistry.register(new Gas("chlorine", "mekanism:blocks/liquid/LiquidChlorine")).registerFluid();
+		GasRegistry.register(new Gas("sulfurDioxideGas", "mekanism:blocks/liquid/LiquidSulfurDioxide")).registerFluid();
+		GasRegistry.register(new Gas("sulfurTrioxideGas", "mekanism:blocks/liquid/LiquidSulfurTrioxide")).registerFluid();
+		GasRegistry.register(new Gas("sulfuricAcid", "mekanism:blocks/liquid/LiquidSulfuricAcid")).registerFluid();
+		GasRegistry.register(new Gas("hydrogenChloride", "mekanism:blocks/liquid/LiquidHydrogenChloride")).registerFluid();
+		GasRegistry.register(new Gas("liquidOsmium", "mekanism:blocks/liquid/LiquidOsmium").setVisible(false));
+		GasRegistry.register(new Gas("liquidStone", "mekanism:blocks/liquid/LiquidStone").setVisible(false));
+		GasRegistry.register(new Gas("ethene", "mekanism:blocks/liquid/LiquidEthene").registerFluid());
+		GasRegistry.register(new Gas("sodium", "mekanism:blocks/liquid/LiquidSodium").registerFluid());
+		GasRegistry.register(new Gas("brine", "mekanism:blocks/liquid/LiquidBrine").registerFluid());
+		GasRegistry.register(new Gas("deuterium", "mekanism:blocks/liquid/LiquidDeuterium")).registerFluid();
+		GasRegistry.register(new Gas("tritium", "mekanism:blocks/liquid/LiquidTritium")).registerFluid();
+		GasRegistry.register(new Gas("fusionFuelDT", "mekanism:blocks/liquid/LiquidDT")).registerFluid();
+		GasRegistry.register(new Gas("lithium", "mekanism:blocks/liquid/LiquidLithium")).registerFluid();
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater")));
-		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true));
+		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")));//.setGaseous(true));
 		
 		for(Resource resource : Resource.values())
 		{
@@ -1379,7 +1407,6 @@ public class Mekanism
 		packetHandler.initialize();
 
 		//Load proxy
-		proxy.registerRenderInformation();
 		proxy.loadUtilities();
 		
 		//Completion notification

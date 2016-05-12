@@ -26,19 +26,24 @@ public class RenderFlame extends Render<EntityFlame>
     @Override
     public void doRender(EntityFlame entity, double x, double y, double z, float f, float partialTick)
     {
+    	if(entity.ticksExisted < 1)
+    	{
+    		return;
+    	}
+    	
     	float alpha = (entity.ticksExisted+partialTick)/(float)EntityFlame.LIFESPAN;
     	float size = (float)Math.pow(2*alpha, 2);
     	
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
         GL11.glColor4f(1, 1, 1, 1-alpha);
         
         bindTexture(getEntityTexture(entity));
         
-        GL11.glTranslatef((float)x, (float)y, (float)z);
-        GL11.glRotatef((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F, 0.0F, 1.0F);
+        GlStateManager.translate((float)x, (float)y, (float)z);
+        GlStateManager.rotate((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F, 0.0F, 1.0F);
         
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
@@ -51,9 +56,9 @@ public class RenderFlame extends Render<EntityFlame>
         float scale = 0.05625F*(0.8F+size);
         
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glRotatef(45F, 1.0F, 0.0F, 0.0F);
-        GL11.glScalef(scale, scale, scale);
-        GL11.glTranslatef(-4F, 0.0F, 0.0F);
+        GlStateManager.rotate(45F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(scale, scale, scale);
+        GlStateManager.translate(-4F, 0.0F, 0.0F);
 
         for(int j = 0; j < 4; j++)
         {
@@ -69,9 +74,10 @@ public class RenderFlame extends Render<EntityFlame>
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
     
     @Override

@@ -6,36 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.api.transmitters.ITransmitter;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismItems;
-import mekanism.common.Tier;
-import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.multipart.TransmitterType.Size;
-import mekanism.common.util.MekanismUtils;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-//import net.minecraft.util.IIcon;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 /*import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.raytracer.ExtendedMOP;
@@ -60,6 +30,35 @@ import mcmultipart.multipart.Multipart;
 import mcmultipart.raytrace.PartMOP;
 import mcmultipart.raytrace.RayTraceUtils;
 import mcmultipart.raytrace.RayTraceUtils.RayTraceResultPart;
+import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
+import mekanism.api.IConfigurable;
+import mekanism.api.MekanismConfig.client;
+import mekanism.api.transmitters.IBlockableConnection;
+import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.MekanismItems;
+import mekanism.common.Tier;
+import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.multipart.TransmitterType.Size;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
+//import net.minecraft.util.IIcon;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
@@ -313,7 +312,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public boolean getPossibleTransmitterConnection(EnumFacing side)
 	{
-		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos())))
+		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld())))
 		{
 			return false;
 		}
@@ -346,7 +345,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		{
 			if(canConnectMutual(side))
 			{
-				Coord4D coord = new Coord4D(getPos()).offset(side);
+				Coord4D coord = new Coord4D(getPos(), getWorld()).offset(side);
 				
 				if(!getWorld().isRemote && !coord.exists(getWorld()))
 				{
@@ -625,7 +624,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	{
 		if(redstoneReactive)
 		{
-			redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos()));
+			redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
 		}
 		else {
 			redstonePowered = false;
@@ -650,7 +649,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	{
 		if(redstoneReactive)
 		{
-			redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos()));
+			redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
 		}
 		else {
 			redstonePowered = false;
@@ -883,6 +882,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public void notifyTileChange()
 	{
-		MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), new Coord4D(getPos()));
+		MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), new Coord4D(getPos(), getWorld()));
 	}
 }

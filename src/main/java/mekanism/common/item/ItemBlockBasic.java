@@ -28,7 +28,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -139,12 +138,6 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	}
 
 	@Override
-	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining)
-	{
-		return null; //TODO: IDONTKNOWHOWTODOTHIS
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
@@ -198,19 +191,6 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		return BasicBlockType.get(stack) == BasicBlockType.BIN && stack.getTagCompound() != null && stack.getTagCompound().hasKey("newCount");
 	}
-
-/*
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		if(BasicBlockType.get(stack) != BasicBlockType.BIN)
-		{
-			return true;
-		}
-
-		return false;
-	}
-*/
 
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
@@ -315,19 +295,6 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 		}
 
 		return "null";
-	}
-	
-	@Override
-	public String getItemStackDisplayName(ItemStack itemstack)
-	{
-		BasicBlockType type = BasicBlockType.get(itemstack);
-		
-		if(type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
-		{
-			return getBaseTier(itemstack).getLocalizedName() + " " + super.getItemStackDisplayName(itemstack);
-		}
-		
-		return super.getItemStackDisplayName(itemstack);
 	}
 	
 	@Override

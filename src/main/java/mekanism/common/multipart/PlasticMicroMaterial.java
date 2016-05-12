@@ -1,9 +1,7 @@
 package mekanism.common.multipart;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-
 import mcmultipart.microblock.BlockMicroMaterial;
+import net.minecraft.block.state.IBlockState;
 
 public class PlasticMicroMaterial extends BlockMicroMaterial
 {

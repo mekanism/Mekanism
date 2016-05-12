@@ -9,14 +9,14 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
-import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IRedstoneControl;
@@ -511,16 +511,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			else {
 			    if(pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 			    {
-			    	Coord4D coord = new Coord4D(pos.getBlockPos(), world.provider.getDimensionId());
+			    	Coord4D coord = new Coord4D(pos.getBlockPos(), world);
 	
-			        if(!world.provider.canMineBlock(entityplayer, coord))
+			        if(!world.provider.canMineBlock(entityplayer, coord.getPos()))
 			        {
 			            return itemstack;
 			        }
 	
 			        if(!entityplayer.isSneaking())
 			        {
-			            if(!entityplayer.canPlayerEdit(coord, pos.sideHit, itemstack))
+			            if(!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack))
 			            {
 			                return itemstack;
 			            }
@@ -546,7 +546,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			        			setFluidStack(newStack, itemstack);
 			        		}
 			        		
-			        		world.setBlockToAir(coord);
+			        		world.setBlockToAir(coord.getPos());
 			            }
 			        }
 			        else {
@@ -559,12 +559,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 						
 						Coord4D trans = coord.offset(pos.sideHit);
 
-			            if(!entityplayer.canPlayerEdit(trans, pos.sideHit, itemstack))
+			            if(!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack))
 			            {
 			                return itemstack;
 			            }
 
-			            if(tryPlaceContainedLiquid(world, itemstack, trans) && !entityplayer.capabilities.isCreativeMode)
+			            if(tryPlaceContainedLiquid(world, itemstack, trans.getPos()) && !entityplayer.capabilities.isCreativeMode)
 			            {
 			            	FluidStack newStack = stored.copy();
 			            	newStack.amount -= FluidContainerRegistry.BUCKET_VOLUME;

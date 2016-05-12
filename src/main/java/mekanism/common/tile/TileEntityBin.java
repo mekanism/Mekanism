@@ -31,9 +31,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
-
-import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import net.minecraftforge.fml.common.Optional.Interface;
+import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 @Interface(iface = "powercrystals.minefactoryreloaded.api.IDeepStorageUnit", modid = "MineFactoryReloaded")
 public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable, ITickable

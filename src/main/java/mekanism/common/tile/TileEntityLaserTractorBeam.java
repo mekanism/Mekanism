@@ -20,8 +20,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MovingObjectPosition;
 
 public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor, ISecurityTile
 {
@@ -64,7 +64,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 			if(on)
 			{
 				MovingObjectPosition mop = LaserManager.fireLaserClient(this, facing, lastFired, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, worldObj);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -76,7 +76,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += lastFired;
@@ -103,7 +103,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 				}
 
 				LaserInfo info = LaserManager.fireLaser(this, facing, firing, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, worldObj);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -115,7 +115,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += firing;

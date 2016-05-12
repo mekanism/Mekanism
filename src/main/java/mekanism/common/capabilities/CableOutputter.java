@@ -2,11 +2,8 @@ package mekanism.common.capabilities;
 
 import mekanism.api.energy.ICableOutputter;
 import mekanism.common.capabilities.StorageHelper.NullStorage;
-
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.util.INBTSerializable;
 
 /**
  * Created by ben on 30/04/16.

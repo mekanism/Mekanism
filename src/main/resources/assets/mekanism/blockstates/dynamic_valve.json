@@ -1,9 +1,9 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "cube_all",
+    "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/DynamicValve"
+      "all": "mekanism:blocks/ctm/dynamic_valve"
     }
   },
   "variants": {

@@ -26,14 +26,14 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificator extends GuiMekanism
@@ -132,11 +132,11 @@ public class GuiOredictionificator extends GuiMekanism
 				
 				if(stack != null)
 				{
-					GL11.glPushMatrix();
+					GlStateManager.pushMatrix();
 					GL11.glEnable(GL11.GL_LIGHTING);
 					itemRender.renderItemAndEffectIntoGUI(stack, 13, yStart + 3);
 					GL11.glDisable(GL11.GL_LIGHTING);
-					GL11.glPopMatrix();
+					GlStateManager.popMatrix();
 				}
 
 				fontRendererObj.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);

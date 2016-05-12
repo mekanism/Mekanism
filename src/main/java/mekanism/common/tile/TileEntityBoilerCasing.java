@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,25 +10,22 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IFluidContainerManager;
+import mekanism.common.PacketHandler;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IFluidContainerManager, IHeatTransfer
+public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer
 {
 	/** A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids. */
 	public Set<ValveData> valveViewing = new HashSet<ValveData>();
@@ -220,7 +216,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 		{
 			data.add(structure.waterVolume*BoilerUpdateProtocol.WATER_PER_TANK);
 			data.add(structure.steamVolume*BoilerUpdateProtocol.STEAM_PER_TANK);
-			data.add(structure.editMode);
 			data.add(structure.lastEnvironmentLoss);
 			data.add(structure.lastBoilRate);
 			data.add(structure.superheatingElements);
@@ -305,7 +300,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 		{
 			clientWaterCapacity = dataStream.readInt();
 			clientSteamCapacity = dataStream.readInt();
-			structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
 			structure.lastEnvironmentLoss = dataStream.readDouble();
 			structure.lastBoilRate = dataStream.readInt();
 			structure.superheatingElements = dataStream.readInt();
@@ -314,7 +308,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			
 			if(dataStream.readInt() == 1)
 			{
-				structure.waterStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
+				structure.waterStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
 			}
 			else {
 				structure.waterStored = null;
@@ -322,7 +316,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	
 			if(dataStream.readInt() == 1)
 			{
-				structure.steamStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
+				structure.steamStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
 			}
 			else {
 				structure.steamStored = null;
@@ -356,28 +350,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 				}
 			}
 		}
-	}
-
-	@Override
-	public ContainerEditMode getContainerEditMode()
-	{
-		if(structure != null)
-		{
-			return structure.editMode;
-		}
-
-		return ContainerEditMode.BOTH;
-	}
-
-	@Override
-	public void setContainerEditMode(ContainerEditMode mode)
-	{
-		if(structure == null)
-		{
-			return;
-		}
-
-		structure.editMode = mode;
 	}
 
 	@Override

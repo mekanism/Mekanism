@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import mekanism.api.IHeatTransfer;
 import mekanism.common.capabilities.Capabilities;
-
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 

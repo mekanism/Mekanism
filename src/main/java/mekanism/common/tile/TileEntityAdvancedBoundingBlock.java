@@ -10,19 +10,17 @@ import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
-import cofh.api.energy.IEnergyHandler;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
+import cofh.api.energy.IEnergyHandler;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
@@ -384,7 +382,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 		
-		TileEntity tile = new Coord4D(mainPos, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
+		TileEntity tile = new Coord4D(mainPos, worldObj).getTileEntity(worldObj);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
@@ -392,7 +390,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainPos, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)new Coord4D(mainPos, worldObj).getTileEntity(worldObj);
 	}
 
 	@Override

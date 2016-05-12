@@ -10,14 +10,14 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.common.capabilities.Capabilities;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Method;
 

@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterRight",
       "front": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterFront",
       "west": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterRight",
       "east": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterLeft",

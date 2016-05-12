@@ -1,7 +1,6 @@
 package ic2.api.info;
 
 import net.minecraft.util.DamageSource;
-
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 

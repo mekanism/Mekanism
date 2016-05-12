@@ -10,7 +10,6 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.StorageHelper.NullStorage;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

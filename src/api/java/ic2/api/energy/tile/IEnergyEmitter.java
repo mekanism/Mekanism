@@ -1,7 +1,6 @@
 package ic2.api.energy.tile;
 
 import net.minecraft.tileentity.TileEntity;
-
 import net.minecraft.util.EnumFacing;
 
 /**

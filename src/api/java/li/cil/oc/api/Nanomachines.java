@@ -1,10 +1,10 @@
 package li.cil.oc.api;
 
+import java.util.Collections;
+
 import li.cil.oc.api.nanomachines.BehaviorProvider;
 import li.cil.oc.api.nanomachines.Controller;
 import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.Collections;
 
 /**
  * This API allows interfacing with nanomachines.

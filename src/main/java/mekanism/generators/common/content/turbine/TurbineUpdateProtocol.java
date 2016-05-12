@@ -20,7 +20,8 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData>
 {
@@ -35,8 +36,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 	@Override
 	protected boolean isValidFrame(int x, int y, int z) 
 	{
-		return pointer.getWorldObj().getBlock(x, y, z) == GeneratorsBlocks.Generator && 
-				GeneratorType.getFromMetadata(pointer.getWorldObj().getBlockMetadata(x, y, z)) == GeneratorType.TURBINE_CASING;
+		return pointer.getWorld().getBlock(x, y, z) == GeneratorsBlocks.Generator && 
+				GeneratorType.getFromMetadata(pointer.getWorld().getBlockMetadata(x, y, z)) == GeneratorType.TURBINE_CASING;
 	}
 	
 	@Override
@@ -46,8 +47,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 		{
 			return true;
 		}
-
-		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		
+		TileEntity tile = pointer.getWorld().getTileEntity(x, y, z);
 		
 		return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex ||
 				tile instanceof TileEntityPressureDisperser || tile instanceof TileEntityElectromagneticCoil;
@@ -74,7 +75,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				//Scan for complex
 				for(Coord4D coord : innerNodes)
 				{
-					TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+					TileEntity tile = coord.getTileEntity(pointer.getWorld());
 					
 					if(tile instanceof TileEntityRotationalComplex)
 					{
@@ -122,7 +123,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					{
 						if(!(x == centerX && z == centerZ))
 						{
-							TileEntity tile = pointer.getWorldObj().getTileEntity(x, complex.yCoord, z);
+							TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, complex.yCoord, z));
 							
 							if(!(tile instanceof TileEntityPressureDisperser))
 							{
@@ -145,7 +146,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				//Make sure a complete line of turbine rotors exist from the complex to the multiblock's base
 				for(int y = complex.yCoord-1; y > structure.minLocation.yCoord; y--)
 				{
-					TileEntity tile = pointer.getWorldObj().getTileEntity(centerX, y, centerZ);
+					TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(centerX, y, centerZ));
 					
 					if(!(tile instanceof TileEntityTurbineRotor))
 					{
@@ -153,7 +154,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					}
 					
 					turbineHeight++;
-					turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorldObj().provider.dimensionId));
+					turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().provider.getDimensionId()));
 				}
 				
 				//If any turbines were not processed, they're in the wrong place
@@ -162,15 +163,15 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					return false;
 				}
 				
-				Coord4D startCoord = complex.getFromSide(ForgeDirection.UP);
+				Coord4D startCoord = complex.offset(EnumFacing.UP);
 				
-				if(startCoord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityElectromagneticCoil)
+				if(startCoord.getTileEntity(pointer.getWorld()) instanceof TileEntityElectromagneticCoil)
 				{
 					structure.coils = new NodeCounter(new NodeChecker() {
 						@Override
 						public boolean isValid(Coord4D coord)
 						{
-							return coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityElectromagneticCoil;
+							return coord.getTileEntity(pointer.getWorld()) instanceof TileEntityElectromagneticCoil;
 						}
 					}).calculate(startCoord);
 				}
@@ -180,8 +181,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					return false;
 				}
 				
-				Coord4D turbineCoord = complex.getFromSide(ForgeDirection.DOWN);
-				TileEntity turbineTile = turbineCoord.getTileEntity(pointer.getWorldObj());
+				Coord4D turbineCoord = complex.offset(EnumFacing.DOWN);
+				TileEntity turbineTile = turbineCoord.getTileEntity(pointer.getWorld());
 				
 				if(turbineTile instanceof TileEntityTurbineRotor)
 				{
@@ -190,7 +191,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				
 				for(Coord4D coord : structure.locations)
 				{
-					if(coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityTurbineVent)
+					if(coord.getTileEntity(pointer.getWorld()) instanceof TileEntityTurbineVent)
 					{
 						if(coord.yCoord >= complex.yCoord)
 						{

@@ -21,9 +21,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismArmor extends ItemArmor
 {
-	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex, int armorType)
+	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex)
 	{
-		super(enumarmormaterial, renderIndex, armorType);
+		super(enumarmormaterial, renderIndex, 0);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -32,14 +32,6 @@ public class ItemMekanismArmor extends ItemArmor
 	{
 		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
-
-/*
-	@Override
-	public void registerIcons(IIconRegister register)
-	{
-		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
-	}
-*/
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)

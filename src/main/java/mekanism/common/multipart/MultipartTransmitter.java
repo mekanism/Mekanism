@@ -2,6 +2,7 @@ package mekanism.common.multipart;
 
 import java.util.Collection;
 
+import mcmultipart.multipart.IMultipartContainer;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -11,10 +12,8 @@ import mekanism.common.transmitters.Transmitter;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
-
-import mcmultipart.multipart.IMultipartContainer;
+import net.minecraft.world.World;
 
 public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Transmitter<A, N>
 {
@@ -40,7 +39,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	@Override
 	public Coord4D coord()
 	{
-		return new Coord4D(getPart().getPos(), getPart().getWorld().provider.getDimensionId());
+		return new Coord4D(getPart().getPos(), getPart().getWorld());
 	}
 
 	@Override

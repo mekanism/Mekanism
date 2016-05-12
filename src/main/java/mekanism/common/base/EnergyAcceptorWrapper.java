@@ -1,11 +1,10 @@
 package mekanism.common.base;
 
 import ic2.api.energy.tile.IEnergySink;
-
-import mekanism.common.capabilities.Capabilities;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

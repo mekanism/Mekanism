@@ -18,11 +18,10 @@ import mekanism.generators.client.gui.element.GuiStatTab;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorController extends GuiMekanism

@@ -35,7 +35,6 @@ import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -173,5 +172,7 @@ public class MekanismItems
 
 		MinecraftForge.EVENT_BUS.register(GasMask);
 		MinecraftForge.EVENT_BUS.register(FreeRunners);
+		
+		Mekanism.proxy.registerItemRenders();
 	}
 }

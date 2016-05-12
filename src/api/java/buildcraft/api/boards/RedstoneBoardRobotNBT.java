@@ -6,7 +6,6 @@ package buildcraft.api.boards;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-
 import buildcraft.api.robots.EntityRobotBase;
 
 public abstract class RedstoneBoardRobotNBT extends RedstoneBoardNBT<EntityRobotBase> {

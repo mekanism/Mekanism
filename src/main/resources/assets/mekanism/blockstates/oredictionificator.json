@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/oredictionificator/OredictionificatorRight",
       "front": "mekanism:blocks/oredictionificator/OredictionificatorFront",
       "west": "mekanism:blocks/oredictionificator/OredictionificatorRight",
       "east": "mekanism:blocks/oredictionificator/OredictionificatorLeft",

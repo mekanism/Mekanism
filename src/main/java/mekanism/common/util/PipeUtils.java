@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import mekanism.common.capabilities.Capabilities;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;

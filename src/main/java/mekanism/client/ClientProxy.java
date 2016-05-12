@@ -1,10 +1,14 @@
 package mekanism.client;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
@@ -66,51 +70,55 @@ import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.ctm.TextureStitcher;
+import mekanism.client.render.ctm.CTMRegistry;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
+import mekanism.client.render.item.CustomItemModelFactory;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
-import mekanism.client.render.tileentity.RenderChemicalInfuser;
-import mekanism.client.render.tileentity.RenderChemicalOxidizer;
-import mekanism.client.render.tileentity.RenderChemicalWasher;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderElectricPump;
-import mekanism.client.render.tileentity.RenderElectrolyticSeparator;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderFluidicPlenisher;
 import mekanism.client.render.tileentity.RenderGasTank;
-import mekanism.client.render.tileentity.RenderLaserAmplifier;
-import mekanism.client.render.tileentity.RenderLaserTractorBeam;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderPersonalChest;
-import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
 import mekanism.client.render.tileentity.RenderQuantumEntangloporter;
 import mekanism.client.render.tileentity.RenderResistiveHeater;
 import mekanism.client.render.tileentity.RenderSecurityDesk;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
+import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.GasTankTier;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.ItemBlockGasTank;
+import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
@@ -149,9 +157,6 @@ import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityInductionCell;
-import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -169,7 +174,6 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
-import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.Minecraft;
@@ -179,6 +183,7 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.monster.EntitySkeleton;
@@ -189,7 +194,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -198,10 +205,11 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import scala.actors.threadpool.Arrays;
 
 /**
  * Client proxy for the Mekanism mod.
@@ -212,6 +220,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ClientProxy extends CommonProxy
 {
 	public static Map<String, ModelResourceLocation> machineResources = new HashMap<String, ModelResourceLocation>();
+	public static Map<String, ModelResourceLocation> basicResources = new HashMap<String, ModelResourceLocation>();
+	
+	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
+		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
+		"solar_neutron_activator", "chemical_dissolution_chamber", "chemical_crystallizer", "seismic_vibrator", "security_desk",
+		"quantum_entangloporter", "resistive_heater", "EnergyCube", "digital_miner"};
 	
 	@Override
 	public void loadConfiguration()
@@ -236,14 +250,6 @@ public class ClientProxy extends CommonProxy
 			Mekanism.configuration.save();
 		}
 	}
-
-/*
-	@Override
-	public int getArmorIndex(String string)
-	{
-		return RenderingRegistry.addNewArmourRendererPrefix(string);
-	}
-*/
 
 	@Override
 	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos)
@@ -282,90 +288,39 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory", new RenderConfigurableMachine<TileEntityEliteFactory>());
 		ClientRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber", new RenderConfigurableMachine<TileEntityPurificationChamber>());
 		ClientRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter", new RenderConfigurableMachine<TileEntityEnergizedSmelter>());
-		//ClientRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser", new RenderMetallurgicInfuser());
-		//ClientRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT", new RenderObsidianTNT());
+		ClientRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser", new RenderConfigurableMachine<TileEntityMetallurgicInfuser>());
 		ClientRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank", new RenderGasTank());
 		ClientRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube", new RenderEnergyCube());
 		ClientRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump", new RenderElectricPump());
-		ClientRegistry.registerTileEntity(TileEntityPersonalChest.class, "ElectricChest", new RenderPersonalChest()); //TODO rename
+		ClientRegistry.registerTileEntity(TileEntityPersonalChest.class, "PersonalChest", new RenderPersonalChest());
 		ClientRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank", new RenderDynamicTank());
 		ClientRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve", new RenderDynamicTank());
 		ClientRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad", new RenderChargepad());
 		ClientRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter", new RenderLogisticalSorter());
 		ClientRegistry.registerTileEntity(TileEntityBin.class, "Bin", new RenderBin());
 		ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());
-		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 		ClientRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter", new RenderTeleporter());
-		ClientRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer", new RenderChemicalOxidizer());
-		ClientRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser", new RenderChemicalInfuser());
 		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine<TileEntityChemicalInjectionChamber>());
-		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
-		ClientRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "SalinationController", new RenderThermalEvaporationController()); //TODO rename
+		ClientRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "ThermalEvaporationController", new RenderThermalEvaporationController());
 		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine<TileEntityPrecisionSawmill>());
-		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
-		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
 		ClientRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer", new RenderChemicalCrystallizer());
 		ClientRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator", new RenderSeismicVibrator());
-		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderPressurizedReactionChamber());
-		ClientRegistry.registerTileEntity(TileEntityFluidTank.class, "PortableTank", new RenderFluidTank()); //TODO rename
+		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderConfigurableMachine<TileEntityPRC>());
+		ClientRegistry.registerTileEntity(TileEntityFluidTank.class, "FluidTank", new RenderFluidTank());
 		ClientRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher", new RenderFluidicPlenisher());
-		//ClientRegistry.registerTileEntity(TileEntityLaser.class, "Laser", new RenderLaser());
-		ClientRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier", new RenderLaserAmplifier());
-		ClientRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam", new RenderLaserTractorBeam());
-		GameRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator");
-		GameRegistry.registerTileEntity(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
-		GameRegistry.registerTileEntity(TileEntityInductionCasing.class, "InductionCasing");
-		GameRegistry.registerTileEntity(TileEntityInductionPort.class, "InductionPort");
-		GameRegistry.registerTileEntity(TileEntityInductionCell.class, "InductionCell");
-		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
-		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
-		GameRegistry.registerTileEntity(TileEntityStructuralGlass.class, "StructuralGlass");
+		ClientRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator", new RenderSolarNeutronActivator());
 		ClientRegistry.registerTileEntity(TileEntityFormulaicAssemblicator.class, "FormulaicAssemblicator", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater", new RenderResistiveHeater());
 		ClientRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing", new RenderThermoelectricBoiler());
 		ClientRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve", new RenderThermoelectricBoiler());
 		ClientRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk", new RenderSecurityDesk());
 		ClientRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter", new RenderQuantumEntangloporter());
-		GameRegistry.registerTileEntity(TileEntityFuelwoodHeater.class, "FuelwoodHeater");
+		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 	}
 
 	@Override
-	public void registerRenderInformation()
+	public void registerItemRenders()
 	{
-//TODO		RenderPartTransmitter.init();
-//TODO		RenderGlowPanel.init();
-
-		//Register item handler
-//TODO		ItemRenderingHandler handler = new ItemRenderingHandler();
-
-/*TODO
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.EnergyCube), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.Robit, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.WalkieTalkie, handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.GasTank), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.BasicBlock), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.Jetpack, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.ArmoredJetpack, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.PartTransmitter, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.GasMask, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.ScubaTank, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.Balloon, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.FreeRunners, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.AtomicDisassembler, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.GlowPanel, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.Flamethrower, handler);
-
-		//Register block handlers
-		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new PlasticRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new CTMRenderingHandler());
-*/
 //		registerItemRender(MekanismItems.PartTransmitter);
 		registerItemRender(MekanismItems.ElectricBow);
 		registerItemRender(MekanismItems.Dust);
@@ -422,17 +377,249 @@ public class ClientProxy extends CommonProxy
 		
 		ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF_MODEL);
 		
-		for(int i = 0; i <= 9; i++)
+		for(int i = 1; i <= 9; i++)
 		{
 			ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.getModel(i));
 		}
 		
 		ModelBakery.registerItemVariants(MekanismItems.CraftingFormula, ItemCraftingFormula.MODEL, 
 				ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
+	}
+	
+	@Override
+	public void registerBlockRenders()
+	{
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1, new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.EnergyCube), 0, new ModelResourceLocation("mekanism:EnergyCube", "inventory"));
+
+		for(MachineType type : MachineType.values())
+		{
+			if(!type.isValidMachine())
+			{
+				continue;
+			}
+			
+			List<ModelResourceLocation> modelsToAdd = new ArrayList<ModelResourceLocation>();
+			String resource = "mekanism:" + type.getName();
+			RecipeType recipePointer = null;
+			
+			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+			{
+				recipePointer = RecipeType.values()[0];
+				resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
+			}
+			
+			while(true)
+			{
+				if(machineResources.get(resource) == null)
+				{
+					List<String> entries = new ArrayList<String>();
+					
+					if(type.hasActiveTexture())
+					{
+						entries.add("active=false");
+					}
+					
+					if(type.hasRotations())
+					{
+						entries.add("facing=north");
+					}
+					
+					String properties = new String();
+					
+					for(int i = 0; i < entries.size(); i++)
+					{
+						properties += entries.get(i);
+						
+						if(i < entries.size()-1)
+						{
+							properties += ",";
+						}
+					}
+					
+					if(Arrays.asList(CUSTOM_RENDERS).contains(type.getName()))
+					{
+						properties = "inventory";
+					}
+					
+					ModelResourceLocation model = new ModelResourceLocation(resource, properties);
+					
+					machineResources.put(resource, model);
+					modelsToAdd.add(model);
+					
+					if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+					{
+						if(recipePointer.ordinal() < RecipeType.values().length-1)
+						{
+							recipePointer = RecipeType.values()[recipePointer.ordinal()+1];
+							resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
+							
+							continue;
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(type.typeBlock.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[] {}));
+		}
+
+		for(BasicBlockType type : BasicBlockType.values())
+		{
+			List<ModelResourceLocation> modelsToAdd = new ArrayList<ModelResourceLocation>();
+			String resource = "mekanism:" + type.getName();
+			BaseTier tierPointer = null;
+			
+			if(type.tiers)
+			{
+				tierPointer = BaseTier.values()[0];
+				resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+			}
+			
+			while(true)
+			{
+				if(basicResources.get(resource) == null)
+				{
+					List<String> entries = new ArrayList<String>();
+					
+					if(type.hasActiveTexture())
+					{
+						entries.add("active=false");
+					}
+					
+					if(type.hasRotations() || type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER)
+					{
+						entries.add("facing=north");
+					}
+					
+					String properties = new String();
+					
+					for(int i = 0; i < entries.size(); i++)
+					{
+						properties += entries.get(i);
+						
+						if(i < entries.size()-1)
+						{
+							properties += ",";
+						}
+					}
+					
+					if(type == BasicBlockType.BIN || Arrays.asList(CUSTOM_RENDERS).contains(type.getName()))
+					{
+						properties = "inventory";
+					}
+					
+					ModelResourceLocation model = new ModelResourceLocation(resource, properties);
+					
+					basicResources.put(resource, model);
+					modelsToAdd.add(model);
+					
+					if(type.tiers)
+					{
+						if(tierPointer.ordinal() < BaseTier.values().length-1)
+						{
+							tierPointer = BaseTier.values()[tierPointer.ordinal()+1];
+							
+							if(tierPointer.isObtainable())
+							{
+								resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+								
+								continue;
+							}
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[] {}));
+		}
+
+		for(EnumColor color : EnumColor.DYES)
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=plastic"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SlickPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=slick"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=glow"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ReinforcedPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=reinforced"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.RoadPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=road"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticFence), color.getMetaValue(), new ModelResourceLocation("mekanism:PlasticFence", "inventory"));
+		}
+
+		for(EnumOreType ore : EnumOreType.values())
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(), new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
+		}
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				GasTankTier tier = GasTankTier.values()[((ItemBlockGasTank)stack.getItem()).getBaseTier(stack).ordinal()];
+				ResourceLocation baseLocation = new ResourceLocation("mekanism", "GasTank");
+				
+				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
+			}
+		});
+		
+		ItemMeshDefinition machineMesher = new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				MachineType type = MachineType.get(stack);
+				
+				if(type != null)
+				{
+					String resource = "mekanism:" + type.getName();
+					
+					if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+					{
+						RecipeType recipe = RecipeType.values()[((ItemBlockMachine)stack.getItem()).getRecipeType(stack)];
+						resource = "mekanism:" + type.getName() + "_" + recipe.getName();
+					}
+					
+					return machineResources.get(resource);
+				}
+				
+				return null;
+			}
+		};
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock), machineMesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), machineMesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), machineMesher);
+		
+		ItemMeshDefinition basicMesher = new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				BasicBlockType type = BasicBlockType.get(stack);
+				
+				if(type != null)
+				{
+					String resource = "mekanism:" + type.getName();
+					
+					if(type.tiers)
+					{
+						BaseTier tier = ((ItemBlockBasic)stack.getItem()).getBaseTier(stack);
+						resource = "mekanism:" + type.getName() + "_" + tier.getName();
+					}
+					
+					return basicResources.get(resource);
+				}
+				
+				return null;
+			}
+		};
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
 
 		OBJLoader.instance.addDomain("mekanism");
-
-		Mekanism.logger.info("Render registrations complete.");
 	}
 	
 	public void registerItemRender(Item item)
@@ -609,7 +796,7 @@ public class ClientProxy extends CommonProxy
 	{
 		if(Minecraft.getMinecraft().theWorld != null)
 		{
-			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord, mop);
+			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord.getPos(), mop);
 		}
 	}
 	
@@ -645,13 +832,29 @@ public class ClientProxy extends CommonProxy
 
 		HolidayManager.init();
 	}
+	
+	@SubscribeEvent
+    public void onModelBake(ModelBakeEvent event) throws IOException 
+    {
+		for(String s : CUSTOM_RENDERS)
+		{
+			ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
+	        Object obj = event.modelRegistry.getObject(model);
+	        
+	        if(obj instanceof IBakedModel)
+	        {
+	        	event.modelRegistry.putObject(model, new CustomItemModelFactory((IBakedModel)obj));
+	        }
+		}
+    }
 
 	@Override
 	public void preInit()
 	{
 		MekanismRenderer.init();
 		
-		MinecraftForge.EVENT_BUS.register(new TextureStitcher());
+		MinecraftForge.EVENT_BUS.register(new CTMRegistry());
+		MinecraftForge.EVENT_BUS.register(this);
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {

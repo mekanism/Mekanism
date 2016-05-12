@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-
 import buildcraft.api.core.IBox;
 import buildcraft.api.core.IZone;
 

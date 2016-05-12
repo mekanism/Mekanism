@@ -37,12 +37,6 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		super(EnumHelper.addArmorMaterial("JETPACK", "jetpack", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-*/
 	
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
@@ -221,7 +215,6 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		return empty;
 	}
 
@@ -230,7 +223,6 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);

@@ -1,7 +1,3 @@
 {
-    "parent": "mekanism:item/standard_item",
-    "textures": { 
-        "layer0": "mekanism:items/GasMask"
-    }
+    "parent": "mekanism:item/standard_item"
 }
-

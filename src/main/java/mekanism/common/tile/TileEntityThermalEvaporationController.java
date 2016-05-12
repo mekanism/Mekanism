@@ -71,6 +71,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public boolean updatedThisTick = false;
 
 	public int clientSolarAmount;
+	public boolean clientStructured;
 	
 	public boolean cacheStructure = false;
 	
@@ -187,14 +188,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		{
 			if(!updatedThisTick)
 			{
-				boolean prev = structured;
-				
 				clearStructure();
 				structured = buildStructure();
 				
-				if(structured != prev)
+				if(structured != clientStructured)
 				{
 					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					clientStructured = structured;
 				}
 				
 				if(structured)
@@ -557,7 +557,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		Coord4D startPoint = Coord4D.get(this).offset(right);
 		startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
 		
-		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing)).add(0, -(height-2), 0);
+		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing)).translate(0, -(height-2), 0);
 		
 		return startPoint;
 	}
@@ -583,8 +583,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			outputTank.setFluid(null);
 		}
 		
-		boolean prev = structured;
-		
 		structured = dataStream.readBoolean();
 		controllerConflict = dataStream.readBoolean();
 		clientSolarAmount = dataStream.readInt();
@@ -595,10 +593,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		lastGain = dataStream.readFloat();
 		totalLoss = dataStream.readFloat();
 		
-		if(structured != prev)
+		if(structured != clientStructured)
 		{
 			inputTank.setCapacity(getMaxFluid());
-			worldObj.markBlockRangeForRenderUpdate(getPos(), getPos().add(1,1,1));
+			MekanismUtils.updateBlock(worldObj, getPos());
 			
 			if(structured)
 			{
@@ -610,9 +608,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 					}
 				});
 			}
+			
+			clientStructured = structured;
 		}
-		
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 	
 	@Override

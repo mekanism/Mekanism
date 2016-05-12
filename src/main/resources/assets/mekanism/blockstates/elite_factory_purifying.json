@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/factory/elite/purifying/ElitePurifyingFactoryRight",
       "front": "mekanism:blocks/factory/elite/purifying/ElitePurifyingFactoryFront",
       "south": "mekanism:blocks/factory/elite/purifying/ElitePurifyingFactoryBack",
       "west": "mekanism:blocks/factory/elite/purifying/ElitePurifyingFactoryRight",

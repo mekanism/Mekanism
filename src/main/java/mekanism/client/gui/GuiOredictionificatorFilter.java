@@ -17,15 +17,15 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificatorFilter extends GuiMekanism
@@ -149,11 +149,11 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		if(renderStack != null)
 		{
 			try {
-				GL11.glPushMatrix();
+				GlStateManager.pushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 45, 19);
 				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			} catch(Exception e) {}
 		}
 		

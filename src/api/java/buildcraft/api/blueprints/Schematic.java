@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
-
 import buildcraft.api.core.IInvSlot;
 
 /** A schematic is a piece of a blueprint. It allows to stock blocks or entities to blueprints, and can have a state

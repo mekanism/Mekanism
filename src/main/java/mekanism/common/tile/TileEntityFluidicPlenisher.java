@@ -16,7 +16,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
@@ -33,8 +32,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -134,7 +133,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
-								worldObj.setBlockState(below, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
+								worldObj.setBlockState(below.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 								
 								setEnergy(getEnergy() - energyPerTick);
 								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
@@ -184,7 +183,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				if(canReplace(coord, true, false))
 				{
-					worldObj.setBlockState(coord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
+					worldObj.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 
 					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 				}
@@ -231,7 +230,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			return isPathfinding;
 		}
 		
-		return coord.getBlock(worldObj).isReplaceable(worldObj, coord);
+		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.getPos());
 	}
 	
 	@Override

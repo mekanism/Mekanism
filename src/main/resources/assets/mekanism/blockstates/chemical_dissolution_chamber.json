@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:chemical_dissolution_chamber"
+    "model": "mekanism:nothing"
   },
   "variants": {
     "normal": [{}],

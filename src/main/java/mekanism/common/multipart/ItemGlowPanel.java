@@ -2,19 +2,6 @@ package mekanism.common.multipart;
 
 import java.util.List;
 
-import mekanism.api.EnumColor;
-import mekanism.common.Mekanism;
-import mekanism.common.util.LangUtils;
-//import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 /*
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
@@ -25,10 +12,19 @@ import codechicken.multipart.TileMultipart;
 */
 import mcmultipart.item.ItemMultiPart;
 import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.IMultipartContainer;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
+import mekanism.common.util.LangUtils;
+//import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 
 public class ItemGlowPanel extends ItemMultiPart
 {

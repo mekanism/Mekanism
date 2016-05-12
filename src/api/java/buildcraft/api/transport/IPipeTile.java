@@ -8,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-
 import buildcraft.api.transport.pluggable.PipePluggable;
 
 public interface IPipeTile extends IInjectable {

@@ -9,7 +9,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import buildcraft.api.core.INBTStoreable;
 import buildcraft.api.core.ISerializable;
 import buildcraft.api.transport.IPipeTile;

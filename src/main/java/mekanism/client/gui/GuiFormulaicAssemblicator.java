@@ -27,15 +27,15 @@ import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiFormulaicAssemblicator extends GuiMekanism
@@ -200,7 +200,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				if(stack != null)
 				{
 					Slot slot = (Slot)inventorySlots.inventorySlots.get(i+20);
-					GL11.glPushMatrix();
+					GlStateManager.pushMatrix();
 					
 					if(slot.getStack() == null || !slot.getStack().isItemEqual(stack))
 					{
@@ -213,7 +213,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					itemRender.renderItemAndEffectIntoGUI(stack, guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition);
 					MekanismRenderer.blendOff();
 					GL11.glDisable(GL11.GL_LIGHTING);
-					GL11.glPopMatrix();
+					GlStateManager.popMatrix();
 				}
 			}
 		}

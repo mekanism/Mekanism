@@ -13,12 +13,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.event.world.BlockEvent;
 
 public class LaserManager
@@ -37,7 +36,7 @@ public class LaserManager
 		if(mop != null)
 		{
 			to = new Pos3D(mop.hitVec);
-			Coord4D toCoord = new Coord4D(mop.getBlockPos());
+			Coord4D toCoord = new Coord4D(mop.getBlockPos(), world);
 			TileEntity tile = toCoord.getTileEntity(world);
 
 			if(tile instanceof ILaserReceptor)
@@ -83,8 +82,8 @@ public class LaserManager
 		IBlockState state = blockCoord.getBlockState(world);
 		Block blockHit = state.getBlock();
 		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, blockCoord.getX(), blockCoord.getY(), blockCoord.getZ()).get();
-		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord, state, dummy);
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord).get();
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord.getPos(), state, dummy);
 		MinecraftForge.EVENT_BUS.post(event);
 		
 		if(event.isCanceled())
@@ -94,15 +93,15 @@ public class LaserManager
 		
 		if(dropAtBlock)
 		{
-			blockHit.dropBlockAsItem(world, blockCoord, state, 0);
+			blockHit.dropBlockAsItem(world, blockCoord.getPos(), state, 0);
 		}
 		else {
-			ret = blockHit.getDrops(world, blockCoord, state, 0);
+			ret = blockHit.getDrops(world, blockCoord.getPos(), state, 0);
 		}
 		
-		blockHit.breakBlock(world, blockCoord, state);
-		world.setBlockToAir(blockCoord);
-		world.playAuxSFX(2001, blockCoord, Block.getIdFromBlock(blockHit));
+		blockHit.breakBlock(world, blockCoord.getPos(), state);
+		world.setBlockToAir(blockCoord.getPos());
+		world.playAuxSFX(2001, blockCoord.getPos(), Block.getIdFromBlock(blockHit));
 		
 		return ret;
 	}

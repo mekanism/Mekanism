@@ -133,6 +133,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/pressurized_reaction_chamber",
-        "particle": "..."
+        "particle": "mekanism:blocks/SteelCasing"
     }
 }

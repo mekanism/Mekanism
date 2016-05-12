@@ -10,15 +10,14 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioGenerator>
@@ -37,29 +36,29 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 			push();
 
 			MekanismRenderer.glowOn();
-			GL11.glTranslatef((float)x, (float)y, (float)z);
+			GlStateManager.translate((float)x, (float)y, (float)z);
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getDisplayList(EnumFacing.getFront(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
+			getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages-1)].render();
 			MekanismRenderer.glowOff();
 
 			pop();
 		}
 		
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal())
 		{
-			case 2: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
-			case 3: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
-			case 4: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
-			case 5: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+			case 2: GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F); break;
+			case 3: GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F); break;
+			case 4: GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F); break;
+			case 5: GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F); break;
 		}
 		
-		GL11.glRotatef(180, 0F, 0F, 1F);
+		GlStateManager.rotate(180, 0F, 0F, 1F);
 		model.render(0.0625F);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	@SuppressWarnings("incomplete-switch")
@@ -140,12 +139,12 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 	private void pop()
 	{
 		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);

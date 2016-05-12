@@ -4,15 +4,18 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory, ITickable
@@ -30,6 +33,12 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	public TileEntityContainerBlock(String name)
 	{
 		fullName = name;
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) 
+	{
+		return oldState.getBlock() != newState.getBlock();
 	}
 
 	@Override

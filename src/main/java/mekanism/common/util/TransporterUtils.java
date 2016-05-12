@@ -211,7 +211,7 @@ public final class TransporterUtils
 
 		TransporterManager.remove(stack);
 
-		EntityItem entityItem = new EntityItem(tileEntity.world(), tileEntity.coord().getX() + pos[0], tileEntity.coord().getY() + pos[1], tileEntity.coord().getZ() + pos[2], stack.itemStack);
+		EntityItem entityItem = new EntityItem(tileEntity.world(), tileEntity.coord().xCoord + pos[0], tileEntity.coord().yCoord + pos[1], tileEntity.coord().zCoord + pos[2], stack.itemStack);
 
 		entityItem.motionX = 0;
 		entityItem.motionY = 0;
@@ -232,7 +232,7 @@ public final class TransporterUtils
 			itemFix = 0.1F;
 		}
 
-		return new float[] {0.5F + offset.getX()*progress, 0.5F + offset.getY()*progress - itemFix, 0.5F + offset.getZ()*progress};
+		return new float[] {0.5F + offset.xCoord*progress, 0.5F + offset.yCoord*progress - itemFix, 0.5F + offset.zCoord*progress};
 	}
 
 	public static void incrementColor(ILogisticalTransporter tileEntity)

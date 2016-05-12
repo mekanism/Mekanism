@@ -6,6 +6,7 @@ import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -57,14 +58,14 @@ public class RenderBalloon extends Render<EntityBalloon>
 
 	public void render(EnumColor color, double x, double y, double z)
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glTranslated(x, y, z);
-		GL11.glRotatef(180, 1, 0, 0);
+		GlStateManager.rotate(180, 1, 0, 0);
 
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
 
 		model.render(0.0625F, color);
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

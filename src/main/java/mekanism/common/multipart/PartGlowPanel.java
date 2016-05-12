@@ -3,23 +3,25 @@ package mekanism.common.multipart;
 import java.util.Collections;
 import java.util.List;
 
+import mcmultipart.microblock.IMicroblock.IFaceMicroblock;
+import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.IOccludingPart;
+import mcmultipart.multipart.Multipart;
+import mcmultipart.multipart.PartSlot;
+import mcmultipart.raytrace.PartMOP;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.render.RenderGlowPanel;
 import mekanism.common.MekanismItems;
 import mekanism.common.block.states.BlockStateFacing;
 
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 //import net.minecraft.util.IIcon;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 /*
@@ -221,8 +223,8 @@ public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconH
 
 	public boolean canStay()
 	{
-		Coord4D adj = new Coord4D(getPos().offset(side), getWorld().provider.getDimensionId());
-		return getWorld().isSideSolid(adj, side.getOpposite()) || (getContainer().getPartInSlot(PartSlot.getFaceSlot(side)) instanceof IFaceMicroblock && ((IFaceMicroblock)getContainer().getPartInSlot(PartSlot.getFaceSlot(side))).isFaceHollow());
+		Coord4D adj = new Coord4D(getPos().offset(side), getWorld());
+		return getWorld().isSideSolid(adj.getPos(), side.getOpposite()) || (getContainer().getPartInSlot(PartSlot.getFaceSlot(side)) instanceof IFaceMicroblock && ((IFaceMicroblock)getContainer().getPartInSlot(PartSlot.getFaceSlot(side))).isFaceHollow());
 	}
 
 	@Override

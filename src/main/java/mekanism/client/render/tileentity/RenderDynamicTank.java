@@ -6,21 +6,22 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank>
@@ -46,7 +47,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 			{
 				push();
 
-				GL11.glTranslated(getX(data.location.getX()), getY(data.location.getY()), getZ(data.location.getZ()));
+				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 
 				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
@@ -71,7 +72,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 				{
 					push();
 
-					GL11.glTranslated(getX(valveData.location.getX()), getY(valveData.location.getY()), getZ(valveData.location.getZ()));
+					GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 
 					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 
@@ -89,12 +90,12 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 	private void pop()
 	{
 		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -111,7 +112,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getStill());
+		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -158,7 +159,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getFlowing());
+		MekanismRenderer.prepFlowing(toReturn, fluid);
 
 		DisplayInteger display = DisplayInteger.createAndStart();
 
@@ -258,7 +259,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
 	private int getValveFluidHeight(ValveRenderData data)
 	{
-		return data.valveLocation.getY() - data.location.getY();
+		return data.valveLocation.yCoord - data.location.yCoord;
 	}
 
 	private int getStages(int height)

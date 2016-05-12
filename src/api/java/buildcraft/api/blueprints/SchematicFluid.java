@@ -10,7 +10,6 @@ import java.util.List;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
-
 import net.minecraftforge.fluids.FluidStack;
 
 public class SchematicFluid extends SchematicBlock {

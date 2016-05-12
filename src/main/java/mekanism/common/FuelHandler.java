@@ -6,9 +6,9 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fml.common.ModAPIManager;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
-import net.minecraftforge.fml.common.ModAPIManager;
 
 public class FuelHandler
 {

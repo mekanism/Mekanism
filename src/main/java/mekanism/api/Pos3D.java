@@ -27,6 +27,11 @@ public class Pos3D extends Vec3
 	{
 		super(vec.xCoord, vec.yCoord, vec.zCoord);
 	}
+	
+	public Pos3D(Coord4D coord)
+	{
+		super(coord.xCoord, coord.yCoord, coord.zCoord);
+	}
 
 	public Pos3D(Vec3i vec)
 	{

@@ -30,16 +30,16 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiLogisticalSorter extends GuiMekanism
@@ -470,11 +470,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 					if(itemFilter.itemType != null)
 					{
-						GL11.glPushMatrix();
+						GlStateManager.pushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
 						itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
-						GL11.glPopMatrix();
+						GlStateManager.popMatrix();
 					}
 
 					fontRendererObj.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
@@ -492,11 +492,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 					if(oreDictStacks.get(filter).renderStack != null)
 					{
 						try {
-							GL11.glPushMatrix();
+							GlStateManager.pushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
 							itemRender.renderItemAndEffectIntoGUI(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
-							GL11.glPopMatrix();
+							GlStateManager.popMatrix();
 						} catch(final Exception e) {}
 					}
 
@@ -509,11 +509,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 					if(itemFilter.materialItem != null)
 					{
-						GL11.glPushMatrix();
+						GlStateManager.pushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
 						itemRender.renderItemAndEffectIntoGUI(itemFilter.materialItem, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
-						GL11.glPopMatrix();
+						GlStateManager.popMatrix();
 					}
 
 					fontRendererObj.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
@@ -531,11 +531,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 					if(modIDStacks.get(filter).renderStack != null)
 					{
 						try {
-							GL11.glPushMatrix();
+							GlStateManager.pushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
 							itemRender.renderItemAndEffectIntoGUI(modIDStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
-							GL11.glPopMatrix();
+							GlStateManager.popMatrix();
 						} catch(final Exception e) {}
 					}
 
@@ -566,7 +566,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 		if(tileEntity.color != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -575,7 +575,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			//TODO itemRender.renderIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 
 		// Draw tooltips for buttons

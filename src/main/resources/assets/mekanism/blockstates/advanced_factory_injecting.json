@@ -3,6 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
+      "sides": "mekanism:blocks/factory/advanced/injecting/AdvancedInjectingFactoryRight",
       "front": "mekanism:blocks/factory/advanced/injecting/AdvancedInjectingFactoryFront",
       "south": "mekanism:blocks/factory/advanced/injecting/AdvancedInjectingFactoryBack",
       "west": "mekanism:blocks/factory/advanced/injecting/AdvancedInjectingFactoryRight",

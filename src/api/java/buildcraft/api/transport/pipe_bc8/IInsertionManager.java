@@ -1,7 +1,6 @@
 package buildcraft.api.transport.pipe_bc8;
 
 import net.minecraft.util.EnumFacing;
-
 import buildcraft.api.core.IFluidFilter;
 import buildcraft.api.core.IStackFilter;
 import buildcraft.api.transport.pipe_bc8.IPipeContentsEditable.IPipeContentsEditableFluid;

@@ -2,7 +2,6 @@ package buildcraft.api.transport.pipe_bc8;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-
 import buildcraft.api.transport.pipe_bc8.IExtractionManager.IExtractable_BC8;
 import buildcraft.api.transport.pipe_bc8.IInsertionManager.IInsertable_BC8;
 

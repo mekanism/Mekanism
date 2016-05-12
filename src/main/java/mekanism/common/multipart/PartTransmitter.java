@@ -12,11 +12,10 @@ import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
-
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraft.util.EnumFacing;
 
 public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements IAlloyInteraction
 {
@@ -131,7 +130,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 				{
 					if(o1 instanceof IGridTransmitter && o2 instanceof IGridTransmitter)
 					{
-						Coord4D thisCoord = new Coord4D(getPos(), getWorld().provider.getDimensionId());
+						Coord4D thisCoord = new Coord4D(getPos(), getWorld());
 						
 						Coord4D o1Coord = ((IGridTransmitter)o1).coord();
 						Coord4D o2Coord = ((IGridTransmitter)o2).coord();

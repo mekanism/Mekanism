@@ -11,7 +11,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -143,7 +142,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		notifyPartUpdate();
 		notifyTileChange();
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-		Coord4D coord = new Coord4D(getPos(), getWorld().provider.getDimensionId());
+		Coord4D coord = new Coord4D(getPos(), getWorld());
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<Object>())), new Range4D(coord));
 
 		return true;

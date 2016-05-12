@@ -30,14 +30,13 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -180,12 +179,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				if(take)
 				{
 					activeType = fluid.getFluid();
-					recurringNodes.add(wrapper.clone());
+					recurringNodes.add(wrapper);
 					fluidTank.fill(fluid, true);
 					
 					if(shouldTake(fluid, wrapper))
 					{
-						worldObj.setBlockToAir(wrapper);
+						worldObj.setBlockToAir(wrapper.getPos());
 					}
 				}
 
@@ -208,7 +207,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 					if(shouldTake(fluid, wrapper))
 					{
-						worldObj.setBlockToAir(wrapper);
+						worldObj.setBlockToAir(wrapper.getPos());
 					}
 				}
 
@@ -234,7 +233,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 							
 							if(shouldTake(fluid, side))
 							{
-								worldObj.setBlockToAir(side);
+								worldObj.setBlockToAir(side.getPos());
 							}
 						}
 

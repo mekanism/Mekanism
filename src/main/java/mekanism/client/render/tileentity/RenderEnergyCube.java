@@ -12,6 +12,7 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -46,35 +47,33 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 	@Override
 	public void renderTileEntityAt(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 2.5F);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
 		bindTexture(baseTexture);
 
 		switch(tileEntity.facing.ordinal())
-/*TODO: switch the enum*/
-
 		{
 			case 0:
 			{
-				GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
-				GL11.glTranslatef(0.0F, 1.0F, -1.0F);
+				GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, 1.0F, -1.0F);
 				break;
 			}
 			case 1:
 			{
-				GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
-				GL11.glTranslatef(0.0F, 1.0F, 1.0F);
+				GlStateManager.rotate(90F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, 1.0F, 1.0F);
 				break;
 			}
-			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
-			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
-			case 4: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
-			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
+			case 2: GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F); break;
+			case 3: GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F); break;
+			case 4: GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F); break;
+			case 5: GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F); break;
 		}
 
-		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine);
+		GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+		model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine, false);
 		
 		for(EnumFacing side : EnumFacing.values())
 		{
@@ -82,12 +81,12 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 			model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, tileEntity.tier, rendererDispatcher.renderEngine);
 		}
 		
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 
 
 		if(tileEntity.getEnergy()/tileEntity.getMaxEnergy() > 0.1)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 			bindTexture(coreTexture);
 
@@ -96,19 +95,20 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
 			int[] c = COLORS[tileEntity.tier.getBaseTier().ordinal()];
 
-			GL11.glPushMatrix();
-			GL11.glScalef(0.4F, 0.4F, 0.4F);
+			GlStateManager.pushMatrix();
+			GlStateManager.scale(0.4F, 0.4F, 0.4F);
 			GL11.glColor4f((float)c[0]/255F, (float)c[1]/255F, (float)c[2]/255F, (float)(tileEntity.getEnergy() / tileEntity.getMaxEnergy()));
-			GL11.glTranslatef(0, (float)Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
-			GL11.glRotatef((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
-			GL11.glRotatef(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
+			GlStateManager.translate(0, (float)Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
+			GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
+			GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
 			core.render(0.0625F);
-			GL11.glPopMatrix();
+			MekanismRenderer.resetColor();
+			GlStateManager.popMatrix();
 
 			MekanismRenderer.glowOff();
 			MekanismRenderer.blendOff();
 
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		MekanismRenderer.machineRenderer.renderTileEntityAt(tileEntity, x, y, z, partialTick, destroyStage);

@@ -1,10 +1,10 @@
 package li.cil.oc.api.detail;
 
+import java.util.Collection;
+
 import li.cil.oc.api.machine.Architecture;
 import li.cil.oc.api.machine.Machine;
 import li.cil.oc.api.machine.MachineHost;
-
-import java.util.Collection;
 
 public interface MachineAPI {
     /**

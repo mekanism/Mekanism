@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -15,12 +16,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorLogicAdapter extends GuiMekanism
@@ -49,11 +50,11 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		
 		for(ReactorLogic type : ReactorLogic.values())
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), type.getRenderStack(), 27, 35 + (22*type.ordinal()));
+			itemRender.renderItemAndEffectIntoGUI(type.getRenderStack(), 27, 35 + (22*type.ordinal()));
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 			
 			fontRendererObj.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34+(22*type.ordinal()), 0x404040);
 		}
@@ -107,7 +108,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 	}
 	
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		

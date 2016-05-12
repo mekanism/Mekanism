@@ -5,7 +5,6 @@
 package buildcraft.api.power;
 
 import net.minecraft.util.EnumFacing;
-
 import cofh.api.energy.IEnergyReceiver;
 
 /** Implement this on tiles that you wish to be able to receive Redstone Engine (low-power) energy.

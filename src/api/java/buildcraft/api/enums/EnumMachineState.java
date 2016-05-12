@@ -2,7 +2,6 @@ package buildcraft.api.enums;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.IStringSerializable;
-
 import buildcraft.api.properties.BuildCraftProperties;
 
 public enum EnumMachineState implements IStringSerializable {

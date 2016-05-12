@@ -1,7 +1,3 @@
 {
-    "parent": "mekanism:item/standard_item",
-    "textures": { 
-        "layer0": "mekanism:items/Jetpack"
-    }
+    "parent": "mekanism:item/standard_item"
 }
-

@@ -1,5 +1,7 @@
 package li.cil.oc.api.detail;
 
+import java.util.Collection;
+
 import li.cil.oc.api.driver.Block;
 import li.cil.oc.api.driver.Converter;
 import li.cil.oc.api.driver.EnvironmentHost;
@@ -7,8 +9,6 @@ import li.cil.oc.api.driver.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.Collection;
 
 public interface DriverAPI {
     /**

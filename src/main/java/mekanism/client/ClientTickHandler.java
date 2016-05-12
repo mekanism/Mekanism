@@ -14,12 +14,13 @@ import java.util.Set;
 
 import mekanism.api.IClientTicker;
 import mekanism.api.MekanismConfig.client;
+import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.GasStack;
+import mekanism.api.util.ReflectionUtils;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
@@ -390,13 +391,13 @@ public class ClientTickHandler
 	public static void setCape(AbstractClientPlayer player, ResourceLocation cape)
 	{
 		try {
-			Method m = MekanismUtils.getPrivateMethod(AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_getPlayerInfo);
+			Method m = ReflectionUtils.getPrivateMethod(AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_getPlayerInfo);
 			Object obj = m.invoke(player);
 			
 			if(obj instanceof NetworkPlayerInfo)
 			{
 				NetworkPlayerInfo info = (NetworkPlayerInfo)obj;
-				MekanismUtils.setPrivateValue(info, cape, NetworkPlayerInfo.class, ObfuscatedNames.NetworkPlayerInfo_locationCape);
+				ReflectionUtils.setPrivateValue(info, cape, NetworkPlayerInfo.class, ObfuscatedNames.NetworkPlayerInfo_locationCape);
 			}
 		} catch(Exception e) {}
 	}

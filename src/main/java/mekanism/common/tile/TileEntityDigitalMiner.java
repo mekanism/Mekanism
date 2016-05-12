@@ -56,10 +56,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -264,7 +264,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 									toRemove.add(chunk);
 								}
 	
-								worldObj.playAuxSFXAtEntity(null, 2001, coord, Block.getIdFromBlock(block) + (meta << 12));
+								worldObj.playAuxSFXAtEntity(null, 2001, coord.getPos(), Block.getIdFromBlock(block) + (meta << 12));
 	
 								missingStack = null;
 							}
@@ -361,8 +361,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		IBlockState state = obj.getBlockState(worldObj);
 		Block block = state.getBlock();
 		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, obj.getX(), obj.getY(), obj.getZ()).get();
-		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(worldObj, obj, state, dummy);
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, obj.xCoord, obj.yCoord, obj.zCoord).get();
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(worldObj, obj.getPos(), state, dummy);
 		MinecraftForge.EVENT_BUS.post(event);
 		
 		if(!event.isCanceled())
@@ -371,13 +371,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			 
 			if(stack != null)
 			{
-				worldObj.setBlockState(obj, Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
+				worldObj.setBlockState(obj.getPos(), Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
 
 				IBlockState s = obj.getBlockState(worldObj);
-				if(s.getBlock() instanceof BlockBush && !((BlockBush)s.getBlock()).canBlockStay(worldObj, obj, s))
+				if(s.getBlock() instanceof BlockBush && !((BlockBush)s.getBlock()).canBlockStay(worldObj, obj.getPos(), s))
 				{
-					s.getBlock().dropBlockAsItem(worldObj, obj, s, 1);
-					worldObj.setBlockToAir(obj);
+					s.getBlock().dropBlockAsItem(worldObj, obj.getPos(), s, 1);
+					worldObj.setBlockToAir(obj.getPos());
 				}
 				
 				return true;
@@ -387,7 +387,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				
 				if(filter == null || (filter.replaceStack == null || !filter.requireStack))
 				{
-					worldObj.setBlockToAir(obj);
+					worldObj.setBlockToAir(obj.getPos());
 					
 					return true;
 				}
@@ -529,7 +529,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileEntity getPullInv()
 	{
-		return Coord4D.get(this).add(0, 2, 0).getTileEntity(worldObj);
+		return Coord4D.get(this).translate(0, 2, 0).getTileEntity(worldObj);
 	}
 
 	public TileEntity getEjectInv()
@@ -1030,9 +1030,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		int diameter = getDiameter();
 		Coord4D start = getStartingCoord();
 
-		int x = start.getX()+index%diameter;
-		int y = start.getY()+(index/diameter/diameter);
-		int z = start.getZ()+(index/diameter)%diameter;
+		int x = start.xCoord+index%diameter;
+		int y = start.yCoord+(index/diameter/diameter);
+		int z = start.zCoord+(index/diameter)%diameter;
 
 		return new Coord4D(x, y, z, worldObj.provider.getDimensionId());
 	}

@@ -184,17 +184,17 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
             {
                 IBlockState state = worldObj.getBlockState(mop.getBlockPos());
 				Block block = state.getBlock();
-                boolean fluid = MekanismUtils.isFluid(worldObj, new Coord4D(mop)) || MekanismUtils.isDeadFluid(worldObj, new Coord4D(mop));
+                boolean fluid = MekanismUtils.isFluid(worldObj, new Coord4D(mop, worldObj)) || MekanismUtils.isDeadFluid(worldObj, new Coord4D(mop, worldObj));
                 
-                Coord4D sideCoord = new Coord4D(mop.getBlockPos().offset(mop.sideHit), worldObj.provider.getDimensionId());
+                Coord4D sideCoord = new Coord4D(mop.getBlockPos().offset(mop.sideHit), worldObj);
                 
                 if(general.aestheticWorldDamage && !fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
                 {
-                	if(mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop.getBlockPos())))
+                	if(mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop, worldObj)))
                 	{
                 		if(mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !worldObj.isRemote)
                 		{
-                			worldObj.setBlockState(sideCoord, Blocks.fire.getDefaultState());
+                			worldObj.setBlockState(sideCoord.getPos(), Blocks.fire.getDefaultState());
                 		}
                 	}
                 }
@@ -249,19 +249,19 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 
 				if(newBlock != null && newBlock != Blocks.air)
 				{
-					worldObj.setBlockState(block, Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
+					worldObj.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
 				}
 				else {
-					worldObj.setBlockToAir(block);
+					worldObj.setBlockToAir(block.getPos());
 					
-					EntityItem item = new EntityItem(worldObj, block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5, result.copy());
+					EntityItem item = new EntityItem(worldObj, block.xCoord + 0.5, block.yCoord + 0.5, block.zCoord + 0.5, result.copy());
 					item.motionX = 0;
 					item.motionY = 0;
 					item.motionZ = 0;
 					worldObj.spawnEntityInWorld(item);
 				}
 				
-				worldObj.playAuxSFXAtEntity(null, 2001, block, Block.getIdFromBlock(b) + (b.getMetaFromState(state) << 12));
+				worldObj.playAuxSFXAtEntity(null, 2001, block.getPos(), Block.getIdFromBlock(b) + (b.getMetaFromState(state) << 12));
 			}
 			
 			spawnParticlesAt(new Pos3D(block).translate(0.5, 0.5, 0.5));

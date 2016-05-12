@@ -17,7 +17,6 @@ import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Vec3;
-
 import net.minecraftforge.common.util.Constants;
 
 public class SchematicEntity extends Schematic {

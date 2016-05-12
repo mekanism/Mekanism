@@ -13,7 +13,6 @@ import java.util.Map;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
 import buildcraft.api.transport.pluggable.PipePluggable;
 
 public abstract class PipeManager {

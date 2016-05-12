@@ -2,11 +2,11 @@ package buildcraft.api.properties;
 
 import java.util.List;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 
 public class BuildCraftExtendedProperty<T extends Comparable<T>> extends BuildCraftProperty<T> implements IUnlistedProperty<T> {
     private final Predicate<T> function;

@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/SteelCasing",
+      "sides": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberRight",
       "front": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberFront",
       "west": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberRight",
       "east": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberLeft",

@@ -2,7 +2,6 @@ package mekanism.common.base;
 
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-
 import net.minecraft.util.EnumFacing;
 
 /**
