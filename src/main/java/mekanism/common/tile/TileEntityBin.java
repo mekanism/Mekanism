@@ -279,19 +279,21 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-
-		isActive = dataStream.readBoolean();
-		clientAmount = dataStream.readInt();
-
-		if(clientAmount > 0)
+		if (worldObj.isRemote) 
 		{
-			itemType = PacketHandler.readStack(dataStream);
-		}
-		else {
-			itemType = null;
-		}
+			isActive = dataStream.readBoolean();
+			clientAmount = dataStream.readInt();
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			if(clientAmount > 0)
+			{
+				itemType = PacketHandler.readStack(dataStream);
+			}
+			else {
+				itemType = null;
+			}
+
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override
