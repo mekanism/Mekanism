@@ -21,11 +21,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerWindGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiWindGenerator extends GuiMekanism
@@ -67,7 +66,7 @@ public class GuiWindGenerator extends GuiMekanism
 
 		int size = 44;
 
-		if(!tileEntity.getWorld().canBlockSeeTheSky(tileEntity.getPos().getX(), tileEntity.getPos().getY()+4, tileEntity.getPos().getZ()))
+		if(!tileEntity.getWorld().canSeeSky(tileEntity.getPos().add(0, 4, 0)))
 		{
 			size += 9;
 			fontRendererObj.drawString(EnumColor.DARK_RED + LangUtils.localize("gui.skyBlocked"), 51, size, 0x00CD00);

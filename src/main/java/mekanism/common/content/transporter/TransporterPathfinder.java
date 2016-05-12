@@ -104,7 +104,7 @@ public final class TransporterPathfinder
 			
 			while(true)
 			{
-				Coord4D coord = start.getFromSide(side, count);
+				Coord4D coord = start.offset(side, count);
 				
 				if(transportStack.canInsertToTransporter(coord.getTileEntity(worldObj), side))
 				{

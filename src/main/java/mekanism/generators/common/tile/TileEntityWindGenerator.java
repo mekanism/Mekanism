@@ -44,7 +44,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
-		if(worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) 
+		if(worldObj.canSeeSky(getPos().add(0, 4, 0))) 
 		{
 			final float minY = (float)generators.windGenerationMinY;
 			final float maxY = (float)generators.windGenerationMaxY;
@@ -54,7 +54,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 			final float slope = (maxG - minG) / (maxY - minY);
 			final float intercept = minG - slope * minY;
 
-			final float clampedY = Math.min(maxY, Math.max(minY, (float)(yCoord+4)));
+			final float clampedY = Math.min(maxY, Math.max(minY, (float)(getPos().getY()+4)));
 			final float toGen = slope * clampedY + intercept;
 
 			return toGen / minG;
@@ -108,22 +108,22 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	@Override
 	public void onPlace()
 	{
-		Coord4D pos = Coord4D.get(this);
-		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(EnumFacing.UP, 1), pos);
-		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(EnumFacing.UP, 2), pos);
-		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(EnumFacing.UP, 3), pos);
-		MekanismUtils.makeBoundingBlock(worldObj, pos.offset(EnumFacing.UP, 4), pos);
+		Coord4D current = Coord4D.get(this);
+		MekanismUtils.makeBoundingBlock(worldObj, getPos().offset(EnumFacing.UP, 1), current);
+		MekanismUtils.makeBoundingBlock(worldObj, getPos().offset(EnumFacing.UP, 2), current);
+		MekanismUtils.makeBoundingBlock(worldObj, getPos().offset(EnumFacing.UP, 3), current);
+		MekanismUtils.makeBoundingBlock(worldObj, getPos().offset(EnumFacing.UP, 4), current);
 	}
 
 	@Override
 	public void onBreak()
 	{
-		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
-		worldObj.setBlockToAir(xCoord, yCoord+2, zCoord);
-		worldObj.setBlockToAir(xCoord, yCoord+3, zCoord);
-		worldObj.setBlockToAir(xCoord, yCoord+4, zCoord);
+		worldObj.setBlockToAir(getPos().add(0, 1, 0));
+		worldObj.setBlockToAir(getPos().add(0, 2, 0));
+		worldObj.setBlockToAir(getPos().add(0, 3, 0));
+		worldObj.setBlockToAir(getPos().add(0, 4, 0));
 
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlockToAir(getPos());
 	}
 
 	@Override

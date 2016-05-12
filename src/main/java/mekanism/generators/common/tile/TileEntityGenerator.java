@@ -71,7 +71,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -110,7 +110,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(EnumFacing.getFront(facing));
+		return EnumSet.of(facing);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 

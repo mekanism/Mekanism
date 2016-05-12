@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
-import mekanism.api.Pos3D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -25,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -263,7 +263,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			if(getReactor() == null)
 			{
 				setReactor(new FusionReactor(this));
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 			
 			((FusionReactor)getReactor()).formed = true;
@@ -282,7 +282,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		else if(getReactor() != null)
 		{
 			setReactor(null);
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 
@@ -329,7 +329,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		if(box == null)
 		{
-			box = AxisAlignedBB.getBoundingBox(xCoord-1, yCoord-3, zCoord-1, xCoord+2, yCoord, zCoord+2);
+			box = AxisAlignedBB.fromBounds(getPos().getX()-1, getPos().getY()-3, getPos().getZ()-1, getPos().getX()+2, getPos().getY(), getPos().getZ()+2);
 		}
 		
 		return box;
@@ -372,9 +372,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Pos3D getSoundPosition()
+	public Vec3 getSoundPosition()
 	{
-		return new Pos3D(xCoord+0.5, yCoord+0.5, zCoord+0.5);
+		return new Vec3(getPos()).addVector(0.5, 0.5, 0.5);
 	}
 
 	@Override

@@ -4,11 +4,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelGasGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,7 +21,7 @@ public class RenderGasGenerator extends TileEntitySpecialRenderer<TileEntityGasG
 		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal())
 		{
 			case 2: GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F); break;
 			case 3: GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F); break;

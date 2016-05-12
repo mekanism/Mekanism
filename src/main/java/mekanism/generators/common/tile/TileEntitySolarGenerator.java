@@ -10,8 +10,8 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -36,7 +36,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return new int[] {0};
 	}
@@ -63,7 +63,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			ChargeUtils.charge(0, this);
 			
-			if(worldObj.isDaytime() && ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord))
+			if(worldObj.isDaytime() && ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.getHasNoSky() && worldObj.canSeeSky(getPos().add(0, 4, 0)))
 			{
 				seesSun = true;
 			}
@@ -84,11 +84,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeGenForCoords(xCoord, zCoord).getBiomeClass() == BiomeGenDesert.class;
+		return worldObj.provider.getBiomeGenForCoords(getPos()).getBiomeClass() == BiomeGenDesert.class;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 0)
 		{

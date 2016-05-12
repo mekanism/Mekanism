@@ -17,16 +17,16 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -66,16 +66,15 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 	
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
 		if(structure != null)
 		{
-			EnumSet set = EnumSet.allOf(ForgeDirection.class);
-			set.remove(ForgeDirection.UNKNOWN);
+			EnumSet set = EnumSet.allOf(EnumFacing.class);
 			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALUES)
 			{
-				if(structure.locations.contains(Coord4D.get(this).getFromSide(side)))
+				if(structure.locations.contains(Coord4D.get(this).offset(side)))
 				{
 					set.remove(side);
 				}
@@ -84,19 +83,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 			return set;
 		}
 		
-		return EnumSet.noneOf(ForgeDirection.class);
+		return EnumSet.noneOf(EnumFacing.class);
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
-	}
-	
-	@Override
-	public boolean canUpdate()
-	{
-		return true;
+		return EnumSet.noneOf(EnumFacing.class);
 	}
 	
 	@Method(modid = "IC2")
@@ -104,7 +97,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
 			
 			if(registered != this)
 			{
@@ -126,7 +119,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
@@ -175,13 +168,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		return 0;
 	}
 
 	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
 		{
@@ -199,19 +192,19 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return structure != null;
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from)
+	public int getEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getEnergy()*general.TO_TE);
 	}
 
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getMaxEnergy()*general.TO_TE);
 	}
@@ -246,27 +239,27 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean isTeleporterCompatible(ForgeDirection side)
+	public boolean isTeleporterCompatible(EnumFacing side)
 	{
 		return canOutputTo(side);
 	}
 
 	@Override
-	public boolean canOutputTo(ForgeDirection side)
+	public boolean canOutputTo(EnumFacing side)
 	{
 		return getOutputtingSides().contains(side);
 	}
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
 	{
 		return false;
 	}
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
+	public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction)
 	{
 		return getOutputtingSides().contains(direction) && receiver instanceof IEnergyConductor;
 	}
@@ -307,7 +300,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
+	public boolean canReceiveEnergy(EnumFacing side)
 	{
 		return false;
 	}
@@ -321,7 +314,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
 	@Override
 	@Method(modid = "IC2")
-	public double injectEnergy(ForgeDirection direction, double amount, double voltage)
+	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		return amount;
 	}
@@ -338,19 +331,19 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
 		return 0;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		int filled = fluidTank.fill(resource, doFill);
 		
@@ -363,7 +356,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(structure != null && structure.fluidStored != null)
 		{
@@ -377,7 +370,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(structure != null)
 		{
@@ -388,7 +381,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		if(fluid == FluidRegistry.getFluid("steam"))
 		{
@@ -399,7 +392,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
 	}

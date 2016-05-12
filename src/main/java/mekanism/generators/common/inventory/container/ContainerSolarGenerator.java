@@ -41,7 +41,7 @@ public class ContainerSolarGenerator extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 		tileEntity.close(entityplayer);
 	}
 

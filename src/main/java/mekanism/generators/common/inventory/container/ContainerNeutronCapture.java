@@ -41,7 +41,7 @@ public class ContainerNeutronCapture extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 		tileEntity.close(entityplayer);
 	}
 

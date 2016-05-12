@@ -20,19 +20,20 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(EnumFacing.getFront(facing));
+		return EnumSet.of(facing);
 	}
 
 	@Override
 	public void onPlace()
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, new Coord4D(xCoord, yCoord+1, zCoord), Coord4D.get(this));
+		Coord4D current = Coord4D.get(this);
+		MekanismUtils.makeBoundingBlock(worldObj, getPos().add(0, 1, 0), current);
 
 		for(int x = -1; x <= 1; x++)
 		{
 			for(int z = -1; z <= 1; z++)
 			{
-				MekanismUtils.makeBoundingBlock(worldObj, new Coord4D(xCoord+x, yCoord+2, zCoord+z), Coord4D.get(this));
+				MekanismUtils.makeBoundingBlock(worldObj, getPos().add(x, 2, z), current);
 			}
 		}
 	}
@@ -40,18 +41,18 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	@Override
 	public void onBreak()
 	{
-		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
+		worldObj.setBlockToAir(getPos().add(0, 1, 0));
 
 		for(int x = -1; x <= 1; x++)
 		{
 			for(int z = -1; z <= 1; z++)
 			{
-				worldObj.setBlockToAir(xCoord+x, yCoord+2, zCoord+z);
+				worldObj.setBlockToAir(getPos().add(x, 2, z));
 			}
 		}
 
 		invalidate();
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlockToAir(getPos());
 	}
 
 	@Override

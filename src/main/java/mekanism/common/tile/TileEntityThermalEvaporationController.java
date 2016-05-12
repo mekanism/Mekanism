@@ -349,10 +349,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			startPoint = startPoint.offset(EnumFacing.UP);
 		}
 		
-		Coord4D test = startPoint.offset(EnumFacing.DOWN).getFromSide(right, 2);
+		Coord4D test = startPoint.offset(EnumFacing.DOWN).offset(right, 2);
 		isLeftOnFace = test.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock;
 		
-		startPoint = startPoint.getFromSide(left, isLeftOnFace ? 1 : 2);
+		startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
 		
 		if(!scanTopLayer(startPoint))
 		{
@@ -390,7 +390,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		{
 			for(int z = 0; z < 4; z++)
 			{
-				Coord4D pointer = current.getFromSide(right, x).getFromSide(back, z);
+				Coord4D pointer = current.offset(right, x).offset(back, z);
 				TileEntity pointerTile = pointer.getTileEntity(worldObj);
 				
 				int corner = getCorner(x, z);
@@ -465,7 +465,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		{
 			for(int z = 0; z < 4; z++)
 			{
-				Coord4D pointer = current.getFromSide(right, x).getFromSide(back, z);
+				Coord4D pointer = current.offset(right, x).offset(back, z);
 				TileEntity pointerTile = pointer.getTileEntity(worldObj);
 				
 				if((x == 1 || x == 2) && (z == 1 || z == 2))

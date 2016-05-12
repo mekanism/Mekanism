@@ -44,7 +44,7 @@ public class ContainerBioGenerator extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 		tileEntity.close(entityplayer);
 	}
 

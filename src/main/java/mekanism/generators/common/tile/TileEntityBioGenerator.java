@@ -184,9 +184,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return EnumFacing.getFront(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+		return side == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 
 	@Override
@@ -243,7 +243,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(FluidRegistry.isFluidRegistered("bioethanol") && from != EnumFacing.getFront(facing))
+		if(FluidRegistry.isFluidRegistered("bioethanol") && from != facing)
 		{
 			if(resource.getFluid() == FluidRegistry.getFluid("bioethanol"))
 			{

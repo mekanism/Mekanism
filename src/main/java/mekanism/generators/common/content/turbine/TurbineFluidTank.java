@@ -30,9 +30,9 @@ public class TurbineFluidTank implements IFluidTank
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(turbine.structure != null && !turbine.getWorldObj().isRemote)
+		if(turbine.structure != null && !turbine.getWorld().isRemote)
 		{
-			if(resource == null || resource.getFluidID() <= 0)
+			if(resource == null || resource.getFluid() == null)
 			{
 				return 0;
 			}
@@ -42,7 +42,7 @@ public class TurbineFluidTank implements IFluidTank
 				return 0;
 			}
 
-			if(turbine.structure.fluidStored == null || turbine.structure.fluidStored.getFluidID() <= 0)
+			if(turbine.structure.fluidStored == null || turbine.structure.fluidStored.getFluid() == null)
 			{
 				if(resource.amount <= getCapacity())
 				{
@@ -110,9 +110,9 @@ public class TurbineFluidTank implements IFluidTank
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		if(turbine.structure != null && !turbine.getWorldObj().isRemote)
+		if(turbine.structure != null && !turbine.getWorld().isRemote)
 		{
-			if(turbine.structure.fluidStored == null || turbine.structure.fluidStored.getFluidID() <= 0)
+			if(turbine.structure.fluidStored == null || turbine.structure.fluidStored.getFluid() == null)
 			{
 				return null;
 			}

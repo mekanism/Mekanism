@@ -215,10 +215,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		EnumSet set = EnumSet.allOf(EnumFacing.class);
-		set.remove(EnumFacing.null);
-		
-		return set;
+		return EnumSet.allOf(EnumFacing.class);
 	}
 
 	@Override
@@ -333,7 +330,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 	
 	@Override
-	public int[] getSlotsForFace(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return getReactor() != null && getReactor().isFormed() ? new int[] {0} : InventoryUtils.EMPTY;
 	}
@@ -352,7 +349,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum)
 		{

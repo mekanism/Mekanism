@@ -7,7 +7,7 @@ import java.util.Random;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.CTMData;
+import mekanism.client.render.ctm.CTMData;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
@@ -43,7 +43,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -53,15 +53,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
-import buildcraft.api.tools.IToolWrench;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import buildcraft.api.tools.IToolWrench;
+import codechicken.lib.render.TextureUtils.IIconRegister;
 
 /**
  * Block class for handling multiple generator block IDs.
@@ -132,11 +134,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 	
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
     {
-		setBlockBoundsBasedOnState(world, x, y, z);
+		setBlockBoundsBasedOnState(world, pos);
 		
-		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+		return super.getCollisionBoundingBox(world, pos);
     }
 	
 	@Override
@@ -163,15 +165,6 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			return BASE_ICON;
 		}
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
-	{
-		int meta = world.getBlockMetadata(x, y, z);
-		
-		return getIcon(side, meta);
-	}
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
@@ -182,7 +175,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			
 			if(tileEntity instanceof IMultiblock)
 			{
-				((IMultiblock)tileEntity).update();
+				((IMultiblock)tileEntity).doUpdate();
 			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
@@ -193,9 +186,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
 		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(entityliving.rotationPitch);
@@ -234,16 +227,16 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		
 		if(!world.isRemote && tileEntity instanceof IMultiblock)
 		{
-			((IMultiblock)tileEntity).update();
+			((IMultiblock)tileEntity).doUpdate();
 		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	public int getLightValue(IBlockAccess world, BlockPos pos)
 	{
 		if(client.enableAmbientLighting)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 
 			if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 			{
@@ -265,11 +258,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 	
 	@Override
-	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
-		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, x, y, z) : 0.0F;
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, pos) : 0.0F;
 	}
 
 	@Override
@@ -284,26 +277,26 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random random)
+	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random random)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		
-		if(MekanismUtils.isActive(world, x, y, z))
+		if(MekanismUtils.isActive(world, pos))
 		{
-			float xRandom = (float)x + 0.5F;
-			float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-			float zRandom = (float)z + 0.5F;
+			float xRandom = (float)pos.getX() + 0.5F;
+			float yRandom = (float)pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+			float zRandom = (float)pos.getZ() + 0.5F;
 			float iRandom = 0.52F;
 			float jRandom = random.nextFloat() * 0.6F - 0.3F;
 
-			if(tileEntity.facing == 4)
+			if(tileEntity.facing == EnumFacing.WEST)
 			{
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-(??)						world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-(??)						world.spawnParticle("flame", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.25, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
@@ -312,7 +305,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 						break;
 				}
 			}
-			else if(tileEntity.facing == 5)
+			else if(tileEntity.facing == EnumFacing.EAST)
 			{
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
@@ -327,7 +320,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 						break;
 				}
 			}
-			else if(tileEntity.facing == 2)
+			else if(tileEntity.facing == EnumFacing.NORTH)
 			{
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
@@ -342,7 +335,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 						break;
 				}
 			}
-			else if(tileEntity.facing == 3)
+			else if(tileEntity.facing == EnumFacing.SOUTH)
 			{
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
@@ -361,16 +354,16 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public boolean canPlaceBlockAt(World world, int x, int y, int z)
+	public boolean canPlaceBlockAt(World world, BlockPos pos)
 	{
 		//This method doesn't actually seem to be used in MC code...
 		if(world.getBlockMetadata(x, y, z) == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
+			boolean canPlace = super.canPlaceBlockAt(world, pos);
 
 			boolean nonAir = false;
-			nonAir |= world.isAirBlock(x, y, z);
-			nonAir |= world.isAirBlock(x, y+1, x);
+			nonAir |= world.isAirBlock(pos);
+			nonAir |= world.isAirBlock(pos.add(0, 1, 0));
 
 			for(int xPos=-1;xPos<=1;xPos++)
 			{
@@ -384,11 +377,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		}
 		else if(world.getBlockMetadata(x, y, z) == GeneratorType.WIND_GENERATOR.meta)
 		{
-			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
+			boolean canPlace = super.canPlaceBlockAt(world, pos);
 
 			boolean nonAir = false;
 
-			for(int yPos = y+1; yPos <= y+4; yPos++)
+			for(int yPos = pos.getY()+1; yPos <= pos.getY()+4; yPos++)
 			{
 				nonAir |= world.isAirBlock(x, yPos, z);
 			}
@@ -396,13 +389,13 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			return (!nonAir) && canPlace;
 		}
 
-		return super.canPlaceBlockAt(world, x, y, z);
+		return super.canPlaceBlockAt(world, pos);
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		
 		if(!world.isRemote && tileEntity instanceof TileEntityTurbineRotor)
 		{
@@ -415,7 +408,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 				double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 				double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-				EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(GeneratorsItems.TurbineBlade, amount));
+				EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, new ItemStack(GeneratorsItems.TurbineBlade, amount));
 
 				world.spawnEntityInWorld(entityItem);
 			}
@@ -426,18 +419,18 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			((IBoundingBlock)tileEntity).onBreak();
 		}
 
-		super.breakBlock(world, x, y, z, block, meta);
+		super.breakBlock(world, pos, state);
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float playerX, float playerY, float playerZ)
 	{
 		if(world.isRemote)
 		{
 			return true;
 		}
 
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
@@ -585,7 +578,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public boolean renderAsNormalBlock()
+	public boolean rendersAsNormalBlock()
 	{
 		return false;
 	}
@@ -642,7 +635,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -651,19 +644,19 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z, player));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return world.setBlockToAir(pos);
 	}
 
 	@Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
-		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(x, y, z));
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(pos));
 
 		if(itemStack.stackTagCompound == null)
 		{
@@ -717,11 +710,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		return itemStack;
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
+		ItemStack itemStack = getPickBlock(null, world, pos, null);
 
-		world.setBlockToAir(x, y, z);
+		world.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
@@ -730,7 +723,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -739,9 +732,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
+	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
+		int metadata = world.getBlockMetadata(pos);
 
 		if(metadata != GeneratorType.SOLAR_GENERATOR.meta && 
 				metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta && 
@@ -850,9 +843,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
@@ -872,9 +865,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{

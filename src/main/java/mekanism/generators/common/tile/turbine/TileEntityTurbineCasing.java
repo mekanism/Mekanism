@@ -10,6 +10,7 @@ import mekanism.api.MekanismConfig.generators;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -107,7 +108,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	}
 	
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("gui.industrialTurbine");
 	}
@@ -118,7 +119,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		if(!player.isSneaking() && structure != null)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			player.openGui(MekanismGenerators.instance, 6, worldObj, xCoord, yCoord, zCoord);
+			player.openGui(MekanismGenerators.instance, 6, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
 			
 			return true;
 		}
@@ -178,7 +179,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			if(structure.fluidStored != null)
 			{
 				data.add(1);
-				data.add(structure.fluidStored.getFluidID());
+				data.add(structure.fluidStored.getFluid().getName());
 				data.add(structure.fluidStored.amount);
 			}
 			else {
@@ -214,7 +215,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			
 			if(dataStream.readInt() == 1)
 			{
-				structure.fluidStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
+				structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
 			}
 			else {
 				structure.fluidStored = null;

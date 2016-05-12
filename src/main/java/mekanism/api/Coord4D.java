@@ -208,7 +208,7 @@ public class Coord4D
 	 */
 	public Coord4D offset(EnumFacing side)
 	{
-		return getFromSide(side, 1);
+		return offset(side, 1);
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class Coord4D
 	 * @param amount - how far to translate this Coord4D
 	 * @return translated Coord4D
 	 */
-	public Coord4D getFromSide(EnumFacing side, int amount)
+	public Coord4D offset(EnumFacing side, int amount)
 	{
 		if(side == null || amount == 0)
 		{

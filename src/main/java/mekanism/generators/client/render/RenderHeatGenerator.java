@@ -4,11 +4,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,7 +21,7 @@ public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHea
 		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.facing.ordinal())
 		{
 			case 2: GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F); break;
 			case 3: GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F); break;
@@ -33,7 +30,7 @@ public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHea
 		}
 
 		GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tileEntity.isActive, field_147501_a.field_147553_e);
+		model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine);
 		GlStateManager.popMatrix();
 	}
 }
