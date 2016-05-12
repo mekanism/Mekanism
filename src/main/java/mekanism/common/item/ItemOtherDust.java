@@ -27,6 +27,11 @@ public class ItemOtherDust extends ItemMekanism
 	{
 		for(int i = 0; i < subtypes.length; i++)
 		{
+			if(i == 2)
+			{
+				continue;
+			}
+			
 			icons[i] = register.registerIcon("mekanism:" + subtypes[i] + "Dust");
 		}
 	}

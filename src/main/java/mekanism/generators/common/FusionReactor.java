@@ -23,7 +23,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -465,13 +464,13 @@ public class FusionReactor implements IFusionReactor
 	{
 		for(int x = -1; x <= 1; x++)
 		{
-			for(int y = -1; x <= 1; x++)
+			for(int y = -1; y <= 1; y++)
 			{
-				for(int z = -1; x <= 1; x++)
+				for(int z = -1; z <= 1; z++)
 				{
-					Block tile = centre.clone().translate(x, y, z).getBlock(controller.getWorldObj());
-
-					if(!tile.isAir(controller.getWorldObj(), x, y, z))
+					Coord4D trans = centre.clone().translate(x, y, z);
+					
+					if(!trans.isAirBlock(controller.getWorldObj()))
 					{
 						return false;
 					}
