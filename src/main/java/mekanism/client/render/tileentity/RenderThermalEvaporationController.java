@@ -153,7 +153,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 			displays[i].endList();
 		}
 
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		MekanismRenderer.resetColor();
 
 		return displays;
 	}

@@ -250,7 +250,7 @@ public class ModelArmoredJetpack extends ModelBase
 		WingbladeL.render(size);
 		WingbladeR.render(size);
 
-		GL11.glColor4f(1, 1, 1, 1);
+		MekanismRenderer.resetColor();
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();

@@ -35,6 +35,7 @@ public final class MinerVisualRenderer
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 		mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 		getList(new MinerRenderData(miner)).render();
+		MekanismRenderer.resetColor();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 		GlStateManager.popMatrix();

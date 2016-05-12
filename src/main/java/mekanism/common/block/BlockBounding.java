@@ -47,15 +47,6 @@ public class BlockBounding extends Block
 		return isAdvanced ? 1 : 0;
 	}
 
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) 
-	{
-		blockIcon = register.registerIcon(BlockBasic.ICON_BASE);
-	}
-*/
-
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -145,6 +136,12 @@ public class BlockBounding extends Block
 	{
 		return false;
 	}
+	
+	@Override
+	public boolean isFullCube()
+	{
+		return false;
+	}
 
 	@Override
 	public boolean hasTileEntity(IBlockState state)
@@ -159,8 +156,7 @@ public class BlockBounding extends Block
 		{
 			return new TileEntityAdvancedBoundingBlock();
 		}
-		else
-		{
+		else {
 			return new TileEntityBoundingBlock();
 		}
 	}

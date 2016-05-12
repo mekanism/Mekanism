@@ -10,6 +10,7 @@ import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelChemicalCrystallizer;
 import mekanism.client.model.ModelChemicalDissolutionChamber;
+import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.model.ModelFreeRunners;
@@ -67,6 +68,7 @@ import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.fluids.Fluid;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
 
 public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 {
@@ -94,6 +96,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 	public static ModelResistiveHeater resistiveHeater = new ModelResistiveHeater();
 	public static ModelQuantumEntangloporter quantumEntangloporter = new ModelQuantumEntangloporter();
 	public static ModelEnergyCube energyCube = new ModelEnergyCube();
+	public static ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
 	
 	public BakedCustomItemModel(IBakedModel model, ItemStack s)
 	{
@@ -206,6 +209,13 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 				GlStateManager.translate(0.05F, -0.96F, 0.05F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
 				resistiveHeater.render(0.0625F, false, mc.renderEngine, true);
+			}
+			else if(machineType == MachineType.DIGITAL_MINER)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glTranslatef(0.35F, 0.1F, 0.0F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
+				digitalMiner.render(0.022F, false, mc.renderEngine);
 			}
 			
 			return;

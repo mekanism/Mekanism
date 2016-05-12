@@ -46,6 +46,8 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
 			int display = getOverlayDisplay(type).display;
 			GL11.glCallList(display);
+			
+			MekanismRenderer.resetColor();
 
 			pop();
 		}

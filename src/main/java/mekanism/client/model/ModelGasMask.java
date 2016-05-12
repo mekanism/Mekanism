@@ -250,7 +250,7 @@ public class ModelGasMask extends ModelBase
 		glassbackL.render(size);
 
 		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glColor4f(1, 1, 1, 1);
+		MekanismRenderer.resetColor();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 

@@ -172,5 +172,7 @@ public class MekanismItems
 
 		MinecraftForge.EVENT_BUS.register(GasMask);
 		MinecraftForge.EVENT_BUS.register(FreeRunners);
+		
+		Mekanism.proxy.registerItemRenders();
 	}
 }

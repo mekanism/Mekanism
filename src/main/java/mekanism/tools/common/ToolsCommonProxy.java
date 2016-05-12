@@ -18,5 +18,5 @@ public class ToolsCommonProxy
 		}
 	}
 	
-	public void registerRenderInformation() {}
+	public void registerItemRenders() {}
 }

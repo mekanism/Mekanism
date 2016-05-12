@@ -8,7 +8,7 @@ import net.minecraft.item.Item;
 public class ToolsClientProxy extends ToolsCommonProxy 
 {
 	@Override
-	public void registerRenderInformation()
+	public void registerItemRenders()
 	{
 		//Vanilla Material Paxels
 		registerItemRender(ToolsItems.WoodPaxel);

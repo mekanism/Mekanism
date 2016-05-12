@@ -71,6 +71,8 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		
 						int display = getOverlayDisplay(pos.sideHit, type).display;
 						GL11.glCallList(display);
+						
+						MekanismRenderer.resetColor();
 		
 						pop();
 					}

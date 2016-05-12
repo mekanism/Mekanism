@@ -23,7 +23,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -36,6 +35,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -129,8 +129,6 @@ public class MekanismRenderer
 	
 	public static void registerItemRender(String domain, Item item)
 	{
-		ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		
 		if(item instanceof IMetaItem)
 		{
 			IMetaItem metaItem = (IMetaItem)item;
@@ -144,7 +142,7 @@ public class MekanismRenderer
 				}
 				
 				ModelResourceLocation loc = new ModelResourceLocation(domain + ":" + metaItem.getTexture(i), "inventory");
-				mesher.register(item, i, loc);
+				ModelLoader.setCustomModelResourceLocation(item, i, loc);
 				variants.add(loc);
 				ModelBakery.addVariantName(item, domain + ":" + metaItem.getTexture(i));
 			}
@@ -152,7 +150,7 @@ public class MekanismRenderer
 			return;
 		}
 		
-		mesher.register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 
 

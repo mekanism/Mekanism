@@ -224,7 +224,7 @@ public class ClientProxy extends CommonProxy
 	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
 		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
 		"solar_neutron_activator", "chemical_dissolution_chamber", "chemical_crystallizer", "seismic_vibrator", "security_desk",
-		"quantum_entangloporter", "resistive_heater", "EnergyCube"};
+		"quantum_entangloporter", "resistive_heater", "EnergyCube", "digital_miner"};
 	
 	@Override
 	public void loadConfiguration()

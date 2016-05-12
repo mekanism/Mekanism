@@ -1407,7 +1407,6 @@ public class Mekanism
 		packetHandler.initialize();
 
 		//Load proxy
-		proxy.registerItemRenders();
 		proxy.loadUtilities();
 		
 		//Completion notification

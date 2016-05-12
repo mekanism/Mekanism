@@ -289,5 +289,7 @@ public class ToolsItems
 		GameRegistry.registerItem(SteelChestplate, "SteelChestplate");
 		GameRegistry.registerItem(SteelLeggings, "SteelLeggings");
 		GameRegistry.registerItem(SteelBoots, "SteelBoots");
+		
+		MekanismTools.proxy.registerItemRenders();
 	}
 }

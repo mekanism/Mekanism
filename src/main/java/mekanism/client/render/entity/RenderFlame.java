@@ -74,6 +74,7 @@ public class RenderFlame extends Render<EntityFlame>
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
         GlStateManager.popMatrix();
