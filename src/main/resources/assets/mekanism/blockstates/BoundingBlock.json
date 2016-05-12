@@ -1,10 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:nothing",
-    "textures": {
-        "particle": "mekanism:blocks/SteelCasing"
-    }
+    "model": "mekanism:nothing"
   },
   "variants": {
     "normal": [{}],

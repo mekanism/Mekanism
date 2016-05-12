@@ -5,27 +5,38 @@ import java.util.List;
 
 import javax.vecmath.Matrix4f;
 
+import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelChemicalCrystallizer;
 import mekanism.client.model.ModelChemicalDissolutionChamber;
+import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
+import mekanism.client.model.ModelQuantumEntangloporter;
+import mekanism.client.model.ModelResistiveHeater;
 import mekanism.client.model.ModelScubaTank;
+import mekanism.client.model.ModelSecurityDesk;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.model.ModelSolarNeutronActivator;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ctm.ModelChiselBlock;
 import mekanism.client.render.tileentity.RenderBin;
+import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.common.MekanismItems;
+import mekanism.common.SideData.IOState;
+import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.base.IEnergyCube;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
@@ -56,7 +67,6 @@ import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.fluids.Fluid;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
 
 public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 {
@@ -80,6 +90,10 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 	public static ModelSeismicVibrator seismicVibrator = new ModelSeismicVibrator();
 	public static ModelChemicalDissolutionChamber chemicalDissolutionChamber = new ModelChemicalDissolutionChamber();
 	public static ModelChemicalCrystallizer chemicalCrystallizer = new ModelChemicalCrystallizer();
+	public static ModelSecurityDesk securityDesk = new ModelSecurityDesk();
+	public static ModelResistiveHeater resistiveHeater = new ModelResistiveHeater();
+	public static ModelQuantumEntangloporter quantumEntangloporter = new ModelQuantumEntangloporter();
+	public static ModelEnergyCube energyCube = new ModelEnergyCube();
 	
 	public BakedCustomItemModel(IBakedModel model, ItemStack s)
 	{
@@ -107,6 +121,15 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		        GlStateManager.blendFunc(770, 771);
 		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 				GlStateManager.popMatrix();
+			}
+			else if(basicType == BasicBlockType.SECURITY_DESK)
+			{
+				GlStateManager.rotate(180, 1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+				GlStateManager.scale(0.8F, 0.8F, 0.8F);
+				GlStateManager.translate(0.0F, -0.8F, 0.0F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk.png"));
+				securityDesk.render(0.0625F, mc.renderEngine);
 			}
 			
 			return;
@@ -142,36 +165,75 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			}
 			else if(machineType == MachineType.SOLAR_NEUTRON_ACTIVATOR)
 			{
-				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-				GL11.glScalef(0.6F, 0.6F, 0.6F);
-				GL11.glTranslatef(0.0F, -0.55F, 0.0F);
+				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.scale(0.6F, 0.6F, 0.6F);
+				GlStateManager.translate(0.0F, -0.55F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
 				solarNeutronActivator.render(0.0625F);
 			}
 			else if(machineType == MachineType.SEISMIC_VIBRATOR)
 			{
-				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-				GL11.glScalef(0.6F, 0.6F, 0.6F);
-				GL11.glTranslatef(0.0F, -0.55F, 0.0F);
+				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.scale(0.6F, 0.6F, 0.6F);
+				GlStateManager.translate(0.0F, -0.55F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
 				seismicVibrator.render(0.0625F);
 			}
 			else if(machineType == MachineType.CHEMICAL_CRYSTALLIZER)
 			{
-				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-				GL11.glTranslatef(0.05F, -1.02F, 0.05F);
+				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(0.05F, -1.001F, 0.05F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));
 				chemicalCrystallizer.render(0.0625F);
 			}
 			else if(machineType == MachineType.CHEMICAL_DISSOLUTION_CHAMBER)
 			{
-				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-				GL11.glTranslatef(0.05F, -1.02F, 0.05F);
+				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(0.05F, -1.001F, 0.05F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
 				chemicalDissolutionChamber.render(0.0625F);
 			}
+			else if(machineType == MachineType.QUANTUM_ENTANGLOPORTER)
+			{
+				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter.png"));
+				quantumEntangloporter.render(0.0625F, mc.renderEngine, true);
+			}
+			else if(machineType == MachineType.RESISTIVE_HEATER)
+			{
+				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(0.05F, -0.96F, 0.05F);
+				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
+				resistiveHeater.render(0.0625F, false, mc.renderEngine, true);
+			}
 			
 			return;
+		}
+		
+		if(stack.getItem() instanceof ItemBlockEnergyCube)
+		{
+			GlStateManager.pushMatrix();
+			EnergyCubeTier tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
+			IEnergizedItem energized = (IEnergizedItem)stack.getItem();
+			mc.renderEngine.bindTexture(RenderEnergyCube.baseTexture);
+
+			GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+
+			MekanismRenderer.blendOn();
+			
+			energyCube.render(0.0625F, tier, mc.renderEngine, true);
+			
+			for(EnumFacing side : EnumFacing.VALUES)
+			{
+				mc.renderEngine.bindTexture(RenderEnergyCube.baseTexture);
+				energyCube.renderSide(0.0625F, side, side == EnumFacing.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, mc.renderEngine);
+			}
+			
+			MekanismRenderer.blendOff();
+			GlStateManager.popMatrix();
 		}
 		
 		if(type == TransformType.GUI)
@@ -304,7 +366,15 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		
 		if(Block.getBlockFromItem(stack.getItem()) != null)
 		{
-			faceQuads.addAll(baseModel.getFaceQuads(facing));
+			MachineType machineType = MachineType.get(stack);
+			
+			if(machineType != MachineType.QUANTUM_ENTANGLOPORTER && machineType != MachineType.RESISTIVE_HEATER)
+			{
+				if(!(stack.getItem() instanceof ItemBlockEnergyCube))
+				{
+					faceQuads.addAll(baseModel.getFaceQuads(facing));
+				}
+			}
 		}
 		
 		return faceQuads;

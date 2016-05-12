@@ -11,8 +11,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import org.lwjgl.opengl.GL11;
-
 @SideOnly(Side.CLIENT)
 public class ModelResistiveHeater extends ModelBase
 {
@@ -167,12 +165,15 @@ public class ModelResistiveHeater extends ModelBase
 		setRotation(portLeft, 0F, 0F, 0F);
 	}
 	
-	public void render(float size, boolean on, TextureManager manager)
+	public void render(float size, boolean on, TextureManager manager, boolean renderMain)
 	{
 		GlStateManager.pushMatrix();
 		MekanismRenderer.blendOn();
 		
-		doRender(size);
+		if(renderMain)
+		{
+			doRender(size);
+		}
 		
 		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
 		GlStateManager.scale(1.001F, 1.001F, 1.001F);

@@ -365,32 +365,6 @@
             }
         },
         {
-            "__comment": "portRightLarge",
-            "from": [0, 3, 3],
-            "to": [1, 13, 13],
-            "faces": {
-                "down":  {"uv": [10, 0, 9.875, 1.25], "texture": "#all"},
-                "up":    {"uv": [9.875, 1.25, 9.75, 0], "texture": "#all"},
-                "north": {"uv": [9.75, 1.25, 9.875, 2.5], "texture": "#all"},
-                "south": {"uv": [11.125, 1.25, 11.25, 2.5], "texture": "#all"},
-                "west":  {"uv": [9.875, 1.25, 11.125, 2.5], "texture": "#all"},
-                "east":  {"uv": [8.5, 1.25, 9.75, 2.5], "texture": "#all"}
-            }
-        },
-        {
-            "__comment": "portLeftLarge",
-            "from": [15, 3, 3],
-            "to": [16, 13, 13],
-            "faces": {
-                "down":  {"uv": [10, 0, 9.875, 1.25], "texture": "#all"},
-                "up":    {"uv": [9.875, 1.25, 9.75, 0], "texture": "#all"},
-                "north": {"uv": [9.75, 1.25, 9.875, 2.5], "texture": "#all"},
-                "south": {"uv": [11.125, 1.25, 11.25, 2.5], "texture": "#all"},
-                "west":  {"uv": [9.875, 1.25, 11.125, 2.5], "texture": "#all"},
-                "east":  {"uv": [8.5, 1.25, 9.75, 2.5], "texture": "#all"}
-            }
-        },
-        {
             "__comment": "corner6",
             "from": [0, 0, 0],
             "to": [3, 3, 3],
@@ -522,7 +496,7 @@
         }
     ],
     "textures": {
-        "all": "...",
+        "all": "mekanism:blocks/models/quantum_entangloporter",
         "particle": "mekanism:blocks/SteelCasing"
     }
 }

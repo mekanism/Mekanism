@@ -48,13 +48,11 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 	public void renderTileEntityAt(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 2.5F);
+		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
 		bindTexture(baseTexture);
 
 		switch(tileEntity.facing.ordinal())
-/*TODO: switch the enum*/
-
 		{
 			case 0:
 			{
@@ -75,7 +73,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 		}
 
 		GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine);
+		model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine, false);
 		
 		for(EnumFacing side : EnumFacing.values())
 		{
@@ -104,6 +102,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 			GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
 			GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
 			core.render(0.0625F);
+			MekanismRenderer.resetColor();
 			GlStateManager.popMatrix();
 
 			MekanismRenderer.glowOff();

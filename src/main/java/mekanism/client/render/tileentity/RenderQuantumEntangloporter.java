@@ -34,7 +34,7 @@ public class RenderQuantumEntangloporter extends TileEntitySpecialRenderer<TileE
 		}
 
 		GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, rendererDispatcher.renderEngine);
+		model.render(0.0625F, rendererDispatcher.renderEngine, false);
 		GlStateManager.popMatrix();
 
 		MekanismRenderer.machineRenderer.renderTileEntityAt(tileEntity, x, y, z, partialTick, destroyStage);

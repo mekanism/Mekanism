@@ -127,7 +127,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			case DOWN:
 			{
 				toReturn.minY = -.01;
-				toReturn.maxY = 0;
+				toReturn.maxY = -.001;
 
 				toReturn.minX = 0;
 				toReturn.minZ = 0;
@@ -137,7 +137,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			}
 			case UP:
 			{
-				toReturn.minY = 1;
+				toReturn.minY = 1.001;
 				toReturn.maxY = 1.01;
 
 				toReturn.minX = 0;
@@ -149,7 +149,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			case NORTH:
 			{
 				toReturn.minZ = -.01;
-				toReturn.maxZ = 0;
+				toReturn.maxZ = -.001;
 
 				toReturn.minX = 0;
 				toReturn.minY = 0;
@@ -159,7 +159,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			}
 			case SOUTH:
 			{
-				toReturn.minZ = 1;
+				toReturn.minZ = 1.001;
 				toReturn.maxZ = 1.01;
 
 				toReturn.minX = 0;
@@ -171,7 +171,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			case WEST:
 			{
 				toReturn.minX = -.01;
-				toReturn.maxX = 0;
+				toReturn.maxX = -.001;
 
 				toReturn.minY = 0;
 				toReturn.minZ = 0;
@@ -181,7 +181,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			}
 			case EAST:
 			{
-				toReturn.minX = 1;
+				toReturn.minX = 1.001;
 				toReturn.maxX = 1.01;
 
 				toReturn.minY = 0;

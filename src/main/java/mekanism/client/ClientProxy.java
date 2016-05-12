@@ -103,9 +103,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.GasTankTier;
-import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
@@ -225,7 +223,8 @@ public class ClientProxy extends CommonProxy
 	
 	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
 		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
-		"solar_neutron_activator", "chemical_dissolution_chamber", "chemical_crystallizer", "seismic_vibrator"};
+		"solar_neutron_activator", "chemical_dissolution_chamber", "chemical_crystallizer", "seismic_vibrator", "security_desk",
+		"quantum_entangloporter", "resistive_heater", "EnergyCube"};
 	
 	@Override
 	public void loadConfiguration()
@@ -393,6 +392,7 @@ public class ClientProxy extends CommonProxy
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1, new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.EnergyCube), 0, new ModelResourceLocation("mekanism:EnergyCube", "inventory"));
 
 		for(MachineType type : MachineType.values())
 		{
@@ -481,7 +481,7 @@ public class ClientProxy extends CommonProxy
 			
 			while(true)
 			{
-				if(machineResources.get(resource) == null)
+				if(basicResources.get(resource) == null)
 				{
 					List<String> entries = new ArrayList<String>();
 					
@@ -507,7 +507,7 @@ public class ClientProxy extends CommonProxy
 						}
 					}
 					
-					if(type == BasicBlockType.BIN)
+					if(type == BasicBlockType.BIN || Arrays.asList(CUSTOM_RENDERS).contains(type.getName()))
 					{
 						properties = "inventory";
 					}
@@ -553,17 +553,6 @@ public class ClientProxy extends CommonProxy
 		{
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(), new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
 		}
-		
-		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.EnergyCube), new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack)
-			{
-				EnergyCubeTier tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
-				ResourceLocation baseLocation = new ResourceLocation("mekanism", "EnergyCube");
-				
-				return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
-			}
-		});
 		
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), new ItemMeshDefinition() {
 			@Override

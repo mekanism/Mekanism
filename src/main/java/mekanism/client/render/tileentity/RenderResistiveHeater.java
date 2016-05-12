@@ -20,7 +20,7 @@ public class RenderResistiveHeater extends TileEntitySpecialRenderer<TileEntityR
 	public void renderTileEntityAt(TileEntityResistiveHeater tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 1.5F);
+		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
 
 		switch(tileEntity.facing.ordinal())
@@ -32,7 +32,7 @@ public class RenderResistiveHeater extends TileEntitySpecialRenderer<TileEntityR
 		}
 
 		GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine);
+		model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine, false);
 		GlStateManager.popMatrix();
 	}
 }

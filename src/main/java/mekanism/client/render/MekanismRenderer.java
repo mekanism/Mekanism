@@ -226,7 +226,7 @@ public class MekanismRenderer
 	    public double textureSizeX = 16, textureSizeY = 16, textureSizeZ = 16;
 	    public double textureOffsetX = 0, textureOffsetY = 0, textureOffsetZ = 0;
 	    
-	    public int[] textureFlips = new int[6];
+	    public int[] textureFlips = new int[] {2, 2, 2, 2, 2, 2};
 		
 		public TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
 		
@@ -296,7 +296,6 @@ public class MekanismRenderer
 		TextureAtlasSprite flowing = getFluidTexture(fluid, FluidType.FLOWING);
 		
 		model.setTextures(still, still, flowing, flowing, flowing, flowing);
-		model.textureFlips = new int[] {0, 0, 2, 2, 2, 2};
 	}
 	
 	public static void renderObject(Model3D object)

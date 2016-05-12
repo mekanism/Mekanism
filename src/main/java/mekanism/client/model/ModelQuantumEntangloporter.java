@@ -11,8 +11,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import org.lwjgl.opengl.GL11;
-
 @SideOnly(Side.CLIENT)
 public class ModelQuantumEntangloporter extends ModelBase 
 {
@@ -314,12 +312,15 @@ public class ModelQuantumEntangloporter extends ModelBase
 		setRotation(portLeftLarge, 0F, 0F, 0F);
 	}
 	
-	public void render(float size, TextureManager manager)
+	public void render(float size, TextureManager manager, boolean renderMain)
 	{
 		GlStateManager.pushMatrix();
 		MekanismRenderer.blendOn();
 		
-		doRender(size);
+		if(renderMain)
+		{
+			doRender(size);
+		}
 		
 		manager.bindTexture(OVERLAY);
 		GlStateManager.scale(1.001F, 1.001F, 1.001F);

@@ -15,8 +15,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import org.lwjgl.opengl.GL11;
-
 @SideOnly(Side.CLIENT)
 public class ModelEnergyCube extends ModelBase
 {
@@ -351,33 +349,36 @@ public class ModelEnergyCube extends ModelBase
 		connectors = new ModelRenderer[] {connectorBottomToggle, connectorTopToggle, connectorFrontToggle, connectorBackToggle, connectorLeftToggle, connectorRightToggle};
 	}
 
-	public void render(float size, EnergyCubeTier tier, TextureManager manager)
+	public void render(float size, EnergyCubeTier tier, TextureManager manager, boolean renderMain)
 	{
-		frame12.render(size);
-		frame11.render(size);
-		frame10.render(size);
-		frame9.render(size);
-		frame8.render(size);
-		frame7.render(size);
-		frame6.render(size);
-		frame5.render(size);
-		frame4.render(size);
-		frame3.render(size);
-		frame2.render(size);
-		frame1.render(size);
-		
-		corner8.render(size);
-		corner7.render(size);
-		corner6.render(size);
-		corner5.render(size);
-		corner4.render(size);
-		corner3.render(size);
-		corner2.render(size);
-		corner1.render(size);
+		if(renderMain)
+		{
+			frame12.render(size);
+			frame11.render(size);
+			frame10.render(size);
+			frame9.render(size);
+			frame8.render(size);
+			frame7.render(size);
+			frame6.render(size);
+			frame5.render(size);
+			frame4.render(size);
+			frame3.render(size);
+			frame2.render(size);
+			frame1.render(size);
+			
+			corner8.render(size);
+			corner7.render(size);
+			corner6.render(size);
+			corner5.render(size);
+			corner4.render(size);
+			corner3.render(size);
+			corner2.render(size);
+			corner1.render(size);
+		}
 		
 		GlStateManager.pushMatrix();
-		GlStateManager.scale(1.0001F, 1.0001F, 1.0001F);
-		GlStateManager.translate(0, -0.00011F, 0);
+		GlStateManager.scale(1.001F, 1.005F, 1.001F);
+		GlStateManager.translate(0, -0.0061F, 0);
 		manager.bindTexture(RenderEnergyCube.resources.get(tier));
 		MekanismRenderer.glowOn();
 		
