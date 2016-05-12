@@ -49,6 +49,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
@@ -117,7 +118,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	{
 		super(Material.iron);
 		setHardness(5F);
-		setResistance(10F);
+		setResistance(20F);
 		setCreativeTab(Mekanism.tabMekanism);
 		blockType = type;
 	}
@@ -164,6 +165,19 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			}
 		}
 	}
+	
+	@Override
+	public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
+    {
+		BasicType type = BasicType.get(this, world.getBlockMetadata(x, y, z));
+		
+		if(type == BasicType.REFINED_OBSIDIAN)
+		{
+			return 4000F;
+		}
+		
+		return blockResistance;
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)
