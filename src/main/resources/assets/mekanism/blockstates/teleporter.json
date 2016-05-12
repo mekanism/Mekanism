@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "cube_all",
+    "model": "mekanism:basic_cube",
     "textures": {
       "all": "mekanism:blocks/ctm/teleporter"
     }

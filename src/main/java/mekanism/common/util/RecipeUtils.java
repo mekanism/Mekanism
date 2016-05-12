@@ -11,7 +11,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
@@ -54,14 +53,6 @@ public class RecipeUtils
 		if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
 		{
 			return false;
-		}
-
-		if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
-		{
-			if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
-			{
-				return false;
-			}
 		}
 		
 		if(target.getItem() instanceof ITierItem && input.getItem() instanceof ITierItem)

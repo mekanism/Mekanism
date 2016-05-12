@@ -422,12 +422,15 @@ public class ModelDigitalMiner extends ModelBase
 		setRotation(monitor3, 0.0872665F, 0.2094395F, 0F);
 	}
 	
-	public void render(float size, boolean on, TextureManager manager)
+	public void render(float size, boolean on, TextureManager manager, boolean renderMain)
 	{
 		GlStateManager.pushMatrix();
 		MekanismRenderer.blendOn();
 		
-		doRender(size);
+		if(renderMain)
+		{
+			doRender(size);
+		}
 		
 		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
 		GlStateManager.scale(1.001F, 1.001F, 1.001F);

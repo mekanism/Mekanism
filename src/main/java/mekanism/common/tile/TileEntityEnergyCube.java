@@ -226,7 +226,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	{
 		super.readFromNBT(nbtTags);
 
-		tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
+		tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 	}
 
@@ -235,7 +235,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setString("tier", tier.getBaseTier().getSimpleName());
+		nbtTags.setInteger("tier", tier.ordinal());
 		nbtTags.setInteger("controlType", controlType.ordinal());
 	}
 

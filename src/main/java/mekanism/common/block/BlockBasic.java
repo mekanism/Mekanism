@@ -43,6 +43,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -57,6 +58,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -106,7 +108,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	{
 		super(Material.iron);
 		setHardness(5F);
-		setResistance(10F);
+		setResistance(20F);
 		setCreativeTab(Mekanism.tabMekanism);
 		
 		initCTMs();
@@ -240,6 +242,19 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 			}
 		}
 	}
+	
+	@Override
+	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
+    {
+		BasicBlockType type = BasicBlockType.get(getBasicBlock(), getMetaFromState(world.getBlockState(pos)));
+		
+		if(type == BasicBlockType.REFINED_OBSIDIAN)
+		{
+			return 4000F;
+		}
+		
+		return blockResistance;
+    }
 
 	public void initCTMs()
 	{

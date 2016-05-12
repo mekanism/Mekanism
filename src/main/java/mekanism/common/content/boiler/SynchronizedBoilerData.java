@@ -48,8 +48,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	
 	public int steamVolume;
 
-	public ContainerEditMode editMode = ContainerEditMode.BOTH;
-
 	public ItemStack[] inventory = new ItemStack[2];
 	
 	public Coord4D upperRenderLocation;

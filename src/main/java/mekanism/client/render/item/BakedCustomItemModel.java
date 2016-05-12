@@ -31,7 +31,7 @@ import mekanism.common.MekanismItems;
 import mekanism.common.SideData.IOState;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FluidTankTier;
-import mekanism.common.base.IEnergyCube;
+import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
@@ -215,7 +215,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 				GL11.glTranslatef(0.35F, 0.1F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
-				digitalMiner.render(0.022F, false, mc.renderEngine);
+				digitalMiner.render(0.022F, false, mc.renderEngine, true);
 			}
 			
 			return;
@@ -224,7 +224,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		if(stack.getItem() instanceof ItemBlockEnergyCube)
 		{
 			GlStateManager.pushMatrix();
-			EnergyCubeTier tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
+			EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem)stack.getItem()).getBaseTier(stack).ordinal()];
 			IEnergizedItem energized = (IEnergizedItem)stack.getItem();
 			mc.renderEngine.bindTexture(RenderEnergyCube.baseTexture);
 

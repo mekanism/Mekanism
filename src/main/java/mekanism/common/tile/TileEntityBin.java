@@ -198,7 +198,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				{
 					TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 
-					if(tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
+					if(tile != null && tile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
 					{
 						ILogisticalTransporter transporter = tile.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
 
