@@ -8,11 +8,13 @@ import java.util.LinkedHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 
 public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements IAlloyInteraction
@@ -31,29 +33,24 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		return transmitterDelegate;
 	}
 
-/*
+	public abstract N createNewNetwork();
+
+	public abstract N createNetworkByMerging(Collection<N> networks);
+
 	@Override
 	public void onWorldJoin()
 	{
-		super.onWorldJoin();
-		
 		if(!getWorld().isRemote)
 		{
 			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
 		}
 		else {
-			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile()));
+			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(getWorld().getTileEntity(getPos())));
 		}
 
 		unloaded = false;
 	}
-*/
 
-	public abstract N createNewNetwork();
-
-	public abstract N createNetworkByMerging(Collection<N> networks);
-
-/*
 	@Override
 	public void onUnloaded()
 	{
@@ -72,19 +69,18 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	}
 
 	@Override
-	public void preRemove()
+	public void onRemoved()
 	{
 		if(!getWorld().isRemote)
 		{
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
-		}
-		else {
+		} else
+		{
 			getTransmitter().setTransmitterNetwork(null);
 		}
-		
-		super.preRemove();
+
+		super.onRemoved();
 	}
-*/
 
 	@Override
 	public void markDirtyTransmitters()

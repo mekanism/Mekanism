@@ -387,7 +387,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
-		if(tile == null || tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
+		if(tile == null || MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
 		{
 			return amount;
 		}

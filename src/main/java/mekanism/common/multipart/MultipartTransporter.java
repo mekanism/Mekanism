@@ -93,7 +93,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 						{
 							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), stack.getSide(this)))
 							{
-								ILogisticalTransporter nextTile = next.getTileEntity(world()).getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+								ILogisticalTransporter nextTile = MekanismUtils.getCapability(next.getTileEntity(world()), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 								nextTile.entityEntering(stack, stack.progress%100);
 								remove.add(stack);
 

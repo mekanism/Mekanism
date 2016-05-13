@@ -91,7 +91,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
 				TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
 
-				if(back instanceof IInventory && (front != null && front.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()) || front instanceof IInventory))
+				if(back instanceof IInventory && (front != null && MekanismUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()) || front instanceof IInventory))
 				{
 					IInventory inventory = InventoryUtils.checkChestInv((IInventory)back);
 
@@ -177,9 +177,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		ItemStack used = null;
 
-		if(front.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
+		if(MekanismUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 		{
-			ILogisticalTransporter transporter = front.getCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
+			ILogisticalTransporter transporter = MekanismUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
 
 			if(!roundRobin)
 			{

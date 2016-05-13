@@ -13,6 +13,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -38,9 +40,9 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 				((TileEntityMultiblock)tileEntity).sendStructure = true;
 			}
 
-			if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+				IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 
 				if(transmitter.hasTransmitterNetwork())
 				{

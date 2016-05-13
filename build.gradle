@@ -68,6 +68,7 @@ minecraft {
 
 dependencies {
     deobfCompile "MCMultiPart:MCMultiPart-experimental:${config.mcmp_version}:universal"
+    compile "org.projectlombok:lombok:1.16.8"
 }
 
 processResources
@@ -93,7 +94,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mcmod.info'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismtools/**', 'assets/mekanismgenerators/**', 'mcmod.info'
     }
 }
 
@@ -106,7 +107,7 @@ task toolsJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/tools/**'
+        include 'mekanism/tools/**', 'assets/mekanismtools/**'
     }
 }
 
@@ -119,15 +120,13 @@ task generatorsJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/generators/**'
+        include 'mekanism/generators/**', 'assets/mekanismgenerators'
     }
 }
 
-/*
-coreJar.dependsOn('reobf')
-toolsJar.dependsOn('reobf')
-generatorsJar.dependsOn('reobf')
-*/
+coreJar.dependsOn('reobfJar')
+toolsJar.dependsOn('reobfJar')
+generatorsJar.dependsOn('reobfJar')
 
 task MDKZip(type: Zip) {
     baseName = 'MDK'

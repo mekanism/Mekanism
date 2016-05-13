@@ -42,6 +42,12 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
+	public void update()
+	{
+		super.update();
+	}
+
+	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);

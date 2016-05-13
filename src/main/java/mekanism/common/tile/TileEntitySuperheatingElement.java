@@ -14,6 +14,12 @@ import net.minecraft.util.ITickable;
 public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock implements ITickable
 {
 	public boolean prevHot;
+
+	@Override
+	public void update()
+	{
+		super.update();
+	}
 	
 	@Override
 	public void setMultiblock(String id)

@@ -11,6 +11,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -38,11 +39,11 @@ public class ItemNetworkReader extends ItemEnergized
 
 			if(getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null)
 			{
-				if(tileEntity.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
+				if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 				{
 					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 	
-					IGridTransmitter transmitter = tileEntity.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
+					IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
 	
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
@@ -79,9 +80,9 @@ public class ItemNetworkReader extends ItemEnergized
 
 						TileEntity tile = coord.getTileEntity(world);
 						
-						if(tile != null && tile.hasCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
+						if(tile != null && MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
 						{
-							IGridTransmitter transmitter = tile.getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
+							IGridTransmitter transmitter = MekanismUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
 							
 							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.offset(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
 							{
