@@ -6,6 +6,7 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.tileentity.RenderDynamicTank.RenderData;
 import mekanism.common.content.tank.TankUpdateProtocol;
@@ -139,14 +140,14 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(STEAM.getIcon());
+		toReturn.setTexture(MekanismRenderer.getFluidTexture(STEAM, FluidType.STILL));
 
 		final int stages = getStages(data.height);
 		DisplayInteger display = DisplayInteger.createAndStart();
 
 		cachedFluids.put(data, display);
 		
-		if(STEAM.getIcon() != null)
+		if(STEAM.getStill() != null)
 		{
 			toReturn.minX = 0 + .01;
 			toReturn.minY = 0 + .01;

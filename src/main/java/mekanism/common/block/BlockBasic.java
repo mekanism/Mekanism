@@ -130,12 +130,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	@Override
 	public BlockState createBlockState()
 	{
-		return new BlockStateBasic(this, getProperty());
-	}
-
-	public PropertyEnum<BlockStateBasic.BasicBlockType> getProperty()
-	{
-		return getBasicBlock().getProperty();
+		return new BlockStateBasic(this, getTypeProperty());
 	}
 
 	@Override
@@ -143,13 +138,13 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	{
 		BlockStateBasic.BasicBlockType type = BlockStateBasic.BasicBlockType.get(getBasicBlock(), meta&0xF);
 
-		return getDefaultState().withProperty(getProperty(), type);
+		return getDefaultState().withProperty(getTypeProperty(), type);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		BlockStateBasic.BasicBlockType type = state.getValue(getProperty());
+		BlockStateBasic.BasicBlockType type = state.getValue(getTypeProperty());
 		return type.meta;
 	}
 

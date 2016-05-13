@@ -34,8 +34,8 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -45,8 +45,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class GeneratorsCommonProxy implements IGuiProvider
 {
-	public static int GENERATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-
 	/**
 	 * Register normal tile entities
 	 */
@@ -123,15 +121,15 @@ public class GeneratorsCommonProxy implements IGuiProvider
 	}
 
 	@Override
-	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
 		return null;
 	}
 
 	@Override
-	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		switch(ID)
 		{

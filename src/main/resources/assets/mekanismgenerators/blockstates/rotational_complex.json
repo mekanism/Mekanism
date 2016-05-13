@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/RotationalComplexSide",
+      "front": "mekanism:blocks/RotationalComplexSide",
+      "up": "mekanism:blocks/RotationalComplexTop",
+      "down": "mekanism:blocks/RotationalComplexTop"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}
+

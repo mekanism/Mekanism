@@ -8,9 +8,9 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.render.ctm.CTMData;
+import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.base.ISustainedData;
@@ -82,13 +82,9 @@ import codechicken.lib.render.TextureUtils.IIconRegister;
  * @author AidanBrady
  *
  */
-public class BlockGenerator extends BlockContainer implements ISpecialBounds, IBlockCTM
+public class BlockGenerator extends BlockContainer implements ISpecialBounds, ICTMBlock
 {
-	public IIcon[][] icons = new IIcon[16][16];
-	
 	public CTMData[] ctms = new CTMData[16];
-	
-	public IIcon BASE_ICON;
 	
 	public Random machineRand = new Random();
 
@@ -122,15 +118,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 	
 	@Override
-	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
+	public CTMData getCTMData(IBlockState state)
 	{
 		return ctms[meta];
-	}
-	
-	@Override
-	public boolean shouldRenderBlock(IBlockAccess world, int x, int y, int z, int meta)
-	{
-		return !GeneratorType.getFromMetadata(meta).hasModel;
 	}
 	
 	@Override
@@ -138,7 +128,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
     {
 		setBlockBoundsBasedOnState(world, pos);
 		
-		return super.getCollisionBoundingBox(world, pos);
+		return super.getCollisionBoundingBox(world, pos, state);
     }
 	
 	@Override
@@ -167,11 +157,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 			
 			if(tileEntity instanceof IMultiblock)
 			{
@@ -180,7 +170,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(neighborBlock);
 			}
 		}
 	}
@@ -299,7 +289,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
-						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.25, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX()+.25, pos.getY()+.2, pos.getZ()+.5, 0.0D, 0.0D, 0.0D);
 						break;
 					default:
 						break;
@@ -314,7 +304,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom + iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
-						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.75, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX()+.75, pos.getY()+.2, pos.getZ()+.5, 0.0D, 0.0D, 0.0D);
 						break;
 					default:
 						break;
@@ -329,7 +319,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
-						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.5, y+.2, z+.25, 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX()+.5, pos.getY()+.2, pos.getZ()+.25, 0.0D, 0.0D, 0.0D);
 						break;
 					default:
 						break;
@@ -344,7 +334,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
-						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+.5, y+.2, z+.75, 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX()+.5, pos.getY()+.2, pos.getZ()+.75, 0.0D, 0.0D, 0.0D);
 						break;
 					default:
 						break;
@@ -369,7 +359,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			{
 				for(int zPos=-1;zPos<=1;zPos++)
 				{
-					nonAir |= world.isAirBlock(x+xPos, y+2, z+zPos);
+					nonAir |= world.isAirBlock(pos.add(xPos, 2, zPos));
 				}
 			}
 
@@ -383,7 +373,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 
 			for(int yPos = pos.getY()+1; yPos <= pos.getY()+4; yPos++)
 			{
-				nonAir |= world.isAirBlock(x, yPos, z);
+				nonAir |= world.isAirBlock(pos.add(0, yPos, 0));
 			}
 
 			return (!nonAir) && canPlace;
@@ -437,20 +427,20 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		{
 			Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
+			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
 				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, x, y, z, false);
+						dismantleBlock(world, pos, false);
 						
 						return true;
 					}
 	
 					if(MekanismUtils.isBCWrench(tool))
 					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
 					}
 	
 					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
@@ -468,7 +458,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		
 		if(metadata == GeneratorType.TURBINE_CASING.meta || metadata == GeneratorType.TURBINE_VALVE.meta || metadata == GeneratorType.TURBINE_VENT.meta)
 		{
-			return ((IMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
+			return ((IMultiblock)tileEntity).onActivate(entityplayer);
 		}
 		
 		if(metadata == GeneratorType.TURBINE_ROTOR.meta)
@@ -539,7 +529,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			{
 				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					entityplayer.openGui(MekanismGenerators.instance, guiId, world, x, y, z);
+					entityplayer.openGui(MekanismGenerators.instance, guiId, world, pos.getX(), pos.getY(), pos.getZ());
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -578,21 +568,15 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public boolean rendersAsNormalBlock()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
 	}
-
+	
 	@Override
-	public int getRenderType()
+	public boolean isFullCube()
 	{
-		return Mekanism.proxy.CTM_RENDER_ID;
+		return false;
 	}
 
 	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/
@@ -603,7 +587,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
@@ -617,20 +601,6 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		}
 		else {
 			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-		}
-	}
-	
-	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-		if(!world.isRemote)
-		{
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onAdded();
-			}
 		}
 	}
 
@@ -658,7 +628,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(pos));
 
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}

@@ -138,7 +138,7 @@ public class BlockStateBasic extends ExtendedBlockState
 		{
 			if(state.getBlock() instanceof BlockBasic)
 			{
-				return state.getValue(((BlockBasic)state.getBlock()).getProperty());
+				return state.getValue(((BlockBasic)state.getBlock()).getTypeProperty());
 			}
 			
 			return null;
@@ -244,7 +244,7 @@ public class BlockStateBasic extends ExtendedBlockState
 		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
 		{
 			BlockBasic block = (BlockBasic)state.getBlock();
-			BasicBlockType type = state.getValue(block.getProperty());
+			BasicBlockType type = state.getValue(block.getTypeProperty());
 			StringBuilder builder = new StringBuilder();
 			String nameOverride = null;
 			

@@ -42,6 +42,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -88,9 +89,9 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	}
 
 	@Override
-	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		switch(ID)
 		{

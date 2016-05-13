@@ -5,7 +5,8 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.block.BlockReactor.ReactorBlockType;
+import mekanism.generators.common.block.states.BlockStateReactor;
+import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -33,22 +34,16 @@ public class ItemBlockReactor extends ItemBlock
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
-	{
-		return metaBlock.getIcon(2, i);
-	}
-
-	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		return getUnlocalizedName() + "." + ReactorBlockType.get(itemstack).name;
+		return getUnlocalizedName() + "." + BlockStateReactor.ReactorBlockType.get(itemstack).name;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		ReactorBlockType type = ReactorBlockType.get(itemstack);
+		BlockStateReactor.ReactorBlockType type = BlockStateReactor.ReactorBlockType.get(itemstack);
 
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{

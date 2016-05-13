@@ -36,7 +36,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			
 			if(outputting != prevOutputting)
 			{
-				worldObj.notifyBlocksOfNeighborChange(getPos(), getBlockType());
+				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
 			}
 			
 			prevOutputting = outputting;

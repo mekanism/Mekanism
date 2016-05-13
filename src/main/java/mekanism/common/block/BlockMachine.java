@@ -130,7 +130,7 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockMachine extends BlockContainer implements ISpecialBounds, ICTMBlock//, ICustomBlockIcon
+public abstract class BlockMachine extends BlockContainer implements ISpecialBounds, ICTMBlock
 {
 	public CTMData[][] ctmData = new CTMData[16][4];
 
@@ -173,14 +173,10 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
         return state.withProperty(BlockStateBasic.ctmProperty, ctx);
     }
 
+	@Override
 	public BlockState createBlockState()
 	{
-		return new BlockStateMachine(this, getProperty());
-	}
-
-	public PropertyEnum<MachineType> getProperty()
-	{
-		return getMachineBlock().getProperty();
+		return new BlockStateMachine(this, getTypeProperty());
 	}
 
 	@Override
@@ -188,13 +184,13 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	{
 		MachineType type = MachineType.get(getMachineBlock(), meta & 0xF);
 
-		return getDefaultState().withProperty(getProperty(), type);
+		return getDefaultState().withProperty(getTypeProperty(), type);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		MachineType type = state.getValue(getProperty());
+		MachineType type = state.getValue(getTypeProperty());
 		return type.meta;
 	}
 
@@ -399,7 +395,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
 	{
-		for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
+		for(MachineType type : MachineType.getValidMachines())
 		{
 			if(type.typeBlock == getMachineBlock() && type.isEnabled())
 			{
@@ -510,7 +506,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 
 		if(tileEntity != null)
 		{
-			MachineType type = BlockStateMachine.MachineType.get(getMachineBlock(), metadata);
+			MachineType type = MachineType.get(getMachineBlock(), metadata);
 
 			switch(type)
 			{
@@ -615,12 +611,12 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	{
 		int metadata = getMetaFromState(state);
 		
-		if(BlockStateMachine.MachineType.get(getMachineBlock(), metadata) == null)
+		if(MachineType.get(getMachineBlock(), metadata) == null)
 		{
 			return null;
 		}
 
-		return BlockStateMachine.MachineType.get(getMachineBlock(), metadata).create();
+		return MachineType.get(getMachineBlock(), metadata).create();
 	}
 
 	@Override
@@ -666,7 +662,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
     {
 		IBlockState state = world.getBlockState(pos);
-		if(BlockStateMachine.MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != BlockStateMachine.MachineType.PERSONAL_CHEST)
+		if(MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST)
 		{
 			return blockResistance;
 		}
@@ -945,7 +941,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = BlockStateMachine.MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
 		{
@@ -981,7 +977,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = BlockStateMachine.MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
 		{
@@ -1020,7 +1016,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = BlockStateMachine.MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
 		{
