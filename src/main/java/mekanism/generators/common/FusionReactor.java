@@ -465,9 +465,9 @@ public class FusionReactor implements IFusionReactor
 	{
 		for(int x = -1; x <= 1; x++)
 		{
-			for(int y = -1; x <= 1; x++)
+			for(int y = -1; y <= 1; y++)
 			{
-				for(int z = -1; x <= 1; x++)
+				for(int z = -1; z <= 1; z++)
 				{
 					Coord4D trans = centre.translate(x, y, z);
 					Block tile = trans.getBlock(controller.getWorld());
