@@ -157,7 +157,7 @@ tile.MachineBlock3.SolarNeutronActivator.name=Солнечный активат�
 tile.MachineBlock3.Oredictionificator.name=Унификатор словаря руд
 tile.MachineBlock3.ResistiveHeater.name=Устойчивый нагреватель
 tile.MachineBlock3.FormulaicAssemblicator.name=Формульный сборщик
-tile.MachineBlock3.FuelwoodHeater.name=Древесный нагреватель
+tile.MachineBlock3.FuelwoodHeater.name=Твердотопливный нагреватель
 
 //Plastic
 tile.PlasticBlock.name=Пластиковый блок
