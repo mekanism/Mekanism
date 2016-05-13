@@ -68,7 +68,6 @@ minecraft {
 
 dependencies {
     deobfCompile "MCMultiPart:MCMultiPart-experimental:${config.mcmp_version}:universal"
-    compile "org.projectlombok:lombok:1.16.8"
 }
 
 processResources
@@ -120,7 +119,7 @@ task generatorsJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/generators/**', 'assets/mekanismgenerators'
+        include 'mekanism/generators/**', 'assets/mekanismgenerators/**'
     }
 }
 
