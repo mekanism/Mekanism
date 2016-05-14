@@ -27,7 +27,6 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryPersonalChest;
@@ -140,9 +139,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		if(BlockStateMachine.MachineType.get(itemstack) != null)
+		if(MachineType.get(itemstack) != null)
 		{
-			return getUnlocalizedName() + "." + BlockStateMachine.MachineType.get(itemstack).machineName;
+			return getUnlocalizedName() + "." + MachineType.get(itemstack).machineName;
 		}
 
 		return "null";
@@ -151,11 +150,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public String getItemStackDisplayName(ItemStack itemstack)
 	{
-		MachineType type = BlockStateMachine.MachineType.get(itemstack);
+		MachineType type = MachineType.get(itemstack);
 		
-		if(type == BlockStateMachine.MachineType.BASIC_FACTORY || type == BlockStateMachine.MachineType.ADVANCED_FACTORY || type == BlockStateMachine.MachineType.ELITE_FACTORY)
+		if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 		{
-			BaseTier tier = type == BlockStateMachine.MachineType.BASIC_FACTORY ? BaseTier.BASIC : (type == BlockStateMachine.MachineType.ADVANCED_FACTORY ? BaseTier.ADVANCED : BaseTier.ELITE);
+			BaseTier tier = type == MachineType.BASIC_FACTORY ? BaseTier.BASIC : (type == MachineType.ADVANCED_FACTORY ? BaseTier.ADVANCED : BaseTier.ELITE);
 
             if(StatCollector.canTranslate("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory"))
             {
@@ -176,11 +175,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
-		MachineType type = BlockStateMachine.MachineType.get(itemstack);
+		MachineType type = MachineType.get(itemstack);
 
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
-			if(type == BlockStateMachine.MachineType.FLUID_TANK)
+			if(type == MachineType.FLUID_TANK)
 			{
 				FluidStack fluidStack = getFluidStack(itemstack);
 				
@@ -206,12 +205,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				}
 			}
 				
-			if(type == BlockStateMachine.MachineType.BASIC_FACTORY || type == BlockStateMachine.MachineType.ADVANCED_FACTORY || type == BlockStateMachine.MachineType.ELITE_FACTORY)
+			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
 				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName());
 			}
 			
-			if(type == BlockStateMachine.MachineType.FLUID_TANK)
+			if(type == MachineType.FLUID_TANK)
 			{
 				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + EnumColor.GREY + LangUtils.transYesNo(getBucketMode(itemstack)));
 			}
@@ -221,7 +220,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 			}
 
-			if(hasTank(itemstack) && type != BlockStateMachine.MachineType.FLUID_TANK)
+			if(hasTank(itemstack) && type != MachineType.FLUID_TANK)
 			{
 				FluidStack fluidStack = getFluidStack(itemstack);
 				
@@ -231,7 +230,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				}
 			}
 			
-			if(type != BlockStateMachine.MachineType.CHARGEPAD && type != BlockStateMachine.MachineType.LOGISTICAL_SORTER)
+			if(type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER)
 			{
 				list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
@@ -254,9 +253,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-		MachineType type = BlockStateMachine.MachineType.get(stack);
+		MachineType type = MachineType.get(stack);
 		
-		if(type == BlockStateMachine.MachineType.FLUID_TANK && getBucketMode(stack))
+		if(type == MachineType.FLUID_TANK && getBucketMode(stack))
 		{
 			return false;
 		}
@@ -269,9 +268,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		boolean place = true;
 		
-		MachineType type = BlockStateMachine.MachineType.get(stack);
+		MachineType type = MachineType.get(stack);
 
-		if(type == BlockStateMachine.MachineType.DIGITAL_MINER)
+		if(type == MachineType.DIGITAL_MINER)
 		{
 			for(int xPos = -1; xPos <= +1; xPos++)
 			{
@@ -463,7 +462,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                 else {
                     if(!world.isRemote && flag && !material.isLiquid())
                     {
-                        //TODO: world.breakBlock(pos, true);
+                    	world.destroyBlock(pos, true);
                     }
                     
                     world.setBlockState(pos, MekanismUtils.getFlowingBlock(getFluidStack(itemstack).getFluid()).getDefaultState(), 3);
@@ -477,7 +476,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
 	{
-		MachineType type = BlockStateMachine.MachineType.get(itemstack);
+		MachineType type = MachineType.get(itemstack);
 		
 		if(MachineType.get(itemstack) == MachineType.PERSONAL_CHEST)
 		{
@@ -498,7 +497,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				}
 			}
 		}
-		else if(type == BlockStateMachine.MachineType.FLUID_TANK && getBucketMode(itemstack))
+		else if(type == MachineType.FLUID_TANK && getBucketMode(itemstack))
     	{
 			if(SecurityUtils.canAccess(entityplayer, itemstack))
 			{
@@ -692,9 +691,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			return false;
 		}
 		
-		MachineType type = BlockStateMachine.MachineType.get((ItemStack)data[0]);
+		MachineType type = MachineType.get((ItemStack)data[0]);
 		
-		return type == BlockStateMachine.MachineType.ELECTRIC_PUMP || type == BlockStateMachine.MachineType.FLUID_TANK || type == BlockStateMachine.MachineType.FLUIDIC_PLENISHER;
+		return type == MachineType.ELECTRIC_PUMP || type == MachineType.FLUID_TANK || type == MachineType.FLUIDIC_PLENISHER;
 	}
 	
 	public void setBucketMode(ItemStack itemStack, boolean bucketMode)
@@ -720,7 +719,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null || !BlockStateMachine.MachineType.get(itemStack).isElectric)
+		if(itemStack.getTagCompound() == null || !MachineType.get(itemStack).isElectric)
 		{
 			return 0;
 		}
@@ -731,7 +730,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(!BlockStateMachine.MachineType.get(itemStack).isElectric)
+		if(!MachineType.get(itemStack).isElectric)
 		{
 			return;
 		}
@@ -748,7 +747,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return MekanismUtils.getMaxEnergy(itemStack, BlockStateMachine.MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
+		return MekanismUtils.getMaxEnergy(itemStack, MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
 	}
 
 	@Override
@@ -760,7 +759,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public boolean canReceive(ItemStack itemStack)
 	{
-		return BlockStateMachine.MachineType.get(itemStack).isElectric;
+		return MachineType.get(itemStack).isElectric;
 	}
 
 	@Override
@@ -855,7 +854,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill) 
 	{
-		if(BlockStateMachine.MachineType.get(container) == BlockStateMachine.MachineType.FLUID_TANK && resource != null)
+		if(MachineType.get(container) == MachineType.FLUID_TANK && resource != null)
 		{
 			FluidStack stored = getFluidStack(container);
 			int toFill;
@@ -888,7 +887,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) 
 	{
-		if(BlockStateMachine.MachineType.get(container) == BlockStateMachine.MachineType.FLUID_TANK)
+		if(MachineType.get(container) == MachineType.FLUID_TANK)
 		{
 			FluidStack stored = getFluidStack(container);
 			

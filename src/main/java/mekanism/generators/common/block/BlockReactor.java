@@ -21,6 +21,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -164,9 +165,9 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
 	}
 
 	@Override
@@ -367,6 +368,12 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 			default:
 				return false;
 		}
+	}
+	
+	@Override
+	public PropertyEnum<ReactorBlockType> getTypeProperty()
+	{
+		return getReactorBlock().getProperty();
 	}
 
 	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)

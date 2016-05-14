@@ -21,7 +21,6 @@ import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ISpecialBounds;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
@@ -130,7 +129,7 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockMachine extends BlockContainer implements ISpecialBounds, ICTMBlock
+public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 {
 	public CTMData[][] ctmData = new CTMData[16][4];
 
@@ -452,7 +451,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 		}
 
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		int metadata = state.getBlock().getMetaFromState(state);
+		int metadata = getMetaFromState(state);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
@@ -591,8 +590,8 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
-						} else
-						{
+						} 
+						else {
 							SecurityUtils.displayNoAccess(entityplayer);
 						}
 
@@ -662,7 +661,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
     {
 		IBlockState state = world.getBlockState(pos);
-		if(MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST)
+		if(MachineType.get(getMachineBlock(), getMetaFromState(state)) != MachineType.PERSONAL_CHEST)
 		{
 			return blockResistance;
 		}
@@ -839,7 +838,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		IBlockState state = world.getBlockState(pos);
-		ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
+		ItemStack itemStack = new ItemStack(this, 1, getMetaFromState(state));
 
 		if(itemStack.getTagCompound() == null)
 		{
@@ -941,7 +940,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), getMetaFromState(state));
 
 		switch(type)
 		{
@@ -977,7 +976,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), getMetaFromState(state));
 
 		switch(type)
 		{
@@ -1016,7 +1015,7 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), getMetaFromState(state));
 
 		switch(type)
 		{
@@ -1046,15 +1045,6 @@ public abstract class BlockMachine extends BlockContainer implements ISpecialBou
 	public PropertyEnum<MachineType> getTypeProperty()
 	{
 		return getMachineBlock().getProperty();
-	}
-
-	@Override
-	public void setRenderBounds(Block block, int metadata) {}
-
-	@Override
-	public boolean doDefaultBoundSetting(int metadata)
-	{
-		return false;
 	}
 
 	@Override

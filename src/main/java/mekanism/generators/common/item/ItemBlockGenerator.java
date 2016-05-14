@@ -22,7 +22,7 @@ import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.block.BlockGenerator.GeneratorType;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
@@ -79,7 +79,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public int getItemStackLimit(ItemStack stack)
 	{
-		GeneratorType type = GeneratorType.getFromMetadata(stack.getItemDamage());
+		GeneratorType type = GeneratorType.get(stack);
 		
 		if(type.maxEnergy == -1)
 		{
@@ -99,19 +99,19 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		if(GeneratorType.getFromMetadata(itemstack.getItemDamage()) == null)
+		if(GeneratorType.get(itemstack) == null)
 		{
 			return "KillMe!";
 		}
 
-		return getUnlocalizedName() + "." + GeneratorType.getFromMetadata(itemstack.getItemDamage()).name;
+		return getUnlocalizedName() + "." + GeneratorType.get(itemstack).name;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		GeneratorType type = GeneratorType.getFromMetadata(itemstack.getItemDamage());
+		GeneratorType type = GeneratorType.get(itemstack);
 		
 		if(type.maxEnergy > -1)
 		{
@@ -406,7 +406,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return GeneratorType.getFromMetadata(itemStack.getItemDamage()).maxEnergy;
+		return GeneratorType.get(itemStack).maxEnergy;
 	}
 
 	@Override
@@ -424,7 +424,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
-		return GeneratorType.getFromMetadata(itemStack.getItemDamage()).maxEnergy != -1;
+		return GeneratorType.get(itemStack).maxEnergy != -1;
 	}
 
 	@Override
@@ -433,14 +433,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy*general.FROM_TE, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive* general.TO_TE);
+			return (int)Math.round(toReceive*general.TO_TE);
 		}
 
 		return 0;
@@ -452,14 +452,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy*general.FROM_TE), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_TE);
 		}
 
 		return 0;
@@ -468,13 +468,13 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)* general.TO_TE);
+		return (int)(getEnergy(theItem)*general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)* general.TO_TE);
+		return (int)(getMaxEnergy(theItem)*general.TO_TE);
 	}
 
 	@Override
@@ -537,7 +537,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public boolean hasSecurity(ItemStack stack) 
 	{
-		GeneratorType type = GeneratorType.getFromMetadata(stack.getItemDamage());
+		GeneratorType type = GeneratorType.get(stack);
 		
 		return type.hasModel;
 	}

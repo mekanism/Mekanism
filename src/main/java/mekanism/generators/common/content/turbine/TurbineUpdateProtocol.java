@@ -10,9 +10,8 @@ import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityPressureDisperser;
-import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.BlockGenerator.GeneratorType;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -36,8 +35,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 	@Override
 	protected boolean isValidFrame(int x, int y, int z) 
 	{
-		return pointer.getWorld().getBlock(x, y, z) == GeneratorsBlocks.Generator && 
-				GeneratorType.getFromMetadata(pointer.getWorld().getBlockMetadata(x, y, z)) == GeneratorType.TURBINE_CASING;
+		return GeneratorType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z))) == GeneratorType.TURBINE_CASING;
 	}
 	
 	@Override
@@ -48,7 +46,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 			return true;
 		}
 		
-		TileEntity tile = pointer.getWorld().getTileEntity(x, y, z);
+		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
 		
 		return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex ||
 				tile instanceof TileEntityPressureDisperser || tile instanceof TileEntityElectromagneticCoil;

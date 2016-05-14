@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import static mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlock.GENERATOR_BLOCK_1;
 import static mekanism.generators.common.block.states.BlockStateReactor.ReactorBlock.REACTOR_BLOCK;
 import static mekanism.generators.common.block.states.BlockStateReactor.ReactorBlock.REACTOR_GLASS;
 import mekanism.generators.common.block.BlockGenerator;
@@ -13,7 +14,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("MekanismGenerators")
 public class GeneratorsBlocks
 {
-	public static final Block Generator = new BlockGenerator().setUnlocalizedName("Generator");
+	public static final Block Generator = BlockGenerator.getGeneratorBlock(GENERATOR_BLOCK_1).setUnlocalizedName("Generator");
 	public static final Block Reactor = BlockReactor.getReactorBlock(REACTOR_BLOCK).setUnlocalizedName("Reactor");
 	public static final Block ReactorGlass = BlockReactor.getReactorBlock(REACTOR_GLASS).setUnlocalizedName("ReactorGlass");
 

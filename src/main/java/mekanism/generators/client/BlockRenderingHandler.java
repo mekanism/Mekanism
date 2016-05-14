@@ -10,7 +10,8 @@ import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.client.model.ModelSolarGenerator;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.GeneratorsBlocks;
-import mekanism.generators.common.block.BlockGenerator.GeneratorType;
+import mekanism.generators.common.block.states.BlockStateGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -40,14 +41,14 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 
 		if(block == GeneratorsBlocks.Generator)
 		{
-			if(metadata == GeneratorType.BIO_GENERATOR.meta)
+			if(metadata == BlockStateGenerator.GeneratorType.BIO_GENERATOR.meta)
 			{
 				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
 				GL11.glTranslated(0.0F, -1.0F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 				bioGenerator.render(0.0625F);
 			}
-			else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+			else if(metadata == BlockStateGenerator.GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 			{
 				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
 				GlStateManager.rotate(90F, 0.0F, 1.0F, 0.0F);
@@ -55,7 +56,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
 				advancedSolarGenerator.render(0.022F);
 			}
-			else if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
+			else if(metadata == BlockStateGenerator.GeneratorType.SOLAR_GENERATOR.meta)
 			{
 				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
 				GlStateManager.rotate(90F, 0.0F, -1.0F, 0.0F);
@@ -63,14 +64,14 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarGenerator.png"));
 				solarGenerator.render(0.0625F);
 			}
-			else if(metadata == GeneratorType.HEAT_GENERATOR.meta)
+			else if(metadata == BlockStateGenerator.GeneratorType.HEAT_GENERATOR.meta)
 			{
 				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
 				GL11.glTranslated(0.0F, -1.0F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
 				heatGenerator.render(0.0625F, false, mc.renderEngine);
 			}
-			else if(metadata == GeneratorType.GAS_GENERATOR.meta)
+			else if(metadata == BlockStateGenerator.GeneratorType.GAS_GENERATOR.meta)
 			{
 				GlStateManager.rotate(180F, 0.0F, 1.0F, 1.0F);
 				GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
@@ -79,7 +80,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 				gasGenerator.render(0.0625F);
 			}
-			else if(metadata == GeneratorType.WIND_GENERATOR.meta)
+			else if(metadata == BlockStateGenerator.GeneratorType.WIND_GENERATOR.meta)
 			{
 				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
 				GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
