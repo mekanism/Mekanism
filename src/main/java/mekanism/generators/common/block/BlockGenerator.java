@@ -16,6 +16,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -79,7 +80,7 @@ import codechicken.lib.render.TextureUtils.IIconRegister;
  */
 public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 {
-	public CTMData[] ctms = new CTMData[16];
+	public CTMData[] ctmData = new CTMData[16];
 	
 	public Random machineRand = new Random();
 	
@@ -89,6 +90,8 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
+		
+		initCTMs();
 	}
 	
 	public static BlockGenerator getGeneratorBlock(GeneratorBlock block)
@@ -104,6 +107,20 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	public abstract GeneratorBlock getGeneratorBlock();
+	
+	public void initCTMs()
+	{
+		switch(getGeneratorBlock())
+		{
+			case GENERATOR_BLOCK_1:
+				ctmData[9] = new CTMData(GeneratorType.ELECTROMAGNETIC_COIL);
+				ctmData[10] = new CTMData(GeneratorType.TURBINE_CASING);
+				ctmData[11] = new CTMData(GeneratorType.TURBINE_VALVE);
+				ctmData[12] = new CTMData(GeneratorType.TURBINE_VENT);
+				
+				break;
+		}
+	}
 	
 	@SideOnly(Side.CLIENT)
     @Override
@@ -140,33 +157,6 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		GeneratorType type = state.getValue(getTypeProperty());
 		return type.meta;
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
-		
-		ctms[9] = new CTMData("ctm/ElectromagneticCoil", this, Arrays.asList(9)).registerIcons(register);
-		ctms[10] = new CTMData("ctm/TurbineCasing", this, Arrays.asList(10, 11, 12)).registerIcons(register);
-		ctms[11] = new CTMData("ctm/TurbineValve", this, Arrays.asList(10, 11, 12)).registerIcons(register);
-		ctms[12] = new CTMData("ctm/TurbineVent", this, Arrays.asList(10, 11, 12)).registerIcons(register);
-		
-		icons[7][0] = register.registerIcon("mekanism:TurbineRod");
-		icons[8][0] = register.registerIcon("mekanism:RotationalComplexSide");
-		icons[8][1] = register.registerIcon("mekanism:RotationalComplexTop");
-		
-		icons[9][0] = ctms[9].mainTextureData.icon;
-		icons[10][0] = ctms[10].mainTextureData.icon;
-		icons[11][0] = ctms[11].mainTextureData.icon;
-		icons[12][0] = ctms[12].mainTextureData.icon;
-	}
-	
-	@Override
-	public CTMData getCTMData(IBlockState state)
-	{
-		return ctms[meta];
-	}
 	
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
@@ -175,31 +165,6 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		
 		return super.getCollisionBoundingBox(world, pos, state);
     }
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		GeneratorType type = GeneratorType.getFromMetadata(meta);
-		
-		if(type == GeneratorType.ROTATIONAL_COMPLEX)
-		{
-			if(side != 0 && side != 1)
-			{
-				return icons[meta][0];
-			}
-			else {
-				return icons[meta][1];
-			}
-		}
-		else if(!type.hasModel)
-		{
-			return icons[meta][0];
-		}
-		else {
-			return BASE_ICON;
-		}
-	}
 
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
@@ -725,12 +690,6 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 
 		return false;
 	}
-	
-	@Override
-	public PropertyEnum<GeneratorType> getTypeProperty()
-	{
-		return getGeneratorBlock().getProperty();
-	}
 
 	@Override
 	public EnumFacing[] getValidRotations(World world, BlockPos pos)
@@ -771,5 +730,23 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public CTMData getCTMData(IBlockState state)
+	{
+		return ctmData[getMetaFromState(state)];
+	}
+	
+	@Override
+	public String getOverrideTexture(IBlockState state, EnumFacing side)
+	{
+		return null;
+	}
+	
+	@Override
+	public PropertyEnum<GeneratorType> getTypeProperty()
+	{
+		return getGeneratorBlock().getProperty();
 	}
 }

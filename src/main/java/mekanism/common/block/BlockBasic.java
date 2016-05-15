@@ -262,7 +262,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 				ctmData[11][0] = new CTMData(BasicBlockType.DYNAMIC_TANK, BasicBlockType.DYNAMIC_VALVE);
 
 				ctmData[14][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
-				ctmData[14][1] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
 				ctmData[15][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
 
 				break;
@@ -270,7 +269,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 				ctmData[0][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
 				ctmData[1][0] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
 				ctmData[2][0] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
-				ctmData[2][1] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
 				ctmData[3][0] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
 				ctmData[3][1] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
 				ctmData[3][2] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
@@ -280,7 +278,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 				ctmData[4][2] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
 				ctmData[4][3] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
 				ctmData[5][0] = new CTMData(BasicBlockType.SUPERHEATING_ELEMENT).setRenderConvexConnections();
-				ctmData[5][1] = new CTMData(BasicBlockType.SUPERHEATING_ELEMENT).setRenderConvexConnections();
 				ctmData[7][0] = new CTMData(BasicBlockType.BOILER_CASING, BasicBlockType.BOILER_VALVE);
 				ctmData[8][0] = new CTMData(BasicBlockType.BOILER_CASING, BasicBlockType.BOILER_VALVE);
 

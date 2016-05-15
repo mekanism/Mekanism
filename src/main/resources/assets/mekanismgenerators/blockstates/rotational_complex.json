@@ -3,10 +3,10 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/RotationalComplexSide",
-      "front": "mekanism:blocks/RotationalComplexSide",
-      "up": "mekanism:blocks/RotationalComplexTop",
-      "down": "mekanism:blocks/RotationalComplexTop"
+      "sides": "mekanismgenerators:blocks/RotationalComplexSide",
+      "front": "mekanismgenerators:blocks/RotationalComplexSide",
+      "up": "mekanismgenerators:blocks/RotationalComplexTop",
+      "down": "mekanismgenerators:blocks/RotationalComplexTop"
     }
   },
   "variants": {

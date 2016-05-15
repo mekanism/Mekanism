@@ -82,6 +82,8 @@ public class GeneratorsCommonProxy implements IGuiProvider
 	 * Register and load client-only render information.
 	 */
 	public void registerRenderInformation() {}
+	
+	public void preInit() {}
 
 	/**
 	 * Set and load the mod's common configuration properties.

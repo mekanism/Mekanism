@@ -1,5 +1,6 @@
 package mekanism.generators.client;
 
+import mekanism.client.render.ctm.CTMRegistry;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -22,7 +23,6 @@ import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
-import mekanism.generators.client.render.item.GeneratorsItemRenderer;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
@@ -86,6 +86,13 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(GeneratorsBlocks.Generator), handler);
 
 		System.out.println("[MekanismGenerators] Render registrations complete.");
+	}
+	
+	@Override
+	public void preInit()
+	{
+		CTMRegistry.registerCTMs("mekanismgenerators", "turbine_vent", "turbine_valve", "turbine_casing", "electromagnetic_coil", 
+				"reactor_controller", "reactor_frame", "reactor_port", "reactor_glass", "laser_focus_matrix", "reactor_logic_adapter");
 	}
 
 	@Override

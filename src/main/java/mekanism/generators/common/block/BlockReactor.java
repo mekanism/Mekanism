@@ -1,6 +1,5 @@
 package mekanism.generators.common.block;
 
-import java.util.Arrays;
 import java.util.List;
 
 import mekanism.client.render.ctm.CTMBlockRenderContext;
@@ -38,11 +37,10 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import buildcraft.api.tools.IToolWrench;
-import codechicken.lib.render.TextureUtils.IIconRegister;
 
 public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 {
-	public CTMData[][] ctms = new CTMData[16][2];
+	public CTMData[] ctmData = new CTMData[16];
 
 	public BlockReactor()
 	{
@@ -50,6 +48,8 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
+		
+		initCTMs();
 	}
 	
 	public static BlockReactor getReactorBlock(ReactorBlock block)
@@ -66,6 +66,26 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 
 	public abstract ReactorBlock getReactorBlock();
 	
+	public void initCTMs()
+	{
+		switch(getReactorBlock())
+		{
+			case REACTOR_BLOCK:
+				ctmData[0] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[1] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[2] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[3] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[4] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				
+				break;
+			case REACTOR_GLASS:
+				ctmData[0] = new CTMData(ReactorBlockType.REACTOR_GLASS, ReactorBlockType.LASER_FOCUS_MATRIX);
+				ctmData[1] = new CTMData(ReactorBlockType.REACTOR_GLASS, ReactorBlockType.LASER_FOCUS_MATRIX);
+				
+				break;
+		}
+	}
+	
 	@SideOnly(Side.CLIENT)
     @Override
     public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
@@ -80,89 +100,6 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 
         return state.withProperty(BlockStateBasic.ctmProperty, ctx);
     }
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		if(this == GeneratorsBlocks.Reactor)
-		{
-			ctms[0][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(EnumFacing.UP, "ctm/ReactorControllerOff").registerIcons(register);
-			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(EnumFacing.UP, "ctm/ReactorControllerOn").registerIcons(register);
-			ctms[1][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
-			ctms[2][0] = new CTMData("ctm/ReactorNeutronCapture", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
-			ctms[3][0] = new CTMData("ctm/ReactorPort", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
-			ctms[4][0] = new CTMData("ctm/ReactorLogicAdapter", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
-
-			icons[0][0] = ctms[0][0].sideOverrides[1].icon;
-			icons[0][1] = ctms[0][1].sideOverrides[1].icon;
-			icons[0][2] = ctms[0][0].mainTextureData.icon;
-			icons[1][0] = ctms[1][0].mainTextureData.icon;
-			icons[2][0] = ctms[2][0].mainTextureData.icon;
-			icons[3][0] = ctms[3][0].mainTextureData.icon;
-			icons[4][0] = ctms[4][0].mainTextureData.icon;
-		}
-		else if(this == GeneratorsBlocks.ReactorGlass)
-		{
-			ctms[0][0] = new CTMData("ctm/ReactorGlass", this, Arrays.asList(0, 1)).registerIcons(register);
-			ctms[1][0] = new CTMData("ctm/ReactorLaserFocus", this, Arrays.asList(1, 0)).registerIcons(register);
-
-			icons[0][0] = ctms[0][0].mainTextureData.icon;
-			icons[1][0] = ctms[1][0].mainTextureData.icon;
-		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		if(this == GeneratorsBlocks.Reactor)
-		{
-			if(meta == 0)
-			{
-				return icons[0][side == 1 ? 0 : 2];
-			}
-			else {
-				return icons[meta][0];
-			}
-		}
-		else if(this == GeneratorsBlocks.ReactorGlass)
-		{
-			return icons[meta][0];
-		}
-
-		return null;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
-	{
-		int metadata = world.getBlockMetadata(x, y, z);
-
-		if(this == GeneratorsBlocks.Reactor)
-		{
-			if(metadata == 0)
-			{
-				if(side == 1)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[0][1] : icons[0][0];
-				}
-				else {
-					return icons[0][2];
-				}
-			}
-			else {
-				return icons[metadata][0];
-			}
-		}
-		else if(this == GeneratorsBlocks.ReactorGlass)
-		{
-			return icons[metadata][0];
-		}
-
-		return null;
-	}
 
 	@Override
 	public int damageDropped(IBlockState state)
@@ -288,18 +225,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	{
 		return null;
 	}
-
-	@Override
-	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
-	{
-		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
-		{
-			return ctms[meta][1];
-		}
-
-		return ctms[meta][0];
-	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side)
@@ -315,7 +241,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 			{
 				case 0:
 				case 1:
-					return ctms[metadata][0].shouldRenderSide(world, pos, side);
+					return ctmData[metadata].shouldRenderSide(world, pos, side);
 				default:
 					return super.shouldSideBeRendered(world, pos, side);
 			}
@@ -369,12 +295,6 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 				return false;
 		}
 	}
-	
-	@Override
-	public PropertyEnum<ReactorBlockType> getTypeProperty()
-	{
-		return getReactorBlock().getProperty();
-	}
 
 	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
 	{
@@ -396,5 +316,23 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 		}
 
 		return itemStack;
+	}
+	
+	@Override
+	public CTMData getCTMData(IBlockState state)
+	{
+		return ctmData[getMetaFromState(state)];
+	}
+	
+	@Override
+	public String getOverrideTexture(IBlockState state, EnumFacing side)
+	{
+		return null;
+	}
+	
+	@Override
+	public PropertyEnum<ReactorBlockType> getTypeProperty()
+	{
+		return getReactorBlock().getProperty();
 	}
 }

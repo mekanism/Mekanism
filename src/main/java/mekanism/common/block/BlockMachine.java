@@ -131,7 +131,7 @@ import buildcraft.api.tools.IToolWrench;
  */
 public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 {
-	public CTMData[][] ctmData = new CTMData[16][4];
+	public CTMData[] ctmData = new CTMData[16];
 
 	public BlockMachine()
 	{
@@ -226,7 +226,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		switch(getMachineBlock())
 		{
 			case MACHINE_BLOCK_1:
-				ctmData[11][0] = new CTMData(BasicBlockType.TELEPORTER_FRAME, MachineType.TELEPORTER);
+				ctmData[11] = new CTMData(BasicBlockType.TELEPORTER_FRAME, MachineType.TELEPORTER);
 				
 				break;
 			default:
@@ -1032,7 +1032,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public CTMData getCTMData(IBlockState state)
 	{
-		return ctmData[getMetaFromState(state)][0];
+		return ctmData[getMetaFromState(state)];
 	}
 	
 	@Override
