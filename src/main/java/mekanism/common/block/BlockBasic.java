@@ -100,7 +100,7 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockBasic extends Block implements ICTMBlock//TODO? implements ICustomBlockIcon
+public abstract class BlockBasic extends Block implements ICTMBlock
 {
 	public CTMData[][] ctmData = new CTMData[16][4];
 	

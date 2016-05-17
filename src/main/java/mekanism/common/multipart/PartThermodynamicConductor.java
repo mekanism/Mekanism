@@ -127,11 +127,6 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	@Override
 	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!getWorld().isRemote)
-		{
-			temperature += 10000; //TODO remove
-		}
-		
 		return true;
 	}
 

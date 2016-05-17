@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -189,7 +190,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 			
-			//TODO itemRender.renderIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
+			drawTexturedRectFromIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
 			itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);
 			
 			GL11.glDisable(GL11.GL_LIGHTING);

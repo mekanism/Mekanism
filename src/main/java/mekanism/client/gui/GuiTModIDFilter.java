@@ -184,7 +184,7 @@ public class GuiTModIDFilter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			//TODO itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+			drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GlStateManager.popMatrix();
@@ -207,8 +207,6 @@ public class GuiTModIDFilter extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTModIDFilter.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -235,6 +233,8 @@ public class GuiTModIDFilter extends GuiMekanism
 		}
 
 		modIDText.drawTextBox();
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override

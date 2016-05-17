@@ -572,7 +572,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			//TODO itemRender.renderIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
+			drawTexturedRectFromIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GlStateManager.popMatrix();

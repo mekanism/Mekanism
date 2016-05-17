@@ -83,8 +83,6 @@ public class GuiMFilterSelect extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiFilterSelect.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -101,6 +99,8 @@ public class GuiMFilterSelect extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
 		}
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 	
 	@Override
