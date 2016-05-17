@@ -314,12 +314,15 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	{
 		super.handlePacketData(dataStream);
 
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
-		}
-		else {
-			gasTank.setGas(null);
+			if(dataStream.readBoolean())
+			{
+				gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
+			}
+			else {
+				gasTank.setGas(null);
+			}
 		}
 	}
 

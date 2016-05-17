@@ -241,19 +241,22 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		operatingTicks = dataStream.readInt();
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			operatingTicks = dataStream.readInt();
+	
+			if(dataStream.readBoolean())
+			{
+				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				gasTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
-		else {
-			gasTank.setGas(null);
-		}
-
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override

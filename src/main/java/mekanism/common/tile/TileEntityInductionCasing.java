@@ -102,20 +102,23 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		super.handlePacketData(dataStream);
 		
-		if(clientHasStructure)
+		if(worldObj.isRemote)
 		{
-			structure.clientEnergy = dataStream.readDouble();
-			structure.storageCap = dataStream.readDouble();
-			structure.transferCap = dataStream.readDouble();
-			structure.lastInput = dataStream.readDouble();
-			structure.lastOutput = dataStream.readDouble();
-			
-			structure.volWidth = dataStream.readInt();
-			structure.volHeight = dataStream.readInt();
-			structure.volLength = dataStream.readInt();
-			
-			clientCells = dataStream.readInt();
-			clientProviders = dataStream.readInt();
+			if(clientHasStructure)
+			{
+				structure.clientEnergy = dataStream.readDouble();
+				structure.storageCap = dataStream.readDouble();
+				structure.transferCap = dataStream.readDouble();
+				structure.lastInput = dataStream.readDouble();
+				structure.lastOutput = dataStream.readDouble();
+				
+				structure.volWidth = dataStream.readInt();
+				structure.volHeight = dataStream.readInt();
+				structure.volLength = dataStream.readInt();
+				
+				clientCells = dataStream.readInt();
+				clientProviders = dataStream.readInt();
+			}
 		}
 	}
 

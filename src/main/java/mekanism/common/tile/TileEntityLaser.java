@@ -166,9 +166,12 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		
-		MekanismUtils.updateBlock(worldObj, getPos());
+		if(worldObj.isRemote)
+		{
+			isActive = dataStream.readBoolean();
+			
+			MekanismUtils.updateBlock(worldObj, getPos());
+		}
 	}
 	
 	@Override

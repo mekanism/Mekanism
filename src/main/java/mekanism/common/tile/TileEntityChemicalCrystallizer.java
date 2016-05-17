@@ -210,20 +210,22 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		operatingTicks = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			operatingTicks = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(dataStream.readBoolean())
+			{
+				inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				inputTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
-		else {
-			inputTank.setGas(null);
-		}
-
-
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override

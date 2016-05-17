@@ -171,7 +171,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-		seesSun = dataStream.readBoolean();
+		
+		if(worldObj.isRemote)
+		{
+			seesSun = dataStream.readBoolean();
+		}
 	}
 
 	@Override

@@ -310,7 +310,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				// Move filter up
 				int filterIndex = dataStream.readInt();
 				filters.swap( filterIndex, filterIndex - 1 );
-				for(EntityPlayer player : playersUsing) openInventory(player); //TODO ?
+				for(EntityPlayer player : playersUsing) openInventory(player);
 			}
 			else if(type == 4)
 			{
@@ -324,66 +324,69 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		super.handlePacketData(dataStream);
 
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		if(worldObj.isRemote)
 		{
-			isActive = dataStream.readBoolean();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-
-			int c = dataStream.readInt();
-
-			if(c != -1)
+			int type = dataStream.readInt();
+	
+			if(type == 0)
 			{
-				color = TransporterUtils.colors.get(c);
+				isActive = dataStream.readBoolean();
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+				int c = dataStream.readInt();
+	
+				if(c != -1)
+				{
+					color = TransporterUtils.colors.get(c);
+				}
+				else {
+					color = null;
+				}
+	
+				autoEject = dataStream.readBoolean();
+				roundRobin = dataStream.readBoolean();
+	
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(TransporterFilter.readFromPacket(dataStream));
+				}
+	
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
-			else {
-				color = null;
-			}
-
-			autoEject = dataStream.readBoolean();
-			roundRobin = dataStream.readBoolean();
-
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
+			else if(type == 1)
 			{
-				filters.add(TransporterFilter.readFromPacket(dataStream));
+				isActive = dataStream.readBoolean();
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+				int c = dataStream.readInt();
+	
+				if(c != -1)
+				{
+					color = TransporterUtils.colors.get(c);
+				}
+				else {
+					color = null;
+				}
+	
+				autoEject = dataStream.readBoolean();
+				roundRobin = dataStream.readBoolean();
+	
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
-
-			MekanismUtils.updateBlock(worldObj, getPos());
-		}
-		else if(type == 1)
-		{
-			isActive = dataStream.readBoolean();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-
-			int c = dataStream.readInt();
-
-			if(c != -1)
+			else if(type == 2)
 			{
-				color = TransporterUtils.colors.get(c);
-			}
-			else {
-				color = null;
-			}
-
-			autoEject = dataStream.readBoolean();
-			roundRobin = dataStream.readBoolean();
-
-			MekanismUtils.updateBlock(worldObj, getPos());
-		}
-		else if(type == 2)
-		{
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				filters.add(TransporterFilter.readFromPacket(dataStream));
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(TransporterFilter.readFromPacket(dataStream));
+				}
 			}
 		}
 	}

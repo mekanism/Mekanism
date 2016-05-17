@@ -282,32 +282,35 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
 		super.handlePacketData(dataStream);
 		
-		lastTransferLoss = dataStream.readDouble();
-		lastEnvironmentLoss = dataStream.readDouble();
-		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			frequency = new InventoryFrequency(dataStream);
-		}
-		else {
-			frequency = null;
-		}
-		
-		publicCache.clear();
-		privateCache.clear();
-		
-		int amount = dataStream.readInt();
-		
-		for(int i = 0; i < amount; i++)
-		{
-			publicCache.add(new InventoryFrequency(dataStream));
-		}
-		
-		amount = dataStream.readInt();
-		
-		for(int i = 0; i < amount; i++)
-		{
-			privateCache.add(new InventoryFrequency(dataStream));
+			lastTransferLoss = dataStream.readDouble();
+			lastEnvironmentLoss = dataStream.readDouble();
+			
+			if(dataStream.readBoolean())
+			{
+				frequency = new InventoryFrequency(dataStream);
+			}
+			else {
+				frequency = null;
+			}
+			
+			publicCache.clear();
+			privateCache.clear();
+			
+			int amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				publicCache.add(new InventoryFrequency(dataStream));
+			}
+			
+			amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				privateCache.add(new InventoryFrequency(dataStream));
+			}
 		}
 	}
 

@@ -269,17 +269,20 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		super.handlePacketData(dataStream);
 
-		if(dataStream.readInt() == 1)
+		if(worldObj.isRemote)
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+			if(dataStream.readInt() == 1)
+			{
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+			}
+			else {
+				fluidTank.setFluid(null);
+			}
+			
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
-		else {
-			fluidTank.setFluid(null);
-		}
-		
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override

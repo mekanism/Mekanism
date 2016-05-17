@@ -116,9 +116,12 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		super.handlePacketData(dataStream);
 		
-		logicType = ReactorLogic.values()[dataStream.readInt()];
-		activeCooled = dataStream.readBoolean();
-		prevOutputting = dataStream.readBoolean();
+		if(worldObj.isRemote)
+		{
+			logicType = ReactorLogic.values()[dataStream.readInt()];
+			activeCooled = dataStream.readBoolean();
+			prevOutputting = dataStream.readBoolean();
+		}
 	}
 
 	@Override

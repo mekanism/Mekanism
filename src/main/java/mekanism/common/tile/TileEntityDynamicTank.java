@@ -251,38 +251,41 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		super.handlePacketData(dataStream);
 		
-		if(clientHasStructure)
+		if(worldObj.isRemote)
 		{
-			clientCapacity = dataStream.readInt();
-			structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
-			
-			if(dataStream.readInt() == 1)
+			if(clientHasStructure)
 			{
-				structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
-			}
-			else {
-				structure.fluidStored = null;
-			}
-
-			if(isRendering)
-			{
-				int size = dataStream.readInt();
+				clientCapacity = dataStream.readInt();
+				structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
 				
-				valveViewing.clear();
-
-				for(int i = 0; i < size; i++)
+				if(dataStream.readInt() == 1)
 				{
-					ValveData data = new ValveData();
-					data.location = Coord4D.read(dataStream);
-					data.side = EnumFacing.getFront(dataStream.readInt());
+					structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
+				}
+				else {
+					structure.fluidStored = null;
+				}
+	
+				if(isRendering)
+				{
+					int size = dataStream.readInt();
 					
-					valveViewing.add(data);
-
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
-
-					if(tileEntity != null)
+					valveViewing.clear();
+	
+					for(int i = 0; i < size; i++)
 					{
-						tileEntity.clientHasStructure = true;
+						ValveData data = new ValveData();
+						data.location = Coord4D.read(dataStream);
+						data.side = EnumFacing.getFront(dataStream.readInt());
+						
+						valveViewing.add(data);
+	
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+	
+						if(tileEntity != null)
+						{
+							tileEntity.clientHasStructure = true;
+						}
 					}
 				}
 			}

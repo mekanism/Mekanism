@@ -294,19 +294,22 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		clientAmount = dataStream.readInt();
-		tier = BinTier.values()[dataStream.readInt()];
-
-		if(clientAmount > 0)
+		if(worldObj.isRemote)
 		{
-			itemType = PacketHandler.readStack(dataStream);
+			isActive = dataStream.readBoolean();
+			clientAmount = dataStream.readInt();
+			tier = BinTier.values()[dataStream.readInt()];
+	
+			if(clientAmount > 0)
+			{
+				itemType = PacketHandler.readStack(dataStream);
+			}
+			else {
+				itemType = null;
+			}
+	
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
-		else {
-			itemType = null;
-		}
-
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -496,10 +499,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public void clear()
-	{
-		//TODO
-	}
+	public void clear() {}
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)

@@ -212,10 +212,10 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		super.handlePacketData(dataStream);
+		
 		if(worldObj.isRemote)
 		{
-			super.handlePacketData(dataStream);
-
 			on = dataStream.readBoolean();
 			collectedEnergy = dataStream.readDouble();
 			lastFired = dataStream.readDouble();

@@ -265,19 +265,22 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		super.handlePacketData(dataStream);
 		
-		producingEnergy = dataStream.readDouble();
-		
-		lastTransferLoss = dataStream.readDouble();
-		lastEnvironmentLoss = dataStream.readDouble();
-
-		int amount = dataStream.readInt();
-
-		if(amount != 0)
+		if(worldObj.isRemote)
 		{
-			lavaTank.setFluid(new FluidStack(FluidRegistry.LAVA, amount));
-		}
-		else {
-			lavaTank.setFluid(null);
+			producingEnergy = dataStream.readDouble();
+			
+			lastTransferLoss = dataStream.readDouble();
+			lastEnvironmentLoss = dataStream.readDouble();
+	
+			int amount = dataStream.readInt();
+	
+			if(amount != 0)
+			{
+				lavaTank.setFluid(new FluidStack(FluidRegistry.LAVA, amount));
+			}
+			else {
+				lavaTank.setFluid(null);
+			}
 		}
 	}
 

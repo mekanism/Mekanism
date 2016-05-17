@@ -267,27 +267,30 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		operatingTicks = dataStream.readInt();
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			injectTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			operatingTicks = dataStream.readInt();
+	
+			if(dataStream.readBoolean())
+			{
+				injectTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				injectTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				outputTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
-		else {
-			injectTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			outputTank.setGas(null);
-		}
-
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override

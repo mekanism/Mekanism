@@ -271,29 +271,31 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 		super.handlePacketData(dataStream);
 
-		mode = dataStream.readInt();
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		clientEnergyUsed = dataStream.readDouble();
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+			mode = dataStream.readInt();
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			clientEnergyUsed = dataStream.readDouble();
+	
+			if(dataStream.readBoolean())
+			{
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+			}
+			else {
+				fluidTank.setFluid(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				gasTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
-		else {
-			fluidTank.setFluid(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			gasTank.setGas(null);
-		}
-
-
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override

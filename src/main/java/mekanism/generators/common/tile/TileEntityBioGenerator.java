@@ -199,7 +199,11 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-		bioFuelSlot.fluidStored = dataStream.readInt();
+		
+		if(worldObj.isRemote)
+		{
+			bioFuelSlot.fluidStored = dataStream.readInt();
+		}
 	}
 
 	@Override

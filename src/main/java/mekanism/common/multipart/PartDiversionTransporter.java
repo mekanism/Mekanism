@@ -79,12 +79,15 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	{
 		super.handlePacketData(dataStream);
 		
-		modes[0] = dataStream.readInt();
-		modes[1] = dataStream.readInt();
-		modes[2] = dataStream.readInt();
-		modes[3] = dataStream.readInt();
-		modes[4] = dataStream.readInt();
-		modes[5] = dataStream.readInt();
+		if(getWorld().isRemote)
+		{
+			modes[0] = dataStream.readInt();
+			modes[1] = dataStream.readInt();
+			modes[2] = dataStream.readInt();
+			modes[3] = dataStream.readInt();
+			modes[4] = dataStream.readInt();
+			modes[5] = dataStream.readInt();
+		}
 	}
 
 	@Override

@@ -238,54 +238,57 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	{
 		super.handlePacketData(dataStream);
 		
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		if(getWorld().isRemote)
 		{
-			int c = dataStream.readInt();
-
-			EnumColor prev = getTransmitter().getColor();
-
-			if(c != -1)
+			int type = dataStream.readInt();
+	
+			if(type == 0)
 			{
-				getTransmitter().setColor(TransporterUtils.colors.get(c));
-			}
-			else {
-				getTransmitter().setColor(null);
-			}
-
-			if(prev != getTransmitter().getColor())
-			{
-				markRenderUpdate();
-			}
-
-			getTransmitter().transit.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				getTransmitter().transit.add(TransporterStack.readFromPacket(dataStream));
-			}
-		}
-		else if(type == 1)
-		{
-			boolean kill = dataStream.readBoolean();
-			int index = dataStream.readInt();
-
-			if(kill)
-			{
-				getTransmitter().transit.remove(index);
-			}
-			else {
-				TransporterStack stack = TransporterStack.readFromPacket(dataStream);
-
-				if(stack.progress == 0)
+				int c = dataStream.readInt();
+	
+				EnumColor prev = getTransmitter().getColor();
+	
+				if(c != -1)
 				{
-					stack.progress = 5;
+					getTransmitter().setColor(TransporterUtils.colors.get(c));
 				}
-
-				getTransmitter().transit.replace(index, stack);
+				else {
+					getTransmitter().setColor(null);
+				}
+	
+				if(prev != getTransmitter().getColor())
+				{
+					markRenderUpdate();
+				}
+	
+				getTransmitter().transit.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					getTransmitter().transit.add(TransporterStack.readFromPacket(dataStream));
+				}
+			}
+			else if(type == 1)
+			{
+				boolean kill = dataStream.readBoolean();
+				int index = dataStream.readInt();
+	
+				if(kill)
+				{
+					getTransmitter().transit.remove(index);
+				}
+				else {
+					TransporterStack stack = TransporterStack.readFromPacket(dataStream);
+	
+					if(stack.progress == 0)
+					{
+						stack.progress = 5;
+					}
+	
+					getTransmitter().transit.replace(index, stack);
+				}
 			}
 		}
 	}

@@ -173,20 +173,23 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		
 		super.handlePacketData(dataStream);
 		
-		energyUsage = dataStream.readDouble();
-		temperature = dataStream.readDouble();
-		clientActive = dataStream.readBoolean();
-		maxEnergy = dataStream.readDouble();
-		soundScale = dataStream.readFloat();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		
-		lastEnvironmentLoss = dataStream.readDouble();
-		
-		if(updateDelay == 0 && clientActive != isActive)
+		if(worldObj.isRemote)
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, getPos());
+			energyUsage = dataStream.readDouble();
+			temperature = dataStream.readDouble();
+			clientActive = dataStream.readBoolean();
+			maxEnergy = dataStream.readDouble();
+			soundScale = dataStream.readFloat();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			
+			lastEnvironmentLoss = dataStream.readDouble();
+			
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
 	}
 
