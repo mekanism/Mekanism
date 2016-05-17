@@ -60,6 +60,8 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
 		
 		if(generatorType != null)
 		{
+			GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+			
 			if(generatorType == GeneratorType.BIO_GENERATOR)
 			{
 				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
@@ -115,22 +117,7 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
 	@Override
 	public List<BakedQuad> getFaceQuads(EnumFacing facing)
 	{
-		List<BakedQuad> faceQuads = new LinkedList<BakedQuad>();
-		
-		/*if(Block.getBlockFromItem(stack.getItem()) != null)
-		{
-			MachineType machineType = MachineType.get(stack);
-			
-			if(machineType != MachineType.QUANTUM_ENTANGLOPORTER && machineType != MachineType.RESISTIVE_HEATER)
-			{
-				if(!(stack.getItem() instanceof ItemBlockEnergyCube))
-				{
-					faceQuads.addAll(baseModel.getFaceQuads(facing));
-				}
-			}
-		}*/
-		
-		return faceQuads;
+		return new LinkedList<BakedQuad>();
 	}
 
 	@Override

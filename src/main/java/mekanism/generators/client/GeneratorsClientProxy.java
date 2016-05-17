@@ -55,6 +55,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -130,6 +131,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	@Override
 	public void preInit()
 	{
+		MinecraftForge.EVENT_BUS.register(this);
+		
 		CTMRegistry.registerCTMs("mekanismgenerators", "turbine_vent", "turbine_valve", "turbine_casing", "electromagnetic_coil", 
 				"reactor_controller", "reactor_frame", "reactor_port", "reactor_glass", "laser_focus_matrix", "reactor_logic_adapter",
 				"reactor_controller_on");

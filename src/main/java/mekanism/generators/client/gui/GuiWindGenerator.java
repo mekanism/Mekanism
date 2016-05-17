@@ -56,8 +56,6 @@ public class GuiWindGenerator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-
 		fontRendererObj.drawString(tileEntity.getName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
@@ -71,6 +69,8 @@ public class GuiWindGenerator extends GuiMekanism
 			size += 9;
 			fontRendererObj.drawString(EnumColor.DARK_RED + LangUtils.localize("gui.skyBlocked"), 51, size, 0x00CD00);
 		}
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
 	@Override
