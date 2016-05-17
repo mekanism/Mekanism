@@ -19,6 +19,8 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 public class CTMRegistry 
 {
     private static List<TextureSpriteCallback> textures = new ArrayList<TextureSpriteCallback>();
@@ -26,20 +28,9 @@ public class CTMRegistry
 	private IBakedModel baseModel;
 	public static ResourceLocation baseResource = new ResourceLocation("mekanism:block/ctm_block");
 	
-	public static List<String> ctmTypes = new ArrayList<String>();
+	public static List<Pair<String, String>> ctmTypes = new ArrayList<Pair<String, String>>();
 	
 	public static Map<String, ChiselTextureCTM> textureCache = new HashMap<String, ChiselTextureCTM>();
-	
-	public CTMRegistry()
-	{
-		if(textureCache.isEmpty())
-		{
-			for(String s : ctmTypes)
-			{
-				textureCache.put(s, createTexture(s));
-			}
-		}
-	}
 	
     @SubscribeEvent
     public void onTextureStitch(TextureStitchEvent.Pre event) 
@@ -56,11 +47,11 @@ public class CTMRegistry
         IModel model = event.modelLoader.getModel(baseResource);
         baseModel = model.bake(new TRSRTransformation(ModelRotation.X0_Y0), Attributes.DEFAULT_BAKED_FORMAT, r -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(r.toString()));
         
-        for(String ctm : ctmTypes) 
+        for(Pair<String, String> pair : ctmTypes) 
         {
-        	ModelChisel chiselModel = new ModelChisel(baseModel, ctm);
+        	ModelChisel chiselModel = new ModelChisel(baseModel, pair.getRight());
         	chiselModel.load();
-            event.modelRegistry.putObject(new ModelResourceLocation("mekanism:" + ctm), new ModelChiselBlock(chiselModel));
+            event.modelRegistry.putObject(new ModelResourceLocation(pair.getLeft() + ":" + pair.getRight()), new ModelChiselBlock(chiselModel));
         }
     }
     
@@ -68,7 +59,8 @@ public class CTMRegistry
     {
     	for(String s : ctms)
     	{
-    		ctmTypes.add(domain + ":" + s);
+    		ctmTypes.add(Pair.of(domain, s));
+    		textureCache.put(s, createTexture(domain, s));
     	}
     }
 
@@ -77,12 +69,12 @@ public class CTMRegistry
         textures.add(callback);
     }
 
-    public static ChiselTextureCTM createTexture(String name)
+    public static ChiselTextureCTM createTexture(String domain, String name)
     {
     	TextureSpriteCallback[] callbacks = new TextureSpriteCallback[CTM.REQUIRED_TEXTURES];
     	
-    	callbacks[0] = new TextureSpriteCallback(new ResourceLocation("mekanism:blocks/ctm/" + name));
-    	callbacks[1] = new TextureSpriteCallback(new ResourceLocation("mekanism:blocks/ctm/" + name + "-ctm"));
+    	callbacks[0] = new TextureSpriteCallback(new ResourceLocation(domain + ":blocks/ctm/" + name));
+    	callbacks[1] = new TextureSpriteCallback(new ResourceLocation(domain + ":blocks/ctm/" + name + "-ctm"));
     	
     	register(callbacks[0]);
     	register(callbacks[1]);

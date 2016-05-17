@@ -1,5 +1,6 @@
 package mekanism.generators.client;
 
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ctm.CTMRegistry;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
@@ -23,8 +24,8 @@ import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
-import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
+import mekanism.generators.common.GeneratorsItems;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
@@ -44,11 +45,8 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -73,26 +71,30 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	}
 
 	@Override
-	public void registerRenderInformation()
+	public void registerItemRenders()
 	{
-		//Register block handler
-		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
+		registerItemRender(GeneratorsItems.SolarPanel);
+		registerItemRender(GeneratorsItems.Hohlraum);
+		registerItemRender(GeneratorsItems.TurbineBlade);
+	}
+	
+	@Override
+	public void registerBlockRenders()
+	{
 		
-		//Register item handler
-		GeneratorsItemRenderer handler = new GeneratorsItemRenderer();
-		
-		MinecraftForge.EVENT_BUS.register(this);
-
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(GeneratorsBlocks.Generator), handler);
-
-		System.out.println("[MekanismGenerators] Render registrations complete.");
+	}
+	
+	public void registerItemRender(Item item)
+	{
+		MekanismRenderer.registerItemRender("mekanismgenerators", item);
 	}
 	
 	@Override
 	public void preInit()
 	{
 		CTMRegistry.registerCTMs("mekanismgenerators", "turbine_vent", "turbine_valve", "turbine_casing", "electromagnetic_coil", 
-				"reactor_controller", "reactor_frame", "reactor_port", "reactor_glass", "laser_focus_matrix", "reactor_logic_adapter");
+				"reactor_controller", "reactor_frame", "reactor_port", "reactor_glass", "laser_focus_matrix", "reactor_logic_adapter",
+				"reactor_controller_on");
 	}
 
 	@Override

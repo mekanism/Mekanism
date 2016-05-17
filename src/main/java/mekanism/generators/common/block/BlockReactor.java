@@ -6,6 +6,7 @@ import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IActiveState;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
@@ -65,6 +66,19 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 
 	public abstract ReactorBlock getReactorBlock();
+	
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		
+		if(tile instanceof TileEntityReactorController)
+		{
+			state = state.withProperty(BlockStateReactor.activeProperty, ((IActiveState)tile).getActive());
+		}
+		
+		return state;
+	}
 	
 	public void initCTMs()
 	{
@@ -327,6 +341,18 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	@Override
 	public String getOverrideTexture(IBlockState state, EnumFacing side)
 	{
+		ReactorBlockType type = state.getValue(getTypeProperty());
+		
+		if(type == ReactorBlockType.REACTOR_CONTROLLER)
+		{
+			if(side == EnumFacing.UP)
+			{
+				return type.getName() + (state.getValue(BlockStateReactor.activeProperty) ? "_on" : "");
+			}
+			else {
+				return "reactor_frame";
+			}
+		}
 		return null;
 	}
 	

@@ -79,9 +79,14 @@ public class GeneratorsCommonProxy implements IGuiProvider
 	}
 
 	/**
-	 * Register and load client-only render information.
+	 * Register and load client-only item render information.
 	 */
-	public void registerRenderInformation() {}
+	public void registerItemRenders() {}
+	
+	/**
+	 * Register and load client-only block render information.
+	 */
+	public void registerBlockRenders() {}
 	
 	public void preInit() {}
 

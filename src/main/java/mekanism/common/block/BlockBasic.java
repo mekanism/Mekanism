@@ -1006,7 +1006,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	@Override
 	public String getOverrideTexture(IBlockState state, EnumFacing side)
 	{
-		BasicBlockType type = state.getValue(getBasicBlock().getProperty());
+		BasicBlockType type = state.getValue(getTypeProperty());
 		
 		if(type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
 		{

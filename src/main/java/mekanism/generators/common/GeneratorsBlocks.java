@@ -23,5 +23,7 @@ public class GeneratorsBlocks
 		GameRegistry.registerBlock(Generator, ItemBlockGenerator.class, "Generator");
 		GameRegistry.registerBlock(Reactor, ItemBlockReactor.class, "Reactor");
 		GameRegistry.registerBlock(ReactorGlass, ItemBlockReactor.class, "ReactorGlass");
+		
+		MekanismGenerators.proxy.registerBlockRenders();
 	}
 }
