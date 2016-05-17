@@ -387,7 +387,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public int damageDropped(IBlockState state)
 	{
-		return getMetaFromState(state);
+		return state.getBlock().getMetaFromState(state);
 	}
 
 	@Override
@@ -451,7 +451,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		}
 
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		int metadata = getMetaFromState(state);
+		int metadata = state.getBlock().getMetaFromState(state);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
@@ -608,7 +608,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		int metadata = getMetaFromState(state);
+		int metadata = state.getBlock().getMetaFromState(state);
 		
 		if(MachineType.get(getMachineBlock(), metadata) == null)
 		{
@@ -661,7 +661,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
     {
 		IBlockState state = world.getBlockState(pos);
-		if(MachineType.get(getMachineBlock(), getMetaFromState(state)) != MachineType.PERSONAL_CHEST)
+		if(MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST)
 		{
 			return blockResistance;
 		}
@@ -838,7 +838,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		IBlockState state = world.getBlockState(pos);
-		ItemStack itemStack = new ItemStack(this, 1, getMetaFromState(state));
+		ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
 		if(itemStack.getTagCompound() == null)
 		{
@@ -940,7 +940,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = MachineType.get(getMachineBlock(), getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
 		{
@@ -976,7 +976,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = MachineType.get(getMachineBlock(), getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
 		{
@@ -1015,7 +1015,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = world.getBlockState(pos);
-		MachineType type = MachineType.get(getMachineBlock(), getMetaFromState(state));
+		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
 		{
@@ -1032,7 +1032,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public CTMData getCTMData(IBlockState state)
 	{
-		return ctmData[getMetaFromState(state)];
+		return ctmData[state.getBlock().getMetaFromState(state)];
 	}
 	
 	@Override

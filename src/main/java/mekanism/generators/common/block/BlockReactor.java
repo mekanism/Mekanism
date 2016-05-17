@@ -22,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -114,11 +115,32 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 
         return state.withProperty(BlockStateBasic.ctmProperty, ctx);
     }
+	
+	@Override
+	public BlockState createBlockState()
+	{
+		return new BlockStateReactor(this, getTypeProperty());
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta & 0xF);
+
+		return getDefaultState().withProperty(getTypeProperty(), type);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		ReactorBlockType type = state.getValue(getTypeProperty());
+		return type.meta;
+	}
 
 	@Override
 	public int damageDropped(IBlockState state)
 	{
-		return getMetaFromState(state);
+		return state.getBlock().getMetaFromState(state);
 	}
 
 	@Override
@@ -199,7 +221,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		int metadata = getMetaFromState(state);
+		int metadata = state.getBlock().getMetaFromState(state);
 		
 		if(ReactorBlockType.get(getReactorBlock(), metadata) == null)
 		{
@@ -335,7 +357,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	@Override
 	public CTMData getCTMData(IBlockState state)
 	{
-		return ctmData[getMetaFromState(state)];
+		return ctmData[state.getBlock().getMetaFromState(state)];
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package mekanism.generators.common.block;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -17,16 +16,12 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
-import mekanism.common.tile.TileEntityFactory;
-import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -63,7 +58,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import buildcraft.api.tools.IToolWrench;
-import codechicken.lib.render.TextureUtils.IIconRegister;
 
 /**
  * Block class for handling multiple generator block IDs.
@@ -163,6 +157,24 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 	
 	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		
+		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
+		{
+			state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).facing);
+		}
+		
+		if(tile instanceof IActiveState)
+		{
+			state = state.withProperty(BlockStateGenerator.activeProperty, ((IActiveState)tile).getActive());
+		}
+		
+		return state;
+	}
+	
+	@Override
 	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
     {
 		setBlockBoundsBasedOnState(world, pos);
@@ -258,7 +270,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	@Override
 	public int damageDropped(IBlockState state)
 	{
-		return getMetaFromState(state);
+		return state.getBlock().getMetaFromState(state);
 	}
 	
 	@Override
@@ -396,7 +408,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		}
 
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		int metadata = getMetaFromState(state);
+		int metadata = state.getBlock().getMetaFromState(state);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
@@ -526,7 +538,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		int metadata = getMetaFromState(state);
+		int metadata = state.getBlock().getMetaFromState(state);
 		
 		if(GeneratorType.get(getGeneratorBlock(), metadata) == null)
 		{
@@ -540,6 +552,12 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
 		return null;
+	}
+	
+	@Override
+	public int getRenderType()
+	{
+		return 3;
 	}
 
 	@Override
@@ -603,7 +621,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		IBlockState state = world.getBlockState(pos);
-		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, getMetaFromState(state));
+		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
 		if(itemStack.getTagCompound() == null)
 		{
@@ -682,7 +700,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = world.getBlockState(pos);
-		GeneratorType type = GeneratorType.get(getGeneratorBlock(), getMetaFromState(state));
+		GeneratorType type = GeneratorType.get(getGeneratorBlock(), state.getBlock().getMetaFromState(state));
 
 		if(type != GeneratorType.SOLAR_GENERATOR && 
 				type != GeneratorType.ADVANCED_SOLAR_GENERATOR && 
@@ -739,7 +757,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	@Override
 	public CTMData getCTMData(IBlockState state)
 	{
-		return ctmData[getMetaFromState(state)];
+		return ctmData[state.getBlock().getMetaFromState(state)];
 	}
 	
 	@Override

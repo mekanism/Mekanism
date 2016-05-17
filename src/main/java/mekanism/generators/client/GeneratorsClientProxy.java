@@ -1,5 +1,7 @@
 package mekanism.generators.client;
 
+import java.io.IOException;
+
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ctm.CTMRegistry;
 import mekanism.generators.client.gui.GuiBioGenerator;
@@ -24,8 +26,11 @@ import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
+import mekanism.generators.client.render.item.GeneratorItemModelFactory;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.GeneratorsItems;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
+import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
@@ -40,12 +45,16 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -54,6 +63,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GeneratorsClientProxy extends GeneratorsCommonProxy
 {
+	public static final String[] CUSTOM_RENDERS = new String[] {"heat_generator", "solar_generator", "bio_generator", "wind_generator",
+		"gas_generator", "advanced_solar_generator"};
+	
 	@Override
 	public void registerSpecialTileEntities()
 	{
@@ -81,13 +93,39 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	@Override
 	public void registerBlockRenders()
 	{
+		for(GeneratorType type : GeneratorType.values())
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
+		}
 		
+		for(ReactorBlockType type : ReactorBlockType.values())
+		{
+			if(type.isValidReactorBlock())
+			{
+				ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
+			}
+		}
 	}
 	
 	public void registerItemRender(Item item)
 	{
 		MekanismRenderer.registerItemRender("mekanismgenerators", item);
 	}
+	
+	@SubscribeEvent
+    public void onModelBake(ModelBakeEvent event) throws IOException 
+    {
+		for(String s : CUSTOM_RENDERS)
+		{
+			ModelResourceLocation model = new ModelResourceLocation("mekanismgenerators:" + s, "inventory");
+	        Object obj = event.modelRegistry.getObject(model);
+	        
+	        if(obj instanceof IBakedModel)
+	        {
+	        	event.modelRegistry.putObject(model, new GeneratorItemModelFactory((IBakedModel)obj));
+	        }
+		}
+    }
 	
 	@Override
 	public void preInit()

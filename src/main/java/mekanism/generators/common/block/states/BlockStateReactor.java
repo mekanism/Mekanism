@@ -1,7 +1,6 @@
 package mekanism.generators.common.block.states;
 
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockBasic;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
@@ -18,9 +17,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
@@ -30,7 +33,7 @@ public class BlockStateReactor extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
 	
-	public BlockStateReactor(BlockBasic block, PropertyEnum<ReactorBlockType> typeProperty)
+	public BlockStateReactor(BlockReactor block, PropertyEnum<ReactorBlockType> typeProperty)
 	{
 		super(block, new IProperty[] {typeProperty, activeProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
 	}
@@ -167,6 +170,27 @@ public class BlockStateReactor extends ExtendedBlockState
 		public ItemStack getStack()
 		{
 			return new ItemStack(blockType.getBlock(), 1, meta);
+		}
+	}
+	
+	public static class ReactorBlockStateMapper extends StateMapperBase
+	{
+		@Override
+		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		{
+			BlockReactor block = (BlockReactor)state.getBlock();
+			ReactorBlockType type = state.getValue(block.getTypeProperty());
+			StringBuilder builder = new StringBuilder();
+			String nameOverride = null;
+
+			if(builder.length() == 0)
+			{
+				builder.append("normal");
+			}
+
+			ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators", nameOverride != null ? nameOverride : type.getName());
+			
+			return new ModelResourceLocation(baseLocation, builder.toString());
 		}
 	}
 }

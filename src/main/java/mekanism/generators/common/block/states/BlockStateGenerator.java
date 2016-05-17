@@ -24,11 +24,14 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
@@ -135,7 +138,6 @@ public class BlockStateGenerator extends ExtendedBlockState
 			
 			return null;
 		}
-
 	
 		public static GeneratorType get(Block block, int meta)
 		{
@@ -191,11 +193,68 @@ public class BlockStateGenerator extends ExtendedBlockState
 		{
 			return new ItemStack(GeneratorsBlocks.Generator, 1, meta);
 		}
-	
-		@Override
-		public String toString()
+		
+		public boolean canRotateTo(EnumFacing side)
 		{
-			return Integer.toString(meta);
+			return facingPredicate.apply(side);
+		}
+
+		public boolean hasRotations()
+		{
+			return !facingPredicate.equals(Predicates.alwaysFalse());
+		}
+
+		public boolean hasActiveTexture()
+		{
+			return activable;
+		}
+	}
+	
+	public static class GeneratorBlockStateMapper extends StateMapperBase
+	{
+		@Override
+		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		{
+			BlockGenerator block = (BlockGenerator)state.getBlock();
+			GeneratorType type = state.getValue(block.getTypeProperty());
+			StringBuilder builder = new StringBuilder();
+			String nameOverride = null;
+			
+			if(type.hasActiveTexture())
+			{
+				builder.append(activeProperty.getName());
+				builder.append("=");
+				builder.append(state.getValue(activeProperty));
+			}
+			
+			if(type.hasRotations())
+			{
+				EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
+				
+				if(type.canRotateTo(facing))
+				{
+					if(builder.length() > 0)
+					{
+						builder.append(",");
+					}
+					
+					builder.append(BlockStateFacing.facingProperty.getName());
+					builder.append("=");
+					builder.append(facing.getName());
+				}
+				else {
+					return new ModelResourceLocation("builtin/missing", "missing");
+				}
+			}
+
+			if(builder.length() == 0)
+			{
+				builder.append("normal");
+			}
+
+			ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators", nameOverride != null ? nameOverride : type.getName());
+			
+			return new ModelResourceLocation(baseLocation, builder.toString());
 		}
 	}
 }
