@@ -47,6 +47,11 @@ public class ItemOtherDust extends ItemMekanism
 	{
 		for(int counter = 0; counter < subtypes.length; counter++)
 		{
+			if(counter == 2)
+			{
+				continue;
+			}
+			
 			itemList.add(new ItemStack(this, 1, counter));
 		}
 	}
