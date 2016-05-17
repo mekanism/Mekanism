@@ -773,49 +773,52 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		super.handlePacketData(dataStream);
 
-		clientActive = dataStream.readBoolean();
-		RecipeType oldRecipe = recipeType;
-		recipeType = RecipeType.values()[dataStream.readInt()];
-		upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
-
-		if(recipeType != oldRecipe)
+		if(worldObj.isRemote)
 		{
-			secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-		}
-		
-		recipeTicks = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		sorting = dataStream.readBoolean();
-		upgraded = dataStream.readBoolean();
-		lastUsage = dataStream.readDouble();
-		infuseStored.amount = dataStream.readInt();
-		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
-
-		for(int i = 0; i < tier.processes; i++)
-		{
-			progress[i] = dataStream.readInt();
-		}
-
-		if(dataStream.readBoolean())
-		{
-			gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
-		}
-		else {
-			gasTank.setGas(null);
-		}
-
-		if(updateDelay == 0 && clientActive != isActive)
-		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-		}
-		
-		if(upgraded)
-		{
-			markDirty();
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-			upgraded = false;
+			clientActive = dataStream.readBoolean();
+			RecipeType oldRecipe = recipeType;
+			recipeType = RecipeType.values()[dataStream.readInt()];
+			upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
+	
+			if(recipeType != oldRecipe)
+			{
+				secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+			}
+			
+			recipeTicks = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			sorting = dataStream.readBoolean();
+			upgraded = dataStream.readBoolean();
+			lastUsage = dataStream.readDouble();
+			infuseStored.amount = dataStream.readInt();
+			infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+	
+			for(int i = 0; i < tier.processes; i++)
+			{
+				progress[i] = dataStream.readInt();
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
+			}
+			else {
+				gasTank.setGas(null);
+			}
+	
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
+			
+			if(upgraded)
+			{
+				markDirty();
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				upgraded = false;
+			}
 		}
 	}
 

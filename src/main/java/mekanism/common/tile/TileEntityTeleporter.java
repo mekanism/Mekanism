@@ -619,33 +619,36 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 		super.handlePacketData(dataStream);
 		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			frequency = new Frequency(dataStream);
-		}
-		else {
-			frequency = null;
-		}
-
-		status = dataStream.readByte();
-		shouldRender = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		
-		publicCache.clear();
-		privateCache.clear();
-		
-		int amount = dataStream.readInt();
-		
-		for(int i = 0; i < amount; i++)
-		{
-			publicCache.add(new Frequency(dataStream));
-		}
-		
-		amount = dataStream.readInt();
-		
-		for(int i = 0; i < amount; i++)
-		{
-			privateCache.add(new Frequency(dataStream));
+			if(dataStream.readBoolean())
+			{
+				frequency = new Frequency(dataStream);
+			}
+			else {
+				frequency = null;
+			}
+	
+			status = dataStream.readByte();
+			shouldRender = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			
+			publicCache.clear();
+			privateCache.clear();
+			
+			int amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				publicCache.add(new Frequency(dataStream));
+			}
+			
+			amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				privateCache.add(new Frequency(dataStream));
+			}
 		}
 	}
 

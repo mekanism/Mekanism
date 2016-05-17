@@ -157,16 +157,19 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	{
 		super.handlePacketData(dataStream);
 
-		operatingTicks = dataStream.readInt();
-		clientActive = dataStream.readBoolean();
-		ticksRequired = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(updateDelay == 0 && clientActive != isActive)
+		if(worldObj.isRemote)
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			operatingTicks = dataStream.readInt();
+			clientActive = dataStream.readBoolean();
+			ticksRequired = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 	}
 

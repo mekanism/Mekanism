@@ -203,24 +203,27 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	{
 		super.handlePacketData(dataStream);
 		
-		int prevBlades = blades;
-		int prevIndex = clientIndex;
-		
-		blades = dataStream.readInt();
-		clientIndex = dataStream.readInt();
-		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			multiblockUUID = PacketHandler.readString(dataStream);
-		}
-		else {
-			multiblockUUID = null;
-		}
-		
-		if(prevBlades != blades || prevIndex != clientIndex)
-		{
-			rotationLower = 0;
-			rotationUpper = 0;
+			int prevBlades = blades;
+			int prevIndex = clientIndex;
+			
+			blades = dataStream.readInt();
+			clientIndex = dataStream.readInt();
+			
+			if(dataStream.readBoolean())
+			{
+				multiblockUUID = PacketHandler.readString(dataStream);
+			}
+			else {
+				multiblockUUID = null;
+			}
+			
+			if(prevBlades != blades || prevIndex != clientIndex)
+			{
+				rotationLower = 0;
+				rotationUpper = 0;
+			}
 		}
 	}
 

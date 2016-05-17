@@ -580,52 +580,55 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		super.handlePacketData(dataStream);
 		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			inputTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
-		}
-		else {
-			inputTank.setFluid(null);
-		}
-		
-		if(dataStream.readBoolean())
-		{
-			outputTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
-		}
-		else {
-			outputTank.setFluid(null);
-		}
-		
-		boolean prev = structured;
-		
-		structured = dataStream.readBoolean();
-		controllerConflict = dataStream.readBoolean();
-		clientSolarAmount = dataStream.readInt();
-		height = dataStream.readInt();
-		temperature = dataStream.readFloat();
-		biomeTemp = dataStream.readFloat();
-		isLeftOnFace = dataStream.readBoolean();
-		lastGain = dataStream.readFloat();
-		totalLoss = dataStream.readFloat();
-		
-		if(structured != prev)
-		{
-			inputTank.setCapacity(getMaxFluid());
-			worldObj.func_147479_m(xCoord, yCoord, zCoord);
-			
-			if(structured)
+			if(dataStream.readBoolean())
 			{
-				Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
-					@Override
-					public boolean isNode(TileEntity tile)
-					{
-						return tile instanceof TileEntityThermalEvaporationBlock;
-					}
-				});
+				inputTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
 			}
+			else {
+				inputTank.setFluid(null);
+			}
+			
+			if(dataStream.readBoolean())
+			{
+				outputTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			}
+			else {
+				outputTank.setFluid(null);
+			}
+			
+			boolean prev = structured;
+			
+			structured = dataStream.readBoolean();
+			controllerConflict = dataStream.readBoolean();
+			clientSolarAmount = dataStream.readInt();
+			height = dataStream.readInt();
+			temperature = dataStream.readFloat();
+			biomeTemp = dataStream.readFloat();
+			isLeftOnFace = dataStream.readBoolean();
+			lastGain = dataStream.readFloat();
+			totalLoss = dataStream.readFloat();
+			
+			if(structured != prev)
+			{
+				inputTank.setCapacity(getMaxFluid());
+				worldObj.func_147479_m(xCoord, yCoord, zCoord);
+				
+				if(structured)
+				{
+					Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
+						@Override
+						public boolean isNode(TileEntity tile)
+						{
+							return tile instanceof TileEntityThermalEvaporationBlock;
+						}
+					});
+				}
+			}
+			
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
-		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	@Override

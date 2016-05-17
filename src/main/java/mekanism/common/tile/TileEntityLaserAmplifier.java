@@ -218,12 +218,32 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			switch(dataStream.readInt())
+			{
+				case 0:
+					minThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
+					break;
+				case 1:
+					maxThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
+					break;
+				case 2:
+					time = dataStream.readInt();
+					break;
+				case 3:
+					entityDetection = !entityDetection;
+					break;
+			}
+			
+			return;
+		}
+		
+		super.handlePacketData(dataStream);
+		
 		if(worldObj.isRemote)
 		{
-			super.handlePacketData(dataStream);
-
 			on = dataStream.readBoolean();
-
 			minThreshold = dataStream.readDouble();
 			maxThreshold = dataStream.readDouble();
 			time = dataStream.readInt();
@@ -232,24 +252,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			emittingRedstone = dataStream.readBoolean();
 			entityDetection = dataStream.readBoolean();
-
-			return;
-		}
-
-		switch(dataStream.readInt())
-		{
-			case 0:
-				minThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
-				break;
-			case 1:
-				maxThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
-				break;
-			case 2:
-				time = dataStream.readInt();
-				break;
-			case 3:
-				entityDetection = !entityDetection;
-				break;
 		}
 	}
 	
@@ -259,7 +261,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		super.readFromNBT(nbtTags);
 
 		on = nbtTags.getBoolean("on");
-		
 		minThreshold = nbtTags.getDouble("minThreshold");
 		maxThreshold = nbtTags.getDouble("maxThreshold");
 		time = nbtTags.getInteger("time");
@@ -275,7 +276,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("on", on);
-		
 		nbtTags.setDouble("minThreshold", minThreshold);
 		nbtTags.setDouble("maxThreshold", maxThreshold);
 		nbtTags.setInteger("time", time);

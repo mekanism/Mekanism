@@ -88,10 +88,13 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		mainX = dataStream.readInt();
-		mainY = dataStream.readInt();
-		mainZ = dataStream.readInt();
-		prevPower = dataStream.readBoolean();
+		if(worldObj.isRemote)
+		{
+			mainX = dataStream.readInt();
+			mainY = dataStream.readInt();
+			mainZ = dataStream.readInt();
+			prevPower = dataStream.readBoolean();
+		}
 	}
 
 	@Override

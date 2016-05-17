@@ -786,95 +786,98 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		super.handlePacketData(dataStream);
 
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		if(worldObj.isRemote)
 		{
-			radius = dataStream.readInt();
-			minY = dataStream.readInt();
-			maxY = dataStream.readInt();
-			doEject = dataStream.readBoolean();
-			doPull = dataStream.readBoolean();
-			clientActive = dataStream.readBoolean();
-			running = dataStream.readBoolean();
-			silkTouch = dataStream.readBoolean();
-			numPowering = dataStream.readInt();
-			searcher.state = State.values()[dataStream.readInt()];
-			clientToMine = dataStream.readInt();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			inverse = dataStream.readBoolean();
+			int type = dataStream.readInt();
+	
+			if(type == 0)
+			{
+				radius = dataStream.readInt();
+				minY = dataStream.readInt();
+				maxY = dataStream.readInt();
+				doEject = dataStream.readBoolean();
+				doPull = dataStream.readBoolean();
+				clientActive = dataStream.readBoolean();
+				running = dataStream.readBoolean();
+				silkTouch = dataStream.readBoolean();
+				numPowering = dataStream.readInt();
+				searcher.state = State.values()[dataStream.readInt()];
+				clientToMine = dataStream.readInt();
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+				inverse = dataStream.readBoolean();
+				
+				if(dataStream.readBoolean())
+				{
+					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+				}
+				else {
+					missingStack = null;
+				}
+	
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(MinerFilter.readFromPacket(dataStream));
+				}
+			}
+			else if(type == 1)
+			{
+				radius = dataStream.readInt();
+				minY = dataStream.readInt();
+				maxY = dataStream.readInt();
+				doEject = dataStream.readBoolean();
+				doPull = dataStream.readBoolean();
+				clientActive = dataStream.readBoolean();
+				running = dataStream.readBoolean();
+				silkTouch = dataStream.readBoolean();
+				numPowering = dataStream.readInt();
+				searcher.state = State.values()[dataStream.readInt()];
+				clientToMine = dataStream.readInt();
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+				inverse = dataStream.readBoolean();
+				
+				if(dataStream.readBoolean())
+				{
+					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+				}
+				else {
+					missingStack = null;
+				}
+			}
+			else if(type == 2)
+			{
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(MinerFilter.readFromPacket(dataStream));
+				}
+			}
+			else if(type == 3)
+			{
+				clientActive = dataStream.readBoolean();
+				running = dataStream.readBoolean();
+				clientToMine = dataStream.readInt();
+				
+				if(dataStream.readBoolean())
+				{
+					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+				}
+				else {
+					missingStack = null;
+				}
+			}
 			
-			if(dataStream.readBoolean())
+			if(clientActive != isActive)
 			{
-				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
-			else {
-				missingStack = null;
-			}
-
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				filters.add(MinerFilter.readFromPacket(dataStream));
-			}
-		}
-		else if(type == 1)
-		{
-			radius = dataStream.readInt();
-			minY = dataStream.readInt();
-			maxY = dataStream.readInt();
-			doEject = dataStream.readBoolean();
-			doPull = dataStream.readBoolean();
-			clientActive = dataStream.readBoolean();
-			running = dataStream.readBoolean();
-			silkTouch = dataStream.readBoolean();
-			numPowering = dataStream.readInt();
-			searcher.state = State.values()[dataStream.readInt()];
-			clientToMine = dataStream.readInt();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			inverse = dataStream.readBoolean();
-			
-			if(dataStream.readBoolean())
-			{
-				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-			}
-			else {
-				missingStack = null;
-			}
-		}
-		else if(type == 2)
-		{
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				filters.add(MinerFilter.readFromPacket(dataStream));
-			}
-		}
-		else if(type == 3)
-		{
-			clientActive = dataStream.readBoolean();
-			running = dataStream.readBoolean();
-			clientToMine = dataStream.readInt();
-			
-			if(dataStream.readBoolean())
-			{
-				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-			}
-			else {
-				missingStack = null;
-			}
-		}
-		
-		if(clientActive != isActive)
-		{
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}
 

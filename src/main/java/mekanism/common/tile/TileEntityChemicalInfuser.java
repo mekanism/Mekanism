@@ -220,36 +220,38 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		clientEnergyUsed = dataStream.readDouble();
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			clientEnergyUsed = dataStream.readDouble();
+	
+			if(dataStream.readBoolean())
+			{
+				leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				leftTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				rightTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				centerTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				centerTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
-		else {
-			leftTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			rightTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			centerTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			centerTank.setGas(null);
-		}
-
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override

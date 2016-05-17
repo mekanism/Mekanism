@@ -183,8 +183,12 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-		isActive = dataStream.readBoolean();
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		
+		if(worldObj.isRemote)
+		{
+			isActive = dataStream.readBoolean();
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override

@@ -150,14 +150,17 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	{
 		super.handlePacketData(dataStream);
 
-		clientActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(updateDelay == 0 && clientActive != isActive)
+		if(worldObj.isRemote)
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			clientActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 	}
 

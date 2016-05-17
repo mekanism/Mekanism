@@ -25,12 +25,15 @@ public class TileEntityInternalMultiblock extends TileEntityBasicBlock
 	{
 		super.handlePacketData(dataStream);
 		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			multiblockUUID = PacketHandler.readString(dataStream);
-		}
-		else {
-			multiblockUUID = null;
+			if(dataStream.readBoolean())
+			{
+				multiblockUUID = PacketHandler.readString(dataStream);
+			}
+			else {
+				multiblockUUID = null;
+			}
 		}
 	}
 

@@ -275,56 +275,59 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	{
 		super.handlePacketData(dataStream);
 
-		if(clientHasStructure)
+		if(worldObj.isRemote)
 		{
-			clientWaterCapacity = dataStream.readInt();
-			clientSteamCapacity = dataStream.readInt();
-			structure.lastEnvironmentLoss = dataStream.readDouble();
-			structure.lastBoilRate = dataStream.readInt();
-			structure.superheatingElements = dataStream.readInt();
-			structure.temperature = dataStream.readDouble();
-			structure.lastMaxBoil = dataStream.readInt();
-			
-			if(dataStream.readInt() == 1)
+			if(clientHasStructure)
 			{
-				structure.waterStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
-			}
-			else {
-				structure.waterStored = null;
-			}
-	
-			if(dataStream.readInt() == 1)
-			{
-				structure.steamStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
-			}
-			else {
-				structure.steamStored = null;
-			}
-			
-			structure.upperRenderLocation = Coord4D.read(dataStream);
-	
-			if(isRendering)
-			{
-				structure.clientHot = dataStream.readBoolean();
-				SynchronizedBoilerData.clientHotMap.put(structure.inventoryID, structure.clientHot);
+				clientWaterCapacity = dataStream.readInt();
+				clientSteamCapacity = dataStream.readInt();
+				structure.lastEnvironmentLoss = dataStream.readDouble();
+				structure.lastBoilRate = dataStream.readInt();
+				structure.superheatingElements = dataStream.readInt();
+				structure.temperature = dataStream.readDouble();
+				structure.lastMaxBoil = dataStream.readInt();
 				
-				int size = dataStream.readInt();
-				
-				valveViewing.clear();
-
-				for(int i = 0; i < size; i++)
+				if(dataStream.readInt() == 1)
 				{
-					ValveData data = new ValveData();
-					data.location = Coord4D.read(dataStream);
-					data.side = ForgeDirection.getOrientation(dataStream.readInt());
+					structure.waterStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
+				}
+				else {
+					structure.waterStored = null;
+				}
+		
+				if(dataStream.readInt() == 1)
+				{
+					structure.steamStored = new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt());
+				}
+				else {
+					structure.steamStored = null;
+				}
+				
+				structure.upperRenderLocation = Coord4D.read(dataStream);
+		
+				if(isRendering)
+				{
+					structure.clientHot = dataStream.readBoolean();
+					SynchronizedBoilerData.clientHotMap.put(structure.inventoryID, structure.clientHot);
 					
-					valveViewing.add(data);
-
-					TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing)data.location.getTileEntity(worldObj);
-
-					if(tileEntity != null)
+					int size = dataStream.readInt();
+					
+					valveViewing.clear();
+	
+					for(int i = 0; i < size; i++)
 					{
-						tileEntity.clientHasStructure = true;
+						ValveData data = new ValveData();
+						data.location = Coord4D.read(dataStream);
+						data.side = ForgeDirection.getOrientation(dataStream.readInt());
+						
+						valveViewing.add(data);
+	
+						TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing)data.location.getTileEntity(worldObj);
+	
+						if(tileEntity != null)
+						{
+							tileEntity.clientHasStructure = true;
+						}
 					}
 				}
 			}

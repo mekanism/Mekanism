@@ -158,9 +158,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		super.handlePacketData(dataStream);
 		
-		mode = dataStream.readBoolean();
-		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(worldObj.isRemote)
+		{
+			mode = dataStream.readBoolean();
+			
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override

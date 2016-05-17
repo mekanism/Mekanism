@@ -402,42 +402,45 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 		super.handlePacketData(dataStream);
 		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			if(dataStream.readBoolean())
+			{
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				fluidTank.setFluid(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				leftTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				rightTank.setGas(null);
+			}
+	
+	        controlType = RedstoneControl.values()[dataStream.readInt()];
+			dumpLeft = GasMode.values()[dataStream.readInt()];
+			dumpRight = GasMode.values()[dataStream.readInt()];
+			clientActive = dataStream.readBoolean();
+			clientEnergyUsed = dataStream.readDouble();
+	
+	        if(updateDelay == 0 && clientActive != isActive)
+	        {
+	            updateDelay = MekanismConfig.general.UPDATE_DELAY;
+	            isActive = clientActive;
+	            MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+	        }
 		}
-		else {
-			fluidTank.setFluid(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			leftTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			rightTank.setGas(null);
-		}
-
-        controlType = RedstoneControl.values()[dataStream.readInt()];
-		dumpLeft = GasMode.values()[dataStream.readInt()];
-		dumpRight = GasMode.values()[dataStream.readInt()];
-		clientActive = dataStream.readBoolean();
-		clientEnergyUsed = dataStream.readDouble();
-
-        if(updateDelay == 0 && clientActive != isActive)
-        {
-            updateDelay = MekanismConfig.general.UPDATE_DELAY;
-            isActive = clientActive;
-            MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-        }
 	}
 
 	@Override

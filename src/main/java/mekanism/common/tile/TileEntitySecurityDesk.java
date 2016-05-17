@@ -192,20 +192,23 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		
 		super.handlePacketData(dataStream);
 		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			owner = PacketHandler.readString(dataStream);
-		}
-		else {
-			owner = null;
-		}
-		
-		if(dataStream.readBoolean())
-		{
-			frequency = new SecurityFrequency(dataStream);
-		}
-		else {
-			frequency = null;
+			if(dataStream.readBoolean())
+			{
+				owner = PacketHandler.readString(dataStream);
+			}
+			else {
+				owner = null;
+			}
+			
+			if(dataStream.readBoolean())
+			{
+				frequency = new SecurityFrequency(dataStream);
+			}
+			else {
+				frequency = null;
+			}
 		}
 	}
 

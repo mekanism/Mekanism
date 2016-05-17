@@ -318,34 +318,37 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		super.handlePacketData(dataStream);
 
-		tier = FluidTankTier.values()[dataStream.readInt()];
-		fluidTank.setCapacity(tier.storage);
-		
-		clientActive = dataStream.readBoolean();
-		valve = dataStream.readInt();
-		editMode = ContainerEditMode.values()[dataStream.readInt()];
-		
-		if(valve > 0)
+		if(worldObj.isRemote)
 		{
-			valveFluid = FluidRegistry.getFluid(dataStream.readInt());
-		}
-		else {
-			valveFluid = null;
-		}
-		
-		if(dataStream.readInt() == 1)
-		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			fluidTank.setFluid(null);
-		}
-		
-		if(updateDelay == 0 && clientActive != isActive)
-		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			tier = FluidTankTier.values()[dataStream.readInt()];
+			fluidTank.setCapacity(tier.storage);
+			
+			clientActive = dataStream.readBoolean();
+			valve = dataStream.readInt();
+			editMode = ContainerEditMode.values()[dataStream.readInt()];
+			
+			if(valve > 0)
+			{
+				valveFluid = FluidRegistry.getFluid(dataStream.readInt());
+			}
+			else {
+				valveFluid = null;
+			}
+			
+			if(dataStream.readInt() == 1)
+			{
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				fluidTank.setFluid(null);
+			}
+			
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 	}
 	

@@ -208,24 +208,27 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	{
 		super.handlePacketData(dataStream);
 
-		if(structure == null)
+		if(worldObj.isRemote)
 		{
-			structure = getNewStructure();
-		}
-
-		isRendering = dataStream.readBoolean();
-		clientHasStructure = dataStream.readBoolean();
-
-		if(clientHasStructure && isRendering)
-		{
-			if(dataStream.readBoolean())
+			if(structure == null)
 			{
-				getSynchronizedData().volHeight = dataStream.readInt();
-				getSynchronizedData().volWidth = dataStream.readInt();
-				getSynchronizedData().volLength = dataStream.readInt();
-
-				getSynchronizedData().renderLocation = Coord4D.read(dataStream);
-				getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
+				structure = getNewStructure();
+			}
+	
+			isRendering = dataStream.readBoolean();
+			clientHasStructure = dataStream.readBoolean();
+	
+			if(clientHasStructure && isRendering)
+			{
+				if(dataStream.readBoolean())
+				{
+					getSynchronizedData().volHeight = dataStream.readInt();
+					getSynchronizedData().volWidth = dataStream.readInt();
+					getSynchronizedData().volLength = dataStream.readInt();
+	
+					getSynchronizedData().renderLocation = Coord4D.read(dataStream);
+					getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
+				}
 			}
 		}
 	}
