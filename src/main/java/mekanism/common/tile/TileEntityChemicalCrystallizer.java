@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
@@ -224,7 +225,12 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 				inputTank.setGas(null);
 			}
 	
-			MekanismUtils.updateBlock(worldObj, getPos());
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
 	}
 

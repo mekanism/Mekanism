@@ -98,6 +98,8 @@ public class MekanismRenderer
 
 		energyIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidEnergy"));
 		heatIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeat"));
+		
+		event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
 
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{

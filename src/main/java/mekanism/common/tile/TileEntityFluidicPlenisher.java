@@ -250,8 +250,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			else {
 				fluidTank.setFluid(null);
 			}
-	
-			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 

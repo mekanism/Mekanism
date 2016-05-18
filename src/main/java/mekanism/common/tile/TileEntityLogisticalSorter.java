@@ -330,7 +330,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	
 			if(type == 0)
 			{
-				isActive = dataStream.readBoolean();
+				clientActive = dataStream.readBoolean();
 				controlType = RedstoneControl.values()[dataStream.readInt()];
 	
 				int c = dataStream.readInt();
@@ -354,12 +354,10 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				{
 					filters.add(TransporterFilter.readFromPacket(dataStream));
 				}
-	
-				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 			else if(type == 1)
 			{
-				isActive = dataStream.readBoolean();
+				clientActive = dataStream.readBoolean();
 				controlType = RedstoneControl.values()[dataStream.readInt()];
 	
 				int c = dataStream.readInt();
@@ -374,8 +372,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	
 				autoEject = dataStream.readBoolean();
 				roundRobin = dataStream.readBoolean();
-	
-				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 			else if(type == 2)
 			{
@@ -387,6 +383,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				{
 					filters.add(TransporterFilter.readFromPacket(dataStream));
 				}
+			}
+			
+			if(clientActive != isActive)
+			{
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 	}

@@ -280,8 +280,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 			
 			controlType = RedstoneControl.values()[dataStream.readInt()];
-	
-			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 

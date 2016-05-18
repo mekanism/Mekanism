@@ -24,22 +24,26 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		super.handlePacketData(dataStream);
+		
 		if(worldObj.isRemote)
 		{
+			InductionProviderTier prevTier = tier;
 			tier = InductionProviderTier.values()[dataStream.readInt()];
 	
-			super.handlePacketData(dataStream);
-	
-			MekanismUtils.updateBlock(worldObj, getPos());
+			if(prevTier != tier)
+			{
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
 	}
 
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier.ordinal());
-
 		super.getNetworkedData(data);
+		
+		data.add(tier.ordinal());
 
 		return data;
 	}

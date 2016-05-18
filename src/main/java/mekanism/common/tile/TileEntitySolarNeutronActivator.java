@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -200,7 +201,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 				outputTank.setGas(null);
 			}
 	
-			MekanismUtils.updateBlock(worldObj, getPos());
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
 	}
 

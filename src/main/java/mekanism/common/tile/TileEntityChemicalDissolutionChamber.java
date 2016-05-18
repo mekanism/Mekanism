@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
@@ -289,7 +290,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 				outputTank.setGas(null);
 			}
 	
-			MekanismUtils.updateBlock(worldObj, getPos());
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
 	}
 

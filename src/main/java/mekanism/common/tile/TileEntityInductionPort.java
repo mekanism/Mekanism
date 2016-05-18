@@ -158,9 +158,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		
 		if(worldObj.isRemote)
 		{
+			boolean prevMode = mode;
 			mode = dataStream.readBoolean();
 			
-			MekanismUtils.updateBlock(worldObj, getPos());
+			if(prevMode != mode)
+			{
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
 	}
 

@@ -33,8 +33,7 @@ import cofh.api.energy.IEnergyContainerItem;
 public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 {
 	public boolean isActive;
-
-	public boolean prevActive;
+	public boolean clientActive;
 
 	public Random random = new Random();
 
@@ -102,7 +101,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 				}
 			}
 
-			if(prevActive != isActive)
+			if(clientActive != isActive)
 			{
 				worldObj.playSoundEffect(getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, "random.click", 0.3F, isActive ? 0.6F : 0.5F);
 				setActive(isActive);
@@ -156,12 +155,12 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	{
 		isActive = active;
 
-		if(prevActive != active)
+		if(clientActive != active)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}
 
-		prevActive = active;
+		clientActive = active;
 	}
 
 	@Override
@@ -187,8 +186,13 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 		
 		if(worldObj.isRemote)
 		{
-			isActive = dataStream.readBoolean();
-			MekanismUtils.updateBlock(worldObj, getPos());
+			clientActive = dataStream.readBoolean();
+			
+			if(clientActive != isActive)
+			{
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
 	}
 

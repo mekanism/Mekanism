@@ -321,6 +321,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
 		if(worldObj.isRemote)
 		{
+			FluidTankTier prevTier = tier;
+			
 			tier = FluidTankTier.values()[dataStream.readInt()];
 			fluidTank.setCapacity(tier.storage);
 			
@@ -344,7 +346,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				fluidTank.setFluid(null);
 			}
 			
-			if(updateDelay == 0 && clientActive != isActive)
+			if(prevTier != tier || (updateDelay == 0 && clientActive != isActive))
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
