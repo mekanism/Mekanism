@@ -23,7 +23,7 @@ import mekanism.client.model.ModelSecurityDesk;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.model.ModelSolarNeutronActivator;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.ctm.ModelChiselBlock;
+import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
@@ -444,7 +444,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
     {    	
         if(cameraTransformType == TransformType.THIRD_PERSON) 
         {
-            ForgeHooksClient.multiplyCurrentGlMatrix(ModelChiselBlock.DEFAULT_BLOCK_THIRD_PERSON_MATRIX);
+            ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.DEFAULT_BLOCK_THIRD_PERSON_MATRIX);
         }
         
         GlStateManager.pushMatrix();

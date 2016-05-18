@@ -247,28 +247,31 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	{
 		super.handlePacketData(dataStream);
 
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			inputFluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			inputFluidTank.setFluid(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			inputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			inputGasTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			outputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			outputGasTank.setGas(null);
+			if(dataStream.readBoolean())
+			{
+				inputFluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				inputFluidTank.setFluid(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				inputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				inputGasTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				outputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				outputGasTank.setGas(null);
+			}
 		}
 	}
 

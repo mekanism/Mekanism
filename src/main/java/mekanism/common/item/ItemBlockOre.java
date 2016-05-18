@@ -53,14 +53,6 @@ public class ItemBlockOre extends ItemBlock
 		return i;
 	}
 
-/*
-	@Override
-	public IIcon getIconFromDamage(int i)
-	{
-		return metaBlock.getIcon(2, i);
-	}
-*/
-
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{

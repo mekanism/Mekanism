@@ -245,44 +245,47 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 		super.handlePacketData(dataStream);
 
-		boolean formed = dataStream.readBoolean();
-		
-		if(formed)
+		if(worldObj.isRemote)
 		{
-			if(getReactor() == null || !((FusionReactor)getReactor()).formed)
-			{
-				Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
-					@Override
-					public boolean isNode(TileEntity tile)
-					{
-						return tile instanceof TileEntityReactorBlock;
-					}
-				});
-			}
+			boolean formed = dataStream.readBoolean();
 			
-			if(getReactor() == null)
+			if(formed)
 			{
-				setReactor(new FusionReactor(this));
+				if(getReactor() == null || !((FusionReactor)getReactor()).formed)
+				{
+					Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
+						@Override
+						public boolean isNode(TileEntity tile)
+						{
+							return tile instanceof TileEntityReactorBlock;
+						}
+					});
+				}
+				
+				if(getReactor() == null)
+				{
+					setReactor(new FusionReactor(this));
+					MekanismUtils.updateBlock(worldObj, getPos());
+				}
+				
+				((FusionReactor)getReactor()).formed = true;
+				getReactor().setPlasmaTemp(dataStream.readDouble());
+				getReactor().setCaseTemp(dataStream.readDouble());
+				getReactor().setInjectionRate(dataStream.readInt());
+				getReactor().setBurning(dataStream.readBoolean());
+				fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
+				deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
+				tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
+				waterTank.setCapacity(dataStream.readInt());
+				waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
+				steamTank.setCapacity(dataStream.readInt());
+				steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
+			}
+			else if(getReactor() != null)
+			{
+				setReactor(null);
 				MekanismUtils.updateBlock(worldObj, getPos());
 			}
-			
-			((FusionReactor)getReactor()).formed = true;
-			getReactor().setPlasmaTemp(dataStream.readDouble());
-			getReactor().setCaseTemp(dataStream.readDouble());
-			getReactor().setInjectionRate(dataStream.readInt());
-			getReactor().setBurning(dataStream.readBoolean());
-			fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
-			deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
-			tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
-			waterTank.setCapacity(dataStream.readInt());
-			waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
-			steamTank.setCapacity(dataStream.readInt());
-			steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
-		}
-		else if(getReactor() != null)
-		{
-			setReactor(null);
-			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 

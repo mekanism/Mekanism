@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,7 +145,7 @@ public class GuiReactorFuel extends GuiMekanism
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -164,7 +165,7 @@ public class GuiReactorFuel extends GuiMekanism
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!injectionRateField.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -212,7 +213,7 @@ public class GuiReactorFuel extends GuiMekanism
 
 		String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
 
-		injectionRateField = new GuiTextField(fontRendererObj, guiWidth + 98, guiHeight + 115, 26, 11);
+		injectionRateField = new GuiTextField(0, fontRendererObj, guiWidth + 98, guiHeight + 115, 26, 11);
 		injectionRateField.setMaxStringLength(2);
 		injectionRateField.setText(prevRad);
 	}

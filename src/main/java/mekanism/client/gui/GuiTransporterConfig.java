@@ -141,7 +141,7 @@ public class GuiTransporterConfig extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			//TODO itemRender.renderIcon(122, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
+			drawTexturedRectFromIcon(122, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GlStateManager.popMatrix();
@@ -158,7 +158,7 @@ public class GuiTransporterConfig extends GuiMekanism
 			{
 				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 				{
-					drawCreativeTabHoveringText(color != null ? color.getName() : LangUtils.localize("gui.none"), xAxis, yAxis);
+					drawCreativeTabHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
 				}
 			}
 		}
@@ -167,7 +167,7 @@ public class GuiTransporterConfig extends GuiMekanism
 		{
 			if(configurable.getEjector().getOutputColor() != null)
 			{
-				drawCreativeTabHoveringText(configurable.getEjector().getOutputColor().getName(), xAxis, yAxis);
+				drawCreativeTabHoveringText(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);

@@ -19,6 +19,8 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 public class CTMRegistry 
 {
     private static List<TextureSpriteCallback> textures = new ArrayList<TextureSpriteCallback>();
@@ -26,24 +28,9 @@ public class CTMRegistry
 	private IBakedModel baseModel;
 	public static ResourceLocation baseResource = new ResourceLocation("mekanism:block/ctm_block");
 	
-	public static String[] ctmTypes = new String[] {"dynamic_tank", "structural_glass", "dynamic_valve", "teleporter", "teleporter_frame", "induction_casing", "induction_port", "induction_port_output",
-		"induction_cell_basic", "induction_cell_advanced", "induction_cell_elite", "induction_cell_ultimate", "induction_provider_basic", "induction_provider_advanced", "induction_provider_elite",
-		"induction_provider_ultimate", "thermal_evaporation_controller", "thermal_evaporation_controller_on", "thermal_evaporation_valve", "superheating_element", "superheating_element_on", "reactor_port",
-		"reactor_neutron_capture", "reactor_logic_adapter", "reactor_laser_focus", "reactor_glass", "reactor_frame", "reactor_controller_on", "reactor_controller_off", "boiler_casing", "boiler_valve",
-		"electromagnetic_coil", "thermal_evaporation_valve", "thermal_evaporation_block", "turbine_casing", "turbine_vent", "turbine_valve"};
+	public static List<Pair<String, String>> ctmTypes = new ArrayList<Pair<String, String>>();
 	
 	public static Map<String, ChiselTextureCTM> textureCache = new HashMap<String, ChiselTextureCTM>();
-	
-	public CTMRegistry()
-	{
-		if(textureCache.isEmpty())
-		{
-			for(String s : ctmTypes)
-			{
-				textureCache.put(s, createTexture(s));
-			}
-		}
-	}
 	
     @SubscribeEvent
     public void onTextureStitch(TextureStitchEvent.Pre event) 
@@ -60,12 +47,21 @@ public class CTMRegistry
         IModel model = event.modelLoader.getModel(baseResource);
         baseModel = model.bake(new TRSRTransformation(ModelRotation.X0_Y0), Attributes.DEFAULT_BAKED_FORMAT, r -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(r.toString()));
         
-        for(String ctm : ctmTypes) 
+        for(Pair<String, String> pair : ctmTypes) 
         {
-        	ModelChisel chiselModel = new ModelChisel(baseModel, ctm);
+        	ModelCTM chiselModel = new ModelCTM(baseModel, pair.getRight());
         	chiselModel.load();
-            event.modelRegistry.putObject(new ModelResourceLocation("mekanism:" + ctm), new ModelChiselBlock(chiselModel));
+            event.modelRegistry.putObject(new ModelResourceLocation(pair.getLeft() + ":" + pair.getRight()), new CTMModelFactory(chiselModel));
         }
+    }
+    
+    public static void registerCTMs(String domain, String... ctms)
+    {
+    	for(String s : ctms)
+    	{
+    		ctmTypes.add(Pair.of(domain, s));
+    		textureCache.put(s, createTexture(domain, s));
+    	}
     }
 
     public static void register(TextureSpriteCallback callback) 
@@ -73,12 +69,12 @@ public class CTMRegistry
         textures.add(callback);
     }
 
-    public static ChiselTextureCTM createTexture(String name)
+    public static ChiselTextureCTM createTexture(String domain, String name)
     {
     	TextureSpriteCallback[] callbacks = new TextureSpriteCallback[CTM.REQUIRED_TEXTURES];
     	
-    	callbacks[0] = new TextureSpriteCallback(new ResourceLocation("mekanism:blocks/ctm/" + name));
-    	callbacks[1] = new TextureSpriteCallback(new ResourceLocation("mekanism:blocks/ctm/" + name + "-ctm"));
+    	callbacks[0] = new TextureSpriteCallback(new ResourceLocation(domain + ":blocks/ctm/" + name));
+    	callbacks[1] = new TextureSpriteCallback(new ResourceLocation(domain + ":blocks/ctm/" + name + "-ctm"));
     	
     	register(callbacks[0]);
     	register(callbacks[1]);

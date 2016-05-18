@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.block.BlockReactor.ReactorBlockType;
+import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -30,12 +30,6 @@ public class ItemBlockReactor extends ItemBlock
 	public int getMetadata(int i)
 	{
 		return i;
-	}
-
-	@Override
-	public IIcon getIconFromDamage(int i)
-	{
-		return metaBlock.getIcon(2, i);
 	}
 
 	@Override

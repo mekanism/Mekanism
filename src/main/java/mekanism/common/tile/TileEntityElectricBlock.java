@@ -135,7 +135,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		super.handlePacketData(dataStream);
 		
-		setEnergy(dataStream.readDouble());
+		if(worldObj.isRemote)
+		{
+			setEnergy(dataStream.readDouble());
+		}
 	}
 
 	@Override

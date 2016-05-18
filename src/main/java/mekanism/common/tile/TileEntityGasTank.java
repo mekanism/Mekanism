@@ -237,21 +237,29 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
 		super.handlePacketData(dataStream);
 		
-		tier = GasTankTier.values()[dataStream.readInt()];
-		gasTank.setMaxGas(tier.storage);
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			GasTankTier prevTier = tier;
+			
+			tier = GasTankTier.values()[dataStream.readInt()];
+			gasTank.setMaxGas(tier.storage);
+	
+			if(dataStream.readBoolean())
+			{
+				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				gasTank.setGas(null);
+			}
+	
+			dumping = GasMode.values()[dataStream.readInt()];
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(prevTier != tier)
+			{
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
-		else {
-			gasTank.setGas(null);
-		}
-
-		dumping = GasMode.values()[dataStream.readInt()];
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override

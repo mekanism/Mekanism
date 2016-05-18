@@ -36,7 +36,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			
 			if(outputting != prevOutputting)
 			{
-				worldObj.notifyBlocksOfNeighborChange(getPos(), getBlockType());
+				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
 			}
 			
 			prevOutputting = outputting;
@@ -116,9 +116,12 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		super.handlePacketData(dataStream);
 		
-		logicType = ReactorLogic.values()[dataStream.readInt()];
-		activeCooled = dataStream.readBoolean();
-		prevOutputting = dataStream.readBoolean();
+		if(worldObj.isRemote)
+		{
+			logicType = ReactorLogic.values()[dataStream.readInt()];
+			activeCooled = dataStream.readBoolean();
+			prevOutputting = dataStream.readBoolean();
+		}
 	}
 
 	@Override

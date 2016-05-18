@@ -20,7 +20,6 @@ public class EntityObsidianTNT extends Entity
 		fuse = 0;
 		preventEntitySpawning = true;
 		setSize(0.98F, 0.98F);
-//TODO		yOffset = height / 2.0F;
 	}
 
 	public EntityObsidianTNT(World world, double x, double y, double z)

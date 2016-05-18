@@ -184,7 +184,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			//TODO itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+			drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GlStateManager.popMatrix();
@@ -194,7 +194,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 		{
 			if(filter.color != null)
 			{
-				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
+				drawCreativeTabHoveringText(filter.color.getColoredName(), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
@@ -207,8 +207,6 @@ public class GuiTOreDictFilter extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTOreDictFilter.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -235,6 +233,8 @@ public class GuiTOreDictFilter extends GuiMekanism
 		}
 
 		oreDictText.drawTextBox();
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override

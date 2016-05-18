@@ -238,54 +238,57 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	{
 		super.handlePacketData(dataStream);
 		
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		if(getWorld().isRemote)
 		{
-			int c = dataStream.readInt();
-
-			EnumColor prev = getTransmitter().getColor();
-
-			if(c != -1)
+			int type = dataStream.readInt();
+	
+			if(type == 0)
 			{
-				getTransmitter().setColor(TransporterUtils.colors.get(c));
-			}
-			else {
-				getTransmitter().setColor(null);
-			}
-
-			if(prev != getTransmitter().getColor())
-			{
-				markRenderUpdate();
-			}
-
-			getTransmitter().transit.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				getTransmitter().transit.add(TransporterStack.readFromPacket(dataStream));
-			}
-		}
-		else if(type == 1)
-		{
-			boolean kill = dataStream.readBoolean();
-			int index = dataStream.readInt();
-
-			if(kill)
-			{
-				getTransmitter().transit.remove(index);
-			}
-			else {
-				TransporterStack stack = TransporterStack.readFromPacket(dataStream);
-
-				if(stack.progress == 0)
+				int c = dataStream.readInt();
+	
+				EnumColor prev = getTransmitter().getColor();
+	
+				if(c != -1)
 				{
-					stack.progress = 5;
+					getTransmitter().setColor(TransporterUtils.colors.get(c));
 				}
-
-				getTransmitter().transit.replace(index, stack);
+				else {
+					getTransmitter().setColor(null);
+				}
+	
+				if(prev != getTransmitter().getColor())
+				{
+					markRenderUpdate();
+				}
+	
+				getTransmitter().transit.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					getTransmitter().transit.add(TransporterStack.readFromPacket(dataStream));
+				}
+			}
+			else if(type == 1)
+			{
+				boolean kill = dataStream.readBoolean();
+				int index = dataStream.readInt();
+	
+				if(kill)
+				{
+					getTransmitter().transit.remove(index);
+				}
+				else {
+					TransporterStack stack = TransporterStack.readFromPacket(dataStream);
+	
+					if(stack.progress == 0)
+					{
+						stack.progress = 5;
+					}
+	
+					getTransmitter().transit.replace(index, stack);
+				}
 			}
 		}
 	}
@@ -391,7 +394,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		notifyTileChange();
 		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld())));
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
 		return true;
 	}
@@ -400,7 +403,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		super.onRightClick(player, side);
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : "None")));
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : "None")));
 		return true;
 	}
 

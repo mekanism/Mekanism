@@ -236,17 +236,20 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	{
 		super.handlePacketData(dataStream);
 		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			fuelTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			if(dataStream.readBoolean())
+			{
+				fuelTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				fuelTank.setGas(null);
+			}
+			
+			generationRate = dataStream.readDouble();
+			output = dataStream.readDouble();
+			clientUsed = dataStream.readInt();
 		}
-		else {
-			fuelTank.setGas(null);
-		}
-		
-		generationRate = dataStream.readDouble();
-		output = dataStream.readDouble();
-		clientUsed = dataStream.readInt();
 	}
 
 	@Override

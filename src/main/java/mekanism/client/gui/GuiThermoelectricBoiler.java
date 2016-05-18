@@ -13,6 +13,7 @@ import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -151,7 +152,7 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 			}
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-			//TODO drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
+			drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.getFluidTexture(fluid.getFluid(), FluidType.STILL), 16, 16 - (16 - renderRemaining));
 			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)

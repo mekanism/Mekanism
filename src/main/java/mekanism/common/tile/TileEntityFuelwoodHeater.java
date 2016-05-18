@@ -141,18 +141,21 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	{
 		super.handlePacketData(dataStream);
 		
-		temperature = dataStream.readDouble();
-		clientActive = dataStream.readBoolean();
-		burnTime = dataStream.readInt();
-		maxBurnTime = dataStream.readInt();
-		
-		lastEnvironmentLoss = dataStream.readDouble();
-		
-		if(updateDelay == 0 && clientActive != isActive)
+		if(worldObj.isRemote)
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, getPos());
+			temperature = dataStream.readDouble();
+			clientActive = dataStream.readBoolean();
+			burnTime = dataStream.readInt();
+			maxBurnTime = dataStream.readInt();
+			
+			lastEnvironmentLoss = dataStream.readDouble();
+			
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
 		}
 	}
 

@@ -111,14 +111,17 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	@Override
 	public void handlePacketData(ByteBuf data)
 	{
-		int gasID = data.readInt();
-		
-		if(gasID < 0)
+		if(worldObj.isRemote)
 		{
-			collectedGas.setGas(null);
-		} 
-		else {
-			collectedGas.setGas(new GasStack(gasID, data.readInt()));
+			int gasID = data.readInt();
+			
+			if(gasID < 0)
+			{
+				collectedGas.setGas(null);
+			} 
+			else {
+				collectedGas.setGas(new GasStack(gasID, data.readInt()));
+			}
 		}
 	}
 }

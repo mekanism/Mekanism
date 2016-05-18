@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:glow_panel.obj"
+    "model": "mekanism:glow_panel.obj.mek"
   },
   "variants": {
     "normal": [{}],

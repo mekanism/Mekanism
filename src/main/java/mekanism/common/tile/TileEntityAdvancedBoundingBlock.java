@@ -184,10 +184,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public void clear()
-	{
-		//TODO
-	}
+	public void clear() {}
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)

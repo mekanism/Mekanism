@@ -28,5 +28,7 @@ public class GeneratorsItems
 		GameRegistry.registerItem(SolarPanel, "SolarPanel");
 		GameRegistry.registerItem(Hohlraum, "Hohlraum");
 		GameRegistry.registerItem(TurbineBlade, "TurbineBlade");
+		
+		MekanismGenerators.proxy.registerItemRenders();
 	}
 }

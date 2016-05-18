@@ -196,8 +196,6 @@ public class GuiMOreDictFilter extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiMOreDictFilter.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -231,22 +229,26 @@ public class GuiMOreDictFilter extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 14, 14, 14);
 		}
 		
+		oreDictText.drawTextBox();
+		
 		if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 		{
 			GlStateManager.pushMatrix();
-			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GlStateManager.disableLighting();
+			GlStateManager.disableDepth();
+			GlStateManager.colorMask(true, true, true, false);
 
 			int x = guiWidth + 149;
 			int y = guiHeight + 19;
 			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
 
-			GL11.glPopAttrib();
+			GlStateManager.colorMask(true, true, true, true);
+			GlStateManager.enableLighting();
+			GlStateManager.enableDepth();
 			GlStateManager.popMatrix();
 		}
-
-		oreDictText.drawTextBox();
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override

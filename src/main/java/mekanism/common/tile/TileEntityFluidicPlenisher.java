@@ -238,18 +238,19 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	{
 		super.handlePacketData(dataStream);
 		
-		finishedCalc = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(dataStream.readInt() == 1)
+		if(worldObj.isRemote)
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+			finishedCalc = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(dataStream.readInt() == 1)
+			{
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+			}
+			else {
+				fluidTank.setFluid(null);
+			}
 		}
-		else {
-			fluidTank.setFluid(null);
-		}
-
-		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override

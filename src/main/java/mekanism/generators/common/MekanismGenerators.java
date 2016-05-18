@@ -62,6 +62,8 @@ public class MekanismGenerators implements IModule
 	{
 		GeneratorsBlocks.register();
 		GeneratorsItems.register();
+		
+		proxy.preInit();
 	}
 
 	@EventHandler
@@ -81,7 +83,6 @@ public class MekanismGenerators implements IModule
 		proxy.loadConfiguration();
 		proxy.registerRegularTileEntities();
 		proxy.registerSpecialTileEntities();
-		proxy.registerRenderInformation();
 		
 		addRecipes();
 		

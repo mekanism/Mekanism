@@ -197,7 +197,6 @@
         }
     ],
     "textures": {
-        "all": "mekanism:entities/Robit",
-        "particle": "..."
+        "all": "mekanism:entities/Robit"
     }
 }

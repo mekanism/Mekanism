@@ -100,7 +100,7 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockBasic extends Block implements ICTMBlock//TODO? implements ICustomBlockIcon
+public abstract class BlockBasic extends Block implements ICTMBlock
 {
 	public CTMData[][] ctmData = new CTMData[16][4];
 	
@@ -130,12 +130,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	@Override
 	public BlockState createBlockState()
 	{
-		return new BlockStateBasic(this, getProperty());
-	}
-
-	public PropertyEnum<BlockStateBasic.BasicBlockType> getProperty()
-	{
-		return getBasicBlock().getProperty();
+		return new BlockStateBasic(this, getTypeProperty());
 	}
 
 	@Override
@@ -143,13 +138,13 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	{
 		BlockStateBasic.BasicBlockType type = BlockStateBasic.BasicBlockType.get(getBasicBlock(), meta&0xF);
 
-		return getDefaultState().withProperty(getProperty(), type);
+		return getDefaultState().withProperty(getTypeProperty(), type);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		BlockStateBasic.BasicBlockType type = state.getValue(getProperty());
+		BlockStateBasic.BasicBlockType type = state.getValue(getTypeProperty());
 		return type.meta;
 	}
 
@@ -246,7 +241,8 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	@Override
 	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
     {
-		BasicBlockType type = BasicBlockType.get(getBasicBlock(), getMetaFromState(world.getBlockState(pos)));
+		IBlockState state = world.getBlockState(pos);
+		BasicBlockType type = BasicBlockType.get(getBasicBlock(), state.getBlock().getMetaFromState(state));
 		
 		if(type == BasicBlockType.REFINED_OBSIDIAN)
 		{
@@ -267,7 +263,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 				ctmData[11][0] = new CTMData(BasicBlockType.DYNAMIC_TANK, BasicBlockType.DYNAMIC_VALVE);
 
 				ctmData[14][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
-				ctmData[14][1] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
 				ctmData[15][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
 
 				break;
@@ -275,7 +270,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 				ctmData[0][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
 				ctmData[1][0] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
 				ctmData[2][0] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
-				ctmData[2][1] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
 				ctmData[3][0] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
 				ctmData[3][1] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
 				ctmData[3][2] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
@@ -285,7 +279,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 				ctmData[4][2] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
 				ctmData[4][3] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
 				ctmData[5][0] = new CTMData(BasicBlockType.SUPERHEATING_ELEMENT).setRenderConvexConnections();
-				ctmData[5][1] = new CTMData(BasicBlockType.SUPERHEATING_ELEMENT).setRenderConvexConnections();
 				ctmData[7][0] = new CTMData(BasicBlockType.BOILER_CASING, BasicBlockType.BOILER_VALVE);
 				ctmData[8][0] = new CTMData(BasicBlockType.BOILER_CASING, BasicBlockType.BOILER_VALVE);
 
@@ -296,7 +289,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	@Override
 	public int damageDropped(IBlockState state)
 	{
-		return getMetaFromState(state);
+		return state.getBlock().getMetaFromState(state);
 	}
 
 	@Override
@@ -914,7 +907,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
-
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -1008,13 +1000,13 @@ public abstract class BlockBasic extends Block implements ICTMBlock//TODO? imple
 	@Override
 	public CTMData getCTMData(IBlockState state)
 	{
-		return ctmData[getMetaFromState(state)][0];
+		return ctmData[state.getBlock().getMetaFromState(state)][0];
 	}
 	
 	@Override
 	public String getOverrideTexture(IBlockState state, EnumFacing side)
 	{
-		BasicBlockType type = state.getValue(getBasicBlock().getProperty());
+		BasicBlockType type = state.getValue(getTypeProperty());
 		
 		if(type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
 		{

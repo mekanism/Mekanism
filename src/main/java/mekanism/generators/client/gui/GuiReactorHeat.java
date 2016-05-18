@@ -21,6 +21,8 @@ import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
@@ -32,7 +34,9 @@ import mekanism.generators.client.gui.element.GuiFuelTab;
 import mekanism.generators.client.gui.element.GuiStatTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.BlockStaticLiquid;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -61,9 +65,9 @@ public class GuiReactorHeat extends GuiMekanism
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
 		{
 			@Override
-			public IIcon getIcon()
+			public TextureAtlasSprite getIcon()
 			{
-				return BlockStaticLiquid.getLiquidIcon("lava_still");
+				return MekanismRenderer.getFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
 			}
 
 			@Override
@@ -95,9 +99,9 @@ public class GuiReactorHeat extends GuiMekanism
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
 		{
 			@Override
-			public IIcon getIcon()
+			public TextureAtlasSprite getIcon()
 			{
-				return BlockStaticLiquid.getLiquidIcon("lava_still");
+				return MekanismRenderer.getFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
 			}
 
 			@Override

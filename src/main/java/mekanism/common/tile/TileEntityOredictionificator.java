@@ -224,36 +224,39 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	{
 		super.handlePacketData(dataStream);
 
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		if(worldObj.isRemote)
 		{
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			didProcess = dataStream.readBoolean();
-
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
+			int type = dataStream.readInt();
+	
+			if(type == 0)
 			{
-				filters.add(OredictionificatorFilter.readFromPacket(dataStream));
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+				didProcess = dataStream.readBoolean();
+	
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(OredictionificatorFilter.readFromPacket(dataStream));
+				}
 			}
-		}
-		else if(type == 1)
-		{
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			didProcess = dataStream.readBoolean();
-		}
-		else if(type == 2)
-		{
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
+			else if(type == 1)
 			{
-				filters.add(OredictionificatorFilter.readFromPacket(dataStream));
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+				didProcess = dataStream.readBoolean();
+			}
+			else if(type == 2)
+			{
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(OredictionificatorFilter.readFromPacket(dataStream));
+				}
 			}
 		}
 	}

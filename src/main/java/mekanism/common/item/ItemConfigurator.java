@@ -81,7 +81,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					{
 						if(!player.isSneaking())
 						{
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + initial.color + initial.localize() + " (" + initial.color.getName() + ")"));
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + initial.color + initial.localize() + " (" + initial.color.getColoredName() + ")"));
 						}
 						else {
 							if(getEnergy(stack) >= ENERGY_PER_CONFIGURE)
@@ -91,7 +91,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 									MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
 									SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
-									player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
+									player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getColoredName() + ")"));
 		
 									if(config instanceof TileEntityBasicBlock)
 									{

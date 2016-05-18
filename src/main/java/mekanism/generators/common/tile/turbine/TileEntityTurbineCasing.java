@@ -201,32 +201,35 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	{
 		super.handlePacketData(dataStream);
 		
-		if(clientHasStructure)
+		if(worldObj.isRemote)
 		{
-			structure.volume = dataStream.readInt();
-			structure.lowerVolume = dataStream.readInt();
-			structure.vents = dataStream.readInt();
-			structure.blades = dataStream.readInt();
-			structure.coils = dataStream.readInt();
-			structure.clientDispersers = dataStream.readInt();
-			structure.electricityStored = dataStream.readDouble();
-			structure.clientFlow = dataStream.readInt();
-			structure.lastSteamInput = dataStream.readInt();
-			
-			if(dataStream.readInt() == 1)
+			if(clientHasStructure)
 			{
-				structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
-			}
-			else {
-				structure.fluidStored = null;
-			}
-			
-			if(isRendering)
-			{
-				structure.complex = Coord4D.read(dataStream);
+				structure.volume = dataStream.readInt();
+				structure.lowerVolume = dataStream.readInt();
+				structure.vents = dataStream.readInt();
+				structure.blades = dataStream.readInt();
+				structure.coils = dataStream.readInt();
+				structure.clientDispersers = dataStream.readInt();
+				structure.electricityStored = dataStream.readDouble();
+				structure.clientFlow = dataStream.readInt();
+				structure.lastSteamInput = dataStream.readInt();
 				
-				structure.clientRotation = dataStream.readFloat();
-				SynchronizedTurbineData.clientRotationMap.put(structure.inventoryID, structure.clientRotation);
+				if(dataStream.readInt() == 1)
+				{
+					structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
+				}
+				else {
+					structure.fluidStored = null;
+				}
+				
+				if(isRendering)
+				{
+					structure.complex = Coord4D.read(dataStream);
+					
+					structure.clientRotation = dataStream.readFloat();
+					SynchronizedTurbineData.clientRotationMap.put(structure.inventoryID, structure.clientRotation);
+				}
 			}
 		}
 	}

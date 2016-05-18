@@ -122,19 +122,22 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		facing = EnumFacing.getFront(dataStream.readInt());
-		redstone = dataStream.readBoolean();
-
-		if(clientFacing != facing)
+		if(worldObj.isRemote)
 		{
-			MekanismUtils.updateBlock(worldObj, getPos());
-			worldObj.notifyNeighborsOfStateChange(getPos(), worldObj.getBlockState(getPos()).getBlock());
-			clientFacing = facing;
-		}
-
-		for(ITileComponent component : components)
-		{
-			component.read(dataStream);
+			facing = EnumFacing.getFront(dataStream.readInt());
+			redstone = dataStream.readBoolean();
+	
+			if(clientFacing != facing)
+			{
+				MekanismUtils.updateBlock(worldObj, getPos());
+				worldObj.notifyNeighborsOfStateChange(getPos(), worldObj.getBlockState(getPos()).getBlock());
+				clientFacing = facing;
+			}
+	
+			for(ITileComponent component : components)
+			{
+				component.read(dataStream);
+			}
 		}
 	}
 

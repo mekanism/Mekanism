@@ -283,10 +283,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public void clear()
-	{
-		//TODO
-	}
+	public void clear() {}
 
 	@Override
 	public IChatComponent getDisplayName()

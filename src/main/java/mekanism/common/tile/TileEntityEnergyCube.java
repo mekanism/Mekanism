@@ -200,22 +200,28 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = EnergyCubeTier.values()[dataStream.readInt()];
-
 		super.handlePacketData(dataStream);
-
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		MekanismUtils.updateBlock(worldObj, getPos());
+		
+		if(worldObj.isRemote)
+		{	
+			EnergyCubeTier prevTier = tier;
+			
+			tier = EnergyCubeTier.values()[dataStream.readInt()];
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(prevTier != tier)
+			{
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
+		}
 	}
 
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier.ordinal());
-
 		super.getNetworkedData(data);
 
+		data.add(tier.ordinal());
 		data.add(controlType.ordinal());
 
 		return data;

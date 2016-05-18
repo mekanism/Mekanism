@@ -26,7 +26,7 @@ public class ContainerRobitSmelting extends Container
 
 		addSlotToContainer(new Slot(entity, 28, 56, 17));
 		addSlotToContainer(new Slot(entity, 29, 56, 53));
-		addSlotToContainer(new SlotFurnaceOutput(inventory.player, entity, 30, 116, 35)); //TODO: ?
+		addSlotToContainer(new SlotFurnaceOutput(inventory.player, entity, 30, 116, 35));
 
 		int slotY;
 

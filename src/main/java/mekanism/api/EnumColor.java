@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.StatCollector;
 
 /**
@@ -7,7 +8,7 @@ import net.minecraft.util.StatCollector;
  * @author AidanBrady
  *
  */
-public enum EnumColor
+public enum EnumColor implements IStringSerializable
 {
 	BLACK("\u00a70", "black", "Black", new int[] {0, 0, 0}, 0),
 	DARK_BLUE("\u00a71", "darkBlue", "Blue", new int[] {0, 0, 170}, 4),
@@ -75,7 +76,7 @@ public enum EnumColor
 	 * Gets the name of this color with it's color prefix code.
 	 * @return the color's name and color prefix
 	 */
-	public String getName()
+	public String getColoredName()
 	{
 		return code + getLocalizedName();
 	}
@@ -83,6 +84,12 @@ public enum EnumColor
 	public String getDyedName()
 	{
 		return code + getDyeName();
+	}
+	
+	@Override
+	public String getName()
+	{
+		return unlocalizedName.toLowerCase();
 	}
 
 	/**

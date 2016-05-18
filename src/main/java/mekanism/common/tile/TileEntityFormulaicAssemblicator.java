@@ -601,29 +601,32 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		
 		super.handlePacketData(dataStream);
 		
-		autoMode = dataStream.readBoolean();
-		operatingTicks = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		isRecipe = dataStream.readBoolean();
-		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
+			autoMode = dataStream.readBoolean();
+			operatingTicks = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			isRecipe = dataStream.readBoolean();
+			
 			if(dataStream.readBoolean())
 			{
-				ItemStack[] inv = new ItemStack[9];
-				
-				for(int i = 0; i < 9; i++)
+				if(dataStream.readBoolean())
 				{
-					if(dataStream.readBoolean())
+					ItemStack[] inv = new ItemStack[9];
+					
+					for(int i = 0; i < 9; i++)
 					{
-						inv[i] = PacketHandler.readStack(dataStream);
+						if(dataStream.readBoolean())
+						{
+							inv[i] = PacketHandler.readStack(dataStream);
+						}
 					}
+					
+					formula = new RecipeFormula(worldObj, inv);
 				}
-				
-				formula = new RecipeFormula(worldObj, inv);
-			}
-			else {
-				formula = null;
+				else {
+					formula = null;
+				}
 			}
 		}
 	}
