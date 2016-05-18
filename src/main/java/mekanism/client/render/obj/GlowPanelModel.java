@@ -48,8 +48,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import codechicken.lib.vec.Matrix4;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -58,7 +56,7 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 {
 	private IBakedModel baseModel;
 	
-	private HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
+	private HashMap<TransformType, Matrix4f> transformationMap = new HashMap<TransformType, Matrix4f>();
 	
 	private static Map<Integer, GlowPanelModel> glowPanelCache = new HashMap<Integer, GlowPanelModel>();
 	private static Map<Integer, GlowPanelModel> glowPanelItemCache = new HashMap<Integer, GlowPanelModel>();
@@ -68,7 +66,7 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 	private TextureAtlasSprite tempSprite;
 	private ItemStack tempStack;
 	
-	public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4> transform)
+	public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform)
 	{
 		model.super(model, state, format, textures);
 		baseModel = base;

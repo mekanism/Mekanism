@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.vecmath.Matrix4f;
+
 import mekanism.client.render.obj.MekanismOBJModel.OBJModelType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -23,7 +25,6 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import codechicken.lib.vec.Matrix4;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
@@ -85,7 +86,7 @@ public class MekanismOBJLoader extends OBJLoader
 			
 			builder.put("missingno", missing);
 			
-			return new GlowPanelModel(existingModel, objModel, state, format, builder.build(), new HashMap<TransformType, Matrix4>());
+			return new GlowPanelModel(existingModel, objModel, state, format, builder.build(), new HashMap<TransformType, Matrix4f>());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
