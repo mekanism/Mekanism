@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {
@@ -200,7 +201,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			bioFuelSlot.fluidStored = dataStream.readInt();
 		}

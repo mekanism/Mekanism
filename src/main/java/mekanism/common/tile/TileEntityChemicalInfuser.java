@@ -40,6 +40,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
 {
@@ -222,7 +223,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			isActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];

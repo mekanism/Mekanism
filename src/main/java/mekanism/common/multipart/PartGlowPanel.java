@@ -12,6 +12,7 @@ import mcmultipart.raytrace.PartMOP;
 import mcmultipart.util.TransformationHelper;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Pos3D;
 import mekanism.common.MekanismItems;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.multipart.GlowPanelBlockState.GlowPanelColorProperty;
@@ -100,7 +101,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	{
 		if(!getWorld().isRemote && !canStay())
 		{
-			//TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), Vector3.fromTileEntityCenter(tile()));
+			MultipartMekanism.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), new Pos3D(getPos()).translate(0.5, 0.5, 0.5));
 			getContainer().removePart(this);
 		}
 	}
@@ -110,7 +111,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	{
 		if(!getWorld().isRemote && !canStay())
 		{
-			//TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), Vector3.fromTileEntityCenter(tile()));
+			MultipartMekanism.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), new Pos3D(getPos()).translate(0.5, 0.5, 0.5));
 			getContainer().removePart(this);
 		}
 	}

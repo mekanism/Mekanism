@@ -42,6 +42,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
 {
@@ -385,7 +386,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
- 		if(!worldObj.isRemote)
+ 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			infuseStored.amount = dataStream.readInt();
 			return;
@@ -393,7 +394,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			clientActive = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();

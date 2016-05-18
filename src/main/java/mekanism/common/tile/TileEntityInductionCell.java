@@ -11,6 +11,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInductionCell extends TileEntityBasicBlock implements IStrictEnergyStorage
 {
@@ -31,7 +32,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			InductionCellTier prevTier = tier;
 			

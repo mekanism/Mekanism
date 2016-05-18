@@ -30,7 +30,7 @@ public class CTMRegistry
 	
 	public static List<Pair<String, String>> ctmTypes = new ArrayList<Pair<String, String>>();
 	
-	public static Map<String, ChiselTextureCTM> textureCache = new HashMap<String, ChiselTextureCTM>();
+	public static Map<String, TextureCTM> textureCache = new HashMap<String, TextureCTM>();
 	
     @SubscribeEvent
     public void onTextureStitch(TextureStitchEvent.Pre event) 
@@ -69,7 +69,7 @@ public class CTMRegistry
         textures.add(callback);
     }
 
-    public static ChiselTextureCTM createTexture(String domain, String name)
+    public static TextureCTM createTexture(String domain, String name)
     {
     	TextureSpriteCallback[] callbacks = new TextureSpriteCallback[CTM.REQUIRED_TEXTURES];
     	
@@ -79,6 +79,6 @@ public class CTMRegistry
     	register(callbacks[0]);
     	register(callbacks[1]);
     	
-    	return new ChiselTextureCTM(EnumWorldBlockLayer.SOLID, callbacks);
+    	return new TextureCTM(EnumWorldBlockLayer.SOLID, callbacks);
     }
 }

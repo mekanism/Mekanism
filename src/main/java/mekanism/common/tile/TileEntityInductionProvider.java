@@ -8,6 +8,7 @@ import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInductionProvider extends TileEntityBasicBlock
 {
@@ -26,7 +27,7 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			InductionProviderTier prevTier = tier;
 			tier = InductionProviderTier.values()[dataStream.readInt()];

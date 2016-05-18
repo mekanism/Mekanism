@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor, ISecurityTile
 {
@@ -214,7 +215,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			on = dataStream.readBoolean();
 			collectedEnergy = dataStream.readDouble();

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import mekanism.common.PacketHandler;
 import mekanism.common.tile.TileEntityBasicBlock;
 
@@ -19,7 +20,7 @@ public class TileEntityInternalMultiblock extends TileEntityBasicBlock
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(dataStream.readBoolean())
 			{

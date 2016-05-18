@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile
 {
@@ -163,7 +164,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
 			maxEnergy = energyUsage * 400;
@@ -173,7 +174,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			energyUsage = dataStream.readDouble();
 			temperature = dataStream.readDouble();

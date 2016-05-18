@@ -15,6 +15,7 @@ import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection
 {
@@ -111,7 +112,7 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	@Override
 	public void handlePacketData(ByteBuf data)
 	{
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			int gasID = data.readInt();
 			

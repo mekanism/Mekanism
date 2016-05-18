@@ -9,20 +9,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.vecmath.Matrix4f;
+
 import mcmultipart.client.multipart.ISmartMultipartModel;
 import mekanism.api.EnumColor;
+import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.common.multipart.GlowPanelBlockState;
 import mekanism.common.multipart.PartGlowPanel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IModelPart;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IModelState;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.client.model.obj.OBJModel;
@@ -36,55 +44,96 @@ import net.minecraftforge.client.model.obj.OBJModel.Vertex;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import codechicken.lib.vec.Matrix4;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
-public class MekanismSmartOBJModel extends OBJBakedModel implements ISmartMultipartModel
+public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartModel
 {
 	private IBakedModel baseModel;
 	
 	private HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
 	
-	private static Map<Integer, MekanismSmartOBJModel> glowPanelCache = new HashMap<Integer, MekanismSmartOBJModel>();
+	private static Map<Integer, GlowPanelModel> glowPanelCache = new HashMap<Integer, GlowPanelModel>();
+	private static Map<Integer, GlowPanelModel> glowPanelItemCache = new HashMap<Integer, GlowPanelModel>();
 	
 	private Set<BakedQuad> bakedQuads;
 	private IBlockState tempState;
 	private TextureAtlasSprite tempSprite;
+	private ItemStack tempStack;
 	
-	public MekanismSmartOBJModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4> transform)
+	public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4> transform)
 	{
 		model.super(model, state, format, textures);
 		baseModel = base;
 		transformationMap = transform;
 	}
 	
+	public EnumColor getColor()
+	{
+		if(tempStack != null)
+		{
+			return EnumColor.DYES[tempStack.getItemDamage()];
+		}
+		
+		if(tempState != null)
+		{
+			return ((IExtendedBlockState)tempState).getValue(GlowPanelBlockState.colorState).color;
+		}
+		
+		return EnumColor.WHITE;
+	}
+	
 	@Override
 	public OBJBakedModel handlePartState(IBlockState state)
 	{
-		if(isGlowPanel(state))
+		int hash = PartGlowPanel.hash((IExtendedBlockState)state);
+		EnumColor color = ((IExtendedBlockState)state).getValue(GlowPanelBlockState.colorState).color;
+		
+		if(!glowPanelCache.containsKey(hash))
 		{
-			int hash = PartGlowPanel.hash((IExtendedBlockState)state);
-			EnumColor color = ((IExtendedBlockState)state).getValue(GlowPanelBlockState.colorState).color;
-			
-			if(!glowPanelCache.containsKey(hash))
-			{
-				MekanismSmartOBJModel model = new MekanismSmartOBJModel(baseModel, getModel(), getState(), getFormat(), getTextures(), transformationMap);
-				model.tempState = state;
-				glowPanelCache.put(hash, model);
-			}
-			
-			return glowPanelCache.get(hash);
+			GlowPanelModel model = new GlowPanelModel(baseModel, getModel(), getState(), getFormat(), getTextures(), transformationMap);
+			model.tempState = state;
+			glowPanelCache.put(hash, model);
 		}
 		
-		return this;
+		return glowPanelCache.get(hash);
 	}
 	
-	public boolean isGlowPanel(IBlockState state)
+	@Override
+	public IBakedModel handleItemState(ItemStack stack)
 	{
-		return state instanceof IExtendedBlockState && ((IExtendedBlockState)state).getUnlistedProperties().containsKey(GlowPanelBlockState.colorState);
+		if(glowPanelItemCache.containsKey(stack.getItemDamage()))
+			return glowPanelItemCache.get(stack.getItemDamage());
+
+		ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
+		builder.put(ModelLoader.White.loc.toString(), ModelLoader.White.instance);
+		TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
+
+		for(String s : getModel().getMatLib().getMaterialNames())
+		{
+			TextureAtlasSprite sprite = null;
+			
+			if(sprite==null)
+				sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
+			if(sprite==null)
+				sprite = missing;
+			
+			builder.put(s, sprite);
+		}
+		
+		builder.put("missingno", missing);
+		GlowPanelModel bakedModel = new GlowPanelModel(baseModel, getModel(), getState(), getFormat(), builder.build(), transformationMap);
+		bakedModel.tempStack = stack;
+		glowPanelItemCache.put(stack.getItemDamage(), bakedModel);
+		
+		return bakedModel;
 	}
 
 	@Override
@@ -97,28 +146,34 @@ public class MekanismSmartOBJModel extends OBJBakedModel implements ISmartMultip
 			Optional<TRSRTransformation> transform = Optional.absent();
 			Set<Face> coloredFaces = new HashSet<Face>();
 
-			for(Group g : this.getModel().getMatLib().getGroups().values())
+			for(Group g : getModel().getMatLib().getGroups().values())
 			{
 				if(getState() instanceof OBJState)
 				{
-					OBJState state = (OBJState) this.getState();
+					OBJState state = (OBJState)getState();
 
 					if(state.parent != null)
 					{
-						transform = state.parent.apply(Optional.<IModelPart> absent());
+						transform = state.parent.apply(Optional.absent());
 					}
 
 					if(state.getGroupsWithVisibility(true).contains(g.getName()))
 					{
-						faces.addAll(g.applyTransform(transform));
+						LinkedHashSet<Face> tempFaces = g.applyTransform(transform);
+						faces.addAll(tempFaces);
+
+						if(g.getName().equals("light"))
+						{
+							coloredFaces.addAll(tempFaces);
+						}
 					}
 				}
 				else {
-					transform = getState().apply(Optional.<IModelPart> absent());
+					transform = getState().apply(Optional.absent());
 					LinkedHashSet<Face> tempFaces = g.applyTransform(transform);
 					faces.addAll(tempFaces);
 
-					if(isGlowPanel(tempState) && g.getName().equals("light"))
+					if(g.getName().equals("light"))
 					{
 						coloredFaces.addAll(tempFaces);
 					}
@@ -147,7 +202,7 @@ public class MekanismSmartOBJModel extends OBJBakedModel implements ISmartMultip
 
 				if(coloredFaces.contains(f))
 				{
-					EnumColor c = ((IExtendedBlockState) tempState).getValue(GlowPanelBlockState.colorState).color;
+					EnumColor c = getColor();
 					color = new float[] {c.getColor(0), c.getColor(1), c.getColor(2), 1};
 				}
 
@@ -249,4 +304,34 @@ public class MekanismSmartOBJModel extends OBJBakedModel implements ISmartMultip
 	{
 		return getTexturesForOBJModel(this);
 	}
+	
+	private Pair<IPerspectiveAwareModel, Matrix4f> thirdPersonTransform;
+    
+    @Override
+    public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    {
+    	if(cameraTransformType == TransformType.GUI)
+    	{
+    		GlStateManager.translate(0.3F, 0.25F, 0.0F);
+    		GlStateManager.rotate(90, 1, 0, 0);
+    		GlStateManager.scale(1.6F, 1.6F, 1.6F);
+    	}
+    	else if(cameraTransformType == TransformType.FIRST_PERSON)
+    	{
+    		GlStateManager.translate(0.0F, 0.3F, 0.0F);
+    	}
+    	else if(cameraTransformType == TransformType.THIRD_PERSON) 
+        {
+        	GlStateManager.translate(0.0F, -0.1F, 0.0F);
+        	
+            if(thirdPersonTransform == null) 
+            {
+                thirdPersonTransform = ImmutablePair.of(this, CTMModelFactory.DEFAULT_BLOCK_THIRD_PERSON_MATRIX);
+            }
+            
+            return thirdPersonTransform;
+        }
+        
+        return Pair.of(this, null);
+    }
 }

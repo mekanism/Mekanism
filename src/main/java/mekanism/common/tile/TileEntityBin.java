@@ -31,6 +31,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
@@ -294,7 +295,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			isActive = dataStream.readBoolean();
 			clientAmount = dataStream.readInt();

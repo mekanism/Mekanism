@@ -8,7 +8,10 @@ import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 /*
 import codechicken.microblock.BlockMicroMaterial;
@@ -191,5 +194,15 @@ public class MultipartMekanism implements IPartFactory
 		
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock2, 1, 0));
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.CardboardBox));
+	}
+	
+	public static void dropItem(ItemStack stack, World world, Vec3 pos)
+	{
+		EntityItem item = new EntityItem(world, pos.xCoord, pos.yCoord, pos.zCoord, stack);
+        item.motionX = world.rand.nextGaussian() * 0.05;
+        item.motionY = world.rand.nextGaussian() * 0.05 + 0.2;
+        item.motionZ = world.rand.nextGaussian() * 0.05;
+        item.setDefaultPickupDelay();
+        world.spawnEntityInWorld(item);
 	}
 }

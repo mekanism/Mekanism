@@ -9,50 +9,50 @@ import net.minecraft.util.EnumWorldBlockLayer;
 /**
  * Chisel Face, basically a list of IChiselTexture's
  */
-public final class ChiselFace {
+public final class CTMFace {
 
-    private List<ChiselTextureCTM> textureList;
+    private List<TextureCTM> textureList;
 
-    private List<ChiselFace> childFaces;
+    private List<CTMFace> childFaces;
 
     private EnumWorldBlockLayer layer;
 
-    public ChiselFace() {
+    public CTMFace() {
         this(new ArrayList<>(), new ArrayList<>());
     }
 
-    public ChiselFace(EnumWorldBlockLayer layer) {
+    public CTMFace(EnumWorldBlockLayer layer) {
         this();
         setLayer(layer);
     }
 
-    public ChiselFace(List<ChiselTextureCTM> textureList, List<ChiselFace> childFaces) {
+    public CTMFace(List<TextureCTM> textureList, List<CTMFace> childFaces) {
         this.textureList = textureList;
         this.childFaces = childFaces;
     }
 
-    public List<ChiselTextureCTM> getTextureList(){
-        List<ChiselTextureCTM> list = new ArrayList<>();
+    public List<TextureCTM> getTextureList(){
+        List<TextureCTM> list = new ArrayList<>();
         list.addAll(this.textureList);
-        for (ChiselFace face : childFaces){
+        for (CTMFace face : childFaces){
             list.addAll(face.getTextureList());
         }
         return list;
     }
 
-    public void addTexture(ChiselTextureCTM texture){
+    public void addTexture(TextureCTM texture){
         this.textureList.add(texture);
     }
 
-    public void addChildFace(ChiselFace face){
+    public void addChildFace(CTMFace face){
         this.childFaces.add(face);
     }
 
-    public boolean removeTexture(ChiselTextureCTM texture){
+    public boolean removeTexture(TextureCTM texture){
         return this.textureList.remove(texture);
     }
 
-    public boolean removeChildFace(ChiselFace face){
+    public boolean removeChildFace(CTMFace face){
         return this.childFaces.remove(face);
     }
 

@@ -376,6 +376,7 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.GaugeDropper);
 		registerItemRender(MekanismItems.FactoryInstaller);
 		registerItemRender(MekanismItems.OtherDust);
+		registerItemRender(MekanismItems.GlowPanel);
 		
 		ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF_MODEL);
 		
@@ -855,10 +856,11 @@ public class ClientProxy extends CommonProxy
 	{
 		MekanismRenderer.init();
 		
-		ModelLoaderRegistry.registerLoader(new MekanismOBJLoader());
+		ModelLoaderRegistry.registerLoader(MekanismOBJLoader.INSTANCE);
 		
 		MinecraftForge.EVENT_BUS.register(new CTMRegistry());
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(MekanismOBJLoader.INSTANCE);
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new IRenderFactory<EntityObsidianTNT>() {

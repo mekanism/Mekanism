@@ -14,6 +14,7 @@ import mcmultipart.item.ItemMultiPart;
 import mcmultipart.multipart.IMultipart;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IMetaItem;
 import mekanism.common.util.LangUtils;
 //import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -26,7 +27,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class ItemGlowPanel extends ItemMultiPart
+public class ItemGlowPanel extends ItemMultiPart implements IMetaItem
 {
 	public ItemGlowPanel()
 	{
@@ -48,52 +49,10 @@ public class ItemGlowPanel extends ItemMultiPart
 			{
 				return new PartGlowPanel(col, orientation);
 			}
-			
-/*
-			if(world.getTileEntity(pos.x, pos.y, pos.z) instanceof IMultipartContainer && ((TileMultipart) world.getTileEntity(pos.x, pos.y, pos.z)).partMap(orientation.ordinal()) instanceof HollowMicroblock)
-			{
-				return new PartGlowPanel(col, orientation);
-			}
-*/
 		}
 
 		return null;
 	}
-
-/*
-	public EnumFacing getSideFromVector3(Vec3 vector)
-	{
-		if(Math.abs(vector.xCoord) > Math.abs(vector.yCoord) && Math.abs(vector.xCoord) > Math.abs(vector.zCoord))
-		{
-			if((vector.xCoord < 0.5 && vector.xCoord > 0) || vector.xCoord == -0.5)
-			{
-				return EnumFacing.EAST;
-			}
-			
-			return EnumFacing.WEST;
-		}
-		else if(Math.abs(vector.y) > Math.abs(vector.x) && Math.abs(vector.y) > Math.abs(vector.z))
-		{
-			if((vector.y < 0.5 && vector.y > 0) || vector.y == -0.5)
-			{
-				return EnumFacing.UP;
-			}
-			
-			return EnumFacing.DOWN;
-		}
-		else if(Math.abs(vector.z) > Math.abs(vector.x) && Math.abs(vector.z) > Math.abs(vector.y))
-		{
-			if((vector.z < 0.5 && vector.z > 0) || vector.z == -0.5)
-			{
-				return EnumFacing.SOUTH;
-			}
-			
-			return EnumFacing.NORTH;
-		}
-		
-		return null;
-	}
-*/
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List listToAddTo)
@@ -130,5 +89,17 @@ public class ItemGlowPanel extends ItemMultiPart
 	public boolean shouldRotateAroundWhenRendering()
 	{
 		return true;
+	}
+
+	@Override
+	public String getTexture(int meta)
+	{
+		return "glow_panel";
+	}
+
+	@Override
+	public int getVariants()
+	{
+		return EnumColor.DYES.length;
 	}
 }

@@ -11,15 +11,30 @@ import com.google.common.base.Function;
 
 public class MekanismOBJModel extends OBJModel
 {
-	public MekanismOBJModel(MaterialLibrary matLib, ResourceLocation modelLocation)
+	public OBJModelType modelType;
+	
+	public MekanismOBJModel(OBJModelType type, MaterialLibrary matLib, ResourceLocation modelLocation)
 	{
 		super(matLib, modelLocation);
+		
+		modelType = type;
 	}
 	
 	@Override
 	public IFlexibleBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 	{
 		IFlexibleBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
-		return new MekanismSmartOBJModel(preBaked, this, state, format, MekanismSmartOBJModel.getTexturesForOBJModel(preBaked), null);
+		
+		if(modelType == OBJModelType.GLOW_PANEL)
+		{
+			return new GlowPanelModel(preBaked, this, state, format, GlowPanelModel.getTexturesForOBJModel(preBaked), null);
+		}
+		
+		return null;
+	}
+	
+	public static enum OBJModelType
+	{
+		GLOW_PANEL
 	}
 }

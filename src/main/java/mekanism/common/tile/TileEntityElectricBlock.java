@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
 public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IEnergyWrapper
@@ -135,7 +136,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			setEnergy(dataStream.readDouble());
 		}

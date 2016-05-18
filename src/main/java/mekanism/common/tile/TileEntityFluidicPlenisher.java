@@ -42,6 +42,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandler, ISustainedTank, IUpgradeTile, IRedstoneControl, ISecurityTile
@@ -238,7 +239,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			finishedCalc = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];

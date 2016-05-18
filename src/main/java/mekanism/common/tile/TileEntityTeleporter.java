@@ -589,7 +589,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 			
@@ -618,7 +618,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(dataStream.readBoolean())
 			{

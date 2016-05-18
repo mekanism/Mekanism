@@ -25,6 +25,7 @@ import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage
 {	
@@ -201,7 +202,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(clientHasStructure)
 			{

@@ -30,6 +30,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData, IHeatTransfer
 {
@@ -265,7 +266,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			producingEnergy = dataStream.readDouble();
 			

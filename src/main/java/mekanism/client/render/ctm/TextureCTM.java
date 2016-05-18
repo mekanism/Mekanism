@@ -13,13 +13,13 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.ResourceLocation;
 
-public class ChiselTextureCTM 
+public class TextureCTM 
 {
     protected EnumWorldBlockLayer layer;
 
     public TextureSpriteCallback[] sprites;
     
-    public ChiselTextureCTM(EnumWorldBlockLayer layer, TextureSpriteCallback[] sprites) 
+    public TextureCTM(EnumWorldBlockLayer layer, TextureSpriteCallback[] sprites) 
     {
         this.layer = layer;
         this.sprites = sprites;
