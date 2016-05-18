@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.vecmath.Matrix4f;
 
-import mekanism.client.render.ctm.ModelChiselBlock;
+import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
@@ -174,7 +174,7 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
     {    	
         if(cameraTransformType == TransformType.THIRD_PERSON) 
         {
-            ForgeHooksClient.multiplyCurrentGlMatrix(ModelChiselBlock.DEFAULT_BLOCK_THIRD_PERSON_MATRIX);
+            ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.DEFAULT_BLOCK_THIRD_PERSON_MATRIX);
         }
         
         GlStateManager.pushMatrix();

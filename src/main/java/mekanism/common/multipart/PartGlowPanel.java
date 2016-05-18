@@ -9,11 +9,12 @@ import mcmultipart.multipart.IOccludingPart;
 import mcmultipart.multipart.Multipart;
 import mcmultipart.multipart.PartSlot;
 import mcmultipart.raytrace.PartMOP;
+import mcmultipart.util.TransformationHelper;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.MekanismItems;
 import mekanism.common.block.states.BlockStateFacing;
-
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,22 +41,11 @@ import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 */
-import mcmultipart.MCMultiPartMod;
-import mcmultipart.block.TileMultipart;
-import mcmultipart.microblock.IMicroblock;
-import mcmultipart.microblock.IMicroblock.IFaceMicroblock;
-import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.IOccludingPart;
-import mcmultipart.multipart.Multipart;
-import mcmultipart.multipart.PartSlot;
-import mcmultipart.raytrace.PartMOP;
-import mcmultipart.util.TransformationHelper;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconHitEffects
+public class PartGlowPanel extends Multipart implements IOccludingPart
 {
+	public static PropertyEnum<EnumColor> colorProperty = PropertyEnum.create("color", EnumColor.class);
+	
 	public EnumColor colour = EnumColor.WHITE;
 	public EnumFacing side = EnumFacing.DOWN;
 
@@ -153,22 +143,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconH
 		side = EnumFacing.getFront(nbt.getInteger("side"));
 		colour = EnumColor.DYES[nbt.getInteger("colour")];
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean renderStatic(Vector3 pos, int pass)
-	{
-		if(pass == 0)
-		{
-			RenderGlowPanel.getInstance().renderStatic(this);
-			return true;
-		}
-		
-		return false;
-	}
-*/
-
+	
 	@Override
 	public int getLightValue()
 	{
@@ -180,35 +155,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconH
 	{
 		addSelectionBoxes(list);
 	}
-
-/*
-	@Override
-	public TextureAtlasSprite getBreakingIcon(Object subPart, EnumFacing side)
-	{
-		return RenderGlowPanel.icon;
-	}
-
-	@Override
-	public TextureAtlasSprite getBrokenIcon(EnumFacing side)
-	{
-		return RenderGlowPanel.icon;
-	}
-*/
-
-/*
-	@Override
-	public void addHitEffects(MovingObjectPosition hit, EffectRenderer effectRenderer)
-	{
-		IconHitEffects.addHitEffects(this, hit, effectRenderer);
-	}
-
-	@Override
-	public void addDestroyEffects(MovingObjectPosition mop, EffectRenderer effectRenderer)
-	{
-		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
-	}
-*/
-
+	
 	@Override
 	public List<ItemStack> getDrops()
 	{
@@ -236,12 +183,12 @@ public class PartGlowPanel extends Multipart implements IOccludingPart//, JIconH
 	@Override
 	public BlockState createBlockState()
 	{
-		return new BlockStateFacing(MCMultiPartMod.multipart);
+		return new GlowPanelBlockState();
 	}
 
 	@Override
 	public IBlockState getExtendedState(IBlockState state)
 	{
-		return state.withProperty(BlockStateFacing.facingProperty, side);
+		return state.withProperty(BlockStateFacing.facingProperty, side).withProperty(colorProperty, colour);
 	}
 }

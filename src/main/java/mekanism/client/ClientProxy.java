@@ -76,6 +76,7 @@ import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.CustomItemModelFactory;
+import mekanism.client.render.obj.MekanismOBJLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -198,6 +199,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -852,6 +854,8 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		MekanismRenderer.init();
+		
+		ModelLoaderRegistry.registerLoader(new MekanismOBJLoader());
 		
 		MinecraftForge.EVENT_BUS.register(new CTMRegistry());
 		MinecraftForge.EVENT_BUS.register(this);

@@ -37,7 +37,7 @@ import com.google.common.collect.Lists;
  * Model for all chisel blocks
  */
 @SuppressWarnings("deprecation")
-public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPerspectiveAwareModel 
+public class CTMModelFactory implements ISmartBlockModel, ISmartItemModel, IPerspectiveAwareModel 
 {
 	public static final TRSRTransformation DEFAULT_BLOCK_THIRD_PERSON_TRANSOFRM = new TRSRTransformation(new Vector3f(0, 1.5f / 16f, -2.75f / 16f), TRSRTransformation.quatFromYXZDegrees(new Vector3f(10, -45, 170)), new Vector3f(0.375f, 0.375f, 0.375f), null);
     public static final Matrix4f DEFAULT_BLOCK_THIRD_PERSON_MATRIX = DEFAULT_BLOCK_THIRD_PERSON_TRANSOFRM.getMatrix();
@@ -45,16 +45,16 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
     private List<BakedQuad> face;
     private List<BakedQuad> general;
 
-    private ModelChisel model;
+    private ModelCTM model;
 
-    public ModelChiselBlock(List<BakedQuad> face, List<BakedQuad> general, ModelChisel model)
+    public CTMModelFactory(List<BakedQuad> f, List<BakedQuad> g, ModelCTM m)
     {
-        this.face = face;
-        this.general = general;
-        this.model = model;
+        face = f;
+        general = g;
+        model = m;
     }
 
-    public ModelChiselBlock(ModelChisel model)
+    public CTMModelFactory(ModelCTM model)
     {
         this(Collections.emptyList(), Collections.emptyList(), model);
     }
@@ -124,7 +124,7 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
         return createModel(block.getDefaultState(), model, null);
     }
     
-    private ModelChiselBlock createModel(IBlockState state, ModelChisel model, CTMBlockRenderContext ctx) 
+    private CTMModelFactory createModel(IBlockState state, ModelCTM model, CTMBlockRenderContext ctx) 
     {
         List<BakedQuad> faceQuads = Lists.newArrayList();
         List<BakedQuad> generalQuads = Lists.newArrayList();
@@ -148,7 +148,7 @@ public class ModelChiselBlock implements ISmartBlockModel, ISmartItemModel, IPer
             addAllQuads(origGeneralQuads, face, ctx, state, quadGoal, generalQuads);
         }
         
-        return new ModelChiselBlock(faceQuads, generalQuads, model);
+        return new CTMModelFactory(faceQuads, generalQuads, model);
     }
     
     private void addAllQuads(List<BakedQuad> from, ChiselTextureCTM tex, @Nullable CTMBlockRenderContext ctx, IBlockState state, int quadGoal, List<BakedQuad> to)

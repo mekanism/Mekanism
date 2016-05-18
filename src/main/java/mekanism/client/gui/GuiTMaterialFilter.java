@@ -156,7 +156,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 		{
 			if(filter.color != null)
 			{
-				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
+				drawCreativeTabHoveringText(filter.color.getColoredName(), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);

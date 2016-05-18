@@ -49,9 +49,9 @@ public class CTMRegistry
         
         for(Pair<String, String> pair : ctmTypes) 
         {
-        	ModelChisel chiselModel = new ModelChisel(baseModel, pair.getRight());
+        	ModelCTM chiselModel = new ModelCTM(baseModel, pair.getRight());
         	chiselModel.load();
-            event.modelRegistry.putObject(new ModelResourceLocation(pair.getLeft() + ":" + pair.getRight()), new ModelChiselBlock(chiselModel));
+            event.modelRegistry.putObject(new ModelResourceLocation(pair.getLeft() + ":" + pair.getRight()), new CTMModelFactory(chiselModel));
         }
     }
     

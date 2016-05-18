@@ -111,7 +111,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 				if(data != null)
 				{
-					drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
+					drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
 				}
 			}
 		}

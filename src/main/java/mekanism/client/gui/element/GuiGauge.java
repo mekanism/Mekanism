@@ -140,7 +140,7 @@ public abstract class GuiGauge<T> extends GuiElement
 							}
 						}
 						
-						guiObj.displayTooltip(color + data.localize() + " (" + color.getName() + ")", xAxis, yAxis);
+						guiObj.displayTooltip(color + data.localize() + " (" + color.getColoredName() + ")", xAxis, yAxis);
 					}
 				}
 			}

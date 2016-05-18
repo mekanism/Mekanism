@@ -478,7 +478,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TOreDictFilter)
 				{
@@ -501,7 +501,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TMaterialFilter)
 				{
@@ -517,7 +517,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TModIDFilter)
 				{
@@ -540,7 +540,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 
 				// Draw hovertext for sorting buttons
@@ -583,7 +583,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		{
 			if(tileEntity.color != null)
 			{
-				drawCreativeTabHoveringText(tileEntity.color.getName(), xAxis, yAxis);
+				drawCreativeTabHoveringText(tileEntity.color.getColoredName(), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
