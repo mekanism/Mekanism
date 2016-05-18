@@ -3,12 +3,12 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryRight",
-      "front": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryFront",
-      "south": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryBack",
-      "west": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryRight",
-      "east": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryLeft",
-      "up": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryTop",
+      "sides": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryRight",
+      "front": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryFront",
+      "south": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryBack",
+      "west": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryRight",
+      "east": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryLeft",
+      "up": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryTop",
       "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
     }
   },
