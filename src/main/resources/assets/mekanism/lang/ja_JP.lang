@@ -1,4 +1,4 @@
-﻿//********//
+//********//
 //MEKANISM//
 //********//
 
@@ -11,6 +11,7 @@ item.EnergyTablet.name=エネルギータブレット
 item.SpeedUpgrade.name=スピードアップグレード
 item.EnergyUpgrade.name=エネルギーアップグレード
 item.FilterUpgrade.name=フィルターアップグレード
+item.MufflingUpgrade.name=消音アップグレード
 item.GasUpgrade.name=ガスアップグレード
 item.Robit.name=ロビット
 item.AtomicDisassembler.name=原子分解機
@@ -28,16 +29,17 @@ item.WalkieTalkie.name=トランシーバー
 item.Jetpack.name=ジェットパック
 item.ScubaTank.name=潜水タンク
 item.GasMask.name=ガスマスク
-item.Dictionary.name=辞書
+item.Dictionary.name=鉱石辞書
 item.ElectrolyticCore.name=電解コア
 item.Sawdust.name=木くず
 item.Salt.name=塩
-item.BrineBucket.name=塩水バケツ
+item.BrineBucket.name=鹹水バケツ
 item.LithiumBucket.name=リチウムバケツ
+item.HeavyWaterBucket.name=重水バケツ
 item.FreeRunners.name=フリーランナー
 item.ArmoredJetpack.name=装甲ジェットパック
 item.FilterCard.name=フィルターカード
-item.SeismicReader.name=セイスミックリーダー
+item.SeismicReader.name=弾性波解析器
 item.HDPEPellet.name=HDPE ペレット
 item.HDPERod.name=HDPE ロッド
 item.HDPESheet.name=HDPE シート
@@ -46,6 +48,7 @@ item.Substrate.name=基板
 item.Flamethrower.name=火炎放射器
 item.GaugeDropper.name=ゲージドロッパー
 item.BioFuel.name=バイオ燃料
+item.CraftingFormula.name=クラフトの模型
 
 //Control Circuits
 item.BasicControlCircuit.name=基本制御回路
@@ -54,13 +57,22 @@ item.EliteControlCircuit.name=上級制御回路
 item.UltimateControlCircuit.name=究極制御回路
 
 //Gas Tank
-tile.GasTank.GasTank.name=ガスタンク
+tile.GasTankBasic.name=基本ガスタンク
+tile.GasTankAdvanced.name=発展ガスタンク
+tile.GasTankElite.name=上級ガスタンク
+tile.GasTankUltimate.name=究極ガスタンク
+
+//Fluid Tank (part of MachineBlock2, naming handled differently)
+tile.FluidTankBasic.name=基本液体タンク
+tile.FluidTankAdvanced.name=発展液体タンク
+tile.FluidTankElite.name=上級液体タンク
+tile.FluidTankUltimate.name=究極液体タンク
 
 //Cardboard Box
 tile.CardboardBox.name=段ボール箱
 
 //Bounding Block
-#tile.BoundingBlock.name=Bounding Block
+tile.BoundingBlock.name=プレースホルダー
 
 //Salt
 tile.SaltBlock.name=塩ブロック
@@ -72,22 +84,25 @@ tile.BasicBlock.RefinedObsidian.name=精錬された黒曜石
 tile.BasicBlock.CharcoalBlock.name=木炭ブロック
 tile.BasicBlock.RefinedGlowstone.name=精錬されたグロウストーン
 tile.BasicBlock.SteelBlock.name=鋼鉄ブロック
-tile.BasicBlock.Bin.name=ビン
+tile.BasicBlock.BinBasic.name=基本ビン
+tile.BasicBlock.BinAdvanced.name=発展ビン
+tile.BasicBlock.BinElite.name=上級ビン
+tile.BasicBlock.BinUltimate.name=究極ビン
 tile.BasicBlock.TeleporterFrame.name=テレポーターフレーム
 tile.BasicBlock.SteelCasing.name=鋼鉄ケース
 tile.BasicBlock.DynamicTank.name=ダイナミックタンク
-tile.BasicBlock.DynamicGlass.name=ダイナミックガラス
+tile.BasicBlock.StructuralGlass.name=ダイナミックガラス
 tile.BasicBlock.DynamicValve.name=ダイナミックバルブ
 tile.BasicBlock.CopperBlock.name=銅ブロック
 tile.BasicBlock.TinBlock.name=錫ブロック
-tile.BasicBlock.SolarEvaporationController.name=塩分化コントローラー
-tile.BasicBlock.SolarEvaporationValve.name=塩分化バルブ
+tile.BasicBlock.ThermalEvaporationController.name=加温採鹹コントローラ
+tile.BasicBlock.ThermalEvaporationValve.name=加温採鹹バルブ
 
 //Basic Block 2 (second ID iteration)
-#tile.BasicBlock2.SolarEvaporationBlock.name=Solar Evaporation Block
+tile.BasicBlock2.ThermalEvaporationBlock.name=加温採鹹ブロック
 tile.BasicBlock2.InductionCasing.name=インダクションケーシング
 tile.BasicBlock2.InductionPort.name=インダクションポート
-tile.BasicBlock2.InductionCellBasic.name=ベーシック
+tile.BasicBlock2.InductionCellBasic.name=ベーシックインダクションセル
 tile.BasicBlock2.InductionCellAdvanced.name=アドバンスドインダクションセル
 tile.BasicBlock2.InductionCellElite.name=エリートインダクションセル
 tile.BasicBlock2.InductionCellUltimate.name=アルティメットインダクションセル
@@ -95,6 +110,11 @@ tile.BasicBlock2.InductionProviderBasic.name=ベーシックインダクショ�
 tile.BasicBlock2.InductionProviderAdvanced.name=アドバンスドインダクションプロバイダ
 tile.BasicBlock2.InductionProviderElite.name=エリートインダクションプロバイダ
 tile.BasicBlock2.InductionProviderUltimate.name=アルティメットインダクションプロバイダ
+tile.BasicBlock2.SuperheatingElement.name=発熱ブロック
+tile.BasicBlock2.PressureDisperser.name=圧力分散器
+tile.BasicBlock2.BoilerCasing.name=ボイラーケース
+tile.BasicBlock2.BoilerValve.name=ボイラーバルブ
+tile.BasicBlock2.SecurityDesk.name=セキュリティーデスク
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=濃縮チャンバー
@@ -104,16 +124,16 @@ tile.MachineBlock.Crusher.name=粉砕機
 tile.MachineBlock.Factory.name=ファクトリー
 tile.MachineBlock.MetallurgicInfuser.name=冶金注入機
 tile.MachineBlock.PurificationChamber.name=精製チャンバー
-tile.MachineBlock.EnergizedSmelter.name=電気かまど
+tile.MachineBlock.EnergizedSmelter.name=電動かまど
 tile.MachineBlock.Teleporter.name=テレポーター
-tile.MachineBlock.ElectricPump.name=電気ポンプ
-tile.MachineBlock.ElectricChest.name=電気チェスト
+tile.MachineBlock.ElectricPump.name=電動ポンプ
+tile.MachineBlock.ElectricChest.name=電子チェスト
 tile.MachineBlock.Chargepad.name=チャージパッド
 tile.MachineBlock.LogisticalSorter.name=ロジスティカルソーター
 tile.MachineBlock.DigitalMiner.name=デジタルマイナー
 
 //Machine Block 2 (second ID iteration)
-tile.MachineBlock2.RotaryCondensentrator.name=液体物質変換機
+tile.MachineBlock2.RotaryCondensentrator.name=回転式流体凝縮器
 tile.MachineBlock2.ChemicalOxidizer.name=化学酸化機
 tile.MachineBlock2.ChemicalInfuser.name=化学注入機
 tile.MachineBlock2.ChemicalCombiner.name=化学結合機
@@ -123,18 +143,21 @@ tile.MachineBlock2.PrecisionSawmill.name=精密製材機
 tile.MachineBlock2.ChemicalDissolutionChamber.name=化学溶解機
 tile.MachineBlock2.ChemicalWasher.name=化学洗浄機
 tile.MachineBlock2.ChemicalCrystallizer.name=化学結晶化装置
-tile.MachineBlock2.SeismicVibrator.name=セイスミックバイブレーター
+tile.MachineBlock2.SeismicVibrator.name=弾性波発振装置
 tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応機
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
-tile.MachineBlock2.PortableTank.name=ポータブルタンク
 tile.MachineBlock2.FluidicPlenisher.name=流体再供給機
 tile.MachineBlock2.Laser.name=レーザー
 tile.MachineBlock2.LaserAmplifier.name=レーザー増幅器
 tile.MachineBlock2.LaserTractorBeam.name=レーザートラクタービーム
 
 //Machine Block 3 (third ID iteration)
-tile.MachineBlock3.SolarNeutronActivator.name=ソーラーニュートロンアクティベーター
-#tile.MachineBlock3.Oredictionificator.name=Oredictionificator
+tile.MachineBlock3.QuantumEntangloporter.name=量子もつれ転送機
+tile.MachineBlock3.SolarNeutronActivator.name=太陽中性子反応機
+tile.MachineBlock3.Oredictionificator.name=鉱石統合器
+tile.MachineBlock3.ResistiveHeater.name=抵抗型発熱器
+tile.MachineBlock3.FormulaicAssemblicator.name=成形組立機
+tile.MachineBlock3.FuelwoodHeater.name=薪木ストーブ
 
 //Plastic
 tile.PlasticBlock.name=プラスチックブロック
@@ -150,9 +173,9 @@ infuse.carbon=炭素
 infuse.tin=錫
 infuse.diamond=ダイヤモンド
 infuse.redstone=レッドストーン
-infuse.fungi=Fungi
+infuse.fungi=菌糸
 infuse.obsidian=黒曜石
-infuse.bio=Biomass
+infuse.bio=バイオマス
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=オスミウム鉱石
@@ -160,7 +183,10 @@ tile.OreBlock.CopperOre.name=銅鉱石
 tile.OreBlock.TinOre.name=錫鉱石
 
 //Transmitters
-item.MultipartTransmitter.PressurizedTube.name=加圧チューブ
+item.MultipartTransmitter.BasicPressurizedTube.name=基本加圧チューブ
+item.MultipartTransmitter.AdvancedPressurizedTube.name=発展加圧チューブ
+item.MultipartTransmitter.ElitePressurizedTube.name=上級加圧チューブ
+item.MultipartTransmitter.UltimatePressurizedTube.name=究極加圧チューブ
 item.MultipartTransmitter.BasicUniversalCable.name=ベーシックユニバーサルケーブル
 item.MultipartTransmitter.AdvancedUniversalCable.name=アドバンスドユニバーサルケーブル
 item.MultipartTransmitter.EliteUniversalCable.name=エリートユニバーサルケーブル
@@ -169,15 +195,26 @@ item.MultipartTransmitter.BasicMechanicalPipe.name=ベーシックメカニカ�
 item.MultipartTransmitter.AdvancedMechanicalPipe.name=アドバンスドメカニカルパイプ
 item.MultipartTransmitter.EliteMechanicalPipe.name=エリートメカニカルパイプ
 item.MultipartTransmitter.UltimateMechanicalPipe.name=アルティメットメカニカルパイプ
-item.MultipartTransmitter.LogisticalTransporter.name=ロジスティカルトランスポーター
+item.MultipartTransmitter.BasicLogisticalTransporter.name=基本ロジスティカルトランスポーター
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=発展ロジスティカルトランスポーター
+item.MultipartTransmitter.EliteLogisticalTransporter.name=上級ロジスティカルトランスポーター
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=究極ロジスティカルトランスポーター
 item.MultipartTransmitter.RestrictiveTransporter.name=制限トランスポーター
 item.MultipartTransmitter.DiversionTransporter.name=迂回トランスポーター
+item.MultipartTransmitter.BasicThermodynamicConductor.name=基本サーモダイナミックコンダクター
+item.MultipartTransmitter.AdvancedThermodynamicConductor.name=発展サーモダイナミックコンダクター
+item.MultipartTransmitter.EliteThermodynamicConductor.name=上級サーモダイナミックコンダクター
+item.MultipartTransmitter.UltimateThermodynamicConductor.name=究極サーモダイナミックコンダクター
 
 //Glow Panel
-item.GlowPanel.name=グロウパネル
+item.GlowPanel.name=発光パネル
 
 //Energy Cubes
-tile.EnergyCube.name=エネルギーキューブ
+tile.EnergyCubeBasic.name=基本エネルギーキューブ
+tile.EnergyCubeAdvanced.name=発展エネルギーキューブ
+tile.EnergyCubeElite.name=上級エネルギーキューブ
+tile.EnergyCubeUltimate.name=究極エネルギーキューブ
+tile.EnergyCubeCreative.name=クリエイティブエネルギーキューブ
 
 //Factory Installers
 item.basicFactoryInstaller.name=ベーシックファクトリーインストーラ
@@ -199,7 +236,8 @@ item.leadDust.name=鉛の粉
 item.sulfurDust.name=硫黄の粉
 item.lithiumDust.name=リチウムの粉
 
-//Clumpsitem.ironClump.name=鉄の塊
+//Clump
+sitem.ironClump.name=鉄の塊
 item.goldClump.name=金の塊
 item.osmiumClump.name=オスミウムの塊
 item.copperClump.name=銅の塊
@@ -252,39 +290,40 @@ gas.sulfurDioxideGas=二酸化硫黄
 gas.sulfurTrioxideGas=三酸化硫黄
 gas.sulfuricAcid=硫酸
 gas.hydrogenChloride=塩化水素
-#gas.liquidOsmium=Liquid Osmium
-#gas.liquidStone=Liquid Stone
+gas.liquidOsmium=オスミウム
+gas.liquidStone=石
 gas.ethene=エチレン
 gas.sodium=ナトリウム
-gas.brine=気化した塩水
+gas.brine=気化した鹹水
 gas.deuterium=重水素
-gas.tritium=トリチウム
+gas.tritium=三重水素
 gas.lithium=リチウム
 gas.fusionFuelDT=D-T 燃料
 
-gas.iron=鉄のスラリー
-gas.gold=金のスラリー
-gas.osmium=オスミウムのスラリー
-gas.copper=銅のスラリー
-gas.tin=錫のスラリー
-gas.silver=銀のスラリー
-gas.obsidian=黒曜石のスラリー
-gas.lead=鉛のスラリー
+gas.iron=鉄の懸濁液
+gas.gold=金の懸濁液
+gas.osmium=オスミウムの懸濁液
+gas.copper=銅の懸濁液
+gas.tin=錫の懸濁液
+gas.silver=銀の懸濁液
+gas.obsidian=黒曜石の懸濁液
+gas.lead=鉛の懸濁液
 
-gas.cleanIron=クリーンな鉄のスラリー
-gas.cleanGold=クリーンな金のスラリー
-gas.cleanOsmium=クリーンなオスミウムのスラリー
-gas.cleanCopper=クリーンな銅のスラリー
-gas.cleanTin=クリーンな錫のスラリー
-gas.cleanSilver=クリーンな銀のスラリー
-gas.cleanObsidian=クリーンな黒曜石のスラリー
-gas.cleanLead=クリーンな鉛のスラリー
+gas.cleanIron=純粋な鉄の懸濁液
+gas.cleanGold=純粋な金の懸濁液
+gas.cleanOsmium=純粋なオスミウムの懸濁液
+gas.cleanCopper=純粋な銅の懸濁液
+gas.cleanTin=純粋な錫の懸濁液
+gas.cleanSilver=純粋な銀の懸濁液
+gas.cleanObsidian=純粋な黒曜石の懸濁液
+gas.cleanLead=純粋な鉛の懸濁液
 
 //BC Fuel Gases
 gas.fuel=気化燃料
 gas.oil=気化油
 
-//Fluidsfluid.hydrogen=液体水素
+//Fluids
+fluid.hydrogen=液体水素
 fluid.oxygen=液体酸素
 fluid.chlorine=液体塩素
 fluid.sulfurDioxideGas=液体亜硫酸
@@ -299,6 +338,7 @@ fluid.lithium=液体リチウム
 fluid.deuterium=液体重水素
 fluid.tritium=液体トリチウム
 fluid.fusionFuelDT=液体 D-T 燃料
+fluid.steam=蒸気
 
 //OreGas names
 oregas.iron=鉄鉱石
@@ -317,52 +357,55 @@ tier.Elite=エリート
 tier.Ultimate=アルティメット
 tier.Creative=クリエイティブ
 
-
 //Transmission types
 transmission.Energy=エネルギー
 transmission.Fluids=液体
 transmission.Gases=ガス
 transmission.Items=アイテム
-#transmission.Heat=Heat
+transmission.Heat=熱
 
 //Update handler text
-#update.consider=Consider updating to version
-#update.newFeatures=New features
-#update.visit=Visit
-#update.toDownload=to download
+update.consider=新バージョンへのアップデートはどうでしょう
+update.newFeatures=新たな要素
+update.visit=Visit
+update.toDownload=to download
 update.devBuild=開発版ビルドを利用中
 update.outdated=古いバージョンのモジュールを利用しています
 
 //Upgrades
 upgrade.energy=エネルギー
-#upgrade.energy.desc=Increases energy efficiency !nand capacity of machinery.
+upgrade.energy.desc=マシンのエネルギー効率と蓄電量を増やします。
 upgrade.speed=スピード
-#upgrade.speed.desc=Increases speed of machinery.
+upgrade.speed.desc=マシンの処理速度を上昇させます。
 upgrade.filter=フィルター
-#upgrade.filter.desc=A filter that separates !nheavy water from regular water.
+upgrade.filter.desc=重水を普通の水から分離します。
 upgrade.gas=ガス
-#upgrade.gas.desc=Increases the efficiency !nof gas-using machinery.
+upgrade.gas.desc=ガスの使用効率を上昇させます。
+upgrade.muffling=消音
+upgrade.muffling.desc=マシンの騒音を減らします。
 
 //Key description text
 key.mode=アイテムモード切り替え
 key.armorMode=アーマーモード切り替え
-#key.voice=Voice
+key.voice=周波数
 
 //Entities
 entity.Mekanism.Robit.name=ロビット
-entity.Mekanism.BabySkeleton.name=Babyスケルトン
+entity.Mekanism.BabySkeleton.name=ベビースケルトン
 
 //Config Gui
-mekanism.configgui.ctgy.general=Mekanism 一般設定
-mekanism.configgui.ctgy.machines=マシン設定
-#mekanism.configgui.ctgy.usage=Usage Settings
+mekanism.configgui.ctgy.general=Mekanism 基本設定
+mekanism.configgui.ctgy.machines=マシンの設定
+mekanism.configgui.ctgy.tier=ランクの設定
+mekanism.configgui.ctgy.usage=エネルギー使用率の設定
 mekanism.configgui.ctgy.client=クライアント設定
 
 //Config Tooltips
-#mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
-#mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
-#mekanism.configgui.ctgy.usage.tooltip=機械に関する設定とエネルギー使用量
-#mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
+mekanism.configgui.ctgy.general.tooltip=Mekanismとそのモジュールに関する基本的な設定
+mekanism.configgui.ctgy.machines.tooltip=機械ごとの有効・無効化の設定
+mekanism.configgui.ctgy.tier.tooltip=Mekanismのランクされた機械に対応する値の設定
+mekanism.configgui.ctgy.usage.tooltip=機械に関する設定とエネルギー使用量
+mekanism.configgui.ctgy.client.tooltip=Mekanismとそのモジュールにおけるクライアント設定
 
 //Gui text
 gui.removeSpeedUpgrade=スピードアップグレードを削除
