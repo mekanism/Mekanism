@@ -161,7 +161,7 @@ import com.mojang.authlib.GameProfile;
  *
  */
 @Mod(modid = "Mekanism", name = "Mekanism", version = "9.0.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
-		dependencies = "after:ForgeMultipart;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
+		dependencies = "after:JEI;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
 				"after:ComputerCraft;after:Galacticraft API;after:MetallurgyCore")
 public class Mekanism
 {
