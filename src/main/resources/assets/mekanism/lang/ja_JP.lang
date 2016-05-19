@@ -23,7 +23,7 @@ item.CompressedDiamond.name=圧縮ダイヤモンド
 item.CompressedObsidian.name=圧縮黒曜石
 item.PortableTeleporter.name=ポータブルテレポーター
 item.TeleportationCore.name=テレポートコア
-item.Configurator.name=コンフィグレーター
+item.Configurator.name=コンフィギュレーター
 item.NetworkReader.name=ネットワークリーダー
 item.WalkieTalkie.name=トランシーバー
 item.Jetpack.name=ジェットパック
@@ -33,18 +33,18 @@ item.Dictionary.name=鉱石辞書
 item.ElectrolyticCore.name=電解コア
 item.Sawdust.name=木くず
 item.Salt.name=塩
-item.BrineBucket.name=鹹水バケツ
+item.BrineBucket.name=塩水バケツ
 item.LithiumBucket.name=リチウムバケツ
 item.HeavyWaterBucket.name=重水バケツ
 item.FreeRunners.name=フリーランナー
 item.ArmoredJetpack.name=装甲ジェットパック
-item.FilterCard.name=フィルターカード
+item.FilterCard.name=設定カード
 item.SeismicReader.name=弾性波解析器
 item.HDPEPellet.name=HDPE ペレット
 item.HDPERod.name=HDPE ロッド
 item.HDPESheet.name=HDPE シート
 item.PlaStick.name=プラスティック
-item.Substrate.name=基板
+item.Substrate.name=基質
 item.Flamethrower.name=火炎放射器
 item.GaugeDropper.name=ゲージドロッパー
 item.BioFuel.name=バイオ燃料
@@ -91,7 +91,7 @@ tile.BasicBlock.BinUltimate.name=究極ビン
 tile.BasicBlock.TeleporterFrame.name=テレポーターフレーム
 tile.BasicBlock.SteelCasing.name=鋼鉄ケース
 tile.BasicBlock.DynamicTank.name=ダイナミックタンク
-tile.BasicBlock.StructuralGlass.name=ダイナミックガラス
+tile.BasicBlock.StructuralGlass.name=構造用ガラス
 tile.BasicBlock.DynamicValve.name=ダイナミックバルブ
 tile.BasicBlock.CopperBlock.name=銅ブロック
 tile.BasicBlock.TinBlock.name=錫ブロック
@@ -111,7 +111,7 @@ tile.BasicBlock2.InductionProviderAdvanced.name=アドバンスドインダク�
 tile.BasicBlock2.InductionProviderElite.name=エリートインダクションプロバイダ
 tile.BasicBlock2.InductionProviderUltimate.name=アルティメットインダクションプロバイダ
 tile.BasicBlock2.SuperheatingElement.name=発熱ブロック
-tile.BasicBlock2.PressureDisperser.name=圧力分散器
+tile.BasicBlock2.PressureDisperser.name=減圧ブロック
 tile.BasicBlock2.BoilerCasing.name=ボイラーケース
 tile.BasicBlock2.BoilerValve.name=ボイラーバルブ
 tile.BasicBlock2.SecurityDesk.name=セキュリティーデスク
@@ -119,15 +119,15 @@ tile.BasicBlock2.SecurityDesk.name=セキュリティーデスク
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=濃縮チャンバー
 tile.MachineBlock.OsmiumCompressor.name=オスミウム圧縮機
-tile.MachineBlock.Combiner.name=コンバイナー
+tile.MachineBlock.Combiner.name=抱合機
 tile.MachineBlock.Crusher.name=粉砕機
 tile.MachineBlock.Factory.name=ファクトリー
 tile.MachineBlock.MetallurgicInfuser.name=冶金注入機
-tile.MachineBlock.PurificationChamber.name=精製チャンバー
+tile.MachineBlock.PurificationChamber.name=精製室
 tile.MachineBlock.EnergizedSmelter.name=電動かまど
 tile.MachineBlock.Teleporter.name=テレポーター
 tile.MachineBlock.ElectricPump.name=電動ポンプ
-tile.MachineBlock.ElectricChest.name=電子チェスト
+tile.MachineBlock.PersonalChest.name=パーソナルチェスト
 tile.MachineBlock.Chargepad.name=チャージパッド
 tile.MachineBlock.LogisticalSorter.name=ロジスティカルソーター
 tile.MachineBlock.DigitalMiner.name=デジタルマイナー
@@ -144,7 +144,7 @@ tile.MachineBlock2.ChemicalDissolutionChamber.name=化学溶解機
 tile.MachineBlock2.ChemicalWasher.name=化学洗浄機
 tile.MachineBlock2.ChemicalCrystallizer.name=化学結晶化装置
 tile.MachineBlock2.SeismicVibrator.name=弾性波発振装置
-tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応機
+tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応室
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.FluidicPlenisher.name=流体再供給機
 tile.MachineBlock2.Laser.name=レーザー
@@ -217,9 +217,9 @@ tile.EnergyCubeUltimate.name=究極エネルギーキューブ
 tile.EnergyCubeCreative.name=クリエイティブエネルギーキューブ
 
 //Factory Installers
-item.basicFactoryInstaller.name=ベーシックファクトリーインストーラ
-item.advancedFactoryInstaller.name=アドバンスドファクトリーインストーラ
-item.eliteFactoryInstaller.name=エリートファクトリーインストーラ
+item.basicFactoryInstaller.name=基本ファクトリーインストーラ
+item.advancedFactoryInstaller.name=発展ファクトリーインストーラ
+item.eliteFactoryInstaller.name=上級ファクトリーインストーラ
 
 //Dust
 item.ironDust.name=鉄の粉
@@ -236,8 +236,8 @@ item.leadDust.name=鉛の粉
 item.sulfurDust.name=硫黄の粉
 item.lithiumDust.name=リチウムの粉
 
-//Clump
-sitem.ironClump.name=鉄の塊
+//Clumps
+item.ironClump.name=鉄の塊
 item.goldClump.name=金の塊
 item.osmiumClump.name=オスミウムの塊
 item.copperClump.name=銅の塊
@@ -336,7 +336,7 @@ fluid.sodium=液体ナトリウム
 fluid.heavyWater=重水
 fluid.lithium=液体リチウム
 fluid.deuterium=液体重水素
-fluid.tritium=液体トリチウム
+fluid.tritium=液体三重水素
 fluid.fusionFuelDT=液体 D-T 燃料
 fluid.steam=蒸気
 
@@ -351,10 +351,10 @@ oregas.obsidian=黒曜石鉱石
 oregas.lead=鉛鉱石
 
 //Tier names
-tier.Basic=ベーシック
-tier.Advanced=アドバンスド
-tier.Elite=エリート
-tier.Ultimate=アルティメット
+tier.Basic=基本
+tier.Advanced=発展
+tier.Elite=上級
+tier.Ultimate=究極
 tier.Creative=クリエイティブ
 
 //Transmission types
@@ -408,11 +408,7 @@ mekanism.configgui.ctgy.usage.tooltip=機械に関する設定とエネルギー
 mekanism.configgui.ctgy.client.tooltip=Mekanismとそのモジュールにおけるクライアント設定
 
 //Gui text
-gui.removeSpeedUpgrade=スピードアップグレードを削除
-gui.removeEnergyUpgrade=エネルギーアップグレードを削除
-#gui.condensentrating=Condensentrating
-#gui.decondensentrating=Decondensentrating
-#gui.power=Power
+gui.condensentrating=凝縮
 gui.confirm=確認
 gui.open=開く
 #gui.allOK=All OK
@@ -831,8 +827,8 @@ fluidedit.empty=空
 itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
-#nei.chemicalInjectionChamber=C. 注入器
-#nei.rotaryCondensentrator=R. コンデンセントレーター
+nei.chemicalInjectionChamber=化学注入機
+nei.rotaryCondensentrator=回転式流体凝縮器
 
 //**********//
 //GENERATORS//
@@ -841,21 +837,29 @@ itemGroup.tabMekanism=Mekanism
 //Items
 item.SolarPanel.name=ソーラーパネル
 item.Hohlraum.name=フーラム
+item.TurbineBlade.name=タービンの羽
 
 //Generators
-tile.Generator.HeatGenerator.name=火力発電機
-tile.Generator.SolarGenerator.name=ソーラー発電機
-tile.Generator.GasGenerator.name=ガス発電機
+tile.Generator.HeatGenerator.name=熱発電機
+tile.Generator.SolarGenerator.name=太陽光発電機
+tile.Generator.GasGenerator.name=ガス燃焼発電機
 tile.Generator.BioGenerator.name=バイオ発電機
-tile.Generator.AdvancedSolarGenerator.name=アドバンスドソーラー発電機
-tile.Generator.WindTurbine.name=風力発電機
+tile.Generator.AdvancedSolarGenerator.name=発展太陽光発電機
+tile.Generator.WindGenerator.name=風力発電機
+tile.Generator.TurbineRotor.name=タービンローター
+tile.Generator.RotationalComplex.name=回転機構
+tile.Generator.ElectromagneticCoil.name=電磁コイル
+tile.Generator.TurbineCasing.name=タービン筐体
+tile.Generator.TurbineValve.name=タービンバルブ
+tile.Generator.TurbineVent.name=蒸気排出口
 
-tile.Reactor.ReactorController.name=リアクターコントローラー
-tile.Reactor.ReactorFrame.name=リアクターフレーム
-#tile.Reactor.ReactorNeutronCapturePlate.name=Neutron Capture Plate
-tile.Reactor.ReactorInOutPort.name=リアクターポート
+tile.Reactor.ReactorController.name=核融合炉制御装置
+tile.Reactor.ReactorFrame.name=核融合炉筐体
+tile.Reactor.ReactorNeutronCapturePlate.name=中性子捕捉板
+tile.Reactor.ReactorInOutPort.name=核融合炉搬入出ポート
+tile.Reactor.ReactorLogicAdapter.name=核融合炉論理アダプター
 
-tile.ReactorGlass.ReactorGlass.name=リアクターガラス
+tile.ReactorGlass.ReactorGlass.name=核融合炉窓
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=レーザーフォーカスマトリックス
 
 //Gui text
@@ -921,7 +925,6 @@ item.OsmiumAxe.name=オスミウムの斧
 item.OsmiumShovel.name=オスミウムのシャベル
 item.OsmiumHoe.name=オスミウムのクワ
 item.OsmiumSword.name=オスミウムの剣
-
 
 //Bronze
 item.BronzeHelmet.name=青銅のヘルメット
