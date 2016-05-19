@@ -12,6 +12,7 @@ import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -176,7 +177,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		{
 			if(renderStack != null)
 			{
-				String name = MekanismUtils.getMod(renderStack);
+				String name = ItemRegistryUtils.getMod(renderStack);
 				String extra = name.equals("null") ? "" : " (" + name + ")";
 				
 				drawCreativeTabHoveringText(renderStack.getDisplayName() + extra, xAxis, yAxis);

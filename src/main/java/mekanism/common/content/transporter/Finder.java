@@ -3,6 +3,7 @@ package mekanism.common.content.transporter;
 import java.util.List;
 
 import mekanism.api.util.StackUtils;
+import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -128,7 +129,7 @@ public abstract class Finder
 				return false;
 			}
 			
-			String id = MekanismUtils.getMod(stack);
+			String id = ItemRegistryUtils.getMod(stack);
 			
 			if(modID.equals(id) || modID.equals("*"))
 			{
