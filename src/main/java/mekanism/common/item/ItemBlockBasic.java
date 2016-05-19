@@ -24,6 +24,7 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -189,7 +190,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return BasicBlockType.get(stack) == BasicBlockType.BIN && stack.getTagCompound() != null && stack.getTagCompound().hasKey("newCount");
+		return BasicBlockType.get(stack) == BasicBlockType.BIN && ItemDataUtils.hasData(stack, "newCount");
 	}
 
 	@Override
@@ -197,16 +198,16 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		if(BasicBlockType.get(stack) == BasicBlockType.BIN)
 		{
-			if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("newCount"))
+			if(!ItemDataUtils.hasData(stack, "newCount"))
 			{
 				return null;
 			}
 			
-			int newCount = stack.getTagCompound().getInteger("newCount");
-			stack.getTagCompound().removeTag("newCount");
+			int newCount = ItemDataUtils.getInt(stack, "newCount");
+			ItemDataUtils.removeData(stack, "newCount");
 
             ItemStack ret = stack.copy();
-            ret.getTagCompound().setInteger("itemCount", newCount);
+            ItemDataUtils.setInt(ret, "itemCount", newCount);
 
             return ret;
 		}
@@ -302,12 +303,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		if(BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL)
 		{
-			if(itemStack.getTagCompound() == null)
-			{
-				return 0;
-			}
-	
-			return itemStack.getTagCompound().getDouble("energyStored");
+			return ItemDataUtils.getDouble(itemStack, "energyStored");
 		}
 		
 		return 0;
@@ -318,12 +314,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		if(BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL)
 		{
-			if(itemStack.getTagCompound() == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-	
-			itemStack.getTagCompound().setDouble("energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
+			ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
 		}
 	}
 

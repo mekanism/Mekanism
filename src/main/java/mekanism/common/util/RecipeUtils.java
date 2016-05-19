@@ -237,7 +237,7 @@ public class RecipeUtils
 
 				if(itemstack != null && BlockStateMachine.MachineType.get(itemstack) != null && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades)
 				{
-					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.getTagCompound());
+					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
 					
 					for(Map.Entry<Upgrade, Integer> entry : stackMap.entrySet())
 					{
@@ -251,12 +251,7 @@ public class RecipeUtils
 				}
 			}
 			
-			if(toReturn.getTagCompound() == null)
-			{
-				toReturn.setTagCompound(new NBTTagCompound());
-			}
-			
-			Upgrade.saveMap(upgrades, toReturn.getTagCompound());
+			Upgrade.saveMap(upgrades, ItemDataUtils.getDataMap(toReturn));
 		}
 
 		return toReturn;

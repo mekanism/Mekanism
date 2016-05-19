@@ -4,6 +4,7 @@ import mekanism.common.MekanismItems;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemProxy;
+import mekanism.common.util.ItemDataUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -144,7 +145,7 @@ public class BinRecipe implements IRecipe
 
 						ItemStack testRemove = inv.removeStack();
 
-						bin.getTagCompound().setInteger("newCount", size-(testRemove != null ? testRemove.stackSize : 0));
+						ItemDataUtils.setInt(bin, "newCount", size-(testRemove != null ? testRemove.stackSize : 0));
 					}
 				}
 			}

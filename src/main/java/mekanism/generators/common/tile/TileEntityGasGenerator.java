@@ -17,6 +17,7 @@ import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -360,16 +361,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	{
 		if(fuelTank != null)
 		{
-			itemStack.getTagCompound().setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "fuelTank", fuelTank.write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		if(itemStack.getTagCompound().hasKey("fuelTank"))
+		if(ItemDataUtils.hasData(itemStack, "fuelTank"))
 		{
-			fuelTank.read(itemStack.getTagCompound().getCompoundTag("fuelTank"));
+			fuelTank.read(ItemDataUtils.getCompound(itemStack, "fuelTank"));
 			
 			boolean isTankEmpty = (fuelTank.getGas() == null);
 			//Update energy output based on any existing fuel in tank

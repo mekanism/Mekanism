@@ -46,6 +46,7 @@ import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -864,14 +865,15 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 		if(tileEntity instanceof IUpgradeTile)
 		{
-			((IUpgradeTile)tileEntity).getComponent().write(itemStack.getTagCompound());
+			((IUpgradeTile)tileEntity).getComponent().write(ItemDataUtils.getDataMap(itemStack));
 		}
 
 		if(tileEntity instanceof ISideConfiguration)
 		{
 			ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-			config.getConfig().write(itemStack.getTagCompound());
+			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
 		}
 		
 		if(tileEntity instanceof ISustainedData)
@@ -882,7 +884,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		if(tileEntity instanceof IRedstoneControl)
 		{
 			IRedstoneControl control = (IRedstoneControl)tileEntity;
-			itemStack.getTagCompound().setInteger("controlType", control.getControlType().ordinal());
+			ItemDataUtils.setInt(itemStack, "controlType", control.getControlType().ordinal());
 		}
 
 		if(tileEntity instanceof IStrictEnergyStorage)

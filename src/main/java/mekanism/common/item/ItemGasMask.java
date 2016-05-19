@@ -23,12 +23,6 @@ public class ItemGasMask extends ItemArmor
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-*/
-
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
 	{

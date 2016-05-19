@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.ModContainer;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-public class ItemRegistryUtils 
+public final class ItemRegistryUtils 
 {
 	private static final Map<String, String> modIDMap = new HashMap<String, String>();
 	

@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -21,14 +22,6 @@ public class ItemProxy extends Item
 		return getSavedItem(stack);
 	}
 
-/*
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		return stack.getTagCompound() == null || !stack.getTagCompound().getBoolean("hasStack");
-	}
-*/
-
 	@Override
 	public boolean hasContainerItem(ItemStack itemStack)
 	{
@@ -37,32 +30,22 @@ public class ItemProxy extends Item
 
 	public void setSavedItem(ItemStack stack, ItemStack save)
 	{
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(save == null)
 		{
-			stack.getTagCompound().setBoolean("hasStack", false);
-			stack.getTagCompound().removeTag("savedItem");
+			ItemDataUtils.setBoolean(stack, "hasStack", false);
+			ItemDataUtils.removeData(stack, "savedItem");
 		}
 		else {
-			stack.getTagCompound().setBoolean("hasStack", true);
-			stack.getTagCompound().setTag("savedItem", save.writeToNBT(new NBTTagCompound()));
+			ItemDataUtils.setBoolean(stack, "hasStack", true);
+			ItemDataUtils.setCompound(stack, "savedItem", save.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
 	public ItemStack getSavedItem(ItemStack stack)
 	{
-		if(stack.getTagCompound() == null)
+		if(ItemDataUtils.getBoolean(stack, "hasStack"))
 		{
-			return null;
-		}
-
-		if(stack.getTagCompound().getBoolean("hasStack"))
-		{
-			return ItemStack.loadItemStackFromNBT(stack.getTagCompound().getCompoundTag("savedItem"));
+			return ItemStack.loadItemStackFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
 		}
 
 		return null;

@@ -19,6 +19,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -303,14 +304,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.getTagCompound() == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-
-			itemStack.getTagCompound().setTag("Items", nbtTags);
+			ItemDataUtils.setList((ItemStack)data[0], "Items", nbtTags);
 		}
 	}
 
@@ -319,14 +313,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.getTagCompound() == null)
-			{
-				return null;
-			}
-
-			return itemStack.getTagCompound().getTagList("Items", 10);
+			return ItemDataUtils.getList((ItemStack)data[0], "Items");
 		}
 
 		return null;
@@ -335,21 +322,17 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public void setFluidStack(FluidStack fluidStack, Object... data)
 	{
-		if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null)
-		{
-			return;
-		}
-
 		if(data[0] instanceof ItemStack)
 		{
 			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.getTagCompound() == null)
+			
+			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null)
 			{
-				itemStack.setTagCompound(new NBTTagCompound());
+				ItemDataUtils.removeData(itemStack, "fluidTank");
 			}
-
-			itemStack.getTagCompound().setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
+			else {
+				ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
+			}
 		}
 	}
 
@@ -360,15 +343,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.getTagCompound() == null)
+			if(!ItemDataUtils.hasData(itemStack, "fluidTank"))
 			{
 				return null;
 			}
 
-			if(itemStack.getTagCompound().hasKey("fluidTank"))
-			{
-				return FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank"));
-			}
+			return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank"));
 		}
 
 		return null;
@@ -383,24 +363,13 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			return 0;
-		}
-
-		return itemStack.getTagCompound().getDouble("electricity");
+		return ItemDataUtils.getDouble(itemStack, "energyStored");
 	}
 
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.getTagCompound().setDouble("electricity", electricityStored);
+		ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
 	}
 
 	@Override
@@ -487,9 +456,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public String getOwner(ItemStack stack) 
 	{
-		if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("owner"))
+		if(ItemDataUtils.hasData(stack, "owner"))
 		{
-			return stack.getTagCompound().getString("owner");
+			return ItemDataUtils.getString(stack, "owner");
 		}
 		
 		return null;
@@ -498,40 +467,25 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public void setOwner(ItemStack stack, String owner) 
 	{
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
 		if(owner == null || owner.isEmpty())
 		{
-			stack.getTagCompound().removeTag("owner");
+			ItemDataUtils.removeData(stack, "owner");
 			return;
 		}
 		
-		stack.getTagCompound().setString("owner", owner);
+		ItemDataUtils.setString(stack, "owner", owner);
 	}
 
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.getTagCompound() == null)
-		{
-			return SecurityMode.PUBLIC;
-		}
-
-		return SecurityMode.values()[stack.getTagCompound().getInteger("security")];
+		return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
 	}
 
 	@Override
 	public void setSecurity(ItemStack stack, SecurityMode mode) 
 	{
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		stack.getTagCompound().setInteger("security", mode.ordinal());
+		ItemDataUtils.setInt(stack, "security", mode.ordinal());
 	}
 
 	@Override

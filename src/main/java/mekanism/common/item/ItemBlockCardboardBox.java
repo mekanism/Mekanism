@@ -7,6 +7,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -139,22 +140,17 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 	public void setBlockData(ItemStack itemstack, BlockData data)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemstack.getTagCompound().setTag("blockData", data.write(new NBTTagCompound()));
+		ItemDataUtils.setCompound(itemstack, "blockData", data.write(new NBTTagCompound()));
 	}
 
 	public BlockData getBlockData(ItemStack itemstack)
 	{
-		if(itemstack.getTagCompound() == null || !itemstack.getTagCompound().hasKey("blockData"))
+		if(!ItemDataUtils.hasData(itemstack, "blockData"))
 		{
 			return null;
 		}
 
-		return BlockData.read(itemstack.getTagCompound().getCompoundTag("blockData"));
+		return BlockData.read(ItemDataUtils.getCompound(itemstack, "blockData"));
 	}
 
 	@SubscribeEvent

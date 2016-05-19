@@ -20,6 +20,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -363,7 +364,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public void writeSustainedData(ItemStack itemStack) 
 	{
-		itemStack.getTagCompound().setBoolean("hasOredictionificatorConfig", true);
+		ItemDataUtils.setBoolean(itemStack, "hasOredictionificatorConfig", true);
 
 		NBTTagList filterTags = new NBTTagList();
 
@@ -376,18 +377,18 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 		if(filterTags.tagCount() != 0)
 		{
-			itemStack.getTagCompound().setTag("filters", filterTags);
+			ItemDataUtils.setList(itemStack, "filters", filterTags);
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		if(itemStack.getTagCompound().hasKey("hasOredictionificatorConfig"))
+		if(ItemDataUtils.hasData(itemStack, "hasOredictionificatorConfig"))
 		{
-			if(itemStack.getTagCompound().hasKey("filters"))
+			if(ItemDataUtils.hasData(itemStack, "filters"))
 			{
-				NBTTagList tagList = itemStack.getTagCompound().getTagList("filters", NBT.TAG_COMPOUND);
+				NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{

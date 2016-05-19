@@ -54,6 +54,7 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.Item;
@@ -311,14 +312,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						
 						ItemStack returnStack = getMachineStack();
 						
-						if(returnStack.getTagCompound() == null)
-						{
-							returnStack.setTagCompound(new NBTTagCompound());
-						}
-						
-						upgradeComponent.write(returnStack.getTagCompound());
+						upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
 						upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-						upgradeComponent.read(inventory[2].getTagCompound());
+						upgradeComponent.read(ItemDataUtils.getDataMap(inventory[2]));
 
 						inventory[2] = null;
 						inventory[3] = returnStack;

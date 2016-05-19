@@ -5,6 +5,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -110,32 +110,22 @@ public class ItemCraftingFormula extends ItemMekanism
 	
 	public boolean isInvalid(ItemStack stack)
 	{
-		if(!stack.hasTagCompound())
-		{
-			return false;
-		}
-		
-		return stack.getTagCompound().getBoolean("invalid");
+		return ItemDataUtils.getBoolean(stack, "invalid");
 	}
 	
 	public void setInvalid(ItemStack stack, boolean invalid)
 	{
-		if(!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		stack.getTagCompound().setBoolean("invalid", invalid);
+		ItemDataUtils.setBoolean(stack, "invalid", invalid);
 	}
 	
 	public ItemStack[] getInventory(ItemStack stack)
 	{
-		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("Items"))
+		if(!ItemDataUtils.hasData(stack, "Items"))
 		{
 			return null;
 		}
 		
-		NBTTagList tagList = stack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
+		NBTTagList tagList = ItemDataUtils.getList(stack, "Items");
 		ItemStack[] inventory = new ItemStack[9];
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
@@ -154,14 +144,9 @@ public class ItemCraftingFormula extends ItemMekanism
 	
 	public void setInventory(ItemStack stack, ItemStack[] inv)
 	{
-		if(!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
 		if(inv == null)
 		{
-			stack.getTagCompound().removeTag("Items");
+			ItemDataUtils.removeData(stack, "Items");
 			return;
 		}
 		
@@ -178,6 +163,6 @@ public class ItemCraftingFormula extends ItemMekanism
 			}
 		}
 
-		stack.getTagCompound().setTag("Items", tagList);
+		ItemDataUtils.setList(stack, "Items", tagList);
 	}
 }

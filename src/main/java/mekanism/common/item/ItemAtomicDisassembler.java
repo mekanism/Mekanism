@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.util.ListUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -18,7 +19,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
@@ -276,12 +276,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public int getMode(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			return 0;
-		}
-
-		return itemStack.getTagCompound().getInteger("mode");
+		return ItemDataUtils.getInt(itemStack, "mode");
 	}
 
 	public String getModeName(ItemStack itemStack)
@@ -307,12 +302,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public void toggleMode(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.getTagCompound().setInteger("mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
+		ItemDataUtils.setInt(itemStack, "mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
 	}
 
 	@Override

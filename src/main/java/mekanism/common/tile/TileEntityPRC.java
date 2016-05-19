@@ -29,6 +29,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -451,26 +452,26 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	{
 		if(inputFluidTank.getFluid() != null)
 		{
-			itemStack.getTagCompound().setTag("inputFluidTank", inputFluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "inputFluidTank", inputFluidTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 		
 		if(inputGasTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("inputGasTank", inputGasTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "inputGasTank", inputGasTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputGasTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("outputGasTank", outputGasTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "outputGasTank", outputGasTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("inputFluidTank")));
-		inputGasTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("inputGasTank")));
-		outputGasTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("outputGasTank")));
+		inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "inputFluidTank")));
+		inputGasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputGasTank")));
+		outputGasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputGasTank")));
 	}
 	
 	@Override
