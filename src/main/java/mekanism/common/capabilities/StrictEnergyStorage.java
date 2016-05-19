@@ -61,6 +61,5 @@ public class StrictEnergyStorage implements IStrictEnergyStorage, INBTSerializab
     public static void register()
     {
         CapabilityManager.INSTANCE.register(IStrictEnergyStorage.class, new DefaultStorage<>(), StrictEnergyStorage.class);
-
     }
 }

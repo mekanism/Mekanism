@@ -23,6 +23,7 @@ import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.PartMap;
 import codechicken.multipart.IMultipart;
 import codechicken.multipart.TSlottedPart;*/
+import mcmultipart.MCMultiPartMod;
 import mcmultipart.block.TileMultipart;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.IOccludingPart;
@@ -39,11 +40,19 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
+import mekanism.common.Tier.CableTier;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.StrictEnergyAcceptor;
 import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,9 +65,14 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 //import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
@@ -81,6 +95,13 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 	public TileEntity[] cachedAcceptors = new TileEntity[6];
+
+	public PropertyEnum DOWN_PROPERTY = PropertyEnum.create("down", ConnectionType.class),
+			UP_PROPERTY = PropertyEnum.create("up", ConnectionType.class),
+			NORTH_PROPERTY = PropertyEnum.create("north", ConnectionType.class),
+			SOUTH_PROPERTY = PropertyEnum.create("south", ConnectionType.class),
+			WEST_PROPERTY = PropertyEnum.create("west", ConnectionType.class),
+			EAST_PROPERTY = PropertyEnum.create("east", ConnectionType.class);
 
 	static
 	{
@@ -421,7 +442,24 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public void addCollisionBoxes(AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity)
 	{
-		addSelectionBoxes(list);
+		if(getContainer() != null)
+		{
+			for(EnumFacing side : EnumFacing.values())
+			{
+				int ord = side.ordinal();
+				byte connections = getAllCurrentConnections();
+
+				if(connectionMapContainsSide(connections, side) || side == testingSide)
+				{
+					AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? smallSides[ord] : largeSides[ord];
+					if(box.intersectsWith(mask)) list.add(box);
+				}
+			}
+		}
+
+		AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6];
+		if(box.intersectsWith(mask)) list.add(box);
+
 	}
 
 	@Override
@@ -862,7 +900,58 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return true;
 	}
 
-	public static enum ConnectionType
+	@Override
+	public String getModelPath()
+	{
+		return getType();
+	}
+
+	@Override
+	public BlockState createBlockState()
+	{
+		return new BlockState(MCMultiPartMod.multipart, DOWN_PROPERTY, UP_PROPERTY, NORTH_PROPERTY, SOUTH_PROPERTY, WEST_PROPERTY, EAST_PROPERTY);
+	}
+
+	@Override
+	public IBlockState getExtendedState(IBlockState state)
+	{
+		return state
+				.withProperty(DOWN_PROPERTY, getConnectionType(EnumFacing.DOWN))
+				.withProperty(UP_PROPERTY, getConnectionType(EnumFacing.UP))
+				.withProperty(NORTH_PROPERTY, getConnectionType(EnumFacing.NORTH))
+				.withProperty(SOUTH_PROPERTY, getConnectionType(EnumFacing.SOUTH))
+				.withProperty(WEST_PROPERTY, getConnectionType(EnumFacing.WEST))
+				.withProperty(EAST_PROPERTY, getConnectionType(EnumFacing.EAST));
+	}
+
+	@Override
+	public boolean canRenderInLayer(EnumWorldBlockLayer layer) {
+
+		return layer == EnumWorldBlockLayer.TRANSLUCENT;
+	}
+
+
+	public void notifyTileChange()
+	{
+		MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), new Coord4D(getPos(), getWorld()));
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY
+				|| super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
+			return (T) this;
+		return super.getCapability(capability, facing);
+	}
+
+	public static enum ConnectionType implements IStringSerializable
 	{
 		NORMAL,
 		PUSH,
@@ -878,10 +967,12 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 			return values()[ordinal()+1];
 		}
+
+		public String getName()
+		{
+			return name().toLowerCase();
+		}
 	}
 
-	public void notifyTileChange()
-	{
-		MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), new Coord4D(getPos(), getWorld()));
-	}
+
 }

@@ -14,6 +14,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
@@ -108,9 +109,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					
 					return true;
 				}
-				else if(tile instanceof IConfigurable)
+				else if(MekanismUtils.hasCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side))
 				{
-					IConfigurable config = (IConfigurable)tile;
+					IConfigurable config = MekanismUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side);
 
 					if(SecurityUtils.canAccess(player, tile))
 					{

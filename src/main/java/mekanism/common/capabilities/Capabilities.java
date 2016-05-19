@@ -61,5 +61,7 @@ public class Capabilities
 
         GridTransmitterTile.register();
         LogisticalTransporter.register();
+
+        Configurable.register();
     }
 }
