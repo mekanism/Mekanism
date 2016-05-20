@@ -43,11 +43,11 @@ public class SolarNeutronRecipeWrapper extends BlankRecipeWrapper
 	{
 		List<String> currenttip = new ArrayList<String>();
 		
-		if(mouseX >= 26-5 && mouseX <= 42-5 && mouseY >= 14-12 && mouseY <= 72-12)
+		if(mouseX >= 26-3 && mouseX <= 42-3 && mouseY >= 14-12 && mouseY <= 72-12)
 		{
 			currenttip.add(LangUtils.localizeGasStack(recipe.getInput().ingredient));
 		}
-		else if(mouseX >= 134-5 && mouseX <= 150-5 && mouseY >= 14-12 && mouseY <= 72-12)
+		else if(mouseX >= 134-3 && mouseX <= 150-3 && mouseY >= 14-12 && mouseY <= 72-12)
 		{
 			currenttip.add(LangUtils.localizeGasStack(recipe.getOutput().output));
 		}

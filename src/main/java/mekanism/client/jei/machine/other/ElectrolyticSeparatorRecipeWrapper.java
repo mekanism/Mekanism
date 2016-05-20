@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ElectrolyticSeparatorRecipeWrapper extends BlankRecipeWrapper
@@ -52,11 +51,11 @@ public class ElectrolyticSeparatorRecipeWrapper extends BlankRecipeWrapper
 	{
 		List<String> currenttip = new ArrayList<String>();
 		
-		if(mouseX >= 59-5 && mouseX <= 75-5 && mouseY >= 19-9 && mouseY <= 47-9)
+		if(mouseX >= 59-4 && mouseX <= 75-4 && mouseY >= 19-9 && mouseY <= 47-9)
 		{
 			currenttip.add(recipe.getOutput().leftGas.getGas().getLocalizedName());
 		}
-		else if(mouseX >= 101-5 && mouseX <= 117-5 && mouseY >= 19-9 && mouseY <= 47-9)
+		else if(mouseX >= 101-4 && mouseX <= 117-4 && mouseY >= 19-9 && mouseY <= 47-9)
 		{
 			currenttip.add(recipe.getOutput().rightGas.getGas().getLocalizedName());
 		}

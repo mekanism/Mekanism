@@ -1,5 +1,7 @@
 package mekanism.client.jei.machine.chemical;
 
+import java.util.List;
+
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mezz.jei.api.IGuiHelper;
@@ -7,9 +9,11 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 {
@@ -43,9 +47,7 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 		super.drawExtras(minecraft);
 		
 		drawTexturedRect(61-xOffset, 39-yOffset, 176, 63, 55, 8);
-
-		//displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, new FluidStack(FluidRegistry.WATER, 1), null);
-
+		
 		if(tempRecipe.getInput().ingredient != null)
 		{
 			displayGauge(58, 27-xOffset, 14-yOffset, 176, 4, 58, null, tempRecipe.getInput().ingredient);
@@ -75,5 +77,13 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 		
 		fluidStacks.init(0, true, 6-xOffset, 5-yOffset, 16, 58, 1000, false, fluidOverlay);
 		fluidStacks.set(0, recipeWrapper.getFluidInputs());
+		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
+
+			@Override
+			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip) 
+			{
+				tooltip.remove(1);
+			}
+		});
 	}
 }
