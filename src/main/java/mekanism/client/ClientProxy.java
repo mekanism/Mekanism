@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mcmultipart.client.multipart.MultipartRegistryClient;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
@@ -97,6 +98,8 @@ import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
+import mekanism.client.render.transmitter.RenderMechanicalPipe;
+import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -123,6 +126,8 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.multipart.PartMechanicalPipe;
+import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -314,6 +319,9 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk", new RenderSecurityDesk());
 		ClientRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter", new RenderQuantumEntangloporter());
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
+		
+		MultipartRegistryClient.bindMultipartSpecialRenderer(PartMechanicalPipe.class, new RenderMechanicalPipe());
+		MultipartRegistryClient.bindMultipartSpecialRenderer(PartUniversalCable.class, new RenderUniversalCable());
 	}
 
 	@Override
@@ -616,7 +624,7 @@ public class ClientProxy extends CommonProxy
 		
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
-
+		
 		OBJLoader.instance.addDomain("mekanism");
 	}
 	

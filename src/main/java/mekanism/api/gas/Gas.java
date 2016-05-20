@@ -161,7 +161,7 @@ public class Gas
 		{
 			sprite = tex;
 		}
-		System.out.println(sprite);
+		
 		return this;
 	}
 
