@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+package mekanism.client.jei.crafting;
 
 import javax.annotation.Nonnull;
 

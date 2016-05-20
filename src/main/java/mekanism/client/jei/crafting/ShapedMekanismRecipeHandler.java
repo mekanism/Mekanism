@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+package mekanism.client.jei.crafting;
 
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mezz.jei.api.recipe.IRecipeHandler;
