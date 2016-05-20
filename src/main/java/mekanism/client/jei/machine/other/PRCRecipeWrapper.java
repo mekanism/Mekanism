@@ -11,7 +11,6 @@ import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class PRCRecipeWrapper extends BlankRecipeWrapper
@@ -30,21 +29,21 @@ public class PRCRecipeWrapper extends BlankRecipeWrapper
 	@Override
 	public List<ItemStack> getInputs()
 	{
-		return new ArrayList<ItemStack>();
+		return Arrays.asList(recipe.getInput().getSolid());
 	}
 	
 	@Nonnull
 	@Override
 	public List<FluidStack> getFluidInputs() 
 	{
-		return Arrays.asList(new FluidStack(FluidRegistry.WATER, 1000));
+		return Arrays.asList(recipe.getInput().getFluid());
 	}
 
 	@Nonnull
 	@Override
 	public List<ItemStack> getOutputs()
 	{
-		return new ArrayList<ItemStack>();
+		return Arrays.asList(recipe.getOutput().getItemOutput());
 	}
 	
 	@Nullable
@@ -53,13 +52,13 @@ public class PRCRecipeWrapper extends BlankRecipeWrapper
 	{
 		List<String> currenttip = new ArrayList<String>();
 		
-		if(mouseX >= 26-3 && mouseX <= 42-3 && mouseY >= 14-12 && mouseY <= 72-12)
+		if(mouseX >= 29-3 && mouseX <= 45-3 && mouseY >= 11-12 && mouseY <= 69-12)
 		{
-			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).gasStack));
+			currenttip.add(LangUtils.localizeGasStack(recipe.getInput().getGas()));
 		}
-		else if(mouseX >= 134-3 && mouseX <= 150-3 && mouseY >= 14-12 && mouseY <= 72-12)
+		else if(mouseX >= 141-3 && mouseX <= 157-3 && mouseY >= 41-12 && mouseY <= 69-12)
 		{
-			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe)arecipes.get(recipe)).fluidStack));
+			currenttip.add(LangUtils.localizeGasStack(recipe.getOutput().getGasOutput()));
 		}
 		
 		return currenttip;
