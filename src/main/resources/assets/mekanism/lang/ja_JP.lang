@@ -31,7 +31,7 @@ item.ScubaTank.name=潜水タンク
 item.GasMask.name=ガスマスク
 item.Dictionary.name=鉱石辞書
 item.ElectrolyticCore.name=電解コア
-item.Sawdust.name=木くず
+item.Sawdust.name=おがくず
 item.Salt.name=塩
 item.BrineBucket.name=塩水バケツ
 item.LithiumBucket.name=リチウムバケツ
@@ -53,19 +53,19 @@ item.CraftingFormula.name=クラフトの模型
 //Control Circuits
 item.BasicControlCircuit.name=基本制御回路
 item.AdvancedControlCircuit.name=発展制御回路
-item.EliteControlCircuit.name=上級制御回路
+item.EliteControlCircuit.name=精鋭制御回路
 item.UltimateControlCircuit.name=究極制御回路
 
 //Gas Tank
 tile.GasTankBasic.name=基本ガスタンク
 tile.GasTankAdvanced.name=発展ガスタンク
-tile.GasTankElite.name=上級ガスタンク
+tile.GasTankElite.name=精鋭ガスタンク
 tile.GasTankUltimate.name=究極ガスタンク
 
 //Fluid Tank (part of MachineBlock2, naming handled differently)
 tile.FluidTankBasic.name=基本液体タンク
 tile.FluidTankAdvanced.name=発展液体タンク
-tile.FluidTankElite.name=上級液体タンク
+tile.FluidTankElite.name=精鋭液体タンク
 tile.FluidTankUltimate.name=究極液体タンク
 
 //Cardboard Box
@@ -86,7 +86,7 @@ tile.BasicBlock.RefinedGlowstone.name=精錬されたグロウストーン
 tile.BasicBlock.SteelBlock.name=鋼鉄ブロック
 tile.BasicBlock.BinBasic.name=基本ビン
 tile.BasicBlock.BinAdvanced.name=発展ビン
-tile.BasicBlock.BinElite.name=上級ビン
+tile.BasicBlock.BinElite.name=精鋭ビン
 tile.BasicBlock.BinUltimate.name=究極ビン
 tile.BasicBlock.TeleporterFrame.name=テレポーターフレーム
 tile.BasicBlock.SteelCasing.name=鋼鉄ケース
@@ -185,7 +185,7 @@ tile.OreBlock.TinOre.name=錫鉱石
 //Transmitters
 item.MultipartTransmitter.BasicPressurizedTube.name=基本加圧チューブ
 item.MultipartTransmitter.AdvancedPressurizedTube.name=発展加圧チューブ
-item.MultipartTransmitter.ElitePressurizedTube.name=上級加圧チューブ
+item.MultipartTransmitter.ElitePressurizedTube.name=精鋭加圧チューブ
 item.MultipartTransmitter.UltimatePressurizedTube.name=究極加圧チューブ
 item.MultipartTransmitter.BasicUniversalCable.name=ベーシックユニバーサルケーブル
 item.MultipartTransmitter.AdvancedUniversalCable.name=アドバンスドユニバーサルケーブル
@@ -197,13 +197,13 @@ item.MultipartTransmitter.EliteMechanicalPipe.name=エリートメカニカル�
 item.MultipartTransmitter.UltimateMechanicalPipe.name=アルティメットメカニカルパイプ
 item.MultipartTransmitter.BasicLogisticalTransporter.name=基本ロジスティカルトランスポーター
 item.MultipartTransmitter.AdvancedLogisticalTransporter.name=発展ロジスティカルトランスポーター
-item.MultipartTransmitter.EliteLogisticalTransporter.name=上級ロジスティカルトランスポーター
+item.MultipartTransmitter.EliteLogisticalTransporter.name=精鋭ロジスティカルトランスポーター
 item.MultipartTransmitter.UltimateLogisticalTransporter.name=究極ロジスティカルトランスポーター
 item.MultipartTransmitter.RestrictiveTransporter.name=制限トランスポーター
 item.MultipartTransmitter.DiversionTransporter.name=迂回トランスポーター
 item.MultipartTransmitter.BasicThermodynamicConductor.name=基本サーモダイナミックコンダクター
 item.MultipartTransmitter.AdvancedThermodynamicConductor.name=発展サーモダイナミックコンダクター
-item.MultipartTransmitter.EliteThermodynamicConductor.name=上級サーモダイナミックコンダクター
+item.MultipartTransmitter.EliteThermodynamicConductor.name=精鋭サーモダイナミックコンダクター
 item.MultipartTransmitter.UltimateThermodynamicConductor.name=究極サーモダイナミックコンダクター
 
 //Glow Panel
@@ -212,14 +212,14 @@ item.GlowPanel.name=発光パネル
 //Energy Cubes
 tile.EnergyCubeBasic.name=基本エネルギーキューブ
 tile.EnergyCubeAdvanced.name=発展エネルギーキューブ
-tile.EnergyCubeElite.name=上級エネルギーキューブ
+tile.EnergyCubeElite.name=精鋭エネルギーキューブ
 tile.EnergyCubeUltimate.name=究極エネルギーキューブ
 tile.EnergyCubeCreative.name=クリエイティブエネルギーキューブ
 
 //Factory Installers
 item.basicFactoryInstaller.name=基本ファクトリーインストーラ
 item.advancedFactoryInstaller.name=発展ファクトリーインストーラ
-item.eliteFactoryInstaller.name=上級ファクトリーインストーラ
+item.eliteFactoryInstaller.name=精鋭ファクトリーインストーラ
 
 //Dust
 item.ironDust.name=鉄の粉
@@ -246,13 +246,13 @@ item.silverClump.name=銀の塊
 item.leadClump.name=鉛の塊
 
 //Shards
-item.ironCrystal.name=鉄の結晶
-item.goldCrystal.name=金の結晶
-item.osmiumCrystal.name=オスミウムの結晶
-item.copperCrystal.name=銅の結晶
-item.tinCrystal.name=錫の結晶
-item.silverCrystal.name=銀の結晶
-item.leadCrystal.name=鉛の結晶
+item.ironShard.name=鉄の欠片
+item.goldShard.name=金の欠片
+item.osmiumShard.name=オスミウムの欠片
+item.copperShard.name=銅の欠片
+item.tinShard.name=錫の欠片
+item.silverShard.name=銀の欠片
+item.leadShard.name=鉛の欠片
 
 //Crystals
 item.ironCrystal.name=鉄の結晶
@@ -353,7 +353,7 @@ oregas.lead=鉛鉱石
 //Tier names
 tier.Basic=基本
 tier.Advanced=発展
-tier.Elite=上級
+tier.Elite=精鋭
 tier.Ultimate=究極
 tier.Creative=クリエイティブ
 
