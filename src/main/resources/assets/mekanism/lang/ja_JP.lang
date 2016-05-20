@@ -48,7 +48,7 @@ item.Substrate.name=基質
 item.Flamethrower.name=火炎放射器
 item.GaugeDropper.name=ゲージドロッパー
 item.BioFuel.name=バイオ燃料
-item.CraftingFormula.name=クラフトの模型
+item.CraftingFormula.name=クラフトレシピ
 
 //Control Circuits
 item.BasicControlCircuit.name=基本制御回路
@@ -156,7 +156,7 @@ tile.MachineBlock3.QuantumEntangloporter.name=量子もつれ転送機
 tile.MachineBlock3.SolarNeutronActivator.name=太陽中性子反応機
 tile.MachineBlock3.Oredictionificator.name=鉱石統合器
 tile.MachineBlock3.ResistiveHeater.name=抵抗型発熱器
-tile.MachineBlock3.FormulaicAssemblicator.name=成形組立機
+tile.MachineBlock3.FormulaicAssemblicator.name=組立機
 tile.MachineBlock3.FuelwoodHeater.name=薪木ストーブ
 
 //Plastic
@@ -537,7 +537,7 @@ gui.maxSteam=蒸気の最大容量
 gui.heatTransfer=熱交換
 gui.superheaters=発熱器
 gui.boilCapacity=沸騰可能量
-gui.encodeFormula=パターンに登録
+gui.encodeFormula=クラフトレシピに登録
 gui.autoModeToggle=オートモード
 gui.craftSingle=一個だけ
 gui.craftAvailable=出来るだけ
@@ -773,8 +773,8 @@ tooltip.flamethrower.heat=加熱
 tooltip.flamethrower.inferno=焦熱
 tooltip.flamethrower.modeBump=火炎放射器のモードを変更
 
-tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
-tooltip.seismicReader.noVibrations=Unable to discover any vibrations
+tooltip.seismicReader.needsEnergy=弾性波の解析に必要なエネルギーがありません
+tooltip.seismicReader.noVibrations=弾性波を検出できません
 
 tooltip.Bin=A block used to store large quantities of a single type of item.
 tooltip.TeleporterFrame=The frame used to construct the Teleporter multiblock, allowing a portal to be generated within the structure.
