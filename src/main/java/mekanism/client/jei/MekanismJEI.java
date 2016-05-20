@@ -3,6 +3,8 @@ package mekanism.client.jei;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -62,9 +64,24 @@ import mekanism.client.jei.machine.chemical.ChemicalOxidizerRecipeWrapper;
 import mekanism.client.jei.machine.chemical.ChemicalWasherRecipeCategory;
 import mekanism.client.jei.machine.chemical.ChemicalWasherRecipeHandler;
 import mekanism.client.jei.machine.chemical.ChemicalWasherRecipeWrapper;
+import mekanism.client.jei.machine.other.ElectrolyticSeparatorRecipeCategory;
+import mekanism.client.jei.machine.other.ElectrolyticSeparatorRecipeHandler;
+import mekanism.client.jei.machine.other.ElectrolyticSeparatorRecipeWrapper;
 import mekanism.client.jei.machine.other.MetallurgicInfuserRecipeCategory;
 import mekanism.client.jei.machine.other.MetallurgicInfuserRecipeHandler;
 import mekanism.client.jei.machine.other.MetallurgicInfuserRecipeWrapper;
+import mekanism.client.jei.machine.other.PRCRecipeCategory;
+import mekanism.client.jei.machine.other.PRCRecipeHandler;
+import mekanism.client.jei.machine.other.PRCRecipeWrapper;
+import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeCategory;
+import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeHandler;
+import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeWrapper;
+import mekanism.client.jei.machine.other.SolarNeutronRecipeCategory;
+import mekanism.client.jei.machine.other.SolarNeutronRecipeHandler;
+import mekanism.client.jei.machine.other.SolarNeutronRecipeWrapper;
+import mekanism.client.jei.machine.other.ThermalEvaporationRecipeCategory;
+import mekanism.client.jei.machine.other.ThermalEvaporationRecipeHandler;
+import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -77,6 +94,10 @@ import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.recipe.machines.OxidationRecipe;
+import mekanism.common.recipe.machines.PressurizedRecipe;
+import mekanism.common.recipe.machines.SeparatorRecipe;
+import mekanism.common.recipe.machines.SolarNeutronRecipe;
+import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.util.ItemDataUtils;
 import mezz.jei.api.IItemRegistry;
@@ -156,6 +177,26 @@ public class MekanismJEI implements IModPlugin
 			registry.addRecipeCategories(chemicalWasherCategory);
 			registry.addRecipeHandlers(new ChemicalWasherRecipeHandler(chemicalWasherCategory));
 			addRecipes(registry, Recipe.CHEMICAL_WASHER, chemicalWasherCategory, WasherRecipe.class, ChemicalWasherRecipeCategory.class, ChemicalWasherRecipeWrapper.class);
+			
+			SolarNeutronRecipeCategory solarNeutronCategory = new SolarNeutronRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(solarNeutronCategory);
+			registry.addRecipeHandlers(new SolarNeutronRecipeHandler(solarNeutronCategory));
+			addRecipes(registry, Recipe.SOLAR_NEUTRON_ACTIVATOR, solarNeutronCategory, SolarNeutronRecipe.class, SolarNeutronRecipeCategory.class, SolarNeutronRecipeWrapper.class);
+			
+			ElectrolyticSeparatorRecipeCategory electrolyticSeparatorCategory = new ElectrolyticSeparatorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(electrolyticSeparatorCategory);
+			registry.addRecipeHandlers(new ElectrolyticSeparatorRecipeHandler(electrolyticSeparatorCategory));
+			addRecipes(registry, Recipe.ELECTROLYTIC_SEPARATOR, electrolyticSeparatorCategory, SeparatorRecipe.class, ElectrolyticSeparatorRecipeCategory.class, ElectrolyticSeparatorRecipeWrapper.class);
+			
+			ThermalEvaporationRecipeCategory thermalEvaporationCategory = new ThermalEvaporationRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(thermalEvaporationCategory);
+			registry.addRecipeHandlers(new ThermalEvaporationRecipeHandler(thermalEvaporationCategory));
+			addRecipes(registry, Recipe.THERMAL_EVAPORATION_PLANT, thermalEvaporationCategory, ThermalEvaporationRecipe.class, ThermalEvaporationRecipeCategory.class, ThermalEvaporationRecipeWrapper.class);
+			
+			PRCRecipeCategory prcCategory = new PRCRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(prcCategory);
+			registry.addRecipeHandlers(new PRCRecipeHandler(prcCategory));
+			addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, prcCategory, PressurizedRecipe.class, PRCRecipeCategory.class, PRCRecipeWrapper.class);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -179,6 +220,23 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipeClickArea(GuiThermalEvaporationController.class, 49, 20, 78, 38, "mekanism.thermal_evaporation_plant");
 		registry.addRecipeClickArea(GuiPRC.class, 75, 37, 36, 10, "mekanism.pressurized_reaction_chamber");
 		registry.addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, "mekanism.rotary_condensentrator");
+		
+		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<RotaryCondensentratorRecipeWrapper>();
+		
+		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+		registry.addRecipeCategories(rotaryCondensentratorCategory);
+		registry.addRecipeHandlers(new RotaryCondensentratorRecipeHandler(rotaryCondensentratorCategory));
+		
+		for(Gas gas : GasRegistry.getRegisteredGasses())
+		{
+			if(gas.hasFluid())
+			{
+				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, true, rotaryCondensentratorCategory));
+				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, false, rotaryCondensentratorCategory));
+			}
+		}
+		
+		registry.addRecipes(condensentratorRecipes);
 	}
 	
 	private void registerBasicMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends MachineRecipeHandler> handler, Class<? extends MachineRecipeWrapper> wrapper) throws Exception
