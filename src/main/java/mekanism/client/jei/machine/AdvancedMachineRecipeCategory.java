@@ -98,12 +98,16 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 			tempRecipe = ((AdvancedMachineRecipeWrapper)recipeWrapper).recipe;
 		}
 		
+		AdvancedMachineInput input = (AdvancedMachineInput)tempRecipe.recipeInput;
+		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		
 		itemStacks.init(0, true, 27, 0);
 		itemStacks.init(1, false, 87, 18);
+		itemStacks.init(2, false, 27, 36);
 
 		itemStacks.setFromRecipe(0, recipeWrapper.getInputs());
 		itemStacks.setFromRecipe(1, recipeWrapper.getOutputs());
+		itemStacks.set(2, ((AdvancedMachineRecipeWrapper)recipeWrapper).getFuelStacks(input.gasType));
 	}
 }
