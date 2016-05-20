@@ -12,6 +12,7 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.ModelBiped;
@@ -22,7 +23,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -48,12 +48,6 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		setMaxStackSize(1);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-*/
 
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
@@ -142,24 +136,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			return 0;
-		}
-
-		return itemStack.getTagCompound().getDouble("electricity");
+		return ItemDataUtils.getDouble(itemStack, "energyStored");
 	}
 
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.getTagCompound().setDouble("electricity", electricityStored);
+		ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
 	}
 
 	@Override

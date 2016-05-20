@@ -21,6 +21,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -147,7 +148,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 			
@@ -191,7 +192,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(dataStream.readBoolean())
 			{

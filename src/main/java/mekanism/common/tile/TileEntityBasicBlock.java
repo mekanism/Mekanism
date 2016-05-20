@@ -31,6 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
@@ -122,7 +123,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			facing = EnumFacing.getFront(dataStream.readInt());
 			redstone = dataStream.readBoolean();

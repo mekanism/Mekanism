@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer
 {
@@ -296,7 +297,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(clientHasStructure)
 			{

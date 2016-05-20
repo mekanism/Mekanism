@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager
 {
@@ -251,7 +252,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(clientHasStructure)
 			{

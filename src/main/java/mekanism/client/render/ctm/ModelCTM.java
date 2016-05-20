@@ -26,8 +26,8 @@ public class ModelCTM implements IModel
 {
     private Map<EnumFacing, String> overrides = Maps.newHashMap();
     
-    private transient ChiselTextureCTM faceObj;
-    private transient Map<EnumFacing, ChiselTextureCTM> overridesObj = new EnumMap<>(EnumFacing.class);
+    private transient TextureCTM faceObj;
+    private transient Map<EnumFacing, TextureCTM> overridesObj = new EnumMap<>(EnumFacing.class);
     
     private transient IBakedModel modelObj;
     
@@ -77,12 +77,12 @@ public class ModelCTM implements IModel
         overridesObj.values().forEach(t -> textures.addAll(t.getTextures()));
     }
 
-    public ChiselTextureCTM getDefaultFace()
+    public TextureCTM getDefaultFace()
     {
         return faceObj;
     }
 
-    public ChiselTextureCTM getFace(EnumFacing facing) 
+    public TextureCTM getFace(EnumFacing facing) 
     {
         return overridesObj.getOrDefault(facing, faceObj);
     }

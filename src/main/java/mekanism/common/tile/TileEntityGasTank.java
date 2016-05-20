@@ -34,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, ISecurityTile
 {
@@ -217,7 +218,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 
@@ -237,7 +238,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			GasTankTier prevTier = tier;
 			

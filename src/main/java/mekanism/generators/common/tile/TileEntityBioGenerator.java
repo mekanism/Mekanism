@@ -9,6 +9,7 @@ import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +20,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {
@@ -200,7 +202,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			bioFuelSlot.fluidStored = dataStream.readInt();
 		}
@@ -308,12 +310,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public void writeSustainedData(ItemStack itemStack)
 	{
-		itemStack.getTagCompound().setInteger("fluidStored", bioFuelSlot.fluidStored);
+		ItemDataUtils.setInt(itemStack, "fluidStored", bioFuelSlot.fluidStored);
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		bioFuelSlot.setFluid(itemStack.getTagCompound().getInteger("fluidStored"));
+		bioFuelSlot.setFluid(ItemDataUtils.getInt(itemStack, "fluidStored"));
 	}
 }

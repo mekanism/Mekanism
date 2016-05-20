@@ -9,6 +9,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -140,35 +141,25 @@ public class ItemConfigurationCard extends ItemMekanism
 	
 	public void setData(ItemStack itemstack, NBTTagCompound data)
 	{
-		if(itemstack.hasTagCompound())
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(data != null)
 		{
-			itemstack.getTagCompound().setTag("data", data);
+			ItemDataUtils.setCompound(itemstack, "data", data);
 		}
 		else {
-			itemstack.getTagCompound().removeTag("data");
+			ItemDataUtils.removeData(itemstack, "data");
 		}
 	}
 
 	public NBTTagCompound getData(ItemStack itemstack)
 	{
-		if(!itemstack.hasTagCompound())
-		{
-			return null;
-		}
-		
-		NBTTagCompound data = itemstack.getTagCompound().getCompoundTag("data");
+		NBTTagCompound data = ItemDataUtils.getCompound(itemstack, "data");
 		
 		if(data.hasNoTags())
 		{
 			return null;
 		}
 		else {
-			return itemstack.getTagCompound().getCompoundTag("data");
+			return ItemDataUtils.getCompound(itemstack, "data");
 		}
 	}
 

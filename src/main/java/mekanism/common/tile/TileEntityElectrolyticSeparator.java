@@ -39,6 +39,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,6 +53,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager, IRedstoneControl, IActiveState, ISecurityTile
@@ -385,7 +387,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			byte type = dataStream.readByte();
 
@@ -403,7 +405,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(dataStream.readBoolean())
 			{
@@ -583,26 +585,26 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			itemStack.getTagCompound().setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 		
 		if(leftTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("leftTank", leftTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(rightTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("rightTank", rightTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank")));
-		leftTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("leftTank")));
-		rightTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("rightTank")));
+		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
+		leftTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
+		rightTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
 	}
 
 	@Override

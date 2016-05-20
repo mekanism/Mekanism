@@ -35,6 +35,5 @@ public abstract class AdvancedMachineRecipe<RECIPE extends AdvancedMachineRecipe
 		{
 			getOutput().applyOutputs(inventory, outputIndex, true);
 		}
-
 	}
 }

@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -11,7 +12,6 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public class ItemElectricBow extends ItemEnergized
@@ -107,41 +107,14 @@ public class ItemElectricBow extends ItemEnergized
 		return itemstack;
 	}
 
-	/**
-	 * Sets the bow's fire state in NBT.
-	 * @param itemstack - the bow's itemstack
-	 * @param state - state to change to
-	 */
 	public void setFireState(ItemStack itemstack, boolean state)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemstack.getTagCompound().setBoolean("fireState", state);
+		ItemDataUtils.setBoolean(itemstack, "fireState", state);
 	}
 
-	/**
-	 * Gets the bow's fire state from NBT.
-	 * @param itemstack - the bow's itemstack
-	 * @return fire state
-	 */
 	public boolean getFireState(ItemStack itemstack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			return false;
-		}
-
-		boolean state = false;
-
-		if(itemstack.getTagCompound().getTag("fireState") != null)
-		{
-			state = itemstack.getTagCompound().getBoolean("fireState");
-		}
-
-		return state;
+		return ItemDataUtils.getBoolean(itemstack, "fireState");
 	}
 
 	@Override

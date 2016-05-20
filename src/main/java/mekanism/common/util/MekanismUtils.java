@@ -83,7 +83,6 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
@@ -91,7 +90,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -705,7 +703,7 @@ public final class MekanismUtils
 	 */
 	public static double getMaxEnergy(ItemStack itemStack, double def)
 	{
-		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.getTagCompound());
+		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
 		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
 		return def * Math.pow(general.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}
@@ -1370,8 +1368,8 @@ public final class MekanismUtils
 		if((dmgItems[1] != null) && (dmgItems[0].getItem() == dmgItems[1].getItem()) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && dmgItems[0].getItem().isRepairable())
 		{
 			Item theItem = dmgItems[0].getItem();
-			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamage/*TODO:ForDisplay*/();
-			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamage/*TODO:ForDisplay*/();
+			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamage();
+			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamage();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
 			
@@ -1415,21 +1413,6 @@ public final class MekanismUtils
 	public static boolean isOp(EntityPlayerMP player)
 	{
 		return general.opsBypassRestrictions && player.mcServer.getConfigurationManager().canSendCommands(player.getGameProfile());
-	}
-	
-	/**
-	 * Gets the mod ID of the mod owning the given ItemStack.
-	 * @param stack - ItemStack to check
-	 * @return mod ID of the ItemStack's owner
-	 */
-	public static String getMod(ItemStack stack)
-	{
-		try {
-			ModContainer mod = null;//TODO:GameData.findModOwner(GameData.getItemRegistry().getNameForObject(stack.getItem()));
-			return mod == null ? "Minecraft" : mod.getName();
-		} catch(Exception e) {
-			return "null";
-		}
 	}
 	
 	/**

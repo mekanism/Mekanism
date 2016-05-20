@@ -23,6 +23,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -38,7 +39,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory, ITierItem, ISecurityItem
@@ -147,31 +147,21 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			return null;
-		}
-
-		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
+		return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
 	}
 
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.getTagCompound().removeTag("stored");
+			ItemDataUtils.removeData(itemstack, "stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 
@@ -295,14 +285,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(!itemStack.hasTagCompound())
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-
-			itemStack.getTagCompound().setTag("Items", nbtTags);
+			ItemDataUtils.setList((ItemStack)data[0], "Items", nbtTags);
 		}
 	}
 
@@ -311,14 +294,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(!itemStack.hasTagCompound())
-			{
-				return null;
-			}
-
-			return itemStack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
+			return ItemDataUtils.getList((ItemStack)data[0], "Items");
 		}
 
 		return null;
@@ -339,9 +315,9 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public String getOwner(ItemStack stack) 
 	{
-		if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("owner"))
+		if(ItemDataUtils.hasData(stack, "owner"))
 		{
-			return stack.getTagCompound().getString("owner");
+			return ItemDataUtils.getString(stack, "owner");
 		}
 		
 		return null;
@@ -350,40 +326,25 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public void setOwner(ItemStack stack, String owner) 
 	{
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
 		if(owner == null || owner.isEmpty())
 		{
-			stack.getTagCompound().removeTag("owner");
+			ItemDataUtils.removeData(stack, "owner");
 			return;
 		}
 		
-		stack.getTagCompound().setString("owner", owner);
+		ItemDataUtils.setString(stack, "owner", owner);
 	}
 
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.getTagCompound() == null)
-		{
-			return SecurityMode.PUBLIC;
-		}
-
-		return SecurityMode.values()[stack.getTagCompound().getInteger("security")];
+		return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
 	}
 
 	@Override
 	public void setSecurity(ItemStack stack, SecurityMode mode) 
 	{
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		stack.getTagCompound().setInteger("security", mode.ordinal());
+		ItemDataUtils.setInt(stack, "security", mode.ordinal());
 	}
 
 	@Override

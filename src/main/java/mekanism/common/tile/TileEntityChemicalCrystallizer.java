@@ -39,10 +39,12 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, IUpgradeTile, ISustainedData, ITankManager, IConfigCardAccess, ISecurityTile
 {
@@ -211,7 +213,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			isActive = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();
@@ -462,14 +464,14 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		if(inputTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("inputTank", inputTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		inputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("inputTank")));
+		inputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
 	}
 
 	@Override

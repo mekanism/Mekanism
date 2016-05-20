@@ -131,7 +131,7 @@ public class CTMModelFactory implements ISmartBlockModel, ISmartItemModel, IPers
         
         for(EnumFacing facing : EnumFacing.VALUES)
         {
-            ChiselTextureCTM face = model.getFace(facing);
+            TextureCTM face = model.getFace(facing);
             ICTMBlock block = (ICTMBlock)state.getBlock();
             CTMData data = block.getCTMData(state);
             
@@ -151,7 +151,7 @@ public class CTMModelFactory implements ISmartBlockModel, ISmartItemModel, IPers
         return new CTMModelFactory(faceQuads, generalQuads, model);
     }
     
-    private void addAllQuads(List<BakedQuad> from, ChiselTextureCTM tex, @Nullable CTMBlockRenderContext ctx, IBlockState state, int quadGoal, List<BakedQuad> to)
+    private void addAllQuads(List<BakedQuad> from, TextureCTM tex, @Nullable CTMBlockRenderContext ctx, IBlockState state, int quadGoal, List<BakedQuad> to)
     {
         for(BakedQuad q : from)
         {

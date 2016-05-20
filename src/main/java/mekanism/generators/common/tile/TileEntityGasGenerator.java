@@ -17,10 +17,12 @@ import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection, ISustainedData
 {
@@ -236,7 +238,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	{
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(dataStream.readBoolean())
 			{
@@ -359,16 +361,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	{
 		if(fuelTank != null)
 		{
-			itemStack.getTagCompound().setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "fuelTank", fuelTank.write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		if(itemStack.getTagCompound().hasKey("fuelTank"))
+		if(ItemDataUtils.hasData(itemStack, "fuelTank"))
 		{
-			fuelTank.read(itemStack.getTagCompound().getCompoundTag("fuelTank"));
+			fuelTank.read(ItemDataUtils.getCompound(itemStack, "fuelTank"));
 			
 			boolean isTankEmpty = (fuelTank.getGas() == null);
 			//Update energy output based on any existing fuel in tank

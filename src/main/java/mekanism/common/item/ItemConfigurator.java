@@ -19,6 +19,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -238,27 +239,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 	public void setState(ItemStack itemstack, ConfiguratorMode state)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemstack.getTagCompound().setInteger("state", state.ordinal());
+		ItemDataUtils.setInt(itemstack, "state", state.ordinal());
 	}
 
 	public ConfiguratorMode getState(ItemStack itemstack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			return ConfiguratorMode.CONFIGURATE_ITEMS;
-		}
-
-		if(itemstack.getTagCompound().getTag("state") != null)
-		{
-			return ConfiguratorMode.values()[itemstack.getTagCompound().getInteger("state")];
-		}
-
-		return ConfiguratorMode.CONFIGURATE_ITEMS;
+		return ConfiguratorMode.values()[ItemDataUtils.getInt(itemstack, "state")];
 	}
 
 	@Override

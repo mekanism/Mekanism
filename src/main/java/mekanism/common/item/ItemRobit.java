@@ -7,10 +7,10 @@ import mekanism.api.EnumColor;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -76,24 +76,14 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 
 	public void setName(ItemStack itemstack, String name)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemstack.getTagCompound().setString("name", name);
+		ItemDataUtils.setString(itemstack, "name", name);
 	}
 
 	public String getName(ItemStack itemstack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			return "Robit";
-		}
+		String name = ItemDataUtils.getString(itemstack, "name");
 
-		String name = itemstack.getTagCompound().getString("name");
-
-		return name.equals("") ? "Robit" : name;
+		return name.isEmpty() ? "Robit" : name;
 	}
 
 	@Override
@@ -101,14 +91,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.getTagCompound() == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-
-			itemStack.getTagCompound().setTag("Items", nbtTags);
+			ItemDataUtils.setList((ItemStack)data[0], "Items", nbtTags);
 		}
 	}
 
@@ -117,14 +100,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.getTagCompound() == null)
-			{
-				return null;
-			}
-
-			return itemStack.getTagCompound().getTagList("Items", 10);
+			return ItemDataUtils.getList((ItemStack)data[0], "Items");
 		}
 
 		return null;

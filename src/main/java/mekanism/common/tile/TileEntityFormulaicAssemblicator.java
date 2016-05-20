@@ -30,6 +30,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
 {
@@ -565,7 +566,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 			
@@ -601,7 +602,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			autoMode = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();

@@ -6,6 +6,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -101,14 +102,9 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 
 	private FluidStack getFluid_do(ItemStack container) 
 	{
-		if(container.getTagCompound() == null)
+		if(ItemDataUtils.hasData(container, "fluidStack"))
 		{
-			return null;
-		}
-
-		if(container.getTagCompound().hasKey("fluidStack"))
-		{
-			return FluidStack.loadFluidStackFromNBT(container.getTagCompound().getCompoundTag("fluidStack"));
+			return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(container, "fluidStack"));
 		}
 		
 		return null;
@@ -122,17 +118,12 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	
 	public void setFluid(ItemStack container, FluidStack stack)
 	{
-		if(container.getTagCompound() == null)
-		{
-			container.setTagCompound(new NBTTagCompound());
-		}
-		
 		if(stack == null || stack.amount == 0 || stack.getFluid() == null)
 		{
-			container.getTagCompound().removeTag("fluidStack");
+			ItemDataUtils.removeData(container, "fluidStack");
 		}
 		else {
-			container.getTagCompound().setTag("fluidStack", stack.writeToNBT(new NBTTagCompound()));
+			ItemDataUtils.setCompound(container, "fluidStack", stack.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
@@ -246,12 +237,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 
 	private GasStack getGas_do(ItemStack itemstack) 
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			return null;
-		}
-
-		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("gasStack"));
+		return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "gasStack"));
 	}
 	
 	@Override
@@ -261,22 +247,17 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	}
 
 	@Override
-	public void setGas(ItemStack itemstack, GasStack stack) 
+	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.getTagCompound().removeTag("gasStack");
+			ItemDataUtils.removeData(itemstack, "gasStack");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.getTagCompound().setTag("gasStack", gasStack.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemstack, "gasStack", gasStack.write(new NBTTagCompound()));
 		}
 	}
 

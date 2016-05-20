@@ -38,6 +38,7 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -58,7 +59,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -235,9 +235,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
 
-			if(type.supportsUpgrades && itemstack.getTagCompound() != null && itemstack.getTagCompound().hasKey("upgrades"))
+			if(type.supportsUpgrades && ItemDataUtils.hasData(itemstack, "upgrades"))
 			{
-				Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemstack.getTagCompound());
+				Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
 				
 				for(Map.Entry<Upgrade, Integer> entry : upgrades.entrySet())
 				{
@@ -326,9 +326,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			
 			if(tileEntity instanceof IUpgradeTile)
 			{
-				if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("upgrades"))
+				if(ItemDataUtils.hasData(stack, "upgrades"))
 				{
-					((IUpgradeTile)tileEntity).getComponent().read(stack.getTagCompound());
+					((IUpgradeTile)tileEntity).getComponent().read(ItemDataUtils.getDataMap(stack));
 				}
 			}
 
@@ -336,9 +336,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-				if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("sideDataStored"))
+				if(ItemDataUtils.hasData(stack, "sideDataStored"))
 				{
-					config.getConfig().read(stack.getTagCompound());
+					config.getConfig().read(ItemDataUtils.getDataMap(stack));
+					config.getEjector().read(ItemDataUtils.getDataMap(stack));
 				}
 			}
 			
@@ -352,9 +353,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(tileEntity instanceof IRedstoneControl)
 			{
-				if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("controlType"))
+				if(ItemDataUtils.hasData(stack, "controlType"))
 				{
-					((IRedstoneControl)tileEntity).setControlType(RedstoneControl.values()[stack.getTagCompound().getInteger("controlType")]);
+					((IRedstoneControl)tileEntity).setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
 				}
 			}
 
@@ -611,14 +612,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.getTagCompound() == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-			
-			itemStack.getTagCompound().setTag("Items", nbtTags);
+			ItemDataUtils.setList((ItemStack)data[0], "Items", nbtTags);
 		}
 	}
 
@@ -627,14 +621,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.getTagCompound() == null)
-			{
-				return null;
-			}
-			
-			return itemStack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
+			return ItemDataUtils.getList((ItemStack)data[0], "Items");
 		}
 
 		return null;
@@ -646,18 +633,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		if(data[0] instanceof ItemStack)
 		{
 			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.getTagCompound() == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
 			
 			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null)
 			{
-				itemStack.getTagCompound().removeTag("fluidTank");
+				ItemDataUtils.removeData(itemStack, "fluidTank");
 			}
 			else {
-				itemStack.getTagCompound().setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
+				ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
 			}
 		}
 	}
@@ -669,15 +651,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.getTagCompound() == null)
+			if(!ItemDataUtils.hasData(itemStack, "fluidTank"))
 			{
 				return null;
 			}
 
-			if(itemStack.getTagCompound().hasKey("fluidTank"))
-			{
-				return FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank"));
-			}
+			return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank"));
 		}
 
 		return null;
@@ -698,33 +677,23 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	
 	public void setBucketMode(ItemStack itemStack, boolean bucketMode)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.getTagCompound().setBoolean("bucketMode", bucketMode);
+		ItemDataUtils.setBoolean(itemStack, "bucketMode", bucketMode);
 	}
 	
 	public boolean getBucketMode(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			return false;
-		}
-
-		return itemStack.getTagCompound().getBoolean("bucketMode");
+		return ItemDataUtils.getBoolean(itemStack, "bucketMode");
 	}
 
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null || !MachineType.get(itemStack).isElectric)
+		if(!MachineType.get(itemStack).isElectric)
 		{
 			return 0;
 		}
 
-		return itemStack.getTagCompound().getDouble("electricity");
+		return ItemDataUtils.getDouble(itemStack, "energyStored");
 	}
 
 	@Override
@@ -735,13 +704,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			return;
 		}
 		
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.getTagCompound().setDouble("electricity", electricityStored);
+		ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
 	}
 
 	@Override
@@ -774,14 +737,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy*general.FROM_TE, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive* general.TO_TE);
+			return (int)Math.round(toReceive*general.TO_TE);
 		}
 
 		return 0;
@@ -793,14 +756,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy*general.FROM_TE), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_TE);
 		}
 
 		return 0;
@@ -809,13 +772,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem) * general.TO_TE);
+		return (int)(getEnergy(theItem)*general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem) * general.TO_TE);
+		return (int)(getMaxEnergy(theItem)*general.TO_TE);
 	}
 
 	@Override
@@ -933,9 +896,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public String getOwner(ItemStack stack) 
 	{
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("owner"))
+		if(ItemDataUtils.hasData(stack, "owner"))
 		{
-			return stack.getTagCompound().getString("owner");
+			return ItemDataUtils.getString(stack, "owner");
 		}
 		
 		return null;
@@ -944,40 +907,25 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public void setOwner(ItemStack stack, String owner) 
 	{
-		if(!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
 		if(owner == null || owner.isEmpty())
 		{
-			stack.getTagCompound().removeTag("owner");
+			ItemDataUtils.removeData(stack, "owner");
 			return;
 		}
 		
-		stack.getTagCompound().setString("owner", owner);
+		ItemDataUtils.setString(stack, "owner", owner);
 	}
 
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.getTagCompound() == null)
-		{
-			return SecurityMode.PUBLIC;
-		}
-
-		return SecurityMode.values()[stack.getTagCompound().getInteger("security")];
+		return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
 	}
 
 	@Override
 	public void setSecurity(ItemStack stack, SecurityMode mode) 
 	{
-		if(!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		stack.getTagCompound().setInteger("security", mode.ordinal());
+		ItemDataUtils.setInt(stack, "security", mode.ordinal());
 	}
 
 	@Override

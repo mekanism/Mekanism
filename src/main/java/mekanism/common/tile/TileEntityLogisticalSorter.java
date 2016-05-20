@@ -27,6 +27,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,6 +39,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, ISpecialConfigData, ISustainedData, ISecurityTile
 {
@@ -275,7 +277,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 
@@ -324,7 +326,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			int type = dataStream.readInt();
 	
@@ -666,15 +668,15 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public void writeSustainedData(ItemStack itemStack) 
 	{
-		itemStack.getTagCompound().setBoolean("hasSorterConfig", true);
+		ItemDataUtils.setBoolean(itemStack, "hasSorterConfig", true);
 
 		if(color != null)
 		{
-			itemStack.getTagCompound().setInteger("color", TransporterUtils.colors.indexOf(color));
+			ItemDataUtils.setInt(itemStack, "color", TransporterUtils.colors.indexOf(color));
 		}
 
-		itemStack.getTagCompound().setBoolean("autoEject", autoEject);
-		itemStack.getTagCompound().setBoolean("roundRobin", roundRobin);
+		ItemDataUtils.setBoolean(itemStack, "autoEject", autoEject);
+		ItemDataUtils.setBoolean(itemStack, "roundRobin", roundRobin);
 
 		NBTTagList filterTags = new NBTTagList();
 
@@ -687,26 +689,26 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		if(filterTags.tagCount() != 0)
 		{
-			itemStack.getTagCompound().setTag("filters", filterTags);
+			ItemDataUtils.setList(itemStack, "filters", filterTags);
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		if(itemStack.getTagCompound().hasKey("hasSorterConfig"))
+		if(ItemDataUtils.hasData(itemStack, "hasSorterConfig"))
 		{
-			if(itemStack.getTagCompound().hasKey("color"))
+			if(ItemDataUtils.hasData(itemStack, "color"))
 			{
-				color = TransporterUtils.colors.get(itemStack.getTagCompound().getInteger("color"));
+				color = TransporterUtils.colors.get(ItemDataUtils.getInt(itemStack, "color"));
 			}
 
-			autoEject = itemStack.getTagCompound().getBoolean("autoEject");
-			roundRobin = itemStack.getTagCompound().getBoolean("roundRobin");
+			autoEject = ItemDataUtils.getBoolean(itemStack, "autoEject");
+			roundRobin = ItemDataUtils.getBoolean(itemStack, "roundRobin");
 
-			if(itemStack.getTagCompound().hasKey("filters"))
+			if(ItemDataUtils.hasData(itemStack, "filters"))
 			{
-				NBTTagList tagList = itemStack.getTagCompound().getTagList("filters", NBT.TAG_COMPOUND);
+				NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{

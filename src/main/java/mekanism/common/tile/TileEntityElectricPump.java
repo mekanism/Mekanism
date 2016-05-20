@@ -45,6 +45,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration, ISecurityTile
@@ -269,7 +270,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			if(dataStream.readInt() == 1)
 			{

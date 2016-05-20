@@ -54,12 +54,14 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -310,14 +312,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						
 						ItemStack returnStack = getMachineStack();
 						
-						if(returnStack.getTagCompound() == null)
-						{
-							returnStack.setTagCompound(new NBTTagCompound());
-						}
-						
-						upgradeComponent.write(returnStack.getTagCompound());
+						upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
 						upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-						upgradeComponent.read(inventory[2].getTagCompound());
+						upgradeComponent.read(ItemDataUtils.getDataMap(inventory[2]));
 
 						inventory[2] = null;
 						inventory[3] = returnStack;
@@ -746,7 +743,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 
@@ -766,7 +763,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			clientActive = dataStream.readBoolean();
 			RecipeType oldRecipe = recipeType;

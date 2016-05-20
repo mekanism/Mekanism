@@ -10,13 +10,13 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -116,24 +116,13 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			return 0;
-		}
-
-		return itemStack.getTagCompound().getDouble("electricity");
+		return ItemDataUtils.getDouble(itemStack, "energyStored");
 	}
 
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.getTagCompound().setDouble("electricity", electricityStored);
+		ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
 	}
 
 	@Override

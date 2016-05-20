@@ -11,6 +11,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
@@ -153,12 +154,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	public boolean getFlowing(ItemStack stack)
 	{
-		if(stack.getTagCompound() == null)
-		{
-			return false;
-		}
-
-		return stack.getTagCompound().getBoolean("flowing");
+		return ItemDataUtils.getBoolean(stack, "flowing");
 	}
 	
 	public String getFlowingStr(ItemStack stack)
@@ -170,12 +166,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	public void setFlowing(ItemStack stack, boolean flowing)
 	{
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-
-		stack.getTagCompound().setBoolean("flowing", flowing);
+		ItemDataUtils.setBoolean(stack, "flowing", flowing);
 	}
 
 	@Override
@@ -193,31 +184,21 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			return null;
-		}
-
-		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
+		return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
 	}
 
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.getTagCompound().removeTag("stored");
+			ItemDataUtils.removeData(itemstack, "stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 

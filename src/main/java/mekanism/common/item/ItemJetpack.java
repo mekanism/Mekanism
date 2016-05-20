@@ -12,6 +12,7 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
@@ -160,54 +161,34 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		return false;
 	}
 
-	@Override
-	public GasStack getGas(ItemStack itemstack)
-	{
-		if(itemstack.getTagCompound() == null)
-		{
-			return null;
-		}
-
-		return GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
-	}
-
 	public JetpackMode getMode(ItemStack stack)
 	{
-		if(stack.getTagCompound() == null)
-		{
-			return JetpackMode.NORMAL;
-		}
-
-		return JetpackMode.values()[stack.getTagCompound().getInteger("mode")];
+		return JetpackMode.values()[ItemDataUtils.getInt(stack, "mode")];
 	}
 
 	public void setMode(ItemStack stack, JetpackMode mode)
 	{
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
+		ItemDataUtils.setInt(stack, "mode", mode.ordinal());
+	}
 
-		stack.getTagCompound().setInteger("mode", mode.ordinal());
+	@Override
+	public GasStack getGas(ItemStack itemstack)
+	{
+		return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
 	}
 
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.getTagCompound() == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.getTagCompound().removeTag("stored");
+			ItemDataUtils.removeData(itemstack, "stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 

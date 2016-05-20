@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import java.awt.Rectangle;
 import java.util.List;
 
 import mekanism.api.ObfuscatedNames;
@@ -12,8 +13,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiElement
@@ -145,12 +144,18 @@ public abstract class GuiElement
 	public static class Rectangle4i
 	{
 		public int x, y, width, height;
+		
 		public Rectangle4i(int x, int y, int width, int height)
 		{
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
+		}
+		
+		public Rectangle toRectangle()
+		{
+			return new Rectangle(x, y, width, height);
 		}
 	}
 }

@@ -433,20 +433,19 @@ public class BlockStateMachine extends ExtendedBlockState
 			{
 				EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
 				
-				if(type.canRotateTo(facing))
+				if(!type.canRotateTo(facing))
 				{
-					if(builder.length() > 0)
-					{
-						builder.append(",");
-					}
-					
-					builder.append(BlockStateFacing.facingProperty.getName());
-					builder.append("=");
-					builder.append(facing.getName());
+					facing = EnumFacing.NORTH;
 				}
-				else {
-					return new ModelResourceLocation("builtin/missing", "missing");
+				
+				if(builder.length() > 0)
+				{
+					builder.append(",");
 				}
+				
+				builder.append(BlockStateFacing.facingProperty.getName());
+				builder.append("=");
+				builder.append(facing.getName());
 			}
 			
 			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)

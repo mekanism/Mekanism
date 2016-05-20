@@ -12,9 +12,10 @@ import mcmultipart.raytrace.PartMOP;
 import mcmultipart.util.TransformationHelper;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Pos3D;
 import mekanism.common.MekanismItems;
 import mekanism.common.block.states.BlockStateFacing;
-import net.minecraft.block.properties.PropertyEnum;
+import mekanism.common.multipart.GlowPanelBlockState.GlowPanelColorProperty;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +26,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.property.IExtendedBlockState;
 /*
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
@@ -44,8 +46,6 @@ import codechicken.multipart.TileMultipart;
 
 public class PartGlowPanel extends Multipart implements IOccludingPart
 {
-	public static PropertyEnum<EnumColor> colorProperty = PropertyEnum.create("color", EnumColor.class);
-	
 	public EnumColor colour = EnumColor.WHITE;
 	public EnumFacing side = EnumFacing.DOWN;
 
@@ -101,7 +101,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	{
 		if(!getWorld().isRemote && !canStay())
 		{
-			//TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), Vector3.fromTileEntityCenter(tile()));
+			MultipartMekanism.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), new Pos3D(getPos()).translate(0.5, 0.5, 0.5));
 			getContainer().removePart(this);
 		}
 	}
@@ -111,7 +111,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	{
 		if(!getWorld().isRemote && !canStay())
 		{
-			//TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), Vector3.fromTileEntityCenter(tile()));
+			MultipartMekanism.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), getWorld(), new Pos3D(getPos()).translate(0.5, 0.5, 0.5));
 			getContainer().removePart(this);
 		}
 	}
@@ -189,6 +189,22 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	@Override
 	public IBlockState getExtendedState(IBlockState state)
 	{
-		return state.withProperty(BlockStateFacing.facingProperty, side).withProperty(colorProperty, colour);
+		state = state.withProperty(BlockStateFacing.facingProperty, side);
+		
+		if(state instanceof IExtendedBlockState)
+		{
+			return ((IExtendedBlockState)state).withProperty(GlowPanelBlockState.colorState, new GlowPanelColorProperty(colour));
+		}
+		
+		return state;
+	}
+	
+	public static int hash(IExtendedBlockState state)
+	{
+		int hash = 1;
+		hash = 31 * hash + state.getValue(GlowPanelBlockState.colorState).color.ordinal();
+		hash = 31 * hash + state.getValue(BlockStateFacing.facingProperty).ordinal();
+		
+		return hash;
 	}
 }

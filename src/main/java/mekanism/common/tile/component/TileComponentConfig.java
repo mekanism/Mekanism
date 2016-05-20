@@ -208,8 +208,8 @@ public class TileComponentConfig implements ITileComponent
 	{
 		for(TransmissionType type : transmissions)
 		{
-			nbtTags.setByteArray("config" + type, sideConfigs.get(type.ordinal()));
-			nbtTags.setBoolean("ejecting" + type, ejecting.get(type.ordinal()));
+			nbtTags.setByteArray("config" + type.ordinal(), sideConfigs.get(type.ordinal()));
+			nbtTags.setBoolean("ejecting" + type.ordinal(), ejecting.get(type.ordinal()));
 		}
 		
 		nbtTags.setBoolean("sideDataStored", true);

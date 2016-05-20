@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public class ItemWalkieTalkie extends ItemMekanism
@@ -62,48 +62,29 @@ public class ItemWalkieTalkie extends ItemMekanism
 
 	public void setOn(ItemStack itemStack, boolean on)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.getTagCompound().setBoolean("on", on);
+		ItemDataUtils.setBoolean(itemStack, "on", on);
 	}
 
 	public boolean getOn(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			return false;
-		}
-
-		return itemStack.getTagCompound().getBoolean("on");
+		return ItemDataUtils.getBoolean(itemStack, "on");
 	}
 
 	public void setChannel(ItemStack itemStack, int channel)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.getTagCompound().setInteger("channel", channel);
+		ItemDataUtils.setInt(itemStack, "channel", channel);
 	}
 
 	public int getChannel(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound() == null)
-		{
-			return 1;
-		}
-
-		int channel = itemStack.getTagCompound().getInteger("channel");
+		int channel = ItemDataUtils.getInt(itemStack, "channel");
 
 		if(channel == 0)
 		{
 			setChannel(itemStack, 1);
+			channel = 1;
 		}
 
-		return itemStack.getTagCompound().getInteger("channel");
+		return channel;
 	}
 }

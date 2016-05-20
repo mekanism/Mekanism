@@ -8,13 +8,13 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.security.IOwnerItem;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
@@ -99,9 +99,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	@Override
 	public String getOwner(ItemStack stack) 
 	{
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("owner"))
+		if(ItemDataUtils.hasData(stack, "owner"))
 		{
-			return stack.getTagCompound().getString("owner");
+			return ItemDataUtils.getString(stack, "owner");
 		}
 		
 		return null;
@@ -115,11 +115,11 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		
 		if(owner == null || owner.isEmpty())
 		{
-			stack.getTagCompound().removeTag("owner");
+			ItemDataUtils.removeData(stack, "owner");
 			return;
 		}
 		
-		stack.getTagCompound().setString("owner", owner);
+		ItemDataUtils.setString(stack, "owner", owner);
 	}
 	
 	@Override
@@ -130,29 +130,19 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	
 	public boolean isPrivateMode(ItemStack stack) 
 	{
-		if(stack.hasTagCompound())
-		{
-			return stack.getTagCompound().getBoolean("private");
-		}
-		
-		return false;
+		return ItemDataUtils.getBoolean(stack, "private");
 	}
 
 	public void setPrivateMode(ItemStack stack, boolean isPrivate) 
 	{
-		if(!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
-		stack.getTagCompound().setBoolean("private", isPrivate);
+		ItemDataUtils.setBoolean(stack, "private", isPrivate);
 	}
 	
 	public String getFrequency(ItemStack stack) 
 	{
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("frequency"))
+		if(ItemDataUtils.hasData(stack, "frequency"))
 		{
-			return stack.getTagCompound().getString("frequency");
+			return ItemDataUtils.getString(stack, "frequency");
 		}
 		
 		return null;
@@ -160,17 +150,12 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 
 	public void setFrequency(ItemStack stack, String frequency) 
 	{
-		if(!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		
 		if(frequency == null || frequency.isEmpty())
 		{
-			stack.getTagCompound().removeTag("frequency");
+			ItemDataUtils.removeData(stack, "frequency");
 			return;
 		}
 		
-		stack.getTagCompound().setString("frequency", frequency);
+		ItemDataUtils.setString(stack, "frequency", frequency);
 	}
 }

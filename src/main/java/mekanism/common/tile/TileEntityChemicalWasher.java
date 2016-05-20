@@ -36,6 +36,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
@@ -51,6 +52,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IFluidHandler, IUpgradeTile, ISustainedData, IUpgradeInfoHandler, ITankManager, ISecurityTile
 {
@@ -229,7 +231,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			isActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -564,26 +566,26 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			itemStack.getTagCompound().setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 		
 		if(inputTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("inputTank", inputTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank")));
-		inputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("inputTank")));
-		outputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("outputTank")));
+		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
+		inputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
+		outputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
 	}
 
 	@Override

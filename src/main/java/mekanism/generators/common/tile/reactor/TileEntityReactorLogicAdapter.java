@@ -9,6 +9,7 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import dan200.computercraft.api.lua.LuaException;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration
@@ -98,7 +99,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 			
@@ -116,7 +117,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		super.handlePacketData(dataStream);
 		
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			logicType = ReactorLogic.values()[dataStream.readInt()];
 			activeCooled = dataStream.readBoolean();

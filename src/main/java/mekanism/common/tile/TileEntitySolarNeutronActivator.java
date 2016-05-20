@@ -5,8 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -26,6 +26,7 @@ import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,6 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.biome.BiomeGenDesert;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -179,7 +181,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			isActive = dataStream.readBoolean();
 			recipeTicks = dataStream.readInt();
@@ -344,20 +346,20 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		if(inputTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("inputTank", inputTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 	
 	@Override
 	public void readSustainedData(ItemStack itemStack)
 	{
-		inputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("inputTank")));
-		outputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("outputTank")));
+		inputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
+		outputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
 	}
 
 	@Override

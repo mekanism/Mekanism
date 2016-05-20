@@ -40,6 +40,7 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
 import mekanism.common.util.TransporterUtils;
@@ -61,6 +62,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -713,7 +715,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 
@@ -789,7 +791,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			int type = dataStream.readInt();
 	
@@ -1435,15 +1437,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public void writeSustainedData(ItemStack itemStack) 
 	{
-		itemStack.getTagCompound().setBoolean("hasMinerConfig", true);
+		ItemDataUtils.setBoolean(itemStack, "hasMinerConfig", true);
 
-		itemStack.getTagCompound().setInteger("radius", radius);
-		itemStack.getTagCompound().setInteger("minY", minY);
-		itemStack.getTagCompound().setInteger("maxY", maxY);
-		itemStack.getTagCompound().setBoolean("doEject", doEject);
-		itemStack.getTagCompound().setBoolean("doPull", doPull);
-		itemStack.getTagCompound().setBoolean("silkTouch", silkTouch);
-		itemStack.getTagCompound().setBoolean("inverse", inverse);
+		ItemDataUtils.setInt(itemStack, "radius", radius);
+		ItemDataUtils.setInt(itemStack, "minY", minY);
+		ItemDataUtils.setInt(itemStack, "maxY", maxY);
+		ItemDataUtils.setBoolean(itemStack, "doEject", doEject);
+		ItemDataUtils.setBoolean(itemStack, "doPull", doPull);
+		ItemDataUtils.setBoolean(itemStack, "silkTouch", silkTouch);
+		ItemDataUtils.setBoolean(itemStack, "inverse", inverse);
 
 		NBTTagList filterTags = new NBTTagList();
 
@@ -1454,26 +1456,26 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(filterTags.tagCount() != 0)
 		{
-			itemStack.getTagCompound().setTag("filters", filterTags);
+			ItemDataUtils.setList(itemStack, "filters", filterTags);
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack)
 	{
-		if(itemStack.getTagCompound().hasKey("hasMinerConfig"))
+		if(ItemDataUtils.hasData(itemStack, "hasMinerConfig"))
 		{
-			radius = itemStack.getTagCompound().getInteger("radius");
-			minY = itemStack.getTagCompound().getInteger("minY");
-			maxY = itemStack.getTagCompound().getInteger("maxY");
-			doEject = itemStack.getTagCompound().getBoolean("doEject");
-			doPull = itemStack.getTagCompound().getBoolean("doPull");
-			silkTouch = itemStack.getTagCompound().getBoolean("silkTouch");
-			inverse = itemStack.getTagCompound().getBoolean("inverse");
+			radius = ItemDataUtils.getInt(itemStack, "radius");
+			minY = ItemDataUtils.getInt(itemStack, "minY");
+			maxY = ItemDataUtils.getInt(itemStack, "maxY");
+			doEject = ItemDataUtils.getBoolean(itemStack, "doEject");
+			doPull = ItemDataUtils.getBoolean(itemStack, "doPull");
+			silkTouch = ItemDataUtils.getBoolean(itemStack, "silkTouch");
+			inverse = ItemDataUtils.getBoolean(itemStack, "inverse");
 
-			if(itemStack.getTagCompound().hasKey("filters"))
+			if(ItemDataUtils.hasData(itemStack, "filters"))
 			{
-				NBTTagList tagList = itemStack.getTagCompound().getTagList("filters", NBT.TAG_COMPOUND);
+				NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{

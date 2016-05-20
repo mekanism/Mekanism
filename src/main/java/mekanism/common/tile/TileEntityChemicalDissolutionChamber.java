@@ -33,12 +33,14 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager, ISecurityTile
 {
@@ -268,7 +270,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			isActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -470,20 +472,20 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		if(injectTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("injectTank", injectTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "injectTank", injectTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputTank.getGas() != null)
 		{
-			itemStack.getTagCompound().setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		injectTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("injectTank")));
-		outputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("outputTank")));
+		injectTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "injectTank")));
+		outputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
 	}
 
 	@Override
