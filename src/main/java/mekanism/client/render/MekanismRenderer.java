@@ -103,7 +103,7 @@ public class MekanismRenderer
 
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
-			gas.updateIcon(event.map);
+			gas.registerIcon(event.map);
 		}
 
 		for(InfuseType type : InfuseRegistry.getInfuseMap().values())
@@ -127,6 +127,11 @@ public class MekanismRenderer
 	public void onStitch(TextureStitchEvent.Post event)
 	{
 		initFluidTextures(event.map);
+		
+		for(Gas gas : GasRegistry.getRegisteredGasses())
+		{
+			gas.updateIcon(event.map);
+		}
 	}
 	
 	public static void registerItemRender(String domain, Item item)

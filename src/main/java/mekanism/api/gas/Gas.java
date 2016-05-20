@@ -136,7 +136,7 @@ public class Gas
 		{
 			return MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
 		}
-
+		
 		return sprite;
 	}
 
@@ -145,11 +145,23 @@ public class Gas
 	 * @param i - IIcon to associate with this Gas
 	 * @return this Gas object
 	 */
-	public Gas updateIcon(TextureMap map)
+	public Gas registerIcon(TextureMap map)
 	{
-		sprite = map.registerSprite(iconLocation);
+		map.registerSprite(iconLocation);
 		from_fluid = false;
 		
+		return this;
+	}
+	
+	public Gas updateIcon(TextureMap map)
+	{
+		TextureAtlasSprite tex = map.getTextureExtry(iconLocation.toString());
+		
+		if(tex != null)
+		{
+			sprite = tex;
+		}
+		System.out.println(sprite);
 		return this;
 	}
 

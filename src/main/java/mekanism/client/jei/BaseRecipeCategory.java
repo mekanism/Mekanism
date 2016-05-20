@@ -33,6 +33,9 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	
 	public ProgressBar progressBar;
 	
+	public int xOffset = 28;
+	public int yOffset = 16;
+	
 	public BaseRecipeCategory(String gui, String name, String unlocalized, ProgressBar progress)
 	{
 		guiTexture = gui;
@@ -66,7 +69,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 		
 		for(GuiElement e : guiElements)
 		{
-			e.renderBackground(0, 0, -28, -16);
+			e.renderBackground(0, 0, -xOffset, -yOffset);
 		}
 	}
 
