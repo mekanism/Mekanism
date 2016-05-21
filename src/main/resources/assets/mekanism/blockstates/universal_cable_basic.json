@@ -5,10 +5,12 @@
     "textures": {
       "#side": "mekanism:blocks/models/multipart/UniversalCableVerticalBasic",
       "#center": "mekanism:blocks/models/multipart/UniversalCableBasic"
+    },
+    "custom": {
+      "flip-v": true
     }
   },
   "variants": {
     "multipart": [{}]
   }
 }
-
