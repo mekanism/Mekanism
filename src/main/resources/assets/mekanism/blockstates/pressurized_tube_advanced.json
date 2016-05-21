@@ -3,8 +3,8 @@
   "defaults": {
     "model": "mekanism:transmitter_small.obj",
     "textures": {
-      "#side": "mekanism:blocks/models/multipart/UniversalCableVerticalBasic",
-      "#center": "mekanism:blocks/models/multipart/UniversalCableBasic"
+      "#side": "mekanism:blocks/models/multipart/PressurizedTubeVerticalAdvanced",
+      "#center": "mekanism:blocks/models/multipart/PressurizedTubeAdvanced"
     }
   },
   "variants": {

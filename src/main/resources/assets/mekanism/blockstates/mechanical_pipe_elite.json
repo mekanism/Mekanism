@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "#side": "mekanism:blocks/models/multipart/MechanicalPipeVerticalElite",
+      "#center": "mekanism:blocks/models/multipart/MechanicalPipeElite"
+    }
+  },
+  "variants": {
+    "multipart": [{"model": "mekanism:transmitter_large.obj"}]
+  }
+}
+

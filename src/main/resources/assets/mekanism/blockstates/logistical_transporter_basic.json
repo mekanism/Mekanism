@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "#side": "mekanism:blocks/models/multipart/LogisticalTransporterVerticalBasic",
+      "#center": "mekanism:blocks/models/multipart/LogisticalTransporterBasic"
+    }
+  },
+  "variants": {
+    "multipart": [{"model": "mekanism:transmitter_large.obj"}]
+  }
+}
+

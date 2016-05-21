@@ -135,7 +135,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	{
 		super.readFromNBT(nbtTags);
 		
-		tier = Tier.PipeTier.values()[nbtTags.getInteger("tier")];
+		if(nbtTags.hasKey("tier")) tier = Tier.PipeTier.values()[nbtTags.getInteger("tier")];
 		buffer.setCapacity(getCapacity());
 
 		if(nbtTags.hasKey("cacheFluid"))

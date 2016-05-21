@@ -339,7 +339,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	{
 		super.readFromNBT(nbtTags);
 		
-		tier = TransporterTier.values()[nbtTags.getInteger("tier")];
+		if(nbtTags.hasKey("tier")) tier = TransporterTier.values()[nbtTags.getInteger("tier")];
 
 		if(nbtTags.hasKey("color"))
 		{
