@@ -98,7 +98,10 @@ import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
+import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
+import mekanism.client.render.transmitter.RenderPressurizedTube;
+import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
@@ -126,7 +129,10 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.multipart.PartLogisticalTransporter;
 import mekanism.common.multipart.PartMechanicalPipe;
+import mekanism.common.multipart.PartPressurizedTube;
+import mekanism.common.multipart.PartThermodynamicConductor;
 import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
@@ -322,6 +328,9 @@ public class ClientProxy extends CommonProxy
 		
 		MultipartRegistryClient.bindMultipartSpecialRenderer(PartMechanicalPipe.class, new RenderMechanicalPipe());
 		MultipartRegistryClient.bindMultipartSpecialRenderer(PartUniversalCable.class, new RenderUniversalCable());
+		MultipartRegistryClient.bindMultipartSpecialRenderer(PartThermodynamicConductor.class, new RenderThermodynamicConductor());
+		MultipartRegistryClient.bindMultipartSpecialRenderer(PartLogisticalTransporter.class, new RenderLogisticalTransporter());
+		MultipartRegistryClient.bindMultipartSpecialRenderer(PartPressurizedTube.class, new RenderPressurizedTube());
 	}
 
 	@Override
