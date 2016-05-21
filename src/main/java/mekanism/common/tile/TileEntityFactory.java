@@ -42,7 +42,6 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -632,24 +631,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 			else if(recipeType == RecipeType.INFUSING)
 			{
-				if(infuseStored.type != null)
-				{
-					if(RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null)
-					{
-						return true;
-					}
-				}
-				else {
-					for(Object obj : Recipe.METALLURGIC_INFUSER.get().keySet())
-					{
-						InfusionInput input = (InfusionInput)obj;
-						
-						if(input.inputStack.isItemEqual(itemstack))
-						{
-							return true;
-						}
-					}
-				}
+				return InfuseRegistry.getObject(itemstack) != null && (infuseStored.type == null || infuseStored.type == InfuseRegistry.getObject(itemstack).type);
 			}
 		}
 

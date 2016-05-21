@@ -192,22 +192,19 @@ public class ContainerFactory extends Container
 					}
 				}
 			}
-			else if(tileEntity.recipeType == RecipeType.INFUSING)
+			else if(tileEntity.recipeType == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
 			{
-				if(InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
+				if(slotID > tileEntity.inventory.length-1)
 				{
-					if(slotID > tileEntity.inventory.length-1)
+					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
-						if(!mergeItemStack(slotStack, 3, 4, false))
-						{
-							return null;
-						}
+						return null;
 					}
-					else {
-						if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
-						{
-							return null;
-						}
+				}
+				else {
+					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					{
+						return null;
 					}
 				}
 			}

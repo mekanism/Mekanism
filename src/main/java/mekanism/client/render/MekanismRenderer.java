@@ -111,13 +111,6 @@ public class MekanismRenderer
 		{
 			type.setIcon(event.map.registerSprite(type.iconResource));
 		}
-		
-/*
-		if(RenderPartTransmitter.getInstance() != null)
-		{
-			RenderPartTransmitter.getInstance().resetDisplayInts();
-		}
-*/
 
 		RenderDynamicTank.resetDisplayInts();
 		RenderThermalEvaporationController.resetDisplayInts();
