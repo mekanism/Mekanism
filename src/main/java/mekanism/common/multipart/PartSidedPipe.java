@@ -3,6 +3,7 @@ package mekanism.common.multipart;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,8 +71,11 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
+import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
@@ -95,13 +99,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 	public TileEntity[] cachedAcceptors = new TileEntity[6];
-
-	public PropertyEnum DOWN_PROPERTY = PropertyEnum.create("down", ConnectionType.class),
-			UP_PROPERTY = PropertyEnum.create("up", ConnectionType.class),
-			NORTH_PROPERTY = PropertyEnum.create("north", ConnectionType.class),
-			SOUTH_PROPERTY = PropertyEnum.create("south", ConnectionType.class),
-			WEST_PROPERTY = PropertyEnum.create("west", ConnectionType.class),
-			EAST_PROPERTY = PropertyEnum.create("east", ConnectionType.class);
 
 	static
 	{
@@ -848,18 +845,22 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			{
 				return false;
 			}
-			else if(hit.subHit < 6)
+			else
 			{
-				connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
-				sendDesc = true;
-	
-				onModeChange(EnumFacing.getFront(hit.subHit));
-				player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
-	
-				return true;
-			}
-			else {
-				return onConfigure(player, hit.subHit, side);
+				EnumFacing hitSide = sideHit(hit.subHit + 1);
+				if(hitSide != null)
+				{
+					connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
+					sendDesc = true;
+
+					onModeChange(EnumFacing.getFront(hitSide.ordinal()));
+					player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hitSide.ordinal()].toString()));
+
+					return true;
+				}
+				else {
+					return onConfigure(player, hitSide.ordinal(), side);
+				}
 			}
 		}
 		
@@ -874,6 +875,25 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return result == null ? null : result.hit;
 	}
 
+	protected EnumFacing sideHit(int boxIndex)
+	{
+		List<EnumFacing> list = new ArrayList<>();
+		if(getContainer() != null)
+		{
+			for(EnumFacing side : EnumFacing.values())
+			{
+				int ord = side.ordinal();
+				byte connections = getAllCurrentConnections();
+
+				if(connectionMapContainsSide(connections, side))
+				{
+					list.add(side);
+				}
+			}
+		}
+		if(boxIndex < list.size()) return list.get(boxIndex);
+		return null;
+	}
 
 	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
@@ -909,25 +929,29 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public BlockState createBlockState()
 	{
-		return new BlockState(MCMultiPartMod.multipart, DOWN_PROPERTY, UP_PROPERTY, NORTH_PROPERTY, SOUTH_PROPERTY, WEST_PROPERTY, EAST_PROPERTY);
+		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.instance});
+	}
+
+	public List<String> getVisibleGroups()
+	{
+		List<String> visible = new ArrayList<>();
+		for(EnumFacing side : EnumFacing.values())
+		{
+			visible.add(side.getName() + getConnectionType(side).getName().toUpperCase());
+		}
+		return visible;
 	}
 
 	@Override
 	public IBlockState getExtendedState(IBlockState state)
 	{
-		return state
-				.withProperty(DOWN_PROPERTY, getConnectionType(EnumFacing.DOWN))
-				.withProperty(UP_PROPERTY, getConnectionType(EnumFacing.UP))
-				.withProperty(NORTH_PROPERTY, getConnectionType(EnumFacing.NORTH))
-				.withProperty(SOUTH_PROPERTY, getConnectionType(EnumFacing.SOUTH))
-				.withProperty(WEST_PROPERTY, getConnectionType(EnumFacing.WEST))
-				.withProperty(EAST_PROPERTY, getConnectionType(EnumFacing.EAST));
+		return ((IExtendedBlockState)state).withProperty(OBJProperty.instance, new OBJState(getVisibleGroups(), true));
 	}
 
 	@Override
 	public boolean canRenderInLayer(EnumWorldBlockLayer layer) {
 
-		return layer == EnumWorldBlockLayer.TRANSLUCENT;
+		return layer == EnumWorldBlockLayer.CUTOUT;
 	}
 
 

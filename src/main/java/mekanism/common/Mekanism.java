@@ -1310,7 +1310,10 @@ public class Mekanism
 		//Register blocks and items
 		MekanismItems.register();
 		MekanismBlocks.register();
-		
+
+		//Set up multiparts
+		MinecraftForge.EVENT_BUS.register(new MultipartMekanism());
+
 		Mekanism.proxy.preInit();
 
 		//Register infuses
@@ -1385,8 +1388,6 @@ public class Mekanism
 		//Integrate certain OreDictionary recipes
 		registerOreDict();
 
-		//Set up multiparts
-		new MultipartMekanism();
 		
 		//Integrate with Waila
 		FMLInterModComms.sendMessage("Waila", "register", "mekanism.common.integration.WailaDataProvider.register");

@@ -41,6 +41,10 @@ repositories {
         name 'amadornes'
         url "http://maven.amadornes.com/"
     }
+    maven {
+        name 'prog'
+        url "http://dvs1.progwml6.com/files/maven"
+    }
 }
 
 // Define properties file
@@ -64,10 +68,12 @@ minecraft {
     version = config.minecraft_version + "-" + config.forge_version
     mappings = "${config.mappings_version}"
     runDir = "run"
+    useDepAts = true
 }
 
 dependencies {
     deobfCompile "MCMultiPart:MCMultiPart-experimental:${config.mcmp_version}:universal"
+    deobfCompile "mezz.jei:jei_1.8.9:2.28.18.186"
 }
 
 processResources
