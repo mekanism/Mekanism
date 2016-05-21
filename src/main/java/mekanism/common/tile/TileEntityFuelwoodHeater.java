@@ -228,7 +228,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	@Override
 	public double getInverseConductionCoefficient() 
 	{
-		return 1;
+		return 5;
 	}
 
 	@Override

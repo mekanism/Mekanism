@@ -210,7 +210,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(BasicBlockType.get(itemstack) == BasicBlockType.BIN)
+				if(itemstack != null && BasicBlockType.get(itemstack) == BasicBlockType.BIN)
 				{
 					InventoryBin binInv = new InventoryBin(itemstack);
 					

@@ -220,7 +220,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	@Override
 	public double getInverseConductionCoefficient() 
 	{
-		return 1;
+		return 5;
 	}
 
 	@Override
