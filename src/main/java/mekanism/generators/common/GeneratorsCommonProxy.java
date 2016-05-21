@@ -147,8 +147,9 @@ public class GeneratorsCommonProxy implements IGuiProvider
 			case 5:
 				return new ContainerWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
 			case 6:
-			case 7:
 				return new ContainerFilter(player.inventory, (TileEntityTurbineCasing)tileEntity);
+			case 7:
+				return new ContainerNull(player, (TileEntityTurbineCasing)tileEntity);
 			case 10:
 				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:
