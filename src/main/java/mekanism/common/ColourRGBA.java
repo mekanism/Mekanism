@@ -5,21 +5,31 @@ package mekanism.common;
  */
 public class ColourRGBA
 {
-	public byte r;
-	public byte g;
-	public byte b;
-	public byte a;
+	public byte valR;
+	public byte valG;
+	public byte valB;
+	public byte valA;
 
-    public ColourRGBA(double d1, double d2, double d3, double d4) 
+    public ColourRGBA(double r, double g, double b, double a) 
     {
-    	r = (byte)d1;
-    	g = (byte)d2;
-        b = (byte)d3;
-        a = (byte)d4;
+    	this((int)(r*255), (int)(g*255), (int)(b*255), (int)(a*255));
+    }
+    
+    public ColourRGBA(int r, int g, int b, int a)
+    {
+    	valR = (byte)r;
+    	valG = (byte)g;
+    	valB = (byte)b;
+    	valA = (byte)a;
     }
     
     public int rgba() 
     {
-        return (r & 0xFF) << 24 | (g & 0xFF) << 16 | (b & 0xFF) << 8 | (a & 0xFF);
+        return (valR & 0xFF) << 24 | (valG & 0xFF) << 16 | (valB & 0xFF) << 8 | (valA & 0xFF);
+    }
+    
+    public int argb()
+    {
+    	return (valA & 0xFF) << 24 | (valR & 0xFF) << 16 | (valG & 0xFF) << 8 | (valB & 0xFF);
     }
 }

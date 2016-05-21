@@ -30,7 +30,7 @@ public class RenderUniversalCable extends RenderTransmitterBase
 		push();
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-		GL11.glTranslated(x, y+2.0, z);
+		GL11.glTranslated(x + 0.5, y+0.5, z + 0.5);
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
@@ -38,14 +38,11 @@ public class RenderUniversalCable extends RenderTransmitterBase
 		}
 
 		MekanismRenderer.glowOn();
-		MekanismRenderer.cullFrontFace();
 
 		tessellator.draw();
 		isDrawing = false;
 
-		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
-
 		pop();
 	}
 	

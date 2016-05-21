@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mcmultipart.client.multipart.MultipartSpecialRenderer;
-import mekanism.client.render.ctm.Quad;
 import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.util.MekanismUtils;
@@ -71,8 +70,8 @@ public abstract class RenderTransmitterBase extends MultipartSpecialRenderer
 		
 		for(BakedQuad quad : cc.getGeneralQuads())
 		{
-			quad = Quad.from(quad, cc.getFormat()).transformUVs(icon).rebake();
-			LightUtil.renderQuadColor(renderer, quad, color.rgba());
+			quad = iconTransform(quad, icon);
+			LightUtil.renderQuadColor(renderer, quad, color.argb());
 		}
 	}
 	
@@ -114,6 +113,26 @@ public abstract class RenderTransmitterBase extends MultipartSpecialRenderer
 			return DummyAtlasTextureFlipV.instance;
 		}
 	};
+	
+	public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite)
+	{
+		int[] vertices = new int[28];
+		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
+		
+		vertices[4] = Float.floatToRawIntBits(sprite.getInterpolatedU(16));
+		vertices[5] = Float.floatToRawIntBits(sprite.getInterpolatedV(16));
+		
+		vertices[7+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(16));
+		vertices[7+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(0));
+		
+		vertices[14+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(0));
+		vertices[14+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(0));
+		
+		vertices[21+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(0));
+		vertices[21+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(16));
+		
+		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace());
+	}
     
     private static class DummyAtlasTextureFlipV extends TextureAtlasSprite 
     {
