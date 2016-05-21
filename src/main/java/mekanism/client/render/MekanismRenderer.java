@@ -18,6 +18,8 @@ import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
+import mekanism.client.render.transmitter.RenderLogisticalTransporter;
+import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -81,7 +83,6 @@ public class MekanismRenderer
 	public static TextureAtlasSprite missingIcon;
 
 	public static Map<FluidType, Map<Fluid, TextureAtlasSprite>> textureMap = new HashMap<FluidType, Map<Fluid, TextureAtlasSprite>>();
-	
 
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
@@ -127,6 +128,9 @@ public class MekanismRenderer
 	public void onStitch(TextureStitchEvent.Post event)
 	{
 		initFluidTextures(event.map);
+		
+		RenderLogisticalTransporter.onStitch(event.map);
+		RenderMechanicalPipe.onStitch();
 		
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{

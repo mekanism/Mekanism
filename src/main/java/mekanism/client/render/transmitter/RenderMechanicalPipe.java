@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderMechanicalPipe extends RenderTransmitterBase
 {
-	private HashMap<Integer, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<Integer, HashMap<Fluid, DisplayInteger[]>>();
+	private static HashMap<Integer, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<Integer, HashMap<Fluid, DisplayInteger[]>>();
 	
 	private static final int stages = 100;
 	private static final double height = 0.45;
@@ -74,7 +74,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase
 			MekanismRenderer.colorFluid(fluid);
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslated(x, y, z);
+			GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 
 			boolean gas = fluid.isGaseous();
 
@@ -98,15 +98,14 @@ public class RenderMechanicalPipe extends RenderTransmitterBase
 				}
 				else if(pipe.getConnectionType(side) != ConnectionType.NONE) 
 				{
-					GL11.glCullFace(GL11.GL_FRONT);
 					Tessellator tessellator = Tessellator.getInstance();
 					WorldRenderer worldRenderer = tessellator.getWorldRenderer();
 					renderFluidInOut(worldRenderer, side, pipe);
 					tessellator.draw();
-					GL11.glCullFace(GL11.GL_BACK);
 				}
 			}
 
+			isDrawing = false;
 			DisplayInteger[] displayLists = getListAndRender(null, fluid);
 
 			if(displayLists != null)
@@ -259,4 +258,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase
 		TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(pipe.getTransmitter().getTransmitterNetwork().refFluid, FluidType.STILL);
 		renderTransparency(renderer, tex, getModelForSide(pipe, side), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
 	}
+	
+    public static void onStitch()
+    {
+    	cachedLiquids.clear();
+    }
 }

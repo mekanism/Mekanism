@@ -8,6 +8,7 @@ import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -29,13 +30,15 @@ public abstract class RenderTransmitterBase extends MultipartSpecialRenderer
 	private static OBJModel contentsModel;
 	private static Map<String, IFlexibleBakedModel> contentsMap = new HashMap<String, IFlexibleBakedModel>();
 	
+	protected Minecraft mc = Minecraft.getMinecraft();
+	
 	public RenderTransmitterBase()
 	{
 		if(contentsModel == null)
 		{
 			try {
 				contentsModel = (OBJModel)OBJLoader.instance.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"));
-				contentsMap = getModelsForGroups(contentsModel);
+				contentsMap = buildModelMap(contentsModel);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -75,7 +78,7 @@ public abstract class RenderTransmitterBase extends MultipartSpecialRenderer
 		}
 	}
 	
-	public static HashMap<String, IFlexibleBakedModel> getModelsForGroups(OBJModel objModel) 
+	public static HashMap<String, IFlexibleBakedModel> buildModelMap(OBJModel objModel) 
 	{
 		HashMap<String, IFlexibleBakedModel> modelParts = new HashMap<String, IFlexibleBakedModel>();
 
