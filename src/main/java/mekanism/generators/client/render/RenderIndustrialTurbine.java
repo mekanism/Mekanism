@@ -60,7 +60,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 			
 			RenderTurbineRotor.internalRender = false;
 			
-			if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
+			if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0 && tileEntity.structure.volLength > 0)
 			{
 				RenderData data = new RenderData();
 	

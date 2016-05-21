@@ -218,7 +218,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(BasicType.get(itemstack) == BasicType.BIN)
+				if(itemstack != null && BasicType.get(itemstack) == BasicType.BIN)
 				{
 					InventoryBin binInv = new InventoryBin(itemstack);
 					

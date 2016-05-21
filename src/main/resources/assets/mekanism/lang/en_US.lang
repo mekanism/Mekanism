@@ -830,6 +830,7 @@ tooltip.Factory=A machine that serves as an upgrade to regular machinery, allowi
 tooltip.ResistiveHeater=A condensed, coiled resistor capable of converting electrical energy directly into heat energy.
 tooltip.FormulaicAssemblicator=A machine that uses energy to rapidly craft items and blocks from Crafting Formulas. Doubles as an advanced crafting bench.
 tooltip.FuelwoodHeater=A machine that is capable of producing large quantities of heat energy by burning combustible items.
+tooltip.QuantumEntangloporter=A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or other burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the sun to produce energy.

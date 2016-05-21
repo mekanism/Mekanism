@@ -101,7 +101,22 @@ public interface IFactory
 			}
 			else if(this == INFUSING)
 			{
-				return getRecipe(slotStack, infuse);
+				if(infuse.type != null)
+				{
+					return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuse, slotStack));
+				}
+				else {
+					for(Object obj : Recipe.METALLURGIC_INFUSER.get().entrySet())
+					{
+						Map.Entry entry = (Map.Entry)obj;
+						InfusionInput input = (InfusionInput)entry.getKey();
+						
+						if(input.inputStack.isItemEqual(slotStack))
+						{
+							return (MetallurgicInfuserRecipe)entry.getValue();
+						}
+					}
+				}
 			}
 			
 			return getRecipe(slotStack);
