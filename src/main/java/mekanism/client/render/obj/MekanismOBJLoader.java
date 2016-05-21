@@ -36,7 +36,7 @@ public class MekanismOBJLoader extends OBJLoader
 	
 	private final Map<ResourceLocation, MekanismOBJModel> modelCache = new HashMap<ResourceLocation, MekanismOBJModel>();
 	
-	private static final ImmutableMap<String, String> flipData = ImmutableMap.of("flip-v", String.valueOf(true));
+	public static final ImmutableMap<String, String> flipData = ImmutableMap.of("flip-v", String.valueOf(true));
 	
 	public static final String[] OBJ_RENDERS = new String[] {"glow_panel"};
 	
