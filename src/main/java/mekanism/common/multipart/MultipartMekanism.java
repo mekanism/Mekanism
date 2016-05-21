@@ -1,18 +1,35 @@
 package mekanism.common.multipart;
 
+import java.io.IOException;
+import java.util.List;
+
+import static mekanism.client.ClientProxy.CUSTOM_RENDERS;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
+
+import mcmultipart.client.multipart.ISmartMultipartModel;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.IPartFactory;
 import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /*
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
@@ -44,20 +61,6 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:thermodynamic_conductor_basic", "mekanism:thermodynamic_conductor_advanced",
 				"mekanism:thermodynamic_conductor_elite", "mekanism:thermodynamic_conductor_ultimate",
 				"mekanism:glow_panel");
-
-/*
-		MultipartGenerator.registerPassThroughInterface("mekanism.api.IConfigurable");
-		MultipartGenerator.registerPassThroughInterface("mekanism.api.energy.IStrictEnergyAcceptor");
-		MultipartGenerator.registerPassThroughInterface("mekanism.api.gas.IGasHandler");
-		MultipartGenerator.registerPassThroughInterface("mekanism.api.IHeatTransfer");
-		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IBlockableConnection");
-		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.ITransmitterTile");
-		MultipartGenerator.registerPassThroughInterface("mekanism.api.IAlloyInteraction");
-		MultipartGenerator.registerPassThroughInterface("mekanism.common.base.ITransporterTile");
-		MultipartGenerator.registerPassThroughInterface("mekanism.common.base.ILogisticalTransporter");
-		MultipartGenerator.registerPassThroughInterface("mekanism.common.base.ITileNetwork");
-		MultipartGenerator.registerPassThroughInterface("cofh.api.energy.IEnergyHandler");
-*/
 
 		registerMicroMaterials();
 	}
@@ -205,4 +208,32 @@ public class MultipartMekanism implements IPartFactory
         item.setDefaultPickupDelay();
         world.spawnEntityInWorld(item);
 	}
+
+	@SubscribeEvent
+	public void onModelBake(ModelBakeEvent event)
+	{
+		String[] names = new String[] {"mekanism:universal_cable_basic",
+				"mekanism:universal_cable_advanced", "mekanism:universal_cable_elite",
+				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
+				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
+				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
+				"mekanism:pressurized_tube_basic", "mekanism:pressurized_tube_advanced",
+				"mekanism:pressurized_tube_elite", "mekanism:pressurized_tube_ultimate",
+				"mekanism:logistical_transporter_basic", "mekanism:logistical_transporter_advanced",
+				"mekanism:logistical_transporter_elite", "mekanism:logistical_transporter_ultimate",
+				"mekanism:restrictive_transporter", "mekanism:diversion_transporter",
+				"mekanism:thermodynamic_conductor_basic", "mekanism:thermodynamic_conductor_advanced",
+				"mekanism:thermodynamic_conductor_elite", "mekanism:thermodynamic_conductor_ultimate"};
+
+		for(String s : names)
+		{
+			ModelResourceLocation mrl = new ModelResourceLocation(s, "multipart");
+			IBakedModel model = event.modelRegistry.getObject(mrl);
+			if(model instanceof ISmartBlockModel)
+			{
+				event.modelRegistry.putObject(mrl, new BlockToMultipartModel((ISmartBlockModel)model));
+			}
+		}
+	}
+
 }
