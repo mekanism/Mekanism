@@ -23,7 +23,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -272,9 +271,5 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase
 		gunpowderIcon = map.getTextureExtry("minecraft:items/gunpowder");
 		torchOffIcon = map.getTextureExtry("minecraft:blocks/redstone_torch_off");
 		torchOnIcon = map.getTextureExtry("minecraft:blocks/redstone_torch_on");
-		
-		System.out.println(gunpowderIcon);
-		System.out.println(torchOffIcon);
-		System.out.println(torchOnIcon);
 	}
 }
