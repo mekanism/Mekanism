@@ -3,6 +3,7 @@ package mekanism.generators.common;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
+import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
@@ -147,7 +148,7 @@ public class GeneratorsCommonProxy implements IGuiProvider
 				return new ContainerWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
 			case 6:
 			case 7:
-				return new ContainerNull(player, (TileEntityTurbineCasing)tileEntity);
+				return new ContainerFilter(player.inventory, (TileEntityTurbineCasing)tileEntity);
 			case 10:
 				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:
