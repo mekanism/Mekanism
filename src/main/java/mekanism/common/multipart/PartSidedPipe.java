@@ -811,29 +811,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return sides;
 	}
 
-/*
-	public String getModelForSide(EnumFacing side, boolean internal)
-	{
-		String sideName = side.name().toLowerCase();
-		String typeName = getConnectionType(side).name().toUpperCase();
-		String name = sideName + typeName;
-
-		if(internal)
-		{
-			return RenderPartTransmitter.contents_models.get(name);
-		}
-		else {
-			if(getTransmitterType().getSize() == Size.LARGE)
-			{
-				return RenderPartTransmitter.large_models.get(name);
-			}
-			else {
-				return RenderPartTransmitter.small_models.get(name);
-			}
-		}
-	}
-*/
-
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
@@ -845,9 +822,9 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			{
 				return false;
 			}
-			else
-			{
+			else {
 				EnumFacing hitSide = sideHit(hit.subHit + 1);
+				
 				if(hitSide != null)
 				{
 					connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
@@ -867,17 +844,19 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return true;
 	}
 
-	private PartMOP reTrace(World world, BlockPos pos, EntityPlayer player) {
-
+	private PartMOP reTrace(World world, BlockPos pos, EntityPlayer player) 
+	{
 		Vec3 start = RayTraceUtils.getStart(player);
 		Vec3 end = RayTraceUtils.getEnd(player);
 		RayTraceResultPart result = ((TileMultipart)world.getTileEntity(pos)).getPartContainer().collisionRayTrace(start, end);
+		
 		return result == null ? null : result.hit;
 	}
 
 	protected EnumFacing sideHit(int boxIndex)
 	{
 		List<EnumFacing> list = new ArrayList<>();
+		
 		if(getContainer() != null)
 		{
 			for(EnumFacing side : EnumFacing.values())
@@ -892,6 +871,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			}
 		}
 		if(boxIndex < list.size()) return list.get(boxIndex);
+		
 		return null;
 	}
 
@@ -935,10 +915,12 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	public List<String> getVisibleGroups()
 	{
 		List<String> visible = new ArrayList<>();
+		
 		for(EnumFacing side : EnumFacing.values())
 		{
 			visible.add(side.getName() + getConnectionType(side).getName().toUpperCase());
 		}
+		
 		return visible;
 	}
 
@@ -949,8 +931,8 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	}
 
 	@Override
-	public boolean canRenderInLayer(EnumWorldBlockLayer layer) {
-
+	public boolean canRenderInLayer(EnumWorldBlockLayer layer) 
+	{
 		return layer == EnumWorldBlockLayer.CUTOUT;
 	}
 
@@ -994,11 +976,10 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			return values()[ordinal()+1];
 		}
 
+		@Override
 		public String getName()
 		{
 			return name().toLowerCase();
 		}
 	}
-
-
 }

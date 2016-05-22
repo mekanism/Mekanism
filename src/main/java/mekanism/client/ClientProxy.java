@@ -129,9 +129,11 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.multipart.PartDiversionTransporter;
 import mekanism.common.multipart.PartLogisticalTransporter;
 import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartPressurizedTube;
+import mekanism.common.multipart.PartRestrictiveTransporter;
 import mekanism.common.multipart.PartThermodynamicConductor;
 import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
@@ -330,6 +332,8 @@ public class ClientProxy extends CommonProxy
 		MultipartRegistryClient.bindMultipartSpecialRenderer(PartUniversalCable.class, new RenderUniversalCable());
 		MultipartRegistryClient.bindMultipartSpecialRenderer(PartThermodynamicConductor.class, new RenderThermodynamicConductor());
 		MultipartRegistryClient.bindMultipartSpecialRenderer(PartLogisticalTransporter.class, new RenderLogisticalTransporter());
+		MultipartRegistryClient.bindMultipartSpecialRenderer(PartDiversionTransporter.class, new RenderLogisticalTransporter());
+		MultipartRegistryClient.bindMultipartSpecialRenderer(PartRestrictiveTransporter.class, new RenderLogisticalTransporter());
 		MultipartRegistryClient.bindMultipartSpecialRenderer(PartPressurizedTube.class, new RenderPressurizedTube());
 	}
 

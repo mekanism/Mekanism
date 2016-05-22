@@ -103,6 +103,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase
 					WorldRenderer worldRenderer = tessellator.getWorldRenderer();
 					renderFluidInOut(worldRenderer, side, pipe);
 					tessellator.draw();
+					GL11.glTranslated(-0.5, -0.5, -0.5);
 				}
 			}
 
