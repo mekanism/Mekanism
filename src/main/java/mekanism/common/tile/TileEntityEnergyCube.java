@@ -108,6 +108,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public double getMaxOutput()
 	{
+		if(tier == EnergyCubeTier.CREATIVE)
+		{
+			return Integer.MAX_VALUE;
+		}
+		
 		return tier.output;
 	}
 
