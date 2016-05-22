@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -160,9 +161,9 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		}
 
 		int mode = modes[side.ordinal()];
-		int redstone = getWorld().isBlockIndirectlyGettingPowered(getPos());
+		boolean redstone = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
 
-		if((mode == 2 && redstone > 0) || (mode == 1 && redstone == 0))
+		if((mode == 2 && redstone) || (mode == 1 && !redstone))
 		{
 			return false;
 		}

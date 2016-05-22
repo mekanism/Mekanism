@@ -3,7 +3,6 @@ package mekanism.common.multipart;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,17 +40,12 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
-import mekanism.common.Tier.CableTier;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.StrictEnergyAcceptor;
 import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -78,6 +72,8 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
 	public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
@@ -95,7 +91,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public boolean redstoneReactive = true;
 	
-	public boolean forceUpdate = false;
+	public boolean forceUpdate = true;
 
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 	public TileEntity[] cachedAcceptors = new TileEntity[6];
