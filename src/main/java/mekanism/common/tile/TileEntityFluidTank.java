@@ -513,9 +513,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if(from == EnumFacing.DOWN)
+		if(from == EnumFacing.DOWN && worldObj != null && getPos() != null)
 		{
-			TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
+			TileEntity tile = worldObj.getTileEntity(getPos().offset(EnumFacing.DOWN));
 			
 			if(isActive && !(tile instanceof TileEntityFluidTank))
 			{

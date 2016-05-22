@@ -93,7 +93,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		{
 			if(inventory[0] != null && gasTank.getGas() != null)
 			{
-					gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
+				gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
 			}
 
 			if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))

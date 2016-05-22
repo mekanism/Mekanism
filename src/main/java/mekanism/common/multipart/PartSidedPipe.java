@@ -963,15 +963,17 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY
-				|| super.hasCapability(capability, facing);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
-			return (T) this;
+		{
+			return (T)this;
+		}
+		
 		return super.getCapability(capability, facing);
 	}
 
