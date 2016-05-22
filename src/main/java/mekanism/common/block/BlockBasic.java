@@ -836,7 +836,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		{
 			return null;
 		}
-
+		
 		return BasicType.get(blockType, metadata).create();
 	}
 
@@ -918,8 +918,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		}
 
 		super.breakBlock(world, x, y, z, block, meta);
-		
-		world.removeTileEntity(x, y, z);
 	}
 
 	@Override
@@ -974,7 +972,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
-
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
