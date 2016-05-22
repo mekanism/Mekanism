@@ -2,8 +2,8 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "#side": "mekanism:blocks/models/multipart/MechanicalPipeVerticalUltimate",
-      "#center": "mekanism:blocks/models/multipart/MechanicalPipeUltimate"
+      "#side": "mekanism:blocks/models/multipart/RestrictiveTransporterVertical",
+      "#center": "mekanism:blocks/models/multipart/RestrictiveTransporter"
     },
     "custom": {
       "flip-v": true

@@ -5,6 +5,9 @@
     "textures": {
       "#side": "mekanism:blocks/models/multipart/PressurizedTubeVerticalBasic",
       "#center": "mekanism:blocks/models/multipart/PressurizedTubeBasic"
+    },
+    "custom": {
+      "flip-v": true
     }
   },
   "variants": {

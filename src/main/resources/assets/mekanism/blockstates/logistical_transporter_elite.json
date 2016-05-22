@@ -4,6 +4,9 @@
     "textures": {
       "#side": "mekanism:blocks/models/multipart/LogisticalTransporterVerticalElite",
       "#center": "mekanism:blocks/models/multipart/LogisticalTransporterElite"
+    },
+    "custom": {
+      "flip-v": true
     }
   },
   "variants": {
