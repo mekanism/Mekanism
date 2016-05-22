@@ -10,7 +10,7 @@ import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderUniversalCable extends RenderTransmitterBase
+public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCable>
 {
 	public RenderUniversalCable()
 	{
@@ -18,10 +18,8 @@ public class RenderUniversalCable extends RenderTransmitterBase
 	}
 	
 	@Override
-	public void renderMultipartAt(IMultipart multipart, double x, double y, double z, float partialTick, int destroyStage) 
+	public void renderMultipartAt(PartUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		PartUniversalCable cable = (PartUniversalCable)multipart;
-		
 		if(cable.currentPower == 0)
 		{
 			return;

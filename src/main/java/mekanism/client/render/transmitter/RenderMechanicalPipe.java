@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderMechanicalPipe extends RenderTransmitterBase
+public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPipe>
 {
 	private static HashMap<Integer, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<Integer, HashMap<Fluid, DisplayInteger[]>>();
 	
@@ -33,9 +33,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase
 	}
 	
 	@Override
-	public void renderMultipartAt(IMultipart multipart, double x, double y, double z, float partialTick, int destroyStage) 
+	public void renderMultipartAt(PartMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		PartMechanicalPipe pipe = (PartMechanicalPipe)multipart;
 		float targetScale;
 		
 		if(pipe.getTransmitter().hasTransmitterNetwork())

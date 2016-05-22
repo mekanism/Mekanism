@@ -31,7 +31,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderLogisticalTransporter extends RenderTransmitterBase
+public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogisticalTransporter>
 {
 	private ModelTransporterBox modelBox = new ModelTransporterBox();
 	
@@ -51,9 +51,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase
 	}
 	
 	@Override
-	public void renderMultipartAt(IMultipart multipart, double x, double y, double z, float partialTick, int destroyStage) 
+	public void renderMultipartAt(PartLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		PartLogisticalTransporter transporter = (PartLogisticalTransporter)multipart;
 		GL11.glPushMatrix();
 
 		//possibly TODO
