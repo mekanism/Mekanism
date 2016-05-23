@@ -22,7 +22,9 @@ public final class PipeUtils
 	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
 		if(MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || !(tile instanceof IFluidHandler))
+		{
 			return false;
+		}
 
 		IFluidHandler container = (IFluidHandler)tile;
 		FluidTankInfo[] infoArray = container.getTankInfo(side.getOpposite());
@@ -42,6 +44,7 @@ public final class PipeUtils
 				}
 			}
 		}
+		
 		return false;
 	}
 

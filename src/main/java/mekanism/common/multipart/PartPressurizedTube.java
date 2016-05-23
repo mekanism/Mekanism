@@ -13,6 +13,7 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.MekanismUtils;
 //import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -217,7 +218,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
-		return GasTransmission.canConnect(tile, side);
+		return GasTransmission.isValidAcceptorOnSide(tile, side);
 	}
 
 	@Override
@@ -309,7 +310,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	@Override
 	public IGasHandler getCachedAcceptor(EnumFacing side)
 	{
-		if(cachedAcceptors[side.ordinal()] instanceof IGasHandler)
+		if(MekanismUtils.hasCapability(cachedAcceptors[side.ordinal()], Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()))
 		{
 			return super.getCachedAcceptor(side);
 		}
@@ -360,7 +361,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	{
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY)
 		{
-			return (T)getTransmitter();
+			return (T)this;
 		}
 		
 		return super.getCapability(capability, side);

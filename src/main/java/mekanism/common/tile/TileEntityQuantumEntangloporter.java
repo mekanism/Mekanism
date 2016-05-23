@@ -18,6 +18,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -36,6 +37,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -653,6 +655,24 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	public boolean canTubeConnect(EnumFacing side)
 	{
 		return frequency != null && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState != IOState.OFF;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
+				|| super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 	
 	private static final String[] methods = new String[] {"setFrequency"};

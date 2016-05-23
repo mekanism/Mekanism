@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import mekanism.api.Coord4D;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -36,9 +34,9 @@ public final class GasTransmission
 		{
 			TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
 
-			if(acceptor instanceof IGasHandler)
+			if(MekanismUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite()))
 			{
-				acceptors[orientation.ordinal()] = (IGasHandler)acceptor;
+				acceptors[orientation.ordinal()] = MekanismUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite());
 			}
 		}
 
@@ -60,39 +58,18 @@ public final class GasTransmission
 		return getConnectedAcceptors(pos, world, Arrays.asList(EnumFacing.VALUES));
 	}
 
-	/**
-	 * Gets all the tube connections around a tile entity.
-	 * @param tileEntity - center tile entity
-	 * @return array of ITubeConnections
-	 */
-	public static ITubeConnection[] getConnections(TileEntity tileEntity)
+	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
-		ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
-
-		for(EnumFacing orientation : EnumFacing.VALUES)
+		if(MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 		{
-			TileEntity connection = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
-
-			if(canConnect(connection, orientation))
-			{
-				connections[orientation.ordinal()] = (ITubeConnection)connection;
-			}
+			return false;
 		}
-
-		return connections;
-	}
-
-	/**
-	 * Whether or not a TileEntity can connect to a specified tile on a specified side.
-	 * @param tileEntity - TileEntity to attempt connection to
-	 * @param side - side to attempt connection on
-	 * @return if this tile and side are connectable
-	 */
-	public static boolean canConnect(TileEntity tileEntity, EnumFacing side)
-	{
-		if(tileEntity instanceof ITubeConnection && (!MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), TransmissionType.GAS)))
+		
+		if(MekanismUtils.hasCapability(tile, Capabilities.TUBE_CONNECTION_CAPABILITY, side.getOpposite()))
 		{
-			if(((ITubeConnection)tileEntity).canTubeConnect(side.getOpposite()))
+			ITubeConnection connection = MekanismUtils.getCapability(tile, Capabilities.TUBE_CONNECTION_CAPABILITY, side.getOpposite());
+			
+			if(connection.canTubeConnect(side.getOpposite()))
 			{
 				return true;
 			}

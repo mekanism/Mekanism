@@ -7,6 +7,7 @@ import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.ILogisticalTransporter;
@@ -51,6 +52,9 @@ public class Capabilities
 
     @CapabilityInject(ITileNetwork.class)
     public static Capability<ITileNetwork> TILE_NETWORK_CAPABILITY = null;
+    
+    @CapabilityInject(ITubeConnection.class)
+    public static Capability<ITubeConnection> TUBE_CONNECTION_CAPABILITY = null;
 
     public static void registerCapabilities()
     {
@@ -60,10 +64,12 @@ public class Capabilities
 
         GridTransmitterTile.register();
         LogisticalTransporter.register();
+        
+        GasHandler.register();
+        TubeConnection.register();
 
         Configurable.register();
         TileNetwork.register();
-        GasHandler.register();
         AlloyInteraction.register();
     }
 }

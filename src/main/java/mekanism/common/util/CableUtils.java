@@ -38,6 +38,7 @@ public final class CableUtils
 		{
 			return TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null), TransmissionType.ENERGY);
 		}
+		
 		return false;
 	}
 

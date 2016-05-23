@@ -216,9 +216,13 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == Capabilities.GRID_TRANSMITTER_CAPABILITY || capability == Capabilities.ALLOY_INTERACTION_CAPABILITY)
+		if(capability == Capabilities.GRID_TRANSMITTER_CAPABILITY)
 		{
 			return (T)getTransmitter();
+		}
+		else if(capability == Capabilities.ALLOY_INTERACTION_CAPABILITY)
+		{
+			return (T)this;
 		}
 		
 		return super.getCapability(capability, side);
