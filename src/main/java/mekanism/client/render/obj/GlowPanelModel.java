@@ -72,6 +72,12 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 		baseModel = base;
 		transformationMap = transform;
 	}
+
+	public static void forceRebake()
+	{
+		glowPanelCache.clear();
+		glowPanelItemCache.clear();
+	}
 	
 	public EnumColor getColor()
 	{
