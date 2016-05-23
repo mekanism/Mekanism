@@ -199,7 +199,10 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.GRID_TRANSMITTER_CAPABILITY)
-			return (T) getTransmitter();
+		{
+			return (T)getTransmitter();
+		}
+		
 		return super.getCapability(capability, side);
 	}
 }

@@ -3,8 +3,8 @@
   "defaults": {
     "model": "mekanism:transmitter_small.obj",
     "textures": {
-      "#side": "mekanism:blocks/models/multipart/UniversalCableVerticalUltimate",
-      "#center": "mekanism:blocks/models/multipart/UniversalCableUltimate"
+      "#side": "mekanism:blocks/models/multipart/ThermodynamicConductorVerticalElite",
+      "#center": "mekanism:blocks/models/multipart/ThermodynamicConductorElite"
     },
     "custom": {
       "flip-v": true

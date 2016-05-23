@@ -5,6 +5,9 @@
     "textures": {
       "#side": "mekanism:blocks/models/multipart/UniversalCableVerticalElite",
       "#center": "mekanism:blocks/models/multipart/UniversalCableElite"
+    },
+    "custom": {
+      "flip-v": true
     }
   },
   "variants": {

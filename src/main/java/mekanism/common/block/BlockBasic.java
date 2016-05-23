@@ -850,8 +850,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		}
 
 		super.breakBlock(world, pos, state);
-		
-		world.removeTileEntity(pos);
 	}
 
 	@Override

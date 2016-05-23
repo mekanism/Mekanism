@@ -183,7 +183,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		volume += locations.size();
 
-		if(Math.abs(xmax-xmin)+1 <= 18 && Math.abs(xmax-xmin)+1 <= 18 && Math.abs(zmax-zmin)+1 <= 18)
+		if(Math.abs(xmax-xmin)+1 <= 18 && Math.abs(ymax-ymin)+1 <= 18 && Math.abs(zmax-zmin)+1 <= 18)
 		{
 			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
@@ -215,6 +215,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		innerNodes.clear();
 		iteratedNodes.add(coord);
+		
+		if(iteratedNodes.size() > 2048)
+		{
+			return;
+		}
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{

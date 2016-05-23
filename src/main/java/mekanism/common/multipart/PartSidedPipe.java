@@ -3,7 +3,6 @@ package mekanism.common.multipart;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,17 +40,12 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
-import mekanism.common.Tier.CableTier;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.StrictEnergyAcceptor;
 import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -78,6 +72,8 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
 	public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
@@ -95,7 +91,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public boolean redstoneReactive = true;
 	
-	public boolean forceUpdate = false;
+	public boolean forceUpdate = true;
 
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 	public TileEntity[] cachedAcceptors = new TileEntity[6];
@@ -811,29 +807,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return sides;
 	}
 
-/*
-	public String getModelForSide(EnumFacing side, boolean internal)
-	{
-		String sideName = side.name().toLowerCase();
-		String typeName = getConnectionType(side).name().toUpperCase();
-		String name = sideName + typeName;
-
-		if(internal)
-		{
-			return RenderPartTransmitter.contents_models.get(name);
-		}
-		else {
-			if(getTransmitterType().getSize() == Size.LARGE)
-			{
-				return RenderPartTransmitter.large_models.get(name);
-			}
-			else {
-				return RenderPartTransmitter.small_models.get(name);
-			}
-		}
-	}
-*/
-
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
@@ -845,9 +818,9 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			{
 				return false;
 			}
-			else
-			{
+			else {
 				EnumFacing hitSide = sideHit(hit.subHit + 1);
+				
 				if(hitSide != null)
 				{
 					connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
@@ -867,17 +840,19 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return true;
 	}
 
-	private PartMOP reTrace(World world, BlockPos pos, EntityPlayer player) {
-
+	private PartMOP reTrace(World world, BlockPos pos, EntityPlayer player) 
+	{
 		Vec3 start = RayTraceUtils.getStart(player);
 		Vec3 end = RayTraceUtils.getEnd(player);
 		RayTraceResultPart result = ((TileMultipart)world.getTileEntity(pos)).getPartContainer().collisionRayTrace(start, end);
+		
 		return result == null ? null : result.hit;
 	}
 
 	protected EnumFacing sideHit(int boxIndex)
 	{
 		List<EnumFacing> list = new ArrayList<>();
+		
 		if(getContainer() != null)
 		{
 			for(EnumFacing side : EnumFacing.values())
@@ -892,6 +867,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			}
 		}
 		if(boxIndex < list.size()) return list.get(boxIndex);
+		
 		return null;
 	}
 
@@ -935,10 +911,12 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	public List<String> getVisibleGroups()
 	{
 		List<String> visible = new ArrayList<>();
+		
 		for(EnumFacing side : EnumFacing.values())
 		{
 			visible.add(side.getName() + getConnectionType(side).getName().toUpperCase());
 		}
+		
 		return visible;
 	}
 
@@ -949,8 +927,8 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	}
 
 	@Override
-	public boolean canRenderInLayer(EnumWorldBlockLayer layer) {
-
+	public boolean canRenderInLayer(EnumWorldBlockLayer layer) 
+	{
 		return layer == EnumWorldBlockLayer.CUTOUT;
 	}
 
@@ -963,15 +941,17 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY
-				|| super.hasCapability(capability, facing);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
-			return (T) this;
+		{
+			return (T)this;
+		}
+		
 		return super.getCapability(capability, facing);
 	}
 
@@ -992,11 +972,10 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			return values()[ordinal()+1];
 		}
 
+		@Override
 		public String getName()
 		{
 			return name().toLowerCase();
 		}
 	}
-
-
 }

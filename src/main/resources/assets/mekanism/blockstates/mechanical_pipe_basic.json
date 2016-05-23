@@ -4,6 +4,9 @@
     "textures": {
       "#side": "mekanism:blocks/models/multipart/MechanicalPipeVerticalBasic",
       "#center": "mekanism:blocks/models/multipart/MechanicalPipeBasic"
+    },
+    "custom": {
+      "flip-v": true
     }
   },
   "variants": {

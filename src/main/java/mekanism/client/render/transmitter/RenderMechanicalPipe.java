@@ -73,7 +73,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 			MekanismRenderer.colorFluid(fluid);
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+			GL11.glTranslated(x, y, z);
 
 			boolean gas = fluid.isGaseous();
 
@@ -97,10 +97,12 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 				}
 				else if(pipe.getConnectionType(side) != ConnectionType.NONE) 
 				{
+					GL11.glTranslated(0.5, 0.5, 0.5);
 					Tessellator tessellator = Tessellator.getInstance();
 					WorldRenderer worldRenderer = tessellator.getWorldRenderer();
 					renderFluidInOut(worldRenderer, side, pipe);
 					tessellator.draw();
+					GL11.glTranslated(-0.5, -0.5, -0.5);
 				}
 			}
 
@@ -144,8 +146,11 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
-		toReturn.setSideRender(side, false);
-		toReturn.setSideRender(side.getOpposite(), false);
+		if(side != null)
+		{
+			toReturn.setSideRender(side, false);
+			toReturn.setSideRender(side.getOpposite(), false);
+		}
 
 		DisplayInteger[] displays = new DisplayInteger[stages];
 

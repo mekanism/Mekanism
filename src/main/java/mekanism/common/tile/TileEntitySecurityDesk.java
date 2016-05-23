@@ -276,6 +276,8 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	@Override
 	public void invalidate()
 	{
+		super.invalidate();
+		
 		if(!worldObj.isRemote)
 		{
 			if(frequency != null)
