@@ -93,17 +93,6 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 				"DiversionTransporterVertical", "DiversionTransporterHorizontal"});
 	}
 
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderDynamic(Vector3 pos, float f, int pass)
-	{
-		if(pass == 0)
-		{
-			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
-		}
-	}
-
 	@Override
 	public void onWorldSeparate()
 	{
@@ -111,10 +100,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		
 		if(!getWorld().isRemote)
 		{
-			PathfinderCache.onChanged(new Coord4D(getPos(), getWorld().provider.getDimensionId()));
+			PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
 		}
 	}
-*/
 
 	@Override
 	protected boolean isValidTransmitter(TileEntity tileEntity)
@@ -205,21 +193,13 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		}
 	}
 
-/*
 	@Override
 	public void onWorldJoin()
 	{
 		super.onWorldJoin();
 
-		if(getWorld().isRemote)
-		{
-			Mekanism.packetHandler.sendToServer(new DataRequestMessage(new Coord4D(getPos(), getWorld().provider.getDimensionId())));
-		}
-		else {
-			PathfinderCache.onChanged(getPos());
-		}
+		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
 	}
-*/
 
 	@Override
 	public InventoryNetwork createNewNetwork()

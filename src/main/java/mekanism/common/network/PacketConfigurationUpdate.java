@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -30,6 +31,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 	public IMessage onMessage(ConfigurationUpdateMessage message, MessageContext context) 
 	{
 		TileEntity tile = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
+		ITileNetwork network = MekanismUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
 		
 		if(tile instanceof ISideConfiguration)
 		{
@@ -40,7 +42,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 				config.getConfig().setEjecting(message.transmission, !config.getConfig().isEjecting(message.transmission));
 			}
 			else if(message.packetType == ConfigurationPacket.SIDE_DATA)
-			{
+			{				
 				if(message.clickType == 0)
 				{
 					MekanismUtils.incrementOutput((ISideConfiguration)tile, message.transmission, message.configIndex);
@@ -55,7 +57,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 				}
 
 				tile.markDirty();
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
 			}
 			else if(message.packetType == ConfigurationPacket.EJECT_COLOR)
 			{
@@ -96,7 +98,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 
 			for(EntityPlayer p : ((TileEntityBasicBlock)config).playersUsing)
 			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), (EntityPlayerMP)p);
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList())), (EntityPlayerMP)p);
 			}
 		}
 		

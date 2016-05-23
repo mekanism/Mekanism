@@ -64,6 +64,9 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 			}
 		}
 	}
+	
+	@Override
+	public void onWorldSeparate() {}
 
 	@Override
 	public void onUnloaded()

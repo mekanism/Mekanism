@@ -62,5 +62,6 @@ public class Capabilities
         LogisticalTransporter.register();
 
         Configurable.register();
+        TileNetwork.register();
     }
 }

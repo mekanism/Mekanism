@@ -72,8 +72,6 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-import com.sun.xml.internal.bind.v2.TODO;
-
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
 	public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
@@ -714,6 +712,22 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	protected void markDirtyAcceptor(EnumFacing side) {}
 
 	public abstract void onWorldJoin();
+	
+	public abstract void onWorldSeparate();
+	
+	@Override
+	public void onRemoved()
+	{
+		onWorldSeparate();
+		super.onRemoved();
+	}
+	
+	@Override
+	public void onUnloaded()
+	{
+		onWorldSeparate();
+		super.onRemoved();
+	}
 
 	@Override
 	public void onAdded()
@@ -729,9 +743,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	{
 		onWorldJoin();
 		super.onLoaded();
-		
-		//refreshConnections(); TODO causes StackOverflow. Why?
-		//notifyTileChange();
 	}
 	
 	@Override
@@ -747,7 +758,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		{
 			boolean prevPowered = redstonePowered;
 			refreshConnections();
-			
 			if(prevPowered != redstonePowered)
 			{
 				markDirtyTransmitters();
@@ -941,13 +951,13 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, facing);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY)
 		{
 			return (T)this;
 		}
