@@ -14,7 +14,6 @@ import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -33,7 +32,7 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
 		
-		if(worldServer != null && tileEntity instanceof ITileNetwork)
+		if(worldServer != null)
 		{
 			if(tileEntity instanceof TileEntityMultiblock)
 			{
@@ -50,7 +49,10 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 				}
 			}
 
-			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), ((ITileNetwork)tileEntity).getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
+			if(tileEntity instanceof ITileNetwork)
+			{
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), ((ITileNetwork)tileEntity).getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
+			}
 		}
 		
 		return null;

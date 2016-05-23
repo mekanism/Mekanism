@@ -22,6 +22,8 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public MultipartTransmitter<A, N> transmitterDelegate;
 
 	public boolean unloaded = true;
+	
+	public boolean dataRequest = false;
 
 	public PartTransmitter()
 	{
@@ -44,11 +46,23 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		{
 			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
 		}
-		else {
-			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(getWorld().getTileEntity(getPos())));
-		}
 
 		unloaded = false;
+	}
+	
+	@Override
+	public void update()
+	{
+		super.update();
+		
+		if(getWorld().isRemote)
+		{
+			if(!dataRequest)
+			{
+				dataRequest = true;
+				MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(getWorld().getTileEntity(getPos())));
+			}
+		}
 	}
 
 	@Override
@@ -74,8 +88,8 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		if(!getWorld().isRemote)
 		{
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
-		} else
-		{
+		} 
+		else {
 			getTransmitter().setTransmitterNetwork(null);
 		}
 
