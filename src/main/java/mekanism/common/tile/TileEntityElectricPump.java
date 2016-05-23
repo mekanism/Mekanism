@@ -20,6 +20,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -36,6 +37,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -518,6 +520,23 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return false;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 
 	@Override

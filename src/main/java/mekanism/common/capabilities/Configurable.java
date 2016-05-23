@@ -2,7 +2,6 @@ package mekanism.common.capabilities;
 
 import mekanism.api.IConfigurable;
 import mekanism.common.capabilities.StorageHelper.NullStorage;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -12,7 +11,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
  */
 public class Configurable implements IConfigurable
 {
-
     @Override
     public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
     {

@@ -14,7 +14,6 @@ import mekanism.common.base.ITileNetwork;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-
 /**
  * Created by ben on 30/04/16.
  */

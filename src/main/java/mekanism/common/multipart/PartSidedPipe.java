@@ -832,7 +832,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 					return true;
 				}
 				else {
-					return onConfigure(player, hitSide.ordinal(), side);
+					return onConfigure(player, 6, side);
 				}
 			}
 		}
