@@ -10,7 +10,7 @@ import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderPressurizedTube extends RenderTransmitterBase
+public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurizedTube>
 {
 	public RenderPressurizedTube()
 	{
@@ -18,10 +18,8 @@ public class RenderPressurizedTube extends RenderTransmitterBase
 	}
 	
 	@Override
-	public void renderMultipartAt(IMultipart multipart, double x, double y, double z, float partialTick, int destroyStage) 
+	public void renderMultipartAt(PartPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		PartPressurizedTube tube = (PartPressurizedTube)multipart;
-		
 		if(!tube.getTransmitter().hasTransmitterNetwork() || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
 		{
 			return;

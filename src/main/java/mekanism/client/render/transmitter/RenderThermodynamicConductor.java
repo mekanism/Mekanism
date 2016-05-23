@@ -10,7 +10,7 @@ import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderThermodynamicConductor extends RenderTransmitterBase
+public class RenderThermodynamicConductor extends RenderTransmitterBase<PartThermodynamicConductor>
 {
 	public RenderThermodynamicConductor()
 	{
@@ -18,10 +18,8 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase
 	}
 	
 	@Override
-	public void renderMultipartAt(IMultipart multipart, double x, double y, double z, float partialTick, int destroyStage) 
+	public void renderMultipartAt(PartThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		PartThermodynamicConductor transmitter = (PartThermodynamicConductor)multipart;
-		
 		push();
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldRenderer = tessellator.getWorldRenderer();

@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
-public abstract class RenderTransmitterBase extends MultipartSpecialRenderer
+public abstract class RenderTransmitterBase<T extends PartTransmitter> extends MultipartSpecialRenderer<T>
 {
 	private static OBJModel contentsModel;
 	private static Map<String, IFlexibleBakedModel> contentsMap = new HashMap<String, IFlexibleBakedModel>();
