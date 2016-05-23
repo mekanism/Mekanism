@@ -40,11 +40,6 @@ import net.minecraft.util.EnumFacing;
 //import net.minecraft.util.IIcon;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-/*
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.Vector3;
-*/
 
 public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork>
 {

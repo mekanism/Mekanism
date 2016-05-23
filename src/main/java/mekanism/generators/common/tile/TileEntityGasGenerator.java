@@ -297,12 +297,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public int receiveGas(EnumFacing side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);
@@ -336,12 +330,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return null;
-	}
-
-	@Override
-	public GasStack drawGas(EnumFacing side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override

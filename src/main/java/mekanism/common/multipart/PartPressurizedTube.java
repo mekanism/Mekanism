@@ -12,6 +12,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
+import mekanism.common.capabilities.Capabilities;
 //import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -25,6 +26,7 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
 */
+import net.minecraftforge.common.capabilities.Capability;
 
 public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {
@@ -276,21 +278,9 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	}
 
 	@Override
-	public int receiveGas(EnumFacing side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return null;
-	}
-
-	@Override
-	public GasStack drawGas(EnumFacing side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override
@@ -357,5 +347,22 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		packet.writeInt(tier.ordinal());
 		
 		super.writeUpdatePacket(packet);
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.GAS_HANDLER_CAPABILITY)
+		{
+			return (T)getTransmitter();
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

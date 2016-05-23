@@ -51,7 +51,5 @@ public class StrictEnergyAcceptor extends StrictEnergyStorage implements IStrict
     public static void register()
     {
         CapabilityManager.INSTANCE.register(IStrictEnergyAcceptor.class, new DefaultStorage<>(), StrictEnergyAcceptor.class);
-
     }
-
 }

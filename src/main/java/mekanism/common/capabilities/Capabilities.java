@@ -63,5 +63,7 @@ public class Capabilities
 
         Configurable.register();
         TileNetwork.register();
+        GasHandler.register();
+        AlloyInteraction.register();
     }
 }

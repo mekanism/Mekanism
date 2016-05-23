@@ -430,12 +430,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public int receiveGas(EnumFacing side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
@@ -444,12 +438,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		}
 
 		return null;
-	}
-
-	@Override
-	public GasStack drawGas(EnumFacing side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override

@@ -130,12 +130,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public int receiveGas(EnumFacing side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(getReactor() != null)
@@ -147,12 +141,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		}
 
 		return null;
-	}
-
-	@Override
-	public GasStack drawGas(EnumFacing side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override

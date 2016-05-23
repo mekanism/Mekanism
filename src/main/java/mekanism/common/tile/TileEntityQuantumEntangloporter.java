@@ -467,23 +467,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int receiveGas(EnumFacing side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return !hasFrequency() ? null : frequency.storedGas.draw(amount, doTransfer);
 	}
-
-	@Override
-	public GasStack drawGas(EnumFacing side, int amount)
-	{
-		return drawGas(side, amount, true);
-	}
-
+	
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{

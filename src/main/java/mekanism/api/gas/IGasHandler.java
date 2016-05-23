@@ -16,18 +16,12 @@ public interface IGasHandler
 	 */
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer);
 
-	@Deprecated
-	public int receiveGas(EnumFacing side, GasStack stack);
-
 	/**
 	 * Draws a certain amount of gas from this block.
 	 * @param amount - amount to draw
 	 * @return gas drawn
 	 */
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer);
-
-	@Deprecated
-	public GasStack drawGas(EnumFacing side, int amount);
 
 	/**
 	 * Whether or not this block can accept gas from a certain side.

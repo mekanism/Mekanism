@@ -58,21 +58,9 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	}
 
 	@Override
-	public int receiveGas(EnumFacing side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return collectedGas.draw(amount, doTransfer);
-	}
-
-	@Override
-	public GasStack drawGas(EnumFacing side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override

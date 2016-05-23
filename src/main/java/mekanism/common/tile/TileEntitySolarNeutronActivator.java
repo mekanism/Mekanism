@@ -301,12 +301,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public int receiveGas(EnumFacing side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
@@ -315,12 +309,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		}
 		
 		return null;
-	}
-
-	@Override
-	public GasStack drawGas(EnumFacing side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override
