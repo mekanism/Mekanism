@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -33,6 +34,8 @@ public class TileEntityAdvancedFactory extends TileEntityFactory
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		upgradeComponent = new TileComponentUpgrade(this, 0);
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}

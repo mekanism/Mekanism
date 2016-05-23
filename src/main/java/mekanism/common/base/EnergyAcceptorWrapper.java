@@ -103,7 +103,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double transferEnergyToAcceptor(ForgeDirection side, double amount)
 		{
-			int needed = acceptor.getMaxEnergyStored(side)-acceptor.getEnergyStored(side);
+			int needed = Math.min(acceptor.getMaxEnergyStored(side)-acceptor.getEnergyStored(side), Integer.MAX_VALUE);
 			int transferred = acceptor.receiveEnergy(side, Math.min(needed, toRF(amount)), false);
 			
 			return fromRF(transferred);
@@ -138,7 +138,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public boolean needsEnergy(ForgeDirection side)
 		{
-			return acceptor.receiveEnergy(side, 1, true) > 0;
+			return acceptor.receiveEnergy(side, 1, true) > 0 || getEnergyNeeded(side) > 0;
 		}
 
 		public int toRF(double joules)
@@ -149,6 +149,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public double fromRF(int rf)
 		{
 			return rf * general.FROM_TE;
+		}
+		
+		public int getEnergyNeeded(ForgeDirection side)
+		{
+			return acceptor.getMaxEnergyStored(side) - acceptor.getEnergyStored(side);
 		}
 	}
 
@@ -164,7 +169,8 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double transferEnergyToAcceptor(ForgeDirection side, double amount)
 		{
-			return amount - fromEU(acceptor.injectEnergy(side, Math.min(acceptor.getDemandedEnergy(), toEU(amount)), 0));
+			double toTransfer = Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE);
+			return amount - fromEU(acceptor.injectEnergy(side, toTransfer, 0));
 		}
 
 		@Override

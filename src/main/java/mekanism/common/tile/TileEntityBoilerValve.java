@@ -32,7 +32,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 		
 		if(!worldObj.isRemote)
 		{
-			if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord)
+			if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord-1)
 			{
 				if(structure.steamStored != null && structure.steamStored.amount > 0)
 				{
@@ -63,7 +63,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	{
 		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
 		{
-			if(structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord)
+			if(structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord-1)
 			{
 				return new FluidTankInfo[] {steamTank.getInfo()};
 			}
@@ -78,7 +78,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(structure != null && structure.upperRenderLocation != null && yCoord < structure.upperRenderLocation.yCoord)
+		if(structure != null && structure.upperRenderLocation != null && yCoord < structure.upperRenderLocation.yCoord-1)
 		{
 			return waterTank.fill(resource, doFill);
 		}
@@ -89,7 +89,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord)
+		if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord-1)
 		{
 			if(structure.steamStored != null)
 			{
@@ -106,7 +106,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord)
+		if(structure != null && structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord-1)
 		{
 			return steamTank.drain(maxDrain, doDrain);
 		}
@@ -119,7 +119,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	{
 		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
 		{
-			return structure.upperRenderLocation != null && yCoord < structure.upperRenderLocation.yCoord;
+			return structure.upperRenderLocation != null && yCoord < structure.upperRenderLocation.yCoord-1;
 		}
 		
 		return false;
@@ -130,7 +130,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	{
 		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
 		{
-			return structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord;
+			return structure.upperRenderLocation != null && yCoord >= structure.upperRenderLocation.yCoord-1;
 		}
 		
 		return false;
