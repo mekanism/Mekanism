@@ -325,7 +325,7 @@ public class MekanismRenderer
 		
 		for(int i = 0; i < 4; i++)
 		{
-			int nextIndex = i+amount%4;
+			int nextIndex = (i+amount)%4;
 			vertices[7*i + 4] = quad.getVertexData()[7*nextIndex + 4];
 			vertices[7*i + 5] = quad.getVertexData()[7*nextIndex + 5];
 		}

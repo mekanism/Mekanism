@@ -14,27 +14,16 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
-//import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-//import net.minecraft.util.IIcon;
 import net.minecraft.util.EnumFacing;
-/*
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.Vector3;
-*/
 import net.minecraftforge.common.capabilities.Capability;
 
 public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {
 	public Tier.TubeTier tier = Tier.TubeTier.BASIC;
 	
-	public static TransmitterIcons tubeIcons = new TransmitterIcons(4, 8);
-
 	public float currentScale;
 
 	public GasTank buffer = new GasTank(getCapacity());
@@ -178,31 +167,6 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		return "mekanism:pressurized_tube_" + tier.name().toLowerCase();
 	}
 
-	public static void registerIcons(TextureMap register)
-	{
-		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
-		tubeIcons.registerSideIcons(register, new String[] {"PressurizedTubeVerticalBasic", "PressurizedTubeVerticalAdvanced", "PressurizedTubeVerticalElite", "PressurizedTubeVerticalUltimate",
-				"PressurizedTubeHorizontalBasic", "PressurizedTubeHorizontalAdvanced", "PressurizedTubeHorizontalElite", "PressurizedTubeHorizontalUltimate"});
-	}
-
-	@Override
-	public TextureAtlasSprite getCenterIcon(boolean opaque)
-	{
-		return tubeIcons.getCenterIcon(tier.ordinal());
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIcon(boolean opaque)
-	{
-		return tubeIcons.getSideIcon(tier.ordinal());
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIconRotated(boolean opaque)
-	{
-		return tubeIcons.getSideIcon(4+tier.ordinal());
-	}
-
 	@Override
 	public TransmissionType getTransmissionType()
 	{
@@ -232,18 +196,6 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	{
 		return new GasNetwork(networks);
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderDynamic(Vector3 pos, float f, int pass)
-	{
-		if(pass == 0)
-		{
-			RenderPartTransmitter.getInstance().renderContents(this, pos);
-		}
-	}
-*/
 
 	@Override
 	public int getCapacity()

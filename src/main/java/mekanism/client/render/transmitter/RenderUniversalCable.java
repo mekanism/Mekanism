@@ -1,6 +1,6 @@
 package mekanism.client.render.transmitter;
 
-import mcmultipart.multipart.IMultipart;
+import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartUniversalCable;
@@ -20,7 +20,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCab
 	@Override
 	public void renderMultipartAt(PartUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		if(cable.currentPower == 0)
+		if(!client.fancyUniversalCableRender || cable.currentPower == 0)
 		{
 			return;
 		}

@@ -18,28 +18,17 @@ import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-//import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-//import net.minecraft.util.IIcon;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-/*
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.Vector3;
-*/
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
 
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {
 	public Tier.CableTier tier;
-
-	public static TransmitterIcons cableIcons = new TransmitterIcons(4, 8);
 
 	public double currentPower = 0;
 	public double lastWrite = 0;
@@ -183,32 +172,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		return "mekanism:universal_cable_" + tier.name().toLowerCase();
 	}
 
-	public static void registerIcons(TextureMap register)
-	{
-		cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
-				"UniversalCableElite", "UniversalCableUltimate"});
-		cableIcons.registerSideIcons(register, new String[] {"UniversalCableVerticalBasic", "UniversalCableVerticalAdvanced", "UniversalCableVerticalElite", "UniversalCableVerticalUltimate",
-				"UniversalCableHorizontalBasic", "UniversalCableHorizontalAdvanced", "UniversalCableHorizontalElite", "UniversalCableHorizontalUltimate"});
-	}
-
-	@Override
-	public TextureAtlasSprite getCenterIcon(boolean opaque)
-	{
-		return cableIcons.getCenterIcon(tier.ordinal());
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIcon(boolean opaque)
-	{
-		return cableIcons.getSideIcon(tier.ordinal());
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIconRotated(boolean opaque)
-	{
-		return cableIcons.getSideIcon(4+tier.ordinal());
-	}
-
 	@Override
 	public TransmissionType getTransmissionType()
 	{
@@ -226,18 +189,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		return CableUtils.isValidAcceptorOnSide(getWorld().getTileEntity(getPos()), acceptor, side);
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderDynamic(Vector3 pos, float frame, int pass)
-	{
-		if(pass == 0 && client.fancyUniversalCableRender)
-		{
-			RenderPartTransmitter.getInstance().renderContents(this, pos);
-		}
-	}
-*/
 
 	@Override
 	public EnergyNetwork createNewNetwork()

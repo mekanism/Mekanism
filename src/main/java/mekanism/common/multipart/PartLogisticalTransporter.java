@@ -26,9 +26,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.state.IBlockState;
-//import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -38,7 +35,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-//import net.minecraft.util.IIcon;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -46,8 +42,6 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork>
 {
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
-
-	public static TransmitterIcons transporterIcons = new TransmitterIcons(8, 16);
 
 	public int pullDelay = 0;
 
@@ -80,16 +74,6 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		return TransmissionType.ITEM;
 	}
 
-	public static void registerIcons(TextureMap register)
-	{
-		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporterBasic", "LogisticalTransporterAdvanced", "LogisticalTransporterElite", "LogisticalTransporterUltimate", "RestrictiveTransporter", 
-				"DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
-		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVerticalBasic", "LogisticalTransporterVerticalAdvanced", "LogisticalTransporterVerticalElite", "LogisticalTransporterVerticalUltimate", 
-				"LogisticalTransporterHorizontalBasic", "LogisticalTransporterHorizontalAdvanced", "LogisticalTransporterHorizontalElite", "LogisticalTransporterHorizontalUltimate", "RestrictiveTransporterVertical", 
-				"RestrictiveTransporterHorizontal", "LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored",
-				"DiversionTransporterVertical", "DiversionTransporterHorizontal"});
-	}
-
 	@Override
 	public void onWorldSeparate()
 	{
@@ -112,24 +96,6 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		}
 		
 		return false;
-	}
-
-	@Override
-	public TextureAtlasSprite getCenterIcon(boolean opaque)
-	{
-		return transporterIcons.getCenterIcon(opaque ? tier.ordinal() : (getTransmitter().color != null ? 7 : 6));
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIcon(boolean opaque)
-	{
-		return transporterIcons.getSideIcon(opaque ? tier.ordinal() : (getTransmitter().color != null ? 11 : 10));
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIconRotated(boolean opaque)
-	{
-		return transporterIcons.getSideIcon(opaque ? 4+tier.ordinal() : (getTransmitter().color != null ? 13 : 12));
 	}
 
 	@Override

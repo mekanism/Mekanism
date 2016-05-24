@@ -162,12 +162,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return (byte)((connections & ~(byte)(1 << side.ordinal())) | (byte)((toSet ? 1 : 0) << side.ordinal()));
 	}
 
-	public abstract TextureAtlasSprite getCenterIcon(boolean opaque);
-
-	public abstract TextureAtlasSprite getSideIcon(boolean opaque);
-
-	public abstract TextureAtlasSprite getSideIconRotated(boolean opaque);
-
 	@Override
 	public void update()
 	{
@@ -213,40 +207,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	public boolean transparencyRender()
 	{
 		return false;
-	}
-
-	public TextureAtlasSprite getIconForSide(EnumFacing side, boolean opaque)
-	{
-		ConnectionType type = getConnectionType(side);
-
-		if(type == ConnectionType.NONE)
-		{
-			if(client.oldTransmitterRender || renderCenter())
-			{
-				return getCenterIcon(opaque);
-			}
-			else if(getAllCurrentConnections() == 3 && side != EnumFacing.DOWN && side != EnumFacing.UP)
-			{
-				return getSideIcon(opaque);
-			}
-			else if(getAllCurrentConnections() == 12 && (side == EnumFacing.DOWN || side == EnumFacing.UP))
-			{
-				return getSideIcon(opaque);
-			}
-			else if(getAllCurrentConnections() == 12 && (side == EnumFacing.EAST || side == EnumFacing.WEST))
-			{
-				return getSideIconRotated(opaque);
-			}
-			else if(getAllCurrentConnections() == 48 && side != EnumFacing.EAST && side != EnumFacing.WEST)
-			{
-				return getSideIconRotated(opaque);
-			}
-
-			return getCenterIcon(opaque);
-		}
-		else {
-			return getSideIcon(opaque);
-		}
 	}
 
 	public byte getPossibleTransmitterConnections()

@@ -12,11 +12,9 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
-//import net.minecraft.util.IIcon;
 import net.minecraft.util.EnumFacing;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
@@ -33,24 +31,6 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	public TransmitterType getTransmitterType()
 	{
 		return TransmitterType.DIVERSION_TRANSPORTER;
-	}
-
-	@Override
-	public TextureAtlasSprite getCenterIcon(boolean opaque)
-	{
-		return transporterIcons.getCenterIcon(5);
-	}
-	
-	@Override
-	public TextureAtlasSprite getSideIcon(boolean opaque)
-	{
-		return transporterIcons.getSideIcon(opaque ? 14 : (getTransmitter().color != null ? 11 : 10));
-	}
-	
-	@Override
-	public TextureAtlasSprite getSideIconRotated(boolean opaque)
-	{
-		return transporterIcons.getSideIcon(opaque ? 15 : (getTransmitter().color != null ? 13 : 12));
 	}
 	
 	@Override

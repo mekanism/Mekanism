@@ -8,13 +8,9 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
 import mekanism.common.util.PipeUtils;
-//import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-//import net.minecraft.util.IIcon;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -25,8 +21,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandler
 {
-	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 8);
-
 	public float currentScale;
 
 	public FluidTank buffer = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
@@ -164,31 +158,6 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		return "mekanism:mechanical_pipe_" + tier.name().toLowerCase();
 	}
 
-	public static void registerIcons(TextureMap register)
-	{
-		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipeBasic", "MechanicalPipeAdvanced", "MechanicalPipeElite", "MechanicalPipeUltimate"});
-		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeVerticalBasic", "MechanicalPipeVerticalAdvanced", "MechanicalPipeVerticalElite", "MechanicalPipeVerticalUltimate",
-				"MechanicalPipeHorizontalBasic", "MechanicalPipeHorizontalAdvanced", "MechanicalPipeHorizontalElite", "MechanicalPipeHorizontalUltimate"});
-	}
-
-	@Override
-	public TextureAtlasSprite getCenterIcon(boolean opaque)
-	{
-		return pipeIcons.getCenterIcon(tier.ordinal());
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIcon(boolean opaque)
-	{
-		return pipeIcons.getSideIcon(tier.ordinal());
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIconRotated(boolean opaque)
-	{
-		return pipeIcons.getSideIcon(4+tier.ordinal());
-	}
-
 	@Override
 	public TransmissionType getTransmissionType()
 	{
@@ -218,18 +187,6 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	{
 		return new FluidNetwork(networks);
 	}
-
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderDynamic(Vector3 pos, float f, int pass)
-	{
-		if(pass == 0)
-		{
-			RenderPartTransmitter.getInstance().renderContents(this, pos);
-		}
-	}
-*/
 
 	@Override
 	public int getCapacity()

@@ -12,24 +12,20 @@ import mekanism.common.Tier.ConductorTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-//import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-//import net.minecraft.util.IIcon;
 import net.minecraft.util.EnumFacing;
 
 public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, HeatNetwork> implements IHeatTransfer
 {
 	public Tier.ConductorTier tier;
 	
-	public static TransmitterIcons conductorIcons = new TransmitterIcons(4, 8);
-	
 	public double temperature = 0;
 	public double clientTemperature = 0;
 	public double heatToAbsorb = 0;
+	
+	public boolean renderUpdate;
 
 	public PartThermodynamicConductor(Tier.ConductorTier conductorTier)
 	{
@@ -67,32 +63,6 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
     @Override
     public void updateShare() {}
 
-	public static void registerIcons(TextureMap register)
-	{
-		conductorIcons.registerCenterIcons(register, new String[] {"ThermodynamicConductorBasic", "ThermodynamicConductorAdvanced",
-				"ThermodynamicConductorElite", "ThermodynamicConductorUltimate"});
-		conductorIcons.registerSideIcons(register, new String[] {"ThermodynamicConductorVerticalBasic", "ThermodynamicConductorVerticalAdvanced", "ThermodynamicConductorVerticalElite", "ThermodynamicConductorVerticalUltimate",
-				"ThermodynamicConductorHorizontalBasic", "ThermodynamicConductorHorizontalAdvanced", "ThermodynamicConductorHorizontalElite", "ThermodynamicConductorHorizontalUltimate"});
-	}
-
-	@Override
-	public TextureAtlasSprite getCenterIcon(boolean opaque)
-	{
-		return conductorIcons.getCenterIcon(tier.ordinal());
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIcon(boolean opaque)
-	{
-		return conductorIcons.getSideIcon(tier.ordinal());
-	}
-
-	@Override
-	public TextureAtlasSprite getSideIconRotated(boolean opaque)
-	{
-		return conductorIcons.getSideIcon(4+tier.ordinal());
-	}
-
 	@Override
 	public TransmitterType getTransmitterType()
 	{
@@ -117,18 +87,6 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 		return "mekanism:thermodynamic_conductor_" + tier.name().toLowerCase();
 	}
 
-/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderDynamic(Vector3 pos, float f, int pass)
-	{
-		if(pass == 0)
-		{
-			RenderPartTransmitter.getInstance().renderContents(this, pos);
-		}
-	}
-*/
-
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
@@ -147,21 +105,27 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 
 	public void sendTemp()
 	{
-/*
-		PacketBuffer packet = getWriteStream();
-		packet.writeBoolean(true);
-		packet.writeDouble(temperature);
-*/
+		renderUpdate = true;
+		sendUpdatePacket();
 	}
 
 	@Override
 	public void writeUpdatePacket(PacketBuffer packet)
 	{
-		packet.writeBoolean(false);
-		
-		super.writeUpdatePacket(packet);
-		
-		packet.writeInt(tier.ordinal());
+		if(renderUpdate)
+		{
+			packet.writeBoolean(true);
+			packet.writeDouble(temperature);
+			
+			renderUpdate = false;
+		}
+		else {
+			packet.writeBoolean(false);
+			
+			super.writeUpdatePacket(packet);
+			
+			packet.writeInt(tier.ordinal());
+		}
 	}
 
 	@Override
