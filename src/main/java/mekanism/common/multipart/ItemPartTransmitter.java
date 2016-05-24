@@ -11,6 +11,7 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.base.IMetaItem;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 //import net.minecraft.client.renderer.texture.IIconRegister;
@@ -32,7 +33,7 @@ import codechicken.multipart.TMultiPart;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemPartTransmitter extends ItemMultiPart
+public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 {
 	public ItemPartTransmitter()
 	{
@@ -174,5 +175,17 @@ public class ItemPartTransmitter extends ItemMultiPart
 	public String getUnlocalizedName(ItemStack stack)
 	{
 		return getUnlocalizedName() + "." + TransmitterType.values()[stack.getItemDamage()].getName();
+	}
+
+	@Override
+	public String getTexture(int meta) 
+	{
+		return TransmitterType.values()[meta].name().toLowerCase();
+	}
+
+	@Override
+	public int getVariants() 
+	{
+		return TransmitterType.values().length;
 	}
 }

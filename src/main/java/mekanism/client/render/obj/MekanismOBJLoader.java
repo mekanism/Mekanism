@@ -61,6 +61,7 @@ public class MekanismOBJLoader extends OBJLoader
 	{
 		try {
 			Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
+				@Override
 				public TextureAtlasSprite apply(ResourceLocation location)
 				{
 					return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());

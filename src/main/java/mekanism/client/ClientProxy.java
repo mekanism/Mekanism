@@ -340,7 +340,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerItemRenders()
 	{
-//		registerItemRender(MekanismItems.PartTransmitter);
+    	registerItemRender(MekanismItems.PartTransmitter);
 		registerItemRender(MekanismItems.ElectricBow);
 		registerItemRender(MekanismItems.Dust);
 		registerItemRender(MekanismItems.Ingot);

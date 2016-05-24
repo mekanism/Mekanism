@@ -1,6 +1,8 @@
 package mekanism.client.render.obj;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -13,6 +15,7 @@ import mekanism.common.multipart.ConnectionProperty;
 import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -20,6 +23,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -36,6 +40,7 @@ import com.google.common.collect.ImmutableMap;
 public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipartModel
 {
 	private Map<Integer, TransmitterModel> modelCache = new HashMap<Integer, TransmitterModel>();
+	private TransmitterModel itemCache;
 	
 	private IBlockState tempState;
 	private ItemStack tempStack;
@@ -85,6 +90,31 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 		}
 		
 		return modelCache.get(hash);
+	}
+	
+	@Override
+	public IBakedModel handleItemState(ItemStack stack)
+	{
+		if(itemCache == null)
+		{
+			List<String> visible = new ArrayList<String>();
+			
+			for(EnumFacing side : EnumFacing.values())
+			{
+				visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
+			}
+			
+			itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), getFormat(), textureMap, transformationMap);
+			itemCache.tempStack = stack;
+		}
+		
+		return itemCache;
+	}
+	
+	@Override
+	public List<BakedQuad> getGeneralQuads()
+	{
+		return super.getGeneralQuads();
 	}
 	
 	@Override

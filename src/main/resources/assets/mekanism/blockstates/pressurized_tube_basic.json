@@ -11,7 +11,8 @@
     }
   },
   "variants": {
-    "multipart": [{}]
+    "multipart": [{}],
+    "inventory": [{}]
   }
 }
 
