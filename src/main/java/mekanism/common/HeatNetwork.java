@@ -7,6 +7,8 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.multipart.MultipartTransmitter;
 //import mekanism.common.multipart.MultipartTransmitter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -77,26 +79,22 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 		{
 			for(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters)
 			{
-				/*
-				if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart() instanceof IHeatTransfer)
+				if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart().hasCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null))
 				{
-					IHeatTransfer heatTransmitter = (IHeatTransfer)((MultipartTransmitter)transmitter).getPart();
+					IHeatTransfer heatTransmitter = (IHeatTransfer)((MultipartTransmitter)transmitter).getPart().getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null);
 					double[] d = heatTransmitter.simulateHeat();
 					newHeatTransferred += d[0];
 					newHeatLost += d[1];
 				}
-				*/
 			}
 			
 			for(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters)
 			{
-/*
-				if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart() instanceof IHeatTransfer)
+				if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart().hasCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null))
 				{
-					IHeatTransfer heatTransmitter = (IHeatTransfer)((MultipartTransmitter)transmitter).getPart();
+					IHeatTransfer heatTransmitter = (IHeatTransfer)((MultipartTransmitter)transmitter).getPart().getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null);
 					newSumTemp += heatTransmitter.applyTemperatureChange();
 				}
-*/
 			}
 		}
 		

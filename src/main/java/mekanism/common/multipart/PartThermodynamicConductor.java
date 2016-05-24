@@ -1,21 +1,29 @@
 package mekanism.common.multipart;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
+import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColourRGBA;
 import mekanism.common.HeatNetwork;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 
 public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, HeatNetwork> implements IHeatTransfer
 {
@@ -24,8 +32,6 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	public double temperature = 0;
 	public double clientTemperature = 0;
 	public double heatToAbsorb = 0;
-	
-	public boolean renderUpdate;
 
 	public PartThermodynamicConductor(Tier.ConductorTier conductorTier)
 	{
@@ -72,7 +78,13 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
-		return tile instanceof IHeatTransfer && ((IHeatTransfer)tile).canConnectHeat(side.getOpposite());
+		if(MekanismUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+		{
+			IHeatTransfer transfer = MekanismUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+			return transfer.canConnectHeat(side.getOpposite());
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -105,41 +117,38 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 
 	public void sendTemp()
 	{
-		renderUpdate = true;
-		sendUpdatePacket();
+		Coord4D coord = new Coord4D(getPos(), getWorld());
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList())), new Range4D(coord));
+	}
+	
+	@Override
+	public void handlePacketData(ByteBuf dataStream) throws Exception 
+	{
+		temperature = dataStream.readDouble();
+	}
+
+	@Override
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	{
+		data.add(temperature);
+		
+		return data;
 	}
 
 	@Override
 	public void writeUpdatePacket(PacketBuffer packet)
 	{
-		if(renderUpdate)
-		{
-			packet.writeBoolean(true);
-			packet.writeDouble(temperature);
-			
-			renderUpdate = false;
-		}
-		else {
-			packet.writeBoolean(false);
-			
-			super.writeUpdatePacket(packet);
-			
-			packet.writeInt(tier.ordinal());
-		}
+		packet.writeInt(tier.ordinal());
+		
+		super.writeUpdatePacket(packet);
 	}
 
 	@Override
 	public void readUpdatePacket(PacketBuffer packet)
 	{
-		if(packet.readBoolean())
-		{
-			temperature = packet.readDouble();
-		}
-		else {
-			super.readUpdatePacket(packet);
-			
-			tier = ConductorTier.values()[packet.readInt()];
-		}
+		tier = ConductorTier.values()[packet.readInt()];
+		
+		super.readUpdatePacket(packet);
 	}
 
 	public ColourRGBA getBaseColour()
@@ -212,6 +221,23 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 	
 	@Override

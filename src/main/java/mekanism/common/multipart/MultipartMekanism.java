@@ -11,9 +11,7 @@ import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class MultipartMekanism implements IPartFactory
 {
@@ -191,34 +189,5 @@ public class MultipartMekanism implements IPartFactory
 		{
 			dropItem(stack, multipart);
 		}
-	}
-
-	@SubscribeEvent
-	public void onModelBake(ModelBakeEvent event)
-	{
-		/*String[] names = new String[] {
-				"mekanism:universal_cable_basic", "mekanism:universal_cable_advanced", 
-				"mekanism:universal_cable_elite", "mekanism:universal_cable_ultimate",
-				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
-				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
-				"mekanism:pressurized_tube_basic", "mekanism:pressurized_tube_advanced",
-				"mekanism:pressurized_tube_elite", "mekanism:pressurized_tube_ultimate",
-				"mekanism:logistical_transporter_basic", "mekanism:logistical_transporter_advanced",
-				"mekanism:logistical_transporter_elite", "mekanism:logistical_transporter_ultimate",
-				"mekanism:restrictive_transporter", "mekanism:diversion_transporter",
-				"mekanism:thermodynamic_conductor_basic", "mekanism:thermodynamic_conductor_advanced",
-				"mekanism:thermodynamic_conductor_elite", "mekanism:thermodynamic_conductor_ultimate"};
-		
-		for(String s : names)
-		{
-			ModelResourceLocation mrl = new ModelResourceLocation(s, "multipart");
-			IBakedModel model = event.modelRegistry.getObject(mrl);
-			
-			if(model instanceof ISmartBlockModel)
-			{
-				System.out.println(model.getClass());
-				event.modelRegistry.putObject(mrl, new BlockToMultipartModel((ISmartBlockModel)model));
-			}
-		}*/
 	}
 }
