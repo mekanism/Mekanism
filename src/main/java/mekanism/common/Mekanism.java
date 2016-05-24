@@ -1308,7 +1308,7 @@ public class Mekanism
 		MekanismBlocks.register();
 
 		//Set up multiparts
-		MinecraftForge.EVENT_BUS.register(new MultipartMekanism());
+		new MultipartMekanism();
 
 		Mekanism.proxy.preInit();
 

@@ -11,6 +11,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -22,6 +23,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -405,6 +407,23 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		return null;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 	
 	@Override
