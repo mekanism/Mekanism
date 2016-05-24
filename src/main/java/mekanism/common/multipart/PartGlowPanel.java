@@ -139,6 +139,12 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	}
 	
 	@Override
+	public float getHardness(PartMOP partHit)
+	{
+		return 3.5F;
+	}
+	
+	@Override
 	public List<ItemStack> getDrops()
 	{
 		return Collections.singletonList(getPickBlock(null, null));

@@ -44,6 +44,7 @@ public class MekanismOBJLoader extends OBJLoader
     public void onModelBake(ModelBakeEvent event) throws IOException 
     {
 		GlowPanelModel.forceRebake();
+		
 		for(String s : OBJ_RENDERS)
 		{
 			ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");

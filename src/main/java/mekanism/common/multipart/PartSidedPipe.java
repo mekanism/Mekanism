@@ -54,23 +54,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-/*import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.raytracer.ExtendedMOP;
-import codechicken.lib.raytracer.AxisAlignedBB;
-import codechicken.lib.raytracer.RayTracer;
-import codechicken.lib.render.CCModel;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Vector3;
-import codechicken.microblock.ISidedHollowConnect;
-import codechicken.multipart.INeighborTileChange;
-import codechicken.multipart.IconHitEffects;
-import codechicken.multipart.JIconHitEffects;
-import codechicken.multipart.JNormalOcclusion;
-import codechicken.multipart.NormalOcclusionTest;
-import codechicken.multipart.PartMap;
-import codechicken.multipart.IMultipart;
-import codechicken.multipart.TSlottedPart;*/
 
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
@@ -402,6 +385,12 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	{
 		return true;
 	}
+	
+	@Override
+	public float getHardness(PartMOP partHit)
+	{
+		return 3.5F;
+	}
 
 /*
 	@Override
@@ -453,7 +442,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 		AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6];
 		if(box.intersectsWith(mask)) list.add(box);
-
 	}
 
 	@Override
@@ -473,7 +461,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	{
 		return EnumSet.of(PartSlot.CENTER); //TODO implement properly
 	}
-
 
 	@Override
 	public TextureAtlasSprite getBreakingIcon(Object subPart, EnumFacing side)
@@ -959,7 +946,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public boolean canRenderInLayer(EnumWorldBlockLayer layer) 
 	{
-		return layer == EnumWorldBlockLayer.CUTOUT;
+		return layer == EnumWorldBlockLayer.CUTOUT || layer == EnumWorldBlockLayer.TRANSLUCENT;
 	}
 
 	public void notifyTileChange()
