@@ -2,7 +2,6 @@ package mekanism.client.render.obj;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.vecmath.Matrix4f;
 
@@ -14,7 +13,6 @@ import mekanism.common.multipart.PartGlowPanel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -41,7 +39,6 @@ public class GlowPanelModel extends OBJBakedModelBase implements ISmartMultipart
 	private static Map<Integer, GlowPanelModel> glowPanelCache = new HashMap<Integer, GlowPanelModel>();
 	private static Map<Integer, GlowPanelModel> glowPanelItemCache = new HashMap<Integer, GlowPanelModel>();
 	
-	private Set<BakedQuad> bakedQuads;
 	private IBlockState tempState;
 	private ItemStack tempStack;
 	

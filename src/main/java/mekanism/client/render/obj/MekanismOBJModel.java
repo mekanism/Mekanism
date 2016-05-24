@@ -4,20 +4,24 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.IModelState;
 import net.minecraftforge.client.model.obj.OBJModel;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 
 public class MekanismOBJModel extends OBJModel
 {
 	public OBJModelType modelType;
+	public ResourceLocation location;
 	
 	public MekanismOBJModel(OBJModelType type, MaterialLibrary matLib, ResourceLocation modelLocation)
 	{
 		super(matLib, modelLocation);
 		
 		modelType = type;
+		location = modelLocation;
 	}
 	
 	@Override
@@ -36,6 +40,20 @@ public class MekanismOBJModel extends OBJModel
 		
 		return null;
 	}
+	
+	@Override
+    public IModel process(ImmutableMap<String, String> customData)
+    {
+    	MekanismOBJModel ret = new MekanismOBJModel(modelType, getMatLib(), location);
+        return ret;
+    }
+
+    @Override
+    public IModel retexture(ImmutableMap<String, String> textures)
+    {
+    	MekanismOBJModel ret = new MekanismOBJModel(modelType, getMatLib().makeLibWithReplacements(textures), location);
+        return ret;
+    }
 	
 	public static enum OBJModelType
 	{

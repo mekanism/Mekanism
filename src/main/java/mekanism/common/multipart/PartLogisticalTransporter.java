@@ -25,6 +25,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.block.state.IBlockState;
 //import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -39,6 +40,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 //import net.minecraft.util.IIcon;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork>
@@ -383,9 +385,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public EnumColor getRenderColor(boolean post)
+	public EnumColor getRenderColor()
 	{
-		return post ? null : getTransmitter().getColor();
+		return getTransmitter().getColor();
 	}
 
 	@Override
@@ -451,6 +453,12 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public IBlockState getExtendedState(IBlockState state)
+	{
+		return ((IExtendedBlockState)super.getExtendedState(state)).withProperty(ColorProperty.INSTANCE, new ColorProperty(getRenderColor()));
 	}
 	
 	@Override

@@ -9,12 +9,9 @@ import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -199,7 +196,7 @@ public class MultipartMekanism implements IPartFactory
 	@SubscribeEvent
 	public void onModelBake(ModelBakeEvent event)
 	{
-		String[] names = new String[] {
+		/*String[] names = new String[] {
 				"mekanism:universal_cable_basic", "mekanism:universal_cable_advanced", 
 				"mekanism:universal_cable_elite", "mekanism:universal_cable_ultimate",
 				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
@@ -219,8 +216,9 @@ public class MultipartMekanism implements IPartFactory
 			
 			if(model instanceof ISmartBlockModel)
 			{
+				System.out.println(model.getClass());
 				event.modelRegistry.putObject(mrl, new BlockToMultipartModel((ISmartBlockModel)model));
 			}
-		}
+		}*/
 	}
 }

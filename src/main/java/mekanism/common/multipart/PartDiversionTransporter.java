@@ -170,4 +170,10 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 
 		return true;
 	}
+	
+	@Override
+	public EnumColor getRenderColor()
+	{
+		return null;
+	}
 }

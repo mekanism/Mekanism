@@ -1,6 +1,7 @@
 package mekanism.client.render.obj;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -210,38 +211,22 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
 			}
 		}
 	}
+	
+	private static Method m_updateStateVisibilityMap;
 
 	protected void updateStateVisibilityMap(OBJState state)
     {
-        if(state.getVisibilityMap().containsKey(Group.ALL))
-        {
-            boolean operation = state.getVisibilityMap().get(Group.ALL);
-            state.getVisibilityMap().clear();
-            
-            for(String s : getModel().getMatLib().getGroups().keySet())
-            {
-                state.getVisibilityMap().put(s,  OBJState.Operation.SET_TRUE.performOperation(operation));
-            }
-        }
-        else if(state.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
-        {
-            List<String> exceptList = state.getGroupNamesFromMap().subList(1, state.getGroupNamesFromMap().size());
-            state.getVisibilityMap().remove(Group.ALL_EXCEPT);
-          
-            for(String s : this.getModel().getMatLib().getGroups().keySet())
-            {
-                if(!exceptList.contains(s))
-                {
-                    state.getVisibilityMap().put(s, OBJState.Operation.SET_TRUE.performOperation(state.getVisibilityMap().get(s)));
-                }
-            }
-        }
-        else {
-            for(String s : state.getVisibilityMap().keySet())
-            {
-                state.getVisibilityMap().put(s, OBJState.Operation.SET_TRUE.performOperation(state.getVisibilityMap().get(s)));
-            }
-        }
+		try {
+			if(m_updateStateVisibilityMap == null)
+			{
+				m_updateStateVisibilityMap = OBJBakedModel.class.getDeclaredMethod("updateStateVisibilityMap", OBJState.class);
+				m_updateStateVisibilityMap.setAccessible(true);
+			}
+			
+			m_updateStateVisibilityMap.invoke(this, state);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
     }
 	
 	private static Field f_textures;

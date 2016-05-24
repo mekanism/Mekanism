@@ -14,6 +14,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.ReflectionUtils;
+import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderFluidTank;
@@ -101,6 +102,8 @@ public class MekanismRenderer
 		heatIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeat"));
 		
 		event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
+		
+		TransmitterModel.registerIcons(event.map);
 
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{

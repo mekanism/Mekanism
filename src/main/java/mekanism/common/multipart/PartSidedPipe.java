@@ -893,7 +893,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return false;
 	}
 
-	public EnumColor getRenderColor(boolean opaque)
+	public EnumColor getRenderColor()
 	{
 		return null;
 	}
@@ -946,7 +946,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public boolean canRenderInLayer(EnumWorldBlockLayer layer) 
 	{
-		return layer == EnumWorldBlockLayer.CUTOUT || layer == EnumWorldBlockLayer.TRANSLUCENT;
+		return layer == EnumWorldBlockLayer.CUTOUT || (transparencyRender() && layer == EnumWorldBlockLayer.TRANSLUCENT);
 	}
 
 	public void notifyTileChange()
