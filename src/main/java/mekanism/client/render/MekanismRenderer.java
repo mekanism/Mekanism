@@ -27,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -294,6 +295,43 @@ public class MekanismRenderer
 			textures[5] = east;
 		}
 	}
+	
+	public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite)
+	{
+		int[] vertices = new int[28];
+		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
+		
+		vertices[4] = Float.floatToRawIntBits(sprite.getInterpolatedU(16));
+		vertices[5] = Float.floatToRawIntBits(sprite.getInterpolatedV(16));
+		
+		vertices[7+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(16));
+		vertices[7+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(0));
+		
+		vertices[14+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(0));
+		vertices[14+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(0));
+		
+		vertices[21+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(0));
+		vertices[21+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(16));
+		
+		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace());
+	}
+	
+    public static BakedQuad rotate(BakedQuad quad, int amount)
+    {
+		int[] vertices = new int[28];
+		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
+		
+		int[][] uvs = new int[4][2];
+		
+		for(int i = 0; i < 4; i++)
+		{
+			int nextIndex = i+amount%4;
+			vertices[7*i + 4] = quad.getVertexData()[7*nextIndex + 4];
+			vertices[7*i + 5] = quad.getVertexData()[7*nextIndex + 5];
+		}
+		
+		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace());
+    }
 	
 	public static void prepFlowing(Model3D model, Fluid fluid)
 	{

@@ -7,7 +7,11 @@ import java.util.Objects;
 import javax.vecmath.Matrix4f;
 
 import mcmultipart.client.multipart.ISmartMultipartModel;
+import mekanism.api.MekanismConfig.client;
 import mekanism.common.multipart.ColorProperty;
+import mekanism.common.multipart.ConnectionProperty;
+import mekanism.common.multipart.PartSidedPipe;
+import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -15,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -85,11 +90,14 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 	@Override
 	public float[] getOverrideColor(Face f, String groupName)
 	{
-		ColorProperty prop = ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE);
-		
-		if(MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT && prop != null && prop.color != null)
+		if(tempState != null)
 		{
-			return new float[] {prop.color.getColor(0), prop.color.getColor(1), prop.color.getColor(2), 1};
+			ColorProperty prop = ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE);
+			
+			if(MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT && prop != null && prop.color != null)
+			{
+				return new float[] {prop.color.getColor(0), prop.color.getColor(1), prop.color.getColor(2), 1};
+			}
 		}
 		
 		return null;
@@ -98,20 +106,91 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 	@Override
 	public TextureAtlasSprite getOverrideTexture(Face f, String groupName)
 	{
-		ColorProperty prop = ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE);
-		
-		if(MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT)
+		if(tempState != null)
 		{
-			if(prop != null && prop.color != null)
+			EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
+			ColorProperty prop = ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE);
+			ConnectionProperty connection = ((IExtendedBlockState)tempState).getValue(ConnectionProperty.INSTANCE);
+			boolean sideIconOverride = getIconStatus(side, connection) > 0;
+			
+			if(MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT)
 			{
-				return f.getMaterialName().contains("Center") ? transporter_center_color : transporter_side_color;
+				if(prop != null && prop.color != null)
+				{
+					return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center_color : transporter_side_color;
+				}
+				else {
+					return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center : transporter_side;
+				}
 			}
 			else {
-				return f.getMaterialName().contains("Center") ? transporter_center : transporter_side;
+				if(groupName.endsWith("NONE") && sideIconOverride)
+				{
+					for(Group g : getModel().getMatLib().getGroups().values())
+					{
+						for(Face testFace : g.getFaces())
+						{
+							String s = testFace.getMaterialName();
+							
+							if(!s.contains("Center") && !s.contains("Centre"))
+							{
+								return textureMap.get(s);
+							}
+						}
+					}
+				}
 			}
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean shouldRotate(Face f, String groupName)
+	{
+		if(tempState != null)
+		{
+			EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
+			ConnectionProperty connection = ((IExtendedBlockState)tempState).getValue(ConnectionProperty.INSTANCE);
+			
+			if(groupName.endsWith("NONE") && getIconStatus(side, connection) == 2)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public byte getIconStatus(EnumFacing side, ConnectionProperty connection)
+	{
+		ConnectionType type = PartSidedPipe.getConnectionType(side, connection.connectionByte, connection.transmitterConnections, connection.connectionTypes);
+
+		if(type == ConnectionType.NONE)
+		{
+			if(client.oldTransmitterRender || connection.renderCenter)
+			{
+				return (byte)0;
+			}
+			else if(connection.connectionByte == 3 && side != EnumFacing.DOWN && side != EnumFacing.UP)
+			{
+				return (byte)1;
+			}
+			else if(connection.connectionByte == 12 && (side == EnumFacing.DOWN || side == EnumFacing.UP))
+			{
+				return (byte)1;
+			}
+			else if(connection.connectionByte == 12 && (side == EnumFacing.EAST || side == EnumFacing.WEST))
+			{
+				return (byte)2;
+			}
+			else if(connection.connectionByte == 48 && side != EnumFacing.EAST && side != EnumFacing.WEST)
+			{
+				return (byte)2;
+			}
+		}
+		
+		return (byte)0;
 	}
 	
 	public static void registerIcons(TextureMap map)

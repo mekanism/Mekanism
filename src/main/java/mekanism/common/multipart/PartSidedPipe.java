@@ -796,16 +796,21 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public ConnectionType getConnectionType(EnumFacing side)
 	{
-		if(!connectionMapContainsSide(getAllCurrentConnections(), side))
+		return getConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes);
+	}
+	
+	public static ConnectionType getConnectionType(EnumFacing side, byte allConnections, byte transmitterConnections, ConnectionType[] types)
+	{
+		if(!connectionMapContainsSide(allConnections, side))
 		{
 			return ConnectionType.NONE;
 		}
-		else if(connectionMapContainsSide(currentTransmitterConnections, side))
+		else if(connectionMapContainsSide(transmitterConnections, side))
 		{
 			return ConnectionType.NORMAL;
 		}
 
-		return connectionTypes[side.ordinal()];
+		return types[side.ordinal()];
 	}
 
 	public List<EnumFacing> getConnections(ConnectionType type)
@@ -922,7 +927,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public BlockState createBlockState()
 	{
-		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.instance, ColorProperty.INSTANCE});
+		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.instance, ColorProperty.INSTANCE, ConnectionProperty.INSTANCE});
 	}
 
 	public List<String> getVisibleGroups()
@@ -940,7 +945,9 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public IBlockState getExtendedState(IBlockState state)
 	{
-		return ((IExtendedBlockState)state).withProperty(OBJProperty.instance, new OBJState(getVisibleGroups(), true));
+		ConnectionProperty connectionProp = new ConnectionProperty(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
+		
+		return ((IExtendedBlockState)state).withProperty(OBJProperty.instance, new OBJState(getVisibleGroups(), true)).withProperty(ConnectionProperty.INSTANCE, connectionProp);
 	}
 
 	@Override

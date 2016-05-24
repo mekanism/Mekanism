@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.vecmath.Matrix4f;
 
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -137,18 +138,28 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
                 	color = getOverrideColor(f, groupName);
                 }
 
+                EnumFacing facing = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
 				UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(getFormat());
-				builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
+				builder.setQuadOrientation(facing);
 				builder.setQuadColored();
 				builder.setQuadTint(0);
 				
 				Normal faceNormal = f.getNormal();
+				boolean rotate = shouldRotate(f, groupName);
+				
 				putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, getFormat(), color);
 				putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, getFormat(), color);
 				putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, getFormat(), color);
 				putVertexData(builder, f.getVertices()[3], faceNormal, TextureCoordinate.getDefaultUVs()[3], tempSprite, getFormat(), color);
+
+				BakedQuad quad = builder.build();
 				
-				bakedQuads.add(builder.build());
+				if(rotate)
+				{
+					quad = MekanismRenderer.rotate(quad, 1);
+				}
+				
+				bakedQuads.add(quad);
             }
         }
         
@@ -262,5 +273,10 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
     protected TextureAtlasSprite getOverrideTexture(Face f, String groupName)
     {
     	return null;
+    }
+    
+    protected boolean shouldRotate(Face f, String groupName)
+    {
+    	return false;
     }
 }
