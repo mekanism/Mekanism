@@ -10,6 +10,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -269,9 +270,9 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	{
 		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
-		if(adj instanceof IHeatTransfer)
+		if(MekanismUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			return (IHeatTransfer)adj;
+			return MekanismUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 		}
 		
 		return null;

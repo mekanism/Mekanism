@@ -77,8 +77,11 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	public boolean isValid()
 	{
 		IMultipartContainer cont = getPart().getContainer();
+		
 		if(cont == null)
+		{
 			return false;
+		}
 
 		if(cont instanceof TileEntity && ((TileEntity)cont).isInvalid())
 		{

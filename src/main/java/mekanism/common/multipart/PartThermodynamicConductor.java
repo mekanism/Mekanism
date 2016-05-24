@@ -9,7 +9,9 @@ import mekanism.common.HeatNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.MekanismUtils;
 //import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -122,12 +124,6 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	public String getType()
 	{
 		return "mekanism:thermodynamic_conductor_" + tier.name().toLowerCase();
-	}
-
-	@Override
-	public boolean onRightClick(EntityPlayer player, EnumFacing side)
-	{
-		return true;
 	}
 
 /*
@@ -254,9 +250,9 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 		{
 			TileEntity adj = getWorld().getTileEntity(getPos().offset(side));
 			
-			if(adj instanceof IHeatTransfer)
+			if(MekanismUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 			{
-				return (IHeatTransfer)adj;
+				return MekanismUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			}
 		}
 		

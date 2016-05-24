@@ -584,9 +584,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		
 		if(hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, facing).ioState == IOState.INPUT)
 		{
-			if(adj instanceof IHeatTransfer)
+			if(MekanismUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 			{
-				return (IHeatTransfer)adj;
+				return MekanismUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			}
 		}
 		

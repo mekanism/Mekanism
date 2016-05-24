@@ -64,6 +64,7 @@ public class Capabilities
 
         GridTransmitterTile.register();
         LogisticalTransporter.register();
+        BlockableConnection.register();
         
         GasHandler.register();
         TubeConnection.register();
@@ -71,5 +72,6 @@ public class Capabilities
         Configurable.register();
         TileNetwork.register();
         AlloyInteraction.register();
+        HeatTransfer.register();
     }
 }

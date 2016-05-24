@@ -90,6 +90,8 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	public boolean redstoneReactive = true;
 	
 	public boolean forceUpdate = true;
+	
+	public boolean redstoneSet = false;
 
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 	public TileEntity[] cachedAcceptors = new TileEntity[6];
@@ -174,7 +176,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public static byte setConnectionBit(byte connections, boolean toSet, EnumFacing side)
 	{
-		return (byte)((connections & ~(byte)(1 << side.ordinal())) | (byte)((toSet?1:0) << side.ordinal()));
+		return (byte)((connections & ~(byte)(1 << side.ordinal())) | (byte)((toSet ? 1 : 0) << side.ordinal()));
 	}
 
 	public abstract TextureAtlasSprite getCenterIcon(boolean opaque);
@@ -313,6 +315,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 				return true;
 			}
 		}
+		
 		if(cachedAcceptors[side.ordinal()] != null)
 		{
 			cachedAcceptors[side.ordinal()] = null;
@@ -324,7 +327,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public boolean getPossibleTransmitterConnection(EnumFacing side)
 	{
-		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld())))
+		if(handlesRedstone() && redstoneReactive && redstonePowered)
 		{
 			return false;
 		}
@@ -332,7 +335,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		if(canConnectMutual(side))
 		{
 			TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
-
+			
 			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
 					&& TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
 					&& isValidTransmitter(tileEntity))
@@ -542,12 +545,31 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		if(!canConnect(side)) return false;
 
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-		return (!(tile instanceof IBlockableConnection) || ((IBlockableConnection)tile).canConnect(side.getOpposite()));
+		
+		if(!MekanismUtils.hasCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()))
+		{
+			return true;
+		}
+		
+		return MekanismUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()).canConnect(side.getOpposite());
 	}
 
 	@Override
 	public boolean canConnect(EnumFacing side)
 	{
+		if(!redstoneSet)
+		{
+			if(redstoneReactive)
+			{
+				redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
+			}
+			else {
+				redstonePowered = false;
+			}
+			
+			redstoneSet = true;
+		}
+		
 		if(handlesRedstone() && redstoneReactive && redstonePowered)
 		{
 			return false;
@@ -658,6 +680,8 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		else {
 			redstonePowered = false;
 		}
+		
+		redstoneSet = true;
 
 		if(!getWorld().isRemote)
 		{
@@ -676,19 +700,11 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	public void refreshConnections(EnumFacing side)
 	{
-		if(redstoneReactive)
-		{
-			redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
-		}
-		else {
-			redstonePowered = false;
-		}
-
-		boolean possibleTransmitter = getPossibleTransmitterConnection(side);
-		boolean possibleAcceptor = getPossibleAcceptorConnection(side);
-
 		if(!getWorld().isRemote)
 		{
+			boolean possibleTransmitter = getPossibleTransmitterConnection(side);
+			boolean possibleAcceptor = getPossibleAcceptorConnection(side);
+			
 			if((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(), side))
 			{
 				sendDesc = true;
@@ -762,6 +778,9 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			{
 				markDirtyTransmitters();
 			}
+		}
+		else {
+			refreshConnections();
 		}
 	}
 
@@ -876,6 +895,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 				}
 			}
 		}
+		
 		if(boxIndex < list.size()) return list.get(boxIndex);
 		
 		return null;
@@ -942,7 +962,6 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		return layer == EnumWorldBlockLayer.CUTOUT;
 	}
 
-
 	public void notifyTileChange()
 	{
 		MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), new Coord4D(getPos(), getWorld()));
@@ -951,13 +970,15 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY || 
+				capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY 
+				|| capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY)
 		{
 			return (T)this;
 		}

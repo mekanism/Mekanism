@@ -103,7 +103,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	protected boolean isValidTransmitter(TileEntity tileEntity)
 	{
 		ILogisticalTransporter transporter = MekanismUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
-
+	
 		if(getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor())
 		{
 			return super.isValidTransmitter(tileEntity);
@@ -479,7 +479,10 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY)
-			return (T) getTransmitter();
+		{
+			return (T)getTransmitter();
+		}
+		
 		return super.getCapability(capability, side);
 	}
 }

@@ -12,6 +12,7 @@ import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -261,9 +262,9 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	{
 		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
-		if(adj instanceof IHeatTransfer)
+		if(MekanismUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			return (IHeatTransfer)adj;
+			return MekanismUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 		}
 		
 		return null;

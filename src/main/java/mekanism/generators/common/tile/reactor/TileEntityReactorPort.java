@@ -14,6 +14,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -303,9 +304,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
-		if(adj instanceof IHeatTransfer && !(adj instanceof IReactorBlock))
+		if(MekanismUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			return (IHeatTransfer)adj;
+			if(!(adj instanceof IReactorBlock))
+			{
+				return MekanismUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+			}
 		}
 		
 		return null;
