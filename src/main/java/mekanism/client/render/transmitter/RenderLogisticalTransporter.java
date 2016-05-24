@@ -2,7 +2,6 @@ package mekanism.client.render.transmitter;
 
 import java.util.HashMap;
 
-import mcmultipart.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
@@ -23,7 +22,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -62,7 +60,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 		entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
 		entityItem.worldObj = transporter.getWorld();
 
-		for(TransporterStack stack : transporter.getTransmitter().transit)
+		for(TransporterStack stack : transporter.getTransmitter().transit.clone())
 		{
 			if(stack != null)
 			{
@@ -84,7 +82,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 					MekanismRenderer.glowOn();
 					GL11.glDisable(GL11.GL_CULL_FACE);
 					GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
-					GL11.glTranslatef((float)(x + pos[0]), (float)(y + pos[1] - ((stack.itemStack.getItem() instanceof ItemBlock) ? 0.1 : 0)), (float)(z + pos[2]));
+					GL11.glTranslatef((float)(x + pos[0]), (float)(y + pos[1]), (float)(z + pos[2]));
 					modelBox.render(0.0625F);
 					MekanismRenderer.glowOff();
 					GL11.glPopMatrix();

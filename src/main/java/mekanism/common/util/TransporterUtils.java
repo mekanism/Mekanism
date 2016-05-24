@@ -13,7 +13,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -113,14 +112,7 @@ public final class TransporterUtils
 		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.world().provider.getDimensionId()).offset(stack.getSide(tileEntity));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 
-		float itemFix = 0;
-
-		if(!(stack.itemStack.getItem() instanceof ItemBlock))
-		{
-			itemFix = 0.1F;
-		}
-
-		return new float[] {0.5F + offset.xCoord*progress, 0.5F + offset.yCoord*progress - itemFix, 0.5F + offset.zCoord*progress};
+		return new float[] {0.5F + offset.xCoord*progress, 0.25F + offset.yCoord*progress, 0.5F + offset.zCoord*progress};
 	}
 
 	public static void incrementColor(ILogisticalTransporter tileEntity)

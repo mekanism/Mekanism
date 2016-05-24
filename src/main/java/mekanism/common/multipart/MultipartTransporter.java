@@ -203,7 +203,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			{
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, true)), new Range4D(coord()));
 				transit.remove(stack);
-				MekanismUtils.saveChunk((TileEntity)getPart().getContainer()); //TODO
+				MekanismUtils.saveChunk(getPart());
 			}
 
 			for(TransporterStack stack : needsSync)
@@ -287,7 +287,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			{
 				transit.add(stack);
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-				MekanismUtils.saveChunk((TileEntity)getPart().getContainer()); //TODO
+				MekanismUtils.saveChunk(getPart());
 			}
 
 			return rejected;
@@ -322,7 +322,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			{
 				transit.add(stack);
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-				MekanismUtils.saveChunk((TileEntity)getPart().getContainer()); //TODO
+				MekanismUtils.saveChunk(getPart());
 			}
 
 			return rejected;
@@ -337,7 +337,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 		stack.progress = progress;
 		transit.add(stack);
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-		MekanismUtils.saveChunk((TileEntity)getPart().getContainer()); //TODO
+		MekanismUtils.saveChunk(getPart());
 	}
 
 	@Override

@@ -106,7 +106,11 @@ public class TransporterStack
 
 		nbtTags.setInteger("progress", progress);
 		nbtTags.setTag("originalLocation", originalLocation.write(new NBTTagCompound()));
-		nbtTags.setInteger("idleDir", idleDir.ordinal());
+		
+		if(idleDir != null)
+		{
+			nbtTags.setInteger("idleDir", idleDir.ordinal());
+		}
 
 		if(homeLocation != null)
 		{
@@ -126,7 +130,11 @@ public class TransporterStack
 
 		progress = nbtTags.getInteger("progress");
 		originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
-		idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
+		
+		if(nbtTags.hasKey("idleDir"))
+		{
+			idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
+		}
 
 		if(nbtTags.hasKey("homeLocation"))
 		{

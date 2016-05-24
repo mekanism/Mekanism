@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import mcmultipart.multipart.Multipart;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -1041,6 +1042,16 @@ public final class MekanismUtils
 		}
 
 		tileEntity.getWorld().markChunkDirty(tileEntity.getPos(), tileEntity);
+	}
+	
+	public static void saveChunk(Multipart multipart)
+	{
+		if(multipart == null || multipart.getWorld() == null)
+		{
+			return;
+		}
+
+		multipart.getWorld().markChunkDirty(multipart.getPos(), null);
 	}
 
 	/**

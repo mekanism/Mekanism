@@ -6,6 +6,13 @@ import java.util.Iterator;
 public class HashList<T> implements Iterable<T>
 {
 	private ArrayList<T> list = new ArrayList<T>(256);
+	
+	private HashList(ArrayList<T> newList)
+	{
+		list = newList;
+	}
+	
+	public HashList() {}
 
 	public boolean contains(T obj)
 	{
@@ -89,6 +96,12 @@ public class HashList<T> implements Iterable<T>
 	public int size()
 	{
 		return list.size();
+	}
+	
+	@Override
+	public HashList<T> clone()
+	{
+		return new HashList((ArrayList)list.clone());
 	}
 	
 	public void swap(int source, int target)
