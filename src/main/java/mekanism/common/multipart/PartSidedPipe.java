@@ -6,23 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/*import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.raytracer.ExtendedMOP;
-import codechicken.lib.raytracer.AxisAlignedBB;
-import codechicken.lib.raytracer.RayTracer;
-import codechicken.lib.render.CCModel;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Vector3;
-import codechicken.microblock.ISidedHollowConnect;
-import codechicken.multipart.INeighborTileChange;
-import codechicken.multipart.IconHitEffects;
-import codechicken.multipart.JIconHitEffects;
-import codechicken.multipart.JNormalOcclusion;
-import codechicken.multipart.NormalOcclusionTest;
-import codechicken.multipart.PartMap;
-import codechicken.multipart.IMultipart;
-import codechicken.multipart.TSlottedPart;*/
 import mcmultipart.MCMultiPartMod;
 import mcmultipart.block.TileMultipart;
 import mcmultipart.multipart.IMultipart;
@@ -71,6 +54,23 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+/*import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.raytracer.ExtendedMOP;
+import codechicken.lib.raytracer.AxisAlignedBB;
+import codechicken.lib.raytracer.RayTracer;
+import codechicken.lib.render.CCModel;
+import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Vector3;
+import codechicken.microblock.ISidedHollowConnect;
+import codechicken.multipart.INeighborTileChange;
+import codechicken.multipart.IconHitEffects;
+import codechicken.multipart.JIconHitEffects;
+import codechicken.multipart.JNormalOcclusion;
+import codechicken.multipart.NormalOcclusionTest;
+import codechicken.multipart.PartMap;
+import codechicken.multipart.IMultipart;
+import codechicken.multipart.TSlottedPart;*/
 
 public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
@@ -647,7 +647,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		{
 			if(!getWorld().isRemote)
 			{
-				//TODO tile().dropItems(getDrops());
+				MultipartMekanism.dropItems(this);
 				getContainer().removePart(this);
 			}
 
@@ -935,7 +935,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	@Override
 	public BlockState createBlockState()
 	{
-		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.instance});
+		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.instance, ColorProperty.INSTANCE});
 	}
 
 	public List<String> getVisibleGroups()

@@ -2,16 +2,14 @@ package mekanism.common.multipart;
 
 import java.util.List;
 
+import mcmultipart.client.multipart.ISmartMultipartModel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
-
 import net.minecraftforge.client.model.ISmartBlockModel;
-
-import mcmultipart.client.multipart.ISmartMultipartModel;
 
 /**
  * Created by ben on 21/05/16.

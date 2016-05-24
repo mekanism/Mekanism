@@ -1,43 +1,22 @@
 package mekanism.common.multipart;
 
-import java.io.IOException;
-import java.util.List;
-
-import static mekanism.client.ClientProxy.CUSTOM_RENDERS;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
-
-import mcmultipart.client.multipart.ISmartMultipartModel;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.IPartFactory;
+import mcmultipart.multipart.Multipart;
 import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-/*
-import codechicken.microblock.BlockMicroMaterial;
-import codechicken.microblock.MicroMaterialRegistry;
-import codechicken.multipart.MultiPartRegistry;
-import codechicken.multipart.MultiPartRegistry.IPartFactory;
-import codechicken.multipart.MultipartGenerator;
-import codechicken.multipart.TMultiPart;
-*/
 
 public class MultipartMekanism implements IPartFactory
 {
@@ -199,14 +178,22 @@ public class MultipartMekanism implements IPartFactory
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.CardboardBox));
 	}
 	
-	public static void dropItem(ItemStack stack, World world, Vec3 pos)
+	public static void dropItem(ItemStack stack, Multipart multipart)
 	{
-		EntityItem item = new EntityItem(world, pos.xCoord, pos.yCoord, pos.zCoord, stack);
-        item.motionX = world.rand.nextGaussian() * 0.05;
-        item.motionY = world.rand.nextGaussian() * 0.05 + 0.2;
-        item.motionZ = world.rand.nextGaussian() * 0.05;
+		EntityItem item = new EntityItem(multipart.getWorld(), multipart.getPos().getX()+0.5, multipart.getPos().getY()+0.5, multipart.getPos().getZ()+0.5, stack);
+        item.motionX = multipart.getWorld().rand.nextGaussian() * 0.05;
+        item.motionY = multipart.getWorld().rand.nextGaussian() * 0.05 + 0.2;
+        item.motionZ = multipart.getWorld().rand.nextGaussian() * 0.05;
         item.setDefaultPickupDelay();
-        world.spawnEntityInWorld(item);
+        multipart.getWorld().spawnEntityInWorld(item);
+	}
+	
+	public static void dropItems(Multipart multipart)
+	{
+		for(ItemStack stack : multipart.getDrops())
+		{
+			dropItem(stack, multipart);
+		}
 	}
 
 	@SubscribeEvent

@@ -14,7 +14,7 @@ import javax.vecmath.Matrix4f;
 import mcmultipart.client.multipart.ISmartMultipartModel;
 import mekanism.api.EnumColor;
 import mekanism.client.render.ctm.CTMModelFactory;
-import mekanism.common.multipart.GlowPanelBlockState;
+import mekanism.common.multipart.ColorProperty;
 import mekanism.common.multipart.PartGlowPanel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -65,12 +65,14 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 	private IBlockState tempState;
 	private TextureAtlasSprite tempSprite;
 	private ItemStack tempStack;
+	private ImmutableMap<String, TextureAtlasSprite> textureMap;
 	
 	public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform)
 	{
 		model.super(model, state, format, textures);
 		baseModel = base;
 		transformationMap = transform;
+		textureMap = textures;
 	}
 
 	public static void forceRebake()
@@ -88,7 +90,7 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 		
 		if(tempState != null)
 		{
-			return ((IExtendedBlockState)tempState).getValue(GlowPanelBlockState.colorState).color;
+			return ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE).color;
 		}
 		
 		return EnumColor.WHITE;
@@ -98,7 +100,7 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 	public OBJBakedModel handlePartState(IBlockState state)
 	{
 		int hash = PartGlowPanel.hash((IExtendedBlockState)state);
-		EnumColor color = ((IExtendedBlockState)state).getValue(GlowPanelBlockState.colorState).color;
+		EnumColor color = ((IExtendedBlockState)state).getValue(ColorProperty.INSTANCE).color;
 		
 		if(!glowPanelCache.containsKey(hash))
 		{
@@ -114,7 +116,9 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 	public IBakedModel handleItemState(ItemStack stack)
 	{
 		if(glowPanelItemCache.containsKey(stack.getItemDamage()))
+		{
 			return glowPanelItemCache.get(stack.getItemDamage());
+		}
 
 		ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
 		builder.put(ModelLoader.White.loc.toString(), ModelLoader.White.instance);
@@ -124,10 +128,15 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 		{
 			TextureAtlasSprite sprite = null;
 			
-			if(sprite==null)
+			if(sprite == null)
+			{
 				sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-			if(sprite==null)
+			}
+			
+			if(sprite == null)
+			{
 				sprite = missing;
+			}
 			
 			builder.put(s, sprite);
 		}
@@ -190,16 +199,16 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 				{
 					for(Vertex v : f.getVertices())
 					{
-						if(!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
+						if(!v.getMaterial().equals(getModel().getMatLib().getMaterial(v.getMaterial().getName())))
 						{
-							v.setMaterial(this.getModel().getMatLib().getMaterial(v.getMaterial().getName()));
+							v.setMaterial(getModel().getMatLib().getMaterial(v.getMaterial().getName()));
 						}
 					}
 
 					tempSprite = ModelLoader.White.instance;
 				}
 				else {
-					tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
+					tempSprite = textureMap.get(f.getMaterialName());
 				}
 
 				float[] color = new float[] { 1, 1, 1, 1 };
@@ -216,10 +225,10 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 				builder.setQuadTint(0);
 				
 				Normal faceNormal = f.getNormal();
-				putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, color);
-				putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, color);
-				putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, color);
-				putVertexData(builder, f.getVertices()[3], faceNormal, TextureCoordinate.getDefaultUVs()[3], tempSprite, color);
+				putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, getFormat(), color);
+				putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, getFormat(), color);
+				putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, getFormat(), color);
+				putVertexData(builder, f.getVertices()[3], faceNormal, TextureCoordinate.getDefaultUVs()[3], tempSprite, getFormat(), color);
 				
 				bakedQuads.add(builder.build());
 			}
@@ -230,11 +239,11 @@ public class GlowPanelModel extends OBJBakedModel implements ISmartMultipartMode
 		return quadList;
 	}
 
-	private final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate defUV, TextureAtlasSprite sprite, float[] color)
+	private static final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate defUV, TextureAtlasSprite sprite, VertexFormat format, float[] color)
 	{
-		for(int e = 0; e < getFormat().getElementCount(); e++)
+		for(int e = 0; e < format.getElementCount(); e++)
 		{
-			switch(getFormat().getElement(e).getUsage())
+			switch(format.getElement(e).getUsage())
 			{
 				case POSITION:
 					builder.put(e, v.getPos().x, v.getPos().y, v.getPos().z, v.getPos().w);
