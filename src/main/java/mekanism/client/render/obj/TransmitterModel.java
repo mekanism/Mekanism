@@ -15,7 +15,6 @@ import mekanism.common.multipart.ConnectionProperty;
 import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -109,12 +108,6 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 		}
 		
 		return itemCache;
-	}
-	
-	@Override
-	public List<BakedQuad> getGeneralQuads()
-	{
-		return super.getGeneralQuads();
 	}
 	
 	@Override
