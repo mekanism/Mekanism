@@ -29,12 +29,17 @@ public class MekanismOBJModel extends OBJModel
 		{
 			return new GlowPanelModel(preBaked, this, state, format, GlowPanelModel.getTexturesForOBJModel(preBaked), null);
 		}
+		else if(modelType == OBJModelType.TRANSMITTER)
+		{
+			return new TransmitterModel(preBaked, this, state, format, TransmitterModel.getTexturesForOBJModel(preBaked), null);
+		}
 		
 		return null;
 	}
 	
 	public static enum OBJModelType
 	{
-		GLOW_PANEL
+		GLOW_PANEL,
+		TRANSMITTER
 	}
 }

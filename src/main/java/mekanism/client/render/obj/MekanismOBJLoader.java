@@ -105,21 +105,28 @@ public class MekanismOBJLoader extends OBJLoader
 	@Override
 	public IModel loadModel(ResourceLocation loc) throws IOException
 	{
-		if(!modelCache.containsKey(loc))
+		ResourceLocation file = new ResourceLocation(loc.getResourceDomain(), loc.getResourcePath());
+		
+		if(!modelCache.containsKey(file))
 		{
-			IModel model = super.loadModel(loc);
+			IModel model = super.loadModel(file);
 			
 			if(model instanceof OBJModel)
 			{
-				if(loc.getResourcePath().contains("glow_panel"))
+				if(file.getResourcePath().contains("glow_panel"))
 				{
-					MekanismOBJModel mekModel = new MekanismOBJModel(OBJModelType.GLOW_PANEL, ((OBJModel)model).getMatLib(), loc);
-					modelCache.put(loc, mekModel);
+					MekanismOBJModel mekModel = new MekanismOBJModel(OBJModelType.GLOW_PANEL, ((OBJModel)model).getMatLib(), file);
+					modelCache.put(file, mekModel);
+				}
+				else if(file.getResourcePath().contains("transmitter"))
+				{
+					MekanismOBJModel mekModel = new MekanismOBJModel(OBJModelType.TRANSMITTER, ((OBJModel)model).getMatLib(), file);
+					modelCache.put(file, mekModel);
 				}
 			}
 		}
 		
-		MekanismOBJModel mekModel = modelCache.get(loc);
+		MekanismOBJModel mekModel = modelCache.get(file);
 		
 		if(mekModel == null)
 		{

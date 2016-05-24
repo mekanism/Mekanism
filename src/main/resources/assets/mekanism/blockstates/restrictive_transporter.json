@@ -10,7 +10,7 @@
     }
   },
   "variants": {
-    "multipart": [{"model": "mekanism:transmitter_large.obj"}]
+    "multipart": [{"model": "mekanism:transmitter_large.obj.mek"}]
   }
 }
 

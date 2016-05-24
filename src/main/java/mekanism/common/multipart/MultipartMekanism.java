@@ -199,9 +199,9 @@ public class MultipartMekanism implements IPartFactory
 	@SubscribeEvent
 	public void onModelBake(ModelBakeEvent event)
 	{
-		String[] names = new String[] {"mekanism:universal_cable_basic",
-				"mekanism:universal_cable_advanced", "mekanism:universal_cable_elite",
-				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
+		String[] names = new String[] {
+				"mekanism:universal_cable_basic", "mekanism:universal_cable_advanced", 
+				"mekanism:universal_cable_elite", "mekanism:universal_cable_ultimate",
 				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
 				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
 				"mekanism:pressurized_tube_basic", "mekanism:pressurized_tube_advanced",
@@ -211,16 +211,16 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter",
 				"mekanism:thermodynamic_conductor_basic", "mekanism:thermodynamic_conductor_advanced",
 				"mekanism:thermodynamic_conductor_elite", "mekanism:thermodynamic_conductor_ultimate"};
-
+		
 		for(String s : names)
 		{
 			ModelResourceLocation mrl = new ModelResourceLocation(s, "multipart");
 			IBakedModel model = event.modelRegistry.getObject(mrl);
+			
 			if(model instanceof ISmartBlockModel)
 			{
 				event.modelRegistry.putObject(mrl, new BlockToMultipartModel((ISmartBlockModel)model));
 			}
 		}
 	}
-
 }
