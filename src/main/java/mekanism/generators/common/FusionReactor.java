@@ -24,6 +24,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -324,7 +325,7 @@ public class FusionReactor implements IFusionReactor
 
 	public void kill()
 	{
-		AxisAlignedBB death_zone = AxisAlignedBB.fromBounds(controller.getPos().getX() - 1, controller.getPos().getY() - 3, controller.getPos().getZ() - 1 ,controller.getPos().getX() + 2, controller.getPos().getY(), controller.getPos().getZ() + 2);
+		AxisAlignedBB death_zone = new AxisAlignedBB(controller.getPos().getX() - 1, controller.getPos().getY() - 3, controller.getPos().getZ() - 1 ,controller.getPos().getX() + 2, controller.getPos().getY(), controller.getPos().getZ() + 2);
 		List<Entity> entitiesToDie = controller.getWorld().getEntitiesWithinAABB(Entity.class, death_zone);
 		
 		for(Entity entity : entitiesToDie)
@@ -349,7 +350,7 @@ public class FusionReactor implements IFusionReactor
 		
 		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimensionId());
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimension());
 		}
 	}
 
@@ -387,7 +388,7 @@ public class FusionReactor implements IFusionReactor
 		
 		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimensionId());
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimension());
 		}
 	}
 
@@ -470,9 +471,10 @@ public class FusionReactor implements IFusionReactor
 				for(int z = -1; z <= 1; z++)
 				{
 					Coord4D trans = centre.translate(x, y, z);
-					Block tile = trans.getBlock(controller.getWorld());
+					IBlockState state = trans.getBlockState(controller.getWorld());
+					Block tile = state.getBlock();
 
-					if(!tile.isAir(controller.getWorld(), trans.getPos()))
+					if(!tile.isAir(state, controller.getWorld(), trans.getPos()))
 					{
 						return false;
 					}

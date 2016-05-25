@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -137,7 +138,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -150,12 +151,14 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
         }
 
 		nbtTags.setInteger("tier", tier.ordinal());
+		
+		return nbtTags;
 	}
 
 	@Override
-	public String getType()
+	public ResourceLocation getType()
 	{
-		return "mekanism:mechanical_pipe_" + tier.name().toLowerCase();
+		return new ResourceLocation("mekanism:mechanical_pipe_" + tier.name().toLowerCase());
 	}
 
 	@Override

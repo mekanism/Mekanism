@@ -16,9 +16,11 @@ import mekanism.generators.client.model.ModelSolarGenerator;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -26,15 +28,15 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.ImmutableList;
 
 public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareModel
 {
@@ -119,14 +121,13 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
 	}
 
 	@Override
-	public List<BakedQuad> getFaceQuads(EnumFacing facing)
+	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
 	{
-		return new LinkedList<BakedQuad>();
-	}
-
-	@Override
-	public List<BakedQuad> getGeneralQuads()
-	{
+		if(side != null) 
+    	{
+    		return ImmutableList.of();
+    	}
+		
 		Tessellator tessellator = Tessellator.getInstance();
 		tessellator.draw();
 		
@@ -140,15 +141,15 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
         GlStateManager.enableLight(1);
         GlStateManager.enableColorMaterial();
         GlStateManager.colorMaterial(1032, 5634);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
     	GlStateManager.popMatrix();
     	
-    	WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+    	VertexBuffer worldrenderer = tessellator.getBuffer();
     	worldrenderer.begin(7, DefaultVertexFormats.ITEM);
 		
 		if(Block.getBlockFromItem(stack.getItem()) != null)
 		{
-			generalQuads.addAll(baseModel.getGeneralQuads());
+			generalQuads.addAll(baseModel.getQuads(state, side, rand));
 		}
 		
 		return generalQuads;
@@ -185,17 +186,11 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
 	}
 	
     @Override
-    public VertexFormat getFormat()
-    {
-        return Attributes.DEFAULT_BAKED_FORMAT;
-    }
-	
-    @Override
-    public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
     {
     	prevTransform = cameraTransformType;
     	
-        if(cameraTransformType == TransformType.THIRD_PERSON) 
+        if(cameraTransformType == TransformType.THIRD_PERSON_RIGHT_HAND) 
         {
             ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.DEFAULT_BLOCK_THIRD_PERSON_MATRIX);
         }

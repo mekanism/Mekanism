@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.vecmath.Matrix4f;
 
 import mekanism.client.render.MekanismRenderer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -33,6 +34,7 @@ import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -40,7 +42,9 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
 {
 	protected IBakedModel baseModel;
 	
-	protected TextureAtlasSprite tempSprite = ModelLoader.White.instance;
+	protected TextureAtlasSprite tempSprite = ModelLoader.White.INSTANCE;
+	
+	protected VertexFormat vertexFormat;
 	
 	protected ImmutableMap<String, TextureAtlasSprite> textureMap;
 	
@@ -54,6 +58,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
 		baseModel = base;
 		transformationMap = transform;
 		textureMap = textures;
+		vertexFormat = format;
 		
         if(state instanceof OBJState)
         {
@@ -62,8 +67,13 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
 	}
 	
     @Override
-    public List<BakedQuad> getGeneralQuads()
+    public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand)
     {
+    	if(side != null) 
+    	{
+    		return ImmutableList.of();
+    	}
+    	
         if(bakedQuads == null)
         {
         	bakedQuads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
@@ -125,7 +135,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
 						}
 					}
 
-					tempSprite = ModelLoader.White.instance;
+					tempSprite = ModelLoader.White.INSTANCE;
 				}
 				else {
 					tempSprite = textureMap.get(f.getMaterialName());
@@ -139,18 +149,19 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
                 }
 
                 EnumFacing facing = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
-				UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(getFormat());
+				UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(vertexFormat);
+				builder.setContractUVs(true);
 				builder.setQuadOrientation(facing);
-				builder.setQuadColored();
+				builder.setTexture(tempSprite);
 				builder.setQuadTint(0);
 				
 				Normal faceNormal = f.getNormal();
 				boolean rotate = shouldRotate(f, groupName);
 				
-				putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, getFormat(), color);
-				putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, getFormat(), color);
-				putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, getFormat(), color);
-				putVertexData(builder, f.getVertices()[3], faceNormal, TextureCoordinate.getDefaultUVs()[3], tempSprite, getFormat(), color);
+				putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, vertexFormat, color);
+				putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, vertexFormat, color);
+				putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, vertexFormat, color);
+				putVertexData(builder, f.getVertices()[3], faceNormal, TextureCoordinate.getDefaultUVs()[3], tempSprite, vertexFormat, color);
 
 				BakedQuad quad = builder.build();
 				

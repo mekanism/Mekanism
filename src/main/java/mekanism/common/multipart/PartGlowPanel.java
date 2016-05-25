@@ -5,6 +5,7 @@ import java.util.List;
 
 import mcmultipart.microblock.IMicroblock.IFaceMicroblock;
 import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.INormallyOccludingPart;
 import mcmultipart.multipart.Multipart;
 import mcmultipart.multipart.PartSlot;
 import mcmultipart.raytrace.PartMOP;
@@ -20,10 +21,12 @@ import net.minecraft.nbt.NBTTagCompound;
 //import net.minecraft.util.IIcon;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-public class PartGlowPanel extends Multipart implements IOccludingPart
+public class PartGlowPanel extends Multipart implements INormallyOccludingPart
 {
 	public EnumColor colour = EnumColor.WHITE;
 	public EnumFacing side = EnumFacing.DOWN;
@@ -33,7 +36,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	static
 	{
 		AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
-		Vec3 fromOrigin = new Vec3(-0.5, -0.5, -0.5);
+		Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
@@ -60,9 +63,9 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	}
 
 	@Override
-	public String getType()
+	public ResourceLocation getType()
 	{
-		return "mekanism:glow_panel";
+		return new ResourceLocation("mekanism:glow_panel");
 	}
 
 	public void setColour(EnumColor newColour)
@@ -110,10 +113,12 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt.setInteger("side", side.ordinal());
 		nbt.setInteger("colour", colour.getMetaValue());
+		
+		return nbt;
 	}
 
 	@Override
@@ -160,7 +165,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	}
 
 	@Override
-	public String getModelPath()
+	public ResourceLocation getModelPath()
 	{
 		return getType();
 	}

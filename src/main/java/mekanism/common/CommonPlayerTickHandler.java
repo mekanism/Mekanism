@@ -13,6 +13,7 @@ import mekanism.common.item.ItemScubaTank;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.potion.PotionEffect;
@@ -37,7 +38,9 @@ public class CommonPlayerTickHandler
 
 	public void tickEnd(EntityPlayer player)
 	{
-		if(player.getEquipmentInSlot(1) != null && player.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
+		ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+		
+		if(feetStack != null && feetStack.getItem() instanceof ItemFreeRunners)
 		{
 			player.stepHeight = 1.002F;
 		}
@@ -60,13 +63,14 @@ public class CommonPlayerTickHandler
 
 		if(isJetpackOn(player))
 		{
-			ItemJetpack jetpack = (ItemJetpack)player.getEquipmentInSlot(3).getItem();
+			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+			ItemJetpack jetpack = (ItemJetpack)stack.getItem();
 
-			if(jetpack.getMode(player.getEquipmentInSlot(3)) == JetpackMode.NORMAL)
+			if(jetpack.getMode(stack) == JetpackMode.NORMAL)
 			{
 				player.motionY = Math.min(player.motionY + 0.15D, 0.5D);
 			}
-			else if(jetpack.getMode(player.getEquipmentInSlot(3)) == JetpackMode.HOVER)
+			else if(jetpack.getMode(stack) == JetpackMode.HOVER)
 			{
 				if((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) || (Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND)))
 				{
@@ -101,20 +105,21 @@ public class CommonPlayerTickHandler
 
 			if(player instanceof EntityPlayerMP)
 			{
-				ReflectionUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
+				ReflectionUtils.setPrivateValue(((EntityPlayerMP)player).connection, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 			}
 
-			jetpack.useGas(player.getEquipmentInSlot(3));
+			jetpack.useGas(stack);
 		}
 
 		if(isGasMaskOn(player))
 		{
-			ItemScubaTank tank = (ItemScubaTank)player.getEquipmentInSlot(3).getItem();
+			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+			ItemScubaTank tank = (ItemScubaTank)stack.getItem();
 
 			final int max = 300;
 			
-			tank.useGas(player.getEquipmentInSlot(3));
-			GasStack received = tank.useGas(player.getEquipmentInSlot(3), max-player.getAir());
+			tank.useGas(stack);
+			GasStack received = tank.useGas(stack, max-player.getAir());
 			
 			if(received != null)
 			{
@@ -145,7 +150,7 @@ public class CommonPlayerTickHandler
 
 		BlockPos pos = new BlockPos(x, y, z);
 		IBlockState s = player.worldObj.getBlockState(pos);
-		AxisAlignedBB box = s.getBlock().getCollisionBoundingBox(player.worldObj, pos, s);
+		AxisAlignedBB box = s.getCollisionBoundingBox(player.worldObj, pos);
 		AxisAlignedBB playerBox = player.getCollisionBoundingBox().offset(0, -0.01, 0);
 		
 		return box != null && playerBox.intersectsWith(box);

@@ -3,7 +3,9 @@ package mekanism.client.entity;
 import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class EntityLaser extends EntityFX
+public class EntityLaser extends Particle
 {
 	double length;
 	EnumFacing direction;
@@ -34,7 +36,7 @@ public class EntityLaser extends EntityFX
 	}
 
 	@Override
-	public void renderParticle(WorldRenderer worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_)
+	public void renderParticle(VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_)
 	{
 		worldRendererIn.finishDrawing();
 

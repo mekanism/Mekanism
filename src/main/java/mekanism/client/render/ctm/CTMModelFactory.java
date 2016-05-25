@@ -11,20 +11,15 @@ import mekanism.common.block.states.BlockStateBasic;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.Attributes;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
-import net.minecraftforge.client.model.ISmartBlockModel;
-import net.minecraftforge.client.model.ISmartItemModel;
-import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -60,15 +55,21 @@ public class CTMModelFactory implements ISmartBlockModel, ISmartItemModel, IPers
     }
 
     @Override
-    public List<BakedQuad> getFaceQuads(EnumFacing facing)
+    public List<BakedQuad> getQuads(IBlockState stateIn, EnumFacing side, long rand) 
     {
-        return FluentIterable.from(face).filter(quad -> quad.getFace() == facing).toList();
-    }
-
-    @Override
-    public List<BakedQuad> getGeneralQuads() 
-    {
-        return general;
+    	CTMModelFactory baked;
+    	
+    	if(stateIn.getBlock() instanceof ICTMBlock && stateIn instanceof IExtendedBlockState) 
+        {
+            IExtendedBlockState state = (IExtendedBlockState)stateIn;
+            CTMBlockRenderContext ctxList = state.getValue(BlockStateBasic.ctmProperty);
+            baked = createModel(stateIn, model, ctxList);
+        } 
+        else {
+            baked = this;
+        }
+    	
+        return side == null ? baked.general : FluentIterable.from(baked.face).filter(quad -> quad.getFace() == side).toList();
     }
 
     @Override
@@ -101,22 +102,6 @@ public class CTMModelFactory implements ISmartBlockModel, ISmartItemModel, IPers
         return ItemCameraTransforms.DEFAULT;
     }
 
-    // TODO implement model caching, returning a new model every time is a HUGE waste of memory and CPU
-
-    @Override
-    public IBakedModel handleBlockState(IBlockState stateIn) 
-    {
-        if(stateIn.getBlock() instanceof ICTMBlock && stateIn instanceof IExtendedBlockState) 
-        {
-            IExtendedBlockState state = (IExtendedBlockState) stateIn;
-            CTMBlockRenderContext ctxList = state.getValue(BlockStateBasic.ctmProperty);
-            return createModel(stateIn, model, ctxList);
-        } 
-        else {
-            return this;
-        }
-    }
-
     @Override
     public IBakedModel handleItemState(ItemStack stack) 
     {
@@ -142,8 +127,8 @@ public class CTMModelFactory implements ISmartBlockModel, ISmartItemModel, IPers
 
             int quadGoal = ctx == null ? 1 : CTM.QUADS_PER_SIDE;
             IBakedModel baked = model.getModel(state);
-            List<BakedQuad> origFaceQuads = baked.getFaceQuads(facing);
-            List<BakedQuad> origGeneralQuads = FluentIterable.from(baked.getGeneralQuads()).filter(q -> q.getFace() == facing).toList();
+            List<BakedQuad> origFaceQuads = baked.getQuads(state, facing, 0);
+            List<BakedQuad> origGeneralQuads = FluentIterable.from(baked.getQuads(state, null, 0)).filter(q -> q.getFace() == facing).toList();
             addAllQuads(origFaceQuads, face, ctx, state, quadGoal, faceQuads);
             addAllQuads(origGeneralQuads, face, ctx, state, quadGoal, generalQuads);
         }
@@ -159,18 +144,12 @@ public class CTMModelFactory implements ISmartBlockModel, ISmartItemModel, IPers
         }
     }
 
-    @Override
-    public VertexFormat getFormat()
-    {
-        return Attributes.DEFAULT_BAKED_FORMAT;
-    }
-
     private Pair<IPerspectiveAwareModel, Matrix4f> thirdPersonTransform;
     
     @Override
-    public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
     {
-        if(cameraTransformType == TransformType.THIRD_PERSON) 
+        if(cameraTransformType == TransformType.THIRD_PERSON_RIGHT_HAND) 
         {
             if(thirdPersonTransform == null) 
             {

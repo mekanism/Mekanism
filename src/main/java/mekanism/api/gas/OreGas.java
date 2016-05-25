@@ -1,6 +1,6 @@
 package mekanism.api.gas;
 
-import com.sun.imageio.plugins.common.I18N;
+import net.minecraft.util.text.translation.I18n;
 
 
 public class OreGas extends Gas
@@ -34,6 +34,6 @@ public class OreGas extends Gas
 
 	public String getOreName()
 	{
-		return I18N.getString(oreName);
+		return I18n.translateToLocal(oreName);
 	}
 }

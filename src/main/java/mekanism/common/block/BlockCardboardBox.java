@@ -20,9 +20,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockCardboardBox extends BlockContainer
@@ -56,7 +58,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public boolean isReplaceable(World world, BlockPos pos)
+	public boolean isReplaceable(IBlockAccess world, BlockPos pos)
 	{
 		return testingPlace;
 	}
@@ -117,9 +119,9 @@ public class BlockCardboardBox extends BlockContainer
 	}
 	
 	@Override
-	public int getRenderType()
+	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
-		return 3;
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
@@ -128,9 +130,9 @@ public class BlockCardboardBox extends BlockContainer
 		return new TileEntityCardboardBox();
 	}
 
-	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
+	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, pos, null);
+		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
 		world.setBlockToAir(pos);
 
@@ -150,10 +152,9 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-    public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
-		IBlockState state = world.getBlockState(pos);
 
 		ItemStack itemStack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
 
@@ -169,7 +170,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -178,7 +179,7 @@ public class BlockCardboardBox extends BlockContainer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos, player));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}

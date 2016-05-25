@@ -152,7 +152,7 @@ public class MekanismRenderer
 				ModelResourceLocation loc = new ModelResourceLocation(domain + ":" + metaItem.getTexture(i), "inventory");
 				ModelLoader.setCustomModelResourceLocation(item, i, loc);
 				variants.add(loc);
-				ModelBakery.addVariantName(item, domain + ":" + metaItem.getTexture(i));
+				ModelBakery.registerItemVariants(item, new ResourceLocation(domain + ":" + metaItem.getTexture(i)));
 			}
 			
 			return;
@@ -296,7 +296,7 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite)
+	public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite) //TODO
 	{
 		int[] vertices = new int[28];
 		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
@@ -313,10 +313,10 @@ public class MekanismRenderer
 		vertices[21+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(0));
 		vertices[21+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(16));
 		
-		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace());
+		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), quad.getFormat());
 	}
 	
-    public static BakedQuad rotate(BakedQuad quad, int amount)
+    public static BakedQuad rotate(BakedQuad quad, int amount) //TODO
     {
 		int[] vertices = new int[28];
 		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
@@ -330,7 +330,7 @@ public class MekanismRenderer
 			vertices[7*i + 5] = quad.getVertexData()[7*nextIndex + 5];
 		}
 		
-		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace());
+		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
     }
 	
 	public static void prepFlowing(Model3D model, Fluid fluid)

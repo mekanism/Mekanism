@@ -10,8 +10,11 @@ import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.Attributes;
@@ -27,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 public abstract class RenderTransmitterBase<T extends PartTransmitter> extends MultipartSpecialRenderer<T>
 {
 	private static OBJModel contentsModel;
-	private static Map<String, IFlexibleBakedModel> contentsMap = new HashMap<String, IFlexibleBakedModel>();
+	private static Map<String, IBakedModel> contentsMap = new HashMap<String, IBakedModel>();
 	
 	protected Minecraft mc = Minecraft.getMinecraft();
 	
@@ -36,7 +39,7 @@ public abstract class RenderTransmitterBase<T extends PartTransmitter> extends M
 		if(contentsModel == null)
 		{
 			try {
-				contentsModel = (OBJModel)OBJLoader.instance.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"));
+				contentsModel = (OBJModel)OBJLoader.INSTANCE.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"));
 				contentsMap = buildModelMap(contentsModel);
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -62,24 +65,33 @@ public abstract class RenderTransmitterBase<T extends PartTransmitter> extends M
 	
 	public static boolean isDrawing = false;
 	
-	public void renderTransparency(WorldRenderer renderer, TextureAtlasSprite icon, IFlexibleBakedModel cc, ColourRGBA color)
+	public void renderTransparency(VertexBuffer renderer, TextureAtlasSprite icon, IBakedModel cc, ColourRGBA color)
 	{
 		if(!isDrawing)
 		{
-			renderer.begin(GL11.GL_QUADS, cc.getFormat());
+			renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 			isDrawing = true;
 		}
 		
-		for(BakedQuad quad : cc.getGeneralQuads())
+		for(EnumFacing side : EnumFacing.values())
+		{
+			for(BakedQuad quad : cc.getQuads(null, side, 0))
+			{
+				quad = MekanismRenderer.iconTransform(quad, icon);
+				LightUtil.renderQuadColor(renderer, quad, color.argb());
+			}
+		}
+		
+		for(BakedQuad quad : cc.getQuads(null, null, 0))
 		{
 			quad = MekanismRenderer.iconTransform(quad, icon);
 			LightUtil.renderQuadColor(renderer, quad, color.argb());
 		}
 	}
 	
-	public static HashMap<String, IFlexibleBakedModel> buildModelMap(OBJModel objModel) 
+	public static HashMap<String, IBakedModel> buildModelMap(OBJModel objModel) 
 	{
-		HashMap<String, IFlexibleBakedModel> modelParts = new HashMap<String, IFlexibleBakedModel>();
+		HashMap<String, IBakedModel> modelParts = new HashMap<String, IBakedModel>();
 
 		if(!objModel.getMatLib().getGroups().keySet().isEmpty())
 		{
@@ -97,7 +109,7 @@ public abstract class RenderTransmitterBase<T extends PartTransmitter> extends M
 		return modelParts;
 	}
 	
-	public IFlexibleBakedModel getModelForSide(PartTransmitter part, EnumFacing side)
+	public IBakedModel getModelForSide(PartTransmitter part, EnumFacing side)
 	{
 		String sideName = side.name().toLowerCase();
 		String typeName = part.getConnectionType(side).name().toUpperCase();

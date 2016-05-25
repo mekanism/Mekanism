@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -108,7 +109,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.stone;
+		toReturn.baseBlock = Blocks.STONE;
 		toReturn.setTexture(MekanismRenderer.overlays.get(type));
 
 		DisplayInteger display = DisplayInteger.createAndStart();

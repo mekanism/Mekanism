@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -108,7 +109,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
 	{
 		if(!world.isRemote)
 		{
@@ -122,11 +123,11 @@ public class BlockGasTank extends BlockContainer
 	}
 	
 	@Override
-	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, BlockPos pos)
+	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		
-		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, pos) : 0.0F;
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
 	}
 
 	@Override
@@ -192,7 +193,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -243,15 +244,15 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 
 	@Override
-	public int getRenderType()
+	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
-		return 3;
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
@@ -261,7 +262,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);

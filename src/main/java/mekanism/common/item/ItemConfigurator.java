@@ -35,6 +35,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -257,7 +258,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	@Method(modid = "BuildCraft")
 	public boolean canWrench(EntityPlayer player, BlockPos pos)
 	{
-		return canUseWrench(player, pos);
+		return canUseWrench(player.inventory.getCurrentItem(), player, pos);
 	}
 
 	@Override
@@ -274,21 +275,21 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	public void wrenchUsed(EntityPlayer player, Entity entity) {}
 
 	@Override
-	public boolean canUseWrench(EntityPlayer player, BlockPos pos)
+	public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos)
 	{
-		return getState(player.getCurrentEquippedItem()) == ConfiguratorMode.WRENCH;
+		return getState(stack) == ConfiguratorMode.WRENCH;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse(World world, BlockPos pos, EntityPlayer player)
+	public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player)
 	{
-		return getState(player.getCurrentEquippedItem()) == ConfiguratorMode.WRENCH;
+		return getState(stack) == ConfiguratorMode.WRENCH;
 	}
 
 	@Override
 	public boolean isUsable(ItemStack item, EntityLivingBase user, BlockPos pos)
 	{
-		return user instanceof EntityPlayer && canUseWrench((EntityPlayer)user, pos);
+		return user instanceof EntityPlayer && canUseWrench(item, (EntityPlayer)user, pos);
 	}
 
 	@Override

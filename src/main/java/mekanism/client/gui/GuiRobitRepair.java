@@ -17,9 +17,12 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerRepair;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,7 +31,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiRobitRepair extends GuiMekanism implements ICrafting
+public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 {
 	public int entityId;
 	private ContainerRepair repairContainer;
@@ -58,8 +61,8 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 		itemNameField.setDisabledTextColour(-1);
 		itemNameField.setEnableBackgroundDrawing(false);
 		itemNameField.setMaxStringLength(30);
-		inventorySlots.removeCraftingFromCrafters(this);
-		inventorySlots.onCraftGuiOpened(this);
+		inventorySlots.removeListener(this);
+		inventorySlots.addListener(this);
 	}
 
 	@Override
@@ -67,7 +70,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 	{
 		super.onGuiClosed();
 		Keyboard.enableRepeatEvents(false);
-		inventorySlots.removeCraftingFromCrafters(this);
+		inventorySlots.removeListener(this);
 	}
 
 	@Override
@@ -80,7 +83,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 		{
 			int k = 8453920;
 			boolean flag = true;
-			String s = StatCollector.translateToLocalFormatted("container.repair.cost", repairContainer.maximumCost);
+			String s = I18n.translateToLocalFormatted("container.repair.cost", repairContainer.maximumCost);
 
 			if(repairContainer.maximumCost >= 40 && !mc.thePlayer.capabilities.isCreativeMode)
 			{
@@ -128,7 +131,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 		if(itemNameField.textboxKeyTyped(c, i))
 		{
 			repairContainer.updateItemName(itemNameField.getText());
-			mc.thePlayer.sendQueue.addToSendQueue(new C17PacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
+			mc.thePlayer.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
 		}
 		else {
 			super.keyTyped(c, i);
@@ -266,7 +269,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 			if(itemstack != null)
 			{
 				repairContainer.updateItemName(itemNameField.getText());
-				mc.thePlayer.sendQueue.addToSendQueue(new C17PacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
+				mc.thePlayer.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
 			}
 		}
 	}

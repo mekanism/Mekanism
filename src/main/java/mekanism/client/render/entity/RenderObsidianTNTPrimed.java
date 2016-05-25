@@ -72,6 +72,6 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT>
 	@Override
 	protected ResourceLocation getEntityTexture(EntityObsidianTNT entity)
 	{
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 }

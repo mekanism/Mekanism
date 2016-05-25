@@ -34,7 +34,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	@Override
 	public boolean isValidInnerNode(int x, int y, int z)
 	{
-		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimensionId()).getTileEntity(pointer.getWorld());
+		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
 		
 		if(tile != null && (tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider))
 		{

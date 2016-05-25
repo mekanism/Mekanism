@@ -14,8 +14,10 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -30,7 +32,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
-public class MekanismOBJLoader extends OBJLoader
+public class MekanismOBJLoader implements ICustomModelLoader
 {
 	public static final MekanismOBJLoader INSTANCE = new MekanismOBJLoader();
 	
@@ -48,11 +50,11 @@ public class MekanismOBJLoader extends OBJLoader
 		for(String s : OBJ_RENDERS)
 		{
 			ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
-	        Object obj = event.modelRegistry.getObject(model);
+	        Object obj = event.getModelRegistry().getObject(model);
 	        
 	        if(obj instanceof IBakedModel)
 	        {
-	        	event.modelRegistry.putObject(model, createBakedObjItemModel((IBakedModel)obj, "mekanism:models/block/" + s + ".obj.mek", new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM));
+	        	event.getModelRegistry().putObject(model, createBakedObjItemModel((IBakedModel)obj, "mekanism:models/block/" + s + ".obj.mek", new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM));
 	        }
 		}
     }
@@ -69,10 +71,10 @@ public class MekanismOBJLoader extends OBJLoader
 			};
 			
 			ResourceLocation modelLocation = new ResourceLocation(name);
-			OBJModel objModel = (OBJModel)OBJLoader.instance.loadModel(modelLocation);
+			OBJModel objModel = (OBJModel)OBJLoader.INSTANCE.loadModel(modelLocation);
 			objModel = (OBJModel)objModel.process(flipData);
 			ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
-			builder.put(ModelLoader.White.loc.toString(), ModelLoader.White.instance);
+			builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
 			TextureAtlasSprite missing = textureGetter.apply(new ResourceLocation("missingno"));
 			
 			for(String s : objModel.getMatLib().getMaterialNames())
@@ -104,13 +106,13 @@ public class MekanismOBJLoader extends OBJLoader
 	}
 	
 	@Override
-	public IModel loadModel(ResourceLocation loc) throws IOException
+	public IModel loadModel(ResourceLocation loc) throws Exception
 	{
 		ResourceLocation file = new ResourceLocation(loc.getResourceDomain(), loc.getResourcePath());
 		
 		if(!modelCache.containsKey(file))
 		{
-			IModel model = super.loadModel(file);
+			IModel model = OBJLoader.INSTANCE.loadModel(file);
 			
 			if(model instanceof OBJModel)
 			{
@@ -136,4 +138,10 @@ public class MekanismOBJLoader extends OBJLoader
 		
 		return mekModel;
 	}
+	
+	@Override
+	public void onResourceManagerReload(IResourceManager resourceManager)
+    {
+		modelCache.clear();
+    }
 }

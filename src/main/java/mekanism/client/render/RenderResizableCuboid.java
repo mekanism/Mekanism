@@ -6,6 +6,7 @@ import java.util.Map;
 
 import mekanism.client.render.MekanismRenderer.Model3D;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -230,11 +231,12 @@ public class RenderResizableCuboid {
 
         if (shadeTypes.isEnabled(EnumShadeType.AMBIENT_OCCLUSION)) {
             applyLocalAO(wr, faceFormula.transformToWorld(face), locationFormula, access, shadeTypes, vertex);
-        } else if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
+        } 
+        else if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             Vec3d transVertex = locationFormula.transformToWorld(vertex);
             BlockPos pos = convertFloor(transVertex);
-            Block block = access.getBlockState(pos).getBlock();
-            int combindedLight = block.getMixedBrightnessForBlock(access, pos);
+            IBlockState block = access.getBlockState(pos);
+            int combindedLight = block.getPackedLightmapCoords(access, pos);
             wr.lightmap(combindedLight >> 16 & 65535, combindedLight & 65535);
         }
 
@@ -282,12 +284,13 @@ public class RenderResizableCuboid {
         double totalDist = 0;
         Vec3d transVertex = locationFormula.transformToWorld(vertex);
         BlockPos pos = convertFloor(transVertex);
-        Block block = access.getBlockState(pos).getBlock();
-        int combindedLight = block.getMixedBrightnessForBlock(access, pos);
+        IBlockState state = access.getBlockState(pos);
+        Block block = state.getBlock();
+        int combindedLight = state.getPackedLightmapCoords(access, pos);
 
         skyLight[0] = combindedLight / 0x10000;
         blockLight[0] = combindedLight % 0x10000;
-        colorMultiplier[0] = block.getAmbientOcclusionLightValue();
+        colorMultiplier[0] = state.getAmbientOcclusionLightValue();
         distances[0] = transVertex.distanceTo(convertMiddle(pos));
 
         int index = 0;
@@ -295,14 +298,14 @@ public class RenderResizableCuboid {
         for (EnumFacing otherFace : testArray) {
             Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));
-            block = access.getBlockState(pos).getBlock();
-            combindedLight = block.getMixedBrightnessForBlock(access, pos);
+            state = access.getBlockState(pos);
+            combindedLight = state.getPackedLightmapCoords(access, pos);
 
             index++;
 
             skyLight[index] = (int) (combindedLight / 0x10000);
             blockLight[index] = (int) (combindedLight % 0x10000);
-            colorMultiplier[index] = block.getAmbientOcclusionLightValue();
+            colorMultiplier[index] = state.getAmbientOcclusionLightValue();
             // The extra 0.1 is to stop any 1 divided by 0 errors
             distances[index] = 1 / (transVertex.distanceTo(convertMiddle(pos)) + 0.1);
             totalDist += distances[index];
@@ -390,7 +393,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[] { ri.xyz[U_MAX], cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0 };
                 arr[2] = new double[] { ri.xyz[U_MIN], cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0 };
                 arr[3] = new double[] { ri.xyz[U_MIN], cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0 };
-                convertToDoubleQuads(quads, arr, EnumFacing.DOWN);
+                convertToDoubleQuads(quads, arr, EnumFacing.DOWN, sprites[0]);
             }
         }
 
@@ -405,7 +408,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[] { ri.xyz[U_MAX], sizeY + cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0 };
                 arr[2] = new double[] { ri.xyz[U_MIN], sizeY + cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0 };
                 arr[3] = new double[] { ri.xyz[U_MIN], sizeY + cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0 };
-                convertToDoubleQuads(quads, arr, EnumFacing.UP);
+                convertToDoubleQuads(quads, arr, EnumFacing.UP, sprites[1]);
             }
         }
 
@@ -420,7 +423,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[] { ri.xyz[U_MAX], ri.xyz[V_MAX], cuboid.posZ, -1, ri.uv[U_MAX], ri.uv[V_MAX], 0 };
                 arr[2] = new double[] { ri.xyz[U_MIN], ri.xyz[V_MAX], cuboid.posZ, -1, ri.uv[U_MIN], ri.uv[V_MAX], 0 };
                 arr[3] = new double[] { ri.xyz[U_MIN], ri.xyz[V_MIN], cuboid.posZ, -1, ri.uv[U_MIN], ri.uv[V_MIN], 0 };
-                convertToDoubleQuads(quads, arr, EnumFacing.NORTH);
+                convertToDoubleQuads(quads, arr, EnumFacing.NORTH, sprites[2]);
             }
         }
 
@@ -435,7 +438,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[] { ri.xyz[U_MAX], ri.xyz[V_MAX], cuboid.posZ + sizeZ, -1, ri.uv[U_MAX], ri.uv[V_MAX], 0 };
                 arr[2] = new double[] { ri.xyz[U_MIN], ri.xyz[V_MAX], cuboid.posZ + sizeZ, -1, ri.uv[U_MIN], ri.uv[V_MAX], 0 };
                 arr[3] = new double[] { ri.xyz[U_MIN], ri.xyz[V_MIN], cuboid.posZ + sizeZ, -1, ri.uv[U_MIN], ri.uv[V_MIN], 0 };
-                convertToDoubleQuads(quads, arr, EnumFacing.SOUTH);
+                convertToDoubleQuads(quads, arr, EnumFacing.SOUTH, sprites[3]);
             }
         }
 
@@ -450,7 +453,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[] { cuboid.posX, ri.xyz[V_MAX], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0 };
                 arr[2] = new double[] { cuboid.posX, ri.xyz[V_MAX], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0 };
                 arr[3] = new double[] { cuboid.posX, ri.xyz[V_MIN], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0 };
-                convertToDoubleQuads(quads, arr, EnumFacing.WEST);
+                convertToDoubleQuads(quads, arr, EnumFacing.WEST, sprites[4]);
             }
         }
 
@@ -465,21 +468,21 @@ public class RenderResizableCuboid {
                 arr[1] = new double[] { cuboid.posX + sizeX, ri.xyz[V_MAX], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0 };
                 arr[2] = new double[] { cuboid.posX + sizeX, ri.xyz[V_MAX], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0 };
                 arr[3] = new double[] { cuboid.posX + sizeX, ri.xyz[V_MIN], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0 };
-                convertToDoubleQuads(quads, arr, EnumFacing.EAST);
+                convertToDoubleQuads(quads, arr, EnumFacing.EAST, sprites[5]);
             }
         }
     }
 
-    private void convertToDoubleQuads(List<BakedQuad> quads, double[][] points, EnumFacing face) {
-        BakedQuad quad = convertToQuad(points, face);
+    private void convertToDoubleQuads(List<BakedQuad> quads, double[][] points, EnumFacing face, TextureAtlasSprite sprite) {
+        BakedQuad quad = convertToQuad(points, face, sprite);
         quads.add(quad);
 
         double[][] otherPoints = new double[][] { points[3], points[2], points[1], points[0] };
-        quad = convertToQuad(otherPoints, face);
+        quad = convertToQuad(otherPoints, face, sprite);
         quads.add(quad);
     }
 
-    private BakedQuad convertToQuad(double[][] points, EnumFacing face) {
+    private BakedQuad convertToQuad(double[][] points, EnumFacing face, TextureAtlasSprite sprite) {
         int[] list = new int[points.length * points[0].length];
         for (int i = 0; i < points.length; i++) {
             double[] arr = points[i];
@@ -494,7 +497,7 @@ public class RenderResizableCuboid {
                 list[i * arr.length + j] = used;
             }
         }
-        return new BakedQuad(list, -1, face);
+        return new BakedQuad(list, -1, face, sprite);
     }
 
     /** Returns an array containing [uMin, uMax, vMin, vMax]. start* and end* must be doubles between 0 and 1 */
@@ -564,9 +567,8 @@ public class RenderResizableCuboid {
     /** A way to automatically generate the different positions given the same arguments.
      * 
      * @param rotation TODO */
-    private List<RenderInfo> getRenderInfos(float[] uv, double sizeU, double sizeV, double textureSizeU, double textureSizeV, double textureOffsetU,
-            double textureOffsetV) {
-
+    private List<RenderInfo> getRenderInfos(float[] uv, double sizeU, double sizeV, double textureSizeU, double textureSizeV, double textureOffsetU, double textureOffsetV)
+    {
         List<RenderInfo> infos = Lists.newArrayList();
         boolean firstU = true;
         for (double u = 0; u < sizeU; u += textureSizeU) {

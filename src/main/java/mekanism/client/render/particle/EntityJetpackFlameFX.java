@@ -17,8 +17,6 @@ public class EntityJetpackFlameFX extends ParticleFlame
 	public EntityJetpackFlameFX(World world, double posX, double posY, double posZ, double velX, double velY, double velZ) 
 	{
 		super(world, posX, posY, posZ, velX, velY, velZ);
-		
-		noClip = false;
 	}
 
 	@Override

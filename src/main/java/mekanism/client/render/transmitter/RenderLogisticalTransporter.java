@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
@@ -147,7 +148,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.stone;
+		toReturn.baseBlock = Blocks.STONE;
 		toReturn.setTexture(icon);
 
 		DisplayInteger display = DisplayInteger.createAndStart();

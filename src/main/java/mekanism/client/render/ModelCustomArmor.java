@@ -13,6 +13,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -218,17 +219,17 @@ public class ModelCustomArmor extends ModelBiped
 		}
 	}
 
-	public static ModelBiped getGlow(int index)
+	public static ModelBiped getGlow(EntityEquipmentSlot index)
 	{
-		ModelBiped biped = index != 2 ? GLOW_BIG : GLOW_SMALL;
+		ModelBiped biped = index != EntityEquipmentSlot.LEGS ? GLOW_BIG : GLOW_SMALL;
 
-		biped.bipedHead.showModel = index == 0;
-		biped.bipedHeadwear.showModel = index == 0;
-		biped.bipedBody.showModel = index == 1 || index == 2;
-		biped.bipedRightArm.showModel = index == 1;
-		biped.bipedLeftArm.showModel = index == 1;
-		biped.bipedRightLeg.showModel = index == 2 || index == 3;
-		biped.bipedLeftLeg.showModel = index == 2 || index == 3;
+		biped.bipedHead.showModel = index == EntityEquipmentSlot.HEAD;
+		biped.bipedHeadwear.showModel = index == EntityEquipmentSlot.HEAD;
+		biped.bipedBody.showModel = index == EntityEquipmentSlot.CHEST || index == EntityEquipmentSlot.LEGS;
+		biped.bipedRightArm.showModel = index == EntityEquipmentSlot.CHEST;
+		biped.bipedLeftArm.showModel = index == EntityEquipmentSlot.CHEST;
+		biped.bipedRightLeg.showModel = index == EntityEquipmentSlot.LEGS || index == EntityEquipmentSlot.FEET;
+		biped.bipedLeftLeg.showModel = index == EntityEquipmentSlot.LEGS || index == EntityEquipmentSlot.FEET;
 
 		return biped;
 	}

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.MekanismBlocks;
+import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -24,19 +25,19 @@ public class GenHandler implements IWorldGenerator
 			for(int i = 0; i < general.osmiumPerChunk; i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
-				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(0), 8, BlockHelper.forBlock(Blocks.stone)).generate(world, random, pos);
+				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(0), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 
 			for(int i = 0; i < general.copperPerChunk; i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
-				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(1), 8, BlockHelper.forBlock(Blocks.stone)).generate(world, random, pos);
+				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(1), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 
 			for(int i = 0; i < general.tinPerChunk; i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
-				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(2), 8, BlockHelper.forBlock(Blocks.stone)).generate(world, random, pos);
+				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(2), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 			
 			for(int i = 0; i < general.saltPerChunk; i++)

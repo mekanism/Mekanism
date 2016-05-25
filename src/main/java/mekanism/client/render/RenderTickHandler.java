@@ -19,6 +19,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.RayTraceResult;
@@ -73,9 +74,9 @@ public class RenderTickHandler
 					}
 				}
 	
-				if(player != null && mc.currentScreen == null && player.getEquipmentInSlot(3) != null)
+				if(player != null && mc.currentScreen == null && player.getItemStackFromSlot(EntityEquipmentSlot.CHEST) != null)
 				{
-					ItemStack stack = player.getEquipmentInSlot(3);
+					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 	
 					ScaledResolution scaledresolution = new ScaledResolution(mc);
 	

@@ -100,12 +100,9 @@ import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.util.ItemDataUtils;
-import mezz.jei.api.IItemRegistry;
-import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
-import mezz.jei.api.IRecipeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -284,15 +281,6 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipes(recipes);
 	}
 	
-	@Override
-	public void onItemRegistryAvailable(IItemRegistry registry) {}
-
-	@Override
-	public void onJeiHelpersAvailable(IJeiHelpers helpers) {}
-
-	@Override
-	public void onRecipeRegistryAvailable(IRecipeRegistry registry) {}
-
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime runtime) {}
 }

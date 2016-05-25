@@ -19,7 +19,7 @@ public class MMaterialFilter extends MinerFilter
 	
 	public Material getMaterial()
 	{
-		return Block.getBlockFromItem(materialItem.getItem()).getMaterial();
+		return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getItemDamage()).getMaterial();
 	}
 
 	@Override

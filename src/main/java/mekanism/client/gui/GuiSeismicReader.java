@@ -147,7 +147,7 @@ public class GuiSeismicReader extends GuiScreen
 			{
 				renderString = nameStack.getDisplayName();
 			}
-			else if(blockList.get(currentLayer - 1).getRight() == Blocks.air)
+			else if(blockList.get(currentLayer - 1).getRight() == Blocks.AIR)
 			{
 				renderString = "Air";
 			}

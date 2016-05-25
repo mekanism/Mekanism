@@ -11,6 +11,7 @@ import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 public class MultipartMekanism implements IPartFactory
@@ -40,8 +41,10 @@ public class MultipartMekanism implements IPartFactory
 	}
 
 	@Override
-	public IMultipart createPart(String name, boolean client)
+	public IMultipart createPart(ResourceLocation resource, boolean client)
 	{
+		String name = resource.toString();
+		
 		if(name.equals("mekanism:universal_cable"))
 		{
 			return new PartUniversalCable(Tier.CableTier.BASIC);

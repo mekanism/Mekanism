@@ -17,8 +17,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,7 +31,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	{
 		super();
 		setHasSubtypes(true);
-		BlockDispenser.dispenseBehaviorRegistry.putObject(this, new DispenserBehavior());
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, new DispenserBehavior());
 	}
 	
 	@Override
@@ -97,7 +99,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 		EnumColor color = getColor(stack);
         String dyeName = color.getDyedName();
 
-        if(StatCollector.canTranslate(getUnlocalizedName(stack) + "." + color.dyeName))
+        if(I18n.canTranslate(getUnlocalizedName(stack) + "." + color.dyeName))
         {
             return LangUtils.localize(getUnlocalizedName(stack) + "." + color.dyeName);
         }
@@ -153,7 +155,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
+	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
 	{
 		if(player.isSneaking())
 		{
@@ -191,7 +193,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 		@Override
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
-			Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().provider.getDimensionId());
+			Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().provider.getDimension());
 			EnumFacing side = EnumFacing.getFront(BlockDispenser.getFacing(source.getBlockMetadata()).ordinal());
 
 			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());

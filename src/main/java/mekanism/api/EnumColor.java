@@ -1,8 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.util.IStringSerializable;
-
-import com.sun.imageio.plugins.common.I18N;
+import net.minecraft.util.text.translation.I18n;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
@@ -60,12 +59,12 @@ public enum EnumColor implements IStringSerializable
 	 */
 	public String getLocalizedName()
 	{
-		return I18N.getString("color." + unlocalizedName);
+		return I18n.translateToLocal("color." + unlocalizedName);
 	}
 
 	public String getDyeName()
 	{
-		return I18N.getString("dye." + unlocalizedName);
+		return I18n.translateToLocal("dye." + unlocalizedName);
 	}
 	
 	public String getOreDictName()

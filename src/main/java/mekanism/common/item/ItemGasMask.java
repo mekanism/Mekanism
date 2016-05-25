@@ -6,6 +6,8 @@ import mekanism.common.Mekanism;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -19,25 +21,25 @@ public class ItemGasMask extends ItemArmor
 {
 	public ItemGasMask()
 	{
-		super(EnumHelper.addArmorMaterial("GASMASK", "gasmask", 0, new int[] {0, 0, 0, 0}, 0), 0, 0);
+		super(EnumHelper.addArmorMaterial("GASMASK", "gasmask", 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), 0, EntityEquipmentSlot.HEAD);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
 	{
-		return armorType == 0;
+		return armorType == EntityEquipmentSlot.HEAD;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		return "mekanism:render/NullArmor.png";
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
 		model.modelType = ArmorModel.GASMASK;
@@ -47,19 +49,22 @@ public class ItemGasMask extends ItemArmor
 	@SubscribeEvent
 	public void onEntityAttacked(LivingAttackEvent event)
 	{
-		EntityLivingBase base = event.entityLiving;
+		EntityLivingBase base = event.getEntityLiving();
+		
+		ItemStack headStack = base.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+		ItemStack chestStack = base.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-		if(base.getEquipmentInSlot(4) != null && base.getEquipmentInSlot(4).getItem() instanceof ItemGasMask)
+		if(headStack != null && headStack.getItem() instanceof ItemGasMask)
 		{
-			ItemGasMask mask = (ItemGasMask)base.getEquipmentInSlot(4).getItem();
+			ItemGasMask mask = (ItemGasMask)headStack.getItem();
 
-			if(base.getEquipmentInSlot(3) != null && base.getEquipmentInSlot(3).getItem() instanceof ItemScubaTank)
+			if(chestStack != null && chestStack.getItem() instanceof ItemScubaTank)
 			{
-				ItemScubaTank tank = (ItemScubaTank)base.getEquipmentInSlot(3).getItem();
+				ItemScubaTank tank = (ItemScubaTank)chestStack.getItem();
 
-				if(tank.getFlowing(base.getEquipmentInSlot(3)) && tank.getGas(base.getEquipmentInSlot(3)) != null)
+				if(tank.getFlowing(chestStack) && tank.getGas(chestStack) != null)
 				{
-					if(event.source == DamageSource.magic)
+					if(event.getSource() == DamageSource.magic)
 					{
 						event.setCanceled(true);
 					}

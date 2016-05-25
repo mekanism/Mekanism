@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
@@ -146,7 +147,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -159,12 +160,14 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		}
 
         nbtTags.setInteger("tier", tier.ordinal());
+        
+        return nbtTags;
 	}
 
 	@Override
-	public String getType()
+	public ResourceLocation getType()
 	{
-		return "mekanism:pressurized_tube_" + tier.name().toLowerCase();
+		return new ResourceLocation("mekanism:pressurized_tube_" + tier.name().toLowerCase());
 	}
 
 	@Override

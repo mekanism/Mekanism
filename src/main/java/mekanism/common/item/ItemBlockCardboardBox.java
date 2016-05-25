@@ -75,7 +75,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 			Block block = state.getBlock();
 			int meta = block.getMetaFromState(state);
 
-			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta) && block.getBlockHardness(world, pos) != -1)
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta) && state.getBlockHardness(world, pos) != -1)
 			{
 				BlockData data = new BlockData();
 				data.block = block;
@@ -156,7 +156,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 	@SubscribeEvent
 	public void onEntitySpawn(EntityJoinWorldEvent event)
 	{
-		if(event.entity instanceof EntityItem && isMonitoring)
+		if(event.getEntity() instanceof EntityItem && isMonitoring)
 		{
 			event.setCanceled(true);
 		}

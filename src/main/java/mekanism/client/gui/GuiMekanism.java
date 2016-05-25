@@ -15,6 +15,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -238,7 +239,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 		}
 	}
 	
-	public void handleMouse(Slot slot, int slotIndex, int button, int modifier)
+	public void handleMouse(Slot slot, int slotIndex, int button, ClickType modifier)
 	{
 		handleMouseClick(slot, slotIndex, button, modifier);
 	}

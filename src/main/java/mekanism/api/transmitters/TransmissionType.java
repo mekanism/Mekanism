@@ -2,8 +2,7 @@ package mekanism.api.transmitters;
 
 import mekanism.api.gas.IGasTransmitter;
 import net.minecraft.tileentity.TileEntity;
-
-import com.sun.imageio.plugins.common.I18N;
+import net.minecraft.util.text.translation.I18n;
 
 public enum TransmissionType
 {
@@ -34,7 +33,7 @@ public enum TransmissionType
 	
 	public String localize()
 	{
-		return I18N.getString("transmission." + getTransmission());
+		return I18n.translateToLocal("transmission." + getTransmission());
 	}
 
 	public static boolean checkTransmissionType(ITransmitter sideTile, TransmissionType type)

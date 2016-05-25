@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -23,7 +24,7 @@ public class ItemMekanismArmor extends ItemArmor
 {
 	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex)
 	{
-		super(enumarmormaterial, renderIndex, 0);
+		super(enumarmormaterial, renderIndex, EntityEquipmentSlot.HEAD);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -34,9 +35,9 @@ public class ItemMekanismArmor extends ItemArmor
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
-		int layer = (slot == 2) ? 2 : 1;
+		int layer = (slot == EntityEquipmentSlot.CHEST) ? 2 : 1;
 		return "mekanism:armor/" + getArmorMaterial().name().toLowerCase() + "_" + layer + ".png";
 	}
 	
@@ -54,7 +55,7 @@ public class ItemMekanismArmor extends ItemArmor
     	}
     	else if(getArmorMaterial() == MekanismTools.armorLAZULI)
     	{
-    		return new ItemStack(Items.dye, 1, 4);
+    		return new ItemStack(Items.DYE, 1, 4);
     	}
     	else if(getArmorMaterial() == MekanismTools.armorOSMIUM)
     	{
@@ -78,7 +79,7 @@ public class ItemMekanismArmor extends ItemArmor
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		if(itemStack.getItem() == ToolsItems.GlowstoneHelmet || itemStack.getItem() == ToolsItems.GlowstoneChestplate ||
 				itemStack.getItem() == ToolsItems.GlowstoneLeggings || itemStack.getItem() == ToolsItems.GlowstoneBoots)
@@ -86,6 +87,6 @@ public class ItemMekanismArmor extends ItemArmor
 			return ModelCustomArmor.getGlow(armorSlot);
 		}
 
-		return super.getArmorModel(entityLiving, itemStack, armorSlot);
+		return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
 	}
 }

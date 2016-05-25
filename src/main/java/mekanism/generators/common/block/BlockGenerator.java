@@ -46,6 +46,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -84,7 +85,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	
 	public BlockGenerator()
 	{
-		super(Material.iron);
+		super(Material.IRON);
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
@@ -175,15 +176,15 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 	
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
     {
 		setBlockBoundsBasedOnState(world, pos);
 		
-		return super.getCollisionBoundingBox(world, pos, state);
+		return super.getCollisionBoundingBox(state, world, pos);
     }
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
 	{
 		if(!world.isRemote)
 		{
@@ -248,7 +249,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, BlockPos pos)
+	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		if(client.enableAmbientLighting)
 		{
@@ -274,11 +275,11 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 	
 	@Override
-	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, BlockPos pos)
+	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		
-		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, pos) : 0.0F;
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
 	}
 
 	@Override
@@ -293,7 +294,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random random)
+	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random)
 	{
 		GeneratorType type = GeneratorType.get(state.getBlock(), state.getBlock().getMetaFromState(state));
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
@@ -555,19 +556,19 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 	
 	@Override
-	public int getRenderType()
+	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
-		return 3;
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 	
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
@@ -697,9 +698,8 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		IBlockState state = world.getBlockState(pos);
 		GeneratorType type = GeneratorType.get(getGeneratorBlock(), state.getBlock().getMetaFromState(state));
 
 		if(type != GeneratorType.SOLAR_GENERATOR && 

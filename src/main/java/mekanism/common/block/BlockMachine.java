@@ -321,7 +321,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random random)
+	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		
@@ -368,7 +368,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, BlockPos pos)
+	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		if(client.enableAmbientLighting)
 		{
@@ -627,7 +627,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
@@ -673,7 +673,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
     }
 
 	@Override
-	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -803,7 +803,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
 	{
 		if(!world.isRemote)
 		{
@@ -836,10 +836,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		IBlockState state = world.getBlockState(pos);
 		ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
 		if(itemStack.getTagCompound() == null)
@@ -940,9 +939,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		IBlockState state = world.getBlockState(pos);
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
@@ -954,9 +952,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		}
 	}
 
-	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
+	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, pos, null);
+		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
 		world.setBlockToAir(pos);
 
@@ -996,13 +994,13 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 	
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
 		setBlockBoundsBasedOnState(world, pos);
 		
@@ -1011,13 +1009,12 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			return null;
 		}
 
-		return super.getCollisionBoundingBox(world, pos, state);
+		return super.getCollisionBoundingBox(state, world, pos);
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		IBlockState state = world.getBlockState(pos);
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
@@ -1092,7 +1089,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 	
 	@Override
-	public int getWeakPower(IBlockAccess world, BlockPos pos, IBlockState state, EnumFacing side)
+	public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
 		TileEntity tile = world.getTileEntity(pos);
 		

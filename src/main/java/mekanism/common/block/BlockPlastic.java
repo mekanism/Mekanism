@@ -61,7 +61,7 @@ public class BlockPlastic extends Block
 	}
 
 	@Override
-	public Vec3d modifyAcceleration(World world, BlockPos pos, Entity e, Vec3 motion)
+	public Vec3d modifyAcceleration(World world, BlockPos pos, Entity e, Vec3d motion)
 	{
 		if(type == PlasticBlockType.ROAD)
 		{

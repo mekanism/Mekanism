@@ -26,7 +26,7 @@ public class PurificationChamberRecipeWrapper extends AdvancedMachineRecipeWrapp
 	{
 		if(gasType == GasRegistry.getGas("oxygen"))
 		{
-			return ListUtils.asList(new ItemStack(Items.flint), MekanismUtils.getFullGasTank(GasTankTier.BASIC, GasRegistry.getGas("oxygen")));
+			return ListUtils.asList(new ItemStack(Items.FLINT), MekanismUtils.getFullGasTank(GasTankTier.BASIC, GasRegistry.getGas("oxygen")));
 		}
 
 		return new ArrayList<ItemStack>();

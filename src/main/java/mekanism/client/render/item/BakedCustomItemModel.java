@@ -48,10 +48,12 @@ import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -60,11 +62,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.fluids.Fluid;
 
@@ -119,7 +119,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 				ItemBlockBasic itemBasic = (ItemBlockBasic)stack.getItem();
 				InventoryBin inv = new InventoryBin(stack);
 				binRenderer.render(EnumFacing.NORTH, inv.getItemType(), inv.getItemCount(), false, -0.5, -0.5, -0.5);
-				Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+				Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 				GlStateManager.enableRescaleNormal();
 		        GlStateManager.enableAlpha();
 		        GlStateManager.alphaFunc(516, 0.1F);
@@ -314,7 +314,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			GlStateManager.scale(1.4F, 1.4F, 1.4F);
 			GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
 
-			if(type == TransformType.THIRD_PERSON)
+			if(type == TransformType.THIRD_PERSON_RIGHT_HAND)
 			{
 				GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
 				GlStateManager.rotate(50, 1.0F, 0.0F, 0.0F);
@@ -347,7 +347,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			GlStateManager.rotate(135, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate(-20, 0.0F, 0.0F, 1.0F);
 			
-			if(type == TransformType.FIRST_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON)
+			if(type == TransformType.FIRST_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON_RIGHT_HAND)
 			{
 				if(type == TransformType.FIRST_PERSON_RIGHT_HAND)
 				{
@@ -373,29 +373,28 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 	}
 
 	@Override
-	public List<BakedQuad> getFaceQuads(EnumFacing facing)
+	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
 	{
-		List<BakedQuad> faceQuads = new LinkedList<BakedQuad>();
-		
-		if(Block.getBlockFromItem(stack.getItem()) != null)
+		if(side != null)
 		{
-			MachineType machineType = MachineType.get(stack);
+			List<BakedQuad> faceQuads = new LinkedList<BakedQuad>();
 			
-			if(machineType != MachineType.QUANTUM_ENTANGLOPORTER && machineType != MachineType.RESISTIVE_HEATER)
+			if(Block.getBlockFromItem(stack.getItem()) != null)
 			{
-				if(!(stack.getItem() instanceof ItemBlockEnergyCube))
+				MachineType machineType = MachineType.get(stack);
+				
+				if(machineType != MachineType.QUANTUM_ENTANGLOPORTER && machineType != MachineType.RESISTIVE_HEATER)
 				{
-					faceQuads.addAll(baseModel.getFaceQuads(facing));
+					if(!(stack.getItem() instanceof ItemBlockEnergyCube))
+					{
+						faceQuads.addAll(baseModel.getQuads(state, side, rand));
+					}
 				}
 			}
+			
+			return faceQuads;
 		}
 		
-		return faceQuads;
-	}
-
-	@Override
-	public List<BakedQuad> getGeneralQuads()
-	{
 		Tessellator tessellator = Tessellator.getInstance();
 		tessellator.draw();
 		
@@ -409,10 +408,10 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
         GlStateManager.enableLight(1);
         GlStateManager.enableColorMaterial();
         GlStateManager.colorMaterial(1032, 5634);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
     	GlStateManager.popMatrix();
     	
-    	WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+    	VertexBuffer worldrenderer = tessellator.getBuffer();
     	worldrenderer.begin(7, DefaultVertexFormats.ITEM);
     	
 		if(Block.getBlockFromItem(stack.getItem()) != null)
@@ -421,7 +420,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			
 			if(machineType != MachineType.DIGITAL_MINER)
 			{
-				generalQuads.addAll(baseModel.getGeneralQuads());
+				generalQuads.addAll(baseModel.getQuads(state, side, rand));
 			}
 		}
 		
@@ -459,17 +458,11 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 	}
 	
     @Override
-    public VertexFormat getFormat()
-    {
-        return Attributes.DEFAULT_BAKED_FORMAT;
-    }
-	
-    @Override
-    public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
     {
     	prevTransform = cameraTransformType;
     	
-        if(cameraTransformType == TransformType.THIRD_PERSON) 
+        if(cameraTransformType == TransformType.THIRD_PERSON_RIGHT_HAND) 
         {
             ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.DEFAULT_BLOCK_THIRD_PERSON_MATRIX);
         }

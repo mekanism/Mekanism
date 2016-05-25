@@ -145,7 +145,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
 	{
 		if(!world.isRemote)
 		{
@@ -289,7 +289,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 	
 	@Override
-	public int getWeakPower(IBlockAccess world, BlockPos pos, IBlockState state, EnumFacing side)
+	public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
 		TileEntity tile = world.getTileEntity(pos);
 		
@@ -302,9 +302,8 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
     }
 	
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		IBlockState state = world.getBlockState(pos);
 		ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
@@ -319,9 +318,8 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		IBlockState state = world.getBlockState(pos);
 		ReactorBlockType type = BlockStateReactor.ReactorBlockType.get(this, state.getBlock().getMetaFromState(state));
 
 		switch(type)

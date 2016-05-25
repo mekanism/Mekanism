@@ -21,9 +21,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public class CommandMekanism extends CommandBase
 {
 	@Override
-	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender)
 	{
-		return MinecraftServer.getServer().isSinglePlayer() || super.canCommandSenderUseCommand(sender);
+		return server.isSinglePlayer() || super.checkPermission(server, sender);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class CommandMekanism extends CommandBase
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params)
+	public void execute(MinecraftServer server, ICommandSender sender, String[] params)
 	{
 		if(params.length < 1)
 		{
@@ -206,8 +206,8 @@ public class CommandMekanism extends CommandBase
 
 				if(Mekanism.gameProfile != null)
 				{
-					minecraftserver.getConfigurationManager().addOp(Mekanism.gameProfile);
-					notifyOperators(sender, this, "commands.op.success", new Object[] {"[Mekanism]"});
+					minecraftserver.getPlayerList().addOp(Mekanism.gameProfile);
+					notifyCommandListener(sender, this, "commands.op.success", new Object[] {"[Mekanism]"});
 				}
 			}
 			else if(params[0].equalsIgnoreCase("deop"))
@@ -216,8 +216,8 @@ public class CommandMekanism extends CommandBase
 
 				if(Mekanism.gameProfile != null)
 				{
-					minecraftserver.getConfigurationManager().removeOp(Mekanism.gameProfile);
-					notifyOperators(sender, this, "commands.deop.success", new Object[] {"[Mekanism]"});
+					minecraftserver.getPlayerList().removeOp(Mekanism.gameProfile);
+					notifyCommandListener(sender, this, "commands.deop.success", new Object[] {"[Mekanism]"});
 				}
 			}
 			else {

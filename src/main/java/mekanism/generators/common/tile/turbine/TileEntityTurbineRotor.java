@@ -251,11 +251,13 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("blades", getHousedBlades());
+		
+		return nbtTags;
 	}
 	
 	@Override

@@ -91,7 +91,7 @@ public class GlowPanelModel extends OBJBakedModelBase implements ISmartMultipart
 		}
 
 		ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
-		builder.put(ModelLoader.White.loc.toString(), ModelLoader.White.instance);
+		builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
 		TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
 
 		for(String s : getModel().getMatLib().getMaterialNames())
@@ -134,7 +134,7 @@ public class GlowPanelModel extends OBJBakedModelBase implements ISmartMultipart
 	private Pair<IPerspectiveAwareModel, Matrix4f> thirdPersonTransform;
     
     @Override
-    public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
     {
     	if(cameraTransformType == TransformType.GUI)
     	{
@@ -142,11 +142,11 @@ public class GlowPanelModel extends OBJBakedModelBase implements ISmartMultipart
     		GlStateManager.rotate(90, 1, 0, 0);
     		GlStateManager.scale(1.6F, 1.6F, 1.6F);
     	}
-    	else if(cameraTransformType == TransformType.FIRST_PERSON)
+    	else if(cameraTransformType == TransformType.FIRST_PERSON_RIGHT_HAND)
     	{
     		GlStateManager.translate(0.0F, 0.3F, 0.0F);
     	}
-    	else if(cameraTransformType == TransformType.THIRD_PERSON) 
+    	else if(cameraTransformType == TransformType.THIRD_PERSON_RIGHT_HAND) 
         {
         	GlStateManager.translate(0.0F, -0.1F, 0.0F);
         	

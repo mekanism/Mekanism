@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, HeatNetwork> implements IHeatTransfer
@@ -94,9 +95,9 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 
 	@Override
-	public String getType()
+	public ResourceLocation getType()
 	{
-		return "mekanism:thermodynamic_conductor_" + tier.name().toLowerCase();
+		return new ResourceLocation("mekanism:thermodynamic_conductor_" + tier.name().toLowerCase());
 	}
 
 	@Override
@@ -108,11 +109,13 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setDouble("temperature", temperature);
+		
+		return nbtTags;
 	}
 
 	public void sendTemp()

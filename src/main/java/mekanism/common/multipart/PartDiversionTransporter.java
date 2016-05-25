@@ -15,6 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
@@ -22,9 +23,9 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	public int[] modes = {0, 0, 0, 0, 0, 0};
 
 	@Override
-	public String getType()
+	public ResourceLocation getType()
 	{
-		return "mekanism:diversion_transporter";
+		return new ResourceLocation("mekanism:diversion_transporter");
 	}
 
 	@Override

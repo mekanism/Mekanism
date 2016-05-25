@@ -1,5 +1,6 @@
 package mekanism.client.render.obj;
 
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
@@ -24,9 +25,9 @@ public class MekanismOBJModel extends OBJModel
 	}
 	
 	@Override
-	public IFlexibleBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+	public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 	{
-		IFlexibleBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
+		IBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
 		
 		if(modelType == OBJModelType.GLOW_PANEL)
 		{

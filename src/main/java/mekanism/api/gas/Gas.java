@@ -6,10 +6,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-
-import com.sun.imageio.plugins.common.I18N;
 
 /**
  * Gas - a class used to set specific properties of gasses when used or seen in-game.
@@ -98,7 +97,7 @@ public class Gas
 	 */
 	public String getLocalizedName()
 	{
-		return I18N.getString(getUnlocalizedName());
+		return I18n.translateToLocal(getUnlocalizedName());
 	}
 
 	/**

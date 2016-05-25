@@ -43,7 +43,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			return true;
 		}
 
-		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimensionId()).getTileEntity(pointer.getWorld());
+		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
 		
 		return tile instanceof TileEntityPressureDisperser || tile instanceof TileEntitySuperheatingElement;
 	}
@@ -83,7 +83,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			final Coord4D initDisperser = dispersers.iterator().next();
 			
 			//Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
-			Coord4D pos = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord, structure.renderLocation.zCoord, pointer.getWorld().provider.getDimensionId());
+			Coord4D pos = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord, structure.renderLocation.zCoord, pointer.getWorld().provider.getDimension());
 			for(int x = 1; x < structure.volLength-1; x++)
 			{
 				for(int z = 1; z < structure.volWidth-1; z++)
@@ -134,7 +134,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 					{
 						if(pointer.getWorld().isAirBlock(new BlockPos(x, y, z)) || isViableNode(x, y, z))
 						{
-							initAir = new Coord4D(x, y, z, pointer.getWorld().provider.getDimensionId());
+							initAir = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension());
 							totalAir++;
 						}
 					}

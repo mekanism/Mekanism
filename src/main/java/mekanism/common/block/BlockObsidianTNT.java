@@ -18,7 +18,7 @@ public class BlockObsidianTNT extends Block
 {
 	public BlockObsidianTNT()
 	{
-		super(Material.tnt);
+		super(Material.TNT);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -43,7 +43,7 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
 	{
 		if(world.isBlockIndirectlyGettingPowered(pos) > 0)
 		{
@@ -76,7 +76,7 @@ public class BlockObsidianTNT extends Block
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == Items.flint_and_steel)
+		if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == Items.FLINT_AND_STEEL)
 		{
 			explode(world, pos);
 			world.setBlockToAir(pos);
@@ -94,13 +94,13 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity entity)
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity)
 	{
 		if(entity instanceof EntityArrow && !world.isRemote)
 		{

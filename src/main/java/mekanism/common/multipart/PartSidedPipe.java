@@ -38,8 +38,10 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -583,7 +585,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	}
 
 	@Override
-	public boolean onActivated(EntityPlayer player, ItemStack stack, PartMOP hit)
+	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack stack, PartMOP hit)
 	{
 		if(stack == null)
 		{
@@ -879,7 +881,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	}
 
 	@Override
-	public String getModelPath()
+	public ResourceLocation getModelPath()
 	{
 		return getType();
 	}
@@ -887,7 +889,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	@Override
 	public BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.instance, ColorProperty.INSTANCE, ConnectionProperty.INSTANCE});
+		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.INSTANCE, ColorProperty.INSTANCE, ConnectionProperty.INSTANCE});
 	}
 
 	public List<String> getVisibleGroups()
@@ -907,7 +909,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	{
 		ConnectionProperty connectionProp = new ConnectionProperty(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
 		
-		return ((IExtendedBlockState)state).withProperty(OBJProperty.instance, new OBJState(getVisibleGroups(), true)).withProperty(ConnectionProperty.INSTANCE, connectionProp);
+		return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true)).withProperty(ConnectionProperty.INSTANCE, connectionProp);
 	}
 
 	@Override

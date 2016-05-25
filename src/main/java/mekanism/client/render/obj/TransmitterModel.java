@@ -66,7 +66,7 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 			color = extended.getValue(ColorProperty.INSTANCE).color.ordinal();
 		}
 		
-		OBJState obj = extended.getValue(OBJProperty.instance);
+		OBJState obj = extended.getValue(OBJProperty.INSTANCE);
 		
 		if(layer != BlockRenderLayer.TRANSLUCENT)
 		{

@@ -19,8 +19,10 @@ import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -114,7 +116,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							
 							if(player instanceof EntityPlayerMP)
 							{
-								ReflectionUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
+								ReflectionUtils.setPrivateValue(((EntityPlayerMP)player).connection, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 							}
 							
 							player.closeScreen();
@@ -123,7 +125,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							TileEntityTeleporter.teleportPlayerTo((EntityPlayerMP)player, coords, teleporter);
                             TileEntityTeleporter.alignPlayer((EntityPlayerMP)player, coords);
 							
-							world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
+                            world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 							Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
 						} catch(Exception e) {}
 					}

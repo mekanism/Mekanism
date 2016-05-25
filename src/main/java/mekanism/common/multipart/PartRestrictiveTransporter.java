@@ -2,13 +2,14 @@ package mekanism.common.multipart;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 
 public class PartRestrictiveTransporter extends PartLogisticalTransporter
 {
 	@Override
-	public String getType()
+	public ResourceLocation getType()
 	{
-		return "mekanism:restrictive_transporter";
+		return new ResourceLocation("mekanism:restrictive_transporter");
 	}
 
 	@Override

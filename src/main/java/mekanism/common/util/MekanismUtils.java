@@ -64,6 +64,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -76,6 +77,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -285,30 +287,6 @@ public final class MekanismUtils
 		} catch (IOException e) {
 			return false;
 		}
-	}
-
-	/**
-	 * Creates a fake explosion at the declared player, with only sounds and effects. No damage is caused to either blocks or the player.
-	 * @param entityplayer - player to explode
-	 */
-	public static void doFakeEntityExplosion(EntityPlayer entityplayer)
-	{
-		World world = entityplayer.worldObj;
-		world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
-		world.playSoundAtEntity(entityplayer, "random.explode", 1.0F, 1.0F);
-	}
-
-	/**
-	 * Creates a fake explosion at the declared coords, with only sounds and effects. No damage is caused to either blocks or the player.
-	 * @param world - world where the explosion will occur
-	 * @param x - x coord
-	 * @param y - y coord
-	 * @param z - z coord
-	 */
-	public static void doFakeBlockExplosion(World world, int x, int y, int z)
-	{
-		world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, x, y, z, 0.0D, 0.0D, 0.0D);
-		world.playSound(x, y, z, "random.explode", 1.0F, 1.0F, true);
 	}
 
 	/**
@@ -1502,14 +1480,14 @@ public final class MekanismUtils
 	 */
 	public static boolean hasUsableWrench(EntityPlayer player, BlockPos pos)
 	{
-		ItemStack tool = player.getCurrentEquippedItem();
+		ItemStack tool = player.inventory.getCurrentItem();
 		
 		if(tool == null)
 		{
 			return false;
 		}
 		
-		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(player, pos))
+		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(tool, player, pos))
 		{
 			return true;
 		}

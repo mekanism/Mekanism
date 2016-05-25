@@ -18,6 +18,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -32,7 +34,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	public ItemScubaTank()
 	{
-		super(EnumHelper.addArmorMaterial("SCUBATANK", "scubatank", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
+		super(EnumHelper.addArmorMaterial("SCUBATANK", "scubatank", 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), 0, EntityEquipmentSlot.CHEST);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -65,20 +67,20 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	}
 
 	@Override
-	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
 	{
-		return armorType == 1;
+		return armorType == EntityEquipmentSlot.CHEST;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		return "mekanism:render/NullArmor.png";
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
 		model.modelType = ArmorModel.SCUBATANK;

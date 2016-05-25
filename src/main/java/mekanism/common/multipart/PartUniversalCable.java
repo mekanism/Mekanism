@@ -22,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
@@ -158,18 +159,20 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 		
 		nbtTags.setDouble("cacheEnergy", lastWrite);
 		nbtTags.setInteger("tier", tier.ordinal());
+		
+		return nbtTags;
 	}
 
 	@Override
-	public String getType()
+	public ResourceLocation getType()
 	{
-		return "mekanism:universal_cable_" + tier.name().toLowerCase();
+		return new ResourceLocation("mekanism:universal_cable_" + tier.name().toLowerCase());
 	}
 
 	@Override

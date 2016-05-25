@@ -8,6 +8,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleRedstone;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -271,7 +273,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	{
 		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
 
-		EntityFX fx = new EntityReddustFX.Factory().getEntityFX(0, worldObj, pos.xCoord, pos.yCoord, pos.zCoord, 0, 0, 0);
+		Particle fx = new ParticleRedstone.Factory().getEntityFX(0, worldObj, pos.xCoord, pos.yCoord, pos.zCoord, 0, 0, 0);
 		fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
 
 		Minecraft.getMinecraft().effectRenderer.addEffect(fx);

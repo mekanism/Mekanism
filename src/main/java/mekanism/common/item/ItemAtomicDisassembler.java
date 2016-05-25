@@ -37,9 +37,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
 	{
-		return block != Blocks.BEDROCK;
+		return state.getBlock() != Blocks.BEDROCK;
 	}
 
 	@Override
@@ -67,15 +67,15 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack itemstack, IBlockState state)
+	public float getStrVsBlock(ItemStack itemstack, IBlockState state)
 	{
 		return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack itemstack, World world, Block block, BlockPos pos, EntityLivingBase entityliving)
+	public boolean onBlockDestroyed(ItemStack itemstack, World world, IBlockState state, BlockPos pos, EntityLivingBase entityliving)
 	{
-		if(block.getBlockHardness(world, pos) != 0.0D)
+		if(state.getBlockHardness(world, pos) != 0.0D)
 		{
 			setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
 		}
@@ -97,9 +97,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			Block block = state.getBlock();
 			int meta = block.getMetaFromState(state);
 
-			if(block == Blocks.lit_redstone_ore)
+			if(block == Blocks.LIT_REDSTONE_ORE)
 			{
-				block = Blocks.redstone_ore;
+				block = Blocks.REDSTONE_ORE;
 			}
 
 			ItemStack stack = new ItemStack(block, 1, meta);
@@ -169,7 +169,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		{
 			if(!useHoe(stack, player, world, pos, side))
 			{
-				if(world.getBlockState(pos).getBlock() != Blocks.farmland)
+				if(world.getBlockState(pos).getBlock() != Blocks.FARMLAND)
 				{
 					return false;
 				}
@@ -363,8 +363,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		}
 
 		static {
-			ignoreBlocks.put(Blocks.redstone_ore, ListUtils.asList(Blocks.redstone_ore, Blocks.lit_redstone_ore));
-			ignoreBlocks.put(Blocks.lit_redstone_ore, ListUtils.asList(Blocks.redstone_ore, Blocks.lit_redstone_ore));
+			ignoreBlocks.put(Blocks.REDSTONE_ORE, ListUtils.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
+			ignoreBlocks.put(Blocks.LIT_REDSTONE_ORE, ListUtils.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
 		}
 	}
 }

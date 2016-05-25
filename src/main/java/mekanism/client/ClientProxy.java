@@ -206,6 +206,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -637,7 +638,7 @@ public class ClientProxy extends CommonProxy
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
 		
-		OBJLoader.instance.addDomain("mekanism");
+		OBJLoader.INSTANCE.addDomain("mekanism");
 	}
 	
 	public void registerItemRender(Item item)
@@ -857,11 +858,11 @@ public class ClientProxy extends CommonProxy
 		for(String s : CUSTOM_RENDERS)
 		{
 			ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
-	        Object obj = event.modelRegistry.getObject(model);
+	        Object obj = event.getModelRegistry().getObject(model);
 	        
 	        if(obj instanceof IBakedModel)
 	        {
-	        	event.modelRegistry.putObject(model, new CustomItemModelFactory((IBakedModel)obj));
+	        	event.getModelRegistry().putObject(model, new CustomItemModelFactory((IBakedModel)obj));
 	        }
 		}
     }

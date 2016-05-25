@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -57,9 +58,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public String getType()
+	public ResourceLocation getType()
 	{
-		return "mekanism:logistical_transporter_" + tier.name().toLowerCase();
+		return new ResourceLocation("mekanism:logistical_transporter_" + tier.name().toLowerCase());
 	}
 
 	@Override
@@ -303,7 +304,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 		
@@ -327,6 +328,8 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		{
 			nbtTags.setTag("stacks", stacks);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

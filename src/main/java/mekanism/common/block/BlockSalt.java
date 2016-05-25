@@ -5,6 +5,7 @@ import java.util.Random;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -13,10 +14,10 @@ public class BlockSalt extends Block
 {
     public BlockSalt()
     {
-        super(Material.sand);
+        super(Material.SAND);
         setCreativeTab(Mekanism.tabMekanism);
         setHardness(0.5F);
-        setStepSound(soundTypeSand);
+        setSoundType(SoundType.SAND);
     }
 
     @Override

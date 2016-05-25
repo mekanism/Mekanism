@@ -56,6 +56,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -500,14 +501,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     	{
 			if(SecurityUtils.canAccess(entityplayer, itemstack))
 			{
-		        RayTraceResult pos = getRayTraceResultFromPlayer(world, entityplayer, !entityplayer.isSneaking());
+		        RayTraceResult pos = rayTrace(world, entityplayer, !entityplayer.isSneaking());
 		        
 		        if(pos == null)
 		        {
 		            return itemstack;
 		        }
 			else {
-			    if(pos.typeOfHit == RayTraceResult.MovingObjectType.BLOCK)
+			    if(pos.typeOfHit == RayTraceResult.Type.BLOCK)
 			    {
 			    	Coord4D coord = new Coord4D(pos.getBlockPos(), world);
 	

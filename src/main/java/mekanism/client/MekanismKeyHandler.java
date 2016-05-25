@@ -27,6 +27,7 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
@@ -129,7 +130,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 		else if(kb == armorModeSwitchKey)
 		{
 			EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
-			ItemStack chestStack = player.getCurrentArmor(2);
+			ItemStack chestStack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 			Item chestItem = StackUtils.getItem(chestStack);
 
 			if(chestItem instanceof ItemJetpack)

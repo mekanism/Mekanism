@@ -20,6 +20,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -44,26 +46,26 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	public ItemFreeRunners()
 	{
-		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", "frictionboots", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
+		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", "frictionboots", 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), 0, EntityEquipmentSlot.FEET);
 		setMaxStackSize(1);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
 	{
-		return armorType == 3;
+		return armorType == EntityEquipmentSlot.FEET;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		return "mekanism:render/NullArmor.png";
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
 		model.modelType = ArmorModel.FREERUNNERS;
@@ -194,14 +196,14 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy*general.FROM_TE), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_TE);
 		}
 
 		return 0;
@@ -210,13 +212,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)Math.round(getEnergy(theItem)* general.TO_TE);
+		return (int)Math.round(getEnergy(theItem)*general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)Math.round(getMaxEnergy(theItem)* general.TO_TE);
+		return (int)Math.round(getMaxEnergy(theItem)*general.TO_TE);
 	}
 
 	@Override
@@ -241,16 +243,16 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@SubscribeEvent
 	public void onEntityAttacked(LivingAttackEvent event)
 	{
-		EntityLivingBase base = event.entityLiving;
+		EntityLivingBase base = event.getEntityLiving();
+		ItemStack stack = base.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-		if(base.getEquipmentInSlot(1) != null && base.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
+		if(stack != null && stack.getItem() instanceof ItemFreeRunners)
 		{
-			ItemStack stack = base.getEquipmentInSlot(1);
 			ItemFreeRunners boots = (ItemFreeRunners)stack.getItem();
 
-			if(boots.getEnergy(stack) > 0 && event.source == DamageSource.fall)
+			if(boots.getEnergy(stack) > 0 && event.getSource() == DamageSource.fall)
 			{
-				boots.setEnergy(stack, boots.getEnergy(stack)-event.ammount*50);
+				boots.setEnergy(stack, boots.getEnergy(stack)-event.getAmount()*50);
 				event.setCanceled(true);
 			}
 		}

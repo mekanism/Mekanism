@@ -16,9 +16,9 @@ import net.minecraft.item.ItemTool;
 
 public class ItemMekanismTool extends ItemTool
 {
-	public ItemMekanismTool(int mobBoost, ToolMaterial toolMaterial, Set<Block> effectiveBlocksIn)
+	public ItemMekanismTool(float attack, float speed, ToolMaterial toolMaterial, Set<Block> effectiveBlocksIn)
 	{
-		super(mobBoost, toolMaterial, effectiveBlocksIn);
+		super(attack, speed, toolMaterial, effectiveBlocksIn);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 

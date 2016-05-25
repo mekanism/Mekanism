@@ -37,21 +37,21 @@ public class CTMRegistry
     {
         for(TextureSpriteCallback callback : textures) 
         {
-            callback.stitch(event.map);
+            callback.stitch(event.getMap());
         }
     }
     
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) throws IOException 
     {
-        IModel model = event.modelLoader.getModel(baseResource);
+        IModel model = event.getModelLoader().getModel(baseResource);
         baseModel = model.bake(new TRSRTransformation(ModelRotation.X0_Y0), Attributes.DEFAULT_BAKED_FORMAT, r -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(r.toString()));
         
         for(Pair<String, String> pair : ctmTypes) 
         {
         	ModelCTM chiselModel = new ModelCTM(baseModel, pair.getRight());
         	chiselModel.load();
-            event.modelRegistry.putObject(new ModelResourceLocation(pair.getLeft() + ":" + pair.getRight()), new CTMModelFactory(chiselModel));
+            event.getModelRegistry().putObject(new ModelResourceLocation(pair.getLeft() + ":" + pair.getRight()), new CTMModelFactory(chiselModel));
         }
     }
     

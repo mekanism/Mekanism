@@ -1,5 +1,7 @@
 package mekanism.tools.item;
 
+import java.util.HashSet;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -10,18 +12,20 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 {
 	public ItemMekanismPaxel(ToolMaterial toolMaterial)
 	{
-		super(3, toolMaterial, new Block[0]);
+		super(4, -2.4F, toolMaterial, new HashSet<Block>());
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, IBlockState blockState)
+	public float getStrVsBlock(ItemStack stack, IBlockState blockState)
 	{
 		return blockState.getBlock() != Blocks.BEDROCK ? efficiencyOnProperMaterial : 1.0F;
 	}
 
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
 	{
+		Block block = state.getBlock();
+		
 		if(block == Blocks.OBSIDIAN)
 		{
 			return toolMaterial.getHarvestLevel() == 3;
@@ -32,41 +36,41 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block == Blocks.gold_block || block == Blocks.gold_ore)
+		if(block == Blocks.GOLD_BLOCK || block == Blocks.GOLD_ORE)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block == Blocks.iron_block || block == Blocks.iron_ore)
+		if(block == Blocks.IRON_BLOCK || block == Blocks.IRON_ORE)
 		{
 			return toolMaterial.getHarvestLevel() >= 1;
 		}
 
-		if(block == Blocks.lapis_block || block == Blocks.lapis_ore)
+		if(block == Blocks.LAPIS_BLOCK || block == Blocks.LAPIS_ORE)
 		{
 			return toolMaterial.getHarvestLevel() >= 1;
 		}
 
-		if(block == Blocks.redstone_ore || block == Blocks.lit_redstone_ore)
+		if(block == Blocks.REDSTONE_ORE || block == Blocks.LIT_REDSTONE_ORE)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block == Blocks.anvil)
+		if(block == Blocks.ANVIL)
 		{
 			return toolMaterial.getHarvestLevel() >= 0;
 		}
 
-		if(block == Blocks.snow || block == Blocks.snow_layer)
+		if(block == Blocks.SNOW || block == Blocks.SNOW_LAYER)
 		{
 			return true;
 		}
 
-		if(block.getMaterial() == Material.rock)
+		if(state.getMaterial() == Material.ROCK)
 		{
 			return true;
 		}
 
-		return block.getMaterial() == Material.iron;
+		return state.getMaterial() == Material.IRON;
 	}
 }

@@ -13,7 +13,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -37,7 +39,7 @@ public class BlockBounding extends Block
 	{
 		boolean isAdvanced = meta > 0;
 
-		return this.getDefaultState().withProperty(BlockStateBounding.advancedProperty, isAdvanced);
+		return getDefaultState().withProperty(BlockStateBounding.advancedProperty, isAdvanced);
 	}
 
 	@Override
@@ -48,12 +50,12 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
-			return state1.getBlock().onBlockActivated(world, tileEntity.mainPos, state1, entityplayer, side, hitX, hitY, hitZ);
+			return state1.getBlock().onBlockActivated(world, tileEntity.mainPos, state1, player, hand, stack, side, hitX, hitY, hitZ);
 		} catch(Exception e) {
 			return false;
 		}
@@ -68,48 +70,49 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-    public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
-			return state1.getBlock().getPickBlock(target, world, tileEntity.mainPos, player);
+			return state1.getBlock().getPickBlock(state1, target, world, tileEntity.mainPos, player);
 		} catch(Exception e) {
 			return null;
 		}
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
-			return state1.getBlock().removedByPlayer(world, tileEntity.mainPos, player, willHarvest);
+			return state1.getBlock().removedByPlayer(state1, world, tileEntity.mainPos, player, willHarvest);
 		} catch(Exception e) {
 			return false;
 		}
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
 			tileEntity.onNeighborChange(state.getBlock());
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
-			state1.getBlock().onNeighborBlockChange(world, tileEntity.mainPos, state1, this);
+			state1.getBlock().neighborChanged(state1, world, tileEntity.mainPos, this);
 		} catch(Exception e) {}
 	}
 	
 	@Override
-	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, BlockPos pos)
+	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
-			return world.getBlockState(tileEntity.mainPos).getBlock().getPlayerRelativeBlockHardness(player, world, tileEntity.mainPos);
+			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
+			return state1.getBlock().getPlayerRelativeBlockHardness(state1, player, world, tileEntity.mainPos);
 		} catch(Exception e) {
-			return super.getPlayerRelativeBlockHardness(player, world, pos);
+			return super.getPlayerRelativeBlockHardness(state, player, world, pos);
 		}
 	}
 
@@ -126,19 +129,19 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public int getRenderType()
+	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
-		return -1;
+		return EnumBlockRenderType.INVISIBLE;
 	}
 
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 	
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
