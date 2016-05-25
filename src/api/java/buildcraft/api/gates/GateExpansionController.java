@@ -4,10 +4,11 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.gates;
 
-import java.util.List;
+import java.util.Collection;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
 import buildcraft.api.statements.IActionInternal;
 import buildcraft.api.statements.IStatement;
 import buildcraft.api.statements.IStatementParameter;
@@ -43,9 +44,9 @@ public abstract class GateExpansionController {
         return false;
     }
 
-    public void addTriggers(List<ITriggerInternal> list) {}
+    public void addTriggers(Collection<ITriggerInternal> list) {}
 
-    public void addActions(List<IActionInternal> list) {}
+    public void addActions(Collection<IActionInternal> list) {}
 
     public void writeToNBT(NBTTagCompound nbt) {}
 

@@ -1,6 +1,7 @@
 package buildcraft.api.tablet;
 
 import net.minecraft.nbt.NBTTagCompound;
+
 import net.minecraftforge.fml.relauncher.Side;
 
 public interface ITablet {

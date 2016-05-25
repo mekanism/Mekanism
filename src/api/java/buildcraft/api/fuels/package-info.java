@@ -6,4 +6,3 @@
 package buildcraft.api.fuels;
 
 import net.minecraftforge.fml.common.API;
-

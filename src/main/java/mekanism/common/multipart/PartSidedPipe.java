@@ -463,13 +463,13 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	}
 
 	@Override
-	public void addHitEffects(MovingObjectPosition hit, EffectRenderer effectRenderer)
+	public void addHitEffects(RayTraceResult hit, EffectRenderer effectRenderer)
 	{
 		IconHitEffects.addHitEffects(this, hit, effectRenderer);
 	}
 
 	@Override
-	public void addDestroyEffects(MovingObjectPosition mop, EffectRenderer effectRenderer)
+	public void addDestroyEffects(RayTraceResult mop, EffectRenderer effectRenderer)
 	{
 		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}

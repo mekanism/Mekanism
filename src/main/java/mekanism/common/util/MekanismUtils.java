@@ -1087,7 +1087,7 @@ public final class MekanismUtils
 	 * @param player - player to raytrace
 	 * @return raytraced value
 	 */
-	public static MovingObjectPosition rayTrace(World world, EntityPlayer player)
+	public static RayTraceResult rayTrace(World world, EntityPlayer player)
 	{
 		double reach = Mekanism.proxy.getReach(player);
 

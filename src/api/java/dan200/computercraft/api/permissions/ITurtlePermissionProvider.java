@@ -6,7 +6,7 @@
 
 package dan200.computercraft.api.permissions;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**

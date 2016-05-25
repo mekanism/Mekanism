@@ -6,7 +6,7 @@ package buildcraft.api.tools;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 /*** Implement this interface on subclasses of Item to have that item work as a wrench for buildcraft */
 public interface IToolWrench {

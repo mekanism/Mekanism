@@ -10,8 +10,10 @@ import java.util.List;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
+
 import buildcraft.api.core.JavaTools;
 
 public class SchematicTile extends SchematicBlock {
@@ -46,7 +48,8 @@ public class SchematicTile extends SchematicBlock {
             tileNBT.setInteger("x", pos.getX());
             tileNBT.setInteger("y", pos.getY());
             tileNBT.setInteger("z", pos.getZ());
-            TileEntity tile = TileEntity.createAndLoadEntity(tileNBT);
+            // The minecraft server argument doesn't seem to be used...
+            TileEntity tile = TileEntity.create(tileNBT);
             tile.setWorldObj(context.world());
             context.world().setTileEntity(pos, tile);
         }

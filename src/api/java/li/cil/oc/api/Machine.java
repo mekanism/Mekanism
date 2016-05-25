@@ -1,10 +1,10 @@
 package li.cil.oc.api;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import li.cil.oc.api.machine.Architecture;
 import li.cil.oc.api.machine.MachineHost;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * This API is intended for people who would like to implement custom computer
@@ -43,6 +43,18 @@ public final class Machine {
         if (API.machine != null)
             return API.machine.architectures();
         return Collections.emptyList();
+    }
+
+    /**
+     * Get the name of the specified architecture.
+     *
+     * @param architecture the architecture to get the name for.
+     * @return the name of the specified architecture.
+     */
+    public static String getArchitectureName(Class<? extends Architecture> architecture) {
+        if (API.machine != null)
+            return API.machine.getArchitectureName(architecture);
+        return null;
     }
 
     /**

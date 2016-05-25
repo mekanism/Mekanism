@@ -123,6 +123,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -376,7 +377,7 @@ public class CommonProxy implements IGuiProvider
 	/**
 	 * Adds block hit effects on the client side.
 	 */
-	public void addHitEffects(Coord4D coord, MovingObjectPosition mop) {}
+	public void addHitEffects(Coord4D coord, RayTraceResult mop) {}
 	
 	/**
 	 * Does a generic creation animation, starting from the rendering block.
@@ -542,7 +543,7 @@ public class CommonProxy implements IGuiProvider
 	{
 		if(player instanceof EntityPlayerMP)
 		{
-			return ((EntityPlayerMP)player).theItemInWorldManager.getBlockReachDistance();
+			return ((EntityPlayerMP)player).interactionManager.getBlockReachDistance();
 		}
 
 		return 0;
@@ -576,10 +577,10 @@ public class CommonProxy implements IGuiProvider
 	{
 		if(general.cardboardSpawners)
 		{
-			MekanismAPI.removeBoxBlacklist(Blocks.mob_spawner, 0);
+			MekanismAPI.removeBoxBlacklist(Blocks.MOB_SPAWNER, 0);
 		}
 		else {
-			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
+			MekanismAPI.addBoxBlacklist(Blocks.MOB_SPAWNER, 0);
 		}
 		
 		BlockStateMachine.MachineType.updateAllUsages();

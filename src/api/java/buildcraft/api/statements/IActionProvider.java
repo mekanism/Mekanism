@@ -10,10 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 public interface IActionProvider {
+    void addInternalActions(Collection<IActionInternal> actions, IStatementContainer container);
 
-    /** Returns the list of actions that are available from the statement container holding the gate. */
-    Collection<IActionInternal> getInternalActions(IStatementContainer container);
-
-    /** Returns the list of actions available to a gate next to the given block. */
-    Collection<IActionExternal> getExternalActions(EnumFacing side, TileEntity tile);
+    void addExternalActions(Collection<IActionExternal> actions, EnumFacing side, TileEntity tile);
 }

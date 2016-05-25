@@ -53,7 +53,7 @@ public class Range4D
 	
 	public static Range4D getChunkRange(EntityPlayer player)
 	{
-		int radius = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getViewDistance();
+		int radius = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getViewDistance();
 		
 		return new Range4D(new Chunk3D(player)).expandChunks(radius);
 	}

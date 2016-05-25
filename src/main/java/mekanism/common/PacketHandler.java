@@ -76,6 +76,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -278,9 +280,9 @@ public class PacketHandler
 	 */
 	public void sendToAll(IMessage message)
 	{
-		MinecraftServer server = MinecraftServer.getServer();
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		
-		for(EntityPlayerMP player : server.getConfigurationManager().playerEntityList)
+		for(EntityPlayerMP player : server.getPlayerList().getPlayerList())
 		{
 			sendTo(message, player);
 		}
@@ -324,13 +326,13 @@ public class PacketHandler
 	 */
 	public void sendToCuboid(IMessage message, AxisAlignedBB cuboid, int dimId)
 	{
-		MinecraftServer server = MinecraftServer.getServer();
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 		if(server != null && cuboid != null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayerList())
 			{
-				if(player.dimension == dimId && cuboid.isVecInside(new Vec3(player.posX, player.posY, player.posZ)))
+				if(player.dimension == dimId && cuboid.isVecInside(new Vec3d(player.posX, player.posY, player.posZ)))
 				{
 					sendTo(message, player);
 				}
@@ -340,11 +342,11 @@ public class PacketHandler
 	
 	public void sendToReceivers(IMessage message, Range4D range)
 	{
-		MinecraftServer server = MinecraftServer.getServer();
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 		if(server != null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayerList())
 			{
 				if(player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range))
 				{

@@ -4,7 +4,6 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.power;
 
-
 /** This interface should be defined by any Tile which wants to receive energy from BuildCraft lasers.
  *
  * The respective Block MUST implement ILaserTargetBlock! */

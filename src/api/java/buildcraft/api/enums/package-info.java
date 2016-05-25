@@ -6,4 +6,3 @@
 package buildcraft.api.enums;
 
 import net.minecraftforge.fml.common.API;
-

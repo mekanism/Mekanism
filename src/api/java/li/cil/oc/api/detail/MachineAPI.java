@@ -1,10 +1,10 @@
 package li.cil.oc.api.detail;
 
-import java.util.Collection;
-
 import li.cil.oc.api.machine.Architecture;
 import li.cil.oc.api.machine.Machine;
 import li.cil.oc.api.machine.MachineHost;
+
+import java.util.Collection;
 
 public interface MachineAPI {
     /**
@@ -28,6 +28,14 @@ public interface MachineAPI {
      * until it also created a new machine using that architecture.
      */
     Collection<Class<? extends Architecture>> architectures();
+
+    /**
+     * Get the name of the specified architecture.
+     *
+     * @param architecture the architecture to get the name for.
+     * @return the name of the specified architecture.
+     */
+    String getArchitectureName(Class<? extends Architecture> architecture);
 
     /**
      * Creates a new machine for the specified host.

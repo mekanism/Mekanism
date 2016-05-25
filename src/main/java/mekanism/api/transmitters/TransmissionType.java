@@ -3,6 +3,8 @@ package mekanism.api.transmitters;
 import mekanism.api.gas.IGasTransmitter;
 import net.minecraft.tileentity.TileEntity;
 
+import com.sun.imageio.plugins.common.I18N;
+
 public enum TransmissionType
 {
 	ENERGY("EnergyNetwork", "Energy"),
@@ -32,7 +34,7 @@ public enum TransmissionType
 	
 	public String localize()
 	{
-		return StatCollector.translateToLocal("transmission." + getTransmission());
+		return I18N.getString("transmission." + getTransmission());
 	}
 
 	public static boolean checkTransmissionType(ITransmitter sideTile, TransmissionType type)

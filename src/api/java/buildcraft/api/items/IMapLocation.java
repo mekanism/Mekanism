@@ -3,8 +3,9 @@ package buildcraft.api.items;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+
 import buildcraft.api.core.IBox;
 import buildcraft.api.core.IZone;
 
@@ -15,7 +16,9 @@ public interface IMapLocation extends INamedItem {
         SPOT,
         AREA,
         PATH,
-        ZONE;
+        ZONE,
+        /** Like PATH but repeats around in a loop. */
+        PATH_REPEATING;
 
         public final int meta = ordinal();
 

@@ -500,14 +500,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     	{
 			if(SecurityUtils.canAccess(entityplayer, itemstack))
 			{
-		        MovingObjectPosition pos = getMovingObjectPositionFromPlayer(world, entityplayer, !entityplayer.isSneaking());
+		        RayTraceResult pos = getRayTraceResultFromPlayer(world, entityplayer, !entityplayer.isSneaking());
 		        
 		        if(pos == null)
 		        {
 		            return itemstack;
 		        }
 			else {
-			    if(pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			    if(pos.typeOfHit == RayTraceResult.MovingObjectType.BLOCK)
 			    {
 			    	Coord4D coord = new Coord4D(pos.getBlockPos(), world);
 	

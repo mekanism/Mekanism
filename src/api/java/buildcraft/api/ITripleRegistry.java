@@ -2,9 +2,9 @@ package buildcraft.api;
 
 import java.util.Set;
 
-import net.minecraft.item.Item;
-
 import org.apache.commons.lang3.tuple.Triple;
+
+import net.minecraft.item.Item;
 
 public interface ITripleRegistry<T extends ObjectDefinition> extends ISimpleRegistry<T> {
     /** @return An unmodifiable set containing all the current mappings of the registry */

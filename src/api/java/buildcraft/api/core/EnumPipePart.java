@@ -1,9 +1,9 @@
 package buildcraft.api.core;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Locale;
 import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTBase.NBTPrimitive;
@@ -11,18 +11,19 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 
-import com.google.common.collect.Maps;
+import io.netty.buffer.ByteBuf;
 
-public enum EnumPipePart implements IStringSerializable,INetworkLoadable_BC8<EnumPipePart> {
+public enum EnumPipePart implements IStringSerializable, INetworkLoadable_BC8<EnumPipePart> {
     DOWN(EnumFacing.DOWN),
     UP(EnumFacing.UP),
     NORTH(EnumFacing.NORTH),
     SOUTH(EnumFacing.SOUTH),
     WEST(EnumFacing.WEST),
     EAST(EnumFacing.EAST),
-    /** CENTER, UNKNOWN and ALL are all valid uses of this constant. */
+    /** CENTER, UNKNOWN and ALL are all valid uses of this. */
     CENTER(null);
 
+    public static final EnumPipePart[] VALUES = values();
     private static final Map<EnumFacing, EnumPipePart> facingMap = Maps.newEnumMap(EnumFacing.class);
     private static final Map<String, EnumPipePart> nameMap = Maps.newHashMap();
     private static final int MAX_VALUES = values().length;
@@ -34,6 +35,10 @@ public enum EnumPipePart implements IStringSerializable,INetworkLoadable_BC8<Enu
             nameMap.put(part.name(), part);
             if (part.face != null) facingMap.put(part.face, part);
         }
+    }
+
+    public static int ordinal(EnumFacing face) {
+        return face == null ? 6 : face.ordinal();
     }
 
     public static EnumPipePart fromFacing(EnumFacing face) {

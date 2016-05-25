@@ -8,8 +8,9 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+
 import buildcraft.api.core.IInvSlot;
 
 /** A schematic is a piece of a blueprint. It allows to stock blocks or entities to blueprints, and can have a state
@@ -97,12 +98,12 @@ public abstract class Schematic {
     }
 
     /** Applies translations to all positions in the schematic to center in the blueprint referential */
-    public void translateToBlueprint(Vec3 transform) {
+    public void translateToBlueprint(Vec3d transform) {
 
     }
 
     /** Apply translations to all positions in the schematic to center in the builder referential */
-    public void translateToWorld(Vec3 transform) {}
+    public void translateToWorld(Vec3d transform) {}
 
     /** Translates blocks and item ids to the blueprint referential */
     public void idsToBlueprint(MappingRegistry registry) {}

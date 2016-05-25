@@ -4,7 +4,7 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.core;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 /** To be implemented by TileEntities able to provide a square area on the world, typically BuildCraft markers. */
 public interface IAreaProvider {

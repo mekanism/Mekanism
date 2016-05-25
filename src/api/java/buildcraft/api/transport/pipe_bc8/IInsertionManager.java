@@ -1,6 +1,7 @@
 package buildcraft.api.transport.pipe_bc8;
 
 import net.minecraft.util.EnumFacing;
+
 import buildcraft.api.core.IFluidFilter;
 import buildcraft.api.core.IStackFilter;
 import buildcraft.api.transport.pipe_bc8.IPipeContentsEditable.IPipeContentsEditableFluid;
@@ -22,15 +23,6 @@ public interface IInsertionManager {
         boolean tryInsertItems(IPipeContentsEditableItem contents, Object extractor, EnumFacing direction, boolean simulate);
 
         boolean tryInsertFluid(IPipeContentsEditableFluid fluid, Object extractor, EnumFacing direction, boolean simulate);
-
-        default boolean tryInsert(IPipeContentsEditable contents, Object extractor, EnumFacing direction, boolean simulate) {
-            if (contents instanceof IPipeContentsEditableItem) {
-                return tryInsertItems((IPipeContentsEditableItem) contents, extractor, direction, simulate);
-            } else if (contents instanceof IPipeContentsEditableFluid) {
-                return tryInsertFluid((IPipeContentsEditableFluid) contents, extractor, direction, simulate);
-            }
-            return false;
-        }
 
         /** @return True if {@link #tryExtractItems(IStackFilter, Object, EnumFacing, boolean)} can return a non-null
          *         value at any future point in time. */

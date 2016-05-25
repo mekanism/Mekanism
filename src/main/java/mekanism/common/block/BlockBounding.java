@@ -66,7 +66,7 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);

@@ -7,7 +7,9 @@ package buildcraft.api.transport;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
 import buildcraft.api.transport.pluggable.PipePluggable;
 
 public interface IPipeTile extends IInjectable {
@@ -21,6 +23,8 @@ public interface IPipeTile extends IInjectable {
     PipeType getPipeType();
 
     World getWorldBC();
+
+    BlockPos getPosBC();
 
     /** True if the pipe is connected to the block/pipe in the specific direction
      * 

@@ -11,6 +11,7 @@ import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.biome.BiomeDesert;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -84,7 +85,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeGenForCoords(getPos()).getBiomeClass() == BiomeGenDesert.class;
+		return worldObj.provider.getBiomeForCoords(getPos()).getBiomeClass() == BiomeDesert.class;
 	}
 
 	@Override

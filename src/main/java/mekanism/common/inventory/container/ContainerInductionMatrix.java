@@ -70,7 +70,7 @@ public class ContainerInductionMatrix extends Container
 
 			if(ChargeUtils.canBeCharged(slotStack) || ChargeUtils.canBeDischarged(slotStack))
 			{
-				if(slotStack.getItem() == Items.redstone)
+				if(slotStack.getItem() == Items.REDSTONE)
 				{
 					if(slotID != 1)
 					{

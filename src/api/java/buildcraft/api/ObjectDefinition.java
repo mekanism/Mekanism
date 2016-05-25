@@ -16,7 +16,7 @@ public class ObjectDefinition {
     protected static String getCurrentMod() {
         ModContainer container = Loader.instance().activeModContainer();
         if (container == null) {
-            throw new IllegalStateException("Pipes MUST be registered inside a mod");
+            throw new IllegalStateException("Objects MUST be created inside a mod");
         }
         return container.getModId();
     }

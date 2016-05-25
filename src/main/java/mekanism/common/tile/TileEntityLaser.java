@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IActiveState
@@ -47,7 +48,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 		{
 			if(isActive)
 			{
-				MovingObjectPosition mop = LaserManager.fireLaserClient(this, facing, usage.laserUsage, worldObj);
+				RayTraceResult mop = LaserManager.fireLaserClient(this, facing, usage.laserUsage, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, worldObj);
 
 				if(hitCoord == null || !hitCoord.equals(digging))

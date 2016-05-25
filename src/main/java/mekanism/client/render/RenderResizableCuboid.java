@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -20,6 +21,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IBlockAccess;
 
@@ -35,12 +37,12 @@ import com.google.common.collect.Maps;
 public class RenderResizableCuboid {
 	protected RenderManager manager = Minecraft.getMinecraft().getRenderManager();
 	
-	public static final Vec3 VEC_ONE = vec3(1);
-	public static final Vec3 VEC_ZERO = vec3(0);
-	public static final Vec3 VEC_HALF = vec3(0.5);
+	public static final Vec3d VEC_ONE = vec3(1);
+	public static final Vec3d VEC_ZERO = vec3(0);
+	public static final Vec3d VEC_HALF = vec3(0.5);
 	
     public interface IBlockLocation {
-        Vec3 transformToWorld(Vec3 vec);
+        Vec3d transformToWorld(Vec3d vec);
     }
 
     public interface IFacingLocation {
@@ -99,7 +101,7 @@ public class RenderResizableCuboid {
     public static final RenderResizableCuboid INSTANCE = new RenderResizableCuboid();
 
     /** The AO map assumes that each direction in the world has a different amount of light going towards it. */
-    private static final Map<EnumFacing, Vec3> aoMap = Maps.newEnumMap(EnumFacing.class);
+    private static final Map<EnumFacing, Vec3d> aoMap = Maps.newEnumMap(EnumFacing.class);
 
     private static final int U_MIN = 0;
     private static final int U_MAX = 1;
@@ -141,15 +143,15 @@ public class RenderResizableCuboid {
             flips = new int[6];
         }
 
-        Vec3 textureStart = new Vec3(cube.textureStartX / 16D, cube.textureStartY / 16D, cube.textureStartZ / 16D);
-        Vec3 textureSize = new Vec3(cube.textureSizeX / 16D, cube.textureSizeY / 16D, cube.textureSizeZ / 16D);
-        Vec3 textureOffset = new Vec3(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D, cube.textureOffsetZ / 16D);
-        Vec3 size = new Vec3(cube.sizeX(), cube.sizeY(), cube.sizeZ());
+        Vec3d textureStart = new Vec3d(cube.textureStartX / 16D, cube.textureStartY / 16D, cube.textureStartZ / 16D);
+        Vec3d textureSize = new Vec3d(cube.textureSizeX / 16D, cube.textureSizeY / 16D, cube.textureSizeZ / 16D);
+        Vec3d textureOffset = new Vec3d(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D, cube.textureOffsetZ / 16D);
+        Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
 
-        manager.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        manager.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
         Tessellator tess = Tessellator.getInstance();
-        WorldRenderer wr = tess.getWorldRenderer();
+        VertexBuffer wr = tess.getBuffer();
 
         GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
@@ -168,15 +170,15 @@ public class RenderResizableCuboid {
         GlStateManager.enableFog();
     }
 
-    private void renderCuboidFace(WorldRenderer wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3 textureStart, Vec3 textureSize,
-            Vec3 size, Vec3 textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula,
+    private void renderCuboidFace(VertexBuffer wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
+            Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula,
             IBlockAccess access) {
         int ordinal = face.ordinal();
         if (sprites[ordinal] == null) {
             return;
         }
 
-        Vec3 textureEnd = textureStart.add(textureSize);
+        Vec3d textureEnd = textureStart.add(textureSize);
         float[] uv = getUVArray(sprites[ordinal], flips[ordinal], face, textureStart, textureEnd);
         List<RenderInfo> renderInfoList = getRenderInfos(uv, face, size, textureSize, textureOffset);
 
@@ -203,19 +205,19 @@ public class RenderResizableCuboid {
         }
     }
     
-    public static Vec3 withValue(Vec3 vector, Axis axis, double value) {
-        if (axis == Axis.X) return new Vec3(value, vector.yCoord, vector.zCoord);
-        else if (axis == Axis.Y) return new Vec3(vector.xCoord, value, vector.zCoord);
-        else if (axis == Axis.Z) return new Vec3(vector.xCoord, vector.yCoord, value);
+    public static Vec3d withValue(Vec3d vector, Axis axis, double value) {
+        if (axis == Axis.X) return new Vec3d(value, vector.yCoord, vector.zCoord);
+        else if (axis == Axis.Y) return new Vec3d(vector.xCoord, value, vector.zCoord);
+        else if (axis == Axis.Z) return new Vec3d(vector.xCoord, vector.yCoord, value);
         else throw new RuntimeException("Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector + ")");
     }
 
-    private void renderPoint(WorldRenderer wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV,
+    private void renderPoint(VertexBuffer wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV,
             IBlockLocation locationFormula, IFacingLocation faceFormula, IBlockAccess access, EnumShadeArgument shadeTypes) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
 
-        Vec3 vertex = withValue(VEC_ZERO, u, ri.xyz[U_ARRAY]);
+        Vec3d vertex = withValue(VEC_ZERO, u, ri.xyz[U_ARRAY]);
         vertex = withValue(vertex, v, ri.xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
 
@@ -229,7 +231,7 @@ public class RenderResizableCuboid {
         if (shadeTypes.isEnabled(EnumShadeType.AMBIENT_OCCLUSION)) {
             applyLocalAO(wr, faceFormula.transformToWorld(face), locationFormula, access, shadeTypes, vertex);
         } else if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
-            Vec3 transVertex = locationFormula.transformToWorld(vertex);
+            Vec3d transVertex = locationFormula.transformToWorld(vertex);
             BlockPos pos = convertFloor(transVertex);
             Block block = access.getBlockState(pos).getBlock();
             int combindedLight = block.getMixedBrightnessForBlock(access, pos);
@@ -239,19 +241,19 @@ public class RenderResizableCuboid {
         wr.endVertex();
     }
     
-    public static BlockPos convertFloor(Vec3 vec) {
+    public static BlockPos convertFloor(Vec3d vec) {
         return new BlockPos(vec.xCoord, vec.yCoord, vec.zCoord);
     }
     
-    public static Vec3 convert(Vec3i vec3i) {
-        return new Vec3(vec3i.getX(), vec3i.getY(), vec3i.getZ());
+    public static Vec3d convert(Vec3i vec3i) {
+        return new Vec3d(vec3i.getX(), vec3i.getY(), vec3i.getZ());
     }
     
-    public static Vec3 convert(EnumFacing face) {
+    public static Vec3d convert(EnumFacing face) {
         if (face == null) {
             return VEC_ZERO;
         }
-        return new Vec3(face.getFrontOffsetX(), face.getFrontOffsetY(), face.getFrontOffsetZ());
+        return new Vec3d(face.getFrontOffsetX(), face.getFrontOffsetY(), face.getFrontOffsetZ());
 
     }
     
@@ -267,8 +269,8 @@ public class RenderResizableCuboid {
         return faces;
     }
 
-    private void applyLocalAO(WorldRenderer wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes,
-            Vec3 vertex) {
+    private void applyLocalAO(VertexBuffer wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes,
+            Vec3d vertex) {
         // This doesn't work. At all.
         boolean allAround = false;
 
@@ -278,7 +280,7 @@ public class RenderResizableCuboid {
         float[] colorMultiplier = new float[numPositions];
         double[] distances = new double[numPositions];
         double totalDist = 0;
-        Vec3 transVertex = locationFormula.transformToWorld(vertex);
+        Vec3d transVertex = locationFormula.transformToWorld(vertex);
         BlockPos pos = convertFloor(transVertex);
         Block block = access.getBlockState(pos).getBlock();
         int combindedLight = block.getMixedBrightnessForBlock(access, pos);
@@ -291,7 +293,7 @@ public class RenderResizableCuboid {
         int index = 0;
         EnumFacing[] testArray = allAround ? EnumFacing.values() : getNeighbours(face);
         for (EnumFacing otherFace : testArray) {
-            Vec3 nearestOther = vertex.add(convert(otherFace));
+            Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));
             block = access.getBlockState(pos).getBlock();
             combindedLight = block.getMixedBrightnessForBlock(access, pos);
@@ -322,7 +324,7 @@ public class RenderResizableCuboid {
             wr.lightmap(capBlockLight, capSkyLight);
         }
 
-        Vec3 color;
+        Vec3d color;
         if (shadeTypes.isEnabled(EnumShadeType.FACE)) {
             color = aoMap.get(face);
         } else {
@@ -332,19 +334,19 @@ public class RenderResizableCuboid {
         setWorldRendererRGB(wr, color);
     }
     
-    public static void setWorldRendererRGB(WorldRenderer wr, Vec3 color) {
+    public static void setWorldRendererRGB(VertexBuffer wr, Vec3d color) {
         wr.color((float) color.xCoord, (float) color.yCoord, (float) color.zCoord, 1f);
     }
     
-    public static Vec3 vec3(double value) {
-        return new Vec3(value, value, value);
+    public static Vec3d vec3(double value) {
+        return new Vec3d(value, value, value);
     }
     
-    public static Vec3 multiply(Vec3 vec, double multiple) {
-        return new Vec3(vec.xCoord * multiple, vec.yCoord * multiple, vec.zCoord * multiple);
+    public static Vec3d multiply(Vec3d vec, double multiple) {
+        return new Vec3d(vec.xCoord * multiple, vec.yCoord * multiple, vec.zCoord * multiple);
     }
     
-    public static Vec3 convertMiddle(Vec3i vec3i) {
+    public static Vec3d convertMiddle(Vec3i vec3i) {
         return convert(vec3i).add(VEC_HALF);
     }
 
@@ -515,7 +517,7 @@ public class RenderResizableCuboid {
         return uvarray;
     }
 
-    private float[] getUVArray(TextureAtlasSprite sprite, int flips, EnumFacing face, Vec3 start, Vec3 end) {
+    private float[] getUVArray(TextureAtlasSprite sprite, int flips, EnumFacing face, Vec3d start, Vec3d end) {
         Axis u = face.getAxis() == Axis.X ? Axis.Z : Axis.X;
         Axis v = face.getAxis() == Axis.Y ? Axis.Z : Axis.Y;
 
@@ -538,7 +540,7 @@ public class RenderResizableCuboid {
         return uvarray;
     }
 
-    private List<RenderInfo> getRenderInfos(float[] uv, EnumFacing face, Vec3 size, Vec3 texSize, Vec3 texOffset) {
+    private List<RenderInfo> getRenderInfos(float[] uv, EnumFacing face, Vec3d size, Vec3d texSize, Vec3d texOffset) {
         Axis u = face.getAxis() == Axis.X ? Axis.Z : Axis.X;
         Axis v = face.getAxis() == Axis.Y ? Axis.Z : Axis.Y;
 
@@ -552,7 +554,7 @@ public class RenderResizableCuboid {
         return getRenderInfos(uv, sizeU, sizeV, textureSizeU, textureSizeV, textureOffsetU, textureOffsetV);
     }
     
-    public static double getValue(Vec3 vector, Axis axis) {
+    public static double getValue(Vec3d vector, Axis axis) {
         if (axis == Axis.X) return vector.xCoord;
         else if (axis == Axis.Y) return vector.yCoord;
         else if (axis == Axis.Z) return vector.zCoord;

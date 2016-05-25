@@ -10,6 +10,7 @@ public final class BuildcraftRecipeRegistry {
     public static IIntegrationRecipeManager integrationTable;
     public static IRefineryRecipeManager refinery;
     public static IProgrammingRecipeManager programmingTable;
+    public static IComplexRefineryRecipeManager complexRefinery;
 
     private BuildcraftRecipeRegistry() {}
 }

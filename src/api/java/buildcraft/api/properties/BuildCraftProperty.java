@@ -3,10 +3,13 @@ package buildcraft.api.properties;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+
+import com.google.common.base.Optional;
 
 import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 /** This class exists primarily to allow for a property to be used as either a normal IProperty, or an
  * IUnlistedProperty. It also exists to give IProperty's generic types. */
@@ -108,9 +111,9 @@ public class BuildCraftProperty<T extends Comparable<T>> extends PropertyHelper<
         } else if (value instanceof IStringSerializable) {
             return ((IStringSerializable) value).getName();
         } else if (value instanceof Enum) {
-            return ((Enum<?>) value).name();
+            return ((Enum<?>) value).name().toLowerCase(Locale.ROOT);
         } else {
-            return value.toString();
+            return value.toString().toLowerCase(Locale.ROOT);
         }
     }
 
@@ -125,5 +128,20 @@ public class BuildCraftProperty<T extends Comparable<T>> extends PropertyHelper<
         builder.append(values);
         builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public Optional<T> parseValue(String value) {
+        if (clazz.isEnum()) {
+            return parseEnum(value, (BuildCraftProperty) this);
+        }
+        return Optional.absent();
+    }
+
+    public static <E extends Enum<E>> Optional<E> parseEnum(String name, BuildCraftProperty<E> prop) {
+        for (E e : prop.values) {
+            if (e.name().equalsIgnoreCase(name)) return Optional.of(e);
+        }
+        return Optional.absent();
     }
 }

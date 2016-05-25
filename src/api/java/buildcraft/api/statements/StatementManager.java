@@ -4,14 +4,15 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.statements;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import buildcraft.api.core.BCLog;
 
 public final class StatementManager {
@@ -50,93 +51,57 @@ public final class StatementManager {
     }
 
     public static List<ITriggerExternal> getExternalTriggers(EnumFacing side, TileEntity entity) {
-        List<ITriggerExternal> result;
-
         if (entity instanceof IOverrideDefaultStatements) {
-            result = ((IOverrideDefaultStatements) entity).overrideTriggers();
+            List<ITriggerExternal> result = ((IOverrideDefaultStatements) entity).overrideTriggers();
             if (result != null) {
                 return result;
             }
         }
 
-        result = new LinkedList<ITriggerExternal>();
+        LinkedHashSet<ITriggerExternal> triggers = new LinkedHashSet<ITriggerExternal>();
 
         for (ITriggerProvider provider : triggerProviders) {
-            Collection<ITriggerExternal> toAdd = provider.getExternalTriggers(side, entity);
-
-            if (toAdd != null) {
-                for (ITriggerExternal t : toAdd) {
-                    if (!result.contains(t)) {
-                        result.add(t);
-                    }
-                }
-            }
+            provider.addExternalTriggers(triggers, side, entity);
         }
 
-        return result;
+        return new ArrayList<ITriggerExternal>(triggers);
     }
 
     public static List<IActionExternal> getExternalActions(EnumFacing side, TileEntity entity) {
-        List<IActionExternal> result = new LinkedList<IActionExternal>();
-
         if (entity instanceof IOverrideDefaultStatements) {
-            result = ((IOverrideDefaultStatements) entity).overrideActions();
+            List<IActionExternal> result = ((IOverrideDefaultStatements) entity).overrideActions();
             if (result != null) {
                 return result;
             }
         }
 
-        result = new LinkedList<IActionExternal>();
+        LinkedHashSet<IActionExternal> actions = new LinkedHashSet<IActionExternal>();
 
         for (IActionProvider provider : actionProviders) {
-            Collection<IActionExternal> toAdd = provider.getExternalActions(side, entity);
-
-            if (toAdd != null) {
-                for (IActionExternal t : toAdd) {
-                    if (!result.contains(t)) {
-                        result.add(t);
-                    }
-                }
-            }
+            provider.addExternalActions(actions, side, entity);
         }
 
-        return result;
+        return new ArrayList<IActionExternal>(actions);
     }
 
     public static List<ITriggerInternal> getInternalTriggers(IStatementContainer container) {
-        List<ITriggerInternal> result = new LinkedList<ITriggerInternal>();
+        LinkedHashSet<ITriggerInternal> triggers = new LinkedHashSet<ITriggerInternal>();
 
         for (ITriggerProvider provider : triggerProviders) {
-            Collection<ITriggerInternal> toAdd = provider.getInternalTriggers(container);
-
-            if (toAdd != null) {
-                for (ITriggerInternal t : toAdd) {
-                    if (!result.contains(t)) {
-                        result.add(t);
-                    }
-                }
-            }
+            provider.addInternalTriggers(triggers, container);
         }
 
-        return result;
+        return new ArrayList<ITriggerInternal>(triggers);
     }
 
     public static List<IActionInternal> getInternalActions(IStatementContainer container) {
-        List<IActionInternal> result = new LinkedList<IActionInternal>();
+        LinkedHashSet<IActionInternal> actions = new LinkedHashSet<IActionInternal>();
 
         for (IActionProvider provider : actionProviders) {
-            Collection<IActionInternal> toAdd = provider.getInternalActions(container);
-
-            if (toAdd != null) {
-                for (IActionInternal t : toAdd) {
-                    if (!result.contains(t)) {
-                        result.add(t);
-                    }
-                }
-            }
+            provider.addInternalActions(actions, container);
         }
 
-        return result;
+        return new ArrayList<IActionInternal>(actions);
     }
 
     public static IStatementParameter createParameter(String kind) {
@@ -144,6 +109,10 @@ public final class StatementManager {
     }
 
     private static IStatementParameter createParameter(Class<? extends IStatementParameter> param) {
+        if (param == null) {
+            return null;
+        }
+
         try {
             return param.newInstance();
         } catch (InstantiationException e) {
@@ -158,19 +127,19 @@ public final class StatementManager {
         return null;
     }
 
-    // /**
-    // * Generally, this function should be called by every mod implementing
-    // * the Statements API ***as a container*** (that is, adding its own gates)
-    // * on the client side from a given Item of choice.
-    // */
-    // @SideOnly(Side.CLIENT)
-    // public static void registerIcons(TextureAtlasSpriteRegister register) {
-    // for (IStatement statement : statements.values()) {
-    // statement.registerIcons(register);
-    // }
-    //
-    // for (Class<? extends IStatementParameter> parameter : parameters.values()) {
-    // createParameter(parameter).registerIcons(register);
-    // }
-    // }
+    /**
+     * Generally, this function should be called by every mod implementing
+     * the Statements API ***as a container*** (that is, adding its own gates)
+     * on the client side from a given Item of choice.
+     */
+    @SideOnly(Side.CLIENT)
+    public static void registerIcons(TextureMap register) {
+        for (IStatement statement : statements.values()) {
+            statement.registerIcons(register);
+        }
+
+        for (Class<? extends IStatementParameter> parameter : parameters.values()) {
+            createParameter(parameter).registerIcons(register);
+        }
+    }
 }

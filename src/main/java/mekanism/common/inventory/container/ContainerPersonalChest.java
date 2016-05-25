@@ -6,6 +6,7 @@ import mekanism.common.inventory.slot.SlotPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -137,9 +138,9 @@ public class ContainerPersonalChest extends Container
 	}
 
 	@Override
-	public ItemStack slotClick(int slotNumber, int destSlot, int modifier, EntityPlayer player)
+	public ItemStack slotClick(int slotNumber, int destSlot, ClickType clickType, EntityPlayer player)
 	{
-		if(modifier == 2 && destSlot >= 0 && destSlot < 9)
+		if(destSlot >= 0 && destSlot < 9)
 		{
 			ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
 			
@@ -149,6 +150,6 @@ public class ContainerPersonalChest extends Container
 			}
 		}
 
-		return super.slotClick(slotNumber, destSlot, modifier, player);
+		return super.slotClick(slotNumber, destSlot, clickType, player);
 	}
 }

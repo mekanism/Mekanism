@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
@@ -229,7 +230,7 @@ public class RenderTickHandler
 
 	public void spawnAndSetParticle(EnumParticleTypes s, World world, double x, double y, double z, double velX, double velY, double velZ)
 	{
-		EntityFX fx = null;
+		Particle fx = null;
 
 		if(s.equals(EnumParticleTypes.FLAME))
 		{

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
 import buildcraft.api.core.INBTLoadable_BC8;
 import buildcraft.api.transport.pipe_bc8.event_bc8.IPipeEvent_BC8;
 
@@ -38,16 +39,12 @@ public interface IPipe_BC8 extends INBTLoadable_BC8<IPipe_BC8> {
 
     /** Makes this pipe send a client update at some point in the future. This might send it now, or it might send it
      * next tick. */
-    default void scheduleClientUpdate(IPipeListener listener) {
-        sendClientUpdate(listener);
-    }
+    void scheduleClientUpdate(IPipeListener listener);
 
     /** Makes this pipe re-render its static parts. */
     void sendRenderUpdate();
 
     /** Makes this pipe send a render update at some point in the future. This might send it now, or it might send it in
      * a few ticks time. */
-    default void scheduleRenderUpdate() {
-        sendRenderUpdate();
-    }
+    void scheduleRenderUpdate();
 }

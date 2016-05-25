@@ -1,9 +1,9 @@
 package li.cil.oc.api.network;
 
-import java.util.Collection;
-
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+
+import java.util.Collection;
 
 /**
  * Components are nodes that can be addressed computers via drivers.

@@ -16,18 +16,18 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 	@Override
 	public float getDigSpeed(ItemStack stack, IBlockState blockState)
 	{
-		return blockState.getBlock() != Blocks.bedrock ? efficiencyOnProperMaterial : 1.0F;
+		return blockState.getBlock() != Blocks.BEDROCK ? efficiencyOnProperMaterial : 1.0F;
 	}
 
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if(block == Blocks.obsidian)
+		if(block == Blocks.OBSIDIAN)
 		{
 			return toolMaterial.getHarvestLevel() == 3;
 		}
 
-		if(block == Blocks.diamond_block || block == Blocks.diamond_ore)
+		if(block == Blocks.DIAMOND_BLOCK || block == Blocks.DIAMOND_ORE)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}

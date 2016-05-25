@@ -10,7 +10,8 @@ import java.util.Random;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -116,7 +117,7 @@ public enum EnumColor implements IStringSerializable {
     }
 
     public String getLocalizedName() {
-        return StatCollector.translateToLocal(getTag());
+        return I18n.translateToLocal(getTag());
     }
 
     public String getDye() {

@@ -3,7 +3,7 @@ package ic2.api.crops;
 import java.util.Collection;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary.Type;
 
 /**
@@ -41,7 +41,7 @@ public abstract class Crops {
 	 * @param biome Biome to check
 	 * @return Humidity bonus or 0 if none
 	 */
-	public abstract int getHumidityBiomeBonus(BiomeGenBase biome);
+	public abstract int getHumidityBiomeBonus(Biome biome);
 
 	/**
 	 * Gets the nutrient bonus for a biome.
@@ -49,7 +49,7 @@ public abstract class Crops {
 	 * @param biome Biome to check
 	 * @return Nutrient bonus or 0 if none
 	 */
-	public abstract int getNutrientBiomeBonus(BiomeGenBase biome);
+	public abstract int getNutrientBiomeBonus(Biome biome);
 
 	/**
 	 * Get the crop card for the specified owner and name.

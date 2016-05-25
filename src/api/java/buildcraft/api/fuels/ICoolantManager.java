@@ -7,6 +7,7 @@ package buildcraft.api.fuels;
 import java.util.Collection;
 
 import net.minecraftforge.fluids.Fluid;
+
 import buildcraft.api.core.StackKey;
 
 public interface ICoolantManager {

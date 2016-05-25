@@ -148,7 +148,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 		IBlockState state = world.getBlockState(pos);

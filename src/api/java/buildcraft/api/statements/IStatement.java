@@ -5,6 +5,8 @@
 package buildcraft.api.statements;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,4 +35,7 @@ public interface IStatement {
      * texture on the map block texture map. */
     @SideOnly(Side.CLIENT)
     TextureAtlasSprite getGuiSprite();
+
+    @SideOnly(Side.CLIENT)
+    void registerIcons(TextureMap register);
 }

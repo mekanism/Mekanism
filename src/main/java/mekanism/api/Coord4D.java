@@ -15,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -59,7 +60,7 @@ public class Coord4D
 		yCoord = (int)entity.posY;
 		zCoord = (int)entity.posZ;
 		
-		dimensionId = entity.worldObj.provider.getDimensionId();
+		dimensionId = entity.worldObj.provider.getDimension();
 	}
 
 	/**
@@ -80,10 +81,10 @@ public class Coord4D
 	
 	public Coord4D(BlockPos pos, World world)
 	{
-		this(pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionId());
+		this(pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimension());
 	}
 
-	public Coord4D(MovingObjectPosition mop, World world)
+	public Coord4D(RayTraceResult mop, World world)
 	{
 		this(mop.getBlockPos(), world);
 	}
@@ -230,7 +231,7 @@ public class Coord4D
 	{
 		IBlockState state = getBlockState(world);
 		
-		if(state == null || state == Blocks.air)
+		if(state == null || state == Blocks.AIR)
 		{
 			return null;
 		}
@@ -350,7 +351,7 @@ public class Coord4D
 	 */
 	public boolean exists(World world)
 	{
-		return world.getChunkProvider() == null || world.getChunkProvider().chunkExists(xCoord >> 4, zCoord >> 4);
+		return world.getChunkProvider() == null || world.getChunkProvider().getLoadedChunk(xCoord >> 4, zCoord >> 4) != null;
 	}
 
 	/**
@@ -398,7 +399,7 @@ public class Coord4D
 	 */
 	public AxisAlignedBB getBoundingBox()
 	{
-		return AxisAlignedBB.fromBounds(xCoord, yCoord, zCoord, xCoord+1, yCoord+1, zCoord+1);
+		return new AxisAlignedBB(xCoord, yCoord, zCoord, xCoord+1, yCoord+1, zCoord+1);
 	}
 
 	@Override

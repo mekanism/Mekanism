@@ -6,4 +6,3 @@
 package buildcraft.api.recipes;
 
 import net.minecraftforge.fml.common.API;
-

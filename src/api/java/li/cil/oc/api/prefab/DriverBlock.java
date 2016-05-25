@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -21,7 +21,9 @@ import net.minecraftforge.oredict.OreDictionary;
  * any.
  *
  * @see li.cil.oc.api.network.ManagedEnvironment
+ * @deprecated Use {@link DriverSidedBlock} instead.
  */
+@Deprecated // TODO Remove in OC 1.7
 @SuppressWarnings("UnusedDeclaration")
 public abstract class DriverBlock implements li.cil.oc.api.driver.Block {
     protected final ItemStack[] blocks;

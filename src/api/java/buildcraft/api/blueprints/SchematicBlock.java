@@ -4,26 +4,21 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.blueprints;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.BlockPos;
+
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.BlockFluidBase;
+
 import buildcraft.api.core.BCLog;
 
 public class SchematicBlock extends SchematicBlockBase {
@@ -124,6 +119,7 @@ public class SchematicBlock extends SchematicBlockBase {
         context.world().setBlockState(pos, state, 3);
     }
 
+    @Override
     public boolean doNotUse() {
         return doNotUse;
     }
@@ -193,21 +189,7 @@ public class SchematicBlock extends SchematicBlockBase {
     // Pretty much all blocks (that rotate) rotate this way now
     @Override
     public void rotateLeft(IBuilderContext context) {
-        IProperty<EnumFacing> facingProp = getFacingProp();
-        if (facingProp != null) {
-            EnumFacing face = state.getValue(facingProp);
-            if (face.getAxis() == Axis.Y) return;
-            state = state.withProperty(facingProp, face.rotateY());
-        }
-    }
-
-    protected IProperty<EnumFacing> getFacingProp() {
-        Collection<IProperty> props = state.getPropertyNames();
-        for (IProperty prop : props) {
-            if ("facing".equals(prop.getName()) && state.getValue(prop) instanceof EnumFacing) {
-                return prop;
-            }
-        }
-        return null;
+        // FIXME: This might be the wrong way
+        state = state.withRotation(Rotation.CLOCKWISE_90);
     }
 }

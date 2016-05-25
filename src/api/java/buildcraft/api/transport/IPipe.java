@@ -5,6 +5,7 @@
 package buildcraft.api.transport;
 
 import net.minecraft.util.EnumFacing;
+
 import buildcraft.api.gates.IGate;
 
 public interface IPipe {

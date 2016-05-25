@@ -9,6 +9,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
+import com.sun.imageio.plugins.common.I18N;
+
 /**
  * Gas - a class used to set specific properties of gasses when used or seen in-game.
  * @author aidancbrady
@@ -96,7 +98,7 @@ public class Gas
 	 */
 	public String getLocalizedName()
 	{
-		return StatCollector.translateToLocal(getUnlocalizedName());
+		return I18N.getString(getUnlocalizedName());
 	}
 
 	/**

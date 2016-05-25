@@ -1,6 +1,8 @@
 package mekanism.client.render.particle;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleFlame;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -8,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityJetpackFlameFX extends EntityFlameFX 
+public class EntityJetpackFlameFX extends ParticleFlame 
 {
 	private static Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -26,7 +28,7 @@ public class EntityJetpackFlameFX extends EntityFlameFX
 	}
 
 	@Override
-	public void renderParticle(WorldRenderer worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_)
+	public void renderParticle(VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_)
 	{
 		if(particleAge > 0)
 		{

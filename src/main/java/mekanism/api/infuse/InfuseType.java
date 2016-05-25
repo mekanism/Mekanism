@@ -3,6 +3,8 @@ package mekanism.api.infuse;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
+import com.sun.imageio.plugins.common.I18N;
+
 /**
  * The types of infuse currently available in Mekanism.
  * @author AidanBrady
@@ -42,6 +44,6 @@ public final class InfuseType
 
 	public String getLocalizedName()
 	{
-		return StatCollector.translateToLocal(unlocalizedName);
+		return I18N.getString(unlocalizedName);
 	}
 }

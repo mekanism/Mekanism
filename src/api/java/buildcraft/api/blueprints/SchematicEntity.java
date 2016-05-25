@@ -16,7 +16,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
+
 import net.minecraftforge.common.util.Constants;
 
 public class SchematicEntity extends Schematic {
@@ -47,17 +48,17 @@ public class SchematicEntity extends Schematic {
     }
 
     @Override
-    public void translateToBlueprint(Vec3 transform) {
+    public void translateToBlueprint(Vec3d transform) {
         NBTTagList nbttaglist = entityNBT.getTagList("Pos", 6);
-        Vec3 pos = new Vec3(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
+        Vec3d pos = new Vec3d(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
         pos = pos.add(transform);
         entityNBT.setTag("Pos", this.newDoubleNBTList(pos.xCoord, pos.yCoord, pos.zCoord));
     }
 
     @Override
-    public void translateToWorld(Vec3 transform) {
+    public void translateToWorld(Vec3d transform) {
         NBTTagList nbttaglist = entityNBT.getTagList("Pos", 6);
-        Vec3 pos = new Vec3(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
+        Vec3d pos = new Vec3d(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
         pos = pos.add(transform);
 
         entityNBT.setTag("Pos", this.newDoubleNBTList(pos.xCoord, pos.yCoord, pos.zCoord));
@@ -78,7 +79,7 @@ public class SchematicEntity extends Schematic {
     @Override
     public void rotateLeft(IBuilderContext context) {
         NBTTagList nbttaglist = entityNBT.getTagList("Pos", 6);
-        Vec3 pos = new Vec3(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
+        Vec3d pos = new Vec3d(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
         pos = context.rotatePositionLeft(pos);
         entityNBT.setTag("Pos", this.newDoubleNBTList(pos.xCoord, pos.yCoord, pos.zCoord));
 
@@ -123,7 +124,7 @@ public class SchematicEntity extends Schematic {
 
                 if (sub.getInteger("id") >= 0) {
                     // Maps the id in the blueprint to the id in the world
-                    sub.setInteger("id", Item.itemRegistry.getIDForObject(registry.getItemForId(sub.getInteger("id"))));
+                    sub.setInteger("id", Item.REGISTRY.getIDForObject(registry.getItemForId(sub.getInteger("id"))));
 
                     rqs.add(ItemStack.loadItemStackFromNBT(sub));
                 } else {
@@ -166,12 +167,12 @@ public class SchematicEntity extends Schematic {
 
     public boolean isAlreadyBuilt(IBuilderContext context) {
         NBTTagList nbttaglist = entityNBT.getTagList("Pos", 6);
-        Vec3 newPosition = new Vec3(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
+        Vec3d newPosition = new Vec3d(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
 
         for (Object o : context.world().loadedEntityList) {
             Entity e = (Entity) o;
 
-            Vec3 existingPositon = new Vec3(e.posX, e.posY, e.posZ);
+            Vec3d existingPositon = new Vec3d(e.posX, e.posY, e.posZ);
 
             if (existingPositon.distanceTo(newPosition) <= 0.1) {
                 return true;

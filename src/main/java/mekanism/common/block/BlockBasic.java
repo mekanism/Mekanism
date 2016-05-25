@@ -397,7 +397,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		if(!world.isRemote && type == BasicBlockType.BIN)
 		{
 			TileEntityBin bin = (TileEntityBin)world.getTileEntity(pos);
-			MovingObjectPosition mop = MekanismUtils.rayTrace(world, player);
+			RayTraceResult mop = MekanismUtils.rayTrace(world, player);
 
 			if(mop != null && mop.sideHit == bin.facing)
 			{
@@ -850,7 +850,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		IBlockState state = world.getBlockState(pos);
 		BasicBlockType type = BasicBlockType.get(state);

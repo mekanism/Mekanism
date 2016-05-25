@@ -9,6 +9,6 @@ import java.lang.ref.WeakReference;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
 
-public interface ICoreProxy {
+public interface IBCFakePlayer {
     WeakReference<EntityPlayer> getBuildCraftPlayer(WorldServer world);
 }

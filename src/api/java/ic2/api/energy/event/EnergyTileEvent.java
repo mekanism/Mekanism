@@ -15,7 +15,7 @@ public class EnergyTileEvent extends WorldEvent {
 	public EnergyTileEvent(IEnergyTile energyTile1) {
 		super(((TileEntity) energyTile1).getWorld());
 
-		if (world == null) throw new NullPointerException("world is null");
+		if (getWorld() == null) throw new NullPointerException("world is null");
 
 		this.energyTile = energyTile1;
 	}

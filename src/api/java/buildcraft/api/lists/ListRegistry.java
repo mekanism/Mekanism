@@ -20,7 +20,7 @@ public final class ListRegistry {
         }
     }
 
-    public static List getHandlers() {
+    public static List<ListMatchHandler> getHandlers() {
         return Collections.unmodifiableList(handlers);
     }
 }

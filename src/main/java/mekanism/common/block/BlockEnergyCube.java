@@ -278,7 +278,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);

@@ -3,11 +3,12 @@ package buildcraft.api.enums;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.IStringSerializable;
+
 import buildcraft.api.properties.BuildCraftProperties;
 
 public enum EnumSpring implements IStringSerializable {
 
-    WATER(5, -1, Blocks.water.getDefaultState()),
+    WATER(5, -1, Blocks.WATER.getDefaultState()),
     OIL(6000, 8, null); // Set in BuildCraftEnergy
     public static final EnumSpring[] VALUES = values();
     public final int tickRate, chance;
@@ -21,9 +22,10 @@ public enum EnumSpring implements IStringSerializable {
     }
 
     public static EnumSpring fromState(IBlockState state) {
-        return (EnumSpring) state.getValue(BuildCraftProperties.SPRING_TYPE);
+        return state.getValue(BuildCraftProperties.SPRING_TYPE);
     }
 
+    @Override
     public String getName() {
         return this.name();
     }

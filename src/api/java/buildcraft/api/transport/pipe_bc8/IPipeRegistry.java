@@ -1,6 +1,7 @@
 package buildcraft.api.transport.pipe_bc8;
 
 import net.minecraft.item.Item;
+
 import buildcraft.api.ITripleRegistry;
 
 public interface IPipeRegistry extends ITripleRegistry<PipeDefinition_BC8> {

@@ -1,8 +1,8 @@
 package buildcraft.api.enums;
 
-import net.minecraft.util.IStringSerializable;
+import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
+import net.minecraft.util.IStringSerializable;
 
 public enum EnumEnergyStage implements IStringSerializable {
     BLUE,
@@ -11,10 +11,13 @@ public enum EnumEnergyStage implements IStringSerializable {
     RED,
     OVERHEAT,
     BLACK;
+
     public static final EnumEnergyStage[] VALUES = values();
 
+    private final String modelName = name().toLowerCase(Locale.ROOT);
+
     public String getModelName() {
-        return StringUtils.lowerCase(name());
+        return modelName;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package mekanism.api.gas;
 
+import com.sun.imageio.plugins.common.I18N;
+
 
 public class OreGas extends Gas
 {
@@ -32,6 +34,6 @@ public class OreGas extends Gas
 
 	public String getOreName()
 	{
-		return StatCollector.translateToLocal(oreName);
+		return I18N.getString(oreName);
 	}
 }

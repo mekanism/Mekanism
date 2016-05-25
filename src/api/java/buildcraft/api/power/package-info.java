@@ -6,4 +6,3 @@
 package buildcraft.api.power;
 
 import net.minecraftforge.fml.common.API;
-

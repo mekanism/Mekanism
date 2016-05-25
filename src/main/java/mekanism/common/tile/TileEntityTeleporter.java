@@ -749,7 +749,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		releaseChunks();
 		chunkTicket = ticket;
 		
-		ForgeChunkManager.forceChunk(chunkTicket, new Chunk3D(Coord4D.get(this)).toPair());
+		ForgeChunkManager.forceChunk(chunkTicket, new Chunk3D(Coord4D.get(this)).getPos());
 	}
 	
 	public void releaseChunks()

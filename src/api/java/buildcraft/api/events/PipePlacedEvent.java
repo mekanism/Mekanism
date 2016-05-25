@@ -5,15 +5,17 @@
 package buildcraft.api.events;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.Item;
+import net.minecraft.util.math.BlockPos;
+
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class PipePlacedEvent extends Event {
     public EntityPlayer player;
-    public String pipeType;
+    public Item pipeType;
     public BlockPos pos;
 
-    public PipePlacedEvent(EntityPlayer player, String pipeType, BlockPos pos) {
+    public PipePlacedEvent(EntityPlayer player, Item pipeType, BlockPos pos) {
         this.player = player;
         this.pipeType = pipeType;
         this.pos = pos;

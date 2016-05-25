@@ -109,7 +109,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	{
 		Vec3 localVec = new Vec3(posX, posY, posZ);
         Vec3 motionVec = new Vec3(posX + motionX*2, posY + motionY*2, posZ + motionZ*2);
-        MovingObjectPosition mop = worldObj.rayTraceBlocks(localVec, motionVec, true, false, false);
+        RayTraceResult mop = worldObj.rayTraceBlocks(localVec, motionVec, true, false, false);
         localVec = new Vec3(posX, posY, posZ);
         motionVec = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
 
@@ -129,11 +129,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
             {
                 float boundsScale = 0.3F;
                 AxisAlignedBB newBounds = entity1.getEntityBoundingBox().expand((double)boundsScale, (double)boundsScale, (double)boundsScale);
-                MovingObjectPosition movingobjectposition1 = newBounds.calculateIntercept(localVec, motionVec);
+                RayTraceResult RayTraceResult1 = newBounds.calculateIntercept(localVec, motionVec);
 
-                if(movingobjectposition1 != null)
+                if(RayTraceResult1 != null)
                 {
-                    double dist = localVec.distanceTo(movingobjectposition1.hitVec);
+                    double dist = localVec.distanceTo(RayTraceResult1.hitVec);
 
                     if(dist < entityDist || entityDist == 0)
                     {
@@ -146,7 +146,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 
         if(entity != null)
         {
-            mop = new MovingObjectPosition(entity);
+            mop = new RayTraceResult(entity);
         }
 
         if(mop != null && mop.entityHit instanceof EntityPlayer)

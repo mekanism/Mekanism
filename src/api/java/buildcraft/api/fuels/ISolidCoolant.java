@@ -5,6 +5,7 @@
 package buildcraft.api.fuels;
 
 import net.minecraft.item.ItemStack;
+
 import net.minecraftforge.fluids.FluidStack;
 
 public interface ISolidCoolant {

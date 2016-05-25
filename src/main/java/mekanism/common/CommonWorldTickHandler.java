@@ -7,6 +7,7 @@ import java.util.Random;
 
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -17,18 +18,18 @@ public class CommonWorldTickHandler
 {
 	private static final long maximumDeltaTimeNanoSecs = 16000000; // 16 milliseconds
 	
-	private HashMap<Integer, Queue<ChunkCoordIntPair>> chunkRegenMap;
+	private HashMap<Integer, Queue<ChunkPos>> chunkRegenMap;
 	
-	public void addRegenChunk(int dimensionId, ChunkCoordIntPair chunkCoord) 
+	public void addRegenChunk(int dimensionId, ChunkPos chunkCoord) 
 	{
 		if(chunkRegenMap == null) 
 		{
-			chunkRegenMap = new HashMap<Integer, Queue<ChunkCoordIntPair>>();
+			chunkRegenMap = new HashMap<Integer, Queue<ChunkPos>>();
 		}
 
 		if(!chunkRegenMap.containsKey(dimensionId))
 		{
-			LinkedList<ChunkCoordIntPair> list = new LinkedList<ChunkCoordIntPair>();
+			LinkedList<ChunkPos> list = new LinkedList<ChunkPos>();
 			list.add(chunkCoord);
 			chunkRegenMap.put(dimensionId, list);
 		}
@@ -87,17 +88,17 @@ public class CommonWorldTickHandler
 				return; 
 			}
 			
-			int dimensionId = world.provider.getDimensionId();
+			int dimensionId = world.provider.getDimension();
 
 			//Credit to E. Beef
 			if(chunkRegenMap.containsKey(dimensionId)) 
 			{
-				Queue<ChunkCoordIntPair> chunksToGen = chunkRegenMap.get(dimensionId);
+				Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionId);
 				long startTime = System.nanoTime();
 				
 				while(System.nanoTime() - startTime < maximumDeltaTimeNanoSecs && !chunksToGen.isEmpty()) 
 				{
-					ChunkCoordIntPair nextChunk = chunksToGen.poll();
+					ChunkPos nextChunk = chunksToGen.poll();
 					
 					if(nextChunk == null) 
 					{ 

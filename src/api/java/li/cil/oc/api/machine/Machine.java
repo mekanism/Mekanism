@@ -1,8 +1,8 @@
 package li.cil.oc.api.machine;
 
-import java.util.Map;
-
 import li.cil.oc.api.network.ManagedEnvironment;
+
+import java.util.Map;
 
 /**
  * This interface allows interacting with a Machine obtained via the factory

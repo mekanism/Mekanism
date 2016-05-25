@@ -4,6 +4,7 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.gates;
 
+import java.util.Collection;
 import java.util.List;
 
 import buildcraft.api.statements.IStatement;
@@ -18,13 +19,15 @@ public interface IGate extends ISidedStatementContainer {
 
     IPipe getPipe();
 
+    Collection<IGateExpansion> getExpansions();
+
     List<IStatement> getTriggers();
 
     List<IStatement> getActions();
 
     List<StatementSlot> getActiveActions();
 
-    List<IStatementParameter> getTriggerParameters(int index);
+    List<IStatementParameter> getTriggerParameters(int slot);
 
-    List<IStatementParameter> getActionParameters(int index);
+    List<IStatementParameter> getActionParameters(int slot);
 }

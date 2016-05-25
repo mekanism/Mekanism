@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,7 +31,7 @@ public class LaserManager
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
 
-		MovingObjectPosition mop = world.rayTraceBlocks(from, to);
+		RayTraceResult mop = world.rayTraceBlocks(from, to);
 
 		if(mop != null)
 		{
@@ -100,20 +101,20 @@ public class LaserManager
 		
 		blockHit.breakBlock(world, blockCoord.getPos(), state);
 		world.setBlockToAir(blockCoord.getPos());
-		world.playAuxSFX(2001, blockCoord.getPos(), Block.getIdFromBlock(blockHit));
+		world.playEvent(2001, blockCoord.getPos(), Block.getStateId(state));
 		
 		return ret;
 	}
 
-	public static MovingObjectPosition fireLaserClient(TileEntity from, EnumFacing direction, double energy, World world)
+	public static RayTraceResult fireLaserClient(TileEntity from, EnumFacing direction, double energy, World world)
 	{
 		return fireLaserClient(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
 	}
 
-	public static MovingObjectPosition fireLaserClient(Pos3D from, EnumFacing direction, double energy, World world)
+	public static RayTraceResult fireLaserClient(Pos3D from, EnumFacing direction, double energy, World world)
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
-		MovingObjectPosition mop = world.rayTraceBlocks(from, to);
+		RayTraceResult mop = world.rayTraceBlocks(from, to);
 
 		if(mop != null)
 		{
@@ -128,11 +129,11 @@ public class LaserManager
 	
 	public static class LaserInfo
 	{
-		public MovingObjectPosition movingPos;
+		public RayTraceResult movingPos;
 		
 		public boolean foundEntity;
 		
-		public LaserInfo(MovingObjectPosition mop, boolean b)
+		public LaserInfo(RayTraceResult mop, boolean b)
 		{
 			movingPos = mop;
 			foundEntity = b;

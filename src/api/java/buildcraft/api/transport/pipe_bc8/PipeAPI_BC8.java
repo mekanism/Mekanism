@@ -1,6 +1,7 @@
 package buildcraft.api.transport.pipe_bc8;
 
 import net.minecraft.item.EnumDyeColor;
+
 import buildcraft.api.APIHelper;
 import buildcraft.api.transport.pipe_bc8.IExtractionManager.IExtractable_BC8;
 import buildcraft.api.transport.pipe_bc8.IInsertionManager.IInsertable_BC8;

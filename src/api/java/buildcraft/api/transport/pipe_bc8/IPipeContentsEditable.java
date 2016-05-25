@@ -1,14 +1,17 @@
 package buildcraft.api.transport.pipe_bc8;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+
 import net.minecraftforge.fluids.Fluid;
+
 import buildcraft.api.core.INBTLoadable_BC8;
 import buildcraft.api.core.INetworkLoadable_BC8;
 import buildcraft.api.transport.pipe_bc8.IPipePropertyProvider.IPipePropertyProviderEditable;
+
+import io.netty.buffer.ByteBuf;
 
 /** Provides a way to change the contents of a pipe. */
 public interface IPipeContentsEditable extends IPipeContents, INetworkLoadable_BC8<IPipeContentsEditable>, INBTLoadable_BC8<IPipeContentsEditable> {

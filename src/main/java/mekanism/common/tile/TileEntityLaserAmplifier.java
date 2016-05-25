@@ -75,7 +75,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		{
 			if(on)
 			{
-				MovingObjectPosition mop = LaserManager.fireLaserClient(this, facing, lastFired, worldObj);
+				RayTraceResult mop = LaserManager.fireLaserClient(this, facing, lastFired, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, worldObj);
 
 				if(hitCoord == null || !hitCoord.equals(digging))

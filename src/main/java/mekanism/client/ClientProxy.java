@@ -810,7 +810,7 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
-	public void addHitEffects(Coord4D coord, MovingObjectPosition mop)
+	public void addHitEffects(Coord4D coord, RayTraceResult mop)
 	{
 		if(Minecraft.getMinecraft().theWorld != null)
 		{

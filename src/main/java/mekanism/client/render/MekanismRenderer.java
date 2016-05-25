@@ -238,7 +238,7 @@ public class MekanismRenderer
 		
 		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true, false};
 
-		public Block baseBlock = Blocks.sand;
+		public Block baseBlock = Blocks.SAND;
 		
 	    public final void setBlockBounds(double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos)
 	    {
@@ -503,7 +503,7 @@ public class MekanismRenderer
     
     public static ResourceLocation getBlocksTexture()
     {
-    	return TextureMap.locationBlocksTexture;
+    	return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
     
     public static interface ICustomBlockIcon

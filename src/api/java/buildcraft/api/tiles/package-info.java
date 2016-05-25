@@ -6,4 +6,3 @@
 package buildcraft.api.tiles;
 
 import net.minecraftforge.fml.common.API;
-

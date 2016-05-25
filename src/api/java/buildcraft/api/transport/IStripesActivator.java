@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 public interface IStripesActivator {
-    void sendItem(ItemStack itemStack, EnumFacing direction);
+    boolean sendItem(ItemStack itemStack, EnumFacing direction);
 
     void dropItem(ItemStack itemStack, EnumFacing direction);
 }

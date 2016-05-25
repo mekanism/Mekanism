@@ -8,16 +8,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Set;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import net.minecraft.block.Block;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 public final class BuildCraftAPI {
 
-    public static ICoreProxy proxy;
+    public static IBCFakePlayer fakePlayerProvider;
 
     public static final Set<Block> softBlocks = Sets.newHashSet();
     public static final HashMap<String, IWorldProperty> worldProperties = Maps.newHashMap();

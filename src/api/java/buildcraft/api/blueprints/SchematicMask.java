@@ -11,9 +11,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+
 import buildcraft.api.core.BuildCraftAPI;
 
 public class SchematicMask extends SchematicBlockBase {
@@ -36,7 +37,7 @@ public class SchematicMask extends SchematicBlockBase {
                 return;
             } else {
                 ItemStack stack = stacks.get(0);
-                EntityPlayer player = BuildCraftAPI.proxy.getBuildCraftPlayer((WorldServer) context.world()).get();
+                EntityPlayer player = BuildCraftAPI.fakePlayerProvider.getBuildCraftPlayer((WorldServer) context.world()).get();
 
                 // force the block to be air block, in case it's just a soft
                 // block which replacement is not straightforward

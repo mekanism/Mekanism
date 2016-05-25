@@ -2,14 +2,15 @@ package buildcraft.api.transport.pipe_bc8;
 
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import buildcraft.api.transport.ICustomPipeConnection;
 
-import com.google.common.collect.Maps;
+import buildcraft.api.transport.ICustomPipeConnection;
 
 /** Use this class to register blocks with custom block sizes so that pipes can connect to them properly. Note that you
  * do not need to register a custom pipe connection if your block implements ICustomPipeConnection. The registered

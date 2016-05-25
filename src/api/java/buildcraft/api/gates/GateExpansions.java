@@ -4,15 +4,11 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.gates;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import net.minecraft.item.ItemStack;
+import java.util.*;
 
 import com.google.common.collect.HashBiMap;
+
+import net.minecraft.item.ItemStack;
 
 public final class GateExpansions {
     private static final Map<String, IGateExpansion> expansions = new HashMap<String, IGateExpansion>();
