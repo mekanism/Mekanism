@@ -20,6 +20,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -45,7 +46,7 @@ public class RenderTickHandler
 	
 				FontRenderer font = mc.fontRendererObj;
 	
-				MovingObjectPosition pos = player.rayTrace(40.0D, 1.0F);
+				RayTraceResult pos = player.rayTrace(40.0D, 1.0F);
 	
 				if(pos != null)
 				{	

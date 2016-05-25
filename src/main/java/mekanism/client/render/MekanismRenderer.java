@@ -91,29 +91,29 @@ public class MekanismRenderer
 	{
 		for(EnumColor color : EnumColor.values())
 		{
-			colors[color.ordinal()] = event.map.registerSprite(new ResourceLocation("mekanism:blocks/overlay/overlay_" + color.unlocalizedName));
+			colors[color.ordinal()] = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/overlay/overlay_" + color.unlocalizedName));
 		}
 
 		for(TransmissionType type : TransmissionType.values())
 		{
-			overlays.put(type, event.map.registerSprite(new ResourceLocation("mekanism:blocks/overlay/" + type.getTransmission() + "Overlay")));
+			overlays.put(type, event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/overlay/" + type.getTransmission() + "Overlay")));
 		}
 
-		energyIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidEnergy"));
-		heatIcon = event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeat"));
+		energyIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidEnergy"));
+		heatIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeat"));
 		
-		event.map.registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
+		event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
 		
-		TransmitterModel.registerIcons(event.map);
+		TransmitterModel.registerIcons(event.getMap());
 
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
-			gas.registerIcon(event.map);
+			gas.registerIcon(event.getMap());
 		}
 
 		for(InfuseType type : InfuseRegistry.getInfuseMap().values())
 		{
-			type.setIcon(event.map.registerSprite(type.iconResource));
+			type.setIcon(event.getMap().registerSprite(type.iconResource));
 		}
 
 		RenderDynamicTank.resetDisplayInts();
@@ -124,14 +124,14 @@ public class MekanismRenderer
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Post event)
 	{
-		initFluidTextures(event.map);
+		initFluidTextures(event.getMap());
 		
-		RenderLogisticalTransporter.onStitch(event.map);
+		RenderLogisticalTransporter.onStitch(event.getMap());
 		RenderMechanicalPipe.onStitch();
 		
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
-			gas.updateIcon(event.map);
+			gas.updateIcon(event.getMap());
 		}
 	}
 	

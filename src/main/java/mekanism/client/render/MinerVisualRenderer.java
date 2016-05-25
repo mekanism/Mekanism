@@ -61,7 +61,7 @@ public final class MinerVisualRenderer
 				{
 					if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
 					{
-						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.getDimensionId())));
+						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.getDimension())));
 					}
 				}
 			}
@@ -82,7 +82,7 @@ public final class MinerVisualRenderer
 		Model3D toReturn = new Model3D();
 		
 		toReturn.setBlockBounds(rel.xCoord + 0.4, rel.yCoord + 0.4, rel.zCoord + 0.4, rel.xCoord + 0.6, rel.yCoord + 0.6, rel.zCoord + 0.6);
-		toReturn.baseBlock = Blocks.water;
+		toReturn.baseBlock = Blocks.WATER;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
 		
 		return toReturn;

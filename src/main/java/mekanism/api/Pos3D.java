@@ -7,6 +7,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 /**
@@ -14,14 +16,14 @@ import net.minecraft.util.math.Vec3i;
  * @author aidancbrady
  *
  */
-public class Pos3D extends Vec3
+public class Pos3D extends Vec3d
 {
 	public Pos3D()
 	{
 		this(0, 0, 0);
 	}
 
-	public Pos3D(Vec3 vec)
+	public Pos3D(Vec3d vec)
 	{
 		super(vec.xCoord, vec.yCoord, vec.zCoord);
 	}
@@ -36,7 +38,7 @@ public class Pos3D extends Vec3
 		super(vec);
 	}
 
-	public Pos3D(MovingObjectPosition mop)
+	public Pos3D(RayTraceResult mop)
 	{
 		this(mop.getBlockPos());
 	}
@@ -93,7 +95,7 @@ public class Pos3D extends Vec3
 	 * @param vec - Vec3 to subtract
 	 * @return difference of the two Pos3Ds
 	 */
-	public Pos3D diff(Vec3 vec)
+	public Pos3D diff(Vec3d vec)
 	{
 		return new Pos3D(xCoord-vec.xCoord, yCoord-vec.yCoord, zCoord-vec.zCoord);
 	}
@@ -143,7 +145,7 @@ public class Pos3D extends Vec3
 	 * @param pos - Pos3D value to translate by
 	 * @return translated Pos3D
 	 */
-	public Pos3D translate(Vec3 pos)
+	public Pos3D translate(Vec3d pos)
 	{
 		return translate(pos.xCoord, pos.yCoord, pos.zCoord);
 	}
@@ -174,7 +176,7 @@ public class Pos3D extends Vec3
 	 * @param pos - the Pos3D to find the distance to
 	 * @return the distance between this and the defined Pos3D
 	 */
-	public double distance(Vec3 pos)
+	public double distance(Vec3d pos)
 	{
 		double subX = xCoord - pos.xCoord;
 		double subY = yCoord - pos.yCoord;
@@ -241,7 +243,7 @@ public class Pos3D extends Vec3
         return new Pos3D(xPos, yPos, zPos);
     }
 	
-	public Pos3D multiply(Vec3 pos)
+	public Pos3D multiply(Vec3d pos)
 	{
 		return scale(pos.xCoord, pos.yCoord, pos.zCoord);
 	}
@@ -382,10 +384,10 @@ public class Pos3D extends Vec3
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof Vec3 &&
-				((Vec3)obj).xCoord == xCoord &&
-				((Vec3)obj).xCoord == yCoord &&
-				((Vec3)obj).xCoord == zCoord;
+		return obj instanceof Vec3d &&
+				((Vec3d)obj).xCoord == xCoord &&
+				((Vec3d)obj).xCoord == yCoord &&
+				((Vec3d)obj).xCoord == zCoord;
 	}
 
 	@Override
