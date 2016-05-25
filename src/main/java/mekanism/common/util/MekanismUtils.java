@@ -77,6 +77,9 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -128,28 +131,28 @@ public final class MekanismUtils
 
 					if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list.isEmpty())
 					{
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
+						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
+						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
 
 						if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
 						{
-							entityplayer.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
+							entityplayer.addChatMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
 						}
 
 						for(IModule module : list)
 						{
-							entityplayer.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion()));
+							entityplayer.addChatMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion()));
 						}
 
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
+						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
+						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
+						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 						return true;
 					}
 					else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
 					{
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
+						entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
 						return true;
 					}
 				}
@@ -721,14 +724,13 @@ public final class MekanismUtils
 			if(sideCoord.exists(world) && sideCoord.offset(side).exists(world))
 			{
 				IBlockState blockState = sideCoord.getBlockState(world);
-				Block block = blockState.getBlock();
-				boolean weakPower = block.shouldCheckWeakPower(world, coord.getPos(), side);
+				boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, coord.getPos(), side);
 				
 				if(weakPower && isDirectlyGettingPowered(world, sideCoord))
 				{
 					return true;
 				}
-				else if(!weakPower && block.getWeakPower(world, sideCoord.getPos(), blockState, side) > 0)
+				else if(!weakPower && blockState.getWeakPower(world, sideCoord.getPos(), side) > 0)
 				{
 					return true;
 				}
@@ -778,7 +780,7 @@ public final class MekanismUtils
 				Block block1 = offset.getBlock(world);
 				block1.onNeighborChange(world, offset.getPos(), coord.getPos());
 				
-				if(block1.isNormalCube(world, offset.getPos()))
+				if(offset.getBlockState(world).isNormalCube())
 				{
 					offset = offset.offset(dir);
 					
@@ -884,7 +886,7 @@ public final class MekanismUtils
 			return null;
 		}
 
-		if((block == Blocks.water || block == Blocks.flowing_water) && state.getValue(BlockLiquid.LEVEL) == 0)
+		if((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && state.getValue(BlockLiquid.LEVEL) == 0)
 		{
 			if(!filter)
 			{
@@ -894,7 +896,7 @@ public final class MekanismUtils
 				return new FluidStack(FluidRegistry.getFluid("heavywater"), 10);
 			}
 		}
-		else if((block == Blocks.lava || block == Blocks.flowing_lava) && state.getValue(BlockLiquid.LEVEL) == 0)
+		else if((block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) && state.getValue(BlockLiquid.LEVEL) == 0)
 		{
 			return new FluidStack(FluidRegistry.LAVA, FluidContainerRegistry.BUCKET_VOLUME);
 		}
@@ -948,11 +950,11 @@ public final class MekanismUtils
 		}
 		else if(fluid == FluidRegistry.WATER)
 		{
-			return Blocks.flowing_water;
+			return Blocks.FLOWING_WATER;
 		}
 		else if(fluid == FluidRegistry.LAVA)
 		{
-			return Blocks.flowing_lava;
+			return Blocks.FLOWING_LAVA;
 		}
 		else {
 			return fluid.getBlock();
@@ -983,7 +985,7 @@ public final class MekanismUtils
 
 		player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
-		player.openContainer.onCraftGuiOpened(player);
+		player.openContainer.addListener(player);
 	}
 
 	/**
@@ -1091,9 +1093,9 @@ public final class MekanismUtils
 	{
 		double reach = Mekanism.proxy.getReach(player);
 
-		Vec3 headVec = getHeadVec(player);
-		Vec3 lookVec = player.getLook(1);
-		Vec3 endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
+		Vec3d headVec = getHeadVec(player);
+		Vec3d lookVec = player.getLook(1);
+		Vec3d endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
 
 		return world.rayTraceBlocks(headVec, endVec, true);
 	}
@@ -1103,7 +1105,7 @@ public final class MekanismUtils
 	 * @param player - player to check
 	 * @return head location
 	 */
-	private static Vec3 getHeadVec(EntityPlayer player)
+	private static Vec3d getHeadVec(EntityPlayer player)
 	{
 		double posX = player.posX;
 		double posY = player.posY;
@@ -1119,7 +1121,7 @@ public final class MekanismUtils
 			}
 		}
 
-		return new Vec3(posX, posY, posZ);
+		return new Vec3d(posX, posY, posZ);
 	}
 
 	/**
@@ -1420,7 +1422,7 @@ public final class MekanismUtils
 	 */
 	public static boolean isOp(EntityPlayerMP player)
 	{
-		return general.opsBypassRestrictions && player.mcServer.getConfigurationManager().canSendCommands(player.getGameProfile());
+		return general.opsBypassRestrictions && player.mcServer.getPlayerList().canSendCommands(player.getGameProfile());
 	}
 	
 	/**

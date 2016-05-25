@@ -271,7 +271,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		if(!temperatureSet)
 		{
-			biomeTemp = worldObj.getBiomeGenForCoordsBody(getPos()).getFloatTemperature(getPos());
+			biomeTemp = worldObj.getBiomeForCoordsBody(getPos()).getFloatTemperature(getPos());
 			temperatureSet = true;
 		}
 		
@@ -625,7 +625,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		if(inputTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(inputTank.getFluid().getFluid().getName());
+			data.add(FluidRegistry.getFluidName(inputTank.getFluid()));
 			data.add(inputTank.getFluid().amount);
 		}
 		else {
@@ -635,7 +635,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		if(outputTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(outputTank.getFluid().getFluid().getName());
+			data.add(FluidRegistry.getFluidName(outputTank.getFluid()));
 			data.add(outputTank.getFluid().amount);
 		}
 		else {

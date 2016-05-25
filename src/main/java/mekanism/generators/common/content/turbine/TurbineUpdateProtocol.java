@@ -152,7 +152,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					}
 					
 					turbineHeight++;
-					turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().provider.getDimensionId()));
+					turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().provider.getDimension()));
 				}
 				
 				//If any turbines were not processed, they're in the wrong place

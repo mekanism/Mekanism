@@ -2,6 +2,7 @@ package mekanism.client.sound;
 
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -17,7 +18,7 @@ public interface ISoundSource
 	public float getFrequency();
 
 	@SideOnly(Side.CLIENT)
-	public Vec3 getSoundPosition();
+	public Vec3d getSoundPosition();
 
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRepeat();

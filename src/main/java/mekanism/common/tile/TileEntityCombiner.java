@@ -30,7 +30,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<Combin
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
-		if(itemstack.getItem() instanceof ItemBlock && Block.getBlockFromItem(itemstack.getItem()) == Blocks.cobblestone)
+		if(itemstack.getItem() instanceof ItemBlock && Block.getBlockFromItem(itemstack.getItem()) == Blocks.COBBLESTONE)
 		{
 			return new GasStack(GasRegistry.getGas("liquidStone"), 200);
 		}

@@ -456,7 +456,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(fluidTank.getFluid().getFluid().getName());
+			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
 			data.add(fluidTank.getFluidAmount());
 		}
 		else {

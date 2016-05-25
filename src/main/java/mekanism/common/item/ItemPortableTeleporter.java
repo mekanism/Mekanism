@@ -15,6 +15,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
@@ -52,7 +53,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			if(getOwner(itemstack) == null)
 			{
 				setOwner(itemstack, entityplayer.getName());
-				entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
+				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
 			}
 			else {
 				if(SecurityUtils.canAccess(entityplayer, itemstack))
@@ -77,9 +78,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 
 		int neededEnergy = 1000;
 
-		if(entity.worldObj.provider.getDimensionId() != coords.dimensionId)
+		if(entity.worldObj.provider.getDimension() != coords.dimensionId)
 		{
-			neededEnergy+=10000;
+			neededEnergy += 10000;
 		}
 
 		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);

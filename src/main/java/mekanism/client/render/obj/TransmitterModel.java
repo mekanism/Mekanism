@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
@@ -56,7 +57,7 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 	public IBakedModel handlePartState(IBlockState state)
 	{
 		IExtendedBlockState extended = (IExtendedBlockState)state;
-		EnumWorldBlockLayer layer = MinecraftForgeClient.getRenderLayer();
+		BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 		ColorProperty colorProp = extended.getValue(ColorProperty.INSTANCE);
 		int color = -1;
 		
@@ -67,7 +68,7 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 		
 		OBJState obj = extended.getValue(OBJProperty.instance);
 		
-		if(layer != EnumWorldBlockLayer.TRANSLUCENT)
+		if(layer != BlockRenderLayer.TRANSLUCENT)
 		{
 			color = -1;
 		}
@@ -115,7 +116,7 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 		{
 			ColorProperty prop = ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE);
 			
-			if(MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT && prop != null && prop.color != null)
+			if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT && prop != null && prop.color != null)
 			{
 				return new float[] {prop.color.getColor(0), prop.color.getColor(1), prop.color.getColor(2), 1};
 			}
@@ -134,7 +135,7 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 			ConnectionProperty connection = ((IExtendedBlockState)tempState).getValue(ConnectionProperty.INSTANCE);
 			boolean sideIconOverride = getIconStatus(side, connection) > 0;
 			
-			if(MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT)
+			if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT)
 			{
 				if(prop != null && prop.color != null)
 				{

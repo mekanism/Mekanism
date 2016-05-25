@@ -13,14 +13,14 @@ import net.minecraft.world.World;
 
 public final class MinerUtils
 {
-	public static List<Block> specialSilkIDs = ListUtils.asList(Blocks.ice);
+	public static List<Block> specialSilkIDs = ListUtils.asList(Blocks.ICE);
 
 	public static List<ItemStack> getDrops(World world, Coord4D obj, boolean silk)
 	{
 		IBlockState state = obj.getBlockState(world);
 		Block block = state.getBlock();
 
-		if(block == null || block.isAir(world, obj.getPos()))
+		if(block == null || block.isAir(state, world, obj.getPos()))
 		{
 			return new ArrayList<ItemStack>();
 		}

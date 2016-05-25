@@ -203,10 +203,10 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	
 	public static enum ReactorLogic
 	{
-		DISABLED("disabled", new ItemStack(Items.gunpowder)),
-		READY("ready", new ItemStack(Items.redstone)),
-		CAPACITY("capacity", new ItemStack(Items.redstone)),
-		DEPLETED("depleted", new ItemStack(Items.redstone));
+		DISABLED("disabled", new ItemStack(Items.GUNPOWDER)),
+		READY("ready", new ItemStack(Items.REDSTONE)),
+		CAPACITY("capacity", new ItemStack(Items.REDSTONE)),
+		DEPLETED("depleted", new ItemStack(Items.REDSTONE));
 		
 		private String name;
 		private ItemStack renderStack;

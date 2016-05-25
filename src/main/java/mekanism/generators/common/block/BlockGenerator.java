@@ -36,6 +36,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -50,6 +51,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -122,7 +124,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
     @Override
     public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
 	{
-        if(stateIn.getBlock() == null || stateIn.getBlock().getMaterial() == Material.air) 
+        if(stateIn.getBlock() == null || stateIn.getMaterial() == Material.AIR) 
         {
             return stateIn;
         }
@@ -134,7 +136,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
     }
 	
 	@Override
-	public BlockState createBlockState()
+	public BlockStateContainer createBlockState()
 	{
 		return new BlockStateGenerator(this, getTypeProperty());
 	}

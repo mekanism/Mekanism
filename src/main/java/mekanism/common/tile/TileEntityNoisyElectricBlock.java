@@ -10,6 +10,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.SoundWrapper;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -81,9 +82,9 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Vec3 getSoundPosition()
+	public Vec3d getSoundPosition()
 	{
-		return new Vec3(getPos()).addVector(0.5, 0.5, 0.5);
+		return new Vec3d(getPos()).addVector(0.5, 0.5, 0.5);
 	}
 
 	@Override

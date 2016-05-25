@@ -16,11 +16,12 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor, ISecurityTile
@@ -74,7 +75,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 				if(hitCoord != null)
 				{
-					Block blockHit = hitCoord.getBlock(worldObj);
+					IBlockState blockHit = hitCoord.getBlockState(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
@@ -113,7 +114,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 				if(hitCoord != null)
 				{
-					Block blockHit = hitCoord.getBlock(worldObj);
+					IBlockState blockHit = hitCoord.getBlockState(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))

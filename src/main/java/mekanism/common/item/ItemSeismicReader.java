@@ -7,6 +7,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class ItemSeismicReader extends ItemEnergized
@@ -33,7 +34,7 @@ public class ItemSeismicReader extends ItemEnergized
 		{
 			if(!world.isRemote)
 			{
-				entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.needsEnergy")));
+				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.needsEnergy")));
 			}
 			
 			return itemstack;
@@ -42,7 +43,7 @@ public class ItemSeismicReader extends ItemEnergized
 		{
 			if(!world.isRemote)
 			{
-				entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.noVibrations")));
+				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.noVibrations")));
 			}
 			
 			return itemstack;

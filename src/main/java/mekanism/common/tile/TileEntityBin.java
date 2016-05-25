@@ -29,6 +29,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
@@ -450,9 +452,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public IChatComponent getDisplayName()
+	public ITextComponent getDisplayName()
 	{
-		return new ChatComponentText(getName());
+		return new TextComponentString(getName());
 	}
 
 	@Override

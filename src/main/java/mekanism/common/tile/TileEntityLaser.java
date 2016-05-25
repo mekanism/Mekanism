@@ -16,7 +16,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -59,7 +59,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 
 				if(hitCoord != null)
 				{
-					Block blockHit = hitCoord.getBlock(worldObj);
+					IBlockState blockHit = hitCoord.getBlockState(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 
@@ -91,7 +91,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 
 				if(hitCoord != null)
 				{
-					Block blockHit = hitCoord.getBlock(worldObj);
+					IBlockState blockHit = hitCoord.getBlockState(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					

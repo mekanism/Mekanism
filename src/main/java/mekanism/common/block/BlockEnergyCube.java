@@ -21,6 +21,7 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,6 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -53,14 +55,14 @@ public class BlockEnergyCube extends BlockContainer
 {
 	public BlockEnergyCube()
 	{
-		super(Material.iron);
+		super(Material.IRON);
 		setHardness(2F);
 		setResistance(4F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	public BlockState createBlockState()
+	public BlockStateContainer createBlockState()
 	{
 		return new BlockStateEnergyCube(this);
 	}

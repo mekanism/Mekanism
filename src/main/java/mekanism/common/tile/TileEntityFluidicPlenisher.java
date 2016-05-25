@@ -33,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.Fluid;
@@ -266,7 +267,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().getFluid().getName());
+			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
@@ -490,7 +491,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		usedNodes.clear();
 		finishedCalc = false;
 		
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
+		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
 
 		return true;
 	}

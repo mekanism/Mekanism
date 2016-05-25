@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.biome.BiomeDesert;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -147,7 +148,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeGenForCoords(getPos()) instanceof BiomeGenDesert;
+		return worldObj.provider.getBiomeForCoords(getPos()) instanceof BiomeDesert;
 	}
 	
 	public SolarNeutronRecipe getRecipe()

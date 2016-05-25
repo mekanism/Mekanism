@@ -347,9 +347,9 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			GlStateManager.rotate(135, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate(-20, 0.0F, 0.0F, 1.0F);
 			
-			if(type == TransformType.FIRST_PERSON || type == TransformType.THIRD_PERSON)
+			if(type == TransformType.FIRST_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON)
 			{
-				if(type == TransformType.FIRST_PERSON)
+				if(type == TransformType.FIRST_PERSON_RIGHT_HAND)
 				{
 					GlStateManager.rotate(55, 0.0F, 1.0F, 0.0F);
 				}

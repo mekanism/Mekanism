@@ -100,7 +100,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -109,6 +109,8 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		nbtTags.setInteger("mainZ", mainPos.getZ());
 		nbtTags.setInteger("prevPower", prevPower);
 		nbtTags.setBoolean("receivedCoords", receivedCoords);
+		
+		return nbtTags;
 	}
 
 	@Override

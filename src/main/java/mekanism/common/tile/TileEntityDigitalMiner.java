@@ -266,7 +266,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 									toRemove.add(chunk);
 								}
 	
-								worldObj.playAuxSFXAtEntity(null, 2001, coord.getPos(), Block.getIdFromBlock(block) + (meta << 12));
+								worldObj.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
 	
 								missingStack = null;
 							}
@@ -1034,7 +1034,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public Coord4D getStartingCoord()
 	{
-		return new Coord4D(getPos().getX()-radius, minY, getPos().getZ()-radius, worldObj.provider.getDimensionId());
+		return new Coord4D(getPos().getX()-radius, minY, getPos().getZ()-radius, worldObj.provider.getDimension());
 	}
 
 	public Coord4D getCoordFromIndex(int index)
@@ -1046,7 +1046,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		int y = start.yCoord+(index/diameter/diameter);
 		int z = start.zCoord+(index/diameter)%diameter;
 
-		return new Coord4D(x, y, z, worldObj.provider.getDimensionId());
+		return new Coord4D(x, y, z, worldObj.provider.getDimension());
 	}
 
 	@Override

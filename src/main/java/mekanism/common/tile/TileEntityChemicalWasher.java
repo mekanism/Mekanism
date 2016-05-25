@@ -18,6 +18,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IRedstoneControl;
@@ -241,7 +242,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	
 			if(dataStream.readBoolean())
 			{
-				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
 			}
 			else {
 				fluidTank.setFluid(null);
@@ -284,7 +285,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(fluidTank.getFluid().getFluid().getID());
+			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
 			data.add(fluidTank.getFluidAmount());
 		}
 		else {

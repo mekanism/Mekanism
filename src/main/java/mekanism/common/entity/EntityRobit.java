@@ -35,13 +35,13 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.pathfinding.PathNavigateGround;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import cofh.api.energy.IEnergyContainerItem;
 
@@ -156,7 +156,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				return;
 			}
 
-			if(!(homeLocation.getTileEntity(MinecraftServer.getServer().worldServerForDimension(homeLocation.dimensionId)) instanceof TileEntityChargepad))
+			if(!(homeLocation.getTileEntity(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(homeLocation.dimensionId)) instanceof TileEntityChargepad))
 			{
 				drop();
 				setDead();
@@ -195,7 +195,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_TE));
 				}
-				else if(inventory[27].getItem() == Items.redstone && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
+				else if(inventory[27].getItem() == Items.REDSTONE && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
 					setEnergy(getEnergy() + general.ENERGY_PER_REDSTONE);
 					inventory[27].stackSize--;
@@ -304,7 +304,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		setFollowing(false);
 
-		if(worldObj.provider.getDimensionId() != homeLocation.dimensionId)
+		if(worldObj.provider.getDimension() != homeLocation.dimensionId)
 		{
 			travelToDimension(homeLocation.dimensionId);
 		}

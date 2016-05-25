@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import mekanism.api.gas.GasStack;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
 
 public final class LangUtils
@@ -37,6 +38,6 @@ public final class LangUtils
 	 */
 	public static String localize(String s)
 	{
-		return StatCollector.translateToLocal(s);
+		return I18n.translateToLocal(s);
 	}
 }

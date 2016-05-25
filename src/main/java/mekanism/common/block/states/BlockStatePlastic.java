@@ -2,6 +2,7 @@ package mekanism.common.block.states;
 
 import mekanism.common.block.BlockPlastic;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
@@ -9,7 +10,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockStatePlastic extends BlockState
+public class BlockStatePlastic extends BlockStateContainer
 {
 	public static PropertyEnum<EnumDyeColor> colorProperty = PropertyEnum.create("color", EnumDyeColor.class);
 

@@ -18,6 +18,7 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -29,6 +30,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import buildcraft.api.tools.IToolWrench;
@@ -37,7 +39,7 @@ public class BlockGasTank extends BlockContainer
 {
 	public BlockGasTank()
 	{
-		super(Material.iron);
+		super(Material.IRON);
 		setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 1.0F, 0.8F);
 		setHardness(3.5F);
 		setResistance(8F);
@@ -45,7 +47,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	protected BlockState createBlockState()
+	protected BlockStateContainer createBlockState()
 	{
 		return new BlockStateGasTank(this);
 	}

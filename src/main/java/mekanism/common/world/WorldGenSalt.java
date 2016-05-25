@@ -25,7 +25,7 @@ public class WorldGenSalt extends WorldGenerator
     @Override
     public boolean generate(World world, Random random, BlockPos pos)
     {
-        if(world.getBlockState(pos).getBlock().getMaterial() != Material.water)
+        if(world.getBlockState(pos).getMaterial() != Material.WATER)
         {
             return false;
         }
@@ -47,7 +47,7 @@ public class WorldGenSalt extends WorldGenerator
                             BlockPos newPos = new BlockPos(xPos, yPos, zPos);
                             Block block = world.getBlockState(newPos).getBlock();
 
-                            if(block == Blocks.dirt || block == Blocks.clay || block == MekanismBlocks.SaltBlock)
+                            if(block == Blocks.DIRT || block == Blocks.CLAY || block == MekanismBlocks.SaltBlock)
                             {
                                 world.setBlockState(newPos, blockGen.getDefaultState(), 2);
                             }

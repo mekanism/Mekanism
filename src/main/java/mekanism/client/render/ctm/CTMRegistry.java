@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.client.resources.model.ModelRotation;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelRotation;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -79,6 +79,6 @@ public class CTMRegistry
     	register(callbacks[0]);
     	register(callbacks[1]);
     	
-    	return new TextureCTM(EnumWorldBlockLayer.SOLID, callbacks);
+    	return new TextureCTM(BlockRenderLayer.SOLID, callbacks);
     }
 }

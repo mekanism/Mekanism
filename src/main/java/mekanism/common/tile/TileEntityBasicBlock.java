@@ -200,7 +200,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -211,6 +211,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		{
 			component.write(nbtTags);
 		}
+		
+		return nbtTags;
 	}
 	
 	@Override
@@ -285,7 +287,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Method(modid = "IC2")
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
-		return getBlockType().getPickBlock(null, worldObj, getPos(), entityPlayer);
+		return getBlockType().getPickBlock(worldObj.getBlockState(getPos()), null, worldObj, getPos(), entityPlayer);
 	}
 
 	public boolean isPowered()

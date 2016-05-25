@@ -279,7 +279,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							filter.itemType = stack.copy();
 							filter.itemType.stackSize = 1;
@@ -304,7 +304,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							toUse = stack.copy();
 							toUse.stackSize = 1;

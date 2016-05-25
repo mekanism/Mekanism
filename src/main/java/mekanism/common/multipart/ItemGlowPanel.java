@@ -2,27 +2,20 @@ package mekanism.common.multipart;
 
 import java.util.List;
 
-/*
-import codechicken.lib.vec.BlockCoord;
-import codechicken.lib.vec.Vector3;
-import codechicken.microblock.HollowMicroblock;
-import codechicken.multipart.JItemMultiPart;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TileMultipart;
-*/
 import mcmultipart.item.ItemMultiPart;
 import mcmultipart.multipart.IMultipart;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.util.LangUtils;
-//import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 public class ItemGlowPanel extends ItemMultiPart implements IMetaItem
@@ -35,7 +28,7 @@ public class ItemGlowPanel extends ItemMultiPart implements IMetaItem
 	}
 
 	@Override
-	public IMultipart createPart(World world, BlockPos pos, EnumFacing orientation, Vec3 vHit, ItemStack item, EntityPlayer player)
+	public IMultipart createPart(World world, BlockPos pos, EnumFacing orientation, Vec3d vHit, ItemStack item, EntityPlayer player)
 	{
 		EnumColor col = EnumColor.DYES[item.getItemDamage()];
 
@@ -67,7 +60,7 @@ public class ItemGlowPanel extends ItemMultiPart implements IMetaItem
 		EnumColor colour = EnumColor.DYES[stack.getItemDamage()];
 		String colourName;
 
-        if(StatCollector.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
+        if(I18n.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
         {
             return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
         }

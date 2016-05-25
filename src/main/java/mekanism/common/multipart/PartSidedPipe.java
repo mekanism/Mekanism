@@ -7,10 +7,13 @@ import java.util.Collections;
 import java.util.List;
 
 import mcmultipart.MCMultiPartMod;
+import mcmultipart.block.TileMultipartContainer;
 import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.INormallyOccludingPart;
 import mcmultipart.multipart.Multipart;
 import mcmultipart.raytrace.PartMOP;
 import mcmultipart.raytrace.RayTraceUtils;
+import mcmultipart.raytrace.RayTraceUtils.AdvancedRayTraceResultPart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -25,6 +28,7 @@ import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,11 +36,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -46,7 +53,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 //import net.minecraft.util.IIcon;
 
-public abstract class PartSidedPipe extends Multipart implements IOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
+public abstract class PartSidedPipe extends Multipart implements INormallyOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
 	public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
 	public static AxisAlignedBB[] largeSides = new AxisAlignedBB[7];
@@ -561,7 +568,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -571,6 +578,8 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 		{
 			nbtTags.setInteger("connection" + i, connectionTypes[i].ordinal());
 		}
+		
+		return nbtTags;
 	}
 
 	@Override
@@ -799,7 +808,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 					sendDesc = true;
 
 					onModeChange(EnumFacing.getFront(hitSide.ordinal()));
-					player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hitSide.ordinal()].toString()));
+					player.addChatMessage(new TextComponentString("Connection type changed to " + connectionTypes[hitSide.ordinal()].toString()));
 
 					return true;
 				}
@@ -814,9 +823,9 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 
 	private PartMOP reTrace(World world, BlockPos pos, EntityPlayer player) 
 	{
-		Vec3 start = RayTraceUtils.getStart(player);
-		Vec3 end = RayTraceUtils.getEnd(player);
-		RayTraceResultPart result = ((TileMultipart)world.getTileEntity(pos)).getPartContainer().collisionRayTrace(start, end);
+		Vec3d start = RayTraceUtils.getStart(player);
+		Vec3d end = RayTraceUtils.getEnd(player);
+		AdvancedRayTraceResultPart result = ((TileMultipartContainer)world.getTileEntity(pos)).getPartContainer().collisionRayTrace(start, end);
 		
 		return result == null ? null : result.hit;
 	}
@@ -863,7 +872,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 			refreshConnections();
 			notifyTileChange();
 
-			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
+			player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
 		}
 		
 		return true;
@@ -876,7 +885,7 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	}
 
 	@Override
-	public BlockState createBlockState()
+	public BlockStateContainer createBlockState()
 	{
 		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.instance, ColorProperty.INSTANCE, ConnectionProperty.INSTANCE});
 	}
@@ -902,9 +911,9 @@ public abstract class PartSidedPipe extends Multipart implements IOccludingPart,
 	}
 
 	@Override
-	public boolean canRenderInLayer(EnumWorldBlockLayer layer) 
+	public boolean canRenderInLayer(BlockRenderLayer layer) 
 	{
-		return layer == EnumWorldBlockLayer.CUTOUT || (transparencyRender() && layer == EnumWorldBlockLayer.TRANSLUCENT);
+		return layer == BlockRenderLayer.CUTOUT || (transparencyRender() && layer == BlockRenderLayer.TRANSLUCENT);
 	}
 
 	public void notifyTileChange()

@@ -39,7 +39,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		return block != Blocks.bedrock;
+		return block != Blocks.BEDROCK;
 	}
 
 	@Override
@@ -226,11 +226,11 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			}
 
 			Block block1 = world.getBlockState(pos).getBlock();
-			boolean air = block1.isAir(world, pos.up());
+			boolean air = block1.isAir(world.getBlockState(pos.up()), world, pos.up());
 
-			if(side != EnumFacing.DOWN && air && (block1 == Blocks.grass || block1 == Blocks.dirt))
+			if(side != EnumFacing.DOWN && air && (block1 == Blocks.GRASS || block1 == Blocks.DIRT))
 			{
-				Block farm = Blocks.farmland;
+				Block farm = Blocks.FARMLAND;
 				world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, farm.stepSound.getStepSound(), (farm.stepSound.getVolume() + 1.0F) / 2.0F, farm.stepSound.getFrequency() * 0.8F);
 
 				if(world.isRemote)

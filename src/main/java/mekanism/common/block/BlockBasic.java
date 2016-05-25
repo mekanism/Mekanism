@@ -40,6 +40,7 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -51,9 +52,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
@@ -103,7 +107,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	
 	public BlockBasic()
 	{
-		super(Material.iron);
+		super(Material.IRON);
 		setHardness(5F);
 		setResistance(20F);
 		setCreativeTab(Mekanism.tabMekanism);
@@ -125,7 +129,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	public abstract BasicBlock getBasicBlock();
 
 	@Override
-	public BlockState createBlockState()
+	public BlockStateContainer createBlockState()
 	{
 		return new BlockStateBasic(this, getTypeProperty());
 	}
@@ -200,7 +204,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
     @Override
     public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
 	{
-        if(stateIn.getBlock() == null || stateIn.getBlock().getMaterial() == Material.air) 
+        if(stateIn.getBlock() == null || stateIn.getMaterial() == Material.AIR) 
         {
             return stateIn;
         }
@@ -561,9 +565,9 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public EnumWorldBlockLayer getBlockLayer()
+	public BlockRenderLayer getBlockLayer()
 	{
-		return EnumWorldBlockLayer.CUTOUT;
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -688,28 +692,27 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	}
 
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 	
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 
 	@Override
-	public int getRenderType()
+	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
-		return 3;
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, BlockPos pos)
+	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
-		IBlockState state = world.getBlockState(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
 
 		if(tileEntity instanceof IActiveState)

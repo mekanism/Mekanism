@@ -4,6 +4,7 @@ import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
@@ -50,9 +51,9 @@ public class ContainerRobitSmelting extends Container
 	}
 
 	@Override
-	public void onCraftGuiOpened(ICrafting icrafting)
+	public void addListener(IContainerListener icrafting)
 	{
-		super.onCraftGuiOpened(icrafting);
+		super.addListener(icrafting);
 		icrafting.sendProgressBarUpdate(this, 0, robit.furnaceCookTime);
 		icrafting.sendProgressBarUpdate(this, 1, robit.furnaceBurnTime);
 		icrafting.sendProgressBarUpdate(this, 2, robit.currentItemBurnTime);
@@ -63,9 +64,9 @@ public class ContainerRobitSmelting extends Container
 	{
 		super.detectAndSendChanges();
 
-		for(int i = 0; i < crafters.size(); ++i)
+		for(int i = 0; i < listeners.size(); ++i)
 		{
-			ICrafting icrafting = (ICrafting)crafters.get(i);
+			IContainerListener icrafting = (IContainerListener)listeners.get(i);
 
 			if(lastCookTime != robit.furnaceCookTime)
 			{

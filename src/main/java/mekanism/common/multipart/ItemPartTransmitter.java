@@ -22,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 /*
 import codechicken.lib.vec.BlockCoord;
@@ -42,7 +43,7 @@ public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 	}
 
 	@Override
-	public IMultipart createPart(World world, BlockPos pos, EnumFacing dir, Vec3 hit, ItemStack stack, EntityPlayer player)
+	public IMultipart createPart(World world, BlockPos pos, EnumFacing dir, Vec3d hit, ItemStack stack, EntityPlayer player)
 	{
 		TransmitterType type = TransmitterType.values()[stack.getItemDamage()];
 

@@ -25,10 +25,12 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -395,13 +397,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		if(valve > 0)
 		{
-			data.add(valveFluid.getName());
+			data.add(FluidRegistry.getFluidName(valveFluid));
 		}
 		
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().getFluid().getName());
+			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
@@ -449,7 +451,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		if(!worldObj.isRemote)
 		{
 			setActive(!getActive());
-			worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "random.click", 0.3F, 1);
+			worldObj.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
 		}
 		
 		return true;

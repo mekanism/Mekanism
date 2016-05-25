@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class ItemDictionary extends ItemMekanism
@@ -39,15 +40,15 @@ public class ItemDictionary extends ItemMekanism
 
 					if(!names.isEmpty())
 					{
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
+						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
 
 						for(String name : names)
 						{
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_GREEN + " - " + name));
+							player.addChatMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
 						}
 					}
 					else {
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
+						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
 					}
 				}
 

@@ -19,11 +19,12 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -86,7 +87,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
 				if(hitCoord != null)
 				{
-					Block blockHit = hitCoord.getBlock(worldObj);
+					IBlockState blockHit = hitCoord.getBlockState(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 
@@ -138,7 +139,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
 				if(hitCoord != null)
 				{
-					Block blockHit = hitCoord.getBlock(worldObj);
+					IBlockState blockHit = hitCoord.getBlockState(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					

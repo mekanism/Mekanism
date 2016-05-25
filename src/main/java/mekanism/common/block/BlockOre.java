@@ -7,6 +7,7 @@ import mekanism.common.block.states.BlockStateOre;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -26,14 +27,14 @@ public class BlockOre extends Block
 {
 	public BlockOre()
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		setHardness(3F);
 		setResistance(5F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	protected BlockState createBlockState()
+	protected BlockStateContainer createBlockState()
 	{
 		return new BlockStateOre(this);
 	}
@@ -41,7 +42,7 @@ public class BlockOre extends Block
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
+		return getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
 	}
 
 	@Override

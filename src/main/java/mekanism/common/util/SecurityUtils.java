@@ -13,6 +13,7 @@ import mekanism.common.security.SecurityFrequency;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.relauncher.Side;
 
 public final class SecurityUtils 
@@ -110,7 +111,7 @@ public final class SecurityUtils
 	
 	public static void displayNoAccess(EntityPlayer player)
 	{
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
+		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
 	}
 	
 	public static SecurityMode getSecurity(ISecurityTile security, Side side)

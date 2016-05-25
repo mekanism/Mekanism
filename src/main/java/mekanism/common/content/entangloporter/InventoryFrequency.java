@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -106,7 +107,7 @@ public class InventoryFrequency extends Frequency
 		if(storedFluid.getFluid() != null)
 		{
 			data.add(true);
-			data.add(storedFluid.getFluid().getFluid().getName());
+			data.add(FluidRegistry.getFluidName(storedFluid.getFluid()));
 			data.add(storedFluid.getFluidAmount());
 		}
 		else {
@@ -138,7 +139,7 @@ public class InventoryFrequency extends Frequency
 		
 		if(dataStream.readBoolean())
 		{
-			storedFluid.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			storedFluid.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
 		}
 		else {
 			storedFluid.setFluid(null);

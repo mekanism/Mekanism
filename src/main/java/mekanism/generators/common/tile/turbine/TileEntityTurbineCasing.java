@@ -180,7 +180,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			if(structure.fluidStored != null)
 			{
 				data.add(1);
-				data.add(structure.fluidStored.getFluid().getName());
+				data.add(FluidRegistry.getFluidName(structure.fluidStored));
 				data.add(structure.fluidStored.amount);
 			}
 			else {

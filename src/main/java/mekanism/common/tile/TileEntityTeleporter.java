@@ -32,8 +32,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketEntityEffect;
+import net.minecraft.network.play.server.SPacketRespawn;
+import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -50,7 +54,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile
 {
-	private MinecraftServer server = MinecraftServer.getServer();
+	private MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 	public AxisAlignedBB teleportBounds = null;
 
@@ -388,7 +392,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
 
-				worldObj.playSoundAtEntity(entity, "mob.endermen.portal", 1.0F, 1.0F);
+				worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
 			}
 		}
 	}
@@ -401,8 +405,8 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			WorldServer oldWorld = player.mcServer.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
 			WorldServer newWorld = player.mcServer.worldServerForDimension(player.dimension);
-			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
-			oldWorld.removePlayerEntityDangerously(player);
+			player.connection.sendPacket(new SPacketRespawn(player.dimension, player.worldObj.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+			oldWorld.removeEntityDangerously(player);
 			player.isDead = false;
 
 			if(player.isEntityAlive())
@@ -413,23 +417,23 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 				player.setWorld(newWorld);
 			}
 
-			player.mcServer.getConfigurationManager().preparePlayer(player, oldWorld);
-			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
-			player.theItemInWorldManager.setWorld(newWorld);
-			player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
-			player.mcServer.getConfigurationManager().syncPlayerInventory(player);
+			player.mcServer.getPlayerList().preparePlayer(player, oldWorld);
+			player.connection.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.interactionManager.setWorld(newWorld);
+			player.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
+			player.mcServer.getPlayerList().syncPlayerInventory(player);
 
 			for(PotionEffect potioneffect : player.getActivePotionEffects())
 			{
-				player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potioneffect));
+				player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
 			}
 
-			player.playerNetServerHandler.sendPacket(new S1FPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel)); // Force XP sync
+			player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel)); // Force XP sync
 
 			FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, id, coord.dimensionId);
 		}
 		else {
-			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.connection.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 		}
 	}
 
@@ -437,7 +441,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
 
-		if(entity.worldObj.provider.getDimensionId() != coord.dimensionId)
+		if(entity.worldObj.provider.getDimension() != coord.dimensionId)
 		{
 			entity.worldObj.removeEntity(entity);
 			entity.isDead = false;
@@ -499,7 +503,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
             }
         }
 
-        player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, player.posZ, yaw, player.rotationPitch);
+        player.connection.setPlayerLocation(player.posX, player.posY, player.posZ, yaw, player.rotationPitch);
     }
 
 	public List<Entity> getToTeleport()
@@ -522,7 +526,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		int energyCost = 1000;
 
-		if(entity.worldObj.provider.getDimensionId() != coords.dimensionId)
+		if(entity.worldObj.provider.getDimension() != coords.dimensionId)
 		{
 			energyCost+=10000;
 		}

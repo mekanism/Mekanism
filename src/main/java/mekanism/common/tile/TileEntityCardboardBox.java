@@ -20,7 +20,7 @@ public class TileEntityCardboardBox extends TileEntity
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -28,5 +28,7 @@ public class TileEntityCardboardBox extends TileEntity
 		{
 			nbtTags.setTag("storedData", storedData.write(new NBTTagCompound()));
 		}
+		
+		return nbtTags;
 	}
 }

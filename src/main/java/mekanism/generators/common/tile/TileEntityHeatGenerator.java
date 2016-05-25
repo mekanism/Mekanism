@@ -225,7 +225,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			}
 		}
 
-		if(worldObj.provider.getDimensionId() == -1)
+		if(worldObj.provider.getDimension() == -1)
 		{
 			netherBoost = generators.heatGenerationNether;
 		}
@@ -235,12 +235,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	
 	private boolean isLava(BlockPos pos)
 	{
-		return worldObj.getBlockState(pos).getBlock() == Blocks.lava;
+		return worldObj.getBlockState(pos).getBlock() == Blocks.LAVA;
 	}
 
 	public int getFuel(ItemStack itemstack)
 	{
-		if(itemstack.getItem() == Items.lava_bucket)
+		if(itemstack.getItem() == Items.LAVA_BUCKET)
 		{
 			return 1000;
 		}

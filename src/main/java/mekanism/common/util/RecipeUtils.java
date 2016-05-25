@@ -278,7 +278,7 @@ public class RecipeUtils
 		}
 		else if(nbtTags.hasKey("itemname"))
 		{
-			Object obj = Item.itemRegistry.getObject(new ResourceLocation(nbtTags.getString("itemname")));
+			Object obj = Item.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("itemname")));
 			
 			if(obj != null)
 			{
@@ -287,7 +287,7 @@ public class RecipeUtils
 		}
 		else if(nbtTags.hasKey("blockname"))
 		{
-			Object obj = Block.blockRegistry.getObject(new ResourceLocation(nbtTags.getString("blockname")));
+			Object obj = Block.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("blockname")));
 			
 			if(obj != null)
 			{

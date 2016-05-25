@@ -61,9 +61,9 @@ public class MekanismItems
 	public static final Item CompressedRedstone = new ItemMekanism().setUnlocalizedName("CompressedRedstone");
 	public static final Item CompressedDiamond = new ItemMekanism().setUnlocalizedName("CompressedDiamond");
 	public static final Item CompressedObsidian = new ItemMekanism().setUnlocalizedName("CompressedObsidian");
-	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
-	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("LithiumBucket");
-	public static final Item HeavyWaterBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("HeavyWaterBucket");
+	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.BUCKET).setUnlocalizedName("BrineBucket");
+	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.BUCKET).setUnlocalizedName("LithiumBucket");
+	public static final Item HeavyWaterBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.BUCKET).setUnlocalizedName("HeavyWaterBucket");
 	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED).setUnlocalizedName("SpeedUpgrade");
 	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY).setUnlocalizedName("EnergyUpgrade");
 	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER).setUnlocalizedName("FilterUpgrade");

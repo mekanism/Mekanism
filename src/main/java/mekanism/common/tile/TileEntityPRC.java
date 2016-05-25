@@ -14,6 +14,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
@@ -216,7 +217,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		if(inputFluidTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(inputFluidTank.getFluid().getFluid().getID());
+			data.add(FluidRegistry.getFluidName(inputFluidTank.getFluid()));
 			data.add(inputFluidTank.getFluidAmount());
 		}
 		else {
@@ -255,7 +256,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		{
 			if(dataStream.readBoolean())
 			{
-				inputFluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+				inputFluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
 			}
 			else {
 				inputFluidTank.setFluid(null);

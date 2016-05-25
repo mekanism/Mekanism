@@ -22,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -29,6 +30,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -44,7 +47,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 
 	public BlockReactor()
 	{
-		super(Material.iron);
+		super(Material.IRON);
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
@@ -103,7 +106,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
     @Override
     public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
 	{
-        if(stateIn.getBlock() == null || stateIn.getBlock().getMaterial() == Material.air) 
+        if(stateIn.getBlock() == null || stateIn.getMaterial() == Material.AIR) 
         {
             return stateIn;
         }
@@ -115,7 +118,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
     }
 	
 	@Override
-	public BlockState createBlockState()
+	public BlockStateContainer createBlockState()
 	{
 		return new BlockStateReactor(this, getTypeProperty());
 	}
@@ -230,25 +233,25 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 	
 	@Override
-	public EnumWorldBlockLayer getBlockLayer()
+	public BlockRenderLayer getBlockLayer()
 	{
-		return this == GeneratorsBlocks.Reactor ? EnumWorldBlockLayer.CUTOUT : EnumWorldBlockLayer.TRANSLUCENT;
+		return this == GeneratorsBlocks.Reactor ? BlockRenderLayer.CUTOUT : BlockRenderLayer.TRANSLUCENT;
 	}
 
 	@Override
-	public int getRenderType()
+	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
-		return 3;
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 	
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}

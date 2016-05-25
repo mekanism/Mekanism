@@ -20,6 +20,6 @@ public class CombinerRecipeWrapper extends AdvancedMachineRecipeWrapper
 	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
-		return ListUtils.asList(new ItemStack(Blocks.cobblestone));
+		return ListUtils.asList(new ItemStack(Blocks.COBBLESTONE));
 	}
 }

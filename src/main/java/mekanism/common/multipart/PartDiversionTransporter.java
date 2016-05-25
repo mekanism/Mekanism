@@ -15,6 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextComponentString;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
 {
@@ -47,11 +48,13 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setIntArray("modes", modes);
+		
+		return nbtTags;
 	}
 
 	@Override
@@ -124,7 +127,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		refreshConnections();
 		notifyPartUpdate();
 		notifyTileChange();
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
+		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
 		Coord4D coord = new Coord4D(getPos(), getWorld());
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<Object>())), new Range4D(coord));
 

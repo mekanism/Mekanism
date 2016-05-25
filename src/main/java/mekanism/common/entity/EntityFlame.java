@@ -23,6 +23,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -107,15 +110,15 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	
 	private void calculateVector()
 	{
-		Vec3 localVec = new Vec3(posX, posY, posZ);
-        Vec3 motionVec = new Vec3(posX + motionX*2, posY + motionY*2, posZ + motionZ*2);
+		Vec3d localVec = new Vec3d(posX, posY, posZ);
+        Vec3d motionVec = new Vec3d(posX + motionX*2, posY + motionY*2, posZ + motionZ*2);
         RayTraceResult mop = worldObj.rayTraceBlocks(localVec, motionVec, true, false, false);
-        localVec = new Vec3(posX, posY, posZ);
-        motionVec = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
+        localVec = new Vec3d(posX, posY, posZ);
+        motionVec = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
 
         if(mop != null)
         {
-            motionVec = new Vec3(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
+            motionVec = new Vec3d(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
         }
 
         Entity entity = null;
@@ -161,7 +164,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 
         if(mop != null)
         {
-            if(mop.typeOfHit == MovingObjectType.ENTITY && mop.entityHit != null && !mop.entityHit.isImmuneToFire())
+            if(mop.typeOfHit == Type.ENTITY && mop.entityHit != null && !mop.entityHit.isImmuneToFire())
             {
             	if(mop.entityHit instanceof EntityItem && mode != ItemFlamethrower.FlamethrowerMode.COMBAT)
             	{
@@ -177,7 +180,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
             		burn(mop.entityHit);
             	}
             }
-            else if(mop.typeOfHit == MovingObjectType.BLOCK)
+            else if(mop.typeOfHit == Type.BLOCK)
             {
                 IBlockState state = worldObj.getBlockState(mop.getBlockPos());
 				Block block = state.getBlock();
@@ -191,7 +194,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 	{
                 		if(mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !worldObj.isRemote)
                 		{
-                			worldObj.setBlockState(sideCoord.getPos(), Blocks.fire.getDefaultState());
+                			worldObj.setBlockState(sideCoord.getPos(), Blocks.FIRE.getDefaultState());
                 		}
                 	}
                 }
@@ -244,7 +247,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 				Block b = state.getBlock();
 				Block newBlock = Block.getBlockFromItem(result.getItem());
 
-				if(newBlock != null && newBlock != Blocks.air)
+				if(newBlock != null && newBlock != Blocks.AIR)
 				{
 					worldObj.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
 				}

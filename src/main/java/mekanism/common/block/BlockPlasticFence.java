@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
@@ -26,14 +27,14 @@ public class BlockPlasticFence extends BlockFence
 {
 	public BlockPlasticFence()
 	{
-		super(Material.clay);
+		super(Material.CLAY);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 	
 	@Override
-	protected BlockState createBlockState()
+	protected BlockStateContainer createBlockState()
 	{
-		return new BlockState(this, new IProperty[] {NORTH, EAST, WEST, SOUTH, colorProperty});
+		return new BlockStateContainer(this, new IProperty[] {NORTH, EAST, WEST, SOUTH, colorProperty});
 	}
 
 	@Override

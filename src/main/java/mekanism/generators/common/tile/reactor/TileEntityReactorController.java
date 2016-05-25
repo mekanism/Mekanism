@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -332,7 +333,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		if(box == null)
 		{
-			box = AxisAlignedBB.fromBounds(getPos().getX()-1, getPos().getY()-3, getPos().getZ()-1, getPos().getX()+2, getPos().getY(), getPos().getZ()+2);
+			box = new AxisAlignedBB(getPos().getX()-1, getPos().getY()-3, getPos().getZ()-1, getPos().getX()+2, getPos().getY(), getPos().getZ()+2);
 		}
 		
 		return box;
@@ -375,9 +376,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Vec3 getSoundPosition()
+	public Vec3d getSoundPosition()
 	{
-		return new Vec3(getPos()).addVector(0.5, 0.5, 0.5);
+		return new Vec3d(getPos()).addVector(0.5, 0.5, 0.5);
 	}
 
 	@Override

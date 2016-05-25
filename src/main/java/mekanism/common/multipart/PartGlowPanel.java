@@ -12,6 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.MekanismItems;
 import mekanism.common.block.states.BlockStateFacing;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -165,7 +166,7 @@ public class PartGlowPanel extends Multipart implements IOccludingPart
 	}
 
 	@Override
-	public BlockState createBlockState()
+	public BlockStateContainer createBlockState()
 	{
 		return new GlowPanelBlockState();
 	}

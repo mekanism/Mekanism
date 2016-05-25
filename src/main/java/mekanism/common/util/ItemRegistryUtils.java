@@ -37,7 +37,7 @@ public final class ItemRegistryUtils
 			populateMap();
 		}
 		
-		ResourceLocation itemResourceLocation = Item.itemRegistry.getNameForObject(stack.getItem());
+		ResourceLocation itemResourceLocation = Item.REGISTRY.getNameForObject(stack.getItem());
 		String modId = itemResourceLocation.getResourceDomain();
 		String lowercaseModId = modId.toLowerCase(Locale.ENGLISH);
 		String modName = modIDMap.get(lowercaseModId);

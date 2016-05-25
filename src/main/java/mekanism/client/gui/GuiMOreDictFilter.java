@@ -332,7 +332,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							toUse = stack.copy();
 							toUse.stackSize = 1;

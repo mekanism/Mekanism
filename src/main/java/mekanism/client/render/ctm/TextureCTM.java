@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 
 public class TextureCTM 
 {
-    protected EnumWorldBlockLayer layer;
+    protected BlockRenderLayer layer;
 
     public TextureSpriteCallback[] sprites;
     
-    public TextureCTM(EnumWorldBlockLayer layer, TextureSpriteCallback[] sprites) 
+    public TextureCTM(BlockRenderLayer layer, TextureSpriteCallback[] sprites) 
     {
         this.layer = layer;
         this.sprites = sprites;

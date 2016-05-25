@@ -228,7 +228,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			if(structure.waterStored != null)
 			{
 				data.add(1);
-				data.add(structure.waterStored.getFluid().getName());
+				data.add(FluidRegistry.getFluidName(structure.waterStored));
 				data.add(structure.waterStored.amount);
 			}
 			else {
@@ -238,7 +238,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			if(structure.steamStored != null)
 			{
 				data.add(1);
-				data.add(structure.steamStored.getFluid().getName());
+				data.add(FluidRegistry.getFluidName(structure.steamStored));
 				data.add(structure.steamStored.amount);
 			}
 			else {
