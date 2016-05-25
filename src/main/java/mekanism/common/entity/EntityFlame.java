@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -202,7 +203,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 if(fluid)
                 {
                 	spawnParticlesAt(new Pos3D(this));
-                	worldObj.playSoundAtEntity(this, "random.fizz", 1.0F, 1.0F);
+                	playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
                 }
             }
             
@@ -220,7 +221,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 			item.ticksExisted = 0;
 			
 			spawnParticlesAt(new Pos3D(item));
-		  	worldObj.playSoundAtEntity(item, "random.fizz", 1.0F, 1.0F);
+			playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
 			
 			return true;
 		}

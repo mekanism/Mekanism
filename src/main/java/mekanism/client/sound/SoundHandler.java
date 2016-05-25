@@ -11,7 +11,7 @@ import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -144,9 +144,9 @@ public class SoundHandler
 		return sound.isDonePlaying() && !getSoundMap().containsKey(sound);
 	}
 	
-	public static void playSound(String sound)
+	public static void playSound(SoundEvent sound)
 	{
-        playSound(PositionedSoundRecord.create(new ResourceLocation(sound), 1.0F));
+        playSound(PositionedSoundRecord.getMasterRecord(sound, 1.0F));
 	}
 
 	public static void playSound(ISound sound)

@@ -173,11 +173,13 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("isActive", isActive);
+		
+		return nbtTags;
 	}
 
 	@Override

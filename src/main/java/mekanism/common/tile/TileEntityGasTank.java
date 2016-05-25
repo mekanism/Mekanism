@@ -284,7 +284,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -292,6 +292,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 		nbtTags.setInteger("dumping", dumping.ordinal());
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		
+		return nbtTags;
 	}
 
 	@Override

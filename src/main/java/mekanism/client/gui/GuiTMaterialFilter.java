@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismSounds;
 import mekanism.common.content.transporter.TMaterialFilter;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
@@ -23,6 +24,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -232,7 +234,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
@@ -256,7 +258,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 					filter.materialItem = null;
 				}
 
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 		
@@ -267,7 +269,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
-			SoundHandler.playSound("mekanism:etc.Ding");
+			SoundHandler.playSound(MekanismSounds.DING);
 
 			if(button == 0)
 			{

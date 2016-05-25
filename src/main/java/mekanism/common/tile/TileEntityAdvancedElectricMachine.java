@@ -357,11 +357,13 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	/**

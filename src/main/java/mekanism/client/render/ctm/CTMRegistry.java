@@ -1,6 +1,5 @@
 package mekanism.client.render.ctm;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -42,9 +42,9 @@ public class CTMRegistry
     }
     
     @SubscribeEvent
-    public void onModelBake(ModelBakeEvent event) throws IOException 
+    public void onModelBake(ModelBakeEvent event) throws Exception 
     {
-        IModel model = event.getModelLoader().getModel(baseResource);
+        IModel model = ModelLoaderRegistry.getModel(baseResource);
         baseModel = model.bake(new TRSRTransformation(ModelRotation.X0_Y0), Attributes.DEFAULT_BAKED_FORMAT, r -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(r.toString()));
         
         for(Pair<String, String> pair : ctmTypes) 

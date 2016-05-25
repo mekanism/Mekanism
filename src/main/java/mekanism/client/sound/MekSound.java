@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 @SideOnly(Side.CLIENT)
-public class Sound implements ISound 
+public class MekSound implements ISound 
 {
 	protected AttenuationType attenuation;
 	
@@ -37,72 +37,72 @@ public class Sound implements ISound
 	
 	protected int repeatDelay;
 
-	public Sound(String sound) 
+	public MekSound(String sound) 
 	{
 		this(sound, 0);
 	}
 
-	public Sound(String sound, float volume) 
+	public MekSound(String sound, float volume) 
 	{
 		this(sound, volume, 0);
 	}
 
-	public Sound(String sound, float volume, float pitch)
+	public MekSound(String sound, float volume, float pitch)
 	{
 		this(sound, volume, pitch, false, 0);
 	}
 
-	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay) 
+	public MekSound(String sound, float volume, float pitch, boolean repeat, int repeatDelay) 
 	{
 		this(sound, volume, pitch, repeat, repeatDelay, 0, 0, 0, AttenuationType.NONE);
 	}
 
-	public Sound(String sound, float volume, float pitch, double x, double y, double z)
+	public MekSound(String sound, float volume, float pitch, double x, double y, double z)
 	{
 		this(sound, volume, pitch, false, 0, x, y, z);
 	}
 
-	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
+	public MekSound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
 	{
 		this(sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation) 
+	public MekSound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation) 
 	{
 		this(new ResourceLocation(sound), volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
 	}
 
-	public Sound(ResourceLocation sound)
+	public MekSound(ResourceLocation sound)
 	{
 		this(sound, 0);
 	}
 
-	public Sound(ResourceLocation sound, float volume)
+	public MekSound(ResourceLocation sound, float volume)
 	{
 		this(sound, volume, 0);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch) 
+	public MekSound(ResourceLocation sound, float volume, float pitch) 
 	{
 		this(sound, volume, pitch, false, 0);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay) 
+	public MekSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay) 
 	{
 		this(sound, volume, pitch, repeat, repeatDelay, 0, 0, 0, AttenuationType.NONE);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch, double x, double y, double z) 
+	public MekSound(ResourceLocation sound, float volume, float pitch, double x, double y, double z) 
 	{
 		this(sound, volume, pitch, false, 0, x, y, z);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
+	public MekSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
 	{
 		this(sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	public Sound(ResourceLocation resource, float v, float p, boolean rep, int delay, double xPos, double yPos, double zPos, AttenuationType att)
+	public MekSound(ResourceLocation resource, float v, float p, boolean rep, int delay, double xPos, double yPos, double zPos, AttenuationType att)
 	{
 		attenuation = att;
 		sound = resource;
@@ -115,7 +115,7 @@ public class Sound implements ISound
 		repeatDelay = delay;
 	}
 
-	public Sound(Sound other) 
+	public MekSound(MekSound other) 
 	{
 		attenuation = other.attenuation;
 		sound = other.sound;

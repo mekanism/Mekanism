@@ -359,7 +359,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -372,6 +372,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		{
 			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

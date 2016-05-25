@@ -151,7 +151,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag)
+	public NBTTagCompound writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT(tag);
 
@@ -176,6 +176,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		tag.setTag("tritiumTank", tritiumTank.write(new NBTTagCompound()));
 		tag.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
 		tag.setTag("steamTank", steamTank.writeToNBT(new NBTTagCompound()));
+		
+		return tag;
 	}
 
 	@Override

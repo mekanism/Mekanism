@@ -289,7 +289,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -301,6 +301,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		{
 			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
 		}
+		
+		return nbtTags;
 	}
 	
 	@Override

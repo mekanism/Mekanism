@@ -112,12 +112,14 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		
+		return nbtTags;
 	}
 	
 	@Override

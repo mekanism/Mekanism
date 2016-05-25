@@ -221,11 +221,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("mode", mode);
+		
+		return nbtTags;
 	}
 
 	@Override

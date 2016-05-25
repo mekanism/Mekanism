@@ -4,6 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.util.StackUtils;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismSounds;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
@@ -115,7 +116,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 					int newChan = wt.getChannel(toolStack) < 9 ? wt.getChannel(toolStack) + 1 : 1;
 					wt.setChannel(toolStack, newChan);
 					Mekanism.packetHandler.sendToServer(new WalkieTalkieStateMessage(newChan));
-					SoundHandler.playSound("mekanism:etc.Ding");
+					SoundHandler.playSound(MekanismSounds.DING);
 				}
 			}
             else if(player.isSneaking() && item instanceof ItemFlamethrower)
@@ -146,7 +147,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				}
 
 				Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.MODE, null, player.isSneaking()));
-				SoundHandler.playSound("mekanism:etc.Hydraulic");
+				SoundHandler.playSound(MekanismSounds.HYDRAULIC);
 			}
 			else if(chestItem instanceof ItemScubaTank)
 			{
@@ -154,7 +155,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 
 				scubaTank.toggleFlowing(chestStack);
 				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.MODE, null, false));
-				SoundHandler.playSound("mekanism:etc.Hydraulic");
+				SoundHandler.playSound(MekanismSounds.HYDRAULIC);
 			}
 		}
 	}

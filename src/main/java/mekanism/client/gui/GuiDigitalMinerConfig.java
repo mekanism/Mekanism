@@ -31,6 +31,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -244,7 +245,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 							data.add(getFilterIndex() + i);
 
 							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							
 							return;
 						}
@@ -260,7 +261,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 							data.add(getFilterIndex() + i);
 
 							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							
 							return;
 						}
@@ -272,22 +273,22 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 						if(filter instanceof MItemStackFilter)
 						{
-	                        SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof MOreDictFilter)
 						{
-	                        SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof MMaterialFilter)
 						{
-	                        SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof MModIDFilter)
 						{
-	                        SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 6, getFilterIndex()+i, 0));
 						}
 					}
@@ -296,25 +297,25 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
 			{
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setRadius();
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103)
 			{
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setMinY();
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128)
 			{
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setMaxY();
 			}
 
@@ -324,7 +325,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				data.add(10);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

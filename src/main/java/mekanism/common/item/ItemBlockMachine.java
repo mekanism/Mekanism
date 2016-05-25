@@ -48,6 +48,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -55,8 +56,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -155,7 +158,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			BaseTier tier = type == MachineType.BASIC_FACTORY ? BaseTier.BASIC : (type == MachineType.ADVANCED_FACTORY ? BaseTier.ADVANCED : BaseTier.ELITE);
 
-            if(StatCollector.canTranslate("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory"))
+            if(I18n.canTranslate("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory"))
             {
                 return LangUtils.localize("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory");
             }
@@ -442,7 +445,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             return false;
         }
         else {
-            Material material = world.getBlockState(pos).getBlock().getMaterial();
+            Material material = world.getBlockState(pos).getMaterial();
             boolean flag = !material.isSolid();
 
             if(!world.isAirBlock(pos) && !flag)
@@ -452,7 +455,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             else {
                 if(world.provider.doesWaterVaporize() && getFluidStack(itemstack).getFluid() == FluidRegistry.WATER)
                 {
-                    world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                    world.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
                     for(int l = 0; l < 8; l++)
                     {

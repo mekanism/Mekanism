@@ -188,10 +188,12 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("isActive", isActive);
+		
+		return nbtTags;
 	}
 }

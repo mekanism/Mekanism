@@ -149,7 +149,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 	
 			playerMP.openContainer = container;
 			playerMP.openContainer.windowId = window;
-			playerMP.openContainer.onCraftGuiOpened(playerMP);
+			playerMP.openContainer.addListener(playerMP);
 	
 			if(guiType == 0)
 			{

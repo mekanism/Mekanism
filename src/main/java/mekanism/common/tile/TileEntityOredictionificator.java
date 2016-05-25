@@ -182,7 +182,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -201,6 +201,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		{
 			nbtTags.setTag("filters", filterTags);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

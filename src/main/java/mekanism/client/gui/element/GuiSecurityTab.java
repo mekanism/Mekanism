@@ -17,6 +17,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -180,7 +181,7 @@ public class GuiSecurityTab extends GuiElement
 					SecurityMode current = getSecurity();
 					int ordinalToSet = current.ordinal() < (SecurityMode.values().length-1) ? current.ordinal()+1 : 0;
 	
-					SoundHandler.playSound("gui.button.press");
+					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
 					if(isItem)
 					{

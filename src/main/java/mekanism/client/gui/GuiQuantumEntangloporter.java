@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -209,7 +210,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			{
 				setFrequency(frequencyField.getText());
 				frequencyField.setText("");
-	            SoundHandler.playSound("gui.button.press");
+	            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

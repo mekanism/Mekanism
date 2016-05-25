@@ -4,9 +4,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import mekanism.common.entity.EntityRobit;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -33,8 +38,8 @@ public class RobitAIPickup extends EntityAIBase
 	/** The ticker for updates. */
 	private int ticker;
 
-	/** Whether or not this robit avoids water. */
-	private boolean avoidWater;
+	private float oldWaterCost;
+	
 	private EntityItem closest;
 
 	public RobitAIPickup(EntityRobit entityRobit, float speed)
@@ -95,22 +100,22 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.getDimensionId() == theRobit.worldObj.provider.getDimensionId();
+		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.getDimension() == theRobit.worldObj.provider.getDimension();
 	}
 
 	@Override
 	public void startExecuting()
 	{
 		ticker = 0;
-		avoidWater = theRobit.getNavigator().getAvoidsWater();
-		theRobit.getNavigator().setAvoidsWater(false);
+		oldWaterCost = theRobit.getPathPriority(PathNodeType.WATER);
+        theRobit.setPathPriority(PathNodeType.WATER, 0.0F);
 	}
 
 	@Override
 	public void resetTask()
 	{
 		thePathfinder.clearPathEntity();
-		theRobit.getNavigator().setAvoidsWater(avoidWater);
+        theRobit.setPathPriority(PathNodeType.WATER, oldWaterCost);
 	}
 
 	@Override
@@ -140,10 +145,13 @@ public class RobitAIPickup extends EntityAIBase
 						for(int i1 = 0; i1 <= 4; ++i1)
 						{
 							BlockPos pos = new BlockPos(x+l, y, z+i1);
-							if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && World.doesBlockHaveSolidTopSurface(theWorld, pos.down()) && !theWorld.getBlockState(pos).getBlock().isNormalCube() && !theWorld.getBlockState(pos.up()).getBlock().isNormalCube())
+							BlockPos under = new BlockPos(x + l, y - 1, z + i1);
+							
+							if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.getBlockState(under).isSideSolid(theWorld, under, EnumFacing.UP) && isEmptyBlock(pos) && isEmptyBlock(new BlockPos(x + l, y + 1, z + i1)))
 							{
 								theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
 								thePathfinder.clearPathEntity();
+								
 								return;
 							}
 						}
@@ -153,4 +161,12 @@ public class RobitAIPickup extends EntityAIBase
 			}
 		}
 	}
+	
+	private boolean isEmptyBlock(BlockPos pos)
+    {
+        IBlockState iblockstate = theWorld.getBlockState(pos);
+        Block block = iblockstate.getBlock();
+        
+        return block == Blocks.AIR ? true : !iblockstate.isFullCube();
+    }
 }

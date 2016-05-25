@@ -553,7 +553,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -561,6 +561,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setInteger("pulseOperations", pulseOperations);
+		
+		return nbtTags;
 	}
 	
 	@Override

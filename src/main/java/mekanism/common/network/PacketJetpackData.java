@@ -7,6 +7,7 @@ import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -31,12 +32,12 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
 			if(!player.worldObj.isRemote)
 			{
-				Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimensionId());
+				Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimension());
 			}
 		}
 		else if(message.packetType == JetpackPacket.MODE)
 		{
-			ItemStack stack = player.getEquipmentInSlot(3);
+			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
 			if(stack != null && stack.getItem() instanceof ItemJetpack)
 			{

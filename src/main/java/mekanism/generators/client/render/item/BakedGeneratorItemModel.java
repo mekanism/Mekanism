@@ -25,12 +25,12 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -190,11 +190,12 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
     {
     	prevTransform = cameraTransformType;
     	
-        if(cameraTransformType == TransformType.THIRD_PERSON_RIGHT_HAND) 
-        {
-            ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.DEFAULT_BLOCK_THIRD_PERSON_MATRIX);
-        }
-    	
-        return Pair.of(this, null);
+        return Pair.of(this, CTMModelFactory.transforms.get(cameraTransformType).getMatrix());
     }
+
+	@Override
+	public ItemOverrideList getOverrides() 
+	{
+		return ItemOverrideList.NONE;
+	}
 }

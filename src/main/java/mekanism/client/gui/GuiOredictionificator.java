@@ -28,6 +28,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -214,7 +215,7 @@ public class GuiOredictionificator extends GuiMekanism
 					{
 						OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex()+i);
 
-                        SoundHandler.playSound("gui.button.press");
+                        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
 					}
 				}

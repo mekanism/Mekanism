@@ -107,7 +107,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.water;
+		toReturn.baseBlock = Blocks.WATER;
 		MekanismRenderer.prepFlowing(toReturn, fluid);
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -144,7 +144,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.water;
+		toReturn.baseBlock = Blocks.WATER;
 		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];

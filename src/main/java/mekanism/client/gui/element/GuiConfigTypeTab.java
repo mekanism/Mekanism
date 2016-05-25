@@ -6,6 +6,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -114,7 +115,7 @@ public class GuiConfigTypeTab extends GuiElement
 			{
 				((GuiSideConfiguration)guiObj).currentType = transmission;
 				((GuiSideConfiguration)guiObj).updateTabs();
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

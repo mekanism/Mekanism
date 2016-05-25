@@ -81,7 +81,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 
 			for(Coord4D obj : entry.getValue().locations)
 			{
-				if(obj.dimensionId == world.provider.getDimensionId() && obj.exists(world))
+				if(obj.dimensionId == world.provider.getDimension() && obj.exists(world))
 				{
 					TileEntity tileEntity = obj.getTileEntity(world);
 

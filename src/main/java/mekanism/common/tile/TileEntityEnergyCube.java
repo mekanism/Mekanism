@@ -243,12 +243,14 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("tier", tier.ordinal());
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		
+		return nbtTags;
 	}
 
 	@Override

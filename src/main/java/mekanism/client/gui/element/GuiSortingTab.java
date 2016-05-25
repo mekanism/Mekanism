@@ -11,6 +11,7 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -79,7 +80,7 @@ public class GuiSortingTab extends GuiElement
 				ArrayList data = new ArrayList();
 				data.add(0);
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

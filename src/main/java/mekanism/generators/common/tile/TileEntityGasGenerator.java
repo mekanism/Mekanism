@@ -315,11 +315,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override

@@ -24,7 +24,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 	{
 		Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.facing);
 
-		if(obj.getBlockState(tileEntity.getWorld()).getBlock().isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite()))
+		if(obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite()))
 		{
 			return;
 		}

@@ -274,7 +274,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -286,6 +286,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		nbtTags.setDouble("lastFired", lastFired);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setBoolean("entityDetection", entityDetection);
+		
+		return nbtTags;
 	}
 
 	@Override

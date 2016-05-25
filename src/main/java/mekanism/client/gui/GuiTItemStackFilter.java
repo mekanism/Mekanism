@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismSounds;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
@@ -22,6 +23,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -301,7 +303,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
@@ -319,12 +321,12 @@ public class GuiTItemStackFilter extends GuiMekanism
 					filter.itemType = null;
 				}
 
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 
 			if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				filter.sizeMode = !filter.sizeMode;
 			}
 		}
@@ -336,7 +338,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
-			SoundHandler.playSound("mekanism:etc.Ding");
+			SoundHandler.playSound(MekanismSounds.DING);
 
 			if(button == 0)
 			{

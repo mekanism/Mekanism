@@ -260,7 +260,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -270,6 +270,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		
 		nbtTags.setTag("inputTank", inputTank.write(new NBTTagCompound()));
 		nbtTags.setTag("outputTank", outputTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override

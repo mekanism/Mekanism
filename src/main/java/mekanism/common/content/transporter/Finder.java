@@ -108,7 +108,7 @@ public abstract class Finder
 				return false;
 			}
 			
-			return Block.getBlockFromItem(stack.getItem()).getMaterial() == materialType;
+			return Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()).getMaterial() == materialType;
 		}
 	}
 	

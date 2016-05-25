@@ -4,6 +4,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartPressurizedTube;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
@@ -25,7 +26,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurized
 
 		push();
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+		VertexBuffer worldRenderer = tessellator.getBuffer();
 		GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 
 		for(EnumFacing side : EnumFacing.VALUES)
@@ -43,7 +44,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurized
 		pop();
 	}
 	
-	public void renderGasSide(WorldRenderer renderer, EnumFacing side, PartPressurizedTube tube)
+	public void renderGasSide(VertexBuffer renderer, EnumFacing side, PartPressurizedTube tube)
 	{
 		bindTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(renderer, tube.getTransmitter().getTransmitterNetwork().refGas.getSprite(), getModelForSide(tube, side), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));

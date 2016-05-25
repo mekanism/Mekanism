@@ -32,6 +32,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -177,7 +178,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 				data.add(0);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

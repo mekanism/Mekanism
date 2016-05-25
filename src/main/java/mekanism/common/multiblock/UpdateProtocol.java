@@ -160,7 +160,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 							else {
 								if(!isAir(origX+x, origY+y, origZ+z))
 								{
-									innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorld().provider.getDimensionId()));
+									innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorld().provider.getDimension()));
 								}
 							}
 

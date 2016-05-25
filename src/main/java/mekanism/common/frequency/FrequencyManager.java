@@ -162,7 +162,7 @@ public class FrequencyManager
 		
 		if(dataHandler == null)
 		{
-			dataHandler = (FrequencyDataHandler)world.getPerWorldStorage().loadData(FrequencyDataHandler.class, name);
+			dataHandler = (FrequencyDataHandler)world.getPerWorldStorage().getOrLoadData(FrequencyDataHandler.class, name);
 			
 			if(dataHandler == null)
 			{
@@ -182,7 +182,7 @@ public class FrequencyManager
 		FrequencyManager manager = new FrequencyManager(freqClass, n);
 		String name = manager.getName();
 		
-		FrequencyDataHandler handler = (FrequencyDataHandler)world.getPerWorldStorage().loadData(FrequencyDataHandler.class, name);
+		FrequencyDataHandler handler = (FrequencyDataHandler)world.getPerWorldStorage().getOrLoadData(FrequencyDataHandler.class, name);
 		
 		if(handler == null)
 		{
@@ -241,7 +241,7 @@ public class FrequencyManager
 			{
 				Coord4D coord = iter.next();
 				
-				if(coord.dimensionId == world.provider.getDimensionId())
+				if(coord.dimensionId == world.provider.getDimension())
 				{
 					if(!coord.exists(world))
 					{
@@ -369,7 +369,7 @@ public class FrequencyManager
 		}
 
 		@Override
-		public void writeToNBT(NBTTagCompound nbtTags) 
+		public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) 
 		{
 			nbtTags.setString("frequencyClass", manager.frequencyClass.getName());
 			
@@ -388,6 +388,8 @@ public class FrequencyManager
 			}
 			
 			nbtTags.setTag("freqList", list);
+			
+			return nbtTags;
 		}
 	}
 }

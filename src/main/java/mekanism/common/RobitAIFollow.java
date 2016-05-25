@@ -1,9 +1,14 @@
 package mekanism.common;
 
 import mekanism.common.entity.EntityRobit;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -34,8 +39,7 @@ public class RobitAIFollow extends EntityAIBase
 	/** The distance between the owner the robit must reach before it stops the protocol. */
 	private float minDist;
 
-	/** Whether or not this robit avoids water. */
-	private boolean avoidWater;
+	private float oldWaterCost;
 
 	public RobitAIFollow(EntityRobit entityRobit, float speed, float min, float max)
 	{
@@ -57,7 +61,7 @@ public class RobitAIFollow extends EntityAIBase
 		{
 			return false;
 		}
-		else if(theRobit.worldObj.provider.getDimensionId() != player.worldObj.provider.getDimensionId())
+		else if(theRobit.worldObj.provider.getDimension() != player.worldObj.provider.getDimension())
 		{
 			return false;
 		}
@@ -85,15 +89,15 @@ public class RobitAIFollow extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.worldObj.provider.getDimensionId() == theRobit.worldObj.provider.getDimensionId();
+		return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.worldObj.provider.getDimension() == theRobit.worldObj.provider.getDimension();
 	}
 
 	@Override
 	public void startExecuting()
 	{
 		ticker = 0;
-		avoidWater = theRobit.getNavigator().getAvoidsWater();
-		theRobit.getNavigator().setAvoidsWater(false);
+		oldWaterCost = theRobit.getPathPriority(PathNodeType.WATER);
+        theRobit.setPathPriority(PathNodeType.WATER, 0.0F);
 	}
 
 	@Override
@@ -101,7 +105,7 @@ public class RobitAIFollow extends EntityAIBase
 	{
 		theOwner = null;
 		thePathfinder.clearPathEntity();
-		theRobit.getNavigator().setAvoidsWater(avoidWater);
+        theRobit.setPathPriority(PathNodeType.WATER, oldWaterCost);
 	}
 
 	@Override
@@ -128,7 +132,9 @@ public class RobitAIFollow extends EntityAIBase
 							for(int i1 = 0; i1 <= 4; ++i1)
 							{
 								BlockPos pos = new BlockPos(x+l, y, z+i1);
-								if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && World.doesBlockHaveSolidTopSurface(theWorld, pos.down()) && !theWorld.getBlockState(pos).getBlock().isNormalCube() && !theWorld.getBlockState(pos.up()).getBlock().isNormalCube())
+								BlockPos under = new BlockPos(x + l, y - 1, z + i1);
+								
+								if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.getBlockState(under).isSideSolid(theWorld, under, EnumFacing.UP) && isEmptyBlock(pos) && isEmptyBlock(new BlockPos(x + l, y + 1, z + i1)))
 								{
 									theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
 									thePathfinder.clearPathEntity();
@@ -141,4 +147,12 @@ public class RobitAIFollow extends EntityAIBase
 			}
 		}
 	}
+	
+	private boolean isEmptyBlock(BlockPos pos)
+    {
+        IBlockState iblockstate = theWorld.getBlockState(pos);
+        Block block = iblockstate.getBlock();
+        
+        return block == Blocks.AIR ? true : !iblockstate.isFullCube();
+    }
 }

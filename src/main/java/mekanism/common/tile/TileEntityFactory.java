@@ -830,7 +830,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -855,6 +855,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		}
 
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -69,7 +70,7 @@ public class BlockObsidianTNT extends Block
 		{
 			EntityObsidianTNT entity = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
 			world.spawnEntityInWorld(entity);
-			world.playSoundAtEntity(entity, "game.tnt.primed", 1.0F, 1.0F);
+			entity.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
 		}
 	}
 

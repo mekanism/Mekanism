@@ -321,7 +321,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -331,6 +331,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		nbtTags.setTag("leftTank", leftTank.write(new NBTTagCompound()));
 		nbtTags.setTag("rightTank", rightTank.write(new NBTTagCompound()));
 		nbtTags.setTag("centerTank", centerTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override

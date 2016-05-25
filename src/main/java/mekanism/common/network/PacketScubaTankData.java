@@ -6,6 +6,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -30,12 +31,12 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 
 			if(!player.worldObj.isRemote)
 			{
-				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimensionId());
+				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimension());
 			}
 		}
 		else if(message.packetType == ScubaTankPacket.MODE)
 		{
-			ItemStack stack = player.getEquipmentInSlot(3);
+			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
 			if(stack != null && stack.getItem() instanceof ItemScubaTank)
 			{

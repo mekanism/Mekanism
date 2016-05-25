@@ -28,6 +28,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -161,7 +162,7 @@ public class GuiResistiveHeater extends GuiMekanism
 			if(xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61)
 			{
 				setEnergyUsage();
-	            SoundHandler.playSound("gui.button.press");
+	            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

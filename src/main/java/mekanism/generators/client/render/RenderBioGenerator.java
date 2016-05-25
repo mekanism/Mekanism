@@ -72,7 +72,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 		DisplayInteger[] displays = new DisplayInteger[stages];
 
 		Model3D model3D = new Model3D();
-		model3D.baseBlock = Blocks.water;
+		model3D.baseBlock = Blocks.WATER;
 		model3D.setTexture(MekanismRenderer.energyIcon);
 
 		for(int i = 0; i < stages; i++)

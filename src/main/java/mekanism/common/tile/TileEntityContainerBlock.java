@@ -71,7 +71,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -92,6 +92,8 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 			nbtTags.setTag("Items", tagList);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

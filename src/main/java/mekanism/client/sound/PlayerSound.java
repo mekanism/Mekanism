@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class PlayerSound extends Sound implements IResettableSound
+public abstract class PlayerSound extends MekSound implements IResettableSound
 {
 	public EntityPlayer player;
 

@@ -2,16 +2,24 @@ package mekanism.generators.client.render.item;
 
 import java.util.List;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
-public class GeneratorItemModelFactory implements ISmartItemModel
+import com.google.common.collect.Lists;
+
+public class GeneratorItemModelFactory implements IBakedModel
 {
 	private IBakedModel baseModel;
+	
+	private GeneratorOverride override = new GeneratorOverride();
 	
 	public GeneratorItemModelFactory(IBakedModel base)
 	{
@@ -19,19 +27,13 @@ public class GeneratorItemModelFactory implements ISmartItemModel
 	}
 	
 	@Override
-	public IBakedModel handleItemState(ItemStack stack) 
+	public ItemOverrideList getOverrides()
 	{
-		return new BakedGeneratorItemModel(baseModel, stack);
+		return override;
 	}
 	
 	@Override
-	public List<BakedQuad> getFaceQuads(EnumFacing p_177551_1_) 
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<BakedQuad> getGeneralQuads() 
+	public List<BakedQuad> getQuads(IBlockState state, EnumFacing facing, long rand) 
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -64,5 +66,19 @@ public class GeneratorItemModelFactory implements ISmartItemModel
 	public ItemCameraTransforms getItemCameraTransforms() 
 	{
 		throw new UnsupportedOperationException();
+	}
+	
+	private class GeneratorOverride extends ItemOverrideList 
+    {
+		public GeneratorOverride() 
+		{
+			super(Lists.newArrayList());
+		}
+
+	    @Override
+	    public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) 
+	    {
+	    	return new BakedGeneratorItemModel(baseModel, stack);
+	    }
 	}
 }

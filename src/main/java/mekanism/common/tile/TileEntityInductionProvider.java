@@ -58,10 +58,12 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("tier", tier.ordinal());
+		
+		return nbtTags;
 	}
 }

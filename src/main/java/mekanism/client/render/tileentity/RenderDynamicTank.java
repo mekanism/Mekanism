@@ -111,7 +111,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.water;
+		toReturn.baseBlock = Blocks.WATER;
 		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
 		final int stages = getStages(data.height);
@@ -158,7 +158,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.water;
+		toReturn.baseBlock = Blocks.WATER;
 		MekanismRenderer.prepFlowing(toReturn, fluid);
 
 		DisplayInteger display = DisplayInteger.createAndStart();

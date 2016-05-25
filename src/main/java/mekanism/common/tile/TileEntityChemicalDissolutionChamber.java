@@ -348,7 +348,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -357,6 +357,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setTag("injectTank", injectTank.write(new NBTTagCompound()));
 		nbtTags.setTag("gasTank", outputTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override

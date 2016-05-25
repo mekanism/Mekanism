@@ -136,7 +136,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 	
 			playerMP.openContainer = container;
 			playerMP.openContainer.windowId = window;
-			playerMP.openContainer.onCraftGuiOpened(playerMP);
+			playerMP.openContainer.addListener(playerMP);
 		}
 	
 		@SideOnly(Side.CLIENT)

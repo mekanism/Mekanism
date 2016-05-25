@@ -10,6 +10,7 @@ import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -97,7 +98,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 				{
 					GL11.glTranslated(0.5, 0.5, 0.5);
 					Tessellator tessellator = Tessellator.getInstance();
-					WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+					VertexBuffer worldRenderer = tessellator.getBuffer();
 					renderFluidInOut(worldRenderer, side, pipe);
 					tessellator.draw();
 					GL11.glTranslated(-0.5, -0.5, -0.5);
@@ -141,7 +142,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.water;
+		toReturn.baseBlock = Blocks.WATER;
 		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
 		if(side != null)
@@ -254,7 +255,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 		return displays;
 	}
 	
-	public void renderFluidInOut(WorldRenderer renderer, EnumFacing side, PartMechanicalPipe pipe)
+	public void renderFluidInOut(VertexBuffer renderer, EnumFacing side, PartMechanicalPipe pipe)
 	{
 		bindTexture(MekanismRenderer.getBlocksTexture());
 		TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(pipe.getTransmitter().getTransmitterNetwork().refFluid, FluidType.STILL);

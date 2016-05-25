@@ -573,7 +573,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 		
@@ -585,6 +585,8 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			frequency.write(frequencyTag);
 			nbtTags.setTag("frequency", frequencyTag);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

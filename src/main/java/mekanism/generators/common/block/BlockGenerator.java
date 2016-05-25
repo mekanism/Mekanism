@@ -600,7 +600,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -609,7 +609,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos, player));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -618,10 +618,9 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-    public ItemStack getPickBlock(RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		IBlockState state = world.getBlockState(pos);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
 		if(itemStack.getTagCompound() == null)
@@ -676,9 +675,9 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		return itemStack;
 	}
 
-	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
+	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, pos, null);
+		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
 		world.setBlockToAir(pos);
 

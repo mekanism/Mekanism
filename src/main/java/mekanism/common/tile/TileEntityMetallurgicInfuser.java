@@ -363,7 +363,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -381,6 +381,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		}
 
 		nbtTags.setBoolean("sideDataStored", true);
+		
+		return nbtTags;
 	}
 
 	@Override

@@ -144,13 +144,15 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		
+		return nbtTags;
 	}
 
 	@Override

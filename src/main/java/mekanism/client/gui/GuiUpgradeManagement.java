@@ -18,6 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -303,13 +304,13 @@ public class GuiUpgradeManagement extends GuiMekanism
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
 				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
 			}
 			
 			if(selectedType != null && xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
 			}
 			

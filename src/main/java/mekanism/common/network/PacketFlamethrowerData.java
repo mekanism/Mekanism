@@ -30,7 +30,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
             if(!player.worldObj.isRemote)
             {
-                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimensionId());
+                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimension());
             }
         }
         else if(message.packetType == FlamethrowerPacket.MODE)

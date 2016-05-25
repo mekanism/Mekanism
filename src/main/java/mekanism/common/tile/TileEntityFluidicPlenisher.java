@@ -278,7 +278,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 		
@@ -316,6 +316,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			nbtTags.setTag("usedNodes", usedList);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

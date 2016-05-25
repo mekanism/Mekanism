@@ -89,7 +89,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	
 			playerMP.openContainer = handlers.get(handler).getServerGui(id, playerMP, world, obj.getPos());
 			playerMP.openContainer.windowId = window;
-			playerMP.openContainer.onCraftGuiOpened(playerMP);
+			playerMP.openContainer.addListener(playerMP);
 		}
 	
 		@SideOnly(Side.CLIENT)

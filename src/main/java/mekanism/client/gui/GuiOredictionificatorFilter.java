@@ -20,6 +20,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -310,19 +311,19 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 			}
 			
 			if(xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setFilter();
 			}
 
 			if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				
 				if(filter.filter != null)
 				{
@@ -342,7 +343,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			
 			if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				
 				if(filter.filter != null)
 				{

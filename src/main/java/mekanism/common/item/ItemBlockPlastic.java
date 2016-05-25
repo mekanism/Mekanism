@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,7 +34,7 @@ public class ItemBlockPlastic extends ItemBlock
 		EnumColor colour = EnumColor.DYES[dyeColour.getDyeDamage()];
 		String colourName;
 
-        if(StatCollector.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
+        if(I18n.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
         {
             return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
         }

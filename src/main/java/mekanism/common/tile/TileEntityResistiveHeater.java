@@ -153,7 +153,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -161,6 +161,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 		nbtTags.setDouble("temperature", temperature);
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		
+		return nbtTags;
 	}
 	
 	@Override

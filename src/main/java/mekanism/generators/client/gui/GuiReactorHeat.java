@@ -35,6 +35,7 @@ import mekanism.generators.client.gui.element.GuiStatTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
@@ -208,7 +209,7 @@ public class GuiReactorHeat extends GuiMekanism
 		{
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));
 			}
 		}

@@ -88,12 +88,14 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("logicType", logicType.ordinal());
 		nbtTags.setBoolean("activeCooled", activeCooled);
+		
+		return nbtTags;
 	}
 	
 	@Override

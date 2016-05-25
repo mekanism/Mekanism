@@ -32,6 +32,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -304,7 +305,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			if(xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61)
 			{
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
 				ArrayList<Object> data = new ArrayList<Object>();
 				data.add(0);
@@ -314,7 +315,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
 			{
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
 				ArrayList<Object> data = new ArrayList<Object>();
 				data.add(1);
@@ -324,7 +325,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
 			{
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
 				ArrayList<Object> data = new ArrayList<Object>();
 				data.add(5);
@@ -334,7 +335,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
 			{
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
 				ArrayList<Object> data = new ArrayList<Object>();
 				data.add(9);

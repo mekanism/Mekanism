@@ -291,13 +291,15 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setTag("inputFluidTank", inputFluidTank.writeToNBT(new NBTTagCompound()));
 		nbtTags.setTag("inputGasTank", inputGasTank.write(new NBTTagCompound()));
 		nbtTags.setTag("outputGasTank", outputGasTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override

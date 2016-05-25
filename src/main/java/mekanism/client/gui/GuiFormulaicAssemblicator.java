@@ -29,6 +29,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -241,7 +242,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 			{
 				if(xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91)
 				{
-					SoundHandler.playSound("gui.button.press");
+					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
 					ArrayList data = new ArrayList();
 					data.add(4);
@@ -255,7 +256,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					{
 						if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							
 							ArrayList data = new ArrayList();
 							data.add(1);
@@ -266,7 +267,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					
 					if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
 					{
-						SoundHandler.playSound("gui.button.press");
+						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
 						ArrayList data = new ArrayList();
 						data.add(2);
@@ -276,7 +277,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					
 					if(xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91)
 					{
-						SoundHandler.playSound("gui.button.press");
+						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
 						ArrayList data = new ArrayList();
 						data.add(3);
@@ -290,7 +291,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 			{
 				if(xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91)
 				{
-					SoundHandler.playSound("gui.button.press");
+					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
 					ArrayList data = new ArrayList();
 					data.add(0);

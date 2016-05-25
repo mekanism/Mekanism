@@ -28,6 +28,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -175,7 +176,7 @@ public class GuiFactory extends GuiMekanism
 					data.add(1);
 	
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-					SoundHandler.playSound("gui.button.press");
+					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				}
 			}
 		}

@@ -18,6 +18,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -119,7 +120,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 			
 			if(xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				
 				ArrayList data = new ArrayList();
 				data.add(0);
@@ -135,7 +136,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 				{
 					if(type != tileEntity.logicType)
 					{
-						SoundHandler.playSound("gui.button.press");
+						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
 						ArrayList data = new ArrayList();
 						data.add(1);

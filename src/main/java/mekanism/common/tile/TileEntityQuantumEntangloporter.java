@@ -241,7 +241,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 		
@@ -251,6 +251,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			frequency.write(frequencyTag);
 			nbtTags.setTag("frequency", frequencyTag);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

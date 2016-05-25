@@ -163,11 +163,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("bioFuelStored", bioFuelSlot.fluidStored);
+		
+		return nbtTags;
 	}
 
 	public int getFuel(ItemStack itemstack)

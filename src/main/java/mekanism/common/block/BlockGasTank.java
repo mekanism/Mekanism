@@ -202,7 +202,7 @@ public class BlockGasTank extends BlockContainer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos, player));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -210,9 +210,9 @@ public class BlockGasTank extends BlockContainer
 		return world.setBlockToAir(pos);
 	}
 
-	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
+	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, pos, null);
+		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
 		world.setBlockToAir(pos);
 
@@ -296,13 +296,13 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride()
+	public boolean hasComparatorInputOverride(IBlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(World world, BlockPos pos)
+	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 		return tileEntity.getRedstoneLevel();

@@ -479,6 +479,8 @@ public class Quad
 
         private EnumFacing quadOrientation;
         
+        private boolean applyDiffuseLighting;
+        
         @Override
         public void setQuadTint(int tint)
         {
@@ -498,7 +500,10 @@ public class Quad
         }
 
         @Override
-        public void setQuadColored() {}
+        public void setApplyDiffuseLighting(boolean lighting)
+        {
+        	applyDiffuseLighting = lighting;
+        }
 
         private ListMultimap<EnumUsage, float[]> vertexData = MultimapBuilder.enumKeys(EnumUsage.class).arrayListValues().build();
         

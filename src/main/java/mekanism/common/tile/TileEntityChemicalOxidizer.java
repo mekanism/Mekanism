@@ -303,7 +303,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -311,6 +311,8 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override

@@ -307,7 +307,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 		
@@ -339,6 +339,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			nbtTags.setTag("recurringNodes", recurringList);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

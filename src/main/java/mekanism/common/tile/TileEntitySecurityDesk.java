@@ -230,7 +230,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 		
@@ -245,6 +245,8 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 			frequency.write(frequencyTag);
 			nbtTags.setTag("frequency", frequencyTag);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

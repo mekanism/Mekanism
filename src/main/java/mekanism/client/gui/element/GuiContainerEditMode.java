@@ -9,6 +9,7 @@ import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -83,7 +84,7 @@ public class GuiContainerEditMode extends GuiElement
 				ContainerEditMode current = manager.getContainerEditMode();
 				int ordinalToSet = current.ordinal() < (ContainerEditMode.values().length-1) ? current.ordinal()+1 : 0;
 
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new ContainerEditModeMessage(Coord4D.get(tileEntity), ContainerEditMode.values()[ordinalToSet]));
 			}
 		}

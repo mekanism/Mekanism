@@ -5,6 +5,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartUniversalCable;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
@@ -26,7 +27,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCab
 
 		push();
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+		VertexBuffer worldRenderer = tessellator.getBuffer();
 		GL11.glTranslated(x + 0.5, y+0.5, z + 0.5);
 
 		for(EnumFacing side : EnumFacing.VALUES)
@@ -43,7 +44,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCab
 		pop();
 	}
 	
-	public void renderEnergySide(WorldRenderer renderer, EnumFacing side, PartUniversalCable cable)
+	public void renderEnergySide(VertexBuffer renderer, EnumFacing side, PartUniversalCable cable)
 	{
 		bindTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));

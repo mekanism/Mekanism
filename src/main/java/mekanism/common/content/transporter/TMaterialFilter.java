@@ -19,7 +19,7 @@ public class TMaterialFilter extends TransporterFilter
 	
 	public Material getMaterial()
 	{
-		return Block.getBlockFromItem(materialItem.getItem()).getMaterial();
+		return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getItemDamage()).getMaterial();
 	}
 
 	@Override

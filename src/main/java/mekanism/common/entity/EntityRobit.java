@@ -29,11 +29,15 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
@@ -59,14 +63,19 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public int furnaceCookTime = 0;
 
 	public boolean texTick;
+	
+    private static final DataParameter<Float> ELECTRICITY = EntityDataManager.<Float>createKey(EntityBalloon.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> OWNER = EntityDataManager.<String>createKey(EntityBalloon.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.<Boolean>createKey(EntityBalloon.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.<Boolean>createKey(EntityBalloon.class, DataSerializers.BOOLEAN);
 
 	public EntityRobit(World world)
 	{
 		super(world);
 
 		setSize(0.5F, 0.5F);
-
-		getNavigator().setAvoidsWater(true);
+		
+		getNavigator().setCanSwim(false);
 
 		tasks.addTask(1, new RobitAIPickup(this, 1.0F));
 		tasks.addTask(2, new RobitAIFollow(this, 1.0F, 4.0F, 2.0F));
@@ -99,8 +108,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		super.applyEntityAttributes();
 
-		getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.3);
-		getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1);
+		getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3);
+		getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
 	}
 
 	@Override
@@ -110,18 +119,14 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	protected void updateAITick() {}
-
-	@Override
 	protected void entityInit()
 	{
 		super.entityInit();
 
-		dataWatcher.addObject(16, ""); /* Electricity */
-		dataWatcher.addObject(17, ""); /* Owner */
-		dataWatcher.addObject(18, (byte)0); /* Follow */
-		//unused
-		dataWatcher.addObject(20, (byte)0); /* Drop Pickup */
+		dataManager.register(ELECTRICITY, 0F);
+		dataManager.register(OWNER, "");
+		dataManager.register(FOLLOW, false);
+		dataManager.register(DROP_PICKUP, false);
 	}
 
 	public double getRoundedTravelEnergy()
@@ -272,7 +277,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 						onItemPickup(item, item.getEntityItem().stackSize);
 						item.setDead();
 
-						playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
 						break;
 					}
@@ -291,7 +296,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 							item.setDead();
 						}
 
-						playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
 						break;
 					}
@@ -517,16 +522,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public double getEnergy()
 	{
-		try {
-			return Double.parseDouble(dataWatcher.getWatchableObjectString(16));
-		} catch(Exception e) {
-			return 0;
-		}
+		return (float)dataManager.get(ELECTRICITY);
 	}
 
 	public void setEnergy(double energy)
 	{
-		dataWatcher.updateObject(16, Double.toString(Math.max(Math.min(energy, MAX_ELECTRICITY), 0)));
+		dataManager.set(ELECTRICITY, (float)Math.max(Math.min(energy, MAX_ELECTRICITY), 0));
 	}
 
 	public EntityPlayer getOwner()
@@ -536,32 +537,32 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public String getOwnerName()
 	{
-		return dataWatcher.getWatchableObjectString(17);
+		return dataManager.get(OWNER);
 	}
 
 	public void setOwner(String username)
 	{
-		dataWatcher.updateObject(17, username);
+		dataManager.set(OWNER, username);
 	}
 
 	public boolean getFollowing()
 	{
-		return dataWatcher.getWatchableObjectByte(18) == 1;
+		return dataManager.get(FOLLOW);
 	}
 
 	public void setFollowing(boolean follow)
 	{
-		dataWatcher.updateObject(18, follow ? (byte)1 : (byte)0);
+		dataManager.set(FOLLOW, follow);
 	}
 
 	public boolean getDropPickup()
 	{
-		return dataWatcher.getWatchableObjectByte(20) == 1;
+		return dataManager.get(DROP_PICKUP);
 	}
 
 	public void setDropPickup(boolean pickup)
 	{
-		dataWatcher.updateObject(20, pickup ? (byte)1 : (byte)0);
+		dataManager.set(DROP_PICKUP, pickup);
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismSounds;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TMaterialFilter;
@@ -32,6 +33,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -263,7 +265,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 								data.add(getFilterIndex() + i);
 
 								Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-								SoundHandler.playSound("gui.button.press");
+								SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 								
 								return;
 							}
@@ -279,7 +281,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 								data.add(getFilterIndex() + i);
 
 								Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-								SoundHandler.playSound("gui.button.press");
+								SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 								
 								return;
 							}
@@ -289,22 +291,22 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 						if(filter instanceof TItemStackFilter)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
 						}
 						else if(filter instanceof TOreDictFilter)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex() + i, 0));
 						}
 						else if(filter instanceof TMaterialFilter)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex() + i, 0));
 						}
 						else if(filter instanceof TModIDFilter)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 5, getFilterIndex() + i, 0));
 						}
 					}
@@ -318,7 +320,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(1);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 
 			// Check for round robin button
@@ -328,7 +330,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(2);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 
@@ -345,7 +347,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			data.add(mouseBtn);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-			SoundHandler.playSound("mekanism:etc.Ding");
+			SoundHandler.playSound(MekanismSounds.DING);
 		}
 	}
 

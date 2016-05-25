@@ -21,6 +21,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -243,13 +244,13 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
 			}
 			
 			if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				filter.requireStack = !filter.requireStack;
 			}
 
@@ -273,7 +274,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 					filter.materialItem = null;
 				}
 
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 			
 			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
@@ -303,7 +304,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 					filter.replaceStack = toUse;
 				}
 
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

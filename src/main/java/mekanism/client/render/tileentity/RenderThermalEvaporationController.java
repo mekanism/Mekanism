@@ -83,7 +83,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.water;
+		toReturn.baseBlock = Blocks.WATER;
 		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
 		final int stages = getStages(data.height);

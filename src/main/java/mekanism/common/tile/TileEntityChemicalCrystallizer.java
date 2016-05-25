@@ -273,7 +273,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -284,6 +284,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		nbtTags.setTag("rightTank", inputTank.write(new NBTTagCompound()));
 
 		nbtTags.setBoolean("sideDataStored", true);
+		
+		return nbtTags;
 	}
 
 	@Override

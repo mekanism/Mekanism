@@ -519,7 +519,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -536,6 +536,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 		nbtTags.setInteger("dumpLeft", dumpLeft.ordinal());
 		nbtTags.setInteger("dumpRight", dumpRight.ordinal());
+		
+		return nbtTags;
 	}
 
 	private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen", "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};

@@ -271,7 +271,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -280,6 +280,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			nbtTags.setString("cachedID", cachedID);
 			cachedData.save(nbtTags);
 		}
+		
+		return nbtTags;
 	}
 	
 	@Override

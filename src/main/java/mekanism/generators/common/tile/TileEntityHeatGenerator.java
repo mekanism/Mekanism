@@ -185,7 +185,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -193,6 +193,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		{
 			nbtTags.setTag("lavaTank", lavaTank.writeToNBT(new NBTTagCompound()));
 		}
+		
+		return nbtTags;
 	}
 
 	@Override

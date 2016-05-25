@@ -10,6 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -122,7 +123,7 @@ public class GuiDictionary extends GuiMekanism
 						itemType.stackSize = 1;
 
 						scrollList.setText(MekanismUtils.getOreDictName(itemType));
-						SoundHandler.playSound("gui.button.press");
+						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
 						return;
 					}
@@ -147,7 +148,7 @@ public class GuiDictionary extends GuiMekanism
 					scrollList.setText(null);
 				}
 
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 

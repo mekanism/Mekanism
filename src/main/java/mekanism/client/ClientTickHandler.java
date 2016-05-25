@@ -38,6 +38,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -199,8 +200,10 @@ public class ClientTickHandler
 						}
 				}
 			}
+			
+			ItemStack bootStack = mc.thePlayer.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-			if(mc.thePlayer.getEquipmentInSlot(1) != null && mc.thePlayer.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
+			if(bootStack != null && bootStack.getItem() instanceof ItemFreeRunners)
 			{
 				mc.thePlayer.stepHeight = 1.002F;
 			}
@@ -296,7 +299,9 @@ public class ClientTickHandler
 				}
 			}
 
-			if(mc.thePlayer.getEquipmentInSlot(3) != null && mc.thePlayer.getEquipmentInSlot(3).getItem() instanceof ItemJetpack)
+			ItemStack chestStack = mc.thePlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+			
+			if(chestStack != null && chestStack.getItem() instanceof ItemJetpack)
 			{
 				MekanismClient.updateKey(mc.gameSettings.keyBindJump, KeySync.ASCEND);
 				MekanismClient.updateKey(mc.gameSettings.keyBindSneak, KeySync.DESCEND);
@@ -314,14 +319,14 @@ public class ClientTickHandler
 			
 			if(isJetpackOn(mc.thePlayer))
 			{
-				ItemJetpack jetpack = (ItemJetpack)mc.thePlayer.getEquipmentInSlot(3).getItem();
+				ItemJetpack jetpack = (ItemJetpack)chestStack.getItem();
 
-				if(jetpack.getMode(mc.thePlayer.getEquipmentInSlot(3)) == JetpackMode.NORMAL)
+				if(jetpack.getMode(chestStack) == JetpackMode.NORMAL)
 				{
 					mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.5D);
 					mc.thePlayer.fallDistance = 0.0F;
 				}
-				else if(jetpack.getMode(mc.thePlayer.getEquipmentInSlot(3)) == JetpackMode.HOVER)
+				else if(jetpack.getMode(chestStack) == JetpackMode.HOVER)
 				{
 					if((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) || (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null)
 					{
@@ -354,17 +359,17 @@ public class ClientTickHandler
 					mc.thePlayer.fallDistance = 0.0F;
 				}
 
-				jetpack.useGas(mc.thePlayer.getEquipmentInSlot(3));
+				jetpack.useGas(chestStack);
 			}
 
 			if(isGasMaskOn(mc.thePlayer))
 			{
-				ItemScubaTank tank = (ItemScubaTank)mc.thePlayer.getEquipmentInSlot(3).getItem();
+				ItemScubaTank tank = (ItemScubaTank)chestStack.getItem();
 
 				final int max = 300;
 				
-				tank.useGas(mc.thePlayer.getEquipmentInSlot(3));
-				GasStack received = tank.useGas(mc.thePlayer.getEquipmentInSlot(3), max-mc.thePlayer.getAir());
+				tank.useGas(chestStack);
+				GasStack received = tank.useGas(chestStack, max-mc.thePlayer.getAir());
 
 				if(received != null)
 				{

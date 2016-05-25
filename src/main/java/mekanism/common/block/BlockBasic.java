@@ -385,10 +385,10 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 							}
 						}
 					default:
-						return super.canCreatureSpawn(world, pos, type);
+						return super.canCreatureSpawn(state, world, pos, type);
 				}
 			default:
-				return super.canCreatureSpawn(world, pos, type);
+				return super.canCreatureSpawn(state, world, pos, type);
 		}
 	}
 

@@ -329,7 +329,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -339,6 +339,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		nbtTags.setTag("leftTank", fluidTank.writeToNBT(new NBTTagCompound()));
 		nbtTags.setTag("rightTank", inputTank.write(new NBTTagCompound()));
 		nbtTags.setTag("centerTank", outputTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override

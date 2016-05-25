@@ -215,7 +215,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -244,6 +244,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		{
 			nbtTags.setTag("filters", filterTags);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override
