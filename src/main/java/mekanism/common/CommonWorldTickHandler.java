@@ -7,7 +7,6 @@ import java.util.Random;
 
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
-import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;

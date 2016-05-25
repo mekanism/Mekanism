@@ -2,7 +2,6 @@ package mekanism.api.infuse;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 
 /**
  * The types of infuse currently available in Mekanism.

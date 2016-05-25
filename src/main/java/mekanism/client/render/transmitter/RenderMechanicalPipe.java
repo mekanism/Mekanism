@@ -2,7 +2,6 @@ package mekanism.client.render.transmitter;
 
 import java.util.HashMap;
 
-import mcmultipart.multipart.IMultipart;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -11,7 +10,6 @@ import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;

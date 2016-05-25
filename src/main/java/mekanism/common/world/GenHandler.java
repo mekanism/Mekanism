@@ -4,9 +4,8 @@ import java.util.Random;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.MekanismBlocks;
-import net.minecraft.block.state.pattern.BlockHelper;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderEnd;

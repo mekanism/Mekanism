@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.EnumWorldBlockLayer;
 
 /**
  * Chisel Face, basically a list of IChiselTexture's

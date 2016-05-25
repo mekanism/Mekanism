@@ -2,7 +2,6 @@ package mekanism.common.block.states;
 
 import mekanism.common.block.BlockOre;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.util.IStringSerializable;
 
 /**

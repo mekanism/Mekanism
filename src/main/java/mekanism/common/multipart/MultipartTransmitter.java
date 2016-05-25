@@ -10,7 +10,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.Transmitter;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;

@@ -20,7 +20,6 @@ import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

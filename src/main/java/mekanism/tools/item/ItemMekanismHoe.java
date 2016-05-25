@@ -11,8 +11,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
@@ -30,7 +30,7 @@ public class ItemMekanismHoe extends ItemMekanism
 		toolMaterial = enumtoolmaterial;
 		maxStackSize = 1;
 		setMaxDamage(enumtoolmaterial.getMaxUses());
-		setCreativeTab(CreativeTabs.tabTools);
+		setCreativeTab(CreativeTabs.TOOLS);
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public class ItemMekanismHoe extends ItemMekanism
 			{
 				return false;
 			}
-
+			
 			if(event.getResult() == Result.ALLOW)
 			{
 				itemstack.damageItem(1, entityplayer);
@@ -63,12 +63,12 @@ public class ItemMekanismHoe extends ItemMekanism
 			Block blockID = world.getBlockState(pos).getBlock();
 			Block aboveBlock = world.getBlockState(pos.add(0, 1, 0)).getBlock();
 
-			if((side == EnumFacing.DOWN || !aboveBlock.isAir(world, pos.add(0, 1, 0)) || blockID != Blocks.grass) && blockID != Blocks.dirt)
+			if((side == EnumFacing.DOWN || !aboveBlock.isAir(world.getBlockState(pos), world, pos.add(0, 1, 0)) || blockID != Blocks.grass) && blockID != Blocks.DIRT)
 			{
 				return false;
 			}
 			else {
-				IBlockState block = Blocks.farmland.getDefaultState();
+				IBlockState block = Blocks.FARMLAND.getDefaultState();
 				world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, block.getBlock().stepSound.getStepSound(), (block.getBlock().stepSound.getVolume() + 1.0F) / 2.0F, block.getBlock().stepSound.getFrequency() * 0.8F);
 
 				if(world.isRemote)

@@ -1,11 +1,9 @@
 package mekanism.client.render.transmitter;
 
-import mcmultipart.multipart.IMultipart;
 import mekanism.client.render.ColourTemperature;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.multipart.PartThermodynamicConductor;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;

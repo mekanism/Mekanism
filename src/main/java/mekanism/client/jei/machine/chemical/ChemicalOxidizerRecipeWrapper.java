@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import mekanism.api.gas.GasRegistry;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.recipe.BlankRecipeWrapper;

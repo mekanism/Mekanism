@@ -1,6 +1,5 @@
 package mekanism.api.gas;
 
-import net.minecraft.util.StatCollector;
 
 public class OreGas extends Gas
 {

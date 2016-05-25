@@ -5,7 +5,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartUniversalCable;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;

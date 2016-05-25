@@ -10,7 +10,6 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.SoundWrapper;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

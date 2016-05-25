@@ -1,8 +1,6 @@
 package mekanism.client.render.particle;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFlameFX;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;

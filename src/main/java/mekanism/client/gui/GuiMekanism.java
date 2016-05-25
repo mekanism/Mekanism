@@ -19,8 +19,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import org.lwjgl.opengl.GL11;
-
 public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
 	public Set<GuiElement> guiElements = new HashSet<GuiElement>();

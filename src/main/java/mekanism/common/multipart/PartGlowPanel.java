@@ -5,25 +5,21 @@ import java.util.List;
 
 import mcmultipart.microblock.IMicroblock.IFaceMicroblock;
 import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.IOccludingPart;
 import mcmultipart.multipart.Multipart;
 import mcmultipart.multipart.PartSlot;
 import mcmultipart.raytrace.PartMOP;
-import mcmultipart.util.TransformationHelper;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.MekanismItems;
 import mekanism.common.block.states.BlockStateFacing;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 //import net.minecraft.util.IIcon;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class PartGlowPanel extends Multipart implements IOccludingPart

@@ -2,7 +2,6 @@ package mekanism.common.block.states;
 
 import mekanism.common.block.BlockBounding;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
 
 public class BlockStateBounding extends BlockState
 {

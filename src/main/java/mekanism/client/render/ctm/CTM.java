@@ -14,9 +14,9 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import java.util.EnumMap;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import com.google.common.base.Optional;

@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.recipe.BlankRecipeWrapper;

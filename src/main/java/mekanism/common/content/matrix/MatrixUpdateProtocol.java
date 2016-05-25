@@ -15,7 +15,7 @@ import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 {

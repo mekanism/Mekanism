@@ -9,7 +9,6 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 
 public final class HolidayManager

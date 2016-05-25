@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import mekanism.api.gas.GasStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 
 public final class LangUtils
