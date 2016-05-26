@@ -14,5 +14,4 @@ public final class MekanismSounds
 	public static final SoundEvent POP = new SoundEvent(new ResourceLocation("mekanism:etc.Pop"));
 	public static final SoundEvent SUCCESS = new SoundEvent(new ResourceLocation("mekanism:etc.Success"));
 	public static final SoundEvent CJ_EASTER_EGG = new SoundEvent(new ResourceLocation("mekanism:etc.cj"));
-
 }

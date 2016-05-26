@@ -43,6 +43,8 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 			{
 				IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 
+				transmitter.setRequestsUpdate();
+				
 				if(transmitter.hasTransmitterNetwork())
 				{
 					transmitter.getTransmitterNetwork().addUpdate(player);

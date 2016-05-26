@@ -41,7 +41,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     private static final DataParameter<Integer> LATCHED_X = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.<Integer>createKey(Entity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
 
 	public EntityBalloon(World world)
 	{

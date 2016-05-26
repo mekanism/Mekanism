@@ -320,10 +320,10 @@ public class MekanismRenderer
 		for(int i = 0; i < 4; i++)
 		{
 			int nextIndex = (i+amount)%4;
-            int j = quad.getFormat().getIntegerSize() * i;
+			int quadSize = quad.getFormat().getIntegerSize();
             int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
-            vertices[j + uvIndex] = quad.getVertexData()[7*nextIndex + uvIndex];
-            vertices[j + uvIndex + 1] = quad.getVertexData()[7*nextIndex + uvIndex];
+            vertices[quadSize*i + uvIndex] = quad.getVertexData()[quadSize*nextIndex + uvIndex];
+            vertices[quadSize*i + uvIndex + 1] = quad.getVertexData()[quadSize*nextIndex + uvIndex + 1];
 		}
 		
 		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());

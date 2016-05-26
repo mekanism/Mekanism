@@ -21,6 +21,8 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
 	 * @param network - network to set to
 	 */
 	public void setTransmitterNetwork(N network);
+	
+	public void setRequestsUpdate();
 
 	public int getTransmitterNetworkSize();
 

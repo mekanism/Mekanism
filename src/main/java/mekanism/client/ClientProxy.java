@@ -128,7 +128,6 @@ import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemBlockPlastic;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
@@ -898,18 +897,22 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public int getColorFromItemstack(ItemStack stack, int tintIndex) 
 			{
-				if(stack.getItem() instanceof ItemBlockPlastic)
-				{
-					EnumDyeColor dyeColor = EnumDyeColor.byMetadata(stack.getItemDamage()&15);
-					EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
-					
-					return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
-				}
+				EnumDyeColor dyeColor = EnumDyeColor.byMetadata(stack.getItemDamage()&15);
+				EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
 				
-				return -1;
+				return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
 			}
 		}, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock, 
 		MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
+		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
+			@Override
+			public int getColorFromItemstack(ItemStack stack, int tintIndex) 
+			{
+				EnumColor dye = EnumColor.DYES[stack.getItemDamage()];
+				
+				return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
+			}
+		}, MekanismItems.Balloon);
 		
 		MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
 		MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());

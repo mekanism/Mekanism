@@ -143,6 +143,12 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	{
 		return getPart().getTransmissionType();
 	}
+	
+	@Override
+	public void setRequestsUpdate()
+	{
+		containingPart.sendDesc = true;
+	}
 
 	public PartTransmitter<A, N> getPart()
 	{
