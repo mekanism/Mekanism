@@ -47,7 +47,7 @@ public class GeneratorItemModelFactory implements IBakedModel
 	@Override
 	public boolean isGui3d() 
 	{
-		throw new UnsupportedOperationException();
+		return baseModel.isGui3d();
 	}
 
 	@Override

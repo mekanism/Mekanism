@@ -39,24 +39,24 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("Mekanism")
 public class MekanismBlocks
 {
-	public static final Block BasicBlock = init(BlockBasic.getBlockBasic(BASIC_BLOCK_1), "BasicBlock");
-	public static final Block BasicBlock2 = init(BlockBasic.getBlockBasic(BASIC_BLOCK_2), "BasicBlock2");
-	public static final Block MachineBlock = init(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), "MachineBlock");
-	public static final Block MachineBlock2 = init(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), "MachineBlock2");
-	public static final Block MachineBlock3 = init(BlockMachine.getBlockMachine(MACHINE_BLOCK_3), "MachineBlock3");
-	public static final Block OreBlock = init(new BlockOre(), "OreBlock");
-	public static final Block ObsidianTNT = init(new BlockObsidianTNT(), "ObsidianTNT").setCreativeTab(Mekanism.tabMekanism);
-	public static final Block EnergyCube = init(new BlockEnergyCube(), "EnergyCube");
-	public static final Block BoundingBlock = (BlockBounding)init(new BlockBounding(), "BoundingBlock");
-	public static final Block GasTank = init(new BlockGasTank(), "GasTank");
-	public static final Block CardboardBox = init(new BlockCardboardBox(), "CardboardBox");
-	public static final Block PlasticBlock = init(new BlockPlastic(PlasticBlockType.PLASTIC), "PlasticBlock");
-	public static final Block SlickPlasticBlock = init(new BlockPlastic(PlasticBlockType.SLICK), "SlickPlasticBlock");
-	public static final Block GlowPlasticBlock = init(new BlockPlastic(PlasticBlockType.GLOW), "GlowPlasticBlock");
-	public static final Block ReinforcedPlasticBlock = init(new BlockPlastic(PlasticBlockType.REINFORCED), "ReinforcedPlasticBlock");
-	public static final Block RoadPlasticBlock = init(new BlockPlastic(PlasticBlockType.ROAD), "RoadPlasticBlock");
-	public static final Block PlasticFence = init(new BlockPlasticFence(), "PlasticFence");
-	public static final Block SaltBlock = init(new BlockSalt(), "SaltBlock");
+	public static Block BasicBlock = BlockBasic.getBlockBasic(BASIC_BLOCK_1);
+	public static Block BasicBlock2 = BlockBasic.getBlockBasic(BASIC_BLOCK_2);
+	public static Block MachineBlock = BlockMachine.getBlockMachine(MACHINE_BLOCK_1);
+	public static Block MachineBlock2 = BlockMachine.getBlockMachine(MACHINE_BLOCK_2);
+	public static Block MachineBlock3 = BlockMachine.getBlockMachine(MACHINE_BLOCK_3);
+	public static Block OreBlock = new BlockOre();
+	public static Block ObsidianTNT = new BlockObsidianTNT().setCreativeTab(Mekanism.tabMekanism);
+	public static Block EnergyCube = new BlockEnergyCube();
+	public static Block BoundingBlock = (BlockBounding)new BlockBounding();
+	public static Block GasTank = new BlockGasTank();
+	public static Block CardboardBox = new BlockCardboardBox();
+	public static Block PlasticBlock = new BlockPlastic(PlasticBlockType.PLASTIC);
+	public static Block SlickPlasticBlock = new BlockPlastic(PlasticBlockType.SLICK);
+	public static Block GlowPlasticBlock = new BlockPlastic(PlasticBlockType.GLOW);
+	public static Block ReinforcedPlasticBlock = new BlockPlastic(PlasticBlockType.REINFORCED);
+	public static Block RoadPlasticBlock = new BlockPlastic(PlasticBlockType.ROAD);
+	public static Block PlasticFence = new BlockPlasticFence();
+	public static Block SaltBlock = new BlockSalt();
 
 	private static final IStateMapper machineMapper = new MachineBlockStateMapper();
 	private static final IStateMapper basicMapper = new BasicBlockStateMapper();
@@ -69,24 +69,24 @@ public class MekanismBlocks
 	 */
 	public static void register()
 	{
-		GameRegistry.register(BasicBlock);
-		GameRegistry.register(BasicBlock2);
-		GameRegistry.register(MachineBlock);
-		GameRegistry.register(MachineBlock2);
-		GameRegistry.register(MachineBlock3);
-		GameRegistry.register(OreBlock);
-		GameRegistry.register(EnergyCube);
-		GameRegistry.register(ObsidianTNT);
-		GameRegistry.register(BoundingBlock);
-		GameRegistry.register(GasTank);
-		GameRegistry.register(CardboardBox);
-		GameRegistry.register(PlasticBlock);
-		GameRegistry.register(SlickPlasticBlock);
-		GameRegistry.register(GlowPlasticBlock);
-		GameRegistry.register(ReinforcedPlasticBlock);
-		GameRegistry.register(RoadPlasticBlock);
-		GameRegistry.register(PlasticFence);
-		GameRegistry.register(SaltBlock);
+		GameRegistry.register(init(BasicBlock, "BasicBlock"));
+		GameRegistry.register(init(BasicBlock2, "BasicBlock2"));
+		GameRegistry.register(init(MachineBlock, "MachineBlock"));
+		GameRegistry.register(init(MachineBlock2, "MachineBlock2"));
+		GameRegistry.register(init(MachineBlock3, "MachineBlock3"));
+		GameRegistry.register(init(OreBlock, "OreBlock"));
+		GameRegistry.register(init(EnergyCube, "EnergyCube"));
+		GameRegistry.register(init(ObsidianTNT, "ObsidianTNT"));
+		GameRegistry.register(init(BoundingBlock, "BoundingBlock"));
+		GameRegistry.register(init(GasTank, "GasTank"));
+		GameRegistry.register(init(CardboardBox, "CardboardBox"));
+		GameRegistry.register(init(PlasticBlock, "PlasticBlock"));
+		GameRegistry.register(init(SlickPlasticBlock, "SlickPlasticBlock"));
+		GameRegistry.register(init(GlowPlasticBlock, "GlowPlasticBlock"));
+		GameRegistry.register(init(ReinforcedPlasticBlock, "ReinforcedPlasticBlock"));
+		GameRegistry.register(init(RoadPlasticBlock, "RoadPlasticBlock"));
+		GameRegistry.register(init(PlasticFence, "PlasticFence"));
+		GameRegistry.register(init(SaltBlock, "SaltBlock"));
 		
 		GameRegistry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock), "BasicBlock"));
 		GameRegistry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock2), "BasicBlock2"));

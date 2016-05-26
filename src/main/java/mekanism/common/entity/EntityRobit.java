@@ -67,10 +67,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public boolean texTick;
 	
-    private static final DataParameter<Float> ELECTRICITY = EntityDataManager.<Float>createKey(EntityBalloon.class, DataSerializers.FLOAT);
-    private static final DataParameter<String> OWNER = EntityDataManager.<String>createKey(EntityBalloon.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.<Boolean>createKey(EntityBalloon.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.<Boolean>createKey(EntityBalloon.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Float> ELECTRICITY = EntityDataManager.<Float>createKey(EntityRobit.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> OWNER = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
 
 	public EntityRobit(World world)
 	{

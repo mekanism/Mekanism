@@ -43,7 +43,7 @@ public class CTMModelFactory implements IPerspectiveAwareModel
 
     private ModelCTM model;
     
-    private CTMOverride override;
+    private CTMOverride override = new CTMOverride();
 
     public CTMModelFactory(List<BakedQuad> f, List<BakedQuad> g, ModelCTM m)
     {
@@ -62,7 +62,7 @@ public class CTMModelFactory implements IPerspectiveAwareModel
     {
     	CTMModelFactory baked;
     	
-    	if(stateIn.getBlock() instanceof ICTMBlock && stateIn instanceof IExtendedBlockState) 
+    	if(stateIn != null && stateIn.getBlock() instanceof ICTMBlock && stateIn instanceof IExtendedBlockState) 
         {
             IExtendedBlockState state = (IExtendedBlockState)stateIn;
             CTMBlockRenderContext ctxList = state.getValue(BlockStateBasic.ctmProperty);

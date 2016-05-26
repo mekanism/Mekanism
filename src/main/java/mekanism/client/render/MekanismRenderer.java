@@ -298,7 +298,7 @@ public class MekanismRenderer
 	
 	public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite)
 	{
-		int[] vertices = new int[28];
+		int[] vertices = new int[quad.getVertexData().length];
 		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
 		
 	    for(int i = 0; i < 4; ++i)
@@ -314,7 +314,7 @@ public class MekanismRenderer
 	
     public static BakedQuad rotate(BakedQuad quad, int amount)
     {
-		int[] vertices = new int[28];
+		int[] vertices = new int[quad.getVertexData().length];
 		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
 		
 		for(int i = 0; i < 4; i++)

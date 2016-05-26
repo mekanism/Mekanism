@@ -1,6 +1,5 @@
 package mekanism.generators.common;
 
-import static mekanism.common.MekanismItems.init;
 import mekanism.common.item.ItemMekanism;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
@@ -15,22 +14,27 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("MekanismGenerators")
 public class GeneratorsItems
 {
-	public static final Item SolarPanel = init(new ItemMekanism(), "SolarPanel");
-	public static final ItemHohlraum Hohlraum = (ItemHohlraum)init(new ItemHohlraum(), "Hohlraum");
-	public static final Item TurbineBlade = init(new ItemMekanism() {
+	public static final Item SolarPanel = new ItemMekanism();
+	public static final ItemHohlraum Hohlraum = (ItemHohlraum)new ItemHohlraum();
+	public static final Item TurbineBlade = new ItemMekanism() {
 		@Override
 		public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player)
 		{
 			return world.getTileEntity(pos) instanceof TileEntityTurbineRotor;
 		}
-	}, "TurbineBlade");
+	};
 
 	public static void register()
 	{
-		GameRegistry.register(SolarPanel);
-		GameRegistry.register(Hohlraum);
-		GameRegistry.register(TurbineBlade);
+		GameRegistry.register(init(SolarPanel, "SolarPanel"));
+		GameRegistry.register(init(Hohlraum, "Hohlraum"));
+		GameRegistry.register(init(TurbineBlade, "TurbineBlade"));
 		
 		MekanismGenerators.proxy.registerItemRenders();
+	}
+	
+	public static Item init(Item item, String name)
+	{
+		return item.setUnlocalizedName(name).setRegistryName("mekanismgenerators:" + name);
 	}
 }

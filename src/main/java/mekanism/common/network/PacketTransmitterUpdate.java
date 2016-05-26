@@ -209,6 +209,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				case FLUID:
 					if(fluidStack != null)
 					{
+						dataStream.writeBoolean(true);
 						PacketHandler.writeString(dataStream, FluidRegistry.getFluidName(fluidStack));
 						dataStream.writeInt(fluidStack.amount);
 					}
