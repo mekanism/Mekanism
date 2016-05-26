@@ -213,6 +213,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -275,7 +276,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos)
+	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand)
 	{
 		TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)entityplayer.worldObj.getTileEntity(pos);
 
@@ -287,11 +288,11 @@ public class ClientProxy extends CommonProxy
 				entityplayer.openContainer.windowId = windowId;
 			}
 			else {
-				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				ItemStack stack = entityplayer.getHeldItem(hand);
 
 				if(MachineType.get(stack) == MachineType.PERSONAL_CHEST)
 				{
-					InventoryPersonalChest inventory = new InventoryPersonalChest(entityplayer);
+					InventoryPersonalChest inventory = new InventoryPersonalChest(entityplayer, hand);
 					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
 					entityplayer.openContainer.windowId = windowId;
 				}
@@ -417,65 +418,7 @@ public class ClientProxy extends CommonProxy
 	
 	@Override
 	public void registerBlockRenders()
-	{
-		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new IBlockColor() {
-			@Override
-			public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex)
-			{
-				BlockMachine machine = (BlockMachine)state.getBlock();
-				
-				if(state.getValue(machine.getMachineBlock().getProperty()) == MachineType.FLUID_TANK)
-				{
-					EnumColor color = state.getValue(BlockStateMachine.tierProperty).getColor();
-					
-					return (int)(color.getColor(0)*255) << 16 | (int)(color.getColor(1)*255) << 8 | (int)(color.getColor(2)*255);
-				}
-				
-				return -1;
-			}
-		}, MekanismBlocks.MachineBlock, MekanismBlocks.MachineBlock2, MekanismBlocks.MachineBlock3);
-		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new IBlockColor() {
-			@Override
-			public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex)
-			{
-				EnumDyeColor color = state.getValue(colorProperty);
-				EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
-				
-				return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
-			}
-		}, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock, 
-		MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
-		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
-			@Override
-			public int getColorFromItemstack(ItemStack stack, int tintIndex) 
-			{
-				if(MachineType.get(stack) == MachineType.FLUID_TANK)
-				{
-					EnumColor color = ((ItemBlockMachine)stack.getItem()).getBaseTier(stack).getColor();
-					
-					return (int)(color.getColor(0)*255) << 16 | (int)(color.getColor(1)*255) << 8 | (int)(color.getColor(2)*255);
-				}
-				
-				return -1;
-			}
-		}, MekanismBlocks.MachineBlock, MekanismBlocks.MachineBlock2, MekanismBlocks.MachineBlock3);
-		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
-			@Override
-			public int getColorFromItemstack(ItemStack stack, int tintIndex) 
-			{
-				if(stack.getItem() instanceof ItemBlockPlastic)
-				{
-					EnumDyeColor dyeColor = EnumDyeColor.byMetadata(stack.getItemDamage()&15);
-					EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
-					
-					return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
-				}
-				
-				return -1;
-			}
-		}, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock, 
-		MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
-		
+	{		
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
@@ -750,11 +693,11 @@ public class ClientProxy extends CommonProxy
 			case 13:
 				return new GuiTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
 			case 14:
-				ItemStack itemStack = player.getCurrentEquippedItem();
+				ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
 
 				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{
-					return new GuiTeleporter(player, itemStack);
+					return new GuiTeleporter(player, EnumHand.values()[pos.getX()], itemStack);
 				}
 			case 15:
 				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
@@ -809,7 +752,7 @@ public class ClientProxy extends CommonProxy
 			case 37:
 				return new GuiChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer)tileEntity);
 			case 38:
-				ItemStack itemStack1 = player.getCurrentEquippedItem();
+				ItemStack itemStack1 = player.getHeldItem(EnumHand.values()[pos.getX()]);
 
 				if(itemStack1 != null && itemStack1.getItem() instanceof ItemSeismicReader)
 				{
@@ -906,9 +849,67 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void loadUtilities()
+	public void init()
 	{
-		super.loadUtilities();
+		super.init();
+		
+		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new IBlockColor() {
+			@Override
+			public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex)
+			{
+				BlockMachine machine = (BlockMachine)state.getBlock();
+				
+				if(state.getValue(machine.getMachineBlock().getProperty()) == MachineType.FLUID_TANK)
+				{
+					EnumColor color = state.getValue(BlockStateMachine.tierProperty).getColor();
+					
+					return (int)(color.getColor(0)*255) << 16 | (int)(color.getColor(1)*255) << 8 | (int)(color.getColor(2)*255);
+				}
+				
+				return -1;
+			}
+		}, MekanismBlocks.MachineBlock, MekanismBlocks.MachineBlock2, MekanismBlocks.MachineBlock3);
+		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new IBlockColor() {
+			@Override
+			public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex)
+			{
+				EnumDyeColor color = state.getValue(colorProperty);
+				EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
+				
+				return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
+			}
+		}, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock, 
+		MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
+		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
+			@Override
+			public int getColorFromItemstack(ItemStack stack, int tintIndex) 
+			{
+				if(MachineType.get(stack) == MachineType.FLUID_TANK)
+				{
+					EnumColor color = ((ItemBlockMachine)stack.getItem()).getBaseTier(stack).getColor();
+					
+					return (int)(color.getColor(0)*255) << 16 | (int)(color.getColor(1)*255) << 8 | (int)(color.getColor(2)*255);
+				}
+				
+				return -1;
+			}
+		}, MekanismBlocks.MachineBlock, MekanismBlocks.MachineBlock2, MekanismBlocks.MachineBlock3);
+		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
+			@Override
+			public int getColorFromItemstack(ItemStack stack, int tintIndex) 
+			{
+				if(stack.getItem() instanceof ItemBlockPlastic)
+				{
+					EnumDyeColor dyeColor = EnumDyeColor.byMetadata(stack.getItemDamage()&15);
+					EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
+					
+					return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
+				}
+				
+				return -1;
+			}
+		}, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock, 
+		MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
 		
 		MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
 		MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());

@@ -15,7 +15,9 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -30,7 +32,7 @@ public class ItemNetworkReader extends ItemEnergized
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
@@ -61,7 +63,7 @@ public class ItemNetworkReader extends ItemEnergized
 					
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 					
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 				else if(MekanismUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 				{
@@ -72,7 +74,7 @@ public class ItemNetworkReader extends ItemEnergized
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 				else {
 					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
@@ -100,7 +102,7 @@ public class ItemNetworkReader extends ItemEnergized
 						}
 					}
 					
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 			}
 
@@ -118,7 +120,7 @@ public class ItemNetworkReader extends ItemEnergized
 			}
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override

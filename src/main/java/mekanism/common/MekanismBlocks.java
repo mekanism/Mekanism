@@ -23,8 +23,15 @@ import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.ItemBlockCardboardBox;
+import mekanism.common.item.ItemBlockEnergyCube;
+import mekanism.common.item.ItemBlockGasTank;
+import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemBlockOre;
+import mekanism.common.item.ItemBlockPlastic;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
@@ -32,24 +39,24 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("Mekanism")
 public class MekanismBlocks
 {
-	public static final Block BasicBlock = BlockBasic.getBlockBasic(BASIC_BLOCK_1).setUnlocalizedName("BasicBlock");
-	public static final Block BasicBlock2 = BlockBasic.getBlockBasic(BASIC_BLOCK_2).setUnlocalizedName("BasicBlock2");
-	public static final Block MachineBlock = BlockMachine.getBlockMachine(MACHINE_BLOCK_1).setUnlocalizedName("MachineBlock");
-	public static final Block MachineBlock2 = BlockMachine.getBlockMachine(MACHINE_BLOCK_2).setUnlocalizedName("MachineBlock2");
-	public static final Block MachineBlock3 = BlockMachine.getBlockMachine(MACHINE_BLOCK_3).setUnlocalizedName("MachineBlock3");
-	public static final Block OreBlock = new BlockOre().setUnlocalizedName("OreBlock");
-	public static final Block ObsidianTNT = new BlockObsidianTNT().setUnlocalizedName("ObsidianTNT").setCreativeTab(Mekanism.tabMekanism);
-	public static final Block EnergyCube = new BlockEnergyCube().setUnlocalizedName("EnergyCube");
-	public static final Block BoundingBlock = (BlockBounding)new BlockBounding().setUnlocalizedName("BoundingBlock");
-	public static final Block GasTank = new BlockGasTank().setUnlocalizedName("GasTank");
-	public static final Block CardboardBox = new BlockCardboardBox().setUnlocalizedName("CardboardBox");
-	public static final Block PlasticBlock = new BlockPlastic(PlasticBlockType.PLASTIC).setUnlocalizedName("PlasticBlock");
-	public static final Block SlickPlasticBlock = new BlockPlastic(PlasticBlockType.SLICK).setUnlocalizedName("SlickPlasticBlock");
-	public static final Block GlowPlasticBlock = new BlockPlastic(PlasticBlockType.GLOW).setUnlocalizedName("GlowPlasticBlock");
-	public static final Block ReinforcedPlasticBlock = new BlockPlastic(PlasticBlockType.REINFORCED).setUnlocalizedName("ReinforcedPlasticBlock");
-	public static final Block RoadPlasticBlock = new BlockPlastic(PlasticBlockType.ROAD).setUnlocalizedName("RoadPlasticBlock");
-	public static final Block PlasticFence = new BlockPlasticFence().setUnlocalizedName("PlasticFence");
-	public static final Block SaltBlock = new BlockSalt().setUnlocalizedName("SaltBlock");
+	public static final Block BasicBlock = init(BlockBasic.getBlockBasic(BASIC_BLOCK_1), "BasicBlock");
+	public static final Block BasicBlock2 = init(BlockBasic.getBlockBasic(BASIC_BLOCK_2), "BasicBlock2");
+	public static final Block MachineBlock = init(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), "MachineBlock");
+	public static final Block MachineBlock2 = init(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), "MachineBlock2");
+	public static final Block MachineBlock3 = init(BlockMachine.getBlockMachine(MACHINE_BLOCK_3), "MachineBlock3");
+	public static final Block OreBlock = init(new BlockOre(), "OreBlock");
+	public static final Block ObsidianTNT = init(new BlockObsidianTNT(), "ObsidianTNT").setCreativeTab(Mekanism.tabMekanism);
+	public static final Block EnergyCube = init(new BlockEnergyCube(), "EnergyCube");
+	public static final Block BoundingBlock = (BlockBounding)init(new BlockBounding(), "BoundingBlock");
+	public static final Block GasTank = init(new BlockGasTank(), "GasTank");
+	public static final Block CardboardBox = init(new BlockCardboardBox(), "CardboardBox");
+	public static final Block PlasticBlock = init(new BlockPlastic(PlasticBlockType.PLASTIC), "PlasticBlock");
+	public static final Block SlickPlasticBlock = init(new BlockPlastic(PlasticBlockType.SLICK), "SlickPlasticBlock");
+	public static final Block GlowPlasticBlock = init(new BlockPlastic(PlasticBlockType.GLOW), "GlowPlasticBlock");
+	public static final Block ReinforcedPlasticBlock = init(new BlockPlastic(PlasticBlockType.REINFORCED), "ReinforcedPlasticBlock");
+	public static final Block RoadPlasticBlock = init(new BlockPlastic(PlasticBlockType.ROAD), "RoadPlasticBlock");
+	public static final Block PlasticFence = init(new BlockPlasticFence(), "PlasticFence");
+	public static final Block SaltBlock = init(new BlockSalt(), "SaltBlock");
 
 	private static final IStateMapper machineMapper = new MachineBlockStateMapper();
 	private static final IStateMapper basicMapper = new BasicBlockStateMapper();
@@ -81,21 +88,24 @@ public class MekanismBlocks
 		GameRegistry.register(PlasticFence);
 		GameRegistry.register(SaltBlock);
 		
-		GameRegistry.register(new ItemBlockBasic(BasicBlock).setUnlocalizedName("BasicBlock"));
-		GameRegistry.register(new ItemBlockBasic(BasicBlock2).setUnlocalizedName("BasicBlock2"));
-		GameRegistry.register(new ItemBlockBasic(MachineBlock).setUnlocalizedName("MachineBlock"));
-		GameRegistry.register(new ItemBlockBasic(MachineBlock2).setUnlocalizedName("MachineBlock2"));
-		GameRegistry.register(new ItemBlockBasic(MachineBlock3).setUnlocalizedName("MachineBlock3"));
-		GameRegistry.register(new ItemBlockBasic(OreBlock).setUnlocalizedName("OreBlock"));
-		GameRegistry.register(new ItemBlockBasic(EnergyCube).setUnlocalizedName("EnergyCube"));
-		GameRegistry.register(new ItemBlockBasic(GasTank).setUnlocalizedName("GasTank"));
-		GameRegistry.register(new ItemBlockBasic(CardboardBox).setUnlocalizedName("CardboardBox"));
-		GameRegistry.register(new ItemBlockBasic(PlasticBlock).setUnlocalizedName("PlasticBlock"));
-		GameRegistry.register(new ItemBlockBasic(SlickPlasticBlock).setUnlocalizedName("SlickPlasticBlock"));
-		GameRegistry.register(new ItemBlockBasic(GlowPlasticBlock).setUnlocalizedName("GlowPlasticBlock"));
-		GameRegistry.register(new ItemBlockBasic(ReinforcedPlasticBlock).setUnlocalizedName("ReinforcedPlasticBlock"));
-		GameRegistry.register(new ItemBlockBasic(RoadPlasticBlock).setUnlocalizedName("RoadPlasticBlock"));
-		GameRegistry.register(new ItemBlockBasic(PlasticFence).setUnlocalizedName("PlasticFence"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock), "BasicBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock2), "BasicBlock2"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock), "MachineBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock2), "MachineBlock2"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock3), "MachineBlock3"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockOre(OreBlock), "OreBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockEnergyCube(EnergyCube), "EnergyCube"));
+		GameRegistry.register(MekanismItems.init(new ItemBlock(ObsidianTNT), "ObsidianTNT"));
+		GameRegistry.register(MekanismItems.init(new ItemBlock(BoundingBlock), "BoundingBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockGasTank(GasTank), "GasTank"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockCardboardBox(CardboardBox), "CardboardBox"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(PlasticBlock), "PlasticBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(SlickPlasticBlock), "SlickPlasticBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(GlowPlasticBlock), "GlowPlasticBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(ReinforcedPlasticBlock), "ReinforcedPlasticBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(RoadPlasticBlock), "RoadPlasticBlock"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(PlasticFence), "PlasticFence"));
+		GameRegistry.register(MekanismItems.init(new ItemBlock(SaltBlock), "SaltBlock"));
 
 		ModelLoader.setCustomStateMapper(MachineBlock, machineMapper);
 		ModelLoader.setCustomStateMapper(MachineBlock2, machineMapper);
@@ -111,5 +121,10 @@ public class MekanismBlocks
 		ModelLoader.setCustomStateMapper(CardboardBox, boxMapper);
 		
 		Mekanism.proxy.registerBlockRenders();
+	}
+	
+	public static Block init(Block block, String name)
+	{
+		return block.setUnlocalizedName(name).setRegistryName("mekanism:" + name);
 	}
 }

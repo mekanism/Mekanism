@@ -52,7 +52,7 @@ public class TileSound extends MekSound implements IResettableSound
 		super(resource, volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
 
 		source = soundSource;
-		sound = resource;
+		soundLocation = resource;
 		baseVolume = volume;
 	}
 

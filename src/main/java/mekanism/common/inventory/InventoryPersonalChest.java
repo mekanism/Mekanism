@@ -6,6 +6,7 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumHand;
 
 public class InventoryPersonalChest extends InventoryBasic
 {
@@ -13,11 +14,14 @@ public class InventoryPersonalChest extends InventoryBasic
 	public ItemStack itemStack;
 
 	public boolean reading;
+	
+	public EnumHand currentHand = EnumHand.MAIN_HAND;
 
-	public InventoryPersonalChest(EntityPlayer player)
+	public InventoryPersonalChest(EntityPlayer player, EnumHand hand)
 	{
 		super("PersonalChest", false, 55);
 		entityPlayer = player;
+		currentHand = hand;
 
 		read();
 	}
@@ -104,6 +108,6 @@ public class InventoryPersonalChest extends InventoryBasic
 
 	public ItemStack getStack()
 	{
-		return itemStack != null ? itemStack : entityPlayer.getCurrentEquippedItem();
+		return itemStack != null ? itemStack : entityPlayer.getHeldItem(currentHand);
 	}
 }

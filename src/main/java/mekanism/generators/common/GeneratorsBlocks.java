@@ -1,8 +1,10 @@
 package mekanism.generators.common;
 
+import static mekanism.common.MekanismBlocks.init;
 import static mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlock.GENERATOR_BLOCK_1;
 import static mekanism.generators.common.block.states.BlockStateReactor.ReactorBlock.REACTOR_BLOCK;
 import static mekanism.generators.common.block.states.BlockStateReactor.ReactorBlock.REACTOR_GLASS;
+import mekanism.common.MekanismItems;
 import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlockStateMapper;
@@ -18,18 +20,22 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("MekanismGenerators")
 public class GeneratorsBlocks
 {
-	public static final Block Generator = BlockGenerator.getGeneratorBlock(GENERATOR_BLOCK_1).setUnlocalizedName("Generator");
-	public static final Block Reactor = BlockReactor.getReactorBlock(REACTOR_BLOCK).setUnlocalizedName("Reactor");
-	public static final Block ReactorGlass = BlockReactor.getReactorBlock(REACTOR_GLASS).setUnlocalizedName("ReactorGlass");
+	public static final Block Generator = init(BlockGenerator.getGeneratorBlock(GENERATOR_BLOCK_1), "Generator");
+	public static final Block Reactor = init(BlockReactor.getReactorBlock(REACTOR_BLOCK), "Reactor");
+	public static final Block ReactorGlass = init(BlockReactor.getReactorBlock(REACTOR_GLASS), "ReactorGlass");
 
 	private static final IStateMapper generatorMapper = new GeneratorBlockStateMapper();
 	private static final IStateMapper reactorMapper = new ReactorBlockStateMapper();
 	
 	public static void register()
 	{
-		GameRegistry.registerBlock(Generator, ItemBlockGenerator.class, "Generator");
-		GameRegistry.registerBlock(Reactor, ItemBlockReactor.class, "Reactor");
-		GameRegistry.registerBlock(ReactorGlass, ItemBlockReactor.class, "ReactorGlass");
+		GameRegistry.register(Generator);
+		GameRegistry.register(Reactor);
+		GameRegistry.register(ReactorGlass);
+		
+		GameRegistry.register(MekanismItems.init(new ItemBlockGenerator(Generator), "Generator"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockReactor(Reactor), "Reactor"));
+		GameRegistry.register(MekanismItems.init(new ItemBlockReactor(ReactorGlass), "ReactorGlass"));
 		
 		ModelLoader.setCustomStateMapper(Generator, generatorMapper);
 		ModelLoader.setCustomStateMapper(Reactor, reactorMapper);

@@ -41,7 +41,7 @@ public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
+	
 	@Override
 	public IMultipart createPart(World world, BlockPos pos, EnumFacing dir, Vec3d hit, ItemStack stack, EntityPlayer player)
 	{

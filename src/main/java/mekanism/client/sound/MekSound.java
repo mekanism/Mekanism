@@ -2,7 +2,11 @@ package mekanism.client.sound;
 
 import mekanism.api.MekanismConfig.client;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.Sound;
+import net.minecraft.client.audio.SoundEventAccessor;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -19,9 +23,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MekSound implements ISound 
 {
+    protected Sound sound;
+    
+    protected SoundEventAccessor soundEvent;
+    
 	protected AttenuationType attenuation;
 	
-	protected ResourceLocation sound;
+	protected ResourceLocation soundLocation;
 	
 	protected float volume;
 	
@@ -105,7 +113,7 @@ public class MekSound implements ISound
 	public MekSound(ResourceLocation resource, float v, float p, boolean rep, int delay, double xPos, double yPos, double zPos, AttenuationType att)
 	{
 		attenuation = att;
-		sound = resource;
+		soundLocation = resource;
 		volume = v;
 		pitch = p;
 		x = (float)xPos;
@@ -118,7 +126,7 @@ public class MekSound implements ISound
 	public MekSound(MekSound other) 
 	{
 		attenuation = other.attenuation;
-		sound = other.sound;
+		soundLocation = other.soundLocation;
 		volume = other.volume;
 		pitch = other.pitch;
 		x = other.x;
@@ -137,7 +145,7 @@ public class MekSound implements ISound
 	@Override
 	public ResourceLocation getSoundLocation()
 	{
-		return sound;
+		return soundLocation;
 	}
 
 	@Override
@@ -180,5 +188,33 @@ public class MekSound implements ISound
 	public int getRepeatDelay() 
 	{
 		return repeatDelay;
+	}
+
+	@Override
+	public SoundEventAccessor createAccessor(SoundHandler handler) 
+	{
+        soundEvent = handler.getAccessor(soundLocation);
+
+        if(soundEvent == null)
+        {
+            sound = SoundHandler.MISSING_SOUND;
+        }
+        else {
+            sound = soundEvent.cloneEntry();
+        }
+
+        return soundEvent;
+	}
+
+	@Override
+	public Sound getSound() 
+	{
+		return sound;
+	}
+
+	@Override
+	public SoundCategory getCategory() 
+	{
+		return SoundCategory.BLOCKS;
 	}
 }

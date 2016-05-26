@@ -122,6 +122,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -196,7 +197,7 @@ public class CommonProxy implements IGuiProvider
 	 * @param isBlock - if the chest is a block
 	 * @param pos - coordinates
 	 */
-	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos) {}
+	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand) {}
 
 	/**
 	 * Register and load client-only item render information.
@@ -361,7 +362,7 @@ public class CommonProxy implements IGuiProvider
 	/**
 	 * Set up and load the utilities this mod uses.
 	 */
-	public void loadUtilities() 
+	public void init() 
 	{
 		MinecraftForge.EVENT_BUS.register(Mekanism.worldTickHandler);
 	}
@@ -429,7 +430,7 @@ public class CommonProxy implements IGuiProvider
 			case 13:
 				return new ContainerTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
 			case 14:
-				ItemStack itemStack = player.getCurrentEquippedItem();
+				ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
 
 				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{

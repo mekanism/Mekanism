@@ -1403,7 +1403,7 @@ public class Mekanism
 		packetHandler.initialize();
 
 		//Load proxy
-		proxy.loadUtilities();
+		proxy.init();
 		
 		//Completion notification
 		logger.info("Loading complete.");

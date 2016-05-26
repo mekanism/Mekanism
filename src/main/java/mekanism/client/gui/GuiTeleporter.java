@@ -33,6 +33,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -44,6 +45,8 @@ import org.lwjgl.opengl.GL11;
 public class GuiTeleporter extends GuiMekanism
 {
 	public static int MAX_LENGTH = 16;
+	
+	public EnumHand currentHand;
 	
 	public ResourceLocation resource;
 	
@@ -105,9 +108,10 @@ public class GuiTeleporter extends GuiMekanism
 		ySize+=64;
 	}
 	
-	public GuiTeleporter(EntityPlayer player, ItemStack stack)
+	public GuiTeleporter(EntityPlayer player, EnumHand hand, ItemStack stack)
 	{
 		super(new ContainerNull());
+		currentHand = hand;
 		itemStack = stack;
 		entityPlayer = player;
 		resource = MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTeleporter.png");
@@ -135,7 +139,7 @@ public class GuiTeleporter extends GuiMekanism
 			setFrequency(item.getFrequency(stack));
 		}
 		else {
-			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
+			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
 		}
 		
 		ySize = 175;
@@ -179,7 +183,7 @@ public class GuiTeleporter extends GuiMekanism
 			
 			if(!isInit)
 			{
-				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
+				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
 			}
 			else {
 				isInit = false;
@@ -206,7 +210,7 @@ public class GuiTeleporter extends GuiMekanism
 		else {
 			Frequency newFreq = new Frequency(freq, null).setPublic(!privateMode);
 			
-			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.SET_FREQ, newFreq));
+			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));
 		}
 	}
 	
@@ -386,8 +390,8 @@ public class GuiTeleporter extends GuiMekanism
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}
 				else {
-					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DEL_FREQ, freq));
-					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, null));
+					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
+					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
 				}
 				
 				scrollList.selected = -1;
@@ -398,7 +402,7 @@ public class GuiTeleporter extends GuiMekanism
 			if(clientFreq != null && clientStatus == 1)
 			{
 				mc.setIngameFocus();
-				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, clientFreq));
+				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, currentHand, clientFreq));
 			}
 		}
 		

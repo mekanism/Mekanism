@@ -938,17 +938,17 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		BlockPos offsetPos = pos.offset(side.getOpposite());
-		
-		if(BasicBlockType.get(world.getBlockState(offsetPos)) == BasicBlockType.STRUCTURAL_GLASS)
+		if(BasicBlockType.get(state) == BasicBlockType.STRUCTURAL_GLASS)
 		{
-			return ctmData[10][0].shouldRenderSide(world, pos, side);
+			if(!ctmData[10][0].shouldRenderSide(world, pos, side))
+			{
+				return false;
+			}
 		}
-		else {
-			return super.shouldSideBeRendered(world, pos, side);
-		}
+		
+		return super.shouldSideBeRendered(state, world, pos, side);
 	}
 
 	@Override

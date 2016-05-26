@@ -18,7 +18,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -32,11 +34,11 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 	}
 	
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(world.isRemote) 
 		{
-			return false;
+			return EnumActionResult.PASS;
 		}
 		
 		TileEntity tile = world.getTileEntity(pos);
@@ -44,7 +46,7 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 		
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).playersUsing.size() > 0)
 		{
-			return true;
+			return EnumActionResult.FAIL;
 		}
 		
 		if(tile instanceof TileEntityFactory && tier != FactoryTier.BASIC)
@@ -63,7 +65,7 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 					stack.stackSize = 0;
 				}
 				
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 		}
 		else if(tile != null && tier == FactoryTier.BASIC)
@@ -74,6 +76,7 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 			{
 				ItemStack machineStack = iterType.getStack();
 				IBlockState state = world.getBlockState(pos);
+				
 				if(Block.getBlockFromItem(machineStack.getItem()) == state.getBlock() && machineStack.getItemDamage() == state.getBlock().getMetaFromState(state))
 				{
 					type = iterType;
@@ -92,7 +95,7 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 						stack.stackSize = 0;
 					}
 					
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 				else if(tile instanceof TileEntityAdvancedElectricMachine)
 				{
@@ -103,7 +106,7 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 						stack.stackSize = 0;
 					}
 					
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 				else if(tile instanceof TileEntityMetallurgicInfuser)
 				{
@@ -114,12 +117,12 @@ public class ItemFactoryInstaller extends ItemMekanism implements IMetaItem
 						stack.stackSize = 0;
 					}
 					
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 			}
 		}
 		
-		return false;
+		return EnumActionResult.PASS;
 	}
 	
 	private int getOutputSlot(FactoryTier tier, int operation)

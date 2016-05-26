@@ -45,7 +45,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		GlStateManager.pushMatrix();
 
 		EntityPlayer player = mc.thePlayer;
-		ItemStack itemStack = player.getCurrentEquippedItem();
+		ItemStack itemStack = player.inventory.getCurrentItem();
 		RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 
 		if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack).isConfigurating())

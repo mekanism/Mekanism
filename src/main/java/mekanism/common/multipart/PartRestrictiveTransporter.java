@@ -1,6 +1,7 @@
 package mekanism.common.multipart;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
@@ -31,8 +32,8 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	}
 	
 	@Override
-	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
+	protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
-		return false;
+		return EnumActionResult.PASS;
 	}
 }

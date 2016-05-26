@@ -16,6 +16,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -76,7 +78,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
@@ -90,7 +92,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 			itemstack.stackSize--;
 		}
 
-		return itemstack;
+		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 	}
 
 	@Override
@@ -113,7 +115,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
 		{
@@ -123,7 +125,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 
 			if(balloonsNear.size() > 0)
 			{
-				return true;
+				return EnumActionResult.FAIL;
 			}
 
 			if(world.getBlockState(pos).getBlock().isReplaceable(world, pos))
@@ -133,7 +135,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 			
 			if(!world.isSideSolid(pos, EnumFacing.UP))
 			{
-				return true;
+				return EnumActionResult.FAIL;
 			}
 
 			if(canReplace(world, pos.up()) && canReplace(world, pos.up(2)))
@@ -146,12 +148,14 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 					world.spawnEntityInWorld(new EntityBalloon(world, new Coord4D(pos, world), getColor(stack)));
 					stack.stackSize--;
 				}
+				
+				return EnumActionResult.SUCCESS;
 			}
 
-			return true;
+			return EnumActionResult.FAIL;
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override

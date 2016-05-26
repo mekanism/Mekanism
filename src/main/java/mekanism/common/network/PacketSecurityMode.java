@@ -10,6 +10,7 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -36,7 +37,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 			}
 		}
 		else {
-			ItemStack stack = player.getCurrentEquippedItem();
+			ItemStack stack = player.getHeldItem(message.currentHand);
 			
 			if(stack.getItem() instanceof ISecurityItem)
 			{
@@ -51,6 +52,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 	{
 		public SecurityPacketType packetType;
 		public Coord4D coord4D;
+		public EnumHand currentHand;
 		public SecurityMode value;
 		
 		public SecurityModeMessage() {}
@@ -63,10 +65,11 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 			value = control;
 		}
 		
-		public SecurityModeMessage(SecurityMode control)
+		public SecurityModeMessage(EnumHand hand, SecurityMode control)
 		{
 			packetType = SecurityPacketType.ITEM;
 			
+			currentHand = hand;
 			value = control;
 		}
 	
@@ -78,6 +81,9 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 			if(packetType == SecurityPacketType.BLOCK)
 			{
 				coord4D.write(dataStream);
+			}
+			else {
+				dataStream.writeInt(currentHand.ordinal());
 			}
 	
 			dataStream.writeInt(value.ordinal());
@@ -91,6 +97,9 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 			if(packetType == SecurityPacketType.BLOCK)
 			{
 				coord4D = Coord4D.read(dataStream);
+			}
+			else {
+				currentHand = EnumHand.values()[dataStream.readInt()];
 			}
 			
 			value = SecurityMode.values()[dataStream.readInt()];

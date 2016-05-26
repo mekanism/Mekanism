@@ -96,7 +96,7 @@ public class BlockStateMachine extends ExtendedBlockState
 		{
 			if(machineTypeProperty == null)
 			{
-				machineTypeProperty = PropertyEnum.create("machineType", MachineType.class, new MachineBlockPredicate(this));
+				machineTypeProperty = PropertyEnum.create("type", MachineType.class, new MachineBlockPredicate(this));
 			}
 
 			return machineTypeProperty;

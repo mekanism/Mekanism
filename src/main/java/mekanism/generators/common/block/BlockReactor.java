@@ -266,27 +266,20 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		BlockPos offsetPos = pos.offset(side.getOpposite());
+		int meta = state.getBlock().getMetaFromState(state);
+		ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta);
 		
-		if(this == GeneratorsBlocks.ReactorGlass)
+		if(type == ReactorBlockType.REACTOR_GLASS || type == ReactorBlockType.LASER_FOCUS_MATRIX)
 		{
-			IBlockState state = world.getBlockState(offsetPos);
-			int metadata = state.getBlock().getMetaFromState(state);
-			
-			switch(metadata)
+			if(!ctmData[meta].shouldRenderSide(world, pos, side))
 			{
-				case 0:
-				case 1:
-					return ctmData[metadata].shouldRenderSide(world, pos, side);
-				default:
-					return super.shouldSideBeRendered(world, pos, side);
+				return false;
 			}
 		}
-		else {
-			return super.shouldSideBeRendered(world, pos, side);
-		}
+			
+		return super.shouldSideBeRendered(state, world, pos, side);
 	}
 	
 	@Override

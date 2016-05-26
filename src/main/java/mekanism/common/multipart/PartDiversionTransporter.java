@@ -14,6 +14,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
@@ -105,7 +106,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
+	protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
 		int newMode = (modes[side.ordinal()] + 1) % 3;
 		String description = "ERROR";
@@ -132,7 +133,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		Coord4D coord = new Coord4D(getPos(), getWorld());
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<Object>())), new Range4D(coord));
 
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override

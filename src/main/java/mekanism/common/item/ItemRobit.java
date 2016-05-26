@@ -13,7 +13,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,13 +39,14 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, BlockPos pos, EnumFacing side, float posX, float posY, float posZ)
+	public EnumActionResult onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, BlockPos pos, EnumHand hand, EnumFacing side, float posX, float posY, float posZ)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if(tileEntity instanceof TileEntityChargepad)
 		{
 			TileEntityChargepad chargepad = (TileEntityChargepad)tileEntity;
+			
 			if(!chargepad.isActive)
 			{
 				if(!world.isRemote)
@@ -59,13 +62,13 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 					world.spawnEntityInWorld(robit);
 				}
 
-				entityplayer.setCurrentItemOrArmor(0, null);
+				entityplayer.setHeldItem(hand, null);
 
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override

@@ -33,6 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
@@ -333,7 +334,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
+	protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
 		TransporterUtils.incrementColor(getTransmitter());
 		refreshConnections();
@@ -342,15 +343,16 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld())));
 		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		super.onRightClick(player, side);
 		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : "None")));
-		return true;
+		
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override

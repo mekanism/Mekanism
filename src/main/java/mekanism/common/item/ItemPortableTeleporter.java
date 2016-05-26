@@ -15,6 +15,9 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
@@ -46,7 +49,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
@@ -58,7 +61,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			else {
 				if(SecurityUtils.canAccess(entityplayer, itemstack))
 				{
-					entityplayer.openGui(Mekanism.instance, 14, world, 0, 0, 0);
+					entityplayer.openGui(Mekanism.instance, 14, world, hand.ordinal(), 0, 0);
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -66,7 +69,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			}
 		}
 		
-		return itemstack;
+		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 	}
 
 	public static double calculateEnergyCost(Entity entity, Coord4D coords)

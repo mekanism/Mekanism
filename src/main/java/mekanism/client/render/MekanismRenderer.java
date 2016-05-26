@@ -296,38 +296,34 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite) //TODO
+	public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite)
 	{
 		int[] vertices = new int[28];
 		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
 		
-		vertices[4] = Float.floatToRawIntBits(sprite.getInterpolatedU(16));
-		vertices[5] = Float.floatToRawIntBits(sprite.getInterpolatedV(16));
-		
-		vertices[7+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(16));
-		vertices[7+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(0));
-		
-		vertices[14+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(0));
-		vertices[14+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(0));
-		
-		vertices[21+4] = Float.floatToRawIntBits(sprite.getInterpolatedU(0));
-		vertices[21+5] = Float.floatToRawIntBits(sprite.getInterpolatedV(16));
-		
+	    for(int i = 0; i < 4; ++i)
+        {
+            int j = quad.getFormat().getIntegerSize() * i;
+            int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
+            vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(sprite.getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
+            vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(sprite.getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
+        }
+	    
 		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), quad.getFormat());
 	}
 	
-    public static BakedQuad rotate(BakedQuad quad, int amount) //TODO
+    public static BakedQuad rotate(BakedQuad quad, int amount)
     {
 		int[] vertices = new int[28];
 		System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
 		
-		int[][] uvs = new int[4][2];
-		
 		for(int i = 0; i < 4; i++)
 		{
 			int nextIndex = (i+amount)%4;
-			vertices[7*i + 4] = quad.getVertexData()[7*nextIndex + 4];
-			vertices[7*i + 5] = quad.getVertexData()[7*nextIndex + 5];
+            int j = quad.getFormat().getIntegerSize() * i;
+            int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
+            vertices[j + uvIndex] = quad.getVertexData()[7*nextIndex + uvIndex];
+            vertices[j + uvIndex + 1] = quad.getVertexData()[7*nextIndex + uvIndex];
 		}
 		
 		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());

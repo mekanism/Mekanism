@@ -32,7 +32,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
@@ -66,7 +68,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
@@ -109,7 +111,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 						}
 					}
 					
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 				else if(MekanismUtils.hasCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side))
 				{
@@ -128,7 +130,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					else {
 						SecurityUtils.displayNoAccess(player);
 						
-						return true;
+						return EnumActionResult.SUCCESS;
 					}
 				}
 			}
@@ -184,11 +186,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 							}
 						}
 
-						return true;
+						return EnumActionResult.SUCCESS;
 					}
 					else {
 						SecurityUtils.displayNoAccess(player);
-						return true;
+						return EnumActionResult.FAIL;
 					}
 				}
 			}
@@ -205,15 +207,15 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					block.rotateBlock(world, pos, side.getOpposite());
 				}
 
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 			else if(getState(stack) == ConfiguratorMode.WRENCH) //Wrench
 			{
-				return false;
+				return EnumActionResult.PASS;
 			}
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 	
 	public String getViewModeText(TransmissionType type)

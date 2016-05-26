@@ -179,9 +179,9 @@ public class RenderTickHandler
 				{
 					for(EntityPlayer p : world.playerEntities)
 					{
-						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && p.inventory.getCurrentItem() != null && p.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 						{
-							if(((ItemFlamethrower)p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null)
+							if(((ItemFlamethrower)p.inventory.getCurrentItem().getItem()).getGas(p.inventory.getCurrentItem()) != null)
 							{
 								Pos3D playerPos = new Pos3D(p);
 								Pos3D flameVec;

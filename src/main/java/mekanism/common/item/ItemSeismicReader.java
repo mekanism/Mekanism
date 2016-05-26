@@ -7,6 +7,9 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
@@ -26,7 +29,7 @@ public class ItemSeismicReader extends ItemEnergized
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
 	{
 		Chunk3D chunk = new Chunk3D(entityplayer);
 		
@@ -37,7 +40,7 @@ public class ItemSeismicReader extends ItemEnergized
 				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.needsEnergy")));
 			}
 			
-			return itemstack;
+			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 		}
 		else if(!MekanismUtils.isChunkVibrated(chunk))
 		{
@@ -46,7 +49,7 @@ public class ItemSeismicReader extends ItemEnergized
 				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.noVibrations")));
 			}
 			
-			return itemstack;
+			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 		}
 		
 		if(!entityplayer.capabilities.isCreativeMode)
@@ -54,8 +57,8 @@ public class ItemSeismicReader extends ItemEnergized
 			setEnergy(itemstack, getEnergy(itemstack)-ENERGY_USAGE);
 		}
 		
-		entityplayer.openGui(Mekanism.instance, 38, world, (int)entityplayer.posX, (int)entityplayer.posY, (int)entityplayer.posZ);
+		entityplayer.openGui(Mekanism.instance, 38, world, hand.ordinal(), 0, 0);
 
-		return itemstack;
+		return new ActionResult(EnumActionResult.PASS, itemstack);
 	}
 }

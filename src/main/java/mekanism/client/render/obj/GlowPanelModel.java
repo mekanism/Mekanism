@@ -134,17 +134,22 @@ public class GlowPanelModel extends OBJBakedModelBase
     		return ImmutableList.of();
     	}
     	
-    	int hash = PartGlowPanel.hash((IExtendedBlockState)state);
-		EnumColor color = ((IExtendedBlockState)state).getValue(ColorProperty.INSTANCE).color;
-		
-		if(!glowPanelCache.containsKey(hash))
-		{
-			GlowPanelModel model = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, textureMap, transformationMap);
-			model.tempState = state;
-			glowPanelCache.put(hash, model.getQuads(state, side, rand));
-		}
-		
-		return glowPanelCache.get(hash);
+    	if(state != null && tempState == null)
+    	{
+	    	int hash = PartGlowPanel.hash((IExtendedBlockState)state);
+			EnumColor color = ((IExtendedBlockState)state).getValue(ColorProperty.INSTANCE).color;
+			
+			if(!glowPanelCache.containsKey(hash))
+			{
+				GlowPanelModel model = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, textureMap, transformationMap);
+				model.tempState = state;
+				glowPanelCache.put(hash, model.getQuads(state, side, rand));
+			}
+			
+			return glowPanelCache.get(hash);
+    	}
+    	
+    	return super.getQuads(state, side, rand);
 	}
 	
 	@Override

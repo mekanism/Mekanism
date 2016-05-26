@@ -102,38 +102,43 @@ public class TransmitterModel extends OBJBakedModelBase
     		return ImmutableList.of();
     	}
     	
-		IExtendedBlockState extended = (IExtendedBlockState)state;
-		BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-		ColorProperty colorProp = extended.getValue(ColorProperty.INSTANCE);
-		int color = -1;
-		
-		if(colorProp != null && colorProp.color != null)
-		{
-			color = extended.getValue(ColorProperty.INSTANCE).color.ordinal();
-		}
-		
-		OBJState obj = extended.getValue(OBJProperty.INSTANCE);
-		
-		if(layer != BlockRenderLayer.TRANSLUCENT)
-		{
-			color = -1;
-		}
-
-		int hash = Objects.hash(layer.ordinal(), color, obj.hashCode());
-		
-		if(obj.getVisibilityMap().containsKey(Group.ALL) || obj.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
-        {
-            updateStateVisibilityMap(obj);
-        }
-		
-		if(!modelCache.containsKey(hash))
-		{
-			TransmitterModel model = new TransmitterModel(baseModel, getModel(), obj, vertexFormat, textureMap, transformationMap);
-			model.tempState = state;
-			modelCache.put(hash, model.getQuads(state, side, rand));
-		}
-		
-		return modelCache.get(hash);
+    	if(state != null && tempState == null)
+    	{
+			IExtendedBlockState extended = (IExtendedBlockState)state;
+			BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+			ColorProperty colorProp = extended.getValue(ColorProperty.INSTANCE);
+			int color = -1;
+			
+			if(colorProp != null && colorProp.color != null)
+			{
+				color = extended.getValue(ColorProperty.INSTANCE).color.ordinal();
+			}
+			
+			OBJState obj = extended.getValue(OBJProperty.INSTANCE);
+			
+			if(layer != BlockRenderLayer.TRANSLUCENT)
+			{
+				color = -1;
+			}
+	
+			int hash = Objects.hash(layer.ordinal(), color, obj.hashCode());
+			
+			if(obj.getVisibilityMap().containsKey(Group.ALL) || obj.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
+	        {
+	            updateStateVisibilityMap(obj);
+	        }
+			
+			if(!modelCache.containsKey(hash))
+			{
+				TransmitterModel model = new TransmitterModel(baseModel, getModel(), obj, vertexFormat, textureMap, transformationMap);
+				model.tempState = state;
+				modelCache.put(hash, model.getQuads(state, side, rand));
+			}
+			
+			return modelCache.get(hash);
+    	}
+    	
+    	return super.getQuads(state, side, rand);
 	}
 	
 	@Override

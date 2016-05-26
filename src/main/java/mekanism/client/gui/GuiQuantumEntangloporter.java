@@ -13,8 +13,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
-import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
-import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.LangUtils;
@@ -271,19 +269,12 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			{
 				Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
 				
-				if(tileEntity != null)
-				{
-					ArrayList data = new ArrayList();
-					data.add(1);
-					data.add(freq.name);
-					data.add(freq.publicFreq);
-					
-					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				}
-				else {
-					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DEL_FREQ, freq));
-					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, null));
-				}
+				ArrayList data = new ArrayList();
+				data.add(1);
+				data.add(freq.name);
+				data.add(freq.publicFreq);
+				
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				
 				scrollList.selected = -1;
 			}

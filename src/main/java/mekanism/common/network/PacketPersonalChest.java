@@ -12,6 +12,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -33,11 +34,11 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 					MekanismUtils.openPersonalChestGui((EntityPlayerMP)player, tileEntity, null, true);
 				}
 				else {
-					ItemStack stack = player.getCurrentEquippedItem();
+					ItemStack stack = player.getHeldItem(message.currentHand);
 
 					if(MachineType.get(stack) == MachineType.PERSONAL_CHEST)
 					{
-						InventoryPersonalChest inventory = new InventoryPersonalChest(player);
+						InventoryPersonalChest inventory = new InventoryPersonalChest(player, message.currentHand);
 						MekanismUtils.openPersonalChestGui((EntityPlayerMP)player, null, inventory, false);
 					}
 				}
@@ -49,7 +50,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 		else if(message.packetType == PersonalChestPacketType.CLIENT_OPEN)
 		{
 			try {
-				Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock, message.coord4D == null ? BlockPos.ORIGIN : message.coord4D.getPos());
+				Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock, message.coord4D == null ? BlockPos.ORIGIN : message.coord4D.getPos(), message.currentHand);
 			} catch(Exception e) {
 				Mekanism.logger.error("Error while handling electric chest open packet.");
 				e.printStackTrace();
@@ -70,10 +71,12 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 	
 		public Coord4D coord4D;
 		
+		public EnumHand currentHand;
+		
 		public PersonalChestMessage() {}
 	
 		//This is a really messy implementation...
-		public PersonalChestMessage(PersonalChestPacketType type, boolean b1, int i1, int i2, Coord4D c1)
+		public PersonalChestMessage(PersonalChestPacketType type, boolean b1, int i1, int i2, Coord4D c1, EnumHand hand)
 		{
 			packetType = type;
 	
@@ -88,6 +91,9 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 					{
 						coord4D = c1;
 					}
+					else {
+						currentHand = hand;
+					}
 	
 					break;
 				case SERVER_OPEN:
@@ -96,6 +102,9 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 					if(isBlock)
 					{
 						coord4D = c1;
+					}
+					else {
+						currentHand = hand;
 					}
 	
 					break;
@@ -118,6 +127,9 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 					{
 						coord4D.write(dataStream);
 					}
+					else {
+						dataStream.writeInt(currentHand.ordinal());
+					}
 	
 					break;
 				case SERVER_OPEN:
@@ -126,6 +138,9 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 					if(isBlock)
 					{
 						coord4D.write(dataStream);
+					}
+					else {
+						dataStream.writeInt(currentHand.ordinal());
 					}
 	
 					break;
@@ -145,6 +160,9 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 				{
 					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 				}
+				else {
+					currentHand = EnumHand.values()[dataStream.readInt()];
+				}
 			}
 			else if(packetType == PersonalChestPacketType.CLIENT_OPEN)
 			{
@@ -155,6 +173,9 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 				if(isBlock)
 				{
 					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				}
+				else {
+					currentHand = EnumHand.values()[dataStream.readInt()];
 				}
 			}
 		}

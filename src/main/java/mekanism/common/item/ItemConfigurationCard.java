@@ -15,7 +15,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -38,7 +40,7 @@ public class ItemConfigurationCard extends ItemMekanism
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
@@ -62,7 +64,7 @@ public class ItemConfigurationCard extends ItemMekanism
 						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
 					}
 					
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 				else if(getData(stack) != null)
 				{
@@ -82,12 +84,12 @@ public class ItemConfigurationCard extends ItemMekanism
 						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.configurationCard.unequal") + "."));
 					}
 					
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 			}
 		}
 		
-		return false;
+		return EnumActionResult.FAIL;
 	}
 	
 	private NBTTagCompound getBaseData(TileEntity tile)

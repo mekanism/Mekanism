@@ -66,7 +66,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 		motionZ = motion.zCoord;
 		
 		owner = player;
-        mode = ((ItemFlamethrower)player.getCurrentEquippedItem().getItem()).getMode(player.getCurrentEquippedItem());
+        mode = ((ItemFlamethrower)player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
 	}
 	
     public void setHeading(Pos3D motion)

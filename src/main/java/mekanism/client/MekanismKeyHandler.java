@@ -31,6 +31,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -75,7 +76,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 		if(kb == modeSwitchKey)
 		{
 			EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
-			ItemStack toolStack = player.getCurrentEquippedItem();
+			ItemStack toolStack = player.inventory.getCurrentItem();
 
 			Item item = StackUtils.getItem(toolStack);
 			
@@ -85,7 +86,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 
 				int toSet = configurator.getState(toolStack).ordinal() < ConfiguratorMode.values().length-1 ? configurator.getState(toolStack).ordinal() + 1 : 0;
 				configurator.setState(toolStack, ConfiguratorMode.values()[toSet]);
-				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(configurator.getState(toolStack)));
+				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(EnumHand.MAIN_HAND, configurator.getState(toolStack)));
 				player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configureState") + ": " + configurator.getColor(configurator.getState(toolStack)) + configurator.getStateDisplay(configurator.getState(toolStack))));
 			}
 			else if(player.isSneaking() && item instanceof ItemElectricBow)
@@ -93,7 +94,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				ItemElectricBow bow = (ItemElectricBow)item;
 
 				bow.setFireState(toolStack, !bow.getFireState(toolStack));
-				Mekanism.packetHandler.sendToServer(new ElectricBowStateMessage(bow.getFireState(toolStack)));
+				Mekanism.packetHandler.sendToServer(new ElectricBowStateMessage(EnumHand.MAIN_HAND, bow.getFireState(toolStack)));
 				player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.fireMode") + ": " + (bow.getFireState(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(bow.getFireState(toolStack))));
 			}
 			else if(player.isSneaking() && item instanceof ItemBlockMachine)
@@ -103,7 +104,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				if(BlockStateMachine.MachineType.get(toolStack) == BlockStateMachine.MachineType.FLUID_TANK)
 				{
 					machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
-					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(machine.getBucketMode(toolStack)));
+					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(EnumHand.MAIN_HAND, machine.getBucketMode(toolStack)));
 					player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + (machine.getBucketMode(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(machine.getBucketMode(toolStack))));
 				}
 			}
@@ -115,7 +116,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				{
 					int newChan = wt.getChannel(toolStack) < 9 ? wt.getChannel(toolStack) + 1 : 1;
 					wt.setChannel(toolStack, newChan);
-					Mekanism.packetHandler.sendToServer(new WalkieTalkieStateMessage(newChan));
+					Mekanism.packetHandler.sendToServer(new WalkieTalkieStateMessage(EnumHand.MAIN_HAND, newChan));
 					SoundHandler.playSound(MekanismSounds.DING);
 				}
 			}
@@ -124,7 +125,7 @@ public class MekanismKeyHandler extends MekKeyHandler
                 ItemFlamethrower flamethrower = (ItemFlamethrower)item;
 
                 flamethrower.incrementMode(toolStack);
-                Mekanism.packetHandler.sendToServer(new PacketFlamethrowerData.FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.MODE, null, false));
+                Mekanism.packetHandler.sendToServer(new PacketFlamethrowerData.FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.MODE, EnumHand.MAIN_HAND, null, false));
                 player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.flamethrower.modeBump") + ": " + flamethrower.getMode(toolStack).getName()));
             }
 		}

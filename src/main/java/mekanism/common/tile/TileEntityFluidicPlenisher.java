@@ -32,6 +32,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -487,7 +488,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 	
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		activeNodes.clear();
 		usedNodes.clear();
@@ -495,13 +496,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
 
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
-		return false;
+		return EnumActionResult.PASS;
 	}
 	
 	@Override

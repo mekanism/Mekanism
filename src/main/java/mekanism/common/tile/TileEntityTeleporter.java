@@ -456,7 +456,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 			if(e != null)
 			{
-				e.copyDataFromOld(entity/*, true*/);
+				//e.copyDataFromOld(entity/*, true*/); TODO
 				world.spawnEntityInWorld(e);
 				teleporter.didTeleport.add(e.getPersistentID());
 			}

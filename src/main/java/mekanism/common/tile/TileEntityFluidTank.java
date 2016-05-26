@@ -29,6 +29,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
@@ -448,7 +449,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	}
 	
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(!worldObj.isRemote)
 		{
@@ -456,13 +457,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			worldObj.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
 		}
 		
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
-		return false;
+		return EnumActionResult.PASS;
 	}
 	
 	@Override

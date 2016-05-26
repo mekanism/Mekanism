@@ -57,7 +57,7 @@ public class CommonPlayerTickHandler
 			
 			if(!player.capabilities.isCreativeMode)
 			{
-				((ItemFlamethrower)player.getCurrentEquippedItem().getItem()).useGas(player.getCurrentEquippedItem());
+				((ItemFlamethrower)player.inventory.getCurrentItem().getItem()).useGas(player.inventory.getCurrentItem());
 			}
 		}
 
@@ -220,7 +220,7 @@ public class CommonPlayerTickHandler
 	{
 		if(Mekanism.flamethrowerActive.contains(player.getName()))
 		{
-			if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+			if(player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 			{
 				return true;
 			}

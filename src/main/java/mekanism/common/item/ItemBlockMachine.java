@@ -54,7 +54,10 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -253,16 +256,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 	
 	@Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 		MachineType type = MachineType.get(stack);
 		
 		if(type == MachineType.FLUID_TANK && getBucketMode(stack))
 		{
-			return false;
+			return EnumActionResult.PASS;
 		}
 		
-		return super.onItemUse(stack, player, world, pos, side, hitX, hitY, hitZ);
+		return super.onItemUse(stack, player, world, pos, hand, side, hitX, hitY, hitZ);
     }
 
 	@Override
@@ -464,7 +467,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     }
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
 	{
 		MachineType type = MachineType.get(itemstack);
 		
@@ -479,7 +482,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				
 				if(SecurityUtils.canAccess(entityplayer, itemstack))
 				{
-					InventoryPersonalChest inventory = new InventoryPersonalChest(entityplayer);
+					InventoryPersonalChest inventory = new InventoryPersonalChest(entityplayer, hand);
 					MekanismUtils.openPersonalChestGui((EntityPlayerMP)entityplayer, null, inventory, false);
 				}
 				else {
@@ -495,75 +498,75 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		        
 		        if(pos == null)
 		        {
-		            return itemstack;
+		            return new ActionResult(EnumActionResult.FAIL, itemstack);
 		        }
-			else {
-			    if(pos.typeOfHit == RayTraceResult.Type.BLOCK)
-			    {
-			    	Coord4D coord = new Coord4D(pos.getBlockPos(), world);
+				else {
+				    if(pos.typeOfHit == RayTraceResult.Type.BLOCK)
+				    {
+				    	Coord4D coord = new Coord4D(pos.getBlockPos(), world);
+		
+				        if(!world.provider.canMineBlock(entityplayer, coord.getPos()))
+				        {
+				            return new ActionResult(EnumActionResult.FAIL, itemstack);
+				        }
+		
+				        if(!entityplayer.isSneaking())
+				        {
+				            if(!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack))
+				            {
+				                return new ActionResult(EnumActionResult.FAIL, itemstack);
+				            }
+				            
+				            FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
+				            
+				            if(fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid)))
+				            {
+				        		int needed = getCapacity(itemstack)-(getFluidStack(itemstack) != null ? getFluidStack(itemstack).amount : 0);
+				        		
+				        		if(fluid.amount > needed)
+				        		{
+				        			return new ActionResult(EnumActionResult.FAIL, itemstack);
+				        		}
+				        		
+				        		if(getFluidStack(itemstack) == null)
+				        		{
+				        			setFluidStack(fluid, itemstack);
+				        		}
+				        		else {
+				        			FluidStack newStack = getFluidStack(itemstack);
+				        			newStack.amount += fluid.amount;
+				        			setFluidStack(newStack, itemstack);
+				        		}
+				        		
+				        		world.setBlockToAir(coord.getPos());
+				            }
+				        }
+				        else {
+				    		FluidStack stored = getFluidStack(itemstack);
+							
+							if(stored == null || stored.amount < FluidContainerRegistry.BUCKET_VOLUME)
+							{
+								return new ActionResult(EnumActionResult.FAIL, itemstack);
+							}
+							
+							Coord4D trans = coord.offset(pos.sideHit);
 	
-			        if(!world.provider.canMineBlock(entityplayer, coord.getPos()))
-			        {
-			            return itemstack;
-			        }
+				            if(!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack))
+				            {
+				            	return new ActionResult(EnumActionResult.FAIL, itemstack);
+				            }
 	
-			        if(!entityplayer.isSneaking())
-			        {
-			            if(!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack))
-			            {
-			                return itemstack;
-			            }
-			            
-			            FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
-			            
-			            if(fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid)))
-			            {
-			        		int needed = getCapacity(itemstack)-(getFluidStack(itemstack) != null ? getFluidStack(itemstack).amount : 0);
-			        		
-			        		if(fluid.amount > needed)
-			        		{
-			        			return itemstack;
-			        		}
-			        		
-			        		if(getFluidStack(itemstack) == null)
-			        		{
-			        			setFluidStack(fluid, itemstack);
-			        		}
-			        		else {
-			        			FluidStack newStack = getFluidStack(itemstack);
-			        			newStack.amount += fluid.amount;
-			        			setFluidStack(newStack, itemstack);
-			        		}
-			        		
-			        		world.setBlockToAir(coord.getPos());
-			            }
-			        }
-			        else {
-			    		FluidStack stored = getFluidStack(itemstack);
-						
-						if(stored == null || stored.amount < FluidContainerRegistry.BUCKET_VOLUME)
-						{
-							return itemstack;
-						}
-						
-						Coord4D trans = coord.offset(pos.sideHit);
-
-			            if(!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack))
-			            {
-			                return itemstack;
-			            }
-
-			            if(tryPlaceContainedLiquid(world, itemstack, trans.getPos()) && !entityplayer.capabilities.isCreativeMode)
-			            {
-			            	FluidStack newStack = stored.copy();
-			            	newStack.amount -= FluidContainerRegistry.BUCKET_VOLUME;
-			            	
-			            	setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);
-			            }
-			        }
-			    }
-	
-		            return itemstack;
+				            if(tryPlaceContainedLiquid(world, itemstack, trans.getPos()) && !entityplayer.capabilities.isCreativeMode)
+				            {
+				            	FluidStack newStack = stored.copy();
+				            	newStack.amount -= FluidContainerRegistry.BUCKET_VOLUME;
+				            	
+				            	setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);
+				            }
+				        }
+				    }
+		
+			        return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 		        }
 	    	}
 			else {
@@ -571,7 +574,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			}
     	}
 
-		return itemstack;
+		return new ActionResult(EnumActionResult.PASS, itemstack);
 	}
 
 	@Override

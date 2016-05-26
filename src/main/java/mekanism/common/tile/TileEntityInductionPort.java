@@ -26,6 +26,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
@@ -433,7 +434,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(!worldObj.isRemote)
 		{
@@ -445,13 +446,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			markDirty();
 		}
 		
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override

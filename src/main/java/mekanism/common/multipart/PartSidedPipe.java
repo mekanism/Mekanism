@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
@@ -791,7 +792,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(!getWorld().isRemote)
 		{
@@ -799,7 +800,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	
 			if(hit == null)
 			{
-				return false;
+				return EnumActionResult.PASS;
 			}
 			else {
 				EnumFacing hitSide = sideHit(hit.subHit + 1);
@@ -812,7 +813,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 					onModeChange(EnumFacing.getFront(hitSide.ordinal()));
 					player.addChatMessage(new TextComponentString("Connection type changed to " + connectionTypes[hitSide.ordinal()].toString()));
 
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 				else {
 					return onConfigure(player, 6, side);
@@ -820,7 +821,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 			}
 		}
 		
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	private PartMOP reTrace(World world, BlockPos pos, EntityPlayer player) 
@@ -855,9 +856,9 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		return null;
 	}
 
-	protected boolean onConfigure(EntityPlayer player, int part, EnumFacing side)
+	protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	public EnumColor getRenderColor()
@@ -866,7 +867,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, EnumFacing side)
+	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(!getWorld().isRemote && handlesRedstone())
 		{
@@ -877,7 +878,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 			player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
 		}
 		
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override

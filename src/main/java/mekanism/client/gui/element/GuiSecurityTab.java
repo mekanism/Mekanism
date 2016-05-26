@@ -20,6 +20,7 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiSecurityTab extends GuiElement
 {
 	public boolean isItem;
+	public EnumHand currentHand;
 	
 	public TileEntity tileEntity;
 
@@ -38,11 +40,12 @@ public class GuiSecurityTab extends GuiElement
 		tileEntity = tile;
 	}
 	
-	public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def)
+	public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def, EnumHand hand)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def);
 		
 		isItem = true;
+		currentHand = hand;
 	}
 	
 	@Override
@@ -163,7 +166,7 @@ public class GuiSecurityTab extends GuiElement
 	
 	private ItemStack getItem()
 	{
-		return mc.thePlayer.getCurrentEquippedItem();
+		return mc.thePlayer.getHeldItem(currentHand);
 	}
 
 	@Override
@@ -185,7 +188,7 @@ public class GuiSecurityTab extends GuiElement
 					
 					if(isItem)
 					{
-						Mekanism.packetHandler.sendToServer(new SecurityModeMessage(SecurityMode.values()[ordinalToSet]));
+						Mekanism.packetHandler.sendToServer(new SecurityModeMessage(currentHand, SecurityMode.values()[ordinalToSet]));
 					}
 					else {
 						Mekanism.packetHandler.sendToServer(new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));

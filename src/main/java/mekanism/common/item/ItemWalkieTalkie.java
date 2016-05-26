@@ -10,6 +10,9 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ItemWalkieTalkie extends ItemMekanism
@@ -44,14 +47,16 @@ public class ItemWalkieTalkie extends ItemMekanism
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if(player.isSneaking())
 		{
 			setOn(itemStack, !getOn(itemStack));
+			
+			return new ActionResult(EnumActionResult.SUCCESS, itemStack);
 		}
 
-		return itemStack;
+		return new ActionResult(EnumActionResult.PASS, itemStack);
 	}
 	
 	@Override

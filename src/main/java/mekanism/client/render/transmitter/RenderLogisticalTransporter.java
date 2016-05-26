@@ -94,7 +94,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 		{
 			EntityPlayer player = mc.thePlayer;
 			World world = mc.thePlayer.worldObj;
-			ItemStack itemStack = player.getCurrentEquippedItem();
+			ItemStack itemStack = player.inventory.getCurrentItem();
 			RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 
 			if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator)

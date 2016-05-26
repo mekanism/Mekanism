@@ -224,7 +224,7 @@ public class ClientTickHandler
 					Mekanism.flamethrowerActive.remove(mc.thePlayer.getName());
 				}
 				
-				Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.UPDATE, mc.thePlayer.getName(), isFlamethrowerOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.UPDATE, null, mc.thePlayer.getName(), isFlamethrowerOn(mc.thePlayer)));
 			}
 
 			if(Mekanism.jetpackOn.contains(mc.thePlayer.getName()) != isJetpackOn(mc.thePlayer))
@@ -309,11 +309,11 @@ public class ClientTickHandler
 			
 			if(isFlamethrowerOn(mc.thePlayer))
 			{
-				ItemFlamethrower flamethrower = (ItemFlamethrower)mc.thePlayer.getCurrentEquippedItem().getItem();
+				ItemFlamethrower flamethrower = (ItemFlamethrower)mc.thePlayer.inventory.getCurrentItem().getItem();
 				
 				if(!mc.thePlayer.capabilities.isCreativeMode)
 				{
-					flamethrower.useGas(mc.thePlayer.getCurrentEquippedItem());
+					flamethrower.useGas(mc.thePlayer.inventory.getCurrentItem());
 				}
 			}
 			
@@ -508,11 +508,11 @@ public class ClientTickHandler
 	
 	public static boolean hasFlamethrower(EntityPlayer player)
 	{
-		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+		if(player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 		{
-			ItemFlamethrower flamethrower = (ItemFlamethrower)player.getCurrentEquippedItem().getItem();
+			ItemFlamethrower flamethrower = (ItemFlamethrower)player.inventory.getCurrentItem().getItem();
 			
-			if(flamethrower.getGas(player.getCurrentEquippedItem()) != null)
+			if(flamethrower.getGas(player.inventory.getCurrentItem()) != null)
 			{
 				return true;
 			}

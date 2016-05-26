@@ -14,6 +14,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -64,7 +67,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if(player.isSneaking() && !world.isRemote)
 		{
@@ -73,10 +76,10 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 			
 			((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 		
-			return stack;
+			return new ActionResult(EnumActionResult.SUCCESS, stack);
 		}
 		
-		return stack;
+		return new ActionResult(EnumActionResult.PASS, stack);
 	}
 	
 	@Override

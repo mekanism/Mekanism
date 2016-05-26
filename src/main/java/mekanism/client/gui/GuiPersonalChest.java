@@ -1,13 +1,13 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -29,14 +29,14 @@ public class GuiPersonalChest extends GuiMekanism
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png")));
 	}
 
-	public GuiPersonalChest(InventoryPlayer inventory, IInventory inv)
+	public GuiPersonalChest(InventoryPlayer inventory, InventoryPersonalChest inv)
 	{
 		super(new ContainerPersonalChest(inventory, null, inv, false));
 
 		xSize+=26;
 		ySize+=64;
 		
-		guiElements.add(new GuiSecurityTab(this, MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png")));
+		guiElements.add(new GuiSecurityTab(this, MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png"), inv.currentHand));
 	}
 
 	@Override

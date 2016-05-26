@@ -13,6 +13,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -75,19 +78,22 @@ public class ItemCraftingFormula extends ItemMekanism
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		if(player.isSneaking() && !world.isRemote)
+		if(player.isSneaking())
 		{
-			setInventory(stack, null);
-			setInvalid(stack, false);
+			if(!world.isRemote)
+			{
+				setInventory(stack, null);
+				setInvalid(stack, false);
+				
+				((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
+			}
 			
-			((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
-		
-			return stack;
+			return new ActionResult(EnumActionResult.SUCCESS, stack);
 		}
 		
-		return stack;
+		return new ActionResult(EnumActionResult.PASS, stack);
 	}
 	
 	@Override

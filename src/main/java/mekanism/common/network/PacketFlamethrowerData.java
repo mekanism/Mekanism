@@ -7,6 +7,7 @@ import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -30,12 +31,12 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
             if(!player.worldObj.isRemote)
             {
-                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimension());
+                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.currentHand, message.username, message.value), player.worldObj.provider.getDimension());
             }
         }
         else if(message.packetType == FlamethrowerPacket.MODE)
         {
-            ItemStack stack = player.getCurrentEquippedItem();
+            ItemStack stack = player.getHeldItem(message.currentHand);
 
             if(stack != null && stack.getItem() instanceof ItemFlamethrower)
             {
@@ -50,12 +51,13 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 	{
         public FlamethrowerPacket packetType;
 
+        public EnumHand currentHand;
 		public String username;
 		public boolean value;
 		
 		public FlamethrowerDataMessage() {}
 	
-		public FlamethrowerDataMessage(FlamethrowerPacket type, String name, boolean state)
+		public FlamethrowerDataMessage(FlamethrowerPacket type, EnumHand hand, String name, boolean state)
 		{
             packetType = type;
 
@@ -63,6 +65,10 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
             {
                 username = name;
                 value = state;
+            }
+            else if(type == FlamethrowerPacket.MODE)
+            {
+            	currentHand = hand;
             }
 		}
 	
@@ -76,6 +82,9 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
                 PacketHandler.writeString(dataStream, username);
                 dataStream.writeBoolean(value);
             }
+            else {
+            	dataStream.writeInt(currentHand.ordinal());
+            }
 		}
 	
 		@Override
@@ -87,6 +96,10 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
             {
                 username = PacketHandler.readString(dataStream);
                 value = dataStream.readBoolean();
+            }
+            else if(packetType == FlamethrowerPacket.MODE)
+            {
+            	currentHand = EnumHand.values()[dataStream.readInt()];
             }
 		}
 	}
