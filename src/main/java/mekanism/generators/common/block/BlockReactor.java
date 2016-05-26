@@ -33,6 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -159,7 +160,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing facing, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing facing, float playerX, float playerY, float playerZ)
 	{
 		if(world.isRemote)
 		{
@@ -169,9 +170,9 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
 
-		if(entityplayer.getCurrentEquippedItem() != null)
+		if(stack != null)
 		{
-			if(MekanismUtils.isBCWrench(entityplayer.getCurrentEquippedItem().getItem()) && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
+			if(MekanismUtils.isBCWrench(stack.getItem()) && !stack.getUnlocalizedName().contains("omniwrench"))
 			{
 				if(entityplayer.isSneaking())
 				{
@@ -179,7 +180,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 					return true;
 				}
 
-				((IToolWrench)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, pos);
+				((IToolWrench)stack.getItem()).wrenchUsed(entityplayer, pos);
 
 				return true;
 			}

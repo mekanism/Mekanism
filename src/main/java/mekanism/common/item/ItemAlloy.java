@@ -7,7 +7,9 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -19,7 +21,7 @@ public class ItemAlloy extends ItemMekanism
 	}
 	
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 		TileEntity tile = world.getTileEntity(pos);
 		
@@ -29,12 +31,12 @@ public class ItemAlloy extends ItemMekanism
 			{
 				IAlloyInteraction interaction = MekanismUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side);
 				int ordinal = stack.getItem() == MekanismItems.EnrichedAlloy? 1 : (stack.getItem() == MekanismItems.ReinforcedAlloy ? 2 : 3);
-				interaction.onAlloyInteraction(player, ordinal);
+				interaction.onAlloyInteraction(player, hand, stack, ordinal);
 			}
 			
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
 		
-        return false;
+        return EnumActionResult.PASS;
     }
 }

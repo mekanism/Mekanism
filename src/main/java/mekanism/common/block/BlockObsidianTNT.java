@@ -10,7 +10,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -75,16 +77,17 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == Items.FLINT_AND_STEEL)
+		if(stack != null && stack.getItem() == Items.FLINT_AND_STEEL)
 		{
 			explode(world, pos);
 			world.setBlockToAir(pos);
+			
 			return true;
 		}
 		else {
-			return super.onBlockActivated(world, pos, state, entityplayer, side, hitX, hitY, hitZ);
+			return super.onBlockActivated(world, pos, state, entityplayer, hand, stack, side, hitX, hitY, hitZ);
 		}
 	}
 

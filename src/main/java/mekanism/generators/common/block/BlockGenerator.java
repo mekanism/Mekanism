@@ -48,6 +48,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -83,6 +84,9 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	
 	public Random machineRand = new Random();
 	
+	private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
+	private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
+
 	public BlockGenerator()
 	{
 		super(Material.IRON);
@@ -174,14 +178,6 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		
 		return state;
 	}
-	
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
-    {
-		setBlockBoundsBasedOnState(world, pos);
-		
-		return super.getCollisionBoundingBox(state, world, pos);
-    }
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
@@ -401,7 +397,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float playerX, float playerY, float playerZ)
 	{
 		if(world.isRemote)
 		{
@@ -411,9 +407,9 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
 
-		if(entityplayer.getCurrentEquippedItem() != null)
+		if(stack != null)
 		{
-			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+			Item tool = stack.getItem();
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
@@ -421,7 +417,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 				{
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, pos, false);
+						dismantleBlock(state, world, pos, false);
 						
 						return true;
 					}
@@ -446,7 +442,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		
 		if(metadata == GeneratorType.TURBINE_CASING.meta || metadata == GeneratorType.TURBINE_VALVE.meta || metadata == GeneratorType.TURBINE_VENT.meta)
 		{
-			return ((IMultiblock)tileEntity).onActivate(entityplayer);
+			return ((IMultiblock)tileEntity).onActivate(entityplayer, hand, stack);
 		}
 		
 		if(metadata == GeneratorType.TURBINE_ROTOR.meta)
@@ -455,17 +451,17 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			
 			if(!entityplayer.isSneaking())
 			{
-				if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == GeneratorsItems.TurbineBlade)
+				if(stack != null && stack.getItem() == GeneratorsItems.TurbineBlade)
 				{
 					if(!world.isRemote && rod.editBlade(true))
 					{
 						if(!entityplayer.capabilities.isCreativeMode)
 						{
-							entityplayer.getCurrentEquippedItem().stackSize--;
+							stack.stackSize--;
 							
-							if(entityplayer.getCurrentEquippedItem().stackSize == 0)
+							if(stack.stackSize == 0)
 							{
-								entityplayer.setCurrentItemOrArmor(0, null);
+								entityplayer.setHeldItem(hand, null);
 							}
 						}
 					}
@@ -476,26 +472,26 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			else {
 				if(!world.isRemote)
 				{
-					if(entityplayer.getCurrentEquippedItem() == null)
+					if(stack == null)
 					{
 						if(rod.editBlade(false))
 						{
 							if(!entityplayer.capabilities.isCreativeMode)
 							{
-								entityplayer.setCurrentItemOrArmor(0, new ItemStack(GeneratorsItems.TurbineBlade));
+								entityplayer.setHeldItem(hand, new ItemStack(GeneratorsItems.TurbineBlade));
 								entityplayer.inventory.markDirty();
 							}
 						}
 					}
-					else if(entityplayer.getCurrentEquippedItem().getItem() == GeneratorsItems.TurbineBlade)
+					else if(stack.getItem() == GeneratorsItems.TurbineBlade)
 					{
-						if(entityplayer.getCurrentEquippedItem().stackSize < entityplayer.getCurrentEquippedItem().getMaxStackSize())
+						if(stack.stackSize < stack.getMaxStackSize())
 						{
 							if(rod.editBlade(false))
 							{
 								if(!entityplayer.capabilities.isCreativeMode)
 								{
-									entityplayer.getCurrentEquippedItem().stackSize++;
+									stack.stackSize++;
 									entityplayer.inventory.markDirty();
 								}
 							}
@@ -579,23 +575,20 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	{
 		return null;
 	}
-
+	
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		IBlockState state = world.getBlockState(pos);
-		GeneratorType type = GeneratorType.get(getGeneratorBlock(), state.getBlock().getMetaFromState(state));
+		GeneratorType type = GeneratorType.get(state);
 
-		if(type == GeneratorType.SOLAR_GENERATOR)
+		switch(type)
 		{
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
-		}
-		else if(type == GeneratorType.TURBINE_ROTOR)
-		{
-			setBlockBounds(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
-		}
-		else {
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+			case SOLAR_GENERATOR:
+				return SOLAR_BOUNDS;
+			case TURBINE_ROTOR:
+				return ROTOR_BOUNDS;
+			default:
+				return super.getBoundingBox(state, world, pos);
 		}
 	}
 

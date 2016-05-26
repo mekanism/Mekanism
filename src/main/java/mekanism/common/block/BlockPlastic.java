@@ -1,7 +1,5 @@
 package mekanism.common.block;
 
-import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
-
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -51,13 +49,13 @@ public class BlockPlastic extends Block
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return getDefaultState().withProperty(colorProperty, EnumDyeColor.byMetadata(meta));
+		return getDefaultState().withProperty(BlockStatePlastic.colorProperty, EnumDyeColor.byMetadata(meta));
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return state.getValue(colorProperty).getMetadata();
+		return state.getValue(BlockStatePlastic.colorProperty).getMetadata();
 	}
 
 	@Override
@@ -88,21 +86,6 @@ public class BlockPlastic extends Block
 		{
 			list.add(new ItemStack(item, 1, i));
 		}
-	}
-
-	@Override
-	public int colorMultiplier(IBlockAccess world, BlockPos pos, int renderPass)
-	{
-		return getRenderColor(world.getBlockState(pos));
-	}
-
-	@Override
-	public int getRenderColor(IBlockState state)
-	{
-		EnumDyeColor color = state.getValue(colorProperty);
-		EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
-		
-		return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
 	}
 
 	@Override

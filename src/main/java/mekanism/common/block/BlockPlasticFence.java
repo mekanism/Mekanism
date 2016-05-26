@@ -18,8 +18,6 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -57,21 +55,6 @@ public class BlockPlasticFence extends BlockFence
         {
             list.add(new ItemStack(item, 1, i));
         }
-    }
-
-    @Override
-    public int colorMultiplier(IBlockAccess world, BlockPos pos, int renderPass)
-    {
-        return getRenderColor(world.getBlockState(pos));
-    }
-
-    @Override
-    public int getRenderColor(IBlockState state)
-    {
-		EnumDyeColor color = state.getValue(colorProperty);
-		EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
-		
-		return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
     }
 
 	@Override

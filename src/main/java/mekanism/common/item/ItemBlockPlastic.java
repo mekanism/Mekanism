@@ -7,8 +7,6 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBlockPlastic extends ItemBlock
 {
@@ -48,11 +46,5 @@ public class ItemBlockPlastic extends ItemBlock
 		}
 
 		return colourName + " " + super.getItemStackDisplayName(stack);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack stack, int renderPass)
-	{
-		return metaBlock.getRenderColor(metaBlock.getStateFromMeta(stack.getMetadata()));
 	}
 }

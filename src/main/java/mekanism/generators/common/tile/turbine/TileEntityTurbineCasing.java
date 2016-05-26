@@ -23,6 +23,8 @@ import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -115,7 +117,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	}
 	
 	@Override
-	public boolean onActivate(EntityPlayer player)
+	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack)
 	{
 		if(!player.isSneaking() && structure != null)
 		{

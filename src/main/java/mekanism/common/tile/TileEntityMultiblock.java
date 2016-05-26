@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -305,7 +306,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 	
 	@Override
-	public boolean onActivate(EntityPlayer player)
+	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack)
 	{
 		return false;
 	}

@@ -9,6 +9,7 @@ public final class MekanismSounds
 	public static final SoundEvent POP = getRegisteredSoundEvent("mekanism:etc.Pop");
 	public static final SoundEvent DING = getRegisteredSoundEvent("mekanism:etc.Ding");
 	public static final SoundEvent HYDRAULIC = getRegisteredSoundEvent("mekanism:etc.Hydraulic");
+	public static final SoundEvent CLICK = getRegisteredSoundEvent("mekanism:etc.Click");
 	
 	private static SoundEvent getRegisteredSoundEvent(String id) 
 	{

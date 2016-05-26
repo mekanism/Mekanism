@@ -11,7 +11,10 @@ import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 public class MultipartMekanism implements IPartFactory
@@ -193,4 +196,33 @@ public class MultipartMekanism implements IPartFactory
 			dropItem(stack, multipart);
 		}
 	}
+	
+	public static AxisAlignedBB rotate(AxisAlignedBB aabb, EnumFacing side) 
+	{
+        Vec3d v1 = rotate(new Vec3d(aabb.minX, aabb.minY, aabb.minZ), side);
+        Vec3d v2 = rotate(new Vec3d(aabb.maxX, aabb.maxY, aabb.maxZ), side);
+        
+        return new AxisAlignedBB(v1.xCoord, v1.yCoord, v1.zCoord, v2.xCoord, v2.yCoord, v2.zCoord);
+    }
+
+    public static Vec3d rotate(Vec3d vec, EnumFacing side)
+    {
+        switch(side) 
+        {
+	        case DOWN:
+	            return new Vec3d(vec.xCoord, vec.yCoord, vec.zCoord);
+	        case UP:
+	            return new Vec3d(vec.xCoord, -vec.yCoord, -vec.zCoord);
+	        case NORTH:
+	            return new Vec3d(vec.xCoord, -vec.zCoord, vec.yCoord);
+	        case SOUTH:
+	            return new Vec3d(vec.xCoord, vec.zCoord, -vec.yCoord);
+	        case WEST:
+	            return new Vec3d(vec.yCoord, -vec.xCoord, vec.zCoord);
+	        case EAST:
+	            return new Vec3d(-vec.yCoord, vec.xCoord, vec.zCoord);
+        }
+        
+        return null;
+    }
 }

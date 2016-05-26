@@ -7,15 +7,17 @@ import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 
 public class TileEntityStructuralGlass extends TileEntity implements IStructuralMultiblock
 {
 	public Coord4D master;
 	
 	@Override
-	public boolean onActivate(EntityPlayer player) 
+	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) 
 	{
 		if(master != null)
 		{
@@ -23,7 +25,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 			
 			if(masterTile instanceof IMultiblock)
 			{
-				return ((IMultiblock)masterTile).onActivate(player);
+				return ((IMultiblock)masterTile).onActivate(player, hand, stack);
 			}
 			else {
 				master = null;

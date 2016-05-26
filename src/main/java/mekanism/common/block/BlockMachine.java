@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
@@ -69,6 +68,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -134,6 +134,9 @@ import buildcraft.api.tools.IToolWrench;
 public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 {
 	public CTMData[] ctmData = new CTMData[16];
+	
+	private static final AxisAlignedBB CHARGEPAD_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
+	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
 	public BlockMachine()
 	{
@@ -445,7 +448,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -455,9 +458,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
 
-		if(entityplayer.getCurrentEquippedItem() != null)
+		if(stack != null)
 		{
-			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+			Item tool = stack.getItem();
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
@@ -465,7 +468,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				{
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, pos, false);
+						dismantleBlock(state, world, pos, false);
 
 						return true;
 					}
@@ -533,9 +536,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					{
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
-							if(entityplayer.getCurrentEquippedItem() != null && FluidContainerRegistry.isContainer(entityplayer.getCurrentEquippedItem()))
+							if(stack != null && FluidContainerRegistry.isContainer(stack))
 							{
-								if(manageInventory(entityplayer, (TileEntityFluidTank)tileEntity))
+								if(manageInventory(entityplayer, (TileEntityFluidTank)tileEntity, hand, stack))
 								{
 									entityplayer.inventory.markDirty();
 									return true;
@@ -684,7 +687,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos, player));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -692,10 +695,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		return world.setBlockToAir(pos);
 	}
 	
-	private boolean manageInventory(EntityPlayer player, TileEntityFluidTank tileEntity)
+	private boolean manageInventory(EntityPlayer player, TileEntityFluidTank tileEntity, EnumHand hand, ItemStack itemStack)
 	{
-		ItemStack itemStack = player.getCurrentEquippedItem();
-
 		if(itemStack != null)
 		{
 			if(FluidContainerRegistry.isEmptyContainer(itemStack))
@@ -724,7 +725,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 						}
 						else if(itemStack.stackSize == 1)
 						{
-							player.setCurrentItemOrArmor(0, filled);
+							player.setHeldItem(hand, filled);
 
 							tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
 
@@ -758,7 +759,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 						{
 							if(itemStack.stackSize == 1)
 							{
-								player.setCurrentItemOrArmor(0, containerItem);
+								player.setHeldItem(hand, containerItem);
 								filled = true;
 							}
 							else {
@@ -775,7 +776,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	
 							if(itemStack.stackSize == 0)
 							{
-								player.setCurrentItemOrArmor(0, null);
+								player.setHeldItem(hand, null);
 							}
 	
 							filled = true;
@@ -918,25 +919,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 		return itemStack;
 	}
-	
-	@Override
-	public int colorMultiplier(IBlockAccess world, BlockPos pos, int renderPass)
-	{
-		return getRenderColor(getActualState(world.getBlockState(pos), world, pos));
-	}
-
-	@Override
-	public int getRenderColor(IBlockState state)
-	{		
-		if(state.getValue(getMachineBlock().getProperty()) == MachineType.FLUID_TANK)
-		{
-			EnumColor color = state.getValue(BlockStateMachine.tierProperty).getColor();
-			
-			return (int)(color.getColor(0)*255) << 16 | (int)(color.getColor(1)*255) << 8 | (int)(color.getColor(2)*255);
-		}
-		
-		return super.getRenderColor(state);
-	}
 
 	@Override
 	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
@@ -974,22 +956,18 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		IBlockState state = world.getBlockState(pos);
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
 		switch(type)
 		{
 			case CHARGEPAD:
-				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
-				break;
+				return CHARGEPAD_BOUNDS;
 			case FLUID_TANK:
-				setBlockBounds(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
-				break;
+				return TANK_BOUNDS;
 			default:
-				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-				break;
+				return super.getBoundingBox(state, world, pos);
 		}
 	}
 
@@ -1002,8 +980,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
-		setBlockBoundsBasedOnState(world, pos);
-		
 		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
 		{
 			return null;

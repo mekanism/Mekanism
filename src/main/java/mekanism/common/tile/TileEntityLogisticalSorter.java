@@ -11,6 +11,7 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismSounds;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
@@ -38,6 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -564,7 +566,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			if(active)
 			{
-				worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mekanism:etc.Click", 0.3F, 1);
+				worldObj.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), MekanismSounds.CLICK, SoundCategory.BLOCKS, 0.3F, 1);
 			}
 
 			clientActive = active;

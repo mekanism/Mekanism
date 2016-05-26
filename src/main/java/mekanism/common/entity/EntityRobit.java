@@ -41,7 +41,10 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
@@ -311,7 +314,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		if(worldObj.provider.getDimension() != homeLocation.dimensionId)
 		{
-			travelToDimension(homeLocation.dimensionId);
+			changeDimension(homeLocation.dimensionId);
 		}
 
 		setPositionAndUpdate(homeLocation.xCoord+0.5, homeLocation.yCoord+0.3, homeLocation.zCoord+0.5);
@@ -374,13 +377,11 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public boolean interact(EntityPlayer entityplayer)
+	public EnumActionResult applyPlayerInteraction(EntityPlayer entityplayer, Vec3d vec, ItemStack stack, EnumHand hand)
 	{
 		if(entityplayer.isSneaking())
 		{
-			ItemStack itemStack = entityplayer.getCurrentEquippedItem();
-
-			if(itemStack != null && itemStack.getItem() instanceof ItemConfigurator)
+			if(stack != null && stack.getItem() instanceof ItemConfigurator)
 			{
 				if(!worldObj.isRemote)
 				{
@@ -389,15 +390,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 				setDead();
 
-				entityplayer.swingItem();
-				return true;
+				entityplayer.swingArm(hand);
+				return EnumActionResult.SUCCESS;
 			}
 		}
 		else {
 			entityplayer.openGui(Mekanism.instance, 21, worldObj, getEntityId(), 0, 0);
+			return EnumActionResult.SUCCESS;
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	public void drop()

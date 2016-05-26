@@ -396,19 +396,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		return false;
 	}
-	
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack stack, int renderPass)
-	{
-		if(MachineType.get(stack) == MachineType.FLUID_TANK)
-		{
-			EnumColor color = getBaseTier(stack).getColor();
-			
-			return (int)(color.getColor(0)*255) << 16 | (int)(color.getColor(1)*255) << 8 | (int)(color.getColor(2)*255);
-		}
-		
-		return super.getColorFromItemStack(stack, renderPass);
-	}
 
 	@Override
 	@Method(modid = "IC2")

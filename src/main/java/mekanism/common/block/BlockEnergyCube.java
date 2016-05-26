@@ -33,6 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -184,7 +185,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -193,9 +194,9 @@ public class BlockEnergyCube extends BlockContainer
 
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
 
-		if(entityplayer.getCurrentEquippedItem() != null)
+		if(stack != null)
 		{
-			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+			Item tool = stack.getItem();
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
@@ -203,14 +204,14 @@ public class BlockEnergyCube extends BlockContainer
 				{
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, pos, false);
+						dismantleBlock(state, world, pos, false);
 						
 						return true;
 					}
 	
 					if(MekanismUtils.isBCWrench(tool))
 	                {
-	                    ((IToolWrench) tool).wrenchUsed(entityplayer, pos);
+	                    ((IToolWrench)tool).wrenchUsed(entityplayer, pos);
 	                }
 	
 					int change = tileEntity.facing.rotateAround(side.getAxis()).ordinal();

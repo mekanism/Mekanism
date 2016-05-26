@@ -20,6 +20,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -61,7 +62,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	}
 	
 	@Override
-	public boolean onActivate(EntityPlayer player)
+	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack)
 	{
 		if(!player.isSneaking() && structure != null)
 		{

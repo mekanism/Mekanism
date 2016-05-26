@@ -40,7 +40,7 @@ public class PartGlowPanel extends Multipart implements INormallyOccludingPart
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			bounds[side.ordinal()] = TransformationHelper.rotate(cuboid.offset(fromOrigin.xCoord, fromOrigin.yCoord, fromOrigin.zCoord), side).offset(-fromOrigin.xCoord, -fromOrigin.zCoord, -fromOrigin.zCoord);
+			bounds[side.ordinal()] = MultipartMekanism.rotate(cuboid.offset(fromOrigin.xCoord, fromOrigin.yCoord, fromOrigin.zCoord), side).offset(-fromOrigin.xCoord, -fromOrigin.zCoord, -fromOrigin.zCoord);
 		}
 	}
 

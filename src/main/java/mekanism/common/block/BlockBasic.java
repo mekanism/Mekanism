@@ -55,6 +55,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -419,7 +420,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		BasicBlockType type = BasicBlockType.get(state);
 		TileEntity tile = world.getTileEntity(pos);
@@ -469,15 +470,15 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		{
 			TileEntityBin bin = (TileEntityBin)tile;
 
-			if(entityplayer.getCurrentEquippedItem() != null && MekanismUtils.hasUsableWrench(entityplayer, pos))
+			if(stack != null && MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
 				if(!world.isRemote)
 				{
-					Item tool = entityplayer.getCurrentEquippedItem().getItem();
+					Item tool = stack.getItem();
 					
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, pos, false);
+						dismantleBlock(state, world, pos, false);
 						return true;
 					}
 	
@@ -499,12 +500,12 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			{
 				if(bin.getItemCount() < bin.tier.storage)
 				{
-					if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
+					if(bin.addTicks == 0 && stack != null)
 					{
-						if(entityplayer.getCurrentEquippedItem() != null)
+						if(stack != null)
 						{
-							ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
-							entityplayer.setCurrentItemOrArmor(0, remain);
+							ItemStack remain = bin.add(stack);
+							entityplayer.setHeldItem(hand, remain);
 							bin.addTicks = 5;
 						}
 					}
@@ -541,7 +542,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 				return true;
 			}
 			
-			return ((IMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
+			return ((IMultiblock)world.getTileEntity(pos)).onActivate(entityplayer, hand, stack);
 		}
 		else if(tile instanceof IStructuralMultiblock)
 		{
@@ -550,7 +551,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 				return true;
 			}
 			
-			return ((IStructuralMultiblock)world.getTileEntity(pos)).onActivate(entityplayer);
+			return ((IStructuralMultiblock)world.getTileEntity(pos)).onActivate(entityplayer, hand, stack);
 		}
 
 		return false;
@@ -569,10 +570,8 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		return BlockRenderLayer.CUTOUT;
 	}
 
-	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
+	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity, EnumHand hand, ItemStack itemStack)
 	{
-		ItemStack itemStack = player.getCurrentEquippedItem();
-
 		if(itemStack != null && tileEntity.structure != null)
 		{
 			if(FluidContainerRegistry.isEmptyContainer(itemStack))
@@ -613,7 +612,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 						}
 						else if(itemStack.stackSize == 1)
 						{
-							player.setCurrentItemOrArmor(0, filled);
+							player.setHeldItem(hand, filled);
 
 							tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
 
@@ -647,7 +646,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 						{
 							if(itemStack.stackSize == 1)
 							{
-								player.setCurrentItemOrArmor(0, containerItem);
+								player.setHeldItem(hand, containerItem);
 								filled = true;
 							}
 							else {
@@ -664,7 +663,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	
 							if(itemStack.stackSize == 0)
 							{
-								player.setCurrentItemOrArmor(0, null);
+								player.setHeldItem(hand, null);
 							}
 	
 							filled = true;

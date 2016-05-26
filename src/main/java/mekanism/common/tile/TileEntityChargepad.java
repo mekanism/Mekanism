@@ -21,10 +21,12 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -104,7 +106,14 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 			if(clientActive != isActive)
 			{
-				worldObj.playSoundEffect(getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, "random.click", 0.3F, isActive ? 0.6F : 0.5F);
+				if(isActive)
+				{
+		            worldObj.playSound((EntityPlayer)null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.8F);
+				}
+				else {
+		            worldObj.playSound((EntityPlayer)null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_OFF, SoundCategory.BLOCKS, 0.3F, 0.7F);
+				}
+				
 				setActive(isActive);
 			}
 		}

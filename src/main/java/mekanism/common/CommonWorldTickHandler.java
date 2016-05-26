@@ -9,6 +9,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -110,7 +111,7 @@ public class CommonWorldTickHandler
 			        long zSeed = fmlRandom.nextLong() >> 2 + 1L;
 			        fmlRandom.setSeed((xSeed*nextChunk.chunkXPos + zSeed*nextChunk.chunkZPos) ^ world.getSeed());
 
-					Mekanism.genHandler.generate(fmlRandom, nextChunk.chunkXPos, nextChunk.chunkZPos, world, world.getChunkProvider(), world.getChunkProvider());
+					Mekanism.genHandler.generate(fmlRandom, nextChunk.chunkXPos, nextChunk.chunkZPos, world, (IChunkGenerator)world.getChunkProvider(), world.getChunkProvider());
 					Mekanism.logger.info("[Mekanism] Regenerating ores at chunk " + nextChunk);
 				}
 

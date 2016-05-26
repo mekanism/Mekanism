@@ -23,6 +23,7 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -158,11 +159,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	}
 	
 	@Override
-	public boolean onActivate(EntityPlayer player)
+	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack)
 	{
 		if(!player.isSneaking() && structure != null)
 		{
-			if(!BlockBasic.manageInventory(player, this))
+			if(!BlockBasic.manageInventory(player, this, hand, stack))
 			{
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				player.openGui(Mekanism.instance, 18, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());

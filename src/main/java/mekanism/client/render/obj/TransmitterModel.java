@@ -14,16 +14,20 @@ import mekanism.common.multipart.ConnectionProperty;
 import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.Face;
@@ -33,11 +37,13 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
-public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipartModel
+public class TransmitterModel extends OBJBakedModelBase
 {
-	private Map<Integer, TransmitterModel> modelCache = new HashMap<Integer, TransmitterModel>();
+	private Map<Integer, List<BakedQuad>> modelCache = new HashMap<Integer, List<BakedQuad>>();
 	private TransmitterModel itemCache;
 	
 	private IBlockState tempState;
@@ -48,14 +54,54 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 	private static TextureAtlasSprite transporter_side;
 	private static TextureAtlasSprite transporter_side_color;
 	
+	private TransmitterOverride override = new TransmitterOverride();
+	
 	public TransmitterModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform)
 	{
 		super(base, model, state, format, textures, transform);
 	}
+	
+	private class TransmitterOverride extends ItemOverrideList 
+    {
+		public TransmitterOverride() 
+		{
+			super(Lists.newArrayList());
+		}
 
+	    @Override
+	    public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) 
+	    {
+			if(itemCache == null)
+			{
+				List<String> visible = new ArrayList<String>();
+				
+				for(EnumFacing side : EnumFacing.values())
+				{
+					visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
+				}
+				
+				itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), vertexFormat, textureMap, transformationMap);
+				itemCache.tempStack = stack;
+			}
+			
+			return itemCache;
+	    }
+    }
+	
 	@Override
-	public IBakedModel handlePartState(IBlockState state)
+	public ItemOverrideList getOverrides()
 	{
+		return override;
+	}
+	
+	@Override
+	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
+	{
+    	if(side != null) 
+    	{
+    		return ImmutableList.of();
+    	}
+    	
 		IExtendedBlockState extended = (IExtendedBlockState)state;
 		BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 		ColorProperty colorProp = extended.getValue(ColorProperty.INSTANCE);
@@ -82,31 +128,12 @@ public class TransmitterModel extends OBJBakedModelBase implements ISmartMultipa
 		
 		if(!modelCache.containsKey(hash))
 		{
-			TransmitterModel model = new TransmitterModel(baseModel, getModel(), obj, getFormat(), textureMap, transformationMap);
+			TransmitterModel model = new TransmitterModel(baseModel, getModel(), obj, vertexFormat, textureMap, transformationMap);
 			model.tempState = state;
-			modelCache.put(hash, model);
+			modelCache.put(hash, model.getQuads(state, side, rand));
 		}
 		
 		return modelCache.get(hash);
-	}
-	
-	@Override
-	public IBakedModel handleItemState(ItemStack stack)
-	{
-		if(itemCache == null)
-		{
-			List<String> visible = new ArrayList<String>();
-			
-			for(EnumFacing side : EnumFacing.values())
-			{
-				visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
-			}
-			
-			itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), getFormat(), textureMap, transformationMap);
-			itemCache.tempStack = stack;
-		}
-		
-		return itemCache;
 	}
 	
 	@Override

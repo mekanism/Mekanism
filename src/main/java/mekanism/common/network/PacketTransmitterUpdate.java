@@ -198,16 +198,26 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					break;
 				case ENERGY:
 					dataStream.writeDouble(power);
+					
 					break;
 				case GAS:
 					dataStream.writeInt(gasStack != null ? gasStack.getGas().getID() : -1);
 					dataStream.writeInt(gasStack != null ? gasStack.amount : 0);
 					dataStream.writeBoolean(didGasTransfer);
+					
 					break;
 				case FLUID:
-					dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
-					dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
+					if(fluidStack != null)
+					{
+						PacketHandler.writeString(dataStream, FluidRegistry.getFluidName(fluidStack));
+						dataStream.writeInt(fluidStack.amount);
+					}
+					else {
+						dataStream.writeBoolean(false);
+					}
+					
 					dataStream.writeBoolean(didFluidTransfer);
+					
 					break;
 				default:
 					break;
@@ -249,9 +259,16 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			}
 			else if(packetType == PacketType.FLUID)
 			{
-				int type = dataStream.readInt();
-				fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
-				amount = dataStream.readInt();
+				if(dataStream.readBoolean())
+				{
+					fluidType = FluidRegistry.getFluid(PacketHandler.readString(dataStream));
+					amount = dataStream.readInt();
+				}
+				else {
+					fluidType = null;
+					amount = 0;
+				}
+				
 				didFluidTransfer = dataStream.readBoolean();
 
 				if(fluidType != null)

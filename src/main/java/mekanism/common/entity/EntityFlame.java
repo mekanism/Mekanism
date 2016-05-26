@@ -262,7 +262,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 					worldObj.spawnEntityInWorld(item);
 				}
 				
-				worldObj.playAuxSFXAtEntity(null, 2001, block.getPos(), Block.getIdFromBlock(b) + (b.getMetaFromState(state) << 12));
+				worldObj.playEvent(null, 2001, block.getPos(), Block.getStateId(state));
 			}
 			
 			spawnParticlesAt(new Pos3D(block).translate(0.5, 0.5, 0.5));

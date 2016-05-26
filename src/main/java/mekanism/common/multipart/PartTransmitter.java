@@ -13,7 +13,9 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -134,7 +136,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	}
 	
 	@Override
-	public void onAlloyInteraction(EntityPlayer player, int tierOrdinal) 
+	public void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal) 
 	{
 		if(getTransmitter().hasTransmitterNetwork())
 		{
@@ -182,11 +184,11 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 			{
 				if(!player.capabilities.isCreativeMode)
 				{
-					player.getCurrentEquippedItem().stackSize--;
+					stack.stackSize--;
 					
-					if(player.getCurrentEquippedItem().stackSize == 0)
+					if(stack.stackSize == 0)
 					{
-						player.setCurrentItemOrArmor(0, null);
+						player.setHeldItem(hand, null);
 					}
 				}
 			}

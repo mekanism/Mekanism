@@ -158,27 +158,45 @@ public class VoiceConnection extends Thread
 	{
 		for(ItemStack itemStack : getPlayer().inventory.mainInventory)
 		{
-			if(itemStack != null)
+			if(canListen(channel, itemStack))
 			{
-				if(itemStack.getItem() instanceof ItemWalkieTalkie)
-				{
-					if(((ItemWalkieTalkie)itemStack.getItem()).getOn(itemStack))
-					{
-						if(((ItemWalkieTalkie)itemStack.getItem()).getChannel(itemStack) == channel)
-						{
-							return true;
-						}
-					}
-				}
+				return true;
+			}
+		}
+		
+		for(ItemStack itemStack : getPlayer().inventory.offHandInventory)
+		{
+			if(canListen(channel, itemStack))
+			{
+				return true;
 			}
 		}
 
 		return false;
 	}
+	
+	public boolean canListen(int channel, ItemStack itemStack)
+	{
+		if(itemStack != null)
+		{
+			if(itemStack.getItem() instanceof ItemWalkieTalkie)
+			{
+				if(((ItemWalkieTalkie)itemStack.getItem()).getOn(itemStack))
+				{
+					if(((ItemWalkieTalkie)itemStack.getItem()).getChannel(itemStack) == channel)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	public int getCurrentChannel()
 	{
-		ItemStack itemStack = getPlayer().getCurrentEquippedItem();
+		ItemStack itemStack = getPlayer().inventory.getCurrentItem();
 
 		if(itemStack != null)
 		{

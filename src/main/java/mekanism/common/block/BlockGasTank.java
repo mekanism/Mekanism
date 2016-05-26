@@ -29,6 +29,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -38,10 +40,11 @@ import buildcraft.api.tools.IToolWrench;
 
 public class BlockGasTank extends BlockContainer
 {
+	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.2F, 0.0F, 0.2F, 0.8F, 1.0F, 0.8F);
+
 	public BlockGasTank()
 	{
 		super(Material.IRON);
-		setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 1.0F, 0.8F);
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
@@ -131,7 +134,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -140,9 +143,9 @@ public class BlockGasTank extends BlockContainer
 
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 
-		if(entityplayer.getCurrentEquippedItem() != null)
+		if(stack != null)
 		{
-			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+			Item tool = stack.getItem();
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
@@ -150,7 +153,7 @@ public class BlockGasTank extends BlockContainer
 				{
 					if(entityplayer.isSneaking())
 					{
-						dismantleBlock(world, pos, false);
+						dismantleBlock(state, world, pos, false);
 						
 						return true;
 					}
@@ -253,6 +256,12 @@ public class BlockGasTank extends BlockContainer
 	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
 		return EnumBlockRenderType.MODEL;
+	}
+	
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
+	{
+		return TANK_BOUNDS;
 	}
 
 	@Override
