@@ -82,7 +82,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	{
 		if(!world.isRemote)
 		{
-			Pos3D pos = new Pos3D(-0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
+			Pos3D pos = new Pos3D(hand == EnumHand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
 
 			world.spawnEntityInWorld(new EntityBalloon(world, pos.xCoord-0.5, pos.yCoord-0.25, pos.zCoord-0.5, getColor(itemstack)));
 		}

@@ -8,7 +8,10 @@ import java.util.Objects;
 
 import javax.vecmath.Matrix4f;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import mekanism.api.MekanismConfig.client;
+import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.common.multipart.ColorProperty;
 import mekanism.common.multipart.ConnectionProperty;
 import mekanism.common.multipart.PartSidedPipe;
@@ -16,6 +19,7 @@ import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -29,6 +33,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.Face;
 import net.minecraftforge.client.model.obj.OBJModel.Group;
@@ -246,6 +251,12 @@ public class TransmitterModel extends OBJBakedModelBase
 		
 		return (byte)0;
 	}
+	
+    @Override
+    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    {
+        return Pair.of(this, CTMModelFactory.transforms.get(cameraTransformType).getMatrix());
+    }
 	
 	public static void registerIcons(TextureMap map)
 	{

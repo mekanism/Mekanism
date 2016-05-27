@@ -156,12 +156,7 @@ public class RenderTickHandler
 								continue;
 							}
 							
-							Pos3D playerPos = new Pos3D(p);
-
-							if(p != mc.thePlayer)
-							{
-								playerPos = playerPos.translate(0, 1.7, 0);
-							}
+							Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
 							
 							float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
 							float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
@@ -243,7 +238,7 @@ public class RenderTickHandler
 		{
 			fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
 		}
-		else if(s.equals("bubble"))
+		else if(s.equals(EnumParticleTypes.WATER_BUBBLE))
 		{
 			fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
 		}

@@ -52,6 +52,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.CullFace;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -110,6 +111,11 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 	private void doRender(TransformType type)
 	{
 		BasicBlockType basicType = BasicBlockType.get(stack);
+		
+		if(type == TransformType.GUI)
+		{
+			GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+		}
 		
 		if(basicType != null)
 		{
@@ -251,9 +257,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		
 		if(type == TransformType.GUI)
 		{
-			GlStateManager.scale(0.625, 0.625, 0.625);
-			GlStateManager.rotate(30.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(-45.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
 		}
 		
 		if(stack.getItem() == MekanismItems.Jetpack)
@@ -314,8 +318,13 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			GlStateManager.scale(1.4F, 1.4F, 1.4F);
 			GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
 
-			if(type == TransformType.THIRD_PERSON_RIGHT_HAND)
+			if(type == TransformType.THIRD_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON_LEFT_HAND)
 			{
+				if(type == TransformType.THIRD_PERSON_LEFT_HAND)
+				{
+					GlStateManager.rotate(-90, 0.0F, 1.0F, 0.0F);
+				}
+				
 				GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
 				GlStateManager.rotate(50, 1.0F, 0.0F, 0.0F);
 				GlStateManager.scale(2.0F, 2.0F, 2.0F);
@@ -329,6 +338,11 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 				GlStateManager.translate(0.0F, -0.2F, 0.0F);
 			}
 			else {
+				if(type == TransformType.FIRST_PERSON_LEFT_HAND)
+				{
+					GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+				}
+				
 				GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
 				GlStateManager.translate(0.0F, -0.7F, 0.0F);
 			}
@@ -347,15 +361,27 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			GlStateManager.rotate(135, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate(-20, 0.0F, 0.0F, 1.0F);
 			
-			if(type == TransformType.FIRST_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON_RIGHT_HAND)
+			if(type == TransformType.FIRST_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON_RIGHT_HAND
+					|| type == TransformType.FIRST_PERSON_LEFT_HAND || type == TransformType.THIRD_PERSON_LEFT_HAND)
 			{
 				if(type == TransformType.FIRST_PERSON_RIGHT_HAND)
 				{
 					GlStateManager.rotate(55, 0.0F, 1.0F, 0.0F);
 				}
-				else {
+				else if(type == TransformType.FIRST_PERSON_LEFT_HAND)
+				{
+					GlStateManager.rotate(-160, 0.0F, 1.0F, 0.0F);
+					GlStateManager.rotate(30F, 1.0F, 0.0F, 0.0F);
+				}
+				else if(type == TransformType.THIRD_PERSON_RIGHT_HAND)
+				{
 					GlStateManager.translate(0.0F, 0.7F, 0.0F);
 					GlStateManager.rotate(75, 0.0F, 1.0F, 0.0F);
+				}
+				else if(type == TransformType.THIRD_PERSON_LEFT_HAND)
+				{
+					GlStateManager.translate(0.0F, 0.7F, 0.0F);
+					GlStateManager.rotate(-75, 0.0F, 1.0F, 0.0F);
 				}
 				
 				GlStateManager.scale(2.5F, 2.5F, 2.5F);
@@ -407,7 +433,8 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
         GlStateManager.enableLight(0);
         GlStateManager.enableLight(1);
         GlStateManager.enableColorMaterial();
-        GlStateManager.colorMaterial(1032, 5634);
+        GlStateManager.colorMaterial(1032, 5634); 
+        GlStateManager.enableCull();
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
     	GlStateManager.popMatrix();
     	
