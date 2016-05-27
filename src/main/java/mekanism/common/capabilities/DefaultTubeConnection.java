@@ -1,11 +1,11 @@
 package mekanism.common.capabilities;
 
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.capabilities.StorageHelper.NullStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class TubeConnection implements ITubeConnection
+public class DefaultTubeConnection implements ITubeConnection
 {
 	@Override
 	public boolean canTubeConnect(EnumFacing side) 
@@ -15,6 +15,6 @@ public class TubeConnection implements ITubeConnection
 	
 	public static void register()
 	{
-        CapabilityManager.INSTANCE.register(ITubeConnection.class, new NullStorage<>(), TubeConnection.class);
+        CapabilityManager.INSTANCE.register(ITubeConnection.class, new NullStorage<>(), DefaultTubeConnection.class);
 	}
 }

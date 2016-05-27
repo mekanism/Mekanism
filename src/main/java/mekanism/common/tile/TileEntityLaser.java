@@ -63,7 +63,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 
-					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
+					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))))
 					{
 						diggingProgress += usage.laserUsage;
 
@@ -95,7 +95,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					
-					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
+					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))))
 					{
 						diggingProgress += usage.laserUsage;
 

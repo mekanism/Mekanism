@@ -10,6 +10,7 @@ import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
@@ -70,9 +71,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 					{
 						TileEntity outputter = connectedOutputters[side.ordinal()];
 
-						if(MekanismUtils.hasCapability(outputter, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && MekanismUtils.hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
+						if(CapabilityUtils.hasCapability(outputter, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
 						{
-							IStrictEnergyStorage storage = MekanismUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
+							IStrictEnergyStorage storage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
 							double received = Math.min(storage.getEnergy(), canDraw);
 							double toDraw = received;
 

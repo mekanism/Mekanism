@@ -1,13 +1,17 @@
 package mekanism.common.capabilities;
 
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.IConfigCardAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.IConfigurable;
+import mekanism.api.IEvaporationSolar;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.ILogisticalTransporter;
@@ -55,23 +59,39 @@ public class Capabilities
     
     @CapabilityInject(ITubeConnection.class)
     public static Capability<ITubeConnection> TUBE_CONNECTION_CAPABILITY = null;
+    
+    @CapabilityInject(IConfigCardAccess.class)
+    public static Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY = null;
+    
+    @CapabilityInject(ISpecialConfigData.class)
+    public static Capability<ISpecialConfigData> SPECIAL_CONFIG_DATA_CAPABILITY = null;
+    
+    @CapabilityInject(IEvaporationSolar.class)
+    public static Capability<IEvaporationSolar> EVAPORATION_SOLAR_CAPABILITY = null;
+    
+    @CapabilityInject(ILaserReceptor.class)
+    public static Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY = null;
 
     public static void registerCapabilities()
     {
-        StrictEnergyStorage.register();
-        StrictEnergyAcceptor.register();
-        CableOutputter.register();
+        DefaultStrictEnergyStorage.register();
+        DefaultStrictEnergyAcceptor.register();
+        DefaultCableOutputter.register();
 
-        GridTransmitterTile.register();
-        LogisticalTransporter.register();
-        BlockableConnection.register();
+        DefaultGridTransmitter.register();
+        DefaultLogisticalTransporter.register();
+        DefaultBlockableConnection.register();
         
-        GasHandler.register();
-        TubeConnection.register();
+        DefaultGasHandler.register();
+        DefaultTubeConnection.register();
 
-        Configurable.register();
-        TileNetwork.register();
-        AlloyInteraction.register();
-        HeatTransfer.register();
+        DefaultConfigurable.register();
+        DefaultTileNetwork.register();
+        DefaultAlloyInteraction.register();
+        DefaultHeatTransfer.register();
+        DefaultConfigCardAccess.register();
+        DefaultSpecialConfigData.register();
+        DefaultEvaporationSolar.register();
+        DefaultLaserReceptor.register();
     }
 }

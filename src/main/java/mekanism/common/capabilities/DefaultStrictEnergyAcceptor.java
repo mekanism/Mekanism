@@ -1,7 +1,7 @@
 package mekanism.common.capabilities;
 
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.common.capabilities.StorageHelper.DefaultStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.DefaultStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -10,14 +10,14 @@ import net.minecraftforge.common.util.INBTSerializable;
 /**
  * Created by ben on 30/04/16.
  */
-public class StrictEnergyAcceptor extends StrictEnergyStorage implements IStrictEnergyAcceptor, INBTSerializable<NBTTagCompound>
+public class DefaultStrictEnergyAcceptor extends DefaultStrictEnergyStorage implements IStrictEnergyAcceptor, INBTSerializable<NBTTagCompound>
 {
-    public StrictEnergyAcceptor()
+    public DefaultStrictEnergyAcceptor()
     {
         this(0);
     }
 
-    public StrictEnergyAcceptor(double capacity)
+    public DefaultStrictEnergyAcceptor(double capacity)
     {
         super(capacity);
     }
@@ -50,6 +50,6 @@ public class StrictEnergyAcceptor extends StrictEnergyStorage implements IStrict
 
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(IStrictEnergyAcceptor.class, new DefaultStorage<>(), StrictEnergyAcceptor.class);
+        CapabilityManager.INSTANCE.register(IStrictEnergyAcceptor.class, new DefaultStorage<>(), DefaultStrictEnergyAcceptor.class);
     }
 }

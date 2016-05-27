@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
@@ -31,7 +32,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 	public IMessage onMessage(ConfigurationUpdateMessage message, MessageContext context) 
 	{
 		TileEntity tile = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
-		ITileNetwork network = MekanismUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
+		ITileNetwork network = CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
 		
 		if(tile instanceof ISideConfiguration)
 		{

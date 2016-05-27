@@ -15,6 +15,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEnergyWrapper;
@@ -398,7 +399,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
-		if(tile == null || MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
+		if(tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
 		{
 			return amount;
 		}

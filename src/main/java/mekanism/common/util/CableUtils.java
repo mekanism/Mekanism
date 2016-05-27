@@ -13,6 +13,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
@@ -27,16 +28,16 @@ public final class CableUtils
 {
 	public static boolean isEnergyAcceptor(TileEntity tileEntity)
 	{
-		return tileEntity != null && (MekanismUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null) ||
+		return tileEntity != null && (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver));
 	}
 
 	public static boolean isCable(TileEntity tileEntity)
 	{
-		if(tileEntity != null && MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+		if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 		{
-			return TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null), TransmissionType.ENERGY);
+			return TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null), TransmissionType.ENERGY);
 		}
 		
 		return false;
@@ -115,7 +116,7 @@ public final class CableUtils
 	public static boolean isOutputter(TileEntity tileEntity, EnumFacing side)
 	{
 		return tileEntity != null && (
-				(MekanismUtils.hasCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && MekanismUtils.getCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite())) ||
+				(CapabilityUtils.hasCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && CapabilityUtils.getCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite())) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()))
 		);
@@ -123,14 +124,14 @@ public final class CableUtils
 
 	public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, EnumFacing side)
 	{
-		if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 		{
 			return false;
 		}
 
-		if(MekanismUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
 		{
-			if(MekanismUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()).canReceiveEnergy(side.getOpposite()))
+			if(CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()).canReceiveEnergy(side.getOpposite()))
 			{
 				return true;
 			}
@@ -142,9 +143,9 @@ public final class CableUtils
 				return true;
 			}
 		}
-		else if(MekanismUtils.hasCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()))
+		else if(CapabilityUtils.hasCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()))
 		{
-			if(MekanismUtils.getCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite()))
+			if(CapabilityUtils.getCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()).canOutputTo(side.getOpposite()))
 			{
 				return true;
 			}
@@ -235,9 +236,9 @@ public final class CableUtils
 	{
 		double sent = 0;
 
-		if(MekanismUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()))
 		{
-			IStrictEnergyAcceptor acceptor = MekanismUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite());
+			IStrictEnergyAcceptor acceptor = CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite());
 
 			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{

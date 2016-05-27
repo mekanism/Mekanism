@@ -20,6 +20,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
 import mekanism.common.base.ITileNetwork;
@@ -224,8 +225,8 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 			{
 				TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
-				if(tileEntity != null && MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
-						&& TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
+				if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+						&& TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
 						&& isValidTransmitter(tileEntity))
 				{
 					connections |= 1 << side.ordinal();
@@ -279,8 +280,8 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		{
 			TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 			
-			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
-					&& TransmissionType.checkTransmissionType(MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
+			if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+					&& TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
 					&& isValidTransmitter(tileEntity))
 			{
 				return true;
@@ -493,12 +494,12 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
 		
-		if(!MekanismUtils.hasCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()))
+		if(!CapabilityUtils.hasCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()))
 		{
 			return true;
 		}
 		
-		return MekanismUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()).canConnect(side.getOpposite());
+		return CapabilityUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()).canConnect(side.getOpposite());
 	}
 
 	@Override

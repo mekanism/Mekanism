@@ -10,8 +10,8 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
@@ -307,12 +307,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 			for(EnumFacing side : sides)
 			{
-				if(!MekanismUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side))
+				if(!CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side))
 				{
 					continue;
 				}
 				
-				IGasHandler acceptor = MekanismUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
+				IGasHandler acceptor = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
 				
 				if(acceptor != null && acceptor.canReceiveGas(side, type))
 				{

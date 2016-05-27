@@ -14,11 +14,11 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.INeutronCapture;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -434,7 +434,7 @@ public class FusionReactor implements IFusionReactor
 		{
 			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
 
-			if(tile instanceof ILaserReceptor && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0)))
+			if(LaserManager.isReceptor(tile, null) && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0)))
 			{
 				return false;
 			}

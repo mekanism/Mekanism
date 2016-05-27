@@ -16,6 +16,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.security.ISecurityTile;
@@ -30,6 +31,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
@@ -266,22 +268,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	                    	container = null;
 	                    }
 
-	                    if(container != null/*TODO && !stack.getItem().doesContainerItemLeaveCraftingGrid(stack)*/)
+	                    if(container != null)
 	                    {
-	                    	/*TODOif(!stack.getItem().doesContainerItemLeaveCraftingGrid(stack))
-	                    	{
-	                    		inventory[i] = container.copy();
-	                    	}
-	                    	else*/ {
-	                    		boolean move = tryMoveToOutput(container.copy(), false);
-	                    		
-	                    		if(move)
-	                    		{
-	                    			tryMoveToOutput(container.copy(), true);
-	                    		}
-	                    		
-	                    		inventory[i] = move ? null : container.copy();
-	                    	}
+                    		boolean move = tryMoveToOutput(container.copy(), false);
+                    		
+                    		if(move)
+                    		{
+                    			tryMoveToOutput(container.copy(), true);
+                    		}
+                    		
+                    		inventory[i] = move ? null : container.copy();
 	                    }
 					}
 				}
@@ -741,5 +737,22 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			default:
 				break;
 		}
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.CONFIG_CARD_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

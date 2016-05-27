@@ -3,11 +3,11 @@ package mekanism.common.capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
-import mekanism.common.capabilities.StorageHelper.NullStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class GasHandler implements IGasHandler
+public class DefaultGasHandler implements IGasHandler
 {
 	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
@@ -35,6 +35,6 @@ public class GasHandler implements IGasHandler
 	
 	public static void register()
 	{
-        CapabilityManager.INSTANCE.register(IGasHandler.class, new NullStorage<>(), GasHandler.class);
+        CapabilityManager.INSTANCE.register(IGasHandler.class, new NullStorage<>(), DefaultGasHandler.class);
 	}
 }

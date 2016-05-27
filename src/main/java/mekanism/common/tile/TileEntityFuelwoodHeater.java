@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
@@ -273,9 +274,9 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	{
 		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
-		if(MekanismUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			return MekanismUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+			return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 		}
 		
 		return null;

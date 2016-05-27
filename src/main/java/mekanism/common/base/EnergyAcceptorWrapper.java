@@ -4,6 +4,7 @@ import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -23,9 +24,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		
 		EnergyAcceptorWrapper wrapper = null;
 		
-		if(MekanismUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null))
+		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null))
 		{
-			wrapper = new MekanismAcceptor(MekanismUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null));
+			wrapper = new MekanismAcceptor(CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null));
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{

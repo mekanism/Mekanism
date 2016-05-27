@@ -11,6 +11,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IMekWrench;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -113,9 +114,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					
 					return EnumActionResult.SUCCESS;
 				}
-				else if(MekanismUtils.hasCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side))
+				else if(CapabilityUtils.hasCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side))
 				{
-					IConfigurable config = MekanismUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side);
+					IConfigurable config = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side);
 
 					if(SecurityUtils.canAccess(player, tile))
 					{

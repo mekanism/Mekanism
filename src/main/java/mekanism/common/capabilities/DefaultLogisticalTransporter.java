@@ -7,7 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.capabilities.StorageHelper.NullStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.inventory.IInventory;
@@ -20,7 +20,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 /**
  * Created by ben on 03/05/16.
  */
-public class LogisticalTransporter implements ILogisticalTransporter
+public class DefaultLogisticalTransporter implements ILogisticalTransporter
 {
     @Override
     public ItemStack insert(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
@@ -231,6 +231,6 @@ public class LogisticalTransporter implements ILogisticalTransporter
 
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(ILogisticalTransporter.class, new NullStorage<>(), LogisticalTransporter.class);
+        CapabilityManager.INSTANCE.register(ILogisticalTransporter.class, new NullStorage<>(), DefaultLogisticalTransporter.class);
     }
 }

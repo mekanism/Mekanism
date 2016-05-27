@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -208,9 +209,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				{
 					TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 
-					if(MekanismUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
+					if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
 					{
-						ILogisticalTransporter transporter = MekanismUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
+						ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
 
 						ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
 

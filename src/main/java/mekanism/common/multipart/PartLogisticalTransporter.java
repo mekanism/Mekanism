@@ -9,6 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
@@ -23,7 +24,6 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -90,7 +90,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	protected boolean isValidTransmitter(TileEntity tileEntity)
 	{
-		ILogisticalTransporter transporter = MekanismUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+		ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 	
 		if(getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor())
 		{

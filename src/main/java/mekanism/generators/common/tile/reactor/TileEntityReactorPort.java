@@ -10,11 +10,11 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -305,11 +305,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 		
-		if(MekanismUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
 			if(!(adj instanceof IReactorBlock))
 			{
-				return MekanismUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+				return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			}
 		}
 		

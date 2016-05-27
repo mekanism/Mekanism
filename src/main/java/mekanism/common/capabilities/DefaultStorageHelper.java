@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 /**
  * Created by ben on 03/05/16.
  */
-public class StorageHelper
+public class DefaultStorageHelper
 {
     public static class DefaultStorage<T> implements IStorage<T>
     {

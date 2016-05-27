@@ -12,6 +12,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -22,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor, ISecurityTile
@@ -78,7 +80,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 					IBlockState blockHit = hitCoord.getBlockState(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
-					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
+					
+					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))))
 					{
 						diggingProgress += lastFired;
 
@@ -117,7 +120,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 					IBlockState blockHit = hitCoord.getBlockState(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
-					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
+					
+					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))))
 					{
 						diggingProgress += firing;
 
@@ -227,5 +231,22 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	public TileComponentSecurity getSecurity()
 	{
 		return securityComponent;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.LASER_RECEPTOR_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.LASER_RECEPTOR_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

@@ -9,6 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.ColourRGBA;
 import mekanism.common.HeatNetwork;
 import mekanism.common.Mekanism;
@@ -18,7 +19,6 @@ import mekanism.common.Tier.ConductorTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.HeatUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -79,9 +79,9 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
-		if(MekanismUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			IHeatTransfer transfer = MekanismUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+			IHeatTransfer transfer = CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			return transfer.canConnectHeat(side.getOpposite());
 		}
 		
@@ -217,9 +217,9 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 		{
 			TileEntity adj = getWorld().getTileEntity(getPos().offset(side));
 			
-			if(MekanismUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+			if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 			{
-				return MekanismUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+				return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			}
 		}
 		

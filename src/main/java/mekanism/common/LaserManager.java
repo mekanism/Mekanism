@@ -6,6 +6,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.api.util.CapabilityUtils;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -39,11 +41,13 @@ public class LaserManager
 			Coord4D toCoord = new Coord4D(mop.getBlockPos(), world);
 			TileEntity tile = toCoord.getTileEntity(world);
 
-			if(tile instanceof ILaserReceptor)
+			if(isReceptor(tile, mop.sideHit))
 			{
-				if(!(((ILaserReceptor)tile).canLasersDig()))
+				ILaserReceptor receptor = getReceptor(tile, mop.sideHit);
+				
+				if(!(receptor.canLasersDig()))
 				{
-					((ILaserReceptor)tile).receiveLaserEnergy(energy, mop.sideHit);
+					receptor.receiveLaserEnergy(energy, mop.sideHit);
 				}
 			}
 		}
@@ -125,6 +129,16 @@ public class LaserManager
 		Mekanism.proxy.renderLaser(world, from, to, direction, energy);
 		
 		return mop;
+	}
+	
+	public static boolean isReceptor(TileEntity tile, EnumFacing side)
+	{
+		return CapabilityUtils.hasCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
+	}
+	
+	public static ILaserReceptor getReceptor(TileEntity tile, EnumFacing side)
+	{
+		return CapabilityUtils.getCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
 	}
 	
 	public static class LaserInfo

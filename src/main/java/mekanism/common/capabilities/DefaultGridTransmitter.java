@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.StorageHelper.NullStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -14,7 +14,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 /**
  * Created by ben on 03/05/16.
  */
-public class GridTransmitterTile<A, N extends DynamicNetwork<A, N>> implements IGridTransmitter<A, N>
+public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N>> implements IGridTransmitter<A, N>
 {
     @Override
     public boolean hasTransmitterNetwork()
@@ -165,6 +165,6 @@ public class GridTransmitterTile<A, N extends DynamicNetwork<A, N>> implements I
 
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(IGridTransmitter.class, new NullStorage<>(), GridTransmitterTile.class);
+        CapabilityManager.INSTANCE.register(IGridTransmitter.class, new NullStorage<>(), DefaultGridTransmitter.class);
     }
 }

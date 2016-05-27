@@ -10,11 +10,13 @@ import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
@@ -532,9 +534,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
 	public boolean addSolarPanel(TileEntity tile, int i)
 	{
-		if(tile instanceof IEvaporationSolar && !tile.isInvalid())
+		if(!tile.isInvalid() && CapabilityUtils.hasCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN))
 		{
-			solars[i] = (IEvaporationSolar)tile;
+			solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN);
 			return true;
 		}
 		else {
