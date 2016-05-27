@@ -146,9 +146,14 @@ public class CommonPlayerTickHandler
 		BlockPos pos = new BlockPos(x, y, z);
 		IBlockState s = player.worldObj.getBlockState(pos);
 		AxisAlignedBB box = s.getBlock().getCollisionBoundingBox(player.worldObj, pos, s);
-		AxisAlignedBB playerBox = player.getCollisionBoundingBox().offset(0, -0.01, 0);
+
+        AxisAlignedBB playerBx = player.getCollisionBoundingBox();
+
+        AxisAlignedBB playerBox = null;
+        if(playerBx != null)
+		  playerBox = playerBx.offset(0, -0.01, 0);
 		
-		return box != null && playerBox.intersectsWith(box);
+		return box != null && playerBox != null && playerBox.intersectsWith(box);
 	}
 
 	public boolean isJetpackOn(EntityPlayer player)
