@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +11,9 @@ import java.util.UUID;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.ObfuscatedNames;
 import mekanism.api.Range4D;
+import mekanism.api.util.ReflectionUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
@@ -456,7 +459,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 			if(e != null)
 			{
-				//e.copyDataFromOld(entity/*, true*/); TODO
+				try {
+					Method m = ReflectionUtils.getPrivateMethod(Entity.class, ObfuscatedNames.Entity_copyDataFromOld, Entity.class);
+					m.invoke(e, entity);
+				} catch(Exception exception) {
+					exception.printStackTrace();
+				}
+				
 				world.spawnEntityInWorld(e);
 				teleporter.didTeleport.add(e.getPersistentID());
 			}

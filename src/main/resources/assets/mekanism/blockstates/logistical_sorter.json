@@ -14,7 +14,7 @@
       "down":  {"x": 90}
     },
     "active": {
-      "true": {},
+      "true": {"textures": {"all": "mekanism:blocks/models/logistical_sorter_on"}},
       "false": {}
     },
     "inventory": [{}]

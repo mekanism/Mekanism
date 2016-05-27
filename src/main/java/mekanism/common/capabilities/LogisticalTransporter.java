@@ -219,6 +219,9 @@ public class LogisticalTransporter implements ILogisticalTransporter
     {
         return null;
     }
+    
+    @Override
+    public void setRequestsUpdate() {}
 
     @Override
     public TransmissionType getTransmissionType()

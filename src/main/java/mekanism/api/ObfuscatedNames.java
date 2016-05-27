@@ -13,4 +13,5 @@ public final class ObfuscatedNames
 	public static String[] SoundManager_invPlayingSounds = new String[] {"invPlayingSounds", "field_148630_i"};
 	public static String[] AbstractClientPlayer_getPlayerInfo = new String[] {"getPlayerInfo", "func_110303_q"};
 	public static String[] NetworkPlayerInfo_locationCape = new String[] {"locationCape", "field_178862_f"};
+	public static String[] Entity_copyDataFromOld = new String[] {"copyDataFromOld"};
 }

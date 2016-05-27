@@ -153,6 +153,9 @@ public class GridTransmitterTile<A, N extends DynamicNetwork<A, N>> implements I
     {
         return null;
     }
+    
+    @Override
+    public void setRequestsUpdate() {}
 
     @Override
     public TransmissionType getTransmissionType()

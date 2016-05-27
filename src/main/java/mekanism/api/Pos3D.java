@@ -205,6 +205,7 @@ public class Pos3D extends Vec3d
 		return new Pos3D(xPos, yCoord, zPos);
 	}
 	
+	@Override
 	public Pos3D rotatePitch(float pitch)
 	{
 		double pitchRadians = Math.toRadians(pitch);
@@ -260,11 +261,7 @@ public class Pos3D extends Vec3d
 		return new Pos3D(xCoord * x, yCoord * y, zCoord * z);
 	}
 
-	/**
-	 * Performs the same operation as scale(x, y, z), but with a value representing all three dimensions.
-	 * @param scale - value to scale by
-	 * @return scaled Pos3D
-	 */
+	@Override
 	public Pos3D scale(double scale)
 	{
 		return scale(scale, scale, scale);
@@ -328,7 +325,9 @@ public class Pos3D extends Vec3d
 		return Math.acos(pos1.clone().dotProduct(pos2));
 	}
 
-	public Pos3D normalize() {
+	@Override
+	public Pos3D normalize() 
+	{
 		return new Pos3D(super.normalize());
 	}
 	
