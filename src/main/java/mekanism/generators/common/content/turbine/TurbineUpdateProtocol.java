@@ -128,7 +128,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 								return false;
 							}
 							
-							dispersers.remove(new Coord4D(x, complex.yCoord, z));
+							dispersers.remove(new Coord4D(x, complex.yCoord, z, pointer.getWorld().provider.getDimension()));
 						}
 					}
 				}

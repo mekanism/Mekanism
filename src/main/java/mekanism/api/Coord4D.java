@@ -34,21 +34,6 @@ public class Coord4D
 	public int zCoord;
 
 	public int dimensionId;
-
-	/**
-	 * Creates a Coord4D WITHOUT a dimensionId. Don't use unless absolutely necessary.
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
-	 */
-	public Coord4D(int x, int y, int z)
-	{
-		xCoord = x;
-		yCoord = y;
-		zCoord = z;
-
-		dimensionId = 0;
-	}
 	
 	/**
 	 * Creates a Coord4D from an entity's position, rounded down.

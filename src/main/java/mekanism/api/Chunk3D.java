@@ -86,9 +86,9 @@ public class Chunk3D
 	}
 	
 	@Override
-	public Coord4D clone()
+	public Chunk3D clone()
 	{
-		return new Coord4D(xCoord, zCoord, dimensionId);
+		return new Chunk3D(xCoord, zCoord, dimensionId);
 	}
 
 	@Override
