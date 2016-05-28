@@ -980,7 +980,10 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		IBlockState state = world.getBlockState(pos);
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
-		switch(type)
+		if(type == null) 
+		{
+			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		} else switch(type)
 		{
 			case CHARGEPAD:
 				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
@@ -1019,7 +1022,10 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		IBlockState state = world.getBlockState(pos);
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
-		switch(type)
+		if(type == null) 
+		{
+			return true;
+		} else switch(type)
 		{
 			case CHARGEPAD:
 			case PERSONAL_CHEST:
