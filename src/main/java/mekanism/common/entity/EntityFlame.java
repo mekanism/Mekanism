@@ -189,7 +189,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 
                 if(general.aestheticWorldDamage && !fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
                 {
-                	if(mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ)))
+                	if(mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId)))
                 	{
                 		if(mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !worldObj.isRemote)
                 		{

@@ -74,7 +74,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			if(on)
 			{
 				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), lastFired, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -126,7 +126,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				}
 
 				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ, worldObj.provider.dimensionId);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{

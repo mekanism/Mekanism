@@ -854,7 +854,7 @@ public final class MekanismUtils
 	 */
 	public static void updateBlock(World world, int x, int y, int z)
 	{
-		Coord4D pos = new Coord4D(x, y, z);
+		Coord4D pos = new Coord4D(x, y, z, world.provider.dimensionId);
 		if(!(pos.getTileEntity(world) instanceof IActiveState) || ((IActiveState)pos.getTileEntity(world)).renderUpdate())
 		{
 			world.func_147479_m(pos.xCoord, pos.yCoord, pos.zCoord);

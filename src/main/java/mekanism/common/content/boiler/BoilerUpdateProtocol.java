@@ -169,7 +169,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			int steamHeight = (structure.renderLocation.yCoord+structure.volHeight-2)-initDisperser.yCoord;
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
 			
-			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord+1, structure.renderLocation.zCoord);
+			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord+1, structure.renderLocation.zCoord, pointer.getWorldObj().provider.dimensionId);
 			
 			return true;
 		}
