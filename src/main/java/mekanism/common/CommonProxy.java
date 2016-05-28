@@ -296,7 +296,7 @@ public class CommonProxy implements IGuiProvider
 		general.energyPerHeat = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerHeat", 1000D).getDouble();
 		general.maxEnergyPerSteam = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxEnergyPerSteam", 100D).getDouble();
 		general.superheatingHeatTransfer = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SuperheatingHeatTransfer", 10000D).getDouble();
-		general.heatPerFuelTick = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HeatPerFuelTick", 1D).getDouble();
+		general.heatPerFuelTick = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HeatPerFuelTick", 4D).getDouble();
 		
 		general.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false).getBoolean();
 		general.blacklistRF = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistRFPower", false).getBoolean();

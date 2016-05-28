@@ -1080,6 +1080,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
 		MachineType type = MachineType.get(blockType, world.getBlockMetadata(x, y, z));
+		
+		if(type == null)
+		{
+			return;
+		}
 
 		switch(type)
 		{

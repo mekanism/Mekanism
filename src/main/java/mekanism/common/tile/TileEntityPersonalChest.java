@@ -84,7 +84,7 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
 		else {
 			if(INV == null)
 			{
-				INV = new int[55];
+				INV = new int[54];
 
 				for(int i = 0; i < INV.length; i++)
 				{

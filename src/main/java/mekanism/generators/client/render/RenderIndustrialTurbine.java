@@ -40,7 +40,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick)
 	{
-		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null)
+		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.complex != null)
 		{
 			RenderTurbineRotor.internalRender = true;
 			Coord4D coord = tileEntity.structure.complex;
