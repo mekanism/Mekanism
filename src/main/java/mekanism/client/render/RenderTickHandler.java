@@ -112,7 +112,7 @@ public class RenderTickHandler
 						}
 
 						Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
-
+						
 						float random = (rand.nextFloat() - 0.5F) * 0.1F;
 
 						Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
@@ -207,7 +207,7 @@ public class RenderTickHandler
 										flameYCoord -= 0.5F;
 									}
 									else {
-										flameYCoord += 1F;
+										flameYCoord -= 0.5F;
 									}
 									
 									flameZCoord += 1.05F;

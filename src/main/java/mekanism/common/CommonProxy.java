@@ -168,8 +168,6 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
 		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
-		GameRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer");
-		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 		GameRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "ThermalEvaporationController");
 		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");

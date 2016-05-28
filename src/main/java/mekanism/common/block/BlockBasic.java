@@ -942,7 +942,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	{
 		if(BasicBlockType.get(state) == BasicBlockType.STRUCTURAL_GLASS)
 		{
-			if(!ctmData[10][0].shouldRenderSide(world, pos, side))
+			if(!ctmData[10][0].shouldRenderSide(world, pos.offset(side), side))
 			{
 				return false;
 			}

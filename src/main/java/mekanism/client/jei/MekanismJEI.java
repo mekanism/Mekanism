@@ -84,6 +84,8 @@ import mekanism.client.jei.machine.other.ThermalEvaporationRecipeHandler;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -198,6 +200,23 @@ public class MekanismJEI implements IModPlugin
 			e.printStackTrace();
 		}
 		
+		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<RotaryCondensentratorRecipeWrapper>();
+		
+		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+		registry.addRecipeCategories(rotaryCondensentratorCategory);
+		registry.addRecipeHandlers(new RotaryCondensentratorRecipeHandler(rotaryCondensentratorCategory));
+		
+		for(Gas gas : GasRegistry.getRegisteredGasses())
+		{
+			if(gas.hasFluid())
+			{
+				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, true, rotaryCondensentratorCategory));
+				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, false, rotaryCondensentratorCategory));
+			}
+		}
+		
+		registry.addRecipes(condensentratorRecipes);
+		
 		registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7, "mekanism.enrichment_chamber");
 		registry.addRecipeClickArea(GuiCrusher.class, 79, 40, 24, 7, "mekanism.crusher");
 		registry.addRecipeClickArea(GuiCombiner.class, 79, 40, 24, 7, "mekanism.combiner");
@@ -218,22 +237,30 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipeClickArea(GuiPRC.class, 75, 37, 36, 10, "mekanism.pressurized_reaction_chamber");
 		registry.addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, "mekanism.rotary_condensentrator");
 		
-		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<RotaryCondensentratorRecipeWrapper>();
+		registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER);
+		registerRecipeItem(registry, MachineType.CRUSHER);
+		registerRecipeItem(registry, MachineType.COMBINER);
+		registerRecipeItem(registry, MachineType.PURIFICATION_CHAMBER);
+		registerRecipeItem(registry, MachineType.OSMIUM_COMPRESSOR);
+		registerRecipeItem(registry, MachineType.CHEMICAL_INJECTION_CHAMBER);
+		registerRecipeItem(registry, MachineType.PRECISION_SAWMILL);
+		registerRecipeItem(registry, MachineType.METALLURGIC_INFUSER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_CRYSTALLIZER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_DISSOLUTION_CHAMBER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_INFUSER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_OXIDIZER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_WASHER);
+		registerRecipeItem(registry, MachineType.SOLAR_NEUTRON_ACTIVATOR);
+		registerRecipeItem(registry, MachineType.ELECTROLYTIC_SEPARATOR);
+		registerRecipeItem(registry, MachineType.PRESSURIZED_REACTION_CHAMBER);
+		registerRecipeItem(registry, MachineType.ROTARY_CONDENSENTRATOR);
 		
-		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(rotaryCondensentratorCategory);
-		registry.addRecipeHandlers(new RotaryCondensentratorRecipeHandler(rotaryCondensentratorCategory));
-		
-		for(Gas gas : GasRegistry.getRegisteredGasses())
-		{
-			if(gas.hasFluid())
-			{
-				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, true, rotaryCondensentratorCategory));
-				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, false, rotaryCondensentratorCategory));
-			}
-		}
-		
-		registry.addRecipes(condensentratorRecipes);
+		registry.addRecipeCategoryCraftingItem(BasicBlockType.THERMAL_EVAPORATION_CONTROLLER.getStack(1), "mekanism.thermal_evaporation_plant");
+	}
+	
+	private void registerRecipeItem(IModRegistry registry, MachineType type)
+	{
+		registry.addRecipeCategoryCraftingItem(type.getStack(), "mekanism." + type.getName());
 	}
 	
 	private void registerBasicMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends MachineRecipeHandler> handler, Class<? extends MachineRecipeWrapper> wrapper) throws Exception

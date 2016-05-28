@@ -273,7 +273,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 		
 		if(type == ReactorBlockType.REACTOR_GLASS || type == ReactorBlockType.LASER_FOCUS_MATRIX)
 		{
-			if(!ctmData[meta].shouldRenderSide(world, pos, side))
+			if(!ctmData[meta].shouldRenderSide(world, pos.offset(side), side))
 			{
 				return false;
 			}
