@@ -16,6 +16,7 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -26,7 +27,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -305,9 +306,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					getTopEject(true, remains);
 				}
-				else if(CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
+				else if(CapabilityUtils.hasCapability(getEjectInv(), BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, null), null, true, 0);
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, null), null, true, 0);
 
 					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{

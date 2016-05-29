@@ -1,12 +1,12 @@
-package mekanism.common.capabilities;
+package mekanism.api.capabilities;
 
 import java.util.Collection;
 
 import mekanism.api.Coord4D;
+import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.CapabilityManager;

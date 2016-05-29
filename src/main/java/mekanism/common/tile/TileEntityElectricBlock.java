@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

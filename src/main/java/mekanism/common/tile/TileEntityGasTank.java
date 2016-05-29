@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -20,7 +21,6 @@ import mekanism.common.SideData;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;

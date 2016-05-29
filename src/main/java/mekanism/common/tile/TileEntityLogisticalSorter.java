@@ -9,6 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Range4D;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -18,7 +19,7 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
@@ -97,7 +98,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
 				TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
 
-				if(back instanceof IInventory && (front != null && CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()) || front instanceof IInventory))
+				if(back instanceof IInventory && (front != null && CapabilityUtils.hasCapability(front, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()) || front instanceof IInventory))
 				{
 					IInventory inventory = InventoryUtils.checkChestInv((IInventory)back);
 
@@ -183,9 +184,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		ItemStack used = null;
 
-		if(CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
+		if(CapabilityUtils.hasCapability(front, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 		{
-			ILogisticalTransporter transporter = CapabilityUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
+			ILogisticalTransporter transporter = CapabilityUtils.getCapability(front, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
 
 			if(!roundRobin)
 			{

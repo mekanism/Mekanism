@@ -2,6 +2,7 @@ package mekanism.common.multipart;
 
 import java.util.Collection;
 
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasStack;
@@ -13,7 +14,6 @@ import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;

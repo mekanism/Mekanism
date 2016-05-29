@@ -4,8 +4,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.capabilities.DefaultStorageHelper;
+import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DefaultTileNetwork implements ITileNetwork

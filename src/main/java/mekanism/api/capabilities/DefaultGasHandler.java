@@ -1,9 +1,9 @@
-package mekanism.common.capabilities;
+package mekanism.api.capabilities;
 
+import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 

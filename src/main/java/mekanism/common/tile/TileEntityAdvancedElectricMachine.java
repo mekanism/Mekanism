@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -16,7 +17,6 @@ import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;

@@ -11,7 +11,7 @@ import mekanism.common.HashList;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
@@ -94,7 +94,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 						{
 							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), stack.getSide(this)))
 							{
-								ILogisticalTransporter nextTile = CapabilityUtils.getCapability(next.getTileEntity(world()), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+								ILogisticalTransporter nextTile = CapabilityUtils.getCapability(next.getTileEntity(world()), BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 								nextTile.entityEntering(stack, stack.progress%100);
 								remove.add(stack);
 

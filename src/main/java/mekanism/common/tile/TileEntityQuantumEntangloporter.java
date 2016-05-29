@@ -8,6 +8,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
@@ -19,7 +20,6 @@ import mekanism.common.PacketHandler;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;

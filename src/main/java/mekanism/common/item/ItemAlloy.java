@@ -1,9 +1,9 @@
 package mekanism.common.item;
 
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.MekanismItems;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

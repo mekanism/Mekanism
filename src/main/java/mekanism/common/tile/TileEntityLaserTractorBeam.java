@@ -7,12 +7,12 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.util.StackUtils;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;

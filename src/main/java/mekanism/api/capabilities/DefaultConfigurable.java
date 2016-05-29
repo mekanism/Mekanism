@@ -1,7 +1,7 @@
-package mekanism.common.capabilities;
+package mekanism.api.capabilities;
 
 import mekanism.api.IConfigurable;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;

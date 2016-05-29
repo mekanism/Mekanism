@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
@@ -19,7 +20,6 @@ import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.EnergyAcceptorWrapper;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

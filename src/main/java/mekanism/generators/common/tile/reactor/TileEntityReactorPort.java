@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -11,7 +12,6 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.api.util.CapabilityUtils;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;

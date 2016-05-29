@@ -4,10 +4,11 @@ import java.util.Collection;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.capabilities.DefaultStorageHelper;
+import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.inventory.IInventory;

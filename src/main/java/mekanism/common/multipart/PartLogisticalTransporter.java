@@ -16,7 +16,7 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
@@ -90,7 +90,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	protected boolean isValidTransmitter(TileEntity tileEntity)
 	{
-		ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+		ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 	
 		if(getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor())
 		{
@@ -451,13 +451,13 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY || super.hasCapability(capability, side);
+		return capability == BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY)
+		if(capability == BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY)
 		{
 			return (T)getTransmitter();
 		}

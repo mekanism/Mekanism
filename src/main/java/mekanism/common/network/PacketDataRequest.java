@@ -5,12 +5,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityMultiblock;
@@ -51,9 +52,9 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 				}
 			}
 
-			if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null))
+			if(CapabilityUtils.hasCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null))
 			{
-				ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
+				ITileNetwork network = CapabilityUtils.getCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null);
 				
 				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
 			}

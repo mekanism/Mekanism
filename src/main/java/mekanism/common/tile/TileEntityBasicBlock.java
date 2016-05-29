@@ -16,7 +16,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
@@ -218,13 +218,13 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
+		return capability == BaseCapabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		if(capability == BaseCapabilities.TILE_NETWORK_CAPABILITY)
 			return (T)this;
 		return super.getCapability(capability, facing);
 	}

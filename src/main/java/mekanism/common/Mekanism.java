@@ -44,7 +44,7 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
@@ -1321,7 +1321,7 @@ public class Mekanism
 		InfuseRegistry.registerInfuseType(new InfuseType("BIO", new ResourceLocation("mekanism:blocks/infuse/Bio")).setUnlocalizedName("bio"));
 		InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation("mekanism:blocks/infuse/Obsidian")).setUnlocalizedName("obsidian"));
 
-		Capabilities.registerCapabilities();
+		BaseCapabilities.registerCapabilities();
 	}
 	
 	@EventHandler

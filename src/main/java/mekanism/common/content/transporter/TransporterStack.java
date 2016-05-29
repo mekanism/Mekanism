@@ -7,10 +7,11 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
@@ -313,12 +314,12 @@ public class TransporterStack
 
 	public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from)
 	{
-		if(!(CapabilityUtils.hasCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite())))
+		if(!(CapabilityUtils.hasCapability(tileEntity, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite())))
 		{
 			return false;
 		}
 
-		ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite());
+		ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite());
 
 		if(!CapabilityUtils.getCapability(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, from.getOpposite()).canConnectMutual(from.getOpposite()))
 		{

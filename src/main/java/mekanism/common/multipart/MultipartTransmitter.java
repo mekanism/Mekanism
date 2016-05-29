@@ -4,11 +4,11 @@ import java.util.Collection;
 
 import mcmultipart.multipart.IMultipartContainer;
 import mekanism.api.Coord4D;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.Transmitter;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

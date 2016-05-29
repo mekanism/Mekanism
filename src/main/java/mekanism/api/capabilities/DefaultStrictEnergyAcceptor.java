@@ -1,7 +1,7 @@
-package mekanism.common.capabilities;
+package mekanism.api.capabilities;
 
+import mekanism.api.capabilities.DefaultStorageHelper.DefaultStorage;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.common.capabilities.DefaultStorageHelper.DefaultStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;

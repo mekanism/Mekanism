@@ -1,4 +1,4 @@
-package mekanism.common.capabilities;
+package mekanism.api.capabilities;
 
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigCardAccess;
@@ -14,8 +14,6 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITileNetwork;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -48,15 +46,9 @@ public class Capabilities
     @CapabilityInject(IGridTransmitter.class)
     public static Capability<IGridTransmitter> GRID_TRANSMITTER_CAPABILITY = null;
 
-    @CapabilityInject(ILogisticalTransporter.class)
-    public static Capability<ILogisticalTransporter> LOGISTICAL_TRANSPORTER_CAPABILITY = null;
-
     @CapabilityInject(IAlloyInteraction.class)
     public static Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY = null;
 
-    @CapabilityInject(ITileNetwork.class)
-    public static Capability<ITileNetwork> TILE_NETWORK_CAPABILITY = null;
-    
     @CapabilityInject(ITubeConnection.class)
     public static Capability<ITubeConnection> TUBE_CONNECTION_CAPABILITY = null;
     
@@ -71,27 +63,4 @@ public class Capabilities
     
     @CapabilityInject(ILaserReceptor.class)
     public static Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY = null;
-
-    public static void registerCapabilities()
-    {
-        DefaultStrictEnergyStorage.register();
-        DefaultStrictEnergyAcceptor.register();
-        DefaultCableOutputter.register();
-
-        DefaultGridTransmitter.register();
-        DefaultLogisticalTransporter.register();
-        DefaultBlockableConnection.register();
-        
-        DefaultGasHandler.register();
-        DefaultTubeConnection.register();
-
-        DefaultConfigurable.register();
-        DefaultTileNetwork.register();
-        DefaultAlloyInteraction.register();
-        DefaultHeatTransfer.register();
-        DefaultConfigCardAccess.register();
-        DefaultSpecialConfigData.register();
-        DefaultEvaporationSolar.register();
-        DefaultLaserReceptor.register();
-    }
 }
