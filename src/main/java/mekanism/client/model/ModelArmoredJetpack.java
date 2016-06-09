@@ -244,6 +244,7 @@ public class ModelArmoredJetpack extends ModelBase
 		GlStateManager.pushMatrix();
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
+		GlStateManager.enableCull();
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glColor4f(1, 1, 1, 0.2F);
 
@@ -251,7 +252,7 @@ public class ModelArmoredJetpack extends ModelBase
 		WingbladeR.render(size);
 
 		MekanismRenderer.resetColor();
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		GlStateManager.disableCull();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 		GlStateManager.popMatrix();

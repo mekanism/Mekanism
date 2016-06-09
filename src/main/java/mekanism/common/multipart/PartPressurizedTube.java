@@ -2,6 +2,7 @@ package mekanism.common.multipart;
 
 import java.util.Collection;
 
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasStack;
@@ -9,11 +10,10 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -265,7 +265,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	@Override
 	public IGasHandler getCachedAcceptor(EnumFacing side)
 	{
-		if(MekanismUtils.hasCapability(cachedAcceptors[side.ordinal()], Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(cachedAcceptors[side.ordinal()], Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()))
 		{
 			return super.getCachedAcceptor(side);
 		}

@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.MekanismUtils;
+import mekanism.api.capabilities.Capabilities;
+import mekanism.api.util.CapabilityUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -34,9 +34,9 @@ public final class GasTransmission
 		{
 			TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
 
-			if(MekanismUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite()))
+			if(CapabilityUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite()))
 			{
-				acceptors[orientation.ordinal()] = MekanismUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite());
+				acceptors[orientation.ordinal()] = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite());
 			}
 		}
 
@@ -60,14 +60,14 @@ public final class GasTransmission
 
 	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
-		if(MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 		{
 			return false;
 		}
 		
-		if(MekanismUtils.hasCapability(tile, Capabilities.TUBE_CONNECTION_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tile, Capabilities.TUBE_CONNECTION_CAPABILITY, side.getOpposite()))
 		{
-			ITubeConnection connection = MekanismUtils.getCapability(tile, Capabilities.TUBE_CONNECTION_CAPABILITY, side.getOpposite());
+			ITubeConnection connection = CapabilityUtils.getCapability(tile, Capabilities.TUBE_CONNECTION_CAPABILITY, side.getOpposite());
 			
 			if(connection.canTubeConnect(side.getOpposite()))
 			{

@@ -1,7 +1,8 @@
 package mekanism.common.util;
 
 import mekanism.api.IHeatTransfer;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.api.capabilities.Capabilities;
+import mekanism.api.util.CapabilityUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -22,7 +23,7 @@ public class HeatUtils
 				source.transferHeatTo(-heatToTransfer);
 				sink.transferHeatTo(heatToTransfer);
 				
-				if(!(sink instanceof ICapabilityProvider && MekanismUtils.hasCapability((ICapabilityProvider)sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())))
+				if(!(sink instanceof ICapabilityProvider && CapabilityUtils.hasCapability((ICapabilityProvider)sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())))
 				{
 					heatTransferred[0] += heatToTransfer;
 				}

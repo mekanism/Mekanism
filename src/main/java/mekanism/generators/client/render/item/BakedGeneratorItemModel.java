@@ -66,8 +66,6 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
 		
 		if(generatorType != null)
 		{
-			GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-			
 			if(generatorType == GeneratorType.BIO_GENERATOR)
 			{
 				GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);

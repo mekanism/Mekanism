@@ -7,11 +7,11 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismAPI;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.MekanismUtils;
+import mekanism.api.util.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -41,11 +41,11 @@ public class ItemNetworkReader extends ItemEnergized
 
 			if(getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null)
 			{
-				if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
+				if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 				{
 					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 	
-					IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
+					IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
 	
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
@@ -55,9 +55,9 @@ public class ItemNetworkReader extends ItemEnergized
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkFlow()));
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkCapacity()));
 					
-					if(MekanismUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 					{
-						IHeatTransfer transfer = MekanismUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+						IHeatTransfer transfer = CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 						player.addChatMessage(new TextComponentString(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
 					}
 					
@@ -65,11 +65,11 @@ public class ItemNetworkReader extends ItemEnergized
 					
 					return EnumActionResult.SUCCESS;
 				}
-				else if(MekanismUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+				else if(CapabilityUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 				{
 					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 
-					IHeatTransfer transfer = MekanismUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+					IHeatTransfer transfer = CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
 					player.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
@@ -87,9 +87,9 @@ public class ItemNetworkReader extends ItemEnergized
 
 						TileEntity tile = coord.getTileEntity(world);
 						
-						if(tile != null && MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
+						if(tile != null && CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
 						{
-							IGridTransmitter transmitter = MekanismUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
+							IGridTransmitter transmitter = CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
 							
 							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.offset(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
 							{

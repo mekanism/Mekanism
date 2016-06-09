@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.BinTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -208,9 +209,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				{
 					TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 
-					if(MekanismUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
+					if(CapabilityUtils.hasCapability(tile, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
 					{
-						ILogisticalTransporter transporter = MekanismUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
+						ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
 
 						ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
 

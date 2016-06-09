@@ -5,15 +5,16 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -39,9 +40,9 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 				((TileEntityMultiblock)tileEntity).sendStructure = true;
 			}
 
-			if(MekanismUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+			if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 			{
-				IGridTransmitter transmitter = MekanismUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+				IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 
 				transmitter.setRequestsUpdate();
 				
@@ -51,9 +52,9 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 				}
 			}
 
-			if(MekanismUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null))
+			if(CapabilityUtils.hasCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null))
 			{
-				ITileNetwork network = MekanismUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
+				ITileNetwork network = CapabilityUtils.getCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null);
 				
 				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
 			}

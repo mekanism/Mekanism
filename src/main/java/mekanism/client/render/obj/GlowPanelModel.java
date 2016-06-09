@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
@@ -167,23 +168,29 @@ public class GlowPanelModel extends OBJBakedModelBase
 	private Pair<IPerspectiveAwareModel, Matrix4f> thirdPersonTransform;
     
     @Override
-    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType) 
     {
-    	if(cameraTransformType == TransformType.GUI)
+    	if(transformType == TransformType.GUI)
     	{
-    		GlStateManager.translate(0.3F, 0.25F, 0.0F);
+    		ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.transforms.get(transformType).getMatrix());
+    		GlStateManager.translate(0.65F, -0.55F, 0.0F);
     		GlStateManager.rotate(90, 1, 0, 0);
     		GlStateManager.scale(1.6F, 1.6F, 1.6F);
+    		
+    		return Pair.of(this, null);
     	}
-    	else if(cameraTransformType == TransformType.FIRST_PERSON_RIGHT_HAND)
+    	else if(transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND)
     	{
-    		GlStateManager.translate(0.0F, 0.3F, 0.0F);
+    		GlStateManager.translate(0.0F, 0.2F, 0.0F);
     	}
-    	else if(cameraTransformType == TransformType.THIRD_PERSON_RIGHT_HAND) 
+    	else if(transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) 
         {
-        	GlStateManager.translate(0.0F, -0.1F, 0.0F);
+    		ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.transforms.get(transformType).getMatrix());
+        	GlStateManager.translate(0.0F, 0.3F, 0.2F);
+        	
+        	return Pair.of(this, null);
         }
         
-        return Pair.of(this, CTMModelFactory.transforms.get(cameraTransformType).getMatrix());
+        return Pair.of(this, CTMModelFactory.transforms.get(transformType).getMatrix());
     }
 }

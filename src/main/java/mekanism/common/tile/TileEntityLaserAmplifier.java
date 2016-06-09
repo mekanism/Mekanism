@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.lasers.ILaserReceptor;
@@ -13,7 +14,6 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -91,7 +91,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 
-					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
+					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))))
 					{
 						diggingProgress += lastFired;
 
@@ -143,7 +143,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
 					
-					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
+					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))))
 					{
 						diggingProgress += firing;
 
@@ -353,6 +353,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+				|| capability == Capabilities.LASER_RECEPTOR_CAPABILITY
 				|| super.hasCapability(capability, facing);
 	}
 
@@ -360,9 +361,11 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
-			return (T) this;
+			return (T)this;
 		if(capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
-			return (T) this;
+			return (T)this;
+		if(capability == Capabilities.LASER_RECEPTOR_CAPABILITY)
+			return (T)this;
 		return super.getCapability(capability, facing);
 	}
 }

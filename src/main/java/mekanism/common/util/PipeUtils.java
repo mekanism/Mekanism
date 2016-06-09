@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import mekanism.common.capabilities.Capabilities;
+import mekanism.api.capabilities.Capabilities;
+import mekanism.api.util.CapabilityUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +22,7 @@ public final class PipeUtils
 
 	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
-		if(MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || !(tile instanceof IFluidHandler))
+		if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || !(tile instanceof IFluidHandler))
 		{
 			return false;
 		}

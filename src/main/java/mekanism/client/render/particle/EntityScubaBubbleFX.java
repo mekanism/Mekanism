@@ -18,7 +18,7 @@ public class EntityScubaBubbleFX extends ParticleBubble
 	{
 		super(world, posX, posY, posZ, velX, velY, velZ);
 		
-		particleScale = (rand.nextFloat()*0.2F)+0.5F;
+		particleScale = (rand.nextFloat()*0.2F)+0.3F;
 		particleMaxAge *= 2;
 	}
 	

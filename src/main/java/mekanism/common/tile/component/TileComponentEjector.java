@@ -13,11 +13,12 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.BaseCapabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
@@ -190,13 +191,13 @@ public class TileComponentEjector implements ITileComponent
 				TileEntity tile = Coord4D.get(tileEntity).offset(side).getTileEntity(tileEntity.getWorld());
 				ItemStack prev = stack.copy();
 
-				if(tile instanceof IInventory && !(MekanismUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite())))
+				if(tile instanceof IInventory && !(CapabilityUtils.hasCapability(tile, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite())))
 				{
 					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side, false);
 				}
-				else if(MekanismUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
+				else if(CapabilityUtils.hasCapability(tile, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
 				{
-					ItemStack rejects = TransporterUtils.insert(tileEntity, MekanismUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), stack, outputColor, true, 0);
+					ItemStack rejects = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, BaseCapabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), stack, outputColor, true, 0);
 
 					if(TransporterManager.didEmit(stack, rejects))
 					{

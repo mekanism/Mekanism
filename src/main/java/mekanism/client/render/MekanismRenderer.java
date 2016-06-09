@@ -62,6 +62,7 @@ public class MekanismRenderer
 	
 	public static TextureAtlasSprite energyIcon;
 	public static TextureAtlasSprite heatIcon;
+	public static TextureAtlasSprite laserIcon;
 	
 	public static float GAS_RENDER_BASE = 0.2F;
 	
@@ -101,6 +102,7 @@ public class MekanismRenderer
 
 		energyIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidEnergy"));
 		heatIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeat"));
+		laserIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/Laser"));
 		
 		event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
 		
@@ -305,8 +307,8 @@ public class MekanismRenderer
         {
             int j = quad.getFormat().getIntegerSize() * i;
             int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
-            vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(sprite.getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
-            vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(sprite.getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
+            vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(quad.getSprite().getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
+            vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(quad.getSprite().getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
         }
 	    
 		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), quad.getFormat());

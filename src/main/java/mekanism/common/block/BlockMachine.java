@@ -960,6 +960,11 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	{
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
+		if(type == null)
+		{
+			return super.getBoundingBox(state, world, pos);
+		}
+		
 		switch(type)
 		{
 			case CHARGEPAD:

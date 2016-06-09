@@ -1,11 +1,11 @@
-package mekanism.common.capabilities;
+package mekanism.api.capabilities;
 
 import mekanism.api.IHeatTransfer;
-import mekanism.common.capabilities.StorageHelper.NullStorage;
+import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class HeatTransfer implements IHeatTransfer
+public class DefaultHeatTransfer implements IHeatTransfer
 {
 	@Override
 	public double getTemp()
@@ -57,6 +57,6 @@ public class HeatTransfer implements IHeatTransfer
 	
 	public static void register()
 	{
-        CapabilityManager.INSTANCE.register(IHeatTransfer.class, new NullStorage<>(), HeatTransfer.class);
+        CapabilityManager.INSTANCE.register(IHeatTransfer.class, new NullStorage<>(), DefaultHeatTransfer.class);
 	}
 }

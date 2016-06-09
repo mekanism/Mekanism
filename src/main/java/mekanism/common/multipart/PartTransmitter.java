@@ -7,11 +7,11 @@ import java.util.LinkedHashSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;

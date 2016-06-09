@@ -3,8 +3,9 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.capabilities.Capabilities;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -46,20 +47,21 @@ public class ItemConfigurationCard extends ItemMekanism
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			
-			if(tileEntity instanceof IConfigCardAccess)
+			if(CapabilityUtils.hasCapability(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side))
 			{
 				if(player.isSneaking())
 				{
 					NBTTagCompound data = getBaseData(tileEntity);
 					
-					if(tileEntity instanceof ISpecialConfigData)
+					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side))
 					{
-						data = ((ISpecialConfigData)tileEntity).getConfigurationData(data);
+						ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
+						data = special.getConfigurationData(data);
 					}
 					
 					if(data != null)
 					{
-						data.setString("dataType", getNameFromTile(tileEntity));
+						data.setString("dataType", getNameFromTile(tileEntity, side));
 						setData(stack, data);
 						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
 					}
@@ -68,13 +70,14 @@ public class ItemConfigurationCard extends ItemMekanism
 				}
 				else if(getData(stack) != null)
 				{
-					if(getNameFromTile(tileEntity).equals(getDataType(stack)))
+					if(getNameFromTile(tileEntity, side).equals(getDataType(stack)))
 					{
 						setBaseData(getData(stack), tileEntity);
 						
-						if(tileEntity instanceof ISpecialConfigData)
+						if(CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side))
 						{
-							((ISpecialConfigData)tileEntity).setConfigurationData(getData(stack));
+							ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
+							special.setConfigurationData(getData(stack));
 						}
 						
 						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
@@ -124,7 +127,7 @@ public class ItemConfigurationCard extends ItemMekanism
 		}
 	}
 	
-	private String getNameFromTile(TileEntity tile)
+	private String getNameFromTile(TileEntity tile, EnumFacing side)
 	{
 		String ret = Integer.toString(tile.hashCode());
 		
@@ -133,9 +136,10 @@ public class ItemConfigurationCard extends ItemMekanism
 			ret = tile.getBlockType().getUnlocalizedName() + "." + ((TileEntityContainerBlock)tile).fullName + ".name";
 		}
 		
-		if(tile instanceof ISpecialConfigData)
+		if(CapabilityUtils.hasCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side))
 		{
-			ret = ((ISpecialConfigData)tile).getDataType();
+			ISpecialConfigData special = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
+			ret = special.getDataType();
 		}
 		
 		return ret;

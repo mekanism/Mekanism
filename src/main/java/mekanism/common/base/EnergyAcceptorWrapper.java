@@ -3,8 +3,9 @@ package mekanism.common.base;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.capabilities.Capabilities;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -23,9 +24,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		
 		EnergyAcceptorWrapper wrapper = null;
 		
-		if(MekanismUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null))
+		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null))
 		{
-			wrapper = new MekanismAcceptor(MekanismUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null));
+			wrapper = new MekanismAcceptor(CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null));
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{
@@ -104,7 +105,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double transferEnergyToAcceptor(EnumFacing side, double amount)
 		{
-			int needed = Math.min(acceptor.getMaxEnergyStored(side)-acceptor.getEnergyStored(side), Integer.MAX_VALUE);
+			int needed = acceptor.getMaxEnergyStored(side)-acceptor.getEnergyStored(side);
 			int transferred = acceptor.receiveEnergy(side, Math.min(needed, toRF(amount)), false);
 			
 			return fromRF(transferred);
@@ -139,7 +140,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public boolean needsEnergy(EnumFacing side)
 		{
-			return acceptor.receiveEnergy(side, 1, true) > 0 || getEnergyNeeded(side) > 0;
+			return acceptor.receiveEnergy(side, 1, true) > 0;
 		}
 
 		public int toRF(double joules)
@@ -150,11 +151,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public double fromRF(int rf)
 		{
 			return rf * general.FROM_TE;
-		}
-		
-		public int getEnergyNeeded(ForgeDirection side)
-		{
-			return acceptor.getMaxEnergyStored(side) - acceptor.getEnergyStored(side);
 		}
 	}
 
@@ -170,8 +166,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double transferEnergyToAcceptor(EnumFacing side, double amount)
 		{
-			double toTransfer = Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE);
-			return amount - fromEU(acceptor.injectEnergy(side, toTransfer, 0));
+			return amount - fromEU(acceptor.injectEnergy(side, Math.min(acceptor.getDemandedEnergy(), toEU(amount)), 0));
 		}
 
 		@Override

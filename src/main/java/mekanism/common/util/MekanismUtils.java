@@ -82,8 +82,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -1500,20 +1498,6 @@ public final class MekanismUtils
 		}
 		
 		return false;
-	}
-
-	public static boolean hasCapability(ICapabilityProvider provider, Capability<?> cap, EnumFacing side)
-	{
-		if(provider == null || cap == null) return false;
-
-		return provider.hasCapability(cap, side);
-	}
-
-	public static <T> T getCapability(ICapabilityProvider provider, Capability<T> cap, EnumFacing side)
-	{
-		if(provider == null || cap == null) return null;
-
-		return provider.getCapability(cap, side);
 	}
 
 	public static enum ResourceType

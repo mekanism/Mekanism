@@ -13,7 +13,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
@@ -29,10 +29,6 @@ idea {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
-    maven {
-        name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
-    }
     maven {
         name 'ForgeFS'
         url 'http://files.minecraftforge.net/maven'
@@ -73,7 +69,7 @@ minecraft {
 
 dependencies {
     deobfCompile "MCMultiPart:MCMultiPart-experimental:${config.mcmp_version}:universal"
-    deobfCompile "mezz.jei:jei_1.8.9:2.28.18.186"
+    deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
 }
 
 processResources

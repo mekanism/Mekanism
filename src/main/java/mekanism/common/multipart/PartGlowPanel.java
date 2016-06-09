@@ -175,6 +175,12 @@ public class PartGlowPanel extends Multipart implements INormallyOccludingPart
 	{
 		return new GlowPanelBlockState();
 	}
+	
+	@Override
+	public IBlockState getActualState(IBlockState state)
+	{
+		return state.withProperty(BlockStateFacing.facingProperty, side);
+	}
 
 	@Override
 	public IBlockState getExtendedState(IBlockState state)

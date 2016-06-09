@@ -27,9 +27,12 @@ import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
 import mekanism.generators.client.render.item.GeneratorItemModelFactory;
+import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.GeneratorsItems;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlockStateMapper;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
+import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockStateMapper;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -47,6 +50,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -66,6 +70,9 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 {
 	public static final String[] CUSTOM_RENDERS = new String[] {"heat_generator", "solar_generator", "bio_generator", "wind_generator",
 		"gas_generator", "advanced_solar_generator"};
+	
+	private static final IStateMapper generatorMapper = new GeneratorBlockStateMapper();
+	private static final IStateMapper reactorMapper = new ReactorBlockStateMapper();
 	
 	@Override
 	public void registerSpecialTileEntities()
@@ -94,6 +101,10 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	@Override
 	public void registerBlockRenders()
 	{
+		ModelLoader.setCustomStateMapper(GeneratorsBlocks.Generator, generatorMapper);
+		ModelLoader.setCustomStateMapper(GeneratorsBlocks.Reactor, reactorMapper);
+		ModelLoader.setCustomStateMapper(GeneratorsBlocks.ReactorGlass, reactorMapper);
+		
 		for(GeneratorType type : GeneratorType.values())
 		{
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));

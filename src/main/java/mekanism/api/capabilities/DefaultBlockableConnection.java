@@ -1,11 +1,11 @@
-package mekanism.common.capabilities;
+package mekanism.api.capabilities;
 
+import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
 import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.common.capabilities.StorageHelper.NullStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class BlockableConnection implements IBlockableConnection
+public class DefaultBlockableConnection implements IBlockableConnection
 {
 	@Override
 	public boolean canConnectMutual(EnumFacing side) 
@@ -21,6 +21,6 @@ public class BlockableConnection implements IBlockableConnection
 	
 	public static void register()
 	{
-        CapabilityManager.INSTANCE.register(IBlockableConnection.class, new NullStorage<>(), BlockableConnection.class);
+        CapabilityManager.INSTANCE.register(IBlockableConnection.class, new NullStorage<>(), DefaultBlockableConnection.class);
 	}
 }

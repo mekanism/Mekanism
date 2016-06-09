@@ -4,6 +4,7 @@ import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
-import mekanism.client.entity.EntityLaser;
+import mekanism.client.entity.ParticleLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalCrystallizer;
@@ -115,10 +116,15 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine;
+import mekanism.common.block.BlockPlasticFence.PlasticFenceStateMapper;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
+import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -200,6 +206,7 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.Render;
@@ -232,7 +239,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.actors.threadpool.Arrays;
 
 /**
  * Client proxy for the Mekanism mod.
@@ -249,6 +255,12 @@ public class ClientProxy extends CommonProxy
 		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
 		"solar_neutron_activator", "chemical_dissolution_chamber", "chemical_crystallizer", "seismic_vibrator", "security_desk",
 		"quantum_entangloporter", "resistive_heater", "EnergyCube", "digital_miner"};
+	
+	private static final IStateMapper machineMapper = new MachineBlockStateMapper();
+	private static final IStateMapper basicMapper = new BasicBlockStateMapper();
+	private static final IStateMapper plasticMapper = new PlasticBlockStateMapper();
+	private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
+	private static final IStateMapper boxMapper = new CardboardBoxStateMapper();
 	
 	@Override
 	public void loadConfiguration()
@@ -418,6 +430,19 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerBlockRenders()
 	{		
+		ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock, machineMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock2, machineMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock3, machineMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.BasicBlock, basicMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.BasicBlock2, basicMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.PlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.SlickPlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.GlowPlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.ReinforcedPlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.RoadPlasticBlock, plasticMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.PlasticFence, fenceMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.CardboardBox, boxMapper);
+		
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
@@ -1089,7 +1114,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void renderLaser(World world, Pos3D from, Pos3D to, EnumFacing direction, double energy)
 	{
-		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction, energy));
+		Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleLaser(world, from, to, direction, energy));
 	}
 	
 	@Override

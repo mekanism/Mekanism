@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.capabilities.Capabilities;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -376,7 +377,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
-		if(tile == null || MekanismUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
+		if(tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
 		{
 			return amount;
 		}

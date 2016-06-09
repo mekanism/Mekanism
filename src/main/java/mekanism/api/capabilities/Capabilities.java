@@ -1,17 +1,19 @@
-package mekanism.common.capabilities;
+package mekanism.api.capabilities;
 
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.IConfigCardAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.IConfigurable;
+import mekanism.api.IEvaporationSolar;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITileNetwork;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -44,34 +46,21 @@ public class Capabilities
     @CapabilityInject(IGridTransmitter.class)
     public static Capability<IGridTransmitter> GRID_TRANSMITTER_CAPABILITY = null;
 
-    @CapabilityInject(ILogisticalTransporter.class)
-    public static Capability<ILogisticalTransporter> LOGISTICAL_TRANSPORTER_CAPABILITY = null;
-
     @CapabilityInject(IAlloyInteraction.class)
     public static Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY = null;
 
-    @CapabilityInject(ITileNetwork.class)
-    public static Capability<ITileNetwork> TILE_NETWORK_CAPABILITY = null;
-    
     @CapabilityInject(ITubeConnection.class)
     public static Capability<ITubeConnection> TUBE_CONNECTION_CAPABILITY = null;
-
-    public static void registerCapabilities()
-    {
-        StrictEnergyStorage.register();
-        StrictEnergyAcceptor.register();
-        CableOutputter.register();
-
-        GridTransmitterTile.register();
-        LogisticalTransporter.register();
-        BlockableConnection.register();
-        
-        GasHandler.register();
-        TubeConnection.register();
-
-        Configurable.register();
-        TileNetwork.register();
-        AlloyInteraction.register();
-        HeatTransfer.register();
-    }
+    
+    @CapabilityInject(IConfigCardAccess.class)
+    public static Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY = null;
+    
+    @CapabilityInject(ISpecialConfigData.class)
+    public static Capability<ISpecialConfigData> SPECIAL_CONFIG_DATA_CAPABILITY = null;
+    
+    @CapabilityInject(IEvaporationSolar.class)
+    public static Capability<IEvaporationSolar> EVAPORATION_SOLAR_CAPABILITY = null;
+    
+    @CapabilityInject(ILaserReceptor.class)
+    public static Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY = null;
 }

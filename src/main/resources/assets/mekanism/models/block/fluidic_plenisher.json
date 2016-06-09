@@ -1,4 +1,5 @@
 {
+    "parent": "block/cube_all",
     "elements": [
         {
             "__comment": "ringTop",

@@ -4,11 +4,12 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.capabilities.DefaultStorageHelper;
+import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.StorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class TileNetwork implements ITileNetwork
+public class DefaultTileNetwork implements ITileNetwork
 {
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception {}
@@ -21,6 +22,6 @@ public class TileNetwork implements ITileNetwork
 	
 	public static void register()
 	{
-        CapabilityManager.INSTANCE.register(ITileNetwork.class, new NullStorage<>(), TileNetwork.class);
+        CapabilityManager.INSTANCE.register(ITileNetwork.class, new NullStorage<>(), DefaultTileNetwork.class);
 	}
 }
