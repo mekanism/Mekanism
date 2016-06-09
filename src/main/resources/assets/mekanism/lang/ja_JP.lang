@@ -135,9 +135,9 @@ tile.MachineBlock.DigitalMiner.name=デジタルマイナー
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=回転式流体凝縮器
 tile.MachineBlock2.ChemicalOxidizer.name=化学酸化機
-tile.MachineBlock2.ChemicalInfuser.name=化学注入機
+tile.MachineBlock2.ChemicalInfuser.name=化学混成機
 tile.MachineBlock2.ChemicalCombiner.name=化学結合機
-tile.MachineBlock2.ChemicalInjectionChamber.name=化学注入機
+tile.MachineBlock2.ChemicalInjectionChamber.name=化学注入室
 tile.MachineBlock2.ElectrolyticSeparator.name=電解分離機
 tile.MachineBlock2.PrecisionSawmill.name=精密製材機
 tile.MachineBlock2.ChemicalDissolutionChamber.name=化学溶解機
@@ -566,7 +566,7 @@ gui.upgrades.amount=数
 gui.upgrades.max=最大
 gui.upgrades.effect=効果
 
-gui.chemicalInfuser.short=化学注入器
+gui.chemicalInfuser.short=化学混成機
 gui.chemicalDissolutionChamber.short=化学溶解機
 gui.solarEvaporationController.short=太陽中性子反応機
 
@@ -940,7 +940,7 @@ reactor.depleted.desc=反応に十分な量の燃料が不足している時
 itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
-nei.chemicalInjectionChamber=化学注入機
+nei.chemicalInjectionChamber=化学注入室
 nei.rotaryCondensentrator=回転式流体凝縮器
 
 //**********//
