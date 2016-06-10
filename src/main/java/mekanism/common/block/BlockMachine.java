@@ -84,6 +84,7 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -899,7 +900,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 						
 						if(itemFluid.amount-toFill > 0)
 						{
-							tileEntity.pushUp(new FluidStack(itemFluid.getFluid(), itemFluid.amount-toFill), true);
+							tileEntity.pushUp(PipeUtils.copy(itemFluid, itemFluid.amount-toFill), true);
 						}
 						
 						return true;
