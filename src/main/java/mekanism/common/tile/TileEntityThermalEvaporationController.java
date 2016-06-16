@@ -534,7 +534,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
 	public boolean addSolarPanel(TileEntity tile, int i)
 	{
-		if(!tile.isInvalid() && CapabilityUtils.hasCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN))
+		if(tile != null && !tile.isInvalid() && CapabilityUtils.hasCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN))
 		{
 			solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN);
 			return true;
