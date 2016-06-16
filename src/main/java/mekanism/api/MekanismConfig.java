@@ -65,6 +65,7 @@ public class MekanismConfig
 		public static double maxEnergyPerSteam = 100;
 		public static double superheatingHeatTransfer = 10000;
 		public static double heatPerFuelTick = 4;
+		public static boolean allowTransmitterAlloyUpgrade;
 	}
 
 	public static class client

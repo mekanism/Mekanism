@@ -95,7 +95,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 				toSave += remain;
 			}
 
-			return new FluidStack(getTransmitter().getTransmitterNetwork().buffer.getFluid(), toSave);
+			return PipeUtils.copy(getTransmitter().getTransmitterNetwork().buffer, toSave);
 		}
 
 		return null;

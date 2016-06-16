@@ -8,6 +8,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -158,7 +159,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 		if(doFill)
 		{
 			int fillAmount = toFill + (stored == null ? 0 : stored.amount);
-			setFluid(container, new FluidStack(resource.getFluid(), (stored != null ? stored.amount : 0)+toFill));
+			setFluid(container, PipeUtils.copy(resource, (stored != null ? stored.amount : 0)+toFill));
 		}
 		
 		return toFill;
@@ -171,7 +172,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 		
 		if(stored != null)
 		{
-			FluidStack toDrain = new FluidStack(stored.getFluid(), Math.min(stored.amount, maxDrain));
+			FluidStack toDrain = PipeUtils.copy(stored, Math.min(stored.amount, maxDrain));
 			
 			if(doDrain)
 			{

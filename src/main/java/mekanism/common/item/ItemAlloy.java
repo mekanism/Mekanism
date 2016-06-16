@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.MekanismItems;
@@ -25,7 +26,7 @@ public class ItemAlloy extends ItemMekanism
     {
 		TileEntity tile = world.getTileEntity(pos);
 		
-		if(CapabilityUtils.hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side))
+		if(general.allowTransmitterAlloyUpgrade && CapabilityUtils.hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side))
 		{
 			if(!world.isRemote)
 			{

@@ -24,6 +24,7 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -190,13 +191,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 					
 					if(ret != null)
 					{
-						fluidTank.setFluid(new FluidStack(ret.getFluid(), Math.min(fluidTank.getCapacity(), ret.amount)));
+						fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
 						
 						int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
 						
 						if(rejects > 0)
 						{
-							pushUp(new FluidStack(ret.getFluid(), rejects), true);
+							pushUp(PipeUtils.copy(ret, rejects), true);
 						}
 					}
 				}
@@ -211,13 +212,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				
 				if(ret != null)
 				{
-					fluidTank.setFluid(new FluidStack(ret.getFluid(), Math.min(fluidTank.getCapacity(), ret.amount)));
+					fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
 					
 					int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
 					
 					if(rejects > 0)
 					{
-						pushUp(new FluidStack(ret.getFluid(), rejects), true);
+						pushUp(PipeUtils.copy(ret, rejects), true);
 					}
 				}
 			}
@@ -492,7 +493,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			if(filled < resource.amount && !isActive)
 			{
-				filled += pushUp(new FluidStack(resource.getFluid(), resource.amount-filled), doFill);
+				filled += pushUp(PipeUtils.copy(resource, resource.amount-filled), doFill);
 			}
 			
 			if(filled > 0 && from == EnumFacing.UP)

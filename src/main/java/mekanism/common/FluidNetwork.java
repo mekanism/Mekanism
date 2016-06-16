@@ -12,6 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
@@ -164,7 +165,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 					if(acceptor != null && fluidToSend != null)
 					{
-						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.getFluid(), currentSending), doTransfer);
+						fluidSent += acceptor.fill(side, PipeUtils.copy(fluidToSend, currentSending), doTransfer);
 					}
 
 					if(fluidSent > prev)

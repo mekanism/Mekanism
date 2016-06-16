@@ -47,6 +47,7 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -791,7 +792,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 						
 						if(itemFluid.amount-toFill > 0)
 						{
-							tileEntity.pushUp(new FluidStack(itemFluid.getFluid(), itemFluid.amount-toFill), true);
+							tileEntity.pushUp(PipeUtils.copy(itemFluid, itemFluid.amount-toFill), true);
 						}
 						
 						return true;

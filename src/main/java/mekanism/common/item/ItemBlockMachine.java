@@ -41,6 +41,7 @@ import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -830,7 +831,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(doFill)
 			{
 				int fillAmount = toFill + (stored == null ? 0 : stored.amount);
-				setFluidStack(new FluidStack(resource.getFluid(), (stored != null ? stored.amount : 0)+toFill), container);
+				setFluidStack(PipeUtils.copy(resource, (stored != null ? stored.amount : 0)+toFill), container);
 			}
 			
 			return toFill;
@@ -848,7 +849,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			
 			if(stored != null)
 			{
-				FluidStack toDrain = new FluidStack(stored.getFluid(), Math.min(stored.amount, maxDrain));
+				FluidStack toDrain = PipeUtils.copy(stored, Math.min(stored.amount, maxDrain));
 				
 				if(doDrain)
 				{

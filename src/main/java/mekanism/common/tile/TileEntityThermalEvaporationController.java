@@ -692,6 +692,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		return side != 0 && side != 1;
 	}
+	
+	@Override
+	public TileEntityThermalEvaporationController getController()
+	{
+		return structured ? this : null;
+	}
 
 	public void clearStructure()
 	{
