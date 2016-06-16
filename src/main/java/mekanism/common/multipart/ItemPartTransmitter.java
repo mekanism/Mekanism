@@ -14,7 +14,6 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-//import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,12 +23,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-/*
-import codechicken.lib.vec.BlockCoord;
-import codechicken.lib.vec.Vector3;
-import codechicken.multipart.JItemMultiPart;
-import codechicken.multipart.TMultiPart;
-*/
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -45,27 +38,6 @@ public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 	@Override
 	public IMultipart createPart(World world, BlockPos pos, EnumFacing dir, Vec3d hit, ItemStack stack, EntityPlayer player)
 	{
-		TransmitterType type = TransmitterType.values()[stack.getItemDamage()];
-
-/*
-		if(type.getTransmission() != TransmissionType.ITEM)
-		{
-			Coord4D obj = new Coord4D(pos, world.provider.getDimensionId());
-
-			List<DynamicNetwork> networks = new ArrayList<DynamicNetwork>();
-
-			for(EnumFacing side : EnumFacing.values())
-			{
-				TileEntity tile = obj.offset(side).getTileEntity(world);
-
-				if(tile instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tile).getTransmitter(), type.getTransmission()))
-				{
-					networks.add(((ITransmitterTile)tile).getTransmitter().getTransmitterNetwork());
-				}
-			}
-		}
-*/
-
 		return PartTransmitter.getPartType(TransmitterType.values()[getDamage(stack)]);
 	}
 
@@ -163,6 +135,7 @@ public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> listToAddTo)
 	{
 		for(TransmitterType type : TransmitterType.values())
