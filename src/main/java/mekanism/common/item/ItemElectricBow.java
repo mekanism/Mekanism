@@ -106,11 +106,11 @@ public class ItemElectricBow extends ItemEnergized
 
                 if(!noConsume)
                 {
-                    itemstack.stackSize--;
+                    ammo.stackSize--;
 
-                    if(itemstack.stackSize == 0)
+                    if(ammo.stackSize == 0)
                     {
-                    	player.inventory.deleteStack(itemstack);
+                    	player.inventory.deleteStack(ammo);
                     }
                 }
 

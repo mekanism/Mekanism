@@ -22,9 +22,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismArmor extends ItemArmor
 {
-	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex)
+	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex, EntityEquipmentSlot slot)
 	{
-		super(enumarmormaterial, renderIndex, EntityEquipmentSlot.HEAD);
+		super(enumarmormaterial, renderIndex, slot);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
