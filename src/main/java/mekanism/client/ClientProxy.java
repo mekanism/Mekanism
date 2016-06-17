@@ -4,8 +4,8 @@ import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1109,6 +1109,12 @@ public class ClientProxy extends CommonProxy
 		else {
 			return Minecraft.getMinecraft().thePlayer;
 		}
+	}
+	
+	@Override
+	public void handlePacket(Runnable runnable, World world)
+	{
+		Minecraft.getMinecraft().addScheduledTask(runnable);
 	}
 
 	@Override

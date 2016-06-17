@@ -645,6 +645,14 @@ public class CommonProxy implements IGuiProvider
 		return context.getServerHandler().playerEntity;
 	}
 	
+	public void handlePacket(Runnable runnable, World world)
+	{
+		if(world instanceof WorldServer)
+		{
+			((WorldServer)world).addScheduledTask(runnable);
+		}
+	}
+	
 	public int getGuiId(Block block, int metadata)
 	{
 		if(MachineType.get(block, metadata) != null)

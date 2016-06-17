@@ -41,34 +41,40 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(!player.worldObj.isRemote)
-		{
-			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
-
-			if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				DigitalMinerGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
-			}
-		}
-		else {
-			if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityDigitalMiner)
-			{
-				try {
-					if(message.packetType == MinerGuiPacket.CLIENT)
+				if(!player.worldObj.isRemote)
+				{
+					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+		
+					if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
 					{
-						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+						DigitalMinerGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
 					}
-					else if(message.packetType == MinerGuiPacket.CLIENT_INDEX)
+				}
+				else {
+					if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityDigitalMiner)
 					{
-						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+						try {
+							if(message.packetType == MinerGuiPacket.CLIENT)
+							{
+								FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+							}
+							else if(message.packetType == MinerGuiPacket.CLIENT_INDEX)
+							{
+								FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+							}
+		
+							player.openContainer.windowId = message.windowId;
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
 					}
-
-					player.openContainer.windowId = message.windowId;
-				} catch(Exception e) {
-					e.printStackTrace();
 				}
 			}
-		}
+		}, player.worldObj);
 		
 		return null;
 	}

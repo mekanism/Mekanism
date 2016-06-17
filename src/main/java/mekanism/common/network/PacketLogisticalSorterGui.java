@@ -35,34 +35,40 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(!player.worldObj.isRemote)
-		{
-			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
-
-			if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
-			}
-		}
-		else {
-			if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityLogisticalSorter)
-			{
-				try {
-					if(message.packetType == SorterGuiPacket.CLIENT)
+				if(!player.worldObj.isRemote)
+				{
+					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+		
+					if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
 					{
-						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+						LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
 					}
-					else if(message.packetType == SorterGuiPacket.CLIENT_INDEX)
+				}
+				else {
+					if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityLogisticalSorter)
 					{
-						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+						try {
+							if(message.packetType == SorterGuiPacket.CLIENT)
+							{
+								FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+							}
+							else if(message.packetType == SorterGuiPacket.CLIENT_INDEX)
+							{
+								FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+							}
+		
+							player.openContainer.windowId = message.windowId;
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
 					}
-
-					player.openContainer.windowId = message.windowId;
-				} catch(Exception e) {
-					e.printStackTrace();
 				}
 			}
-		}
+		}, player.worldObj);
 		
 		return null;
 	}

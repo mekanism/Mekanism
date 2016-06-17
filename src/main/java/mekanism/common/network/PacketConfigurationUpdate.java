@@ -31,77 +31,85 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 	@Override
 	public IMessage onMessage(ConfigurationUpdateMessage message, MessageContext context) 
 	{
-		TileEntity tile = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
-		ITileNetwork network = CapabilityUtils.getCapability(tile, BaseCapabilities.TILE_NETWORK_CAPABILITY, null);
+		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(tile instanceof ISideConfiguration)
-		{
-			ISideConfiguration config = (ISideConfiguration)tile;
-
-			if(message.packetType == ConfigurationPacket.EJECT)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				config.getConfig().setEjecting(message.transmission, !config.getConfig().isEjecting(message.transmission));
+				TileEntity tile = message.coord4D.getTileEntity(player.worldObj);
+				ITileNetwork network = CapabilityUtils.getCapability(tile, BaseCapabilities.TILE_NETWORK_CAPABILITY, null);
+				
+				if(tile instanceof ISideConfiguration)
+				{
+					ISideConfiguration config = (ISideConfiguration)tile;
+		
+					if(message.packetType == ConfigurationPacket.EJECT)
+					{
+						config.getConfig().setEjecting(message.transmission, !config.getConfig().isEjecting(message.transmission));
+					}
+					else if(message.packetType == ConfigurationPacket.SIDE_DATA)
+					{				
+						if(message.clickType == 0)
+						{
+							MekanismUtils.incrementOutput((ISideConfiguration)tile, message.transmission, message.configIndex);
+						}
+						else if(message.clickType == 1)
+						{
+							MekanismUtils.decrementOutput((ISideConfiguration)tile, message.transmission, message.configIndex);
+						}
+						else if(message.clickType == 2)
+						{
+							((ISideConfiguration)tile).getConfig().getConfig(message.transmission)[message.configIndex.ordinal()] = 0;
+						}
+		
+						tile.markDirty();
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
+					}
+					else if(message.packetType == ConfigurationPacket.EJECT_COLOR)
+					{
+						if(message.clickType == 0)
+						{
+							config.getEjector().setOutputColor(TransporterUtils.increment(config.getEjector().getOutputColor()));
+						}
+						else if(message.clickType == 1)
+						{
+							config.getEjector().setOutputColor(TransporterUtils.decrement(config.getEjector().getOutputColor()));
+						}
+						else if(message.clickType == 2)
+						{
+							config.getEjector().setOutputColor(null);
+						}
+					}
+					else if(message.packetType == ConfigurationPacket.INPUT_COLOR)
+					{
+						EnumFacing side = EnumFacing.getFront(message.inputSide);
+		
+						if(message.clickType == 0)
+						{
+							config.getEjector().setInputColor(side, TransporterUtils.increment(config.getEjector().getInputColor(side)));
+						}
+						else if(message.clickType == 1)
+						{
+							config.getEjector().setInputColor(side, TransporterUtils.decrement(config.getEjector().getInputColor(side)));
+						}
+						else if(message.clickType == 2)
+						{
+							config.getEjector().setInputColor(side, null);
+						}
+					}
+					else if(message.packetType == ConfigurationPacket.STRICT_INPUT)
+					{
+						config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
+					}
+		
+					for(EntityPlayer p : ((TileEntityBasicBlock)config).playersUsing)
+					{
+						Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList())), (EntityPlayerMP)p);
+					}
+				}
 			}
-			else if(message.packetType == ConfigurationPacket.SIDE_DATA)
-			{				
-				if(message.clickType == 0)
-				{
-					MekanismUtils.incrementOutput((ISideConfiguration)tile, message.transmission, message.configIndex);
-				}
-				else if(message.clickType == 1)
-				{
-					MekanismUtils.decrementOutput((ISideConfiguration)tile, message.transmission, message.configIndex);
-				}
-				else if(message.clickType == 2)
-				{
-					((ISideConfiguration)tile).getConfig().getConfig(message.transmission)[message.configIndex.ordinal()] = 0;
-				}
-
-				tile.markDirty();
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
-			}
-			else if(message.packetType == ConfigurationPacket.EJECT_COLOR)
-			{
-				if(message.clickType == 0)
-				{
-					config.getEjector().setOutputColor(TransporterUtils.increment(config.getEjector().getOutputColor()));
-				}
-				else if(message.clickType == 1)
-				{
-					config.getEjector().setOutputColor(TransporterUtils.decrement(config.getEjector().getOutputColor()));
-				}
-				else if(message.clickType == 2)
-				{
-					config.getEjector().setOutputColor(null);
-				}
-			}
-			else if(message.packetType == ConfigurationPacket.INPUT_COLOR)
-			{
-				EnumFacing side = EnumFacing.getFront(message.inputSide);
-
-				if(message.clickType == 0)
-				{
-					config.getEjector().setInputColor(side, TransporterUtils.increment(config.getEjector().getInputColor(side)));
-				}
-				else if(message.clickType == 1)
-				{
-					config.getEjector().setInputColor(side, TransporterUtils.decrement(config.getEjector().getInputColor(side)));
-				}
-				else if(message.clickType == 2)
-				{
-					config.getEjector().setInputColor(side, null);
-				}
-			}
-			else if(message.packetType == ConfigurationPacket.STRICT_INPUT)
-			{
-				config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
-			}
-
-			for(EntityPlayer p : ((TileEntityBasicBlock)config).playersUsing)
-			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList())), (EntityPlayerMP)p);
-			}
-		}
+		}, player.worldObj);
 		
 		return null;
 	}

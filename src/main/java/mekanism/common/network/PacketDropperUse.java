@@ -6,6 +6,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITankManager.DropperHandler;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -16,21 +17,29 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
 	@Override
 	public IMessage onMessage(DropperUseMessage message, MessageContext context) 
 	{
-		TileEntity tileEntity = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
+		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(tileEntity instanceof ITankManager)
-		{
-			try {
-				Object tank = ((ITankManager)tileEntity).getTanks()[message.tankId];
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
+			{
+				TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 				
-				if(tank != null)
+				if(tileEntity instanceof ITankManager)
 				{
-					DropperHandler.useDropper(PacketHandler.getPlayer(context), tank, message.mouseButton);
+					try {
+						Object tank = ((ITankManager)tileEntity).getTanks()[message.tankId];
+						
+						if(tank != null)
+						{
+							DropperHandler.useDropper(player, tank, message.mouseButton);
+						}
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
 				}
-			} catch(Exception e) {
-				e.printStackTrace();
 			}
-		}
+		}, player.worldObj);
 		
 		return null;
 	}

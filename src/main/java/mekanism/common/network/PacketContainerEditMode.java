@@ -18,12 +18,19 @@ public class PacketContainerEditMode implements IMessageHandler<ContainerEditMod
 	public IMessage onMessage(ContainerEditModeMessage message, MessageContext context) 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
-		TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 		
-		if(tileEntity instanceof IFluidContainerManager)
-		{
-			((IFluidContainerManager)tileEntity).setContainerEditMode(message.value);
-		}
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
+			{
+				TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+				
+				if(tileEntity instanceof IFluidContainerManager)
+				{
+					((IFluidContainerManager)tileEntity).setContainerEditMode(message.value);
+				}
+			}
+		}, player.worldObj);
 		
 		return null;
 	}

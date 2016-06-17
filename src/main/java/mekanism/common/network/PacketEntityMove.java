@@ -16,13 +16,20 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
 	public IMessage onMessage(EntityMoveMessage message, MessageContext context) 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
-		Entity entity = player.worldObj.getEntityByID(message.entityId);
 		
-		if(entity != null)
-		{
-			entity.setLocationAndAngles(message.pos.xCoord, message.pos.yCoord, message.pos.zCoord, entity.rotationYaw, entity.rotationPitch);
-		}
-		
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
+			{
+				Entity entity = player.worldObj.getEntityByID(message.entityId);
+				
+				if(entity != null)
+				{
+					entity.setLocationAndAngles(message.pos.xCoord, message.pos.yCoord, message.pos.zCoord, entity.rotationYaw, entity.rotationPitch);
+				}
+			}
+		}, player.worldObj);
+				
 		return null;
 	}
 	

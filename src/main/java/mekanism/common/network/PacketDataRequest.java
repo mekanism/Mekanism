@@ -30,35 +30,42 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 	public IMessage onMessage(DataRequestMessage message, MessageContext context) 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
-		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
-		TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
 		
-		if(worldServer != null)
-		{
-			if(tileEntity instanceof TileEntityMultiblock)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				((TileEntityMultiblock)tileEntity).sendStructure = true;
-			}
-
-			if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
-			{
-				IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-
-				transmitter.setRequestsUpdate();
+				World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+				TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
 				
-				if(transmitter.hasTransmitterNetwork())
+				if(worldServer != null)
 				{
-					transmitter.getTransmitterNetwork().addUpdate(player);
+					if(tileEntity instanceof TileEntityMultiblock)
+					{
+						((TileEntityMultiblock)tileEntity).sendStructure = true;
+					}
+		
+					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+					{
+						IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+		
+						transmitter.setRequestsUpdate();
+						
+						if(transmitter.hasTransmitterNetwork())
+						{
+							transmitter.getTransmitterNetwork().addUpdate(player);
+						}
+					}
+		
+					if(CapabilityUtils.hasCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null))
+					{
+						ITileNetwork network = CapabilityUtils.getCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null);
+						
+						Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
+					}
 				}
 			}
-
-			if(CapabilityUtils.hasCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null))
-			{
-				ITileNetwork network = CapabilityUtils.getCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null);
-				
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
-			}
-		}
+		}, player.worldObj);
 		
 		return null;
 	}

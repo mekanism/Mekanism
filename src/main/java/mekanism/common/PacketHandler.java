@@ -77,6 +77,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -262,6 +263,11 @@ public class PacketHandler
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
 		return Mekanism.proxy.getPlayer(context);
+	}
+	
+	public static void handlePacket(Runnable runnable, World world)
+	{
+		Mekanism.proxy.handlePacket(runnable, world);
 	}
 
 	/**

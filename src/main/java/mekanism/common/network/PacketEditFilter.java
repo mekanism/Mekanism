@@ -30,78 +30,84 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 	{
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		
-		if(worldServer != null)
-		{
-			if(message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) message.coord4D.getTileEntity(worldServer);
-
-				if(!sorter.filters.contains(message.tFilter))
+				if(worldServer != null)
 				{
-					return null;
-				}
-
-				int index = sorter.filters.indexOf(message.tFilter);
-
-				sorter.filters.remove(index);
-
-				if(!message.delete)
-				{
-					sorter.filters.add(index, message.tEdited);
-				}
-
-				for(EntityPlayer iterPlayer : sorter.playersUsing)
-				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+					if(message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+					{
+						TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) message.coord4D.getTileEntity(worldServer);
+		
+						if(!sorter.filters.contains(message.tFilter))
+						{
+							return;
+						}
+		
+						int index = sorter.filters.indexOf(message.tFilter);
+		
+						sorter.filters.remove(index);
+		
+						if(!message.delete)
+						{
+							sorter.filters.add(index, message.tEdited);
+						}
+		
+						for(EntityPlayer iterPlayer : sorter.playersUsing)
+						{
+							Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+						}
+					}
+					else if(message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
+					{
+						TileEntityDigitalMiner miner = (TileEntityDigitalMiner)message.coord4D.getTileEntity(worldServer);
+		
+						if(!miner.filters.contains(message.mFilter))
+						{
+							return;
+						}
+		
+						int index = miner.filters.indexOf(message.mFilter);
+		
+						miner.filters.remove(index);
+		
+						if(!message.delete)
+						{
+							miner.filters.add(index, message.mEdited);
+						}
+		
+						for(EntityPlayer iterPlayer : miner.playersUsing)
+						{
+							Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+						}
+					}
+					else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
+					{
+						TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator)message.coord4D.getTileEntity(worldServer);
+		
+						if(!oredictionificator.filters.contains(message.oFilter))
+						{
+							return;
+						}
+		
+						int index = oredictionificator.filters.indexOf(message.oFilter);
+		
+						oredictionificator.filters.remove(index);
+		
+						if(!message.delete)
+						{
+							oredictionificator.filters.add(index, message.oEdited);
+						}
+		
+						for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
+						{
+							Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+						}
+					}
 				}
 			}
-			else if(message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
-			{
-				TileEntityDigitalMiner miner = (TileEntityDigitalMiner)message.coord4D.getTileEntity(worldServer);
-
-				if(!miner.filters.contains(message.mFilter))
-				{
-					return null;
-				}
-
-				int index = miner.filters.indexOf(message.mFilter);
-
-				miner.filters.remove(index);
-
-				if(!message.delete)
-				{
-					miner.filters.add(index, message.mEdited);
-				}
-
-				for(EntityPlayer iterPlayer : miner.playersUsing)
-				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
-				}
-			}
-			else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
-			{
-				TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator)message.coord4D.getTileEntity(worldServer);
-
-				if(!oredictionificator.filters.contains(message.oFilter))
-				{
-					return null;
-				}
-
-				int index = oredictionificator.filters.indexOf(message.oFilter);
-
-				oredictionificator.filters.remove(index);
-
-				if(!message.delete)
-				{
-					oredictionificator.filters.add(index, message.oEdited);
-				}
-
-				for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
-				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
-				}
-			}
-		}
+		}, worldServer);
 	
 		return null;
 	}

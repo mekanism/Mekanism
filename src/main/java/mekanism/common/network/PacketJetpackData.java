@@ -20,36 +20,42 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(message.packetType == JetpackPacket.UPDATE)
-		{
-			if(message.value)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				Mekanism.jetpackOn.add(message.username);
-			}
-			else {
-				Mekanism.jetpackOn.remove(message.username);
-			}
-
-			if(!player.worldObj.isRemote)
-			{
-				Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimension());
-			}
-		}
-		else if(message.packetType == JetpackPacket.MODE)
-		{
-			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-
-			if(stack != null && stack.getItem() instanceof ItemJetpack)
-			{
-				if(!message.value)
+				if(message.packetType == JetpackPacket.UPDATE)
 				{
-					((ItemJetpack)stack.getItem()).incrementMode(stack);
+					if(message.value)
+					{
+						Mekanism.jetpackOn.add(message.username);
+					}
+					else {
+						Mekanism.jetpackOn.remove(message.username);
+					}
+		
+					if(!player.worldObj.isRemote)
+					{
+						Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimension());
+					}
 				}
-				else {
-					((ItemJetpack)stack.getItem()).setMode(stack, JetpackMode.DISABLED);
+				else if(message.packetType == JetpackPacket.MODE)
+				{
+					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+		
+					if(stack != null && stack.getItem() instanceof ItemJetpack)
+					{
+						if(!message.value)
+						{
+							((ItemJetpack)stack.getItem()).incrementMode(stack);
+						}
+						else {
+							((ItemJetpack)stack.getItem()).setMode(stack, JetpackMode.DISABLED);
+						}
+					}
 				}
 			}
-		}
+		}, player.worldObj);
 		
 		return null;
 	}

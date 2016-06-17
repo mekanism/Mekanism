@@ -20,13 +20,19 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		Random random = new Random();
-
-		for(int i = 0; i < 50; i++)
-		{
-			player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-			player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + 1 + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-		}
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
+			{
+				Random random = new Random();
+		
+				for(int i = 0; i < 50; i++)
+				{
+					player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+					player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + 1 + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+				}
+			}
+		}, player.worldObj);
 		
 		return null;
 	}

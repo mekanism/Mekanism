@@ -18,31 +18,37 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 	public IMessage onMessage(FlamethrowerDataMessage message, MessageContext context)
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
-
-        if(message.packetType == FlamethrowerPacket.UPDATE)
-        {
-            if(message.value)
-            {
-                Mekanism.flamethrowerActive.add(message.username);
-            }
-            else {
-                Mekanism.flamethrowerActive.remove(message.username);
-            }
-
-            if(!player.worldObj.isRemote)
-            {
-                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.currentHand, message.username, message.value), player.worldObj.provider.getDimension());
-            }
-        }
-        else if(message.packetType == FlamethrowerPacket.MODE)
-        {
-            ItemStack stack = player.getHeldItem(message.currentHand);
-
-            if(stack != null && stack.getItem() instanceof ItemFlamethrower)
-            {
-                ((ItemFlamethrower)stack.getItem()).incrementMode(stack);
-            }
-        }
+		
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
+			{
+		        if(message.packetType == FlamethrowerPacket.UPDATE)
+		        {
+		            if(message.value)
+		            {
+		                Mekanism.flamethrowerActive.add(message.username);
+		            }
+		            else {
+		                Mekanism.flamethrowerActive.remove(message.username);
+		            }
+		
+		            if(!player.worldObj.isRemote)
+		            {
+		                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.currentHand, message.username, message.value), player.worldObj.provider.getDimension());
+		            }
+		        }
+		        else if(message.packetType == FlamethrowerPacket.MODE)
+		        {
+		            ItemStack stack = player.getHeldItem(message.currentHand);
+		
+		            if(stack != null && stack.getItem() instanceof ItemFlamethrower)
+		            {
+		                ((ItemFlamethrower)stack.getItem()).incrementMode(stack);
+		            }
+		        }
+			}
+		}, player.worldObj);
 		
 		return null;
 	}

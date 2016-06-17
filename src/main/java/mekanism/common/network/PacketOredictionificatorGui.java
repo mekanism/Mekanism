@@ -35,34 +35,40 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(!player.worldObj.isRemote)
-		{
-			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
-
-			if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				OredictionificatorGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
-			}
-		}
-		else {
-			if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityOredictionificator)
-			{
-				try {
-					if(message.packetType == OredictionificatorGuiPacket.CLIENT)
+				if(!player.worldObj.isRemote)
+				{
+					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+		
+					if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
 					{
-						FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+						OredictionificatorGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
 					}
-					else if(message.packetType == OredictionificatorGuiPacket.CLIENT_INDEX)
+				}
+				else {
+					if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityOredictionificator)
 					{
-						FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+						try {
+							if(message.packetType == OredictionificatorGuiPacket.CLIENT)
+							{
+								FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+							}
+							else if(message.packetType == OredictionificatorGuiPacket.CLIENT_INDEX)
+							{
+								FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+							}
+		
+							player.openContainer.windowId = message.windowId;
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
 					}
-
-					player.openContainer.windowId = message.windowId;
-				} catch(Exception e) {
-					e.printStackTrace();
 				}
 			}
-		}
+		}, player.worldObj);
 		
 		return null;
 	}

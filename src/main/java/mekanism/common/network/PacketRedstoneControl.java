@@ -18,12 +18,19 @@ public class PacketRedstoneControl implements IMessageHandler<RedstoneControlMes
 	public IMessage onMessage(RedstoneControlMessage message, MessageContext context) 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
-		TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 		
-		if(tileEntity instanceof IRedstoneControl)
-		{
-			((IRedstoneControl)tileEntity).setControlType(message.value);
-		}
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
+			{
+				TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+				
+				if(tileEntity instanceof IRedstoneControl)
+				{
+					((IRedstoneControl)tileEntity).setControlType(message.value);
+				}
+			}
+		}, player.worldObj);
 		
 		return null;
 	}

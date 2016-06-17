@@ -31,24 +31,30 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(!player.worldObj.isRemote)
-		{
-			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
-
-			if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				if(message.guiId == -1)
+				if(!player.worldObj.isRemote)
 				{
-					return null;
+					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+		
+					if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
+					{
+						if(message.guiId == -1)
+						{
+							return;
+						}
+		
+						SimpleGuiMessage.openServerGui(message.guiHandler, message.guiId, (EntityPlayerMP)player, player.worldObj, message.coord4D);
+					}
 				}
-
-				SimpleGuiMessage.openServerGui(message.guiHandler, message.guiId, (EntityPlayerMP)player, player.worldObj, message.coord4D);
+				else {
+					FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiHandler, message.guiId, player, player.worldObj, message.coord4D));
+					player.openContainer.windowId = message.windowId;
+				}
 			}
-		}
-		else {
-			FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiHandler, message.guiId, player, player.worldObj, message.coord4D));
-			player.openContainer.windowId = message.windowId;
-		}
+		}, player.worldObj);
 		
 		return null;
 	}

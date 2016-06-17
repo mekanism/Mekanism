@@ -22,28 +22,34 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(message.packetType == SecurityPacketType.BLOCK)
-		{
-			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
-			
-			if(tileEntity instanceof ISecurityTile)
+		PacketHandler.handlePacket(new Runnable() {
+			@Override
+			public void run()
 			{
-				String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
-				
-				if(owner != null && player.getName().equals(owner))
+				if(message.packetType == SecurityPacketType.BLOCK)
 				{
-					((ISecurityTile)tileEntity).getSecurity().setMode(message.value);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					
+					if(tileEntity instanceof ISecurityTile)
+					{
+						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
+						
+						if(owner != null && player.getName().equals(owner))
+						{
+							((ISecurityTile)tileEntity).getSecurity().setMode(message.value);
+						}
+					}
+				}
+				else {
+					ItemStack stack = player.getHeldItem(message.currentHand);
+					
+					if(stack.getItem() instanceof ISecurityItem)
+					{
+						((ISecurityItem)stack.getItem()).setSecurity(stack, message.value);
+					}
 				}
 			}
-		}
-		else {
-			ItemStack stack = player.getHeldItem(message.currentHand);
-			
-			if(stack.getItem() instanceof ISecurityItem)
-			{
-				((ISecurityItem)stack.getItem()).setSecurity(stack, message.value);
-			}
-		}
+		}, player.worldObj);
 		
 		return null;
 	}
