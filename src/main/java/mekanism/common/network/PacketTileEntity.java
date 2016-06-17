@@ -31,7 +31,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 			return null;
 		}
 		
-		PacketHandler.handlePacket(new Runnable() {
+		PacketHandler.handlePacket(new Thread() {
 			@Override
 			public void run()
 			{
@@ -50,7 +50,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 					message.storedBuffer.release();
 				}
 			}
-		}, player.worldObj);
+		}, player);
 		
 		return null;
 	}

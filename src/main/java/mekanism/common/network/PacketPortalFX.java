@@ -20,7 +20,7 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
+		PacketHandler.handlePacket(new Thread() {
 			@Override
 			public void run()
 			{
@@ -32,7 +32,7 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 					player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + 1 + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
 				}
 			}
-		}, player.worldObj);
+		}, player);
 		
 		return null;
 	}

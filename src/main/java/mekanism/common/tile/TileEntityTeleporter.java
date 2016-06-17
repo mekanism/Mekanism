@@ -627,7 +627,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			
 			return;
 		}
-
+		
 		super.handlePacketData(dataStream);
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())

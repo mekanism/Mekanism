@@ -225,6 +225,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -1112,9 +1113,16 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
-	public void handlePacket(Runnable runnable, World world)
+	public void handlePacket(Runnable runnable, EntityPlayer player)
 	{
-		Minecraft.getMinecraft().addScheduledTask(runnable);
+		if(player == null || player.worldObj.isRemote)
+		{
+			Minecraft.getMinecraft().addScheduledTask(runnable);
+		}
+		else if(player != null && !player.worldObj.isRemote)
+		{
+			((WorldServer)player.worldObj).addScheduledTask(runnable); //singleplayer
+		}
 	}
 
 	@Override

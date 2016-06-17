@@ -22,7 +22,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
+		PacketHandler.handlePacket(new Thread() {
 			@Override
 			public void run()
 			{
@@ -49,7 +49,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 					}
 				}
 			}
-		}, player.worldObj);
+		}, player);
 		
 		return null;
 	}

@@ -17,7 +17,7 @@ import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -28,9 +28,9 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 	@Override
 	public IMessage onMessage(EditFilterMessage message, MessageContext context) 
 	{
-		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+		WorldServer worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		
-		PacketHandler.handlePacket(new Runnable() {
+		worldServer.addScheduledTask(new Runnable() {
 			@Override
 			public void run()
 			{
@@ -107,7 +107,7 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 					}
 				}
 			}
-		}, worldServer);
+		});
 	
 		return null;
 	}

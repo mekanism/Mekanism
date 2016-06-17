@@ -93,7 +93,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 				}
 			}
 			
-			if(tileEntity.structure.steamStored != null && tileEntity.structure.steamStored.amount != 0)
+			if(tileEntity.structure.steamStored != null && tileEntity.structure.steamStored.amount > 0)
 			{
 				RenderData data = new RenderData();
 

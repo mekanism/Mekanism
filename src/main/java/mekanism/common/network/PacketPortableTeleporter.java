@@ -37,7 +37,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
+		PacketHandler.handlePacket(new Thread() {
 			@Override
 			public void run()
 			{
@@ -51,7 +51,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					switch(message.packetType)
 					{
 						case DATA_REQUEST:
-							sendDataResponse(message.frequency, world, player, item, itemstack);
+							sendDataResponse(message.frequency, world, player, item, itemstack, message.currentHand);
 							break;
 						case DATA_RESPONSE:
 							Mekanism.proxy.handleTeleporterUpdate(message);
@@ -78,7 +78,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							item.setFrequency(itemstack, toUse.name);
 							item.setPrivateMode(itemstack, !toUse.publicFreq);
 							
-							sendDataResponse(toUse, world, player, item, itemstack);
+							sendDataResponse(toUse, world, player, item, itemstack, message.currentHand);
 							
 							break;
 						case DEL_FREQ:
@@ -140,12 +140,12 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					}
 				}
 			}
-		}, player.worldObj);
+		}, player);
 		
 		return null;
 	}
 	
-	public void sendDataResponse(Frequency given, World world, EntityPlayer player, ItemPortableTeleporter item, ItemStack itemstack)
+	public void sendDataResponse(Frequency given, World world, EntityPlayer player, ItemPortableTeleporter item, ItemStack itemstack, EnumHand hand)
 	{
 		List<Frequency> publicFreqs = new ArrayList<Frequency>();
 		
@@ -205,7 +205,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 			}
 		}
 		
-		Mekanism.packetHandler.sendTo(new PortableTeleporterMessage(given, status, publicFreqs, privateFreqs), (EntityPlayerMP)player);
+		Mekanism.packetHandler.sendTo(new PortableTeleporterMessage(hand, given, status, publicFreqs, privateFreqs), (EntityPlayerMP)player);
 	}
 	
 	public FrequencyManager getManager(String owner, World world)
@@ -262,10 +262,11 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 			}
 		}
 		
-		public PortableTeleporterMessage(Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs)
+		public PortableTeleporterMessage(EnumHand hand, Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs)
 		{
 			packetType = PortableTeleporterPacketType.DATA_RESPONSE;
 			
+			currentHand = hand;
 			frequency = freq;
 			status = b;
 			
@@ -294,6 +295,8 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 			}
 			else if(packetType == PortableTeleporterPacketType.DATA_RESPONSE)
 			{
+				buffer.writeInt(currentHand.ordinal());
+				
 				if(frequency != null)
 				{
 					buffer.writeBoolean(true);
@@ -359,6 +362,8 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 			}
 			else if(packetType == PortableTeleporterPacketType.DATA_RESPONSE)
 			{
+				currentHand = EnumHand.values()[buffer.readInt()];
+				
 				if(buffer.readBoolean())
 				{
 					frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());

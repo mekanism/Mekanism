@@ -43,7 +43,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public GuiSeismicReader(World world, Coord4D coord, ItemStack stack)
 	{
-		pos = new Coord4D(coord.xCoord, Math.min(255, coord.yCoord), coord.zCoord, worldObj.provider.getDimension());
+		pos = new Coord4D(coord.xCoord, Math.min(255, coord.yCoord), coord.zCoord, world.provider.getDimension());
 		worldObj = world;
 
 		itemStack = stack;

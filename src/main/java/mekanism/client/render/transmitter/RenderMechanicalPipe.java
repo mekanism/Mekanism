@@ -257,9 +257,12 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 	
 	public void renderFluidInOut(VertexBuffer renderer, EnumFacing side, PartMechanicalPipe pipe)
 	{
-		bindTexture(MekanismRenderer.getBlocksTexture());
-		TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(pipe.getTransmitter().getTransmitterNetwork().refFluid, FluidType.STILL);
-		renderTransparency(renderer, tex, getModelForSide(pipe, side), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
+		if(pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null)
+		{
+			bindTexture(MekanismRenderer.getBlocksTexture());
+			TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(pipe.getTransmitter().getTransmitterNetwork().refFluid, FluidType.STILL);
+			renderTransparency(renderer, tex, getModelForSide(pipe, side), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
+		}
 	}
 	
     public static void onStitch()
