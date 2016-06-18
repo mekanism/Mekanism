@@ -1,6 +1,10 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,8 +25,6 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 {

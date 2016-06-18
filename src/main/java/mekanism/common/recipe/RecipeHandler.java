@@ -1,22 +1,58 @@
 package mekanism.common.recipe;
 
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.util.StackUtils;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.recipe.inputs.*;
-import mekanism.common.recipe.machines.*;
-import mekanism.common.recipe.outputs.*;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
+import mekanism.common.recipe.inputs.ChemicalPairInput;
+import mekanism.common.recipe.inputs.FluidInput;
+import mekanism.common.recipe.inputs.GasInput;
+import mekanism.common.recipe.inputs.InfusionInput;
+import mekanism.common.recipe.inputs.IntegerInput;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.inputs.MachineInput;
+import mekanism.common.recipe.inputs.PressurizedInput;
+import mekanism.common.recipe.machines.AdvancedMachineRecipe;
+import mekanism.common.recipe.machines.AmbientGasRecipe;
+import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
+import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
+import mekanism.common.recipe.machines.CombinerRecipe;
+import mekanism.common.recipe.machines.CrusherRecipe;
+import mekanism.common.recipe.machines.CrystallizerRecipe;
+import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.recipe.machines.EnrichmentRecipe;
+import mekanism.common.recipe.machines.InjectionRecipe;
+import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
+import mekanism.common.recipe.machines.OxidationRecipe;
+import mekanism.common.recipe.machines.PressurizedRecipe;
+import mekanism.common.recipe.machines.PurificationRecipe;
+import mekanism.common.recipe.machines.SawmillRecipe;
+import mekanism.common.recipe.machines.SeparatorRecipe;
+import mekanism.common.recipe.machines.SmeltingRecipe;
+import mekanism.common.recipe.machines.SolarNeutronRecipe;
+import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
+import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
+import mekanism.common.recipe.outputs.ChemicalPairOutput;
+import mekanism.common.recipe.outputs.FluidOutput;
+import mekanism.common.recipe.outputs.GasOutput;
+import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.recipe.outputs.MachineOutput;
+import mekanism.common.recipe.outputs.PressurizedOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Class used to handle machine recipes. This is used for both adding and fetching recipes.
@@ -206,9 +242,9 @@ public final class RecipeHandler
 		addRecipe(Recipe.PRESSURIZED_REACTION_CHAMBER, new PressurizedRecipe(inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks));
 	}
 	
-	public static void addSolarEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid)
+	public static void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid)
 	{
-		addRecipe(Recipe.SOLAR_EVAPORATION_PLANT, new SolarEvaporationRecipe(inputFluid, outputFluid));
+		addRecipe(Recipe.THERMAL_EVAPORATION_PLANT, new ThermalEvaporationRecipe(inputFluid, outputFluid));
 	}
 	
 	public static void addSolarNeutronRecipe(GasStack inputGas, GasStack outputGas)
@@ -397,13 +433,13 @@ public final class RecipeHandler
 		return null;
 	}
 	
-	public static SolarEvaporationRecipe getSolarEvaporationRecipe(FluidInput input)
+	public static ThermalEvaporationRecipe getThermalEvaporationRecipe(FluidInput input)
 	{
 		if(input.isValid())
 		{
-			HashMap<FluidInput, SolarEvaporationRecipe> recipes = Recipe.SOLAR_EVAPORATION_PLANT.get();
+			HashMap<FluidInput, ThermalEvaporationRecipe> recipes = Recipe.THERMAL_EVAPORATION_PLANT.get();
 			
-			SolarEvaporationRecipe recipe = recipes.get(input);
+			ThermalEvaporationRecipe recipe = recipes.get(input);
 			return recipe == null ? null : recipe.copy();
 		}
 		
@@ -520,7 +556,7 @@ public final class RecipeHandler
 		CHEMICAL_CRYSTALLIZER(MachineType.CHEMICAL_CRYSTALLIZER.name, GasInput.class, ItemStackOutput.class, CrystallizerRecipe.class),
 		PRESSURIZED_REACTION_CHAMBER(MachineType.PRESSURIZED_REACTION_CHAMBER.name, PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class),
 		AMBIENT_ACCUMULATOR(MachineType.AMBIENT_ACCUMULATOR.name, IntegerInput.class, GasOutput.class, AmbientGasRecipe.class),
-		SOLAR_EVAPORATION_PLANT("SolarEvaporationPlant", FluidInput.class, FluidOutput.class, SolarEvaporationRecipe.class),
+		THERMAL_EVAPORATION_PLANT("ThermalEvaporationPlant", FluidInput.class, FluidOutput.class, ThermalEvaporationRecipe.class),
 		SOLAR_NEUTRON_ACTIVATOR(MachineType.SOLAR_NEUTRON_ACTIVATOR.name, GasInput.class, GasOutput.class, SolarNeutronRecipe.class);
 
 		private HashMap recipes;

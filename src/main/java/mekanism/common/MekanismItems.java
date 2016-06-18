@@ -1,10 +1,13 @@
 package mekanism.common;
 
+import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemClump;
+import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemControlCircuit;
+import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemCrystal;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemDirtyDust;
@@ -12,7 +15,6 @@ import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemFactoryInstaller;
-import mekanism.common.item.ItemFilterCard;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
@@ -45,9 +47,9 @@ import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("Mekanism")
 public class MekanismItems
 {
-	public static final Item EnrichedAlloy = new ItemMekanism().setUnlocalizedName("EnrichedAlloy");
-	public static final Item ReinforcedAlloy = new ItemMekanism().setUnlocalizedName("ReinforcedAlloy");
-	public static final Item AtomicAlloy = new ItemMekanism().setUnlocalizedName("AtomicAlloy");
+	public static final Item EnrichedAlloy = new ItemAlloy().setUnlocalizedName("EnrichedAlloy");
+	public static final Item ReinforcedAlloy = new ItemAlloy().setUnlocalizedName("ReinforcedAlloy");
+	public static final Item AtomicAlloy = new ItemAlloy().setUnlocalizedName("AtomicAlloy");
 	public static final Item TeleportationCore = new ItemMekanism().setUnlocalizedName("TeleportationCore");
 	public static final Item ElectrolyticCore = new ItemMekanism().setUnlocalizedName("ElectrolyticCore");
 	public static final Item Substrate = new ItemMekanism().setUnlocalizedName("Substrate");
@@ -65,6 +67,7 @@ public class MekanismItems
 	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED).setUnlocalizedName("SpeedUpgrade");
 	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY).setUnlocalizedName("EnergyUpgrade");
 	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER).setUnlocalizedName("FilterUpgrade");
+	public static final Item MufflingUpgrade = new ItemUpgrade(Upgrade.MUFFLING).setUnlocalizedName("MufflingUpgrade");
 	public static final Item GasUpgrade = new ItemUpgrade(Upgrade.GAS).setUnlocalizedName("GasUpgrade");
 	public static final Item FactoryInstaller = new ItemFactoryInstaller().setUnlocalizedName("FactoryInstaller");
 	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
@@ -79,7 +82,8 @@ public class MekanismItems
 	public static final ItemSeismicReader SeismicReader = (ItemSeismicReader)new ItemSeismicReader().setUnlocalizedName("SeismicReader");
 	public static final Item Dictionary = new ItemDictionary().setUnlocalizedName("Dictionary");
 	public static final ItemGaugeDropper GaugeDropper = (ItemGaugeDropper)new ItemGaugeDropper().setUnlocalizedName("GaugeDropper");
-	public static final Item FilterCard = new ItemFilterCard().setUnlocalizedName("FilterCard");
+	public static final Item ConfigurationCard = new ItemConfigurationCard().setUnlocalizedName("ConfigurationCard");
+	public static final Item CraftingFormula = new ItemCraftingFormula().setUnlocalizedName("CraftingFormula");
 	public static final Item PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
 	public static final Item GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
 	public static final ItemScubaTank ScubaTank = (ItemScubaTank)new ItemScubaTank().setUnlocalizedName("ScubaTank");
@@ -114,6 +118,7 @@ public class MekanismItems
 		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
 		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
 		GameRegistry.registerItem(FilterUpgrade, "FilterUpgrade");
+		GameRegistry.registerItem(MufflingUpgrade, "MufflingUpgrade");
 		GameRegistry.registerItem(GasUpgrade, "GasUpgrade");
 		GameRegistry.registerItem(Robit, "Robit");
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
@@ -149,7 +154,8 @@ public class MekanismItems
 		GameRegistry.registerItem(Crystal, "Crystal");
 		GameRegistry.registerItem(FreeRunners, "FreeRunners");
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
-		GameRegistry.registerItem(FilterCard, "FilterCard");
+		GameRegistry.registerItem(ConfigurationCard, "ConfigurationCard");
+		GameRegistry.registerItem(CraftingFormula, "CraftingFormula");
 		GameRegistry.registerItem(SeismicReader, "SeismicReader");
 		GameRegistry.registerItem(Substrate, "Substrate");
 		GameRegistry.registerItem(Polyethene, "Polyethene");

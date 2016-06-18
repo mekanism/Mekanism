@@ -1,5 +1,10 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.util.ListUtils;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
+import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiMatrixTab;
 import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.MekanismRenderer;
@@ -25,6 +30,17 @@ public class GuiInductionMatrix extends GuiMekanism
 		super(tentity, new ContainerInductionMatrix(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, 6, MekanismUtils.getResource(ResourceType.GUI, "GuiInductionMatrix.png")));
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
+		{
+			@Override
+			public List<String> getInfo()
+			{
+				return ListUtils.asList(
+						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t",
+						LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t");
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiInductionMatrix.png")));
 	}
 
 	@Override

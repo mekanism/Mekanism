@@ -4,13 +4,14 @@ import java.util.List;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.ListUtils;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -41,6 +42,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.guiLocation));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, tileEntity.guiLocation));
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, tileEntity.guiLocation));
 		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, tileEntity.guiLocation));
 		guiElements.add(new GuiPowerBar(this, tileEntity, tileEntity.guiLocation, 164, 15));

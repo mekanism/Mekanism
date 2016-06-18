@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile.reactor;
 
 import mekanism.api.lasers.ILaserReceptor;
-
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock implements ILaserReceptor

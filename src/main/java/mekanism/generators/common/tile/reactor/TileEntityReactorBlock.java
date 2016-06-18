@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -55,7 +54,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		
 		if(getReactor() != null)
 		{
-			getReactor().formMultiblock();
+			getReactor().formMultiblock(false);
 		}
 	}
 
@@ -96,7 +95,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 
 		if(!(this instanceof TileEntityReactorController) && getReactor() != null)
 		{
-			getReactor().formMultiblock();
+			getReactor().formMultiblock(true);
 		}
 	}
 	
@@ -109,7 +108,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		{
 			if(getReactor() != null)
 			{
-				getReactor().formMultiblock();
+				getReactor().formMultiblock(false);
 			}
 			else {
 				updateController();
@@ -125,7 +124,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			
 			if(found != null && (found.getReactor() == null || !found.getReactor().isFormed()))
 			{
-				found.formMultiblock();
+				found.formMultiblock(false);
 			}
 		}
 	}

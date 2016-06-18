@@ -1,6 +1,11 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
+import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixCache;
@@ -8,12 +13,12 @@ import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration
 {
@@ -53,6 +58,20 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	}
 	
 	@Override
+	public boolean onActivate(EntityPlayer player)
+	{
+		if(!player.isSneaking() && structure != null)
+		{
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			player.openGui(Mekanism.instance, 49, worldObj, xCoord, yCoord, zCoord);
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
@@ -81,20 +100,23 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		super.handlePacketData(dataStream);
 		
-		if(clientHasStructure)
+		if(worldObj.isRemote)
 		{
-			structure.clientEnergy = dataStream.readDouble();
-			structure.storageCap = dataStream.readDouble();
-			structure.transferCap = dataStream.readDouble();
-			structure.lastInput = dataStream.readDouble();
-			structure.lastOutput = dataStream.readDouble();
-			
-			structure.volWidth = dataStream.readInt();
-			structure.volHeight = dataStream.readInt();
-			structure.volLength = dataStream.readInt();
-			
-			clientCells = dataStream.readInt();
-			clientProviders = dataStream.readInt();
+			if(clientHasStructure)
+			{
+				structure.clientEnergy = dataStream.readDouble();
+				structure.storageCap = dataStream.readDouble();
+				structure.transferCap = dataStream.readDouble();
+				structure.lastInput = dataStream.readDouble();
+				structure.lastOutput = dataStream.readDouble();
+				
+				structure.volWidth = dataStream.readInt();
+				structure.volHeight = dataStream.readInt();
+				structure.volLength = dataStream.readInt();
+				
+				clientCells = dataStream.readInt();
+				clientProviders = dataStream.readInt();
+			}
 		}
 	}
 
@@ -141,7 +163,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 			return structure != null ? structure.getEnergy(worldObj) : 0;
 		}
 		else {
-			return structure.clientEnergy;
+			return structure != null ? structure.clientEnergy : 0;
 		}
 	}
 
@@ -161,7 +183,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		return structure != null ? structure.storageCap : 0;
 	}
 
-	public static final String[] methods = new String[] {"getStored", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
+	public static final String[] methods = new String[] {"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
 
 	@Override
 	public String[] getMethods()

@@ -10,9 +10,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import codechicken.lib.vec.Rectangle4i;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiSideConfigurationTab extends GuiElement
@@ -73,7 +73,7 @@ public class GuiSideConfigurationTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 			{
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 9));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 9));
                 SoundHandler.playSound("gui.button.press");
 			}
 		}

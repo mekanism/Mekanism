@@ -1,10 +1,20 @@
 package mekanism.common.util;
 
-import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
 import ic2.api.energy.EnergyNet;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -17,23 +27,43 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.UnitDisplayUtils;
 import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.*;
-import mekanism.common.Tier.*;
-import mekanism.common.base.*;
+import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+import mekanism.common.OreDictCache;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.BinTier;
+import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.Tier.GasTankTier;
+import mekanism.common.Tier.InductionCellTier;
+import mekanism.common.Tier.InductionProviderTier;
+import mekanism.common.Upgrade;
+import mekanism.common.Version;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.inventory.container.ContainerElectricChest;
+import mekanism.common.base.IModule;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.IUpgradeTile;
+import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
-import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
+import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -49,18 +79,19 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
+import buildcraft.api.tools.IToolWrench;
+import cofh.api.item.IToolHammer;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -337,15 +368,36 @@ public final class MekanismUtils
 	{
 		return ((ItemBlockBasic)new ItemStack(MekanismBlocks.BasicBlock2, 1, 4).getItem()).getUnchargedProvider(tier);
 	}
+	
+	/**
+	 * Retrieves an Bin with a defined tier.
+	 * @param tier - tier to add to the Bin
+	 * @return Bin with defined tier
+	 */
+	public static ItemStack getBin(BinTier tier)
+	{
+		ItemStack ret = new ItemStack(MekanismBlocks.BasicBlock, 1, 6);
+		((ItemBlockBasic)ret.getItem()).setBaseTier(ret, tier.getBaseTier());
+		
+		return ret;
+	}
 
 	/**
 	 * Retrieves an empty Gas Tank.
 	 * @return empty gas tank
 	 */
-	public static ItemStack getEmptyGasTank()
+	public static ItemStack getEmptyGasTank(GasTankTier tier)
 	{
-		ItemStack itemstack = ((ItemBlockGasTank)new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem();
-		return itemstack;
+		return ((ItemBlockGasTank)new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem(tier);
+	}
+	
+	public static ItemStack getEmptyFluidTank(FluidTankTier tier)
+	{
+		ItemStack stack = new ItemStack(MekanismBlocks.MachineBlock2, 1, 11);
+		ItemBlockMachine itemMachine = (ItemBlockMachine)stack.getItem();
+		itemMachine.setBaseTier(stack, tier.getBaseTier());
+		
+		return stack;
 	}
 
 	/**
@@ -463,7 +515,49 @@ public final class MekanismUtils
 	 */
 	public static int getBaseOrientation(int side, int blockFacing)
 	{
-		if(blockFacing == 3 || side == 1 || side == 0)
+		if(blockFacing == 0)
+		{
+			if(side == 0)
+			{
+				return 2;
+			}
+			else if(side == 1)
+			{
+				return 3;
+			}
+			else if(side == 2)
+			{
+				return 1;
+			}
+			else if(side == 3)
+			{
+				return 0;
+			}
+			
+			return side;
+		}
+		else if(blockFacing == 1)
+		{
+			if(side == 0)
+			{
+				return 3;
+			}
+			else if(side == 1)
+			{
+				return 2;
+			}
+			else if(side == 2)
+			{
+				return 0;
+			}
+			else if(side == 3)
+			{
+				return 1;
+			}
+			
+			return side;
+		}
+		else if(blockFacing == 3 || side == 1 || side == 0)
 		{
 			if(side == 2 || side == 3)
 			{
@@ -760,7 +854,7 @@ public final class MekanismUtils
 	 */
 	public static void updateBlock(World world, int x, int y, int z)
 	{
-		Coord4D pos = new Coord4D(x, y, z);
+		Coord4D pos = new Coord4D(x, y, z, world.provider.dimensionId);
 		if(!(pos.getTileEntity(world) instanceof IActiveState) || ((IActiveState)pos.getTileEntity(world)).renderUpdate())
 		{
 			world.func_147479_m(pos.xCoord, pos.yCoord, pos.zCoord);
@@ -901,7 +995,7 @@ public final class MekanismUtils
 	 * @param inventory - IInventory of the item, if it's not a block
 	 * @param isBlock - whether or not this electric chest is in it's block form
 	 */
-	public static void openElectricChestGui(EntityPlayerMP player, TileEntityElectricChest tileEntity, IInventory inventory, boolean isBlock)
+	public static void openPersonalChestGui(EntityPlayerMP player, TileEntityPersonalChest tileEntity, IInventory inventory, boolean isBlock)
 	{
 		player.getNextWindowId();
 		player.closeContainer();
@@ -909,13 +1003,13 @@ public final class MekanismUtils
 
 		if(isBlock)
 		{
-			Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 0, id, null, Coord4D.get(tileEntity)), player);
+			Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity)), player);
 		}
 		else {
-			Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, false, false, 0, id, null, null), player);
+			Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null), player);
 		}
 
-		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);
+		player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
 		player.openContainer.addCraftingToCrafters(player);
 	}
@@ -1118,12 +1212,12 @@ public final class MekanismUtils
 	 */
 	public static String getEnergyDisplay(double energy)
 	{
-		if(energy == Integer.MAX_VALUE)
+		if(energy == Double.MAX_VALUE)
 		{
 			return LangUtils.localize("gui.infinite");
 		}
 		
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case J:
 				return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
@@ -1145,7 +1239,7 @@ public final class MekanismUtils
 	 */
 	public static double convertToJoules(double energy)
 	{
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case RF:
 				return energy * general.FROM_TE;
@@ -1165,7 +1259,7 @@ public final class MekanismUtils
 	 */
 	public static double convertToDisplay(double energy)
 	{
-		switch(general.activeType)
+		switch(general.energyUnit)
 		{
 			case RF:
 				return energy * general.TO_TE;
@@ -1185,7 +1279,8 @@ public final class MekanismUtils
 	 */
 	public static String getTemperatureDisplay(double T, TemperatureUnit unit)
 	{
-		double TK = unit.convertToK(T);
+		double TK = unit.convertToK(T, true);
+		
 		switch(general.tempUnit)
 		{
 			case K:
@@ -1220,7 +1315,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return Mekanism.hooks.CoFHCoreLoaded && !general.blacklistRF;
+		return !general.blacklistRF;
 	}
 
 	/**
@@ -1232,20 +1327,76 @@ public final class MekanismUtils
 	{
 		return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
 	}
-
-	/**
-	 * Splits a string of text into a list of new segments, using the splitter "!n."
-	 * @param s - string to split
-	 * @return split string
-	 */
-	public static List<String> splitLines(String s)
+	
+	@SideOnly(Side.CLIENT)
+	public static List<String> splitTooltip(String s, ItemStack stack)
 	{
-		ArrayList ret = new ArrayList();
-
-		String[] split = s.split("!n");
-		ret.addAll(Arrays.asList(split));
-
-		return ret;
+		s = s.trim();
+		
+		try {
+			FontRenderer renderer = (FontRenderer)Mekanism.proxy.getFontRenderer();
+			
+			if(stack != null && stack.getItem().getFontRenderer(stack) != null)
+			{
+				renderer = stack.getItem().getFontRenderer(stack);
+			}
+			
+			List<String> words = new ArrayList<String>();
+			List<String> lines = new ArrayList<String>();
+			
+			String currentWord = "";
+			
+			for(Character c : s.toCharArray())
+			{
+				if(c.equals(' '))
+				{
+					words.add(currentWord);
+					currentWord = "";
+				}
+				else {
+					currentWord += c;
+				}
+			}
+			
+			if(!currentWord.isEmpty())
+			{
+				words.add(currentWord);
+			}
+			
+			String currentLine = "";
+			
+			for(String word : words)
+			{
+				if(currentLine.isEmpty() || renderer.getStringWidth(currentLine + " " + word) <= 200)
+				{
+					if(currentLine.length() > 0)
+					{
+						currentLine += " ";
+					}
+					
+					currentLine += word;
+					
+					continue;
+				}
+				else {
+					lines.add(currentLine);
+					currentLine = word;
+					
+					continue;
+				}
+			}
+			
+			if(!currentLine.isEmpty())
+			{
+				lines.add(currentLine);
+			}
+			
+			return lines;
+		} catch(Throwable t) {
+			t.printStackTrace();
+		}
+		
+		return new ArrayList<String>();
 	}
 
 	/**
@@ -1253,17 +1404,30 @@ public final class MekanismUtils
 	 * @param gas - gas to fill the tank with
 	 * @return filled gas tank
 	 */
-	public static ItemStack getFullGasTank(Gas gas)
+	public static ItemStack getFullGasTank(GasTankTier tier, Gas gas)
 	{
-		ItemStack tank = getEmptyGasTank();
+		ItemStack tank = getEmptyGasTank(tier);
 		ItemBlockGasTank item = (ItemBlockGasTank)tank.getItem();
 		item.setGas(tank, new GasStack(gas, item.MAX_GAS));
 
 		return tank;
 	}
+	
+	public static InventoryCrafting getDummyCraftingInv()
+	{
+		Container tempContainer = new Container() {
+			@Override
+			public boolean canInteractWith(EntityPlayer player)
+			{
+				return false;
+			}
+		};
+		
+		return new InventoryCrafting(tempContainer, 3, 3);
+	}
 
 	/**
-	 * Finds the output of a defined InventoryCrafting grid. Taken from CofhCore.
+	 * Finds the output of a defined InventoryCrafting grid.
 	 * @param inv - InventoryCrafting to check
 	 * @param world - world reference
 	 * @return output ItemStack
@@ -1299,6 +1463,7 @@ public final class MekanismUtils
 			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamageForDisplay();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
+			
 			return new ItemStack(dmgItems[0].getItem(), 1, solve);
 		}
 

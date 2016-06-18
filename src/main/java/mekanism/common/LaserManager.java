@@ -36,7 +36,7 @@ public class LaserManager
 		if(mop != null)
 		{
 			to = new Pos3D(mop.hitVec);
-			Coord4D toCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+			Coord4D toCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, world.provider.dimensionId);
 			TileEntity tile = toCoord.getTileEntity(world);
 
 			if(tile instanceof ILaserReceptor)

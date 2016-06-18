@@ -5,13 +5,13 @@ import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderDigitalMiner extends TileEntitySpecialRenderer
@@ -33,14 +33,26 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer
 
 		switch(tileEntity.facing)
 		{
-			case 2: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
-			case 3: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
-			case 4: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
-			case 5: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+			case 2: 
+				GL11.glRotatef(0, 0.0F, 1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+				break;
+			case 3: 
+				GL11.glRotatef(180, 0.0F, 1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+				break;
+			case 4: 
+				GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+				break;
+			case 5: 
+				GL11.glRotatef(270, 0.0F, 1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+				break;
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tileEntity.isActive);
+		model.render(0.0625F, tileEntity.isActive, field_147501_a.field_147553_e);
 		GL11.glPopMatrix();
 		
 		if(tileEntity.clientRendering)

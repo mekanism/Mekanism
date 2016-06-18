@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container;
 
+import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.Tier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
@@ -8,7 +9,6 @@ import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -143,7 +143,7 @@ public class ContainerFactory extends Container
 					return null;
 				}
 			}
-			else if(tileEntity.recipeType.getAnyRecipe(slotStack, tileEntity.gasTank.getGasType()) != null)
+			else if(tileEntity.recipeType.getAnyRecipe(slotStack, tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null)
 			{
 				if(!isInputSlot(slotID))
 				{
@@ -177,6 +177,22 @@ public class ContainerFactory extends Container
 				}
 			}
 			else if(tileEntity.recipeType.getItemGas(slotStack) != null)
+			{
+				if(slotID > tileEntity.inventory.length-1)
+				{
+					if(!mergeItemStack(slotStack, 3, 4, false))
+					{
+						return null;
+					}
+				}
+				else {
+					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					{
+						return null;
+					}
+				}
+			}
+			else if(tileEntity.recipeType == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
 			{
 				if(slotID > tileEntity.inventory.length-1)
 				{

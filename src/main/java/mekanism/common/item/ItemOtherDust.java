@@ -12,7 +12,7 @@ public class ItemOtherDust extends ItemMekanism
 {
 	public IIcon[] icons = new IIcon[256];
 	
-	public static String[] subtypes = {"Diamond", "Steel", "Lead", 
+	public static String[] subtypes = {"Diamond", "Steel", "null", 
 									  "Sulfur", "Lithium", "RefinedObsidian",
 									  "Obsidian"};
 	
@@ -27,6 +27,11 @@ public class ItemOtherDust extends ItemMekanism
 	{
 		for(int i = 0; i < subtypes.length; i++)
 		{
+			if(i == 2)
+			{
+				continue;
+			}
+			
 			icons[i] = register.registerIcon("mekanism:" + subtypes[i] + "Dust");
 		}
 	}
@@ -42,6 +47,11 @@ public class ItemOtherDust extends ItemMekanism
 	{
 		for(int counter = 0; counter < subtypes.length; counter++)
 		{
+			if(counter == 2)
+			{
+				continue;
+			}
+			
 			itemList.add(new ItemStack(this, 1, counter));
 		}
 	}

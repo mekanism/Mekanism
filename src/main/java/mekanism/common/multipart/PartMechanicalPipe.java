@@ -1,12 +1,13 @@
 package mekanism.common.multipart;
 
-import codechicken.lib.vec.Vector3;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Collection;
+
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.PipeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,9 +15,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
-
-import java.util.Collection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandler
 {
@@ -306,5 +315,37 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		else {
 			return buffer.fill(fluid, doEmit);
 		}
+	}
+	
+	@Override
+	public boolean upgrade(int tierOrdinal)
+	{
+		if(tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal()+1)
+		{
+			tier = PipeTier.values()[tier.ordinal()+1];
+			
+			markDirtyTransmitters();
+			sendDesc = true;
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void readDesc(MCDataInput packet)
+	{
+		tier = PipeTier.values()[packet.readInt()];
+		
+		super.readDesc(packet);
+	}
+
+	@Override
+	public void writeDesc(MCDataOutput packet)
+	{
+		packet.writeInt(tier.ordinal());
+		
+		super.writeDesc(packet);
 	}
 }

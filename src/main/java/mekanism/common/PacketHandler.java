@@ -27,8 +27,8 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketEntityMove;
+import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketJetpackData;
@@ -41,6 +41,8 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketOredictionificatorGui;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
+import mekanism.common.network.PacketPersonalChest;
+import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPortableTankState;
 import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
 import mekanism.common.network.PacketPortableTeleporter;
@@ -55,6 +57,10 @@ import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
+import mekanism.common.network.PacketSecurityMode;
+import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
+import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity;
@@ -92,8 +98,8 @@ public class PacketHandler
 	{
 		netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
 		netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Side.CLIENT);
-		netHandler.registerMessage(PacketElectricChest.class, ElectricChestMessage.class, 2, Side.CLIENT);
-		netHandler.registerMessage(PacketElectricChest.class, ElectricChestMessage.class, 2, Side.SERVER);
+		netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.CLIENT);
+		netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.SERVER);
 		netHandler.registerMessage(PacketElectricBowState.class, ElectricBowStateMessage.class, 3, Side.SERVER);
 		netHandler.registerMessage(PacketConfiguratorState.class, ConfiguratorStateMessage.class, 4, Side.SERVER);
 		netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.CLIENT);
@@ -102,7 +108,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Side.SERVER);
 		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
 		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
-		//EMPTY SLOT 9
+		netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Side.SERVER);
 		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.CLIENT);
 		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.SERVER);
 		netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Side.SERVER);
@@ -129,6 +135,8 @@ public class PacketHandler
 		netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.CLIENT);
 		netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.SERVER);
 		netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
+		netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
+		netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Side.CLIENT);
 	}
 	
 	/**
@@ -295,6 +303,20 @@ public class PacketHandler
 	public void sendTo(IMessage message, EntityPlayerMP player)
 	{
 		netHandler.sendTo(message, player);
+	}
+	
+	/**
+	 * Send this message to everyone connected to the server.
+	 * @param message - message to send
+	 */
+	public void sendToAll(IMessage message)
+	{
+		MinecraftServer server = MinecraftServer.getServer();
+		
+		for(EntityPlayer player : (List<EntityPlayer>)server.getConfigurationManager().playerEntityList)
+		{
+			sendTo(message, (EntityPlayerMP)player);
+		}
 	}
 
 	/**

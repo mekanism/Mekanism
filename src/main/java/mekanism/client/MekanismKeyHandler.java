@@ -1,20 +1,19 @@
 package mekanism.client;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
 import mekanism.api.util.StackUtils;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.item.*;
+import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
+import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemFlamethrower;
+import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
+import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import mekanism.common.network.PacketFlamethrowerData;
@@ -31,7 +30,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
+
 import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class MekanismKeyHandler extends MekKeyHandler
@@ -91,7 +99,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			{
 				ItemBlockMachine machine = (ItemBlockMachine)item;
 
-				if(MachineType.get(toolStack) == MachineType.PORTABLE_TANK)
+				if(MachineType.get(toolStack) == MachineType.FLUID_TANK)
 				{
 					machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
 					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(machine.getBucketMode(toolStack)));

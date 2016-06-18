@@ -1,15 +1,9 @@
 package mekanism.client;
 
 import java.io.File;
-import java.lang.reflect.Method;
 
-import mekanism.common.ObfuscatedNames;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
-import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;

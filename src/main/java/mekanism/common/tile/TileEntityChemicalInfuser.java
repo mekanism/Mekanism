@@ -19,27 +19,27 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager
+public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
 {
 	public GasTank leftTank = new GasTank(MAX_GAS);
 	public GasTank rightTank = new GasTank(MAX_GAS);
@@ -66,6 +66,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public double clientEnergyUsed;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -73,7 +74,9 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public TileEntityChemicalInfuser()
 	{
 		super("machine.cheminfuser", "ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
+		
 		inventory = new ItemStack[5];
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
 	@Override
@@ -217,36 +220,38 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		clientEnergyUsed = dataStream.readDouble();
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			clientEnergyUsed = dataStream.readDouble();
+	
+			if(dataStream.readBoolean())
+			{
+				leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				leftTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				rightTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				centerTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				centerTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
-		else {
-			leftTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			rightTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			centerTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			centerTank.setGas(null);
-		}
-
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
@@ -555,5 +560,11 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public Object[] getTanks() 
 	{
 		return new Object[] {leftTank, rightTank, centerTank};
+	}
+
+	@Override
+	public TileComponentSecurity getSecurity() 
+	{
+		return securityComponent;
 	}
 }

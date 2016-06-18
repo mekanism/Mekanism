@@ -1,19 +1,17 @@
 package mekanism.common.inventory.container;
 
+import ic2.api.item.IElectricItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import ic2.api.item.IElectricItem;
 
 public class ContainerEnergyCube extends Container
 {

@@ -9,7 +9,6 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,6 +29,6 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillR
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
-		return 0.7F;
+		return 0.7F*super.getVolume();
 	}
 }

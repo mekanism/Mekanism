@@ -2,7 +2,6 @@ package mekanism.common.recipe.machines;
 
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.outputs.ChanceOutput;
-
 import net.minecraft.item.ItemStack;
 
 public class SawmillRecipe extends ChanceMachineRecipe<SawmillRecipe>

@@ -75,7 +75,7 @@ public class GuiTransporterConfigTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
 			{
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 51));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 51));
                 SoundHandler.playSound("gui.button.press");
 			}
 		}

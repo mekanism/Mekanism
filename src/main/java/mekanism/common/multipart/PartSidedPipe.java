@@ -133,8 +133,14 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				return new PartRestrictiveTransporter();
 			case DIVERSION_TRANSPORTER:
 				return new PartDiversionTransporter();
-			case HEAT_TRANSMITTER:
-				return new PartHeatTransmitter();
+			case THERMODYNAMIC_CONDUCTOR_BASIC:
+				return new PartThermodynamicConductor(Tier.ConductorTier.BASIC);
+			case THERMODYNAMIC_CONDUCTOR_ADVANCED:
+				return new PartThermodynamicConductor(Tier.ConductorTier.ADVANCED);
+			case THERMODYNAMIC_CONDUCTOR_ELITE:
+				return new PartThermodynamicConductor(Tier.ConductorTier.ELITE);
+			case THERMODYNAMIC_CONDUCTOR_ULTIMATE:
+				return new PartThermodynamicConductor(Tier.ConductorTier.ULTIMATE);
 			default:
 				return null;
 		}
@@ -655,7 +661,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			
 			currentTransmitterConnections = setConnectionBit(currentTransmitterConnections, possibleTransmitter, side);
 			currentAcceptorConnections = setConnectionBit(currentAcceptorConnections, possibleAcceptor, side);
-
 		}
 	}
 
@@ -701,6 +706,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			boolean prevPowered = redstonePowered;
 			refreshConnections();
+			
 			if(prevPowered != redstonePowered)
 			{
 				markDirtyTransmitters();
@@ -712,8 +718,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void onPartChanged(TMultiPart part)
 	{
 		super.onPartChanged(part);
+		
 		byte transmittersBefore = currentTransmitterConnections;
 		refreshConnections();
+		
 		if(transmittersBefore != currentTransmitterConnections)
 		{
 			markDirtyTransmitters();

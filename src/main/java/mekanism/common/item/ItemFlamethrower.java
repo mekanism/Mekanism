@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
@@ -15,8 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFlamethrower extends ItemMekanism implements IGasItem
 {
@@ -26,8 +26,6 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	{
 		super();
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 	}
 	
 	@Override
@@ -117,23 +115,19 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-
-		if(stored == null)
-		{
-			itemstack.setItemDamage(100);
-		}
-		else {
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-		}
-
-		return stored;
+		return GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
 	}
 	
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return false;
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
 	}
 
 	@Override
@@ -146,14 +140,12 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.setItemDamage(100);
 			itemstack.stackTagCompound.removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
@@ -162,7 +154,6 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		return empty;
 	}
 
@@ -171,7 +162,6 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);

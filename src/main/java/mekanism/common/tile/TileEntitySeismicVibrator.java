@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -9,19 +11,22 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl
+public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl, ISecurityTile, IBoundingBlock
 {
 	public boolean isActive;
 
@@ -29,9 +34,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	
 	public int updateDelay;
 	
-	public float clientPiston;
+	public int clientPiston;
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntitySeismicVibrator()
 	{
@@ -47,6 +54,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 		
 		if(worldObj.isRemote)
 		{
+			if(isActive)
+			{
+				clientPiston++;
+			}
+			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -121,14 +133,17 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		super.handlePacketData(dataStream);
 
-		clientActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		
-		if(updateDelay == 0 && clientActive != isActive)
+		if(worldObj.isRemote)
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			clientActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 	}
 	
@@ -190,7 +205,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	@Override
 	public EnumSet<ForgeDirection> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.UP);
+		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
 
 	@Override
@@ -204,5 +219,31 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	public boolean canPulse()
 	{
 		return false;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
+	}
+	
+	@Override
+	public void onPlace() 
+	{
+		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).getFromSide(ForgeDirection.UP), Coord4D.get(this));
+	}
+
+	@Override
+	public void onBreak() 
+	{
+		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 }

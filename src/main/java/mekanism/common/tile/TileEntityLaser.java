@@ -48,7 +48,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 			if(isActive)
 			{
 				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -80,7 +80,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 				setActive(true);
 				
 				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ, worldObj.provider.dimensionId);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -166,9 +166,12 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(worldObj.isRemote)
+		{
+			isActive = dataStream.readBoolean();
+			
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 	
 	@Override

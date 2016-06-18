@@ -5,13 +5,13 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderChemicalCrystallizer extends TileEntitySpecialRenderer
@@ -49,7 +49,7 @@ public class RenderChemicalCrystallizer extends TileEntitySpecialRenderer
 		tileEntity.spin = (tileEntity.spin + (tileEntity.spinSpeed*0.1F)) % 1;
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.renderWithRotation(0.0625F, tileEntity.spin);
+		model.render(0.0625F);
 		GL11.glPopMatrix();
 
 		MekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);

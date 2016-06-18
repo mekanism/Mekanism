@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -29,17 +28,21 @@ public class FrequencyManager
 	
 	private String owner;
 	
+	private String name;
+	
 	private Class<? extends Frequency> frequencyClass;
 	
-	public FrequencyManager(Class c)
+	public FrequencyManager(Class c, String n)
 	{
 		frequencyClass = c;
+		name = n;
+		
 		managers.add(this);
 	}
 	
-	public FrequencyManager(Class c, String s)
+	public FrequencyManager(Class c, String n, String s)
 	{
-		this(c);
+		this(c, n);
 		
 		owner = s;
 	}
@@ -174,9 +177,9 @@ public class FrequencyManager
 		}
 	}
 	
-	public static FrequencyManager loadOnly(World world, String owner, Class<? extends Frequency> freqClass)
+	public static FrequencyManager loadOnly(World world, String owner, Class<? extends Frequency> freqClass, String n)
 	{
-		FrequencyManager manager = new FrequencyManager(freqClass);
+		FrequencyManager manager = new FrequencyManager(freqClass, n);
 		String name = manager.getName();
 		
 		FrequencyDataHandler handler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, name);
@@ -247,12 +250,12 @@ public class FrequencyManager
 					else {
 						TileEntity tile = coord.getTileEntity(world);
 						
-						if(!(tile instanceof TileEntityTeleporter))
+						if(!(tile instanceof IFrequencyHandler))
 						{
 							iter.remove();
 						}
 						else {
-							Frequency freq = ((TileEntityTeleporter)tile).frequency;
+							Frequency freq = ((IFrequencyHandler)tile).getFrequency(this);
 							
 							if(freq == null || !freq.equals(iterFreq))
 							{
@@ -283,7 +286,7 @@ public class FrequencyManager
 		try {
 			for(int i = 0; i < size; i++)
 			{
-				Frequency freq = frequencyClass.newInstance();
+				Frequency freq = frequencyClass.getConstructor(new Class[] {ByteBuf.class}).newInstance(dataStream);
 				freq.read(dataStream);
 				ret.add(freq);
 			}
@@ -296,7 +299,7 @@ public class FrequencyManager
 	
 	public String getName()
 	{
-		return owner != null ? owner + "FrequencyHandler" : "FrequencyHandler";
+		return owner != null ? (owner + "_" + name + "FrequencyHandler") : (name + "FrequencyHandler");
 	}
 	
 	public static void reset()

@@ -10,15 +10,12 @@ import java.util.List;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiSolarNeutronActivator;
-import mekanism.client.nei.RotaryCondensentratorRecipeHandler.CachedIORecipe;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 

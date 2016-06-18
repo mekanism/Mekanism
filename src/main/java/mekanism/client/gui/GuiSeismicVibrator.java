@@ -1,7 +1,14 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.MekanismConfig.usage;
+import mekanism.api.util.ListUtils;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
+import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -11,10 +18,11 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiSeismicVibrator extends GuiMekanism
@@ -26,8 +34,17 @@ public class GuiSeismicVibrator extends GuiMekanism
 		super(tentity, new ContainerSeismicVibrator(inventory, tentity));
 		tileEntity = tentity;
 
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicVibrator.png")));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicVibrator.png")));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicVibrator.png"), 164, 15));
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+			@Override
+			public List<String> getInfo()
+			{
+				String multiplier = MekanismUtils.getEnergyDisplay(usage.seismicVibratorUsage);
+				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicVibrator.png")));
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicVibrator.png"), 142, 34).with(SlotOverlay.POWER));
 	}

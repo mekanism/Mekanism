@@ -15,7 +15,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -37,8 +36,7 @@ import cpw.mods.fml.common.Optional.Method;
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
-	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
-	@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
+	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2")
 })
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState
 {
@@ -108,12 +106,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		return EnumSet.noneOf(ForgeDirection.class);
 	}
 	
-	@Override
-	public boolean canUpdate()
-	{
-		return true;
-	}
-	
 	@Method(modid = "IC2")
 	public void register()
 	{
@@ -166,9 +158,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		super.handlePacketData(dataStream);
 		
-		mode = dataStream.readBoolean();
-		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(worldObj.isRemote)
+		{
+			mode = dataStream.readBoolean();
+			
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override
@@ -231,7 +226,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
@@ -251,7 +245,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
@@ -271,21 +264,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return structure != null;
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getEnergy()*general.TO_TE);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getMaxEnergy()*general.TO_TE);

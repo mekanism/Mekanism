@@ -1,7 +1,7 @@
 package mekanism.common.block;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
+
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
@@ -13,8 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-
-import java.util.Random;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBounding extends Block
 {
@@ -41,6 +41,14 @@ public class BlockBounding extends Block
 		} catch(Exception e) {
 			return false;
 		}
+	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	{
+		super.breakBlock(world, x, y, z, block, meta);
+		
+		world.removeTileEntity(x, y, z);
 	}
 
 	@Override
@@ -73,6 +81,17 @@ public class BlockBounding extends Block
 			tileEntity.onNeighborChange(block);
 			world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, this);
 		} catch(Exception e) {}
+	}
+	
+	@Override
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
+	{
+		try {
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getPlayerRelativeBlockHardness(player, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+		} catch(Exception e) {
+			return super.getPlayerRelativeBlockHardness(player, world, x, y, z);
+		}
 	}
 
 	@Override

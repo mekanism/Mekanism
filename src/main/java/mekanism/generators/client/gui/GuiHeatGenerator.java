@@ -2,17 +2,20 @@ package mekanism.generators.client.gui;
 
 import java.util.List;
 
-import mekanism.api.MekanismConfig.generators;
 import mekanism.api.util.ListUtils;
+import mekanism.api.util.UnitDisplayUtils;
+import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiPowerBar;
-import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge.Type;
+import mekanism.client.gui.element.GuiHeatInfo;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.util.LangUtils;
@@ -22,10 +25,11 @@ import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidTank;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiHeatGenerator extends GuiMekanism
@@ -37,6 +41,7 @@ public class GuiHeatGenerator extends GuiMekanism
 		super(new ContainerHeatGenerator(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
 		{
 			@Override
@@ -44,7 +49,6 @@ public class GuiHeatGenerator extends GuiMekanism
 			{
 				return ListUtils.asList(
 						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.producingEnergy) + "/t",
-						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
 						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
@@ -58,6 +62,15 @@ public class GuiHeatGenerator extends GuiMekanism
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"), 164, 15));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"), 16, 34));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"), 142, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiHeatInfo(new IInfoHandler() {
+			@Override
+			public List<String> getInfo()
+			{
+				String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, TemperatureUnit.KELVIN);
+				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, TemperatureUnit.KELVIN);
+				return ListUtils.asList(LangUtils.localize("gui.transferred") + ": " + transfer + "/t", LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
 	}
 
 	@Override

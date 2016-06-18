@@ -1,14 +1,29 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig;
 import mekanism.api.Range4D;
-import mekanism.api.gas.*;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.base.*;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -17,7 +32,9 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -27,12 +44,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager, IRedstoneControl, IActiveState
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager, IRedstoneControl, IActiveState, ISecurityTile
 {
 	/** This separator's water slot. */
 	public FluidTank fluidTank = new FluidTank(24000);
@@ -55,9 +76,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	/** Type type of gas this block is dumping. */
 	public GasMode dumpRight = GasMode.IDLE;
 	
-	public boolean clientDumpLeft = false;
-	public boolean clientDumpRight = false;
-	
 	public double BASE_ENERGY_USAGE;
 	
 	public double energyPerTick;
@@ -75,6 +93,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public double clientEnergyUsed;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     /** This machine's current RedstoneControl type. */
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -188,9 +207,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			}
 			
 			int dumpAmount = 8*(int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-			
-			boolean dumpedLeft = false;
-			boolean dumpedRight = false;
 
 			if(leftTank.getGas() != null)
 			{
@@ -211,15 +227,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				else if(dumpLeft == GasMode.DUMPING)
 				{
 					leftTank.draw(dumpAmount, true);
-					
-					dumpedLeft = true;
 				}
 				
 				if(dumpLeft == GasMode.DUMPING_EXCESS && leftTank.getNeeded() < output)
 				{
 					leftTank.draw(output-leftTank.getNeeded(), true);
-					
-					dumpedLeft = true;
 				}
 			}
 
@@ -242,38 +254,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				else if(dumpRight == GasMode.DUMPING)
 				{
 					rightTank.draw(dumpAmount, true);
-					
-					dumpedRight = true;
 				}
 				
 				if(dumpRight == GasMode.DUMPING_EXCESS && rightTank.getNeeded() < output)
 				{
 					rightTank.draw(output-rightTank.getNeeded(), true);
-					
-					dumpedRight = true;
 				}
-			}
-			
-			if(clientDumpLeft != dumpedLeft || clientDumpRight != dumpedRight)
-			{
-				clientDumpLeft = dumpedLeft;
-				clientDumpRight = dumpedRight;
-				
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 
             prevEnergy = getEnergy();
-		}
-		else {
-			if(clientDumpLeft)
-			{
-				spawnParticle(0);
-			}
-			
-			if(clientDumpRight)
-			{
-				spawnParticle(1);
-			}
 		}
 	}
 	
@@ -332,37 +321,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
 				&& rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
-	}
-
-	public void spawnParticle(int type)
-	{
-		if(type == 0)
-		{
-			ForgeDirection side = ForgeDirection.getOrientation(facing);
-
-			double x = xCoord + (side.offsetX == 0 ? 0.5 : Math.max(side.offsetX, 0));
-			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
-
-			worldObj.spawnParticle("smoke", x, yCoord + 0.5, z, 0.0D, 0.0D, 0.0D);
-		}
-		else if(type == 1)
-		{
-			switch(facing)
-			{
-				case 3:
-					worldObj.spawnParticle("smoke", xCoord+0.9, yCoord+1, zCoord+0.75, 0.0D, 0.0D, 0.0D);
-					break;
-				case 4:
-					worldObj.spawnParticle("smoke", xCoord+0.25, yCoord+1, zCoord+0.9, 0.0D, 0.0D, 0.0D);
-					break;
-				case 2:
-					worldObj.spawnParticle("smoke", xCoord+0.1, yCoord+1, zCoord+0.25, 0.0D, 0.0D, 0.0D);
-					break;
-				case 5:
-					worldObj.spawnParticle("smoke", xCoord+0.75, yCoord+1, zCoord+0.1, 0.0D, 0.0D, 0.0D);
-					break;
-			}
-		}
 	}
 
 	@Override
@@ -444,44 +402,45 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 		super.handlePacketData(dataStream);
 		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			if(dataStream.readBoolean())
+			{
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				fluidTank.setFluid(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				leftTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				rightTank.setGas(null);
+			}
+	
+	        controlType = RedstoneControl.values()[dataStream.readInt()];
+			dumpLeft = GasMode.values()[dataStream.readInt()];
+			dumpRight = GasMode.values()[dataStream.readInt()];
+			clientActive = dataStream.readBoolean();
+			clientEnergyUsed = dataStream.readDouble();
+	
+	        if(updateDelay == 0 && clientActive != isActive)
+	        {
+	            updateDelay = MekanismConfig.general.UPDATE_DELAY;
+	            isActive = clientActive;
+	            MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+	        }
 		}
-		else {
-			fluidTank.setFluid(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			leftTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			rightTank.setGas(null);
-		}
-
-        controlType = RedstoneControl.values()[dataStream.readInt()];
-		dumpLeft = GasMode.values()[dataStream.readInt()];
-		dumpRight = GasMode.values()[dataStream.readInt()];
-		clientDumpLeft = dataStream.readBoolean();
-		clientDumpRight = dataStream.readBoolean();
-		clientActive = dataStream.readBoolean();
-		clientEnergyUsed = dataStream.readDouble();
-
-        if(updateDelay == 0 && clientActive != isActive)
-        {
-            updateDelay = MekanismConfig.general.UPDATE_DELAY;
-            isActive = clientActive;
-            MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-        }
 	}
 
 	@Override
@@ -522,8 +481,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         data.add(controlType.ordinal());
 		data.add(dumpLeft.ordinal());
 		data.add(dumpRight.ordinal());
-		data.add(clientDumpLeft);
-		data.add(clientDumpRight);
 		data.add(isActive);
 		data.add(clientEnergyUsed);
 
@@ -576,7 +533,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		nbtTags.setInteger("dumpRight", dumpRight.ordinal());
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen", "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
+	private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen", "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
 
 	@Override
 	public String[] getMethods()
@@ -797,6 +754,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public TileComponentUpgrade getComponent() 
 	{
 		return upgradeComponent;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 	
 	@Override

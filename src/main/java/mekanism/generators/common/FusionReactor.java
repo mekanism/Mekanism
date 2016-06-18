@@ -23,7 +23,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -52,7 +51,7 @@ public class FusionReactor implements IFusionReactor
 	public double heatToAbsorb = 0;
 
 	//Reaction characteristics
-	public static double burnTemperature = TemperatureUnit.AMBIENT.convertFromK(1E8);
+	public static double burnTemperature = TemperatureUnit.AMBIENT.convertFromK(1E8, true);
 	public static double burnRatio = 1;
 	public static double energyPerFuel = 5E6;
 	public int injectionRate = 0;
@@ -141,7 +140,7 @@ public class FusionReactor implements IFusionReactor
 		else {
 			burning = false;
 		}
-
+		
 		//Perform the heat transfer calculations
 		transferHeat();
 
@@ -218,7 +217,7 @@ public class FusionReactor implements IFusionReactor
 		double plasmaCaseHeat = plasmaCaseConductivity * (lastPlasmaTemperature - lastCaseTemperature);
 		plasmaTemperature -= plasmaCaseHeat / plasmaHeatCapacity;
 		caseTemperature += plasmaCaseHeat / caseHeatCapacity;
-
+		
 		//Transfer from casing to water if necessary
 		if(activelyCooled)
 		{
@@ -354,7 +353,7 @@ public class FusionReactor implements IFusionReactor
 	}
 
 	@Override
-	public void formMultiblock()
+	public void formMultiblock(boolean keepBurning)
 	{
 		updatedThisTick = true;
 
@@ -367,19 +366,19 @@ public class FusionReactor implements IFusionReactor
 
 		if(!createFrame(centreOfReactor))
 		{
-			unformMultiblock(false);
+			unformMultiblock(keepBurning);
 			return;
 		}
 		
 		if(!addSides(centreOfReactor))
 		{
-			unformMultiblock(false);
+			unformMultiblock(keepBurning);
 			return;
 		}
 		
 		if(!centreIsClear(centreOfReactor))
 		{
-			unformMultiblock(false);
+			unformMultiblock(keepBurning);
 			return;
 		}
 		
@@ -447,6 +446,7 @@ public class FusionReactor implements IFusionReactor
 				{
 					neutronCaptors.add((INeutronCapture)tile);
 				}
+				
 				if(tile instanceof IHeatTransfer)
 				{
 					heatTransfers.add((IHeatTransfer)tile);
@@ -464,13 +464,13 @@ public class FusionReactor implements IFusionReactor
 	{
 		for(int x = -1; x <= 1; x++)
 		{
-			for(int y = -1; x <= 1; x++)
+			for(int y = -1; y <= 1; y++)
 			{
-				for(int z = -1; x <= 1; x++)
+				for(int z = -1; z <= 1; z++)
 				{
-					Block tile = centre.clone().translate(x, y, z).getBlock(controller.getWorldObj());
-
-					if(!tile.isAir(controller.getWorldObj(), x, y, z))
+					Coord4D trans = centre.clone().translate(x, y, z);
+					
+					if(!trans.isAirBlock(controller.getWorldObj()))
 					{
 						return false;
 					}

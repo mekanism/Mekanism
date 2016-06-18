@@ -1,30 +1,23 @@
 package mekanism.common.content.boiler;
 
 import mekanism.api.Coord4D;
-import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
-import mekanism.common.tile.TileEntityThermoelectricBoiler;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
 public abstract class BoilerTank implements IFluidTank
 {
-	public TileEntityThermoelectricBoiler steamBoiler;
+	public TileEntityBoilerCasing steamBoiler;
 
-	public BoilerTank(TileEntityThermoelectricBoiler tileEntity)
+	public BoilerTank(TileEntityBoilerCasing tileEntity)
 	{
 		steamBoiler = tileEntity;
 	}
 
 	public abstract void setFluid(FluidStack stack);
-
-	@Override
-	public int getCapacity()
-	{
-		return steamBoiler.structure != null ? steamBoiler.structure.volume * BoilerUpdateProtocol.WATER_PER_TANK : 0;
-	}
 
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
@@ -48,9 +41,7 @@ public abstract class BoilerTank implements IFluidTank
 					if(resource.amount > 0 && doFill)
 					{
 						MekanismUtils.saveChunk(steamBoiler);
-						updateValveData(true);
-						steamBoiler.sendPacketToRenderer();
-						updateValveData(false);
+						updateValveData();
 					}
 
 					return resource.amount;
@@ -65,9 +56,7 @@ public abstract class BoilerTank implements IFluidTank
 					if(getCapacity() > 0 && doFill)
 					{
 						MekanismUtils.saveChunk(steamBoiler);
-						updateValveData(true);
-						steamBoiler.sendPacketToRenderer();
-						updateValveData(false);
+						updateValveData();
 					}
 
 					return getCapacity();
@@ -91,9 +80,7 @@ public abstract class BoilerTank implements IFluidTank
 				if(resource.amount > 0 && doFill)
 				{
 					MekanismUtils.saveChunk(steamBoiler);
-					updateValveData(true);
-					steamBoiler.sendPacketToRenderer();
-					updateValveData(false);
+					updateValveData();
 				}
 
 				return resource.amount;
@@ -107,9 +94,7 @@ public abstract class BoilerTank implements IFluidTank
 				if(space > 0 && doFill)
 				{
 					MekanismUtils.saveChunk(steamBoiler);
-					updateValveData(true);
-					steamBoiler.sendPacketToRenderer();
-					updateValveData(false);
+					updateValveData();
 				}
 
 				return space;
@@ -119,7 +104,7 @@ public abstract class BoilerTank implements IFluidTank
 		return 0;
 	}
 
-	public void updateValveData(boolean value)
+	public void updateValveData()
 	{
 		if(steamBoiler.structure != null)
 		{
@@ -127,7 +112,7 @@ public abstract class BoilerTank implements IFluidTank
 			{
 				if(data.location.equals(Coord4D.get(steamBoiler)))
 				{
-					data.serverFluid = value;
+					data.onTransfer();
 				}
 			}
 		}

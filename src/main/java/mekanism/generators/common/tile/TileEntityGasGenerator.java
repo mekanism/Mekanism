@@ -1,8 +1,18 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.gas.*;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.ISustainedData;
@@ -11,8 +21,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
 
 public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection, ISustainedData
 {
@@ -23,7 +31,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public GasTank fuelTank;
 
 	public int burnTicks = 0;
+	public int maxBurnTicks;
 	public double generationRate = 0;
+	
+	public int clientUsed;
 
 	public TileEntityGasGenerator()
 	{
@@ -36,7 +47,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public void onUpdate()
 	{
 		super.onUpdate();
-
+		
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.charge(1, this);
@@ -70,37 +81,71 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 					}
 				}
 			}
-
-			if(canOperate())
+			
+			boolean operate = canOperate();
+			
+			if(operate && getEnergy()+generationRate < getMaxEnergy())
 			{
 				setActive(true);
-
-				if(burnTicks > 0)
+				
+				FuelGas fuel = null;
+				
+				if(fuelTank.getStored() != 0)
 				{
-					burnTicks--;
-					setEnergy(electricityStored + generationRate);
+					fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
+					maxBurnTicks = fuel.burnTicks;
+					generationRate = fuel.energyPerTick;
 				}
-				else if(fuelTank.getStored() > 0)
+				
+				int toUse = getToUse();
+				
+				output = Math.max(general.FROM_H2*2, generationRate*getToUse()*2);
+				
+				int total = burnTicks + fuelTank.getStored()*maxBurnTicks;
+				total -= toUse;
+				
+				setEnergy(getEnergy() + generationRate*toUse);
+				
+				if(fuelTank.getStored() > 0)
 				{
-					FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
-					
-					if(fuel != null)
-					{
-						burnTicks = fuel.burnTicks - 1;
-						generationRate = fuel.energyPerTick;
-						fuelTank.draw(1, true);
-						setEnergy(getEnergy() + generationRate);
-					}
+					fuelTank.setGas(new GasStack(fuelTank.getGasType(), total/maxBurnTicks));
 				}
-				else {
-					burnTicks = 0;
-					generationRate = 0;
-				}
+				
+				burnTicks = total % maxBurnTicks;
+				clientUsed = toUse;
 			}
-			else {
+			else {				
+				if(!operate)
+				{
+					reset();
+				}
+				
+				clientUsed = 0;
 				setActive(false);
 			}
 		}
+	}
+	
+	public void reset()
+	{
+		burnTicks = 0;
+		maxBurnTicks = 0;
+		generationRate = 0;
+		output = general.FROM_H2*2;
+	}
+	
+	public int getToUse()
+	{
+		if(generationRate == 0 || fuelTank.getGas() == null)
+		{
+			return 0;
+		}
+		
+		int max = (int)Math.ceil(((float)fuelTank.getStored()/(float)fuelTank.getMaxGas())*256F);
+		max = Math.min((fuelTank.getStored()*maxBurnTicks) + burnTicks, max);
+		max = (int)Math.min((getMaxEnergy()-getEnergy())/generationRate, max);
+		
+		return max;
 	}
 
 	@Override
@@ -143,7 +188,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canOperate()
 	{
-		return getEnergy() < getMaxEnergy() && fuelTank.getStored() > 0 && MekanismUtils.canFunction(this);
+		return (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
 	}
 
 	/**
@@ -156,7 +201,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		return fuelTank.getStored()*i / MAX_GAS;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
 
 	@Override
 	public String[] getMethods()
@@ -191,16 +236,20 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	{
 		super.handlePacketData(dataStream);
 		
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			fuelTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			if(dataStream.readBoolean())
+			{
+				fuelTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				fuelTank.setGas(null);
+			}
+			
+			generationRate = dataStream.readDouble();
+			output = dataStream.readDouble();
+			clientUsed = dataStream.readInt();
 		}
-		else {
-			fuelTank.setGas(null);
-		}
-		
-		generationRate = dataStream.readDouble();
-		output = dataStream.readDouble();
 	}
 
 	@Override
@@ -220,6 +269,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		
 		data.add(generationRate);
 		data.add(output);
+		data.add(clientUsed);
 		
 		return data;
 	}

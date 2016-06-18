@@ -1,30 +1,37 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.Coord4D;
+import mekanism.api.IConfigCardAccess;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
-import mekanism.common.base.*;
+import mekanism.common.base.IElectricMachine;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
-public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl
+public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
 {
 	/** How much energy this machine uses per tick, un-upgraded. */
 	public double BASE_ENERGY_PER_TICK;
@@ -64,6 +71,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
@@ -77,12 +85,15 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int baseTicksRequired, double maxEnergy)
 	{
 		super("machine." + soundPath, name, maxEnergy);
+		
 		BASE_ENERGY_PER_TICK = perTick;
 		energyPerTick = perTick;
 		BASE_TICKS_REQUIRED = baseTicksRequired;
 		ticksRequired = baseTicksRequired;
 		guiLocation = location;
 		isActive = false;
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -146,16 +157,19 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	{
 		super.handlePacketData(dataStream);
 
-		operatingTicks = dataStream.readInt();
-		clientActive = dataStream.readBoolean();
-		ticksRequired = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(updateDelay == 0 && clientActive != isActive)
+		if(worldObj.isRemote)
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			operatingTicks = dataStream.readInt();
+			clientActive = dataStream.readBoolean();
+			ticksRequired = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 	}
 
@@ -283,8 +297,14 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	}
 
 	@Override
-	public IEjector getEjector()
+	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

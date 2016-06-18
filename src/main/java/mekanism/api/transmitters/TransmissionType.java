@@ -1,7 +1,6 @@
 package mekanism.api.transmitters;
 
 import mekanism.api.gas.IGasTransmitter;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 

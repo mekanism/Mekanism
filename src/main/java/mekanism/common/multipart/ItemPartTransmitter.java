@@ -64,14 +64,6 @@ public class ItemPartTransmitter extends JItemMultiPart
 					networks.add(((ITransmitterTile)tile).getTransmitter().getTransmitterNetwork());
 				}
 			}
-
-			if(networks.size() > 0)
-			{
-				/*if(!networks.iterator().next().canMerge(networks))
-				{
-					return null;
-				}*/
-			}
 		}
 
 		return PartTransmitter.getPartType(TransmitterType.values()[getDamage(stack)]);
@@ -160,6 +152,12 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.diversionDesc"));
 					break;
 				}
+				case 18: case 19: case 20: case 21:
+				{
+					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.heat") + " (Mekanism)");
+					break;
+				}
 			}
 		}
 	}
@@ -169,7 +167,6 @@ public class ItemPartTransmitter extends JItemMultiPart
 	{
 		for(TransmitterType type : TransmitterType.values())
 		{
-			if(type == TransmitterType.HEAT_TRANSMITTER) continue; //TODO
 			listToAddTo.add(new ItemStack(item, 1, type.ordinal()));
 		}
 	}

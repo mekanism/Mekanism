@@ -6,7 +6,6 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -242,7 +241,8 @@ public final class CableUtils
 
 			if(handler.canConnectEnergy(side.getOpposite()))
 			{
-				int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*general.TO_TE), false);
+				int toSend = Math.min((int)Math.round(currentSending*general.TO_TE), Integer.MAX_VALUE);
+				int used = handler.receiveEnergy(side.getOpposite(), toSend, false);
 				sent += used*general.FROM_TE;
 			}
 		}
@@ -251,7 +251,7 @@ public final class CableUtils
 			if(((IEnergySink)tileEntity).acceptsEnergyFrom((TileEntity)from, side.getOpposite()))
 			{
 				double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)tileEntity).getSinkTier())*general.FROM_IC2);
-				toSend = Math.min(toSend, ((IEnergySink)tileEntity).getDemandedEnergy()*general.FROM_IC2);
+				toSend = Math.min(Math.min(toSend, ((IEnergySink)tileEntity).getDemandedEnergy()*general.FROM_IC2), Integer.MAX_VALUE);
 				sent += (toSend - (((IEnergySink)tileEntity).injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
 			}
 		}

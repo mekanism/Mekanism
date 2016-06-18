@@ -35,8 +35,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState, IHasSound, ISoundSource
 {
 	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
-	public static final int MAX_STEAM = MAX_WATER * 1000;
-
+	public static final int MAX_STEAM = MAX_WATER * 100;
 	public static final int MAX_FUEL = 1 * FluidContainerRegistry.BUCKET_VOLUME;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);
@@ -71,14 +70,14 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	public void radiateNeutrons(int neutrons) {} //future impl
 
-	public void formMultiblock()
+	public void formMultiblock(boolean keepBurning)
 	{
 		if(getReactor() == null)
 		{
 			setReactor(new FusionReactor(this));
 		}
 		
-		getReactor().formMultiblock();
+		getReactor().formMultiblock(keepBurning);
 	}
 
 	public double getPlasmaTemp()
@@ -139,7 +138,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onChunkUnload();
 		
-		formMultiblock();
+		formMultiblock(true);
 	}
 	
 	@Override
@@ -147,7 +146,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onAdded();
 		
-		formMultiblock();
+		formMultiblock(false);
 	}
 
 	@Override
@@ -246,44 +245,47 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 		super.handlePacketData(dataStream);
 
-		boolean formed = dataStream.readBoolean();
-		
-		if(formed)
+		if(worldObj.isRemote)
 		{
-			if(getReactor() == null || !((FusionReactor)getReactor()).formed)
-			{
-				Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
-					@Override
-					public boolean isNode(TileEntity tile)
-					{
-						return tile instanceof TileEntityReactorBlock;
-					}
-				});
-			}
+			boolean formed = dataStream.readBoolean();
 			
-			if(getReactor() == null)
+			if(formed)
 			{
-				setReactor(new FusionReactor(this));
+				if(getReactor() == null || !((FusionReactor)getReactor()).formed)
+				{
+					Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
+						@Override
+						public boolean isNode(TileEntity tile)
+						{
+							return tile instanceof TileEntityReactorBlock;
+						}
+					});
+				}
+				
+				if(getReactor() == null)
+				{
+					setReactor(new FusionReactor(this));
+					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				}
+				
+				((FusionReactor)getReactor()).formed = true;
+				getReactor().setPlasmaTemp(dataStream.readDouble());
+				getReactor().setCaseTemp(dataStream.readDouble());
+				getReactor().setInjectionRate(dataStream.readInt());
+				getReactor().setBurning(dataStream.readBoolean());
+				fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
+				deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
+				tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
+				waterTank.setCapacity(dataStream.readInt());
+				waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
+				steamTank.setCapacity(dataStream.readInt());
+				steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
+			}
+			else if(getReactor() != null)
+			{
+				setReactor(null);
 				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
-			
-			((FusionReactor)getReactor()).formed = true;
-			getReactor().setPlasmaTemp(dataStream.readDouble());
-			getReactor().setCaseTemp(dataStream.readDouble());
-			getReactor().setInjectionRate(dataStream.readInt());
-			getReactor().setBurning(dataStream.readBoolean());
-			fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
-			deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
-			tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
-			waterTank.setCapacity(dataStream.readInt());
-			waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
-			steamTank.setCapacity(dataStream.readInt());
-			steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
-		}
-		else if(getReactor() != null)
-		{
-			setReactor(null);
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}
 

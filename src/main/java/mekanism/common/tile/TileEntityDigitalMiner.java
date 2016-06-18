@@ -1,8 +1,17 @@
 package mekanism.common.tile;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.usage;
@@ -10,7 +19,12 @@ import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
-import mekanism.common.base.*;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITransporterTile;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
@@ -22,8 +36,13 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.util.*;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MinerUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,8 +58,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
-
-import java.util.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock
 {
@@ -98,6 +117,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 28);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityDigitalMiner()
 	{
@@ -337,7 +357,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		Block block = obj.getBlock(worldObj);
 		int meta = obj.getMetadata(worldObj);
 		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, obj.xCoord, obj.yCoord, obj.zCoord).get();
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, xCoord, yCoord, zCoord).get();
 		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(obj.xCoord, obj.yCoord, obj.zCoord, worldObj, block, meta, dummy);
 		MinecraftForge.EVENT_BUS.post(event);
 		
@@ -766,88 +786,97 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		super.handlePacketData(dataStream);
 
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		if(worldObj.isRemote)
 		{
-			radius = dataStream.readInt();
-			minY = dataStream.readInt();
-			maxY = dataStream.readInt();
-			doEject = dataStream.readBoolean();
-			doPull = dataStream.readBoolean();
-			isActive = dataStream.readBoolean();
-			running = dataStream.readBoolean();
-			silkTouch = dataStream.readBoolean();
-			numPowering = dataStream.readInt();
-			searcher.state = State.values()[dataStream.readInt()];
-			clientToMine = dataStream.readInt();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			inverse = dataStream.readBoolean();
+			int type = dataStream.readInt();
+	
+			if(type == 0)
+			{
+				radius = dataStream.readInt();
+				minY = dataStream.readInt();
+				maxY = dataStream.readInt();
+				doEject = dataStream.readBoolean();
+				doPull = dataStream.readBoolean();
+				clientActive = dataStream.readBoolean();
+				running = dataStream.readBoolean();
+				silkTouch = dataStream.readBoolean();
+				numPowering = dataStream.readInt();
+				searcher.state = State.values()[dataStream.readInt()];
+				clientToMine = dataStream.readInt();
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+				inverse = dataStream.readBoolean();
+				
+				if(dataStream.readBoolean())
+				{
+					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+				}
+				else {
+					missingStack = null;
+				}
+	
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(MinerFilter.readFromPacket(dataStream));
+				}
+			}
+			else if(type == 1)
+			{
+				radius = dataStream.readInt();
+				minY = dataStream.readInt();
+				maxY = dataStream.readInt();
+				doEject = dataStream.readBoolean();
+				doPull = dataStream.readBoolean();
+				clientActive = dataStream.readBoolean();
+				running = dataStream.readBoolean();
+				silkTouch = dataStream.readBoolean();
+				numPowering = dataStream.readInt();
+				searcher.state = State.values()[dataStream.readInt()];
+				clientToMine = dataStream.readInt();
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+				inverse = dataStream.readBoolean();
+				
+				if(dataStream.readBoolean())
+				{
+					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+				}
+				else {
+					missingStack = null;
+				}
+			}
+			else if(type == 2)
+			{
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(MinerFilter.readFromPacket(dataStream));
+				}
+			}
+			else if(type == 3)
+			{
+				clientActive = dataStream.readBoolean();
+				running = dataStream.readBoolean();
+				clientToMine = dataStream.readInt();
+				
+				if(dataStream.readBoolean())
+				{
+					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+				}
+				else {
+					missingStack = null;
+				}
+			}
 			
-			if(dataStream.readBoolean())
+			if(clientActive != isActive)
 			{
-				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-			}
-			else {
-				missingStack = null;
-			}
-
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				filters.add(MinerFilter.readFromPacket(dataStream));
-			}
-		}
-		else if(type == 1)
-		{
-			radius = dataStream.readInt();
-			minY = dataStream.readInt();
-			maxY = dataStream.readInt();
-			doEject = dataStream.readBoolean();
-			doPull = dataStream.readBoolean();
-			isActive = dataStream.readBoolean();
-			running = dataStream.readBoolean();
-			silkTouch = dataStream.readBoolean();
-			numPowering = dataStream.readInt();
-			searcher.state = State.values()[dataStream.readInt()];
-			clientToMine = dataStream.readInt();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			inverse = dataStream.readBoolean();
-			
-			if(dataStream.readBoolean())
-			{
-				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-			}
-			else {
-				missingStack = null;
-			}
-		}
-		else if(type == 2)
-		{
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				filters.add(MinerFilter.readFromPacket(dataStream));
-			}
-		}
-		else if(type == 3)
-		{
-			isActive = dataStream.readBoolean();
-			running = dataStream.readBoolean();
-			clientToMine = dataStream.readInt();
-			
-			if(dataStream.readBoolean())
-			{
-				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-			}
-			else {
-				missingStack = null;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 	}
@@ -1074,7 +1103,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public boolean lightUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
@@ -1098,7 +1127,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						continue;
 					}
 
-					MekanismUtils.makeAdvancedBoundingBlock(worldObj, new Coord4D(x, y, z), Coord4D.get(this));
+					MekanismUtils.makeAdvancedBoundingBlock(worldObj, new Coord4D(x, y, z, worldObj.provider.dimensionId), Coord4D.get(this));
 		            worldObj.func_147453_f(x, y, z, getBlockType());
 				}
 			}
@@ -1243,7 +1272,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				num = ((Double)arguments[0]).intValue();
 			}
-			else if(arguments[0] instanceof String && (method != 6 && method != 7))
+			else if(arguments[0] instanceof String && (method != 5 && method != 6))
 			{
 				num = Integer.parseInt((String)arguments[0]);
 			}
@@ -1347,7 +1376,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("radius", radius);
 		nbtTags.setInteger("minY", minY);
@@ -1355,7 +1384,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		nbtTags.setBoolean("doEject", doEject);
 		nbtTags.setBoolean("doPull", doPull);
 		nbtTags.setBoolean("silkTouch", silkTouch);
-		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setBoolean("inverse", inverse);
 
 		NBTTagList filterTags = new NBTTagList();
@@ -1374,7 +1402,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
 		radius = nbtTags.getInteger("radius");
 		minY = nbtTags.getInteger("minY");
@@ -1382,7 +1410,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		doEject = nbtTags.getBoolean("doEject");
 		doPull = nbtTags.getBoolean("doPull");
 		silkTouch = nbtTags.getBoolean("silkTouch");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		inverse = nbtTags.getBoolean("inverse");
 
 		if(nbtTags.hasKey("filters"))
@@ -1399,7 +1426,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public String getDataType()
 	{
-		return "tooltip.filterCard.digitalMiner";
+		return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
 	}
 	
 	public void writeSustainedData(ItemStack itemStack) 
@@ -1467,5 +1494,35 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			default:
 				break;
 		}
+	}
+	
+	@Override
+	public boolean canBoundReceiveEnergy(Coord4D coord, ForgeDirection side)
+	{
+		ForgeDirection left = MekanismUtils.getLeft(facing);
+		ForgeDirection right = MekanismUtils.getRight(facing);
+		
+		if(coord.equals(Coord4D.get(this).getFromSide(left)))
+		{
+			return side == left;
+		}
+		else if(coord.equals(Coord4D.get(this).getFromSide(right)))
+		{
+			return side == right;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return EnumSet.of(MekanismUtils.getLeft(facing), MekanismUtils.getRight(facing), ForgeDirection.DOWN);
+	}
+
+	@Override
+	public TileComponentSecurity getSecurity() 
+	{
+		return securityComponent;
 	}
 }

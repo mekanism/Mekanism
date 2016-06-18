@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.GuiSideConfigurationTab;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerGasTank;
@@ -29,6 +35,11 @@ public class GuiGasTank extends GuiMekanism
 		super(tentity, new ContainerGasTank(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
+		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
+		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png"), 7, 7).with(SlotOverlay.PLUS));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png"), 7, 39).with(SlotOverlay.MINUS));
 	}
 
 	@Override
@@ -37,7 +48,7 @@ public class GuiGasTank extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		String capacityInfo = tileEntity.gasTank.getStored() + "/" + tileEntity.MAX_GAS;
+		String capacityInfo = tileEntity.gasTank.getStored() + "/" + tileEntity.tier.storage;
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize / 2) - (fontRendererObj.getStringWidth(tileEntity.getInventoryName()) / 2), 6, 0x404040);
 		fontRendererObj.drawString(capacityInfo, 45, 40, 0x404040);
@@ -54,8 +65,6 @@ public class GuiGasTank extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -67,9 +76,11 @@ public class GuiGasTank extends GuiMekanism
 
 		if(tileEntity.gasTank.getGas() != null)
 		{
-			int scale = (int)(((double)tileEntity.gasTank.getStored() / tileEntity.MAX_GAS) * 72);
+			int scale = (int)(((double)tileEntity.gasTank.getStored() / tileEntity.tier.storage) * 72);
 			drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 10);
 		}
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override

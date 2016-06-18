@@ -1,9 +1,12 @@
 package mekanism.common.tile;
 
+import java.util.Map;
+
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
@@ -16,8 +19,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.Map;
 
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE>
 {
@@ -33,11 +34,13 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2, 4}));
 
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
-		configComponent.setInputEnergyConfig();
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = new ItemStack[5];
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
@@ -159,7 +162,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		return null;
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+	private static final String[] methods = new String[] {"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()

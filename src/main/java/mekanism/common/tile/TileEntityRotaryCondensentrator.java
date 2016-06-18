@@ -19,12 +19,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -44,7 +46,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile, IUpgradeInfoHandler, ITankManager
+public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
 {
 	public GasTank gasTank = new GasTank(MAX_FLUID);
 
@@ -72,6 +74,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public double clientEnergyUsed;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 5);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -126,52 +129,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				{
 					if(inventory[2].getItem() instanceof IFluidContainerItem)
 					{
-						int prev = fluidTank.getFluidAmount();
-						
-						fluidTank.drain(FluidContainerUtils.insertFluid(fluidTank, inventory[2]), true);
-						
-						if(prev == fluidTank.getFluidAmount() || fluidTank.getFluidAmount() == 0)
-						{
-							if(inventory[3] == null)
-							{
-								inventory[3] = inventory[2].copy();
-								inventory[2] = null;
-								
-								markDirty();
-							}
-						}
+						FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
 					}
 					else if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
 					{
-						if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
-						{
-							ItemStack filled = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[2]);
-
-							if(filled != null)
-							{
-								if(inventory[3] == null || (inventory[3].isItemEqual(filled) && inventory[3].stackSize+1 <= filled.getMaxStackSize()))
-								{
-									inventory[2].stackSize--;
-
-									if(inventory[2].stackSize <= 0)
-									{
-										inventory[2] = null;
-									}
-
-									if(inventory[3] == null)
-									{
-										inventory[3] = filled;
-									}
-									else {
-										inventory[3].stackSize++;
-									}
-									
-									markDirty();
-
-									fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
-								}
-							}
-						}
+						FluidContainerUtils.handleRegistryItemFill(this, fluidTank, 2, 3);
 					}
 				}
 
@@ -219,68 +181,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				{
 					if(inventory[2].getItem() instanceof IFluidContainerItem)
 					{
-						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[2]), true);
-						
-						if(((IFluidContainerItem)inventory[2].getItem()).getFluid(inventory[2]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
-						{
-							if(inventory[3] == null)
-							{
-								inventory[3] = inventory[2].copy();
-								inventory[2] = null;
-								
-								markDirty();
-							}
-						}
+						FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
 					}
 					else if(FluidContainerRegistry.isFilledContainer(inventory[2]))
 					{
-						FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[2]);
-	
-						if((fluidTank.getFluid() == null && itemFluid.amount <= MAX_FLUID) || fluidTank.getFluid().amount+itemFluid.amount <= MAX_FLUID)
-						{
-							if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
-							{
-								return;
-							}
-	
-							ItemStack containerItem = inventory[2].getItem().getContainerItem(inventory[2]);
-	
-							boolean filled = false;
-	
-							if(containerItem != null)
-							{
-								if(inventory[3] == null || (inventory[3].isItemEqual(containerItem) && inventory[3].stackSize+1 <= containerItem.getMaxStackSize()))
-								{
-									inventory[2] = null;
-	
-									if(inventory[3] == null)
-									{
-										inventory[3] = containerItem;
-									}
-									else {
-										inventory[3].stackSize++;
-									}
-	
-									filled = true;
-								}
-							}
-							else {
-								inventory[2].stackSize--;
-	
-								if(inventory[2].stackSize == 0)
-								{
-									inventory[2] = null;
-								}
-	
-								filled = true;
-							}
-	
-							if(filled)
-							{
-								fluidTank.fill(itemFluid, true);
-								markDirty();
-							}
-						}
+						FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 2, 3);
 					}
 				}
 
@@ -376,29 +281,32 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 		super.handlePacketData(dataStream);
 
-		mode = dataStream.readInt();
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		clientEnergyUsed = dataStream.readDouble();
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			mode = dataStream.readInt();
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			clientEnergyUsed = dataStream.readDouble();
+	
+			if(dataStream.readBoolean())
+			{
+				fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			}
+			else {
+				fluidTank.setFluid(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				gasTank.setGas(null);
+			}
+	
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
-		else {
-			fluidTank.setFluid(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			gasTank.setGas(null);
-		}
-
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
@@ -684,5 +592,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public Object[] getTanks() 
 	{
 		return new Object[] {gasTank, fluidTank};
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

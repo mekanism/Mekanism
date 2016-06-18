@@ -15,8 +15,12 @@ import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +32,7 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2")
-public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler
+public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler, IFrequencyHandler
 {
 	/** The direction this block is facing. */
 	public int facing;
@@ -108,19 +112,22 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		facing = dataStream.readInt();
-		redstone = dataStream.readBoolean();
-
-		if(clientFacing != facing)
+		if(worldObj.isRemote)
 		{
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
-			clientFacing = facing;
-		}
-
-		for(ITileComponent component : components)
-		{
-			component.read(dataStream);
+			facing = dataStream.readInt();
+			redstone = dataStream.readBoolean();
+	
+			if(clientFacing != facing)
+			{
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				clientFacing = facing;
+			}
+	
+			for(ITileComponent component : components)
+			{
+				component.read(dataStream);
+			}
 		}
 	}
 
@@ -136,6 +143,17 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		}
 
 		return data;
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		for(ITileComponent component : components)
+		{
+			component.invalidate();
+		}
 	}
 
 	@Override
@@ -282,5 +300,16 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public void onAdded() 
 	{
 		updatePower();
+	}
+	
+	@Override
+	public Frequency getFrequency(FrequencyManager manager)
+	{
+		if(manager == Mekanism.securityFrequencies && this instanceof ISecurityTile)
+		{
+			return ((ISecurityTile)this).getSecurity().getFrequency();
+		}
+		
+		return null;
 	}
 }

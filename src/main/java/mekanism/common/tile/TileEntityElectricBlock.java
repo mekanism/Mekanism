@@ -12,7 +12,6 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.util.MekanismUtils;
@@ -136,7 +135,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		super.handlePacketData(dataStream);
 		
-		setEnergy(dataStream.readDouble());
+		if(worldObj.isRemote)
+		{
+			setEnergy(dataStream.readDouble());
+		}
 	}
 
 	@Override
@@ -209,62 +211,57 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive* general.FROM_TE);
+			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*general.FROM_TE);
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
 
-			return (int)Math.round(toAdd* general.TO_TE);
+			return (int)Math.round(toAdd*general.TO_TE);
 		}
 
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
 		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract* general.FROM_TE));
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_TE));
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() - toSend);
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_TE);
 		}
 
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getEnergy()* general.TO_TE);
+		return (int)Math.round(getEnergy()*general.TO_TE);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getMaxEnergy()* general.TO_TE);
+		return (int)Math.round(getMaxEnergy()*general.TO_TE);
 	}
 
 	@Override

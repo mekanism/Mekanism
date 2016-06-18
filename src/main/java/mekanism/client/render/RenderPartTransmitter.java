@@ -10,14 +10,13 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.multipart.MultipartTransporter;
 import mekanism.common.multipart.PartDiversionTransporter;
-import mekanism.common.multipart.PartHeatTransmitter;
 import mekanism.common.multipart.PartLogisticalTransporter;
 import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartPressurizedTube;
 import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
+import mekanism.common.multipart.PartThermodynamicConductor;
 import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.multipart.TransmitterType.Size;
@@ -95,16 +94,14 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		for(Map.Entry<String, CCModel> e : small_models.entrySet())
 		{
-			e.setValue(e.getValue().twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
-			e.getValue().computeLighting(LightModel.standardLightModel);
+			e.setValue(e.getValue().computeLighting(LightModel.standardLightModel).twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
 		}
 
 		large_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_large.obj"), 7, null);
 
 		for(Map.Entry<String, CCModel> e : large_models.entrySet())
 		{
-			e.setValue(e.getValue().twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
-			e.getValue().computeLighting(LightModel.standardLightModel);
+			e.setValue(e.getValue().computeLighting(LightModel.standardLightModel).twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
 		}
 
 		contents_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
@@ -271,7 +268,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		pop();
 	}
 
-	public void renderContents(PartHeatTransmitter transmitter, Vector3 pos)
+	public void renderContents(PartThermodynamicConductor transmitter, Vector3 pos)
 	{
 		push();
 		CCRenderState.reset();
@@ -298,12 +295,12 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
 		float targetScale;
+		
 		if(pipe.getTransmitter().hasTransmitterNetwork())
 		{
 			targetScale = pipe.getTransmitter().getTransmitterNetwork().fluidScale;
 		}
-		else
-		{
+		else {
 			targetScale = (float)pipe.buffer.getFluidAmount() / (float)pipe.buffer.getCapacity();
 		}
 
@@ -602,10 +599,10 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 
-	public void renderHeatSide(ForgeDirection side, PartHeatTransmitter cable)
+	public void renderHeatSide(ForgeDirection side, PartThermodynamicConductor cable)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.getTransmitter().temperature, cable.getBaseColour()));
+		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
 	}
 
 	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)
@@ -664,7 +661,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		PartMechanicalPipe.registerIcons(register);
 		PartPressurizedTube.registerIcons(register);
 		PartLogisticalTransporter.registerIcons(register);
-		PartHeatTransmitter.registerIcons(register);
+		PartThermodynamicConductor.registerIcons(register);
 	}
 
 	@Override

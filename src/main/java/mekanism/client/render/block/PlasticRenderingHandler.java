@@ -2,9 +2,7 @@ package mekanism.client.render.block;
 
 import mekanism.client.ClientProxy;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -26,6 +24,7 @@ public class PlasticRenderingHandler implements ISimpleBlockRenderingHandler
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
 		boolean flag = false;
+		
 		if(block == MekanismBlocks.GlowPlasticBlock)
 		{
 			Tessellator tessellator = Tessellator.instance;
@@ -75,8 +74,10 @@ public class PlasticRenderingHandler implements ISimpleBlockRenderingHandler
 
 			return flag;
 		}
+		
 		flag = renderer.renderStandardBlock(block, x, y, z);
 		renderer.setRenderBoundsFromBlock(block);
+		
 		return flag;
 
 	}

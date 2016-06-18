@@ -3,14 +3,13 @@ package mekanism.generators.common.tile;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.ISalinationSolar;
+import mekanism.api.IEvaporationSolar;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, ISalinationSolar
+public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
@@ -27,13 +26,13 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	@Override
 	public void onPlace()
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, new Coord4D(xCoord, yCoord+1, zCoord), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, new Coord4D(xCoord, yCoord+1, zCoord, worldObj.provider.dimensionId), Coord4D.get(this));
 
 		for(int x = -1; x <= 1; x++)
 		{
 			for(int z = -1; z <= 1; z++)
 			{
-				MekanismUtils.makeBoundingBlock(worldObj, new Coord4D(xCoord+x, yCoord+2, zCoord+z), Coord4D.get(this));
+				MekanismUtils.makeBoundingBlock(worldObj, new Coord4D(xCoord+x, yCoord+2, zCoord+z, worldObj.provider.dimensionId), Coord4D.get(this));
 			}
 		}
 	}

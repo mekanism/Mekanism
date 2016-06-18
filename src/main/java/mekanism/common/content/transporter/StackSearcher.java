@@ -2,7 +2,6 @@ package mekanism.common.content.transporter;
 
 import mekanism.api.util.StackUtils;
 import mekanism.common.util.InventoryUtils;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -19,13 +18,14 @@ public class StackSearcher
 	{
 		theInventory = InventoryUtils.checkChestInv(inventory);
 		side = direction;
+		
 		if(!(theInventory instanceof ISidedInventory))
 		{
 			i = inventory.getSizeInventory();
-		}
-		else
-		{
+		} 
+		else {
 			slots = ((ISidedInventory)theInventory).getAccessibleSlotsFromSide(side.getOpposite().ordinal());
+			
 			if(slots != null)
 			{
 				i = slots.length;
@@ -149,7 +149,4 @@ public class StackSearcher
 
 		return null;
 	}
-
-
-
 }

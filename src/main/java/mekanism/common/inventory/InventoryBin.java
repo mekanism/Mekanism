@@ -1,15 +1,14 @@
 package mekanism.common.inventory;
 
 import mekanism.api.util.StackUtils;
-import mekanism.common.item.ItemBlockBasic;
-
+import mekanism.common.Tier.BinTier;
+import mekanism.common.base.ITierItem;
+import mekanism.common.block.BlockBasic.BasicType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryBin
 {
-	public final int MAX_STORAGE = 4096;
-
 	public ItemStack bin;
 
 	public InventoryBin(ItemStack stack)
@@ -45,23 +44,23 @@ public class InventoryBin
 
 	public ItemStack add(ItemStack stack)
 	{
-		if(isValid(stack) && getItemCount() != MAX_STORAGE)
+		if(isValid(stack) && getItemCount() != getMaxStorage())
 		{
 			if(getItemType() == null)
 			{
 				setItemType(stack);
 			}
 
-			if(getItemCount() + stack.stackSize <= MAX_STORAGE)
+			if(getItemCount() + stack.stackSize <= getMaxStorage())
 			{
 				setItemCount(getItemCount() + stack.stackSize);
 				return null;
 			}
 			else {
 				ItemStack rejects = getItemType().copy();
-				rejects.stackSize = (getItemCount()+stack.stackSize) - MAX_STORAGE;
+				rejects.stackSize = (getItemCount()+stack.stackSize) - getMaxStorage();
 
-				setItemCount(MAX_STORAGE);
+				setItemCount(getMaxStorage());
 
 				return rejects;
 			}
@@ -77,7 +76,7 @@ public class InventoryBin
 			return false;
 		}
 
-		if(stack.getItem() instanceof ItemBlockBasic && stack.getItemDamage() == 6)
+		if(BasicType.get(stack) == BasicType.BIN)
 		{
 			return false;
 		}
@@ -93,6 +92,11 @@ public class InventoryBin
 		}
 
 		return true;
+	}
+	
+	public int getMaxStorage()
+	{
+		return BinTier.values()[((ITierItem)bin.getItem()).getBaseTier(bin).ordinal()].storage;
 	}
 
 	public int getItemCount()

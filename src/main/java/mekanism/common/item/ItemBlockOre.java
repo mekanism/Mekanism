@@ -44,7 +44,7 @@ public class ItemBlockOre extends ItemBlock
 			list.add("Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + LangUtils.localize("tooltip.forDetails") + ".");
 		}
 		else {
-			list.addAll(MekanismUtils.splitLines(LangUtils.localize("tooltip." + getUnlocalizedName(itemstack).replace("tile.OreBlock.", ""))));
+			list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip." + getUnlocalizedName(itemstack).replace("tile.OreBlock.", "")), itemstack));
 		}
 	}
 

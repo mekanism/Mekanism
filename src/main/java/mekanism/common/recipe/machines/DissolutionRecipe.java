@@ -4,7 +4,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.outputs.GasOutput;
-
 import net.minecraft.item.ItemStack;
 
 public class DissolutionRecipe extends MachineRecipe<ItemStackInput, GasOutput, DissolutionRecipe>

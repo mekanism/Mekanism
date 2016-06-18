@@ -3,14 +3,16 @@ package mekanism.common.block;
 import java.util.Random;
 
 import mekanism.api.gas.IGasItem;
-import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ITierItem;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -20,16 +22,15 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
 
 public class BlockGasTank extends BlockContainer
 {
@@ -82,15 +83,18 @@ public class BlockGasTank extends BlockContainer
 			}
 		}
 	}
+	
+	@Override
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, x, y, z) : 0.0F;
+	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
 	{
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-		{
-			return false;
-		}
-
 		if(world.isRemote)
 		{
 			return true;
@@ -104,19 +108,29 @@ public class BlockGasTank extends BlockContainer
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(entityplayer.isSneaking())
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					dismantleBlock(world, x, y, z, false);
-					return true;
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(world, x, y, z, false);
+						
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					}
+	
+					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
+	
+					tileEntity.setFacing((short)change);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
-
-				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
-
-				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
@@ -125,10 +139,18 @@ public class BlockGasTank extends BlockContainer
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(Mekanism.instance, 10, world, x, y, z);
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
+				{
+					entityplayer.openGui(Mekanism.instance, 10, world, x, y, z);
+				}
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
+		
 		return false;
 	}
 
@@ -212,6 +234,25 @@ public class BlockGasTank extends BlockContainer
 	{
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
+		
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(tileEntity instanceof ISecurityTile)
+		{
+			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+			
+			if(securityItem.hasSecurity(itemStack))
+			{
+				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			}
+		}
+		
+		ITierItem tierItem = (ITierItem)itemStack.getItem();
+		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
 
 		IGasItem storageTank = (IGasItem)itemStack.getItem();
 		storageTank.setGas(itemStack, tileEntity.gasTank.getGas());

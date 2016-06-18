@@ -1,17 +1,16 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelSeismicVibrator;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderSeismicVibrator extends TileEntitySpecialRenderer
@@ -29,7 +28,7 @@ public class RenderSeismicVibrator extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator" + (tileEntity.isActive ? "On" : "") + ".png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator" /*+ (tileEntity.isActive ? "On" : "")*/ + ".png"));
 
 		switch(tileEntity.facing)
 		{
@@ -39,29 +38,10 @@ public class RenderSeismicVibrator extends TileEntitySpecialRenderer
 			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 		}
 		
-		if(!Mekanism.proxy.isPaused())
-		{
-			float rate = 0.01F;
-			
-			if(!tileEntity.getActive() && tileEntity.clientPiston > 0)
-			{
-				if(tileEntity.clientPiston < 1)
-				{
-					tileEntity.clientPiston = 1 + (1-tileEntity.clientPiston);
-				}
-				
-				tileEntity.clientPiston = Math.min(2, tileEntity.clientPiston+rate)%2;
-			}
-			else if(tileEntity.getActive())
-			{
-				tileEntity.clientPiston = Math.min(2, tileEntity.clientPiston+rate)%2;
-			}
-		}
-		
-		float actualRate = tileEntity.clientPiston < 1 ? tileEntity.clientPiston : 2-tileEntity.clientPiston;
+		float actualRate = (float)Math.sin((tileEntity.clientPiston + (tileEntity.isActive ? partialTick : 0))/5F);
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.renderWithPiston(actualRate, 0.0625F);
+		model.renderWithPiston(Math.max(0, actualRate), 0.0625F);
 		GL11.glPopMatrix();
 	}
 }

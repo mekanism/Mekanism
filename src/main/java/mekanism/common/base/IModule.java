@@ -1,10 +1,10 @@
 package mekanism.common.base;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 import mekanism.common.Version;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, is a Mekanism module.
@@ -37,4 +37,9 @@ public interface IModule
 	 * @param dataStream - the incoming ByteBuf of the sync packet
 	 */
 	public void readConfig(ByteBuf dataStream) throws IOException;
+	
+	/**
+	 * Called when the player returns to the main menu.
+	 */
+	public void resetClient();
 }

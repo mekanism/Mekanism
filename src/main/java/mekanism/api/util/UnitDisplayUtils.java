@@ -37,8 +37,8 @@ public class UnitDisplayUtils
 
 		public String name;
 		public String symbol;
-		double zeroOffset;
-		double intervalSize;
+		public double zeroOffset;
+		public double intervalSize;
 
 		private TemperatureUnit(String s, String s1, double offset, double size)
 		{
@@ -48,14 +48,14 @@ public class UnitDisplayUtils
 			intervalSize = size;
 		}
 
-		public double convertFromK(double T)
+		public double convertFromK(double T, boolean shift)
 		{
-			return (T * intervalSize) - zeroOffset;
+			return (T * intervalSize) - (shift ? zeroOffset : 0);
 		}
 
-		public double convertToK(double T)
+		public double convertToK(double T, boolean shift)
 		{
-			return (T + zeroOffset) / intervalSize;
+			return (T + (shift ? zeroOffset : 0)) / intervalSize;
 		}
 	}
 
@@ -206,12 +206,12 @@ public class UnitDisplayUtils
 		return roundDecimals(value, decimalPlaces) + " " + unit.name;
 	}
 
-	public static String getDisplay(double T, TemperatureUnit unit, int decimalPlaces, boolean isShort)
+	public static String getDisplay(double T, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort)
 	{
 		String unitName = unit.name;
 		String prefix = "";
 
-		double value = unit.convertFromK(T);
+		double value = unit.convertFromK(T, shift);
 
 		if(value < 0)
 		{
@@ -257,12 +257,17 @@ public class UnitDisplayUtils
 
 	public static String getDisplayShort(double value, TemperatureUnit unit)
 	{
-		return getDisplay(value, unit, 2, true);
+		return getDisplayShort(value, true, unit);
+	}
+	
+	public static String getDisplayShort(double value, boolean shift, TemperatureUnit unit)
+	{
+		return getDisplayShort(value, unit, shift, 2);
 	}
 
-	public static String getDisplayShort(double value, TemperatureUnit unit, int decimalPlaces)
+	public static String getDisplayShort(double value, TemperatureUnit unit, boolean shift, int decimalPlaces)
 	{
-		return getDisplay(value, unit, decimalPlaces, true);
+		return getDisplay(value, unit, decimalPlaces, shift, true);
 	}
 
 	public static double roundDecimals(double d, int decimalPlaces)

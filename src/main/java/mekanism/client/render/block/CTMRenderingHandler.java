@@ -32,6 +32,11 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks rendererOld)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
+		
+		if(block instanceof IBlockCTM && !((IBlockCTM)block).shouldRenderBlock(world, x, y, z, meta))
+		{
+			return false;
+		}
 
 		CTMData blockCTM = ((IBlockCTM)block).getCTMData(world, x, y, z, meta);
 
@@ -57,32 +62,27 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 		
 		if(MachineType.get(block, meta) != null)
 		{
-			if(!MachineType.get(block, meta).hasModel)
+			TileEntity tile = world.getTileEntity(x, y, z);
+			
+			int prevRotateTop = rendererOld.uvRotateTop;
+			int prevRotateBottom = rendererOld.uvRotateBottom;
+			
+			if(tile instanceof TileEntityBasicBlock)
 			{
-				TileEntity tile = world.getTileEntity(x, y, z);
-				
-				int prevRotateTop = rendererOld.uvRotateTop;
-				int prevRotateBottom = rendererOld.uvRotateBottom;
-				
-				if(tile instanceof TileEntityBasicBlock)
+				if(((TileEntityBasicBlock)tile).facing >= 2)
 				{
-					if(((TileEntityBasicBlock)tile).facing >= 2)
-					{
-						rendererOld.uvRotateTop = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
-						rendererOld.uvRotateBottom = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
-					}
+					rendererOld.uvRotateTop = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
+					rendererOld.uvRotateBottom = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
 				}
-				
-				rendererOld.renderStandardBlock(block, x, y, z);
-				rendererOld.setRenderBoundsFromBlock(block);
-				
-				rendererOld.uvRotateTop = prevRotateTop;
-				rendererOld.uvRotateBottom = prevRotateBottom;
-				
-				return true;
 			}
 			
-			return false;
+			rendererOld.renderStandardBlock(block, x, y, z);
+			rendererOld.setRenderBoundsFromBlock(block);
+			
+			rendererOld.uvRotateTop = prevRotateTop;
+			rendererOld.uvRotateBottom = prevRotateBottom;
+			
+			return true;
 		}
 		
 		return rendererOld.renderStandardBlock(block, x, y, z);

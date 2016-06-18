@@ -1,20 +1,45 @@
 package mekanism.generators.common.block;
 
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.ItemAttacher;
+import mekanism.common.CTMData;
 import mekanism.common.Mekanism;
-import mekanism.common.base.*;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBlockCTM;
+import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.ISpecialBounds;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ISustainedTank;
+import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
+import mekanism.generators.common.GeneratorsItems;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.*;
+import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityGasGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.tile.TileEntitySolarGenerator;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
+import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
+import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -25,16 +50,18 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.List;
-import java.util.Random;
-
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple generator block IDs.
@@ -43,12 +70,24 @@ import java.util.Random;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
- * 6: Wind Turbine
+ * 6: Wind Generator
+ * 7: Turbine Rotor
+ * 8: Rotational Complex
+ * 9: Electromagnetic Coil
+ * 10: Turbine Casing
+ * 11: Turbine Valve
+ * 12: Turbine Vent
  * @author AidanBrady
  *
  */
-public class BlockGenerator extends BlockContainer implements ISpecialBounds
+public class BlockGenerator extends BlockContainer implements ISpecialBounds, IBlockCTM
 {
+	public IIcon[][] icons = new IIcon[16][16];
+	
+	public CTMData[] ctms = new CTMData[16];
+	
+	public IIcon BASE_ICON;
+	
 	public Random machineRand = new Random();
 
 	public BlockGenerator()
@@ -60,7 +99,79 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister register) {}
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister register)
+	{
+		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
+		
+		ctms[9] = new CTMData("ctm/ElectromagneticCoil", this, Arrays.asList(9)).registerIcons(register);
+		ctms[10] = new CTMData("ctm/TurbineCasing", this, Arrays.asList(10, 11, 12)).registerIcons(register);
+		ctms[11] = new CTMData("ctm/TurbineValve", this, Arrays.asList(10, 11, 12)).registerIcons(register);
+		ctms[12] = new CTMData("ctm/TurbineVent", this, Arrays.asList(10, 11, 12)).registerIcons(register);
+		
+		icons[7][0] = register.registerIcon("mekanism:TurbineRod");
+		icons[8][0] = register.registerIcon("mekanism:RotationalComplexSide");
+		icons[8][1] = register.registerIcon("mekanism:RotationalComplexTop");
+		
+		icons[9][0] = ctms[9].mainTextureData.icon;
+		icons[10][0] = ctms[10].mainTextureData.icon;
+		icons[11][0] = ctms[11].mainTextureData.icon;
+		icons[12][0] = ctms[12].mainTextureData.icon;
+	}
+	
+	@Override
+	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		return ctms[meta];
+	}
+	
+	@Override
+	public boolean shouldRenderBlock(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		return !GeneratorType.getFromMetadata(meta).hasModel;
+	}
+	
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+		setBlockBoundsBasedOnState(world, x, y, z);
+		
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta)
+	{
+		GeneratorType type = GeneratorType.getFromMetadata(meta);
+		
+		if(type == GeneratorType.ROTATIONAL_COMPLEX)
+		{
+			if(side != 0 && side != 1)
+			{
+				return icons[meta][0];
+			}
+			else {
+				return icons[meta][1];
+			}
+		}
+		else if(!type.hasModel)
+		{
+			return icons[meta][0];
+		}
+		else {
+			return BASE_ICON;
+		}
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		
+		return getIcon(side, meta);
+	}
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
@@ -68,6 +179,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		if(!world.isRemote)
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			
+			if(tileEntity instanceof IMultiblock)
+			{
+				((IMultiblock)tileEntity).update();
+			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
@@ -115,12 +231,17 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		{
 			((IBoundingBlock)tileEntity).onPlace();
 		}
+		
+		if(!world.isRemote && tileEntity instanceof IMultiblock)
+		{
+			((IMultiblock)tileEntity).update();
+		}
 	}
 
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(general.enableAmbientLighting)
+		if(client.enableAmbientLighting)
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
@@ -128,7 +249,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 				{
-					return general.ambientLightingLevel;
+					return client.ambientLightingLevel;
 				}
 			}
 		}
@@ -142,17 +263,23 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		return i;
 	}
+	
+	@Override
+	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(player, world, x, y, z) : 0.0F;
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item i, CreativeTabs creativetabs, List list)
 	{
-		list.add(new ItemStack(i, 1, 0));
-		list.add(new ItemStack(i, 1, 1));
-		list.add(new ItemStack(i, 1, 3));
-		list.add(new ItemStack(i, 1, 4));
-		list.add(new ItemStack(i, 1, 5));
-		list.add(new ItemStack(i, 1, 6));
+		for(GeneratorType type : GeneratorType.values())
+		{
+			list.add(new ItemStack(i, 1, type.meta));
+		}
 	}
 
 	@Override
@@ -160,7 +287,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	public void randomDisplayTick(World world, int x, int y, int z, Random random)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		
 		if(MekanismUtils.isActive(world, x, y, z))
 		{
 			float xRandom = (float)x + 0.5F;
@@ -174,8 +302,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle("flame", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle("flame", (double)(xRandom - iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle("smoke", x+.25, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
@@ -189,8 +317,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle("flame", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle("flame", (double)(xRandom + iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle("smoke", x+.75, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
@@ -204,8 +332,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle("smoke", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle("smoke", (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle("smoke", x+.5, y+.2, z+.25, 0.0D, 0.0D, 0.0D);
@@ -219,8 +347,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 				switch(GeneratorType.getFromMetadata(metadata))
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle("smoke", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle("smoke", (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
 						world.spawnParticle("smoke", x+.5, y+.2, z+.75, 0.0D, 0.0D, 0.0D);
@@ -254,7 +382,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 			return (!nonAir) && canPlace;
 		}
-		else if(world.getBlockMetadata(x, y, z) == GeneratorType.WIND_TURBINE.meta)
+		else if(world.getBlockMetadata(x, y, z) == GeneratorType.WIND_GENERATOR.meta)
 		{
 			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
 
@@ -274,7 +402,24 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
 	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		
+		if(!world.isRemote && tileEntity instanceof TileEntityTurbineRotor)
+		{
+			int amount = ((TileEntityTurbineRotor)tileEntity).getHousedBlades();
+			
+			if(amount > 0)
+			{
+				float motion = 0.7F;
+				double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+				double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+				double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+				EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(GeneratorsItems.TurbineBlade, amount));
+
+				world.spawnEntityInWorld(entityItem);
+			}
+		}
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
@@ -287,17 +432,12 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
 	{
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-		{
-			return false;
-		}
-
 		if(world.isRemote)
 		{
 			return true;
 		}
 
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
@@ -306,36 +446,112 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(entityplayer.isSneaking())
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					dismantleBlock(world, x, y, z, false);
-					return true;
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(world, x, y, z, false);
+						
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					}
+	
+					int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
+	
+					tileEntity.setFacing((short)change);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
-
-				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
-
-				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
-
-		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(GeneratorsBlocks.Generator, 1, 2)))
+		
+		if(metadata == GeneratorType.TURBINE_CASING.meta || metadata == GeneratorType.TURBINE_VALVE.meta || metadata == GeneratorType.TURBINE_VENT.meta)
 		{
-			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != side)
-			{
-				return false;
-			}
+			return ((IMultiblock)world.getTileEntity(x, y, z)).onActivate(entityplayer);
 		}
+		
+		if(metadata == GeneratorType.TURBINE_ROTOR.meta)
+		{
+			TileEntityTurbineRotor rod = (TileEntityTurbineRotor)tileEntity;
+			
+			if(!entityplayer.isSneaking())
+			{
+				if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == GeneratorsItems.TurbineBlade)
+				{
+					if(!world.isRemote && rod.editBlade(true))
+					{
+						if(!entityplayer.capabilities.isCreativeMode)
+						{
+							entityplayer.getCurrentEquippedItem().stackSize--;
+							
+							if(entityplayer.getCurrentEquippedItem().stackSize == 0)
+							{
+								entityplayer.setCurrentItemOrArmor(0, null);
+							}
+						}
+					}
+					
+					return true;
+				}
+			}
+			else {
+				if(!world.isRemote)
+				{
+					if(entityplayer.getCurrentEquippedItem() == null)
+					{
+						if(rod.editBlade(false))
+						{
+							if(!entityplayer.capabilities.isCreativeMode)
+							{
+								entityplayer.setCurrentItemOrArmor(0, new ItemStack(GeneratorsItems.TurbineBlade));
+								entityplayer.inventory.markDirty();
+							}
+						}
+					}
+					else if(entityplayer.getCurrentEquippedItem().getItem() == GeneratorsItems.TurbineBlade)
+					{
+						if(entityplayer.getCurrentEquippedItem().stackSize < entityplayer.getCurrentEquippedItem().getMaxStackSize())
+						{
+							if(rod.editBlade(false))
+							{
+								if(!entityplayer.capabilities.isCreativeMode)
+								{
+									entityplayer.getCurrentEquippedItem().stackSize++;
+									entityplayer.inventory.markDirty();
+								}
+							}
+						}
+					}
+				}
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
+		int guiId = GeneratorType.getFromMetadata(metadata).guiId;
 
-		if(tileEntity != null)
+		if(guiId != -1 && tileEntity != null)
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(MekanismGenerators.instance, GeneratorType.getFromMetadata(metadata).guiId, world, x, y, z);
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
+				{
+					entityplayer.openGui(MekanismGenerators.instance, guiId, world, x, y, z);
+				}
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
@@ -383,7 +599,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public int getRenderType()
 	{
-		return MekanismGenerators.proxy.GENERATOR_RENDER_ID;
+		return Mekanism.proxy.CTM_RENDER_ID;
 	}
 
 	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/
@@ -400,7 +616,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
 		{
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.65F, 1.0F);
+			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
+		}
+		else if(metadata == GeneratorType.TURBINE_ROTOR.meta)
+		{
+			setBlockBounds(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
 		}
 		else {
 			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
@@ -442,19 +662,41 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(x, y, z));
 
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+		
 		if(tileEntity == null)
 		{
 			return null;
 		}
+		
+		if(tileEntity instanceof ISecurityTile)
+		{
+			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+			
+			if(securityItem.hasSecurity(itemStack))
+			{
+				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			}
+		}
 
-		IEnergizedItem electricItem = (IEnergizedItem)itemStack.getItem();
-		electricItem.setEnergy(itemStack, tileEntity.electricityStored);
+		if(tileEntity instanceof TileEntityElectricBlock)
+		{
+			IEnergizedItem electricItem = (IEnergizedItem)itemStack.getItem();
+			electricItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
+		}
 
-		ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
-		inventory.setInventory(tileEntity.getInventory(), itemStack);
+		if(tileEntity instanceof TileEntityContainerBlock)
+		{
+			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
+			inventory.setInventory(((TileEntityContainerBlock)tileEntity).getInventory(), itemStack);
+		}
 		
 		if(tileEntity instanceof ISustainedData)
 		{
@@ -501,7 +743,10 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		if(metadata != GeneratorType.SOLAR_GENERATOR.meta && metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta && metadata != GeneratorType.WIND_TURBINE.meta)
+		if(metadata != GeneratorType.SOLAR_GENERATOR.meta && 
+				metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta && 
+				metadata != GeneratorType.WIND_GENERATOR.meta &&
+				metadata != GeneratorType.TURBINE_ROTOR.meta)
 		{
 			return true;
 		}
@@ -516,7 +761,13 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		GAS_GENERATOR(3, "GasGenerator", 3, general.FROM_H2*100, TileEntityGasGenerator.class, true),
 		BIO_GENERATOR(4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true),
 		ADVANCED_SOLAR_GENERATOR(5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
-		WIND_TURBINE(6, "WindTurbine", 5, 200000, TileEntityWindTurbine.class, true);
+		WIND_GENERATOR(6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class, true),
+		TURBINE_ROTOR(7, "TurbineRotor", -1, -1, TileEntityTurbineRotor.class, false),
+		ROTATIONAL_COMPLEX(8, "RotationalComplex", -1, -1, TileEntityRotationalComplex.class, false),
+		ELECTROMAGNETIC_COIL(9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false),
+		TURBINE_CASING(10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false),
+		TURBINE_VALVE(11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false),
+		TURBINE_VENT(12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false);
 
 		public int meta;
 		public String name;
@@ -540,8 +791,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 			for(GeneratorType type : values())
 			{
 				if(type.meta == meta)
+				{
 					return type;
+				}
 			}
+			
 			return null;
 		}
 
@@ -578,7 +832,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
 		{
-			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.65F, 1.0F);
+			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
+		}
+		else if(metadata == GeneratorType.TURBINE_ROTOR.meta)
+		{
+			block.setBlockBounds(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
 		}
 		else {
 			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);

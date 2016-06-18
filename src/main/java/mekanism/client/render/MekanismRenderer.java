@@ -10,11 +10,14 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
+import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
-import mekanism.client.render.tileentity.RenderPortableTank;
-import mekanism.client.render.tileentity.RenderSalinationController;
+import mekanism.client.render.tileentity.RenderFluidTank;
+import mekanism.client.render.tileentity.RenderThermalEvaporationController;
+import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.util.MekanismUtils;
@@ -57,6 +60,8 @@ public class MekanismRenderer
 	public static IIcon energyIcon;
 	public static IIcon heatIcon;
 	
+	public static float GAS_RENDER_BASE = 0.2F;
+	
 	public static Map<TransmissionType, IIcon> overlays = new HashMap<TransmissionType, IIcon>();
 	
 	private static float lightmapLastX;
@@ -89,27 +94,26 @@ public class MekanismRenderer
 				overlays.put(type, event.map.registerIcon("mekanism:overlay/" + type.getTransmission() + "Overlay"));
 			}
 			
-			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
-			heatIcon = event.map.registerIcon("mekanism:LiquidHeat");
+			energyIcon = event.map.registerIcon("mekanism:liquid/LiquidEnergy");
+			heatIcon = event.map.registerIcon("mekanism:liquid/LiquidHeat");
 			
-			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
-			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
-			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
-			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:LiquidChlorine"));
-			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurDioxide"));
-			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
-			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
-			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
-			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
-			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
-			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:LiquidEthene"));
-			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:LiquidBrine"));
-			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:LiquidSodium"));
-			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:LiquidDeuterium"));
-			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:LiquidTritium"));
-			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:LiquidDT"));
-			GasRegistry.getGas("steam").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
-			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:LiquidLithium"));
+			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:liquid/LiquidHydrogen"));
+			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:liquid/LiquidOxygen"));
+			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSteam"));
+			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:liquid/LiquidChlorine"));
+			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSulfurDioxide"));
+			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSulfurTrioxide"));
+			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSulfuricAcid"));
+			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:liquid/LiquidHydrogenChloride"));
+			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidOsmium"));
+			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:liquid/LiquidStone"));
+			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:liquid/LiquidEthene"));
+			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:liquid/LiquidBrine"));
+			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSodium"));
+			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDeuterium"));
+			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidTritium"));
+			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDT"));
+			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidLithium"));
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
@@ -117,16 +121,22 @@ public class MekanismRenderer
 				{
 					if(gas.getUnlocalizedName().contains("clean"))
 					{
-						gas.setIcon(event.map.registerIcon("mekanism:LiquidCleanOre"));
+						gas.setIcon(event.map.registerIcon("mekanism:liquid/LiquidCleanOre"));
 					}
 					else {
-						gas.setIcon(event.map.registerIcon("mekanism:LiquidOre"));
+						gas.setIcon(event.map.registerIcon("mekanism:liquid/LiquidOre"));
 					}
 				}
 			}
 
-			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
-			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:LiquidHeavyWater"));
+			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:liquid/LiquidBrine"));
+			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:liquid/LiquidHeavyWater"));
+			FluidRegistry.getFluid("steam").setIcons(event.map.registerIcon("mekanism:liquid/LiquidSteam"));
+			
+			for(InfuseType type : InfuseRegistry.getInfuseMap().values())
+			{
+				type.setIcon(event.map.registerIcon(type.textureLocation));
+			}
 
 			if(RenderPartTransmitter.getInstance() != null)
 			{
@@ -134,8 +144,9 @@ public class MekanismRenderer
 			}
 			
 			RenderDynamicTank.resetDisplayInts();
-			RenderSalinationController.resetDisplayInts();
-			RenderPortableTank.resetDisplayInts();
+			RenderThermalEvaporationController.resetDisplayInts();
+			RenderFluidTank.resetDisplayInts();
+			RenderThermoelectricBoiler.resetDisplayInts();
 		}
 	}
 	
@@ -172,7 +183,7 @@ public class MekanismRenderer
 					
 					for(DefIcon def : defaults)
 					{
-						if(def.icons.contains(side.ordinal()+6))
+						if(def.icons.contains(side.ordinal()+6) && def.overridesInactive)
 						{
 							textures[side.ordinal()+6] = def.defIcon;
 							found = true;
@@ -208,6 +219,10 @@ public class MekanismRenderer
 		
 		public List<Integer> icons = new ArrayList<Integer>();
 		
+		/** If this DefIcon should be prioritized over a machine's side-specific off texture 
+		 * if no on texture is present. */
+		public boolean overridesInactive = true;
+		
 		public DefIcon(IIcon icon, int... is)
 		{
 			defIcon = icon;
@@ -216,6 +231,13 @@ public class MekanismRenderer
 			{
 				icons.add(i);
 			}
+		}
+		
+		public DefIcon setOverrides(boolean b)
+		{
+			overridesInactive = b;
+			
+			return this;
 		}
 		
 		public static DefIcon getAll(IIcon icon)
@@ -499,6 +521,7 @@ public class MekanismRenderer
             GL11.glColor4f(red, green, blue, 1.0F);
         }
 
+        GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
     }
     
@@ -523,11 +546,11 @@ public class MekanismRenderer
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-    	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
+    	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 3));
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 3));
+    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
     	        tessellator.draw();
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
@@ -566,11 +589,11 @@ public class MekanismRenderer
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
+	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
+	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
 	        tessellator.draw();
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);

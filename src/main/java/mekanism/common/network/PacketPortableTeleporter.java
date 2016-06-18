@@ -1,10 +1,10 @@
 package mekanism.common.network;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
@@ -22,9 +22,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketPortableTeleporter implements IMessageHandler<PortableTeleporterMessage, IMessage>
 {
@@ -66,12 +67,18 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 						manager1.addFrequency(toUse);
 					}
 					
+					item.setFrequency(itemstack, toUse.name);
+					item.setPrivateMode(itemstack, !toUse.publicFreq);
+					
 					sendDataResponse(toUse, world, player, item, itemstack);
 					
 					break;
 				case DEL_FREQ:
 					FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getCommandSenderName(), world);
 					manager.remove(message.frequency.name, player.getCommandSenderName());
+					
+					item.setFrequency(itemstack, null);
+					item.setPrivateMode(itemstack, false);
 					
 					break;
 				case TELEPORT:
@@ -100,7 +107,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					if(teleporter != null)
 					{
 						try {
-							teleporter.didTeleport.add(player);
+							teleporter.didTeleport.add(player.getPersistentID());
 							teleporter.teleDelay = 5;
 							
 							item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
@@ -157,6 +164,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 				{
 					given = iterFreq;
 					found = true;
+					
 					break;
 				}
 			}

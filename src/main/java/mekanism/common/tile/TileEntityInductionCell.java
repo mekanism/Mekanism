@@ -33,13 +33,16 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = InductionCellTier.values()[dataStream.readInt()];
-
-		super.handlePacketData(dataStream);
-		
-		electricityStored = dataStream.readDouble();
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(worldObj.isRemote)
+		{
+			tier = InductionCellTier.values()[dataStream.readInt()];
+	
+			super.handlePacketData(dataStream);
+			
+			electricityStored = dataStream.readDouble();
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override

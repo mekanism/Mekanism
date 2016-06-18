@@ -10,9 +10,10 @@ import mekanism.api.util.BlockInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
-
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread
 {
@@ -79,6 +80,11 @@ public class ThreadMinerSearch extends Thread
 	
 				info.block = tileEntity.getWorldObj().getBlock(x, y, z);
 				info.meta = tileEntity.getWorldObj().getBlockMetadata(x, y, z);
+				
+				if(info.block instanceof BlockLiquid || info.block instanceof IFluidBlock)
+				{
+					continue;
+				}
 	
 				if(info.block != null && !tileEntity.getWorldObj().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorldObj(), x, y, z) >= 0)
 				{

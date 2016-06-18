@@ -2,11 +2,12 @@ package mekanism.common.util;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -130,6 +131,46 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeOutputted(ItemStack itemstack, boolean chargeSlot)
 	{
-		return true; //this is too much of a hassle to manage
+		if(itemstack.getItem() instanceof IEnergizedItem)
+		{
+			IEnergizedItem energized = (IEnergizedItem)itemstack.getItem();
+			
+			if(chargeSlot)
+			{
+				return energized.getEnergy(itemstack) == energized.getMaxEnergy(itemstack);
+			}
+			else {
+				return energized.getEnergy(itemstack) == 0;
+			}
+		}
+		else if(itemstack.getItem() instanceof IEnergyContainerItem)
+		{
+			IEnergyContainerItem energyContainer = (IEnergyContainerItem)itemstack.getItem();
+			
+			if(chargeSlot)
+			{
+				return energyContainer.receiveEnergy(itemstack, 1, true) > 0;
+			}
+			else {
+				return energyContainer.extractEnergy(itemstack, 1, true) > 0;
+			}
+		}
+		else if(itemstack.getItem() instanceof ISpecialElectricItem)
+		{
+			IElectricItemManager manager = ((ISpecialElectricItem)itemstack.getItem()).getManager(itemstack);
+			
+			if(manager != null)
+			{
+				if(chargeSlot)
+				{
+					return manager.charge(itemstack, 1, 3, true, true) > 0;
+				}
+				else {
+					return manager.discharge(itemstack, 1, 3, true, true, true) > 0;
+				}
+			}
+		}
+		
+		return true;
 	}
 }

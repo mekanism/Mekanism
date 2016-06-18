@@ -1,8 +1,10 @@
 package mekanism.generators.common.tile;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
@@ -13,17 +15,18 @@ import mekanism.common.base.IHasSound;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityNoisyElectricBlock;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
-public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl
+public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl, ISecurityTile
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -39,6 +42,8 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	/**
 	 * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
@@ -145,14 +150,17 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	{
 		super.handlePacketData(dataStream);
 
-		clientActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(updateDelay == 0 && clientActive != isActive)
+		if(worldObj.isRemote)
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			clientActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 	}
 
@@ -221,5 +229,11 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	public boolean canPulse()
 	{
 		return false;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

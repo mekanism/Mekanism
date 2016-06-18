@@ -17,7 +17,6 @@ public class MekanismConfig
 		public static boolean voiceServerEnabled = true;
 		public static boolean cardboardSpawners = true;
 		public static boolean enableWorldRegeneration = true;
-		public static boolean creativeOverrideElectricChest = true;
 		public static boolean spawnBabySkeletons = true;
 		public static int obsidianTNTBlastRadius = 12;
 		public static int osmiumPerChunk = 12;
@@ -32,7 +31,7 @@ public class MekanismConfig
 		public static double ENERGY_PER_REDSTONE = 10000;
 		public static int ETHENE_BURN_TIME = 40;
 		public static double DISASSEMBLER_USAGE = 10;
-		public static EnergyType activeType = EnergyType.J;
+		public static EnergyType energyUnit = EnergyType.J;
 		public static TempType tempUnit =	TempType.K;
 		public static double TO_IC2;
 		public static double TO_TE;
@@ -45,17 +44,27 @@ public class MekanismConfig
 		public static boolean blacklistIC2;
 		public static boolean blacklistRF;
 		public static boolean destroyDisabledBlocks;
-		public static boolean enableAmbientLighting;
-		public static int ambientLightingLevel;
-		public static boolean prefilledPortableTanks;
+		public static boolean prefilledFluidTanks;
+		public static boolean prefilledGasTanks;
 		public static double armoredJetpackDamageRatio;
 		public static int armoredJetpackDamageMax;
 		public static boolean aestheticWorldDamage;
 		public static boolean opsBypassRestrictions;
-		public static double solarEvaporationSpeed;
+		public static double thermalEvaporationSpeed;
 		public static int maxJetpackGas;
 		public static int maxScubaGas;
 		public static int maxFlamethrowerGas;
+		public static int maxPumpRange;
+		public static boolean pumpWaterSources;
+		public static int maxPlenisherNodes;
+		public static double evaporationHeatDissipation = 0.02;
+		public static double evaporationTempMultiplier = 0.1;
+		public static double evaporationSolarMultiplier = 0.2;
+		public static double evaporationMaxTemp = 3000;
+		public static double energyPerHeat = 1000;
+		public static double maxEnergyPerSteam = 100;
+		public static double superheatingHeatTransfer = 10000;
+		public static double heatPerFuelTick = 4;
 	}
 
 	public static class client
@@ -69,6 +78,8 @@ public class MekanismConfig
 		public static boolean oldTransmitterRender = false;
 		public static boolean replaceSoundsWhenResuming = true;
 		public static boolean renderCTM = true;
+		public static boolean enableAmbientLighting;
+		public static int ambientLightingLevel;
 	}
 	
 	public static class machines
@@ -112,6 +123,7 @@ public class MekanismConfig
 		public static double laserUsage;
 		public static double gasCentrifugeUsage;
 		public static double heavyWaterElectrolysisUsage;
+		public static double formulaicAssemblicatorUsage;
 	}
 
 	public static class generators
@@ -128,6 +140,10 @@ public class MekanismConfig
 
 		public static int windGenerationMinY;
 		public static int windGenerationMaxY;
+		
+		public static int turbineBladesPerCoil;
+		public static double turbineVentGasFlow;
+		public static double turbineDisperserGasFlow;
 	}
 
 	public static class tools

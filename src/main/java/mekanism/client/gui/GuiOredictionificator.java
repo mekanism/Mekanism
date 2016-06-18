@@ -9,6 +9,8 @@ import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
@@ -50,6 +52,8 @@ public class GuiOredictionificator extends GuiMekanism
 		super(tentity, new ContainerOredictionificator(inventory, tentity));
 		tileEntity = tentity;
 		
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png")));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png")));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -66,7 +70,7 @@ public class GuiOredictionificator extends GuiMekanism
 	
 	public int getScroll()
 	{
-		return Math.max(Math.min((int)(scroll*88), 88), 0);
+		return Math.max(Math.min((int)(scroll*73), 73), 0);
 	}
 	
 	public int getFilterIndex()
@@ -163,7 +167,7 @@ public class GuiOredictionificator extends GuiMekanism
 			if(tileEntity.filters.get(getFilterIndex()+i) != null)
 			{
 				int yStart = i*22 + 18;
-				boolean mouseOver = xAxis >= 10 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22;
+				boolean mouseOver = xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart+22;
 				
 				if(mouseOver)
 				{
@@ -203,9 +207,9 @@ public class GuiOredictionificator extends GuiMekanism
 			{
 				if(tileEntity.filters.get(getFilterIndex()+i) != null)
 				{
-					int yStart = i*29 + 18;
+					int yStart = i*22 + 18;
 
-					if(xAxis >= 10 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22)
+					if(xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart+22)
 					{
 						OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex()+i);
 
@@ -227,7 +231,7 @@ public class GuiOredictionificator extends GuiMekanism
 
 		if(isDragging)
 		{
-			scroll = Math.min(Math.max((float)(yAxis-18-dragOffset)/88F, 0), 1);
+			scroll = Math.min(Math.max((float)(yAxis-18-dragOffset)/73F, 0), 1);
 		}
 	}
 	

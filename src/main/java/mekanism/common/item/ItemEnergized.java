@@ -1,5 +1,8 @@
 package mekanism.common.item;
 
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
+
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -14,16 +17,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
-import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 
 @InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),
-		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
 public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
@@ -35,9 +35,19 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 		super();
 		MAX_ELECTRICITY = maxElectricity;
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
+	}
+	
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
 	}
 
 	@Override
@@ -48,16 +58,13 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 
 	public ItemStack getUnchargedItem()
 	{
-		ItemStack stack = new ItemStack(this);
-		stack.setItemDamage(100);
-		return stack;
+		return new ItemStack(this);
 	}
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
 		ItemStack discharged = new ItemStack(this);
-		discharged.setItemDamage(100);
 		list.add(discharged);
 		ItemStack charged = new ItemStack(this);
 		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy(charged));
@@ -114,10 +121,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 			return 0;
 		}
 
-		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
-
-		return electricityStored;
+		return itemStack.stackTagCompound.getDouble("electricity");
 	}
 
 	@Override
@@ -130,7 +134,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
 		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
 	}
 
 	@Override
@@ -205,12 +208,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
 		return (int)Math.round(getMaxEnergy(theItem)* general.TO_TE);
-	}
-
-	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
-	{
-		return false;
 	}
 
 	@Override

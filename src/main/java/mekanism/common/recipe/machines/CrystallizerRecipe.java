@@ -4,7 +4,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-
 import net.minecraft.item.ItemStack;
 
 public class CrystallizerRecipe extends MachineRecipe<GasInput, ItemStackOutput, CrystallizerRecipe>

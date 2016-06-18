@@ -9,18 +9,17 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.element.GuiConfigTypeTab;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -136,17 +135,23 @@ public class GuiSideConfiguration extends GuiMekanism
 
 			SideData data = configurable.getConfig().getOutput(currentType, i);
 
-			if(data.color != EnumColor.GREY)
+			if(data != TileComponentConfig.EMPTY)
 			{
-				MekanismRenderer.color(data.color);
-			}
-
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
-			{
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+				if(data.color != EnumColor.GREY)
+				{
+					MekanismRenderer.color(data.color);
+				}
+				
+				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+				{
+					drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+				}
+				else {
+					drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+				}
 			}
 			else {
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
 			}
 		}
 
@@ -179,9 +184,12 @@ public class GuiSideConfiguration extends GuiMekanism
 
 			SideData data = configurable.getConfig().getOutput(currentType, i);
 
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+			if(data != TileComponentConfig.EMPTY)
 			{
-				drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
+				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+				{
+					drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
+				}
 			}
 		}
 
@@ -220,9 +228,9 @@ public class GuiSideConfiguration extends GuiMekanism
 		{
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
-				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
+				int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), guiId));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)

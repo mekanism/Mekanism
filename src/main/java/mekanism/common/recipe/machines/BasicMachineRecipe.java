@@ -2,7 +2,6 @@ package mekanism.common.recipe.machines;
 
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-
 import net.minecraft.item.ItemStack;
 
 public abstract class BasicMachineRecipe<RECIPE extends BasicMachineRecipe<RECIPE>> extends MachineRecipe<ItemStackInput, ItemStackOutput, RECIPE>

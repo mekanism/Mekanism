@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -16,7 +15,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
 	/** The multiblock nodes that have already been iterated over. */
-	public Set<TileEntityMultiblock<T>> iteratedNodes = new HashSet<TileEntityMultiblock<T>>();
+	public Set<TileEntity> iteratedNodes = new HashSet<TileEntity>();
 	
 	public Set<Coord4D> innerNodes = new HashSet<Coord4D>();
 
@@ -35,7 +34,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 * Recursively loops through each node connected to the given TileEntity.
 	 * @param tile - the TileEntity to loop over
 	 */
-	public void loopThrough(TileEntityMultiblock<T> tile)
+	public void loopThrough(TileEntity tile)
 	{
 		World worldObj = tile.getWorldObj();
 
@@ -158,7 +157,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 								break;
 							}
 							else {
-								innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.dimensionId));
+								if(!isAir(origX+x, origY+y, origZ+z))
+								{
+									innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.dimensionId));
+								}
 							}
 
 							volume++;
@@ -180,7 +182,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		volume += locations.size();
 
-		if(volume >= 27 && volume <= 5832 && locations.size() >= 26)
+		if(Math.abs(xmax-xmin)+1 <= 18 && Math.abs(ymax-ymin)+1 <= 18 && Math.abs(zmax-zmin)+1 <= 18)
 		{
 			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
@@ -189,7 +191,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				structure.volLength = Math.abs(xmax-xmin)+1;
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
-				structure.volume = volume;
+				structure.volume = structure.volLength*structure.volHeight*structure.volWidth;
 				structure.renderLocation = Coord4D.get(tile).translate(0, 1, 0);
 				structure.minLocation = Coord4D.get(tile).translate(xmin, ymin, zmin);
 				structure.maxLocation = Coord4D.get(tile).translate(xmax, ymax, zmax);
@@ -200,7 +202,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 					if(structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(Coord4D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
 					{
-						if(isInteriorValid(structure))
+						if(canForm(structure))
 						{
 							structureFound = structure;
 							return;
@@ -210,24 +212,30 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			}
 		}
 
-		innerNodes.clear();
+		innerNodes.clear();		
 		iteratedNodes.add(tile);
+		
+		if(iteratedNodes.size() > 2048)
+		{
+			return;
+		}
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
+			Coord4D coord = Coord4D.get(tile).getFromSide(side);
+			TileEntity tileEntity = coord.getTileEntity(tile.getWorldObj());
 
-			if(MultiblockManager.areEqual(tileEntity, pointer))
+			if(isViableNode(coord.xCoord, coord.yCoord, coord.zCoord))
 			{
 				if(!iteratedNodes.contains(tileEntity))
 				{
-					loopThrough((TileEntityMultiblock<T>)tileEntity);
+					loopThrough(tileEntity);
 				}
 			}
 		}
 	}
 	
-	public boolean isInteriorValid(T structure)
+	protected boolean canForm(T structure)
 	{
 		return true;
 	}
@@ -286,9 +294,17 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 * @param z - z coordinate
 	 * @return
 	 */
-	private boolean isViableNode(int x, int y, int z)
+	public boolean isViableNode(int x, int y, int z)
 	{
 		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		
+		if(tile instanceof IStructuralMultiblock)
+		{
+			if(((IStructuralMultiblock)tile).canInterface(pointer))
+			{
+				return true;
+			}
+		}
 		
 		if(MultiblockManager.areEqual(tile, pointer))
 		{
@@ -377,11 +393,43 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	protected abstract void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<T> cache, MultiblockCache<T> merge);
 	
-	protected void onFormed() {}
+	protected void onFormed() 
+	{
+		for(Coord4D coord : structureFound.internalLocations)
+		{
+			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			
+			if(tile instanceof TileEntityInternalMultiblock)
+			{
+				((TileEntityInternalMultiblock)tile).setMultiblock(structureFound.inventoryID);
+			}
+		}
+	}
 	
 	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 	
-	public void onStructureDestroyed(T structure) {}
+	public void onStructureDestroyed(T structure) 
+	{
+		for(Coord4D coord : structure.internalLocations)
+		{
+			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			
+			if(tile instanceof TileEntityInternalMultiblock)
+			{
+				((TileEntityInternalMultiblock)tile).setMultiblock(null);
+			}
+		}
+	}
+	
+	public void killInnerNode(Coord4D coord)
+	{
+		TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+		
+		if(tile instanceof TileEntityInternalMultiblock)
+		{
+			((TileEntityInternalMultiblock)tile).setMultiblock(null);
+		}
+	}
 
 	/**
 	 * Runs the protocol and updates all nodes that make a part of the multiblock.
@@ -392,29 +440,41 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 		if(structureFound != null)
 		{
-			for(TileEntityMultiblock<T> tileEntity : iteratedNodes)
+			for(TileEntity tileEntity : iteratedNodes)
 			{
 				if(!structureFound.locations.contains(Coord4D.get(tileEntity)))
 				{
 					for(TileEntity tile : iteratedNodes)
 					{
-						((TileEntityMultiblock<T>)tile).structure = null;
+						if(tile instanceof TileEntityMultiblock)
+						{
+							((TileEntityMultiblock<T>)tile).structure = null;
+						}
+						else if(tile instanceof IStructuralMultiblock)
+						{
+							((IStructuralMultiblock)tile).setController(null);
+						}
+					}
+					
+					for(Coord4D coord : innerNodes)
+					{
+						killInnerNode(coord);
 					}
 
 					return;
 				}
 			}
 
-			List<Integer> idsFound = new ArrayList<Integer>();
-			int idToUse = -1;
+			List<String> idsFound = new ArrayList<String>();
+			String idToUse = null;
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
+				TileEntity tileEntity = obj.getTileEntity(pointer.getWorldObj());
 
-				if(tileEntity.cachedID != -1)
+				if(tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock<T>)tileEntity).cachedID != null)
 				{
-					idsFound.add(tileEntity.cachedID);
+					idsFound.add(((TileEntityMultiblock<T>)tileEntity).cachedID);
 				}
 			}
 
@@ -423,7 +483,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 			if(!idsFound.isEmpty())
 			{
-				for(int id : idsFound)
+				for(String id : idsFound)
 				{
 					if(getManager().inventories.get(id) != null)
 					{
@@ -448,29 +508,119 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			//TODO perhaps drop from pointer?
 
 			cache.apply((T)structureFound);
-
-			onFormed();
 			
 			structureFound.inventoryID = idToUse;
+			
+			onFormed();
+			
+			List<IStructuralMultiblock> structures = new ArrayList<IStructuralMultiblock>();
+			Coord4D toUse = null;
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
+				TileEntity tileEntity = obj.getTileEntity(pointer.getWorldObj());
 
-				tileEntity.structure = (T)structureFound;
+				if(tileEntity instanceof TileEntityMultiblock)
+				{
+					((TileEntityMultiblock<T>)tileEntity).structure = structureFound;
+					
+					if(toUse == null)
+					{
+						toUse = obj.clone();
+					}
+				}
+				else if(tileEntity instanceof IStructuralMultiblock)
+				{
+					structures.add((IStructuralMultiblock)tileEntity);
+				}
+			}
+			
+			//Remove all structural multiblocks from locations, set controllers
+			for(IStructuralMultiblock node : structures)
+			{
+				node.setController(toUse);
+				structureFound.locations.remove(Coord4D.get((TileEntity)node));
 			}
 		}
 		else {
-			for(TileEntityMultiblock<T> tileEntity : iteratedNodes)
+			for(TileEntity tile : iteratedNodes)
 			{
-				if(tileEntity.structure != null && !tileEntity.structure.destroyed)
+				if(tile instanceof TileEntityMultiblock)
 				{
-					onStructureDestroyed(tileEntity.structure);
-					tileEntity.structure.destroyed = true;
+					TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)tile;
+					
+					if(tileEntity.structure != null && !tileEntity.structure.destroyed)
+					{
+						onStructureDestroyed(tileEntity.structure);
+						tileEntity.structure.destroyed = true;
+					}
+					
+					tileEntity.structure = null;
 				}
-				
-				tileEntity.structure = null;
+				else if(tile instanceof IStructuralMultiblock)
+				{
+					((IStructuralMultiblock)tile).setController(null);
+				}
 			}
+			
+			for(Coord4D coord : innerNodes)
+			{
+				killInnerNode(coord);
+			}
+		}
+	}
+	
+	public class NodeCounter
+	{
+		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		
+		public NodeChecker checker;
+		
+		public NodeCounter(NodeChecker c)
+		{
+			checker = c;
+		}
+		
+		public void loop(Coord4D pos)
+		{
+			iterated.add(pos);
+			
+			if(!checker.shouldContinue(iterated.size()))
+			{
+				return;
+			}
+			
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				Coord4D coord = pos.getFromSide(side);
+				
+				if(!iterated.contains(coord) && checker.isValid(coord))
+				{
+					loop(coord);
+				}
+			}
+		}
+		
+		public int calculate(Coord4D coord)
+		{
+			if(!checker.isValid(coord))
+			{
+				return 0;
+			}
+			
+			loop(coord);
+			
+			return iterated.size();
+		}
+	}
+	
+	public static abstract class NodeChecker
+	{
+		public abstract boolean isValid(final Coord4D coord);
+		
+		public boolean shouldContinue(int iterated)
+		{
+			return true;
 		}
 	}
 }

@@ -1,19 +1,22 @@
 package mekanism.common.tile.component;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
+import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
-
 import net.minecraft.nbt.NBTTagCompound;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileComponentUpgrade implements ITileComponent
 {
@@ -79,6 +82,7 @@ public class TileComponentUpgrade implements ITileComponent
 							tileEntity.inventory[upgradeSlot] = null;
 						}
 
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
 						tileEntity.markDirty();
 					}
 				}
@@ -222,4 +226,7 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		Upgrade.saveMap(upgrades, nbtTags);
 	}
+	
+	@Override
+	public void invalidate() {}
 }

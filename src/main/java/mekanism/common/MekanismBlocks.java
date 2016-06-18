@@ -1,5 +1,10 @@
 package mekanism.common;
 
+import static mekanism.common.block.BlockBasic.BasicBlock.BASIC_BLOCK_1;
+import static mekanism.common.block.BlockBasic.BasicBlock.BASIC_BLOCK_2;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_1;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_2;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_3;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
@@ -18,16 +23,9 @@ import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
-
 import net.minecraft.block.Block;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
-
-import static mekanism.common.block.BlockBasic.BasicBlock.BASIC_BLOCK_1;
-import static mekanism.common.block.BlockBasic.BasicBlock.BASIC_BLOCK_2;
-import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_1;
-import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_2;
-import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_3;
 
 @ObjectHolder("Mekanism")
 public class MekanismBlocks

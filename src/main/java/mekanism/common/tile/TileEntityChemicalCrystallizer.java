@@ -1,23 +1,40 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.IConfigCardAccess;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
-import mekanism.api.gas.*;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
-import mekanism.common.base.*;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -26,9 +43,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-
-public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, IUpgradeTile, ISustainedData, ITankManager
+public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, IUpgradeTile, ISustainedData, ITankManager, IConfigCardAccess, ISecurityTile
 {
 	public static final int MAX_GAS = 10000;
 	
@@ -64,7 +79,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
-
+	public TileComponentSecurity securityComponent;
+	
 	public TileEntityChemicalCrystallizer()
 	{
 		super("machine.crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
@@ -79,16 +95,20 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		
 		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.YELLOW, new int[] {0}));
-		configComponent.setConfig(TransmissionType.GAS, new byte[] {0, 0, 0, 0, 1, 0});
+		configComponent.setConfig(TransmissionType.GAS, new byte[] {-1, -1, -1, -1, 1, -1});
 		configComponent.setCanEject(TransmissionType.GAS, false);
 		
-		configComponent.setInputEnergyConfig();
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 		
 		inventory = new ItemStack[4];
 		
 		upgradeComponent = new TileComponentUpgrade(this, 3);
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -194,20 +214,22 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		operatingTicks = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			operatingTicks = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(dataStream.readBoolean())
+			{
+				inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				inputTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
-		else {
-			inputTank.setGas(null);
-		}
-
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
@@ -422,7 +444,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public IEjector getEjector()
+	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
 	}
@@ -472,5 +494,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	public Object[] getTanks() 
 	{
 		return new Object[] {inputTank};
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

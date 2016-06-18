@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -11,11 +13,8 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection
 {
@@ -112,14 +111,17 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	@Override
 	public void handlePacketData(ByteBuf data)
 	{
-		int gasID = data.readInt();
-		
-		if(gasID < 0)
+		if(worldObj.isRemote)
 		{
-			collectedGas.setGas(null);
-		} 
-		else {
-			collectedGas.setGas(new GasStack(gasID, data.readInt()));
+			int gasID = data.readInt();
+			
+			if(gasID < 0)
+			{
+				collectedGas.setGas(null);
+			} 
+			else {
+				collectedGas.setGas(new GasStack(gasID, data.readInt()));
+			}
 		}
 	}
 }

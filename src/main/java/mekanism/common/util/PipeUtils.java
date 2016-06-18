@@ -7,7 +7,6 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitterTile;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -58,7 +57,7 @@ public final class PipeUtils
 		{
 			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
-			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitterTile))
+			if(acceptor instanceof IFluidHandler)
 			{
 				acceptors[orientation.ordinal()] = (IFluidHandler)acceptor;
 			}

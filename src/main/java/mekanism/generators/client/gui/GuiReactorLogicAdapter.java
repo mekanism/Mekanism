@@ -56,10 +56,13 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 			GL11.glPopMatrix();
 			
 			fontRendererObj.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34+(22*type.ordinal()), 0x404040);
-			
+		}
+		
+		for(ReactorLogic type : ReactorLogic.values())
+		{
 			if(xAxis >= 24 && xAxis <= 152 && yAxis >= 32+(22*type.ordinal()) && yAxis <= 32+22+(22*type.ordinal()))
 			{
-				drawCreativeTabHoveringText(type.getDescription(), xAxis, yAxis);
+				displayTooltips(MekanismUtils.splitTooltip(type.getDescription(), null), xAxis, yAxis);
 			}
 		}
 		

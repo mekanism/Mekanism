@@ -1,10 +1,8 @@
 package mekanism.client.nei;
 
 import mekanism.client.gui.GuiMekanism;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
-
 import codechicken.nei.guihook.IContainerSlotClickHandler;
 
 public class MekanismSlotClickHandler implements IContainerSlotClickHandler

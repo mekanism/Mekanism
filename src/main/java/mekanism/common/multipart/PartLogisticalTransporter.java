@@ -13,6 +13,7 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITransporterTile;
@@ -36,6 +37,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -228,54 +231,57 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	{
 		super.handlePacketData(dataStream);
 		
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		if(world().isRemote)
 		{
-			int c = dataStream.readInt();
-
-			EnumColor prev = getTransmitter().getColor();
-
-			if(c != -1)
+			int type = dataStream.readInt();
+	
+			if(type == 0)
 			{
-				getTransmitter().setColor(TransporterUtils.colors.get(c));
-			}
-			else {
-				getTransmitter().setColor(null);
-			}
-
-			if(prev != getTransmitter().getColor())
-			{
-				tile().markRender();
-			}
-
-			getTransmitter().transit.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				getTransmitter().transit.add(TransporterStack.readFromPacket(dataStream));
-			}
-		}
-		else if(type == 1)
-		{
-			boolean kill = dataStream.readBoolean();
-			int index = dataStream.readInt();
-
-			if(kill)
-			{
-				getTransmitter().transit.remove(index);
-			}
-			else {
-				TransporterStack stack = TransporterStack.readFromPacket(dataStream);
-
-				if(stack.progress == 0)
+				int c = dataStream.readInt();
+	
+				EnumColor prev = getTransmitter().getColor();
+	
+				if(c != -1)
 				{
-					stack.progress = 5;
+					getTransmitter().setColor(TransporterUtils.colors.get(c));
 				}
-
-				getTransmitter().transit.replace(index, stack);
+				else {
+					getTransmitter().setColor(null);
+				}
+	
+				if(prev != getTransmitter().getColor())
+				{
+					tile().markRender();
+				}
+	
+				getTransmitter().transit.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					getTransmitter().transit.add(TransporterStack.readFromPacket(dataStream));
+				}
+			}
+			else if(type == 1)
+			{
+				boolean kill = dataStream.readBoolean();
+				int index = dataStream.readInt();
+	
+				if(kill)
+				{
+					getTransmitter().transit.remove(index);
+				}
+				else {
+					TransporterStack stack = TransporterStack.readFromPacket(dataStream);
+	
+					if(stack.progress == 0)
+					{
+						stack.progress = 5;
+					}
+	
+					getTransmitter().transit.replace(index, stack);
+				}
 			}
 		}
 	}
@@ -447,5 +453,37 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	public double getCost()
 	{
 		return (double)TransporterTier.ULTIMATE.speed / (double)tier.speed;
+	}
+	
+	@Override
+	public boolean upgrade(int tierOrdinal)
+	{
+		if(tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal()+1)
+		{
+			tier = TransporterTier.values()[tier.ordinal()+1];
+			
+			markDirtyTransmitters();
+			sendDesc = true;
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void readDesc(MCDataInput packet)
+	{
+		tier = TransporterTier.values()[packet.readInt()];
+		
+		super.readDesc(packet);
+	}
+
+	@Override
+	public void writeDesc(MCDataOutput packet)
+	{
+		packet.writeInt(tier.ordinal());
+		
+		super.writeDesc(packet);
 	}
 }

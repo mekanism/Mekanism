@@ -4,13 +4,13 @@ import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderLogisticalSorter extends TileEntitySpecialRenderer
@@ -34,20 +34,20 @@ public class RenderLogisticalSorter extends TileEntitySpecialRenderer
 		{
 			case 0:
 			{
-				GL11.glRotatef(90F, 0.0F, 0.0F, -1.0F);
-				GL11.glTranslatef(1.0F, 1.0F, 0.0F);
+				GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 1.0F, -1.0F);
 				break;
 			}
 			case 1:
 			{
-				GL11.glRotatef(90F, 0.0F, 0.0F, 1.0F);
-				GL11.glTranslatef(-1.0F, 1.0F, 0.0F);
+				GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 1.0F, 1.0F);
 				break;
 			}
-			case 2: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
-			case 3: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
-			case 4: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
-			case 5: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
+			case 4: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);

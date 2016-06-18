@@ -29,13 +29,11 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeBoolean(general.updateNotifications);
 			dataStream.writeBoolean(general.controlCircuitOreDict);
 			dataStream.writeBoolean(general.logPackets);
 			dataStream.writeBoolean(general.dynamicTankEasterEgg);
 			dataStream.writeBoolean(general.voiceServerEnabled);
 			dataStream.writeBoolean(general.cardboardSpawners);
-			dataStream.writeBoolean(general.creativeOverrideElectricChest);
 			dataStream.writeBoolean(general.spawnBabySkeletons);
 			dataStream.writeInt(general.obsidianTNTDelay);
 			dataStream.writeInt(general.obsidianTNTBlastRadius);
@@ -50,7 +48,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.DISASSEMBLER_USAGE);
 			dataStream.writeInt(general.VOICE_PORT);
 			dataStream.writeInt(general.maxUpgradeMultiplier);
-			dataStream.writeInt(general.activeType.ordinal());
+			dataStream.writeInt(general.energyUnit.ordinal());
 			dataStream.writeDouble(general.minerSilkMultiplier);
 			dataStream.writeBoolean(general.blacklistIC2);
 			dataStream.writeBoolean(general.blacklistRF);
@@ -58,10 +56,21 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.armoredJetpackDamageMax);
 			dataStream.writeBoolean(general.aestheticWorldDamage);
 			dataStream.writeBoolean(general.opsBypassRestrictions);
-			dataStream.writeDouble(general.solarEvaporationSpeed);
+			dataStream.writeDouble(general.thermalEvaporationSpeed);
 			dataStream.writeInt(general.maxJetpackGas);
 			dataStream.writeInt(general.maxScubaGas);
 			dataStream.writeInt(general.maxFlamethrowerGas);
+			dataStream.writeInt(general.maxPumpRange);
+			dataStream.writeBoolean(general.pumpWaterSources);
+			dataStream.writeInt(general.maxPlenisherNodes);
+			dataStream.writeDouble(general.evaporationHeatDissipation);
+			dataStream.writeDouble(general.evaporationTempMultiplier);
+			dataStream.writeDouble(general.evaporationSolarMultiplier);
+			dataStream.writeDouble(general.evaporationMaxTemp);
+			dataStream.writeDouble(general.energyPerHeat);
+			dataStream.writeDouble(general.maxEnergyPerSteam);
+			dataStream.writeDouble(general.superheatingHeatTransfer);
+			dataStream.writeDouble(general.heatPerFuelTick);
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -90,6 +99,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(usage.fluidicPlenisherUsage);
 			dataStream.writeDouble(usage.gasCentrifugeUsage);
 			dataStream.writeDouble(usage.heavyWaterElectrolysisUsage);
+			dataStream.writeDouble(usage.formulaicAssemblicatorUsage);
 			
 			Tier.writeConfig(dataStream);
 	
@@ -106,13 +116,11 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			general.updateNotifications = dataStream.readBoolean();
 			general.controlCircuitOreDict = dataStream.readBoolean();
 			general.logPackets = dataStream.readBoolean();
 			general.dynamicTankEasterEgg = dataStream.readBoolean();
 			general.voiceServerEnabled = dataStream.readBoolean();
 			general.cardboardSpawners = dataStream.readBoolean();
-			general.creativeOverrideElectricChest = dataStream.readBoolean();
 			general.spawnBabySkeletons = dataStream.readBoolean();
 			general.obsidianTNTDelay = dataStream.readInt();
 			general.obsidianTNTBlastRadius = dataStream.readInt();
@@ -127,7 +135,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.DISASSEMBLER_USAGE = dataStream.readDouble();
 			general.VOICE_PORT = dataStream.readInt();
 			general.maxUpgradeMultiplier = dataStream.readInt();
-			general.activeType = EnergyType.values()[dataStream.readInt()];
+			general.energyUnit = EnergyType.values()[dataStream.readInt()];
 			general.minerSilkMultiplier = dataStream.readDouble();
 			general.blacklistIC2 = dataStream.readBoolean();
 			general.blacklistRF = dataStream.readBoolean();
@@ -135,10 +143,21 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.armoredJetpackDamageMax = dataStream.readInt();
 			general.aestheticWorldDamage = dataStream.readBoolean();
 			general.opsBypassRestrictions = dataStream.readBoolean();
-			general.solarEvaporationSpeed = dataStream.readDouble();
+			general.thermalEvaporationSpeed = dataStream.readDouble();
 			general.maxJetpackGas = dataStream.readInt();
 			general.maxScubaGas = dataStream.readInt();
 			general.maxFlamethrowerGas = dataStream.readInt();
+			general.maxPumpRange = dataStream.readInt();
+			general.pumpWaterSources = dataStream.readBoolean();
+			general.maxPlenisherNodes = dataStream.readInt();
+			general.evaporationHeatDissipation = dataStream.readDouble();
+			general.evaporationTempMultiplier = dataStream.readDouble();
+			general.evaporationSolarMultiplier = dataStream.readDouble();
+			general.evaporationMaxTemp = dataStream.readDouble();
+			general.energyPerHeat = dataStream.readDouble();
+			general.maxEnergyPerSteam = dataStream.readDouble();
+			general.superheatingHeatTransfer = dataStream.readDouble();
+			general.heatPerFuelTick = dataStream.readDouble();
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -167,6 +186,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.fluidicPlenisherUsage = dataStream.readDouble();
 			usage.gasCentrifugeUsage = dataStream.readDouble();
 			usage.heavyWaterElectrolysisUsage = dataStream.readDouble();
+			usage.formulaicAssemblicatorUsage = dataStream.readDouble();
 			
 			Tier.readConfig(dataStream);
 	

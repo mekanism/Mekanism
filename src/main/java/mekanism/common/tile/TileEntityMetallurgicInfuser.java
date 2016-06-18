@@ -1,16 +1,26 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.IConfigCardAccess;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.*;
-import mekanism.common.base.IEjector;
+import mekanism.common.InfuseStorage;
+import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+import mekanism.common.PacketHandler;
+import mekanism.common.SideData;
+import mekanism.common.Upgrade;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
@@ -21,20 +31,18 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
-public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl
+public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
 {
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
@@ -73,29 +81,33 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	public TileEntityMetallurgicInfuser()
 	{
 		super("machine.metalinfuser", "MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("Infuse", EnumColor.PURPLE, new int[] {1}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {2}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {3}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {4}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Infuse", EnumColor.PURPLE, new int[] {1}));
 		
-		configComponent.setConfig(TransmissionType.ITEM, new byte[] {1, 0, 0, 4, 2, 3});
-		configComponent.setInputEnergyConfig();
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 0, 0, 3, 1, 2});
 
 		inventory = new ItemStack[5];
 		
 		upgradeComponent = new TileComponentUpgrade(this, 0);
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
 		ejectorComponent = new TileComponentEjector(this);
-		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
-
+	
 	@Override
 	public void onUpdate()
 	{
@@ -187,10 +199,66 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		}
 	}
 	
-	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public void upgrade(RecipeType type)
 	{
-		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5, 3);
+		
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		
+		//Basic
+		factory.facing = facing;
+		factory.clientFacing = clientFacing;
+		factory.ticker = ticker;
+		factory.redstone = redstone;
+		factory.redstoneLastTick = redstoneLastTick;
+		factory.doAutoSync = doAutoSync;
+		
+		//Electric
+		factory.electricityStored = electricityStored;
+		
+		//Noisy
+		factory.soundURL = soundURL;
+		
+		//Machine
+		factory.progress[0] = operatingTicks;
+		factory.clientActive = clientActive;
+		factory.isActive = isActive;
+		factory.updateDelay = updateDelay;
+		factory.controlType = controlType;
+		factory.prevEnergy = prevEnergy;
+		factory.upgradeComponent.readFrom(upgradeComponent);
+		factory.upgradeComponent.setUpgradeSlot(0);
+		factory.ejectorComponent.readFrom(ejectorComponent);
+		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
+		factory.recipeType = type;
+		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
+		factory.securityComponent.readFrom(securityComponent);
+		
+		for(TransmissionType transmission : configComponent.transmissions)
+		{
+			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission));
+			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
+		}
+		
+		//Infuser
+		factory.infuseStored.amount = infuseStored.amount;
+		factory.infuseStored.type = infuseStored.type;
+
+		factory.inventory[5] = inventory[2];
+		factory.inventory[1] = inventory[4];
+		factory.inventory[5+3] = inventory[3];
+		factory.inventory[0] = inventory[0];
+		factory.inventory[4] = inventory[1];
+		
+		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
+		{
+			factory.recalculateUpgradables(upgrade);
+		}
+		
+		factory.upgraded = true;
+		
+		factory.markDirty();
 	}
 
 	@Override
@@ -259,7 +327,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 	public void operate(MetallurgicInfuserRecipe recipe)
 	{
-		recipe.output(inventory, infuseStored);
+		recipe.output(inventory, 2, 3, infuseStored);
 
 		markDirty();
 		ejectorComponent.outputItems();
@@ -267,7 +335,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 	public boolean canOperate(MetallurgicInfuserRecipe recipe)
 	{
-		return recipe != null && recipe.canOperate(inventory, infuseStored);
+		return recipe != null && recipe.canOperate(inventory, 2, 3, infuseStored);
 	}
 
 	public int getScaledInfuseLevel(int i)
@@ -324,17 +392,20 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		super.handlePacketData(dataStream);
 
-		clientActive = dataStream.readBoolean();
-		operatingTicks = dataStream.readInt();
-		infuseStored.amount = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
-
-		if(updateDelay == 0 && clientActive != isActive)
+		if(worldObj.isRemote)
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			clientActive = dataStream.readBoolean();
+			operatingTicks = dataStream.readInt();
+			infuseStored.amount = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+	
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 	}
 
@@ -359,7 +430,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		return data;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
 
 	@Override
 	public String[] getMethods()
@@ -440,7 +511,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public boolean renderUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
@@ -475,9 +546,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public IEjector getEjector()
+	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 
 	@Override

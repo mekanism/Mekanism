@@ -3,10 +3,8 @@ package mekanism.common.block;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;

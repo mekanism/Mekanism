@@ -14,11 +14,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
+import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -39,12 +43,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "8.1.9", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "9.0.2", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
-	/** Mekanism Generators Packet Pipeline */
-	public static GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
-
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
 	public static GeneratorsCommonProxy proxy;
 	
@@ -52,7 +53,9 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(8, 1, 9);
+	public static Version versionNumber = new Version(9, 0, 2);
+	
+	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -66,8 +69,9 @@ public class MekanismGenerators implements IModule
 	{
 		//Add this module to the core list
 		Mekanism.modulesLoaded.add(this);
-
-		packetHandler.initialize();
+		
+		//Register this module's GUI handler in the simple packet protocol
+		PacketSimpleGui.handlers.add(1, proxy);
 		
 		//Set up the GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
@@ -130,6 +134,27 @@ public class MekanismGenerators implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 6), new Object[] {
 			" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsItems.TurbineBlade), new Object[] {
+			" S ", "SAS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 7), new Object[] {
+			"SAS", "SAS", "SAS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 8), new Object[] {
+			"SAS", "CAC", "SAS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 9), new Object[] {
+			"SGS", "GEG", "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "ingotGold", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 4, 10), new Object[] {
+			" S ", "SOS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('O'), "ingotOsmium"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 11), new Object[] {
+			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 12), new Object[] {
+			" I ", "IFI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('F'), Blocks.iron_bars
+		}));
 		
 		//Reactor Recipes
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 4, 1), new Object[] {
@@ -142,7 +167,7 @@ public class MekanismGenerators implements IModule
 			" I ", "IGI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('G'), "blockGlass"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 0), new Object[] {
-			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank()
+			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank(GasTankTier.BASIC)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 2, 1), new Object[] {
 			" I ", "ILI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.ReactorGlass, 1, 0), Character.valueOf('L'), "blockRedstone"
@@ -175,10 +200,16 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(generators.heatGenerationLava);
 		dataStream.writeDouble(generators.heatGenerationNether);
 		dataStream.writeDouble(generators.solarGeneration);
+		
 		dataStream.writeDouble(generators.windGenerationMin);
 		dataStream.writeDouble(generators.windGenerationMax);
+		
 		dataStream.writeInt(generators.windGenerationMinY);
 		dataStream.writeInt(generators.windGenerationMaxY);
+		
+		dataStream.writeInt(generators.turbineBladesPerCoil);
+		dataStream.writeDouble(generators.turbineVentGasFlow);
+		dataStream.writeDouble(generators.turbineDisperserGasFlow);
 	}
 
 	@Override
@@ -190,10 +221,22 @@ public class MekanismGenerators implements IModule
 		generators.heatGenerationLava = dataStream.readDouble();
 		generators.heatGenerationNether = dataStream.readDouble();
 		generators.solarGeneration = dataStream.readDouble();
+		
 		generators.windGenerationMin = dataStream.readDouble();
 		generators.windGenerationMax = dataStream.readDouble();
+		
 		generators.windGenerationMinY = dataStream.readInt();
 		generators.windGenerationMaxY = dataStream.readInt();
+		
+		generators.turbineBladesPerCoil = dataStream.readInt();
+		generators.turbineVentGasFlow = dataStream.readDouble();
+		generators.turbineDisperserGasFlow = dataStream.readDouble();
+	}
+	
+	@Override
+	public void resetClient()
+	{
+		SynchronizedTurbineData.clientRotationMap.clear();
 	}
 
 	@SubscribeEvent

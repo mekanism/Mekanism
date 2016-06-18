@@ -1,5 +1,8 @@
 package mekanism.common.entity;
 
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -17,7 +20,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
-
+import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -38,12 +41,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
-import cpw.mods.fml.common.Optional.Interface;
-
 import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
-import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
+import cpw.mods.fml.common.Optional.Interface;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = "Galacticraft API")
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable

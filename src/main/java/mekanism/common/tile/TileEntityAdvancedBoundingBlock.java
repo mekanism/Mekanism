@@ -1,12 +1,8 @@
 package mekanism.common.tile;
 
-import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
-import mekanism.api.IFilterAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.integration.IComputerIntegration;
@@ -17,12 +13,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyHandler;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
 
 @InterfaceList({
-		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore")
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IComputerIntegration, IFilterAccess
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IComputerIntegration, ISpecialConfigData
 {
 	@Override
 	public int getSizeInventory()
@@ -197,10 +196,9 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(getInv() == null)
+		if(getInv() == null || !canReceiveEnergy(from))
 		{
 			return 0;
 		}
@@ -209,7 +207,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		if(getInv() == null)
@@ -221,7 +218,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		if(getInv() == null)
@@ -229,11 +225,10 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canConnectEnergy(from);
+		return canReceiveEnergy(from);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
 		if(getInv() == null)
@@ -245,7 +240,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		if(getInv() == null)
@@ -292,7 +286,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
 	{
-		if(getInv() == null)
+		if(getInv() == null || !canReceiveEnergy(side))
 		{
 			return 0;
 		}
@@ -308,7 +302,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canReceiveEnergy(side);
+		return getInv().canBoundReceiveEnergy(Coord4D.get(this), side);
 	}
 
 	@Override
@@ -327,7 +321,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Method(modid = "IC2")
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
-		if(getInv() == null)
+		if(getInv() == null || !canReceiveEnergy(directionFrom))
 		{
 			return amount;
 		}
@@ -410,25 +404,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
 		if(getInv() == null)
 		{
 			return new NBTTagCompound();
 		}
 		
-		return getInv().getFilterData(nbtTags);
+		return getInv().getConfigurationData(nbtTags);
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 		
-		getInv().setFilterData(nbtTags);
+		getInv().setConfigurationData(nbtTags);
 	}
 
 	@Override

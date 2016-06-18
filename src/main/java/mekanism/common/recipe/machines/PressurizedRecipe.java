@@ -4,7 +4,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;

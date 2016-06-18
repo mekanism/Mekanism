@@ -30,11 +30,14 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = InductionProviderTier.values()[dataStream.readInt()];
-
-		super.handlePacketData(dataStream);
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(worldObj.isRemote)
+		{
+			tier = InductionProviderTier.values()[dataStream.readInt()];
+	
+			super.handlePacketData(dataStream);
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override

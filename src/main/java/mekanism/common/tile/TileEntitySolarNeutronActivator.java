@@ -16,21 +16,26 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager
+public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager, ISecurityTile
 {
 	public GasTank inputTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -52,6 +57,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntitySolarNeutronActivator()
 	{
@@ -171,27 +178,30 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		recipeTicks = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			recipeTicks = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(dataStream.readBoolean())
+			{
+				inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				inputTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				outputTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
-		else {
-			inputTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			outputTank.setGas(null);
-		}
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
@@ -399,5 +409,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	public Object[] getTanks() 
 	{
 		return new Object[] {inputTank, outputTank};
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 }

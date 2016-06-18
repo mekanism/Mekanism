@@ -1,15 +1,28 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.SideData;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -17,10 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
@@ -32,6 +42,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	public RedstoneControl controlType;
 
 	public int prevScale;
+	
+	public TileComponentEjector ejectorComponent;
+	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	/**
 	 * A block used to store and transfer electricity.
@@ -39,9 +53,24 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	public TileEntityEnergyCube()
 	{
 		super("EnergyCube", 0);
+		
+		configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Charge", EnumColor.DARK_BLUE, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Discharge", EnumColor.DARK_RED, new int[] {1}));
+		
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {0, 0, 0, 0, 2, 1});
+		configComponent.setCanEject(TransmissionType.ITEM, false);
+		configComponent.setIOConfig(TransmissionType.ENERGY);
+		configComponent.setEjecting(TransmissionType.ENERGY, true);
 
 		inventory = new ItemStack[2];
 		controlType = RedstoneControl.DISABLED;
+		
+		ejectorComponent = new TileComponentEjector(this);
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -54,7 +83,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 			ChargeUtils.charge(0, this);
 			ChargeUtils.discharge(1, this);
 	
-			if(MekanismUtils.canFunction(this))
+			if(MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY))
 			{
 				CableUtils.emit(this);
 			}
@@ -79,6 +108,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public double getMaxOutput()
 	{
+		if(tier == EnergyCubeTier.CREATIVE)
+		{
+			return Integer.MAX_VALUE;
+		}
+		
 		return tier.output;
 	}
 
@@ -100,16 +134,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public EnumSet<ForgeDirection> getConsumingSides()
 	{
-		EnumSet set = EnumSet.allOf(ForgeDirection.class);
-		set.removeAll(getOutputtingSides());
-
-		return set;
+		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
 	}
 
 	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 2);
 	}
 
 	@Override
@@ -127,7 +158,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return side <= 1 ? new int[] {0} : new int[] {1};
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
@@ -145,7 +176,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		return false;
 	}
 
-    private static final String[] methods = new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()
@@ -174,13 +205,16 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = EnergyCubeTier.values()[dataStream.readInt()];
-
-		super.handlePacketData(dataStream);
-
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(worldObj.isRemote)
+		{
+			tier = EnergyCubeTier.values()[dataStream.readInt()];
+	
+			super.handlePacketData(dataStream);
+	
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override
@@ -216,7 +250,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public void setEnergy(double energy)
 	{
-		if(tier == EnergyCubeTier.CREATIVE && energy != Integer.MAX_VALUE)
+		if(tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE)
 		{
 			return;
 		}
@@ -254,5 +288,29 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	public boolean canPulse()
 	{
 		return false;
+	}
+
+	@Override
+	public TileComponentEjector getEjector()
+	{
+		return ejectorComponent;
+	}
+	
+	@Override
+	public TileComponentConfig getConfig()
+	{
+		return configComponent;
+	}
+	
+	@Override
+	public int getOrientation()
+	{
+		return facing;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

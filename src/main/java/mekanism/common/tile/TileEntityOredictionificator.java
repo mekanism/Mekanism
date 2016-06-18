@@ -7,22 +7,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.IFilterAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Range4D;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.InfusionInput;
-import mekanism.common.util.ChargeUtils;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +29,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, IFilterAccess, ISustainedData
+public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile
 {
 	public static final int MAX_LENGTH = 24;
 	
@@ -44,6 +40,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public boolean didProcess;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntityOredictionificator()
 	{
@@ -68,7 +66,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			
 			didProcess = false;
 			
-			if(inventory[0] != null && getValidName(inventory[0]) != null)
+			if(MekanismUtils.canFunction(this) && inventory[0] != null && getValidName(inventory[0]) != null)
 			{
 				ItemStack result = getResult(inventory[0]);
 				
@@ -229,36 +227,39 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	{
 		super.handlePacketData(dataStream);
 
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		if(worldObj.isRemote)
 		{
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			didProcess = dataStream.readBoolean();
-
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
+			int type = dataStream.readInt();
+	
+			if(type == 0)
 			{
-				filters.add(OredictionificatorFilter.readFromPacket(dataStream));
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+				didProcess = dataStream.readBoolean();
+	
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(OredictionificatorFilter.readFromPacket(dataStream));
+				}
 			}
-		}
-		else if(type == 1)
-		{
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			didProcess = dataStream.readBoolean();
-		}
-		else if(type == 2)
-		{
-			filters.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
+			else if(type == 1)
 			{
-				filters.add(OredictionificatorFilter.readFromPacket(dataStream));
+				controlType = RedstoneControl.values()[dataStream.readInt()];
+				didProcess = dataStream.readBoolean();
+			}
+			else if(type == 2)
+			{
+				filters.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					filters.add(OredictionificatorFilter.readFromPacket(dataStream));
+				}
 			}
 		}
 	}
@@ -322,10 +323,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 	
 	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
-		nbtTags.setInteger("controlType", controlType.ordinal());
-
 		NBTTagList filterTags = new NBTTagList();
 
 		for(OredictionificatorFilter filter : filters)
@@ -344,10 +343,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
 		if(nbtTags.hasKey("filters"))
 		{
 			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
@@ -362,7 +359,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public String getDataType()
 	{
-		return "tooltip.filterCard.oredictionificator";
+		return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
 	}
 
 	@Override
@@ -418,6 +415,12 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	public boolean canPulse()
 	{
 		return true;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 	
 	public static class OredictionificatorFilter

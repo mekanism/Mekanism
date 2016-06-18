@@ -3,7 +3,6 @@ package mekanism.common.block;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.tile.TileEntityObsidianTNT;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -31,6 +30,14 @@ public class BlockObsidianTNT extends Block
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register) {}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	{
+		super.breakBlock(world, x, y, z, block, meta);
+		
+		world.removeTileEntity(x, y, z);
+	}
 
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)

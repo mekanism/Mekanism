@@ -18,11 +18,11 @@ public class SideData
 	/** The name of this SideData */
 	public String name;
 
-	/** Int[] of available side slots, can be used for items, gases, or items */
+	/** int[] of available side slots, can be used for items, gases, or items */
 	public int[] availableSlots;
 	
-	/** EnergyState representing this SideData */
-	public EnergyState energyState;
+	/** IOState representing this SideData */
+	public IOState ioState;
 
 	public SideData(String n, EnumColor colour, int[] slots)
 	{
@@ -31,11 +31,11 @@ public class SideData
 		availableSlots = slots;
 	}
 	
-	public SideData(String n, EnumColor colour, EnergyState state)
+	public SideData(String n, EnumColor colour, IOState state)
 	{
 		name = n;
 		color = colour;
-		energyState = state;
+		ioState = state;
 	}
 	
 	public String localize()
@@ -64,6 +64,11 @@ public class SideData
 		Object[] tanks = manager.getTanks();
 		List<FluidTankInfo> infos = new ArrayList<FluidTankInfo>();
 		
+		if(tanks == null)
+		{
+			return infos.toArray(new FluidTankInfo[] {});
+		}
+		
 		for(int slot : availableSlots)
 		{
 			if(slot <= tanks.length-1 && tanks[slot] instanceof IFluidTank)
@@ -79,7 +84,7 @@ public class SideData
 	{
 		Object[] tanks = manager.getTanks();
 		
-		if(tanks.length < 1 || !(tanks[0] instanceof GasTank))
+		if(tanks == null || tanks.length < 1 || !(tanks[0] instanceof GasTank))
 		{
 			return null;
 		}
@@ -87,7 +92,7 @@ public class SideData
 		return (GasTank)tanks[0];
 	}
 	
-	public static enum EnergyState
+	public static enum IOState
 	{
 		INPUT,
 		OUTPUT,

@@ -1,6 +1,9 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
@@ -12,6 +15,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -20,9 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage, IComputerIntegration
+public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage, IComputerIntegration, ISecurityTile
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
@@ -42,6 +45,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	
 	public boolean emittingRedstone;
 	public boolean entityDetection;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityLaserAmplifier()
 	{
@@ -69,7 +74,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			if(on)
 			{
 				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), lastFired, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -121,7 +126,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				}
 
 				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ, worldObj.provider.dimensionId);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -213,12 +218,32 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			switch(dataStream.readInt())
+			{
+				case 0:
+					minThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
+					break;
+				case 1:
+					maxThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
+					break;
+				case 2:
+					time = dataStream.readInt();
+					break;
+				case 3:
+					entityDetection = !entityDetection;
+					break;
+			}
+			
+			return;
+		}
+		
+		super.handlePacketData(dataStream);
+		
 		if(worldObj.isRemote)
 		{
-			super.handlePacketData(dataStream);
-
 			on = dataStream.readBoolean();
-
 			minThreshold = dataStream.readDouble();
 			maxThreshold = dataStream.readDouble();
 			time = dataStream.readInt();
@@ -227,24 +252,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			emittingRedstone = dataStream.readBoolean();
 			entityDetection = dataStream.readBoolean();
-
-			return;
-		}
-
-		switch(dataStream.readInt())
-		{
-			case 0:
-				minThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
-				break;
-			case 1:
-				maxThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
-				break;
-			case 2:
-				time = dataStream.readInt();
-				break;
-			case 3:
-				entityDetection = !entityDetection;
-				break;
 		}
 	}
 	
@@ -254,7 +261,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		super.readFromNBT(nbtTags);
 
 		on = nbtTags.getBoolean("on");
-		
 		minThreshold = nbtTags.getDouble("minThreshold");
 		maxThreshold = nbtTags.getDouble("maxThreshold");
 		time = nbtTags.getInteger("time");
@@ -270,7 +276,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("on", on);
-		
 		nbtTags.setDouble("minThreshold", minThreshold);
 		nbtTags.setDouble("maxThreshold", maxThreshold);
 		nbtTags.setInteger("time", time);
@@ -310,7 +315,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		return MAX_ENERGY;
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getMaxEnergy"};
+	private static final String[] methods = new String[] {"getEnergy", "getMaxEnergy"};
 
 	@Override
 	public String[] getMethods()
@@ -330,5 +335,11 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			default:
 				throw new NoSuchMethodException();
 		}
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity() 
+	{
+		return securityComponent;
 	}
 }

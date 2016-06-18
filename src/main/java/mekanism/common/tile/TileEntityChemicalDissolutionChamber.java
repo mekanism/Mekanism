@@ -17,16 +17,18 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentAdvancedUpgrade;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -37,7 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager
+public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager, ISecurityTile
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -73,13 +75,16 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	public DissolutionRecipe cachedRecipe;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentAdvancedUpgrade(this, 4);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileEntityChemicalDissolutionChamber()
 	{
 		super("machine.dissolution", "ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
+		
 		inventory = new ItemStack[5];
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
 	@Override
@@ -262,27 +267,30 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		operatingTicks = dataStream.readInt();
-
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			injectTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			operatingTicks = dataStream.readInt();
+	
+			if(dataStream.readBoolean())
+			{
+				injectTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				injectTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				outputTank.setGas(null);
+			}
+	
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
-		else {
-			injectTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			outputTank.setGas(null);
-		}
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
@@ -500,5 +508,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	public Object[] getTanks() 
 	{
 		return new Object[] {injectTank, outputTank};
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

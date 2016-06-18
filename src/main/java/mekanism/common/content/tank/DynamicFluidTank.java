@@ -154,7 +154,7 @@ public class DynamicFluidTank implements IFluidTank
 				dynamicTank.structure.fluidStored.amount -= used;
 			}
 
-			FluidStack drained = new FluidStack(dynamicTank.structure.fluidStored.getFluidID(), used);
+			FluidStack drained = new FluidStack(dynamicTank.structure.fluidStored.getFluid(), used);
 
 			if(dynamicTank.structure.fluidStored.amount <= 0)
 			{

@@ -6,7 +6,6 @@ import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.ChargeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

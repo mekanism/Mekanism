@@ -139,6 +139,8 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		{
 			itemstack.stackSize = getInventoryStackLimit();
 		}
+		
+		markDirty();
 	}
 
 	@Override

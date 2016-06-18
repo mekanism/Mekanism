@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -42,7 +43,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public MultiblockCache cachedData = getNewCache();
 	
 	/** This multiblock segment's cached inventory ID */
-	public int cachedID = -1;
+	public String cachedID = null;
 	
 	public TileEntityMultiblock(String name)
 	{
@@ -84,7 +85,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			{
 				isRendering = false;
 				
-				if(cachedID != -1)
+				if(cachedID != null)
 				{
 					getManager().updateCache(this);
 				}
@@ -123,7 +124,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			{
 				getSynchronizedData().didTick = false;
 
-				if(getSynchronizedData().inventoryID != -1)
+				if(getSynchronizedData().inventoryID != null)
 				{
 					cachedData.sync(getSynchronizedData());
 					cachedID = getSynchronizedData().inventoryID;
@@ -133,6 +134,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		}
 	}
 	
+	@Override
 	public void update()
 	{
 		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))
@@ -191,6 +193,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				data.add(getSynchronizedData().volLength);
 
 				getSynchronizedData().renderLocation.write(data);
+				data.add(getSynchronizedData().inventoryID);
 			}
 			else {
 				data.add(false);
@@ -205,23 +208,27 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	{
 		super.handlePacketData(dataStream);
 
-		if(structure == null)
+		if(worldObj.isRemote)
 		{
-			structure = getNewStructure();
-		}
-
-		isRendering = dataStream.readBoolean();
-		clientHasStructure = dataStream.readBoolean();
-
-		if(clientHasStructure && isRendering)
-		{
-			if(dataStream.readBoolean())
+			if(structure == null)
 			{
-				getSynchronizedData().volHeight = dataStream.readInt();
-				getSynchronizedData().volWidth = dataStream.readInt();
-				getSynchronizedData().volLength = dataStream.readInt();
-
-				getSynchronizedData().renderLocation = Coord4D.read(dataStream);
+				structure = getNewStructure();
+			}
+	
+			isRendering = dataStream.readBoolean();
+			clientHasStructure = dataStream.readBoolean();
+	
+			if(clientHasStructure && isRendering)
+			{
+				if(dataStream.readBoolean())
+				{
+					getSynchronizedData().volHeight = dataStream.readInt();
+					getSynchronizedData().volWidth = dataStream.readInt();
+					getSynchronizedData().volLength = dataStream.readInt();
+	
+					getSynchronizedData().renderLocation = Coord4D.read(dataStream);
+					getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
+				}
 			}
 		}
 	}
@@ -233,10 +240,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 		if(structure == null)
 		{
-			cachedID = nbtTags.getInteger("cachedID");
-
-			if(cachedID != -1)
+			if(nbtTags.hasKey("cachedID"))
 			{
+				cachedID = nbtTags.getString("cachedID");
 				cachedData.load(nbtTags);
 			}
 		}
@@ -247,10 +253,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("cachedID", cachedID);
-
-		if(cachedID != -1)
+		if(cachedID != null)
 		{
+			nbtTags.setString("cachedID", cachedID);
 			cachedData.save(nbtTags);
 		}
 	}
@@ -273,6 +278,12 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				itemstack.stackSize = getInventoryStackLimit();
 			}
 		}
+	}
+	
+	@Override
+	public boolean onActivate(EntityPlayer player)
+	{
+		return false;
 	}
 	
 	@Override

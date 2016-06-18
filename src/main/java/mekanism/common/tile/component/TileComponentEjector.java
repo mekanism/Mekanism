@@ -14,8 +14,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.base.IEjector;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
@@ -34,7 +32,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public class TileComponentEjector implements ITileComponent, IEjector
+public class TileComponentEjector implements ITileComponent
 {
 	public TileEntityContainerBlock tileEntity;
 
@@ -116,13 +114,16 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				SideData data = sideData.get(TransmissionType.GAS);
 				List<ForgeDirection> outputSides = getOutputSides(TransmissionType.GAS, data);
 				
-				GasTank tank = (GasTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
-				
-				if(tank.getStored() > 0)
+				if(((ITankManager)tileEntity).getTanks() != null)
 				{
-					GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
-					int emit = GasTransmission.emit(outputSides, toEmit, tileEntity);
-					tank.draw(emit, true);
+					GasTank tank = (GasTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
+					
+					if(tank.getStored() > 0)
+					{
+						GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
+						int emit = GasTransmission.emit(toEmit, tileEntity, outputSides);
+						tank.draw(emit, true);
+					}
 				}
 			}
 			
@@ -131,13 +132,16 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				SideData data = sideData.get(TransmissionType.FLUID);
 				List<ForgeDirection> outputSides = getOutputSides(TransmissionType.FLUID, data);
 				
-				FluidTank tank = (FluidTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
-				
-				if(tank.getFluidAmount() > 0)
+				if(((ITankManager)tileEntity).getTanks() != null)
 				{
-					FluidStack toEmit = new FluidStack(tank.getFluid().getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
-					int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
-					tank.drain(emit, true);
+					FluidTank tank = (FluidTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
+					
+					if(tank.getFluidAmount() > 0)
+					{
+						FluidStack toEmit = new FluidStack(tank.getFluid().getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
+						int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
+						tank.drain(emit, true);
+					}
 				}
 			}
 		}
@@ -146,7 +150,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public List<ForgeDirection> getOutputSides(TransmissionType type, SideData data)
 	{
 		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
-
 		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
 
 		for(int i = 0; i < configurable.getConfig().getConfig(type).length; i++)
@@ -160,7 +163,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		return outputSides;
 	}
 
-	@Override
 	public void outputItems()
 	{
 		if(!getEjecting(TransmissionType.ITEM) || tileEntity.getWorldObj().isRemote)
@@ -175,12 +177,12 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		{
 			int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];
 
-			if(tileEntity.inventory[slotID] == null)
+			if(tileEntity.getStackInSlot(slotID) == null)
 			{
 				continue;
 			}
 
-			ItemStack stack = tileEntity.inventory[slotID];
+			ItemStack stack = tileEntity.getStackInSlot(slotID);
 			List<ForgeDirection> outputs = getTrackedOutputs(TransmissionType.ITEM, index, outputSides);
 
 			for(ForgeDirection side : outputs)
@@ -213,47 +215,41 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				}
 			}
 
-			tileEntity.inventory[slotID] = stack;
+			tileEntity.setInventorySlotContents(slotID, stack);
 			tileEntity.markDirty();
 		}
 
 		tickDelay = 20;
 	}
 
-	@Override
 	public boolean hasStrictInput()
 	{
 		return strictInput;
 	}
 
-	@Override
 	public void setStrictInput(boolean strict)
 	{
 		strictInput = strict;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
 	public void setOutputColor(EnumColor color)
 	{
 		outputColor = color;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
 	public EnumColor getOutputColor()
 	{
 		return outputColor;
 	}
 
-	@Override
 	public void setInputColor(ForgeDirection side, EnumColor color)
 	{
 		inputColors[side.ordinal()] = color;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
 	public EnumColor getInputColor(ForgeDirection side)
 	{
 		return inputColors[side.ordinal()];
@@ -377,6 +373,9 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			}
 		}
 	}
+	
+	@Override
+	public void invalidate() {}
 	
 	private boolean getEjecting(TransmissionType type)
 	{

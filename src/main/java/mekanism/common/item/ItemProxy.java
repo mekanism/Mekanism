@@ -71,15 +71,18 @@ public class ItemProxy extends Item
 	public void registerIcons(IIconRegister register) {}
 
 	@Override
-	public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)
+	public void onUpdate(ItemStack stacks, World world, Entity entity, int j, boolean flag)
 	{
-		if (par3Entity instanceof EntityPlayer)
+		if(entity instanceof EntityPlayer)
 		{
-			EntityPlayer player = (EntityPlayer) par3Entity;
-			for (int i = 0; i < player.inventory.mainInventory.length; i++)
+			EntityPlayer player = (EntityPlayer)entity;
+			
+			for(int i = 0; i < player.inventory.mainInventory.length; i++)
 			{
-				if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == this)
-					player.inventory.mainInventory[i] = null;					
+				if(player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == this)
+				{
+					player.inventory.mainInventory[i] = null;
+				}
 			}
 		}
 	}

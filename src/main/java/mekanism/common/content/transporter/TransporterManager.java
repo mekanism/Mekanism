@@ -153,12 +153,30 @@ public class TransporterManager
 
 				if(inSlot == null)
 				{
-					copy.inventory[i] = toInsert;
-					return;
+					if(toInsert.stackSize <= inv.getInventoryStackLimit())
+					{
+						copy.inventory[i] = toInsert;
+						return;
+					}
+					else {
+						int rejects = toInsert.stackSize - inv.getInventoryStackLimit();
+						
+						ItemStack toSet = toInsert.copy();
+						toSet.stackSize = inv.getInventoryStackLimit();
+
+						ItemStack remains = toInsert.copy();
+						remains.stackSize = rejects;
+
+						copy.inventory[i] = toSet;
+
+						toInsert = remains;
+					}
 				}
-				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inv.getInventoryStackLimit())
+				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < Math.min(inSlot.getMaxStackSize(), inv.getInventoryStackLimit()))
 				{
-					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
+					int max = Math.min(inSlot.getMaxStackSize(), inv.getInventoryStackLimit());
+					
+					if(inSlot.stackSize + toInsert.stackSize <= max)
 					{
 						ItemStack toSet = toInsert.copy();
 						toSet.stackSize += inSlot.stackSize;
@@ -167,10 +185,10 @@ public class TransporterManager
 						return;
 					}
 					else {
-						int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
+						int rejects = (inSlot.stackSize + toInsert.stackSize) - max;
 
 						ItemStack toSet = toInsert.copy();
-						toSet.stackSize = inSlot.getMaxStackSize();
+						toSet.stackSize = max;
 
 						ItemStack remains = toInsert.copy();
 						remains.stackSize = rejects;
@@ -224,12 +242,30 @@ public class TransporterManager
 	
 						if(inSlot == null)
 						{
-							copy.inventory[slotID] = toInsert;
-							return;
+							if(toInsert.stackSize <= inv.getInventoryStackLimit())
+							{
+								copy.inventory[slotID] = toInsert;
+								return;
+							}
+							else {
+								int rejects = toInsert.stackSize - inv.getInventoryStackLimit();
+								
+								ItemStack toSet = toInsert.copy();
+								toSet.stackSize = inv.getInventoryStackLimit();
+
+								ItemStack remains = toInsert.copy();
+								remains.stackSize = rejects;
+
+								copy.inventory[slotID] = toSet;
+
+								toInsert = remains;
+							}
 						}
-						else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inv.getInventoryStackLimit())
+						else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < Math.min(inSlot.getMaxStackSize(), inv.getInventoryStackLimit()))
 						{
-							if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
+							int max = Math.min(inSlot.getMaxStackSize(), inv.getInventoryStackLimit());
+							
+							if(inSlot.stackSize + toInsert.stackSize <= max)
 							{
 								ItemStack toSet = toInsert.copy();
 								toSet.stackSize += inSlot.stackSize;
@@ -238,10 +274,10 @@ public class TransporterManager
 								return;
 							}
 							else {
-								int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
+								int rejects = (inSlot.stackSize + toInsert.stackSize) - max;
 	
 								ItemStack toSet = toInsert.copy();
-								toSet.stackSize = inSlot.getMaxStackSize();
+								toSet.stackSize = max;
 	
 								ItemStack remains = toInsert.copy();
 								remains.stackSize = rejects;
@@ -324,18 +360,35 @@ public class TransporterManager
 
 				ItemStack inSlot = copy.inventory[i];
 
-				if(inSlot == null || toInsert == null)
+				if(toInsert == null)
 				{
 					return null;
 				}
-				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
+				else if(inSlot == null)
 				{
-					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
+					if(toInsert.stackSize <= inventory.getInventoryStackLimit())
 					{
 						return null;
 					}
 					else {
-						int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
+						int rejects = toInsert.stackSize - inventory.getInventoryStackLimit();
+						
+						if(rejects < toInsert.stackSize)
+						{
+							toInsert = StackUtils.size(toInsert, rejects);
+						}
+					}
+				}
+				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit()))
+				{
+					int max = Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit());
+					
+					if(inSlot.stackSize + toInsert.stackSize <= max)
+					{
+						return null;
+					}
+					else {
+						int rejects = (inSlot.stackSize + toInsert.stackSize) - max;
 
 						if(rejects < toInsert.stackSize)
 						{
@@ -381,23 +434,40 @@ public class TransporterManager
 						}
 	
 						ItemStack inSlot = copy.inventory[slotID];
-	
-						if(inSlot == null)
+						
+						if(toInsert == null)
 						{
 							return null;
 						}
-						else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
+						else if(inSlot == null)
 						{
-							if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
+							if(toInsert.stackSize <= inventory.getInventoryStackLimit())
 							{
 								return null;
 							}
 							else {
-								int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
+								int rejects = toInsert.stackSize - inventory.getInventoryStackLimit();
+								
+								if(rejects < toInsert.stackSize)
+								{
+									toInsert = StackUtils.size(toInsert, rejects);
+								}
+							}
+						}
+						else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit()))
+						{
+							int max = Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit());
+							
+							if(inSlot.stackSize + toInsert.stackSize <= max)
+							{
+								return null;
+							}
+							else {
+								int rejects = (inSlot.stackSize + toInsert.stackSize) - max;
 	
 								if(rejects < toInsert.stackSize)
 								{
-									toInsert = MekanismUtils.size(toInsert, rejects);
+									toInsert = StackUtils.size(toInsert, rejects);
 								}
 							}
 						}

@@ -1,14 +1,21 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.Coord4D;
+
+import java.util.ArrayList;
+
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
-import mekanism.api.gas.*;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.*;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
@@ -25,8 +32,6 @@ import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
 
 public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends TileEntityBasicMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection
 {
@@ -63,12 +68,12 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {0}));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[] {1}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {3}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[] {1}));
 
-		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 4, 0, 3});
-		configComponent.setInputEnergyConfig();
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 1, 0, 3, 0, 2});
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		gasTank = new GasTank(MAX_GAS);
 
@@ -78,8 +83,10 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		secondaryEnergyPerTick = secondaryPerTick;
 
 		upgradeComponent = upgradeableSecondaryEfficiency() ? new TileComponentAdvancedUpgrade(this, 4) : new TileComponentUpgrade(this, 4);
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
 		ejectorComponent = new TileComponentEjector(this);
-		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
 	
 	public void upgrade(RecipeType type)
@@ -99,7 +106,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		
 		//Electric
 		factory.electricityStored = electricityStored;
-		factory.ic2Registered = ic2Registered;
 
 		//Noisy
 		factory.soundURL = soundURL;
@@ -114,9 +120,16 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		factory.upgradeComponent.readFrom(upgradeComponent);
 		factory.upgradeComponent.setUpgradeSlot(0);
 		factory.ejectorComponent.readFrom(ejectorComponent);
-		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
 		factory.recipeType = type;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
+		factory.securityComponent.readFrom(securityComponent);
+		
+		for(TransmissionType transmission : configComponent.transmissions)
+		{
+			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission));
+			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
+		}
 		
 		//Advanced Machine
 		factory.gasTank.setGas(gasTank.getGas());
@@ -135,7 +148,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		factory.upgraded = true;
 		
 		factory.markDirty();
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
 	}
 
 	/**
@@ -302,12 +314,15 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	{
 		super.handlePacketData(dataStream);
 
-		if(dataStream.readBoolean())
+		if(worldObj.isRemote)
 		{
-			gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
-		}
-		else {
-			gasTank.setGas(null);
+			if(dataStream.readBoolean())
+			{
+				gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
+			}
+			else {
+				gasTank.setGas(null);
+			}
 		}
 	}
 
@@ -424,7 +439,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		}
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+	private static final String[] methods = new String[] {"getEnergy", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()

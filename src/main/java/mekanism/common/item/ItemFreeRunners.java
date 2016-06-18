@@ -1,5 +1,8 @@
 package mekanism.common.item;
 
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
+
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -24,19 +27,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 
 @InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),
-		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
 public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
@@ -47,8 +47,6 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	{
 		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -85,16 +83,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	public ItemStack getUnchargedItem()
 	{
-		ItemStack charged = new ItemStack(this);
-		charged.setItemDamage(100);
-		return charged;
+		return new ItemStack(this);
 	}
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
 		ItemStack discharged = new ItemStack(this);
-		discharged.setItemDamage(100);
 		list.add(discharged);
 		ItemStack charged = new ItemStack(this);
 		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy(charged));
@@ -151,10 +146,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 			return 0;
 		}
 
-		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
-
-		return electricityStored;
+		return itemStack.stackTagCompound.getDouble("electricity");
 	}
 
 	@Override
@@ -167,7 +159,6 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
 		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
 	}
 
 	@Override
@@ -245,9 +236,15 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return false;
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
 	}
 
 	@Override

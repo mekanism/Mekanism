@@ -1,12 +1,17 @@
 package mekanism.common.multipart;
 
-import codechicken.lib.vec.Vector3;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mekanism.api.gas.*;
+import java.util.Collection;
+
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasNetwork;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.Tier;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,8 +19,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.Collection;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {
@@ -169,8 +177,8 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	public static void registerIcons(IIconRegister register)
 	{
 		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
-		tubeIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
-				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
+		tubeIcons.registerSideIcons(register, new String[] {"PressurizedTubeVerticalBasic", "PressurizedTubeVerticalAdvanced", "PressurizedTubeVerticalElite", "PressurizedTubeVerticalUltimate",
+				"PressurizedTubeHorizontalBasic", "PressurizedTubeHorizontalAdvanced", "PressurizedTubeHorizontalElite", "PressurizedTubeHorizontalUltimate"});
 	}
 
 	@Override
@@ -314,5 +322,37 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean upgrade(int tierOrdinal)
+	{
+		if(tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal()+1)
+		{
+			tier = TubeTier.values()[tier.ordinal()+1];
+			
+			markDirtyTransmitters();
+			sendDesc = true;
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void readDesc(MCDataInput packet)
+	{
+		tier = TubeTier.values()[packet.readInt()];
+		
+		super.readDesc(packet);
+	}
+
+	@Override
+	public void writeDesc(MCDataOutput packet)
+	{
+		packet.writeInt(tier.ordinal());
+		
+		super.writeDesc(packet);
 	}
 }

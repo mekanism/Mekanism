@@ -8,34 +8,37 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.util.ListUtils;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyGauge;
+import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiNumberGauge;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge.Type;
+import mekanism.client.gui.element.GuiNumberGauge;
 import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
+import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
+import mekanism.generators.client.gui.element.GuiFuelTab;
+import mekanism.generators.client.gui.element.GuiStatTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidTank;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorHeat extends GuiMekanism
@@ -67,7 +70,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getPlasmaTemp());
+				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getPlasmaTemp(), true);
 			}
 
 			@Override
@@ -101,7 +104,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getCaseTemp());
+				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getCaseTemp(), true);
 			}
 
 			@Override
@@ -204,9 +207,8 @@ public class GuiReactorHeat extends GuiMekanism
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
 				SoundHandler.playSound("gui.button.press");
-				MekanismGenerators.packetHandler.sendToServer(new GeneratorsGuiMessage(Coord4D.get(tileEntity), 10));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));
 			}
-
 		}
 	}
 }

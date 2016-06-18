@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-
 import net.minecraft.item.ItemStack;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>>
@@ -19,7 +18,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 
 	public int volume;
 	
-	public int inventoryID;
+	public String inventoryID;
 	
 	public boolean didTick;
 
@@ -31,6 +30,8 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 	public Coord4D maxLocation;
 	
 	public boolean destroyed;
+	
+	public Set<Coord4D> internalLocations = new HashSet<Coord4D>();
 	
 	public ItemStack[] getInventory()
 	{

@@ -13,6 +13,8 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -21,7 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor
+public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor, ISecurityTile
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
@@ -33,6 +35,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	public double diggingProgress;
 
 	public static int[] availableSlotIDs = InventoryUtils.getIntRange(0, 26);
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityLaserTractorBeam()
 	{
@@ -60,7 +64,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 			if(on)
 			{
 				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), lastFired, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -86,8 +90,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 			}
 		}
-		else
-		{
+		else {
 			if(collectedEnergy > 0)
 			{
 				double firing = collectedEnergy;
@@ -100,7 +103,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 				}
 
 				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ, worldObj.provider.dimensionId);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -207,15 +210,19 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		super.handlePacketData(dataStream);
+		
 		if(worldObj.isRemote)
 		{
-			super.handlePacketData(dataStream);
-
 			on = dataStream.readBoolean();
 			collectedEnergy = dataStream.readDouble();
 			lastFired = dataStream.readDouble();
-
-			return;
 		}
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

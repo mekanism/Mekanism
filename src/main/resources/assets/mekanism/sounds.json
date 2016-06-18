@@ -37,6 +37,7 @@
 	"tile.machine.smelter": {"category": "block", "sounds": [{"name": "Smelter", "stream": false}]},
 	"tile.machine.laser": {"category": "block", "sounds": [{"name": "Laser", "stream": false}]},
 	"tile.machine.fusionreactor": {"category": "block", "sounds": [{"name": "FusionReactor", "stream": false}]},
+	"tile.machine.resistiveheater": {"category": "block", "sounds": [{"name": "ResistiveHeater", "stream": false}]},
 
 	"tile.christmas.1": {"category": "block", "sounds": [{"name": "holiday/Nutcracker1", "stream": false}]},
 	"tile.christmas.2": {"category": "block", "sounds": [{"name": "holiday/Nutcracker2", "stream": false}]},

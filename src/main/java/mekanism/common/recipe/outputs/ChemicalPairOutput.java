@@ -1,8 +1,8 @@
 package mekanism.common.recipe.outputs;
 
-import net.minecraft.nbt.NBTTagCompound;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * An input of gasses for recipe use.

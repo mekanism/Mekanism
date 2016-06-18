@@ -1,12 +1,12 @@
 package mekanism.common.tile;
 
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.*;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -19,8 +19,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
 
 public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ItemStackOutput, RECIPE>
 {
@@ -42,17 +40,19 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {0}));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {1}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {1}));
 
-		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
-		configComponent.setInputEnergyConfig();
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {3, 1, 0, 0, 0, 2});
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = new ItemStack[4];
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
+		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
 		ejectorComponent = new TileComponentEjector(this);
-		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
 	
 	public void upgrade(RecipeType type)
@@ -72,7 +72,6 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		
 		//Electric
 		factory.electricityStored = electricityStored;
-		factory.ic2Registered = ic2Registered;
 		
 		//Noisy
 		factory.soundURL = soundURL;
@@ -87,9 +86,16 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		factory.upgradeComponent.readFrom(upgradeComponent);
 		factory.upgradeComponent.setUpgradeSlot(0);
 		factory.ejectorComponent.readFrom(ejectorComponent);
-		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
 		factory.recipeType = type;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
+		factory.securityComponent.readFrom(securityComponent);
+		
+		for(TransmissionType transmission : configComponent.transmissions)
+		{
+			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission));
+			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
+		}
 
 		factory.inventory[5] = inventory[0];
 		factory.inventory[1] = inventory[1];
@@ -104,7 +110,6 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		factory.upgraded = true;
 		
 		factory.markDirty();
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
 	}
 
 	@Override
@@ -222,7 +227,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		return false;
 	}
 
-	private static final String[] methods = new String[] {"getStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+	private static final String[] methods = new String[] {"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
 	@Override
 	public String[] getMethods()

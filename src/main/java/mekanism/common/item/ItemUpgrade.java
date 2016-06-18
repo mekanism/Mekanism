@@ -9,10 +9,11 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 {
@@ -34,7 +35,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
 		}
 		else {
-			list.addAll(MekanismUtils.splitLines(getUpgradeType(itemstack).getDescription()));
+			list.addAll(MekanismUtils.splitTooltip(getUpgradeType(itemstack).getDescription(), itemstack));
 		}
 	}
 	
