@@ -2,6 +2,7 @@ package mekanism.api.transmitters;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
@@ -135,7 +136,7 @@ public class TransmitterNetworkRegistry
 			logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
 		}
 		
-		for(IGridTransmitter orphanTransmitter : orphanTransmitters.values())
+		for(IGridTransmitter orphanTransmitter : ((Map<Coord4D, IGridTransmitter>)orphanTransmitters.clone()).values())
 		{
 			DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
 			
