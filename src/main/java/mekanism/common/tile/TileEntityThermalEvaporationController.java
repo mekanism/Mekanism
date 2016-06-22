@@ -65,6 +65,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public boolean structured = false;
 	public boolean controllerConflict = false;
 	public boolean isLeftOnFace;
+	public int renderY;
 	
 	public boolean updatedThisTick = false;
 
@@ -370,6 +371,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			middlePointer = middlePointer.getFromSide(ForgeDirection.DOWN);
 		}
 		
+		renderY = middlePointer.yCoord+1;
+		
 		if(height < 3 || height > MAX_HEIGHT)
 		{
 			height = 0;
@@ -570,7 +573,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
 		
 		startPoint = startPoint.getFromSide(right.getOpposite()).getFromSide(MekanismUtils.getBack(facing));
-		startPoint.translate(0, -(height-2), 0);
+		startPoint.yCoord = renderY;
 		
 		return startPoint;
 	}
@@ -609,6 +612,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			isLeftOnFace = dataStream.readBoolean();
 			lastGain = dataStream.readFloat();
 			totalLoss = dataStream.readFloat();
+			renderY = dataStream.readInt();
 			
 			if(structured != prev)
 			{
@@ -665,6 +669,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		data.add(isLeftOnFace);
 		data.add(lastGain);
 		data.add(totalLoss);
+		data.add(renderY);
 		
 		return data;
 	}
