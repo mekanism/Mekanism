@@ -52,7 +52,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.CullFace;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -422,7 +421,11 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		}
 		
 		Tessellator tessellator = Tessellator.getInstance();
-		tessellator.draw();
+		
+		if(MekanismRenderer.isDrawing(tessellator))
+		{
+			tessellator.draw();
+		}
 		
 		List<BakedQuad> generalQuads = new LinkedList<BakedQuad>();
 		

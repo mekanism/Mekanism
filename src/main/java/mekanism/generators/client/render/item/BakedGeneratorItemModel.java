@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.vecmath.Matrix4f;
 
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -127,7 +128,11 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
     	}
 		
 		Tessellator tessellator = Tessellator.getInstance();
-		tessellator.draw();
+		
+		if(MekanismRenderer.isDrawing(tessellator))
+		{
+			tessellator.draw();
+		}
 		
 		List<BakedQuad> generalQuads = new LinkedList<BakedQuad>();
 		

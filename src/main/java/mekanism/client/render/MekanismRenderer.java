@@ -27,6 +27,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -221,6 +223,11 @@ public class MekanismRenderer
 		Map<Fluid, TextureAtlasSprite> map = textureMap.get(type);
 		
 		return map.containsKey(fluid) ? map.get(fluid) : missingIcon;
+	}
+	
+	public static boolean isDrawing(Tessellator tessellator)
+	{
+		return (boolean)ReflectionUtils.getPrivateValue(tessellator.getBuffer(), VertexBuffer.class, ObfuscatedNames.VertexBuffer_isDrawing);
 	}
 
 	public static class Model3D
