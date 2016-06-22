@@ -50,7 +50,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -399,34 +398,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		}
 
 		return false;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public boolean canProvideEnergy(ItemStack itemStack)
-	{
-		return false;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public double getMaxCharge(ItemStack itemStack)
-	{
-		return 0;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public int getTier(ItemStack itemStack)
-	{
-		return 4;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public double getTransferLimit(ItemStack itemStack)
-	{
-		return 0;
 	}
 
     public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, BlockPos pos)
@@ -779,20 +750,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
-	}
-	
-	@Override
-	@Method(modid = "IC2")
-	public Item getChargedItem(ItemStack itemStack)
-	{
-		return this;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public Item getEmptyItem(ItemStack itemStack)
-	{
-		return this;
 	}
 
 	@Override

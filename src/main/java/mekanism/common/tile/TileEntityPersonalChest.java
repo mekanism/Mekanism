@@ -4,7 +4,6 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -103,12 +102,6 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
 	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return true;
-	}
-
-	@Override
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer)
-	{
-		return SecurityUtils.canAccess(entityPlayer, this);
 	}
 
 	@Override

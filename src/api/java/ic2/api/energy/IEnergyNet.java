@@ -1,76 +1,66 @@
 package ic2.api.energy;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import ic2.api.energy.tile.IEnergyTile;
+
 /**
  * Interface representing the methods provided by the global EnergyNet class.
- * 
+ *
  * See ic2/api/energy/usage.txt for an overall description of the energy net api.
  */
 public interface IEnergyNet {
 	/**
-	 * Get the EnergyNet-registered tile entity at the specified position.
-	 * 
-	 * This is not the same as World.getTileEntity(), it's possible to register delegate tile
-	 * entities with the energy net which are different from what's actually in the world. Those
-	 * delegates allow to use separate TileEntity objects just for the EnergyNet interfaces,
-	 * simplifying cross-mod dependencies and multi-blocks.
-	 * 
-	 * @param world World containing the tile entity
-	 * @param x x-coordinate
-	 * @param y y-coordinate
-	 * @param z z-coordinate
-	 * @return tile entity registered to the energy net or null if none is registered
+	 * Get the EnergyNet-registered tile for the specified position.
+	 *
+	 * The returned tile is always the main tile implementing IEnergySource/-Sink/-Conductor, which
+	 * is also what was registered to the energy net.
+	 *
+	 * For multi-blocks (IMetaDelegate) the connectivity handling is being done by sub tiles that
+	 * may or may not include the main tile. Sub tiles have to be queried separately through the
+	 * getSubTile method.
+	 *
+	 * As a consequence of always returning the main tile, the supplied position may not match the
+	 * returned tile's position.
+	 *
+	 * Connectivity checking -> IEnergyEmitter/IEnergyAcceptor -> getSubTile
+	 * Logic like energy I/O -> IEnergySource/IEnergySink/IEnergyConductor -> getTile
+	 *
+	 * @param world World containing the tile
+	 * @param pos position
+	 * @return main tile for the specified position or null if none is registered
 	 */
-	TileEntity getTileEntity(World world, BlockPos pos);
+	IEnergyTile getTile(World world, BlockPos pos);
 
 	/**
-	 * Get the EnergyNet-registered neighbor tile entity at the specified position.
-	 * 
-	 * @param te TileEntity indicating the world and position to search from
-	 * @param dir direction the neighbor is to be found
-	 * @return neighbor tile entity registered to the energy net or null if none is registered
+	 * Get the sub tile at the specified position.
+	 *
+	 * See the description of {@link #getTile} about whether getTile or getSubTile is applicable.
+	 *
+	 * @param world World containing the tile
+	 * @param pos position
+	 * @return sub tile at the specified position or null if none is registered
 	 */
-	TileEntity getNeighbor(TileEntity te, EnumFacing dir);
+	IEnergyTile getSubTile(World world, BlockPos pos);
 
-	/**
-	 * determine how much energy has been emitted by the EnergyEmitter specified
-	 *
-	 * @note call this twice with x ticks delay to get the avg. emitted power p = (call2 - call1) / x EU/tick
-	 *
-	 * @param tileEntity energy emitter
-	 * @deprecated Discontinued, use getNodeStats instead.
-	 */
-	@Deprecated
-	double getTotalEnergyEmitted(TileEntity tileEntity);
+	World getWorld(IEnergyTile tile);
 
-	/**
-	 * determine how much energy has been sunken by the EnergySink specified
-	 *
-	 * @note call this twice with x ticks delay to get the avg. sunken power p = (call2 - call1) / x EU/tick
-	 *
-	 * @param tileEntity energy emitter
-	 * @deprecated Discontinued, use getNodeStats instead.
-	 */
-	@Deprecated
-	double getTotalEnergySunken(TileEntity tileEntity);
+	BlockPos getPos(IEnergyTile tile);
 
 	/**
 	 * Retrieve statistics for the tile entity specified.
-	 * 
+	 *
 	 * The statistics apply to the last simulated tick.
-	 * 
-	 * @param te Tile entity to check.
+	 *
+	 * @param tile Tile entity to check.
 	 * @return Statistics for the tile entity.
 	 */
-	NodeStats getNodeStats(TileEntity te);
+	NodeStats getNodeStats(IEnergyTile tile);
 
 	/**
 	 * Determine the typical power used by the specific tier, e.g. 128 eu/t for tier 2.
-	 * 
+	 *
 	 * @param tier tier
 	 * @return power in eu/t
 	 */
@@ -78,7 +68,7 @@ public interface IEnergyNet {
 
 	/**
 	 * Determine minimum tier required to handle the specified power, e.g. tier 2 for 128 eu/t.
-	 * 
+	 *
 	 * @param power in eu/t
 	 * @return tier
 	 */

@@ -1,6 +1,7 @@
 package ic2.api.item;
 
+import net.minecraft.item.ItemStack;
 
 public interface IBlockCuttingBlade {
-	int gethardness();
+	int getHardness(ItemStack stack);
 }

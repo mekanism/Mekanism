@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
@@ -216,7 +217,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
+	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
 		if(getInv() == null)
 		{

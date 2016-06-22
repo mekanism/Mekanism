@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeInputItemStack implements IRecipeInput {

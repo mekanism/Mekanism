@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import ic2.api.tile.IWrenchable;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -35,10 +33,9 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.Method;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2")
-public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler, IFrequencyHandler, ITickable
+public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IChunkLoadHandler, IFrequencyHandler, ITickable
 {
 	/** The direction this block is facing. */
 	public EnumFacing facing = EnumFacing.NORTH;
@@ -229,21 +226,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		return super.getCapability(capability, facing);
 	}
 
-	@Override
-	@Method(modid = "IC2")
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
-	{
-		return true;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public short getFacing()
-	{
-		return (short)facing.ordinal();
-	}
-
-	@Override
 	public void setFacing(short direction)
 	{
 		if(canSetFacing(direction))
@@ -267,27 +249,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public boolean canSetFacing(int facing)
 	{
 		return true;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer)
-	{
-		return true;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public float getWrenchDropRate()
-	{
-		return 1.0F;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
-	{
-		return getBlockType().getPickBlock(worldObj.getBlockState(getPos()), null, worldObj, getPos(), entityPlayer);
 	}
 
 	public boolean isPowered()

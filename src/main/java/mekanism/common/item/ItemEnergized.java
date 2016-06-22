@@ -72,48 +72,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	@Method(modid = "IC2")
-	public boolean canProvideEnergy(ItemStack itemStack)
-	{
-		return canSend(itemStack);
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public Item getChargedItem(ItemStack itemStack)
-	{
-		return this;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public Item getEmptyItem(ItemStack itemStack)
-	{
-		return this;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public double getMaxCharge(ItemStack itemStack)
-	{
-		return 0;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public int getTier(ItemStack itemStack)
-	{
-		return 4;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public double getTransferLimit(ItemStack itemStack)
-	{
-		return 0;
-	}
-
-	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
 		return ItemDataUtils.getDouble(itemStack, "energyStored");

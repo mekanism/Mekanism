@@ -1,61 +1,67 @@
 package ic2.api.tile;
 
+import java.util.List;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
- * Allows a tile entity to make use of the wrench's removal and rotation functions.
+ * Allows a block to make use of the wrench's removal and rotation functions.
  */
 public interface IWrenchable {
 	/**
-	 * Determine if the wrench can be used to set the block's facing.
-	 * Called before wrenchCanRemove().
-	 * 
-	 * @param entityPlayer player using the wrench, may be null
-	 * @param side block's side the wrench was clicked on
-	 * @return Whether the wrenching was done and the wrench should be damaged
+	 * Get direction the block is facing.
+	 *
+	 * The direction typically refers to the front/main/functionally dominant side of a block.
+	 *
+	 * @param world World containing the block.
+	 * @param pos The block's current position in the world.
+	 * @return Current block facing.
 	 */
-	boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side);
+	EnumFacing getFacing(World world, BlockPos pos);
 
 	/**
-	 * Get the block's facing.
-	 * 
-	 * @return Block facing
+	 * Set the block's facing to face towards the specified direction.
+	 *
+	 * Contrary to Block.rotateBlock the block should always face the requested direction after
+	 * successfully processing this method.
+	 *
+	 * @param world World containing the block.
+	 * @param pos The block's current position in the world.
+	 * @param newDirection Requested facing, see {@link #getFacing}.
+	 * @param player Player causing the action, may be null.
+	 * @return true if successful, false otherwise.
 	 */
-	short getFacing();
-
-	/**
-	 * Set the block's facing
-	 * 
-	 * @param facing facing to set the block to
-	 */
-	void setFacing(short facing);
+	boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player);
 
 	/**
 	 * Determine if the wrench can be used to remove the block.
-	 * Called if wrenchSetFacing fails.
 	 *
-	 * @param entityPlayer player using the wrench, may be null
-	 * @return Whether the wrenching was done and the wrench should be damaged
+	 * @param world World containing the block.
+	 * @param pos The block's current position in the world.
+	 * @param player Player causing the action, may be null.
+	 * @return true if allowed, false otherwise.
 	 */
-	boolean wrenchCanRemove(EntityPlayer entityPlayer);
+	boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player);
 
 	/**
-	 * Determine the probability to drop the block as it is.
-	 * The first entry in getDrops will be replaced by blockid:meta if the drop is successful.
-	 * 
-	 * @return Probability from 0 to 1
-	 */
-	float getWrenchDropRate();
-
-	/**
-	 * Determine the item the block will drop when the wrenching is successful.
-	 * 
+	 * Determine the items the block will drop when the wrenching is successful.
+	 *
 	 * The ItemStack will be copied before creating the EntityItem.
-	 * 
-	 * @param entityPlayer player using the wrench, may be null
-	 * @return ItemStack to drop, may be null
+	 *
+	 * @param world World containing the block.
+	 * @param pos The block's current position in the world.
+	 * @param state The block's block state before removal.
+	 * @param te The block's tile entity before removal, if any, may be null.
+	 * @param player Player removing the block, may be null.
+	 * @param fortune Fortune level for drop calculation.
+	 * @return ItemStacks to drop, may be empty.
 	 */
-	ItemStack getWrenchDrop(EntityPlayer entityPlayer);
+	List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune);
 }
 

@@ -28,7 +28,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -255,48 +254,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		}
 
 		return false;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public boolean canProvideEnergy(ItemStack itemStack)
-	{
-		return canSend(itemStack);
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public Item getChargedItem(ItemStack itemStack)
-	{
-		return this;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public Item getEmptyItem(ItemStack itemStack)
-	{
-		return this;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public double getMaxCharge(ItemStack itemStack)
-	{
-		return 0;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public int getTier(ItemStack itemStack)
-	{
-		return 4;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public double getTransferLimit(ItemStack itemStack)
-	{
-		return 0;
 	}
 
 	@Override

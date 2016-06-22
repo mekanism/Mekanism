@@ -1,10 +1,13 @@
 package ic2.api.network;
 
-import java.lang.reflect.Method;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Provides methods to initiate events and synchronize tile entity fields in SMP.
@@ -40,7 +43,7 @@ public final class NetworkHelper {
 	 *  - ItemStack
 	 *  - NBTBase (includes NBTTagCompound)
 	 *  - Block, Item, Achievement, Potion, Enchantment
-	 *  - ChunkCoordinates, ChunkCoordIntPair
+	 *  - BlockPos, ChunkCoordIntPair
 	 *  - TileEntity (does not sync the actual tile entity, instead looks up the tile entity by its position in the client world)
 	 *  - World (does not sync the actual world, instead looks up the world by its dimension ID)
 	 *
@@ -54,14 +57,7 @@ public final class NetworkHelper {
 	 * @param field Name of the field to update
 	 */
 	public static void updateTileEntityField(TileEntity te, String field) {
-		try {
-			if (NetworkManager_updateTileEntityField == null) NetworkManager_updateTileEntityField = Class.forName(getPackage() + ".core.network.NetworkManager").getMethod("updateTileEntityField", TileEntity.class, String.class);
-			if (instance == null) instance = getInstance();
-
-			NetworkManager_updateTileEntityField.invoke(instance, te, field);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).updateTileEntityField(te, field);
 	}
 
 	/**
@@ -76,14 +72,7 @@ public final class NetworkHelper {
 	 *        tracking distance if true
 	 */
 	public static void initiateTileEntityEvent(TileEntity te, int event, boolean limitRange) {
-		try {
-			if (NetworkManager_initiateTileEntityEvent == null) NetworkManager_initiateTileEntityEvent = Class.forName(getPackage() + ".core.network.NetworkManager").getMethod("initiateTileEntityEvent", TileEntity.class, Integer.TYPE, Boolean.TYPE);
-			if (instance == null) instance = getInstance();
-
-			NetworkManager_initiateTileEntityEvent.invoke(instance, te, event, limitRange);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).initiateTileEntityEvent(te, event, limitRange);
 	}
 
 	/**
@@ -95,20 +84,13 @@ public final class NetworkHelper {
 	 * INetworkItemEventListener.onNetworkEvent (if implemented by the item).
 	 *
 	 * @param player EntityPlayer holding the item
-	 * @param itemStack ItemStack containing the item
+	 * @param stack ItemStack containing the item
 	 * @param event Arbitrary integer to represent the event, choosing the values is up to you
 	 * @param limitRange Limit the notification range to (currently) 20 blocks instead of the
 	 *        tracking distance if true
 	 */
-	public static void initiateItemEvent(EntityPlayer player, ItemStack itemStack, int event, boolean limitRange) {
-		try {
-			if (NetworkManager_initiateItemEvent == null) NetworkManager_initiateItemEvent = Class.forName(getPackage() + ".core.network.NetworkManager").getMethod("initiateItemEvent", EntityPlayer.class, ItemStack.class, Integer.TYPE, Boolean.TYPE);
-			if (instance == null) instance = getInstance();
-
-			NetworkManager_initiateItemEvent.invoke(instance, player, itemStack, event, limitRange);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	public static void initiateItemEvent(EntityPlayer player, ItemStack stack, int event, boolean limitRange) {
+		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).initiateItemEvent(player, stack, event, limitRange);
 	}
 
 
@@ -123,14 +105,7 @@ public final class NetworkHelper {
 	 * @param event Arbitrary integer to represent the event, choosing the values is up to you
 	 */
 	public static void initiateClientTileEntityEvent(TileEntity te, int event) {
-		try {
-			if (NetworkManager_initiateClientTileEntityEvent == null) NetworkManager_initiateClientTileEntityEvent = Class.forName(getPackage() + ".core.network.NetworkManager").getMethod("initiateClientTileEntityEvent", TileEntity.class, Integer.TYPE);
-			if (instance == null) instance = getInstance();
-
-			NetworkManager_initiateClientTileEntityEvent.invoke(instance, te, event);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).initiateClientTileEntityEvent(te, event);
 	}
 
 	/**
@@ -140,55 +115,41 @@ public final class NetworkHelper {
 	 *
 	 * This method doesn't do anything if executed on the server.
 	 *
-	 * @param itemStack ItemStack containing the item
+	 * @param stack ItemStack containing the item
 	 * @param event Arbitrary integer to represent the event, choosing the values is up to you
 	 */
-	public static void initiateClientItemEvent(ItemStack itemStack, int event) {
-		try {
-			if (NetworkManager_initiateClientItemEvent == null) NetworkManager_initiateClientItemEvent = Class.forName(getPackage() + ".core.network.NetworkManager").getMethod("initiateClientItemEvent", ItemStack.class, Integer.TYPE);
-			if (instance == null) instance = getInstance();
-
-			NetworkManager_initiateClientItemEvent.invoke(instance, itemStack, event);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	public static void initiateClientItemEvent(ItemStack stack, int event) {
+		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).initiateClientItemEvent(stack, event);
 	}
 
 	/**
-	 * Get the base IC2 package name, used internally.
-	 *
-	 * @return IC2 package name, if unable to be determined defaults to ic2
+	 * This will return the NetworkManager for the given side.
+	 * @param side the side to get the NetworkManager for.
+	 * @return The NetworkManager for the given side.
 	 */
-	private static String getPackage() {
-		Package pkg = NetworkHelper.class.getPackage();
-
-		if (pkg != null) {
-			String packageName = pkg.getName();
-
-			return packageName.substring(0, packageName.length() - ".api.network".length());
+	public static INetworkManager getNetworkManager(Side side) {
+		if (side.isClient()) {
+			return clientInstance;
 		}
-
-		return "ic2";
+		else {
+			return serverInstance;
+		}
 	}
+
+	private static INetworkManager serverInstance;
+	private static INetworkManager clientInstance;
 
 	/**
-	 * Get the NetworkManager instance, used internally.
-	 *
-	 * @return NetworkManager instance
+	 * Sets the internal INetworkManager instance.
+	 * ONLY IC2 CAN DO THIS!!!!!!!
 	 */
-	private static Object getInstance() {
-		try {
-			return Class.forName(getPackage() + ".core.IC2").getDeclaredField("network").get(null);
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
+	public static void setInstance(INetworkManager server, INetworkManager client) {
+		ModContainer mc = Loader.instance().activeModContainer();
+		if (mc == null || !"IC2".equals(mc.getModId())) {
+			throw new IllegalAccessError();
 		}
+		serverInstance = server;
+		clientInstance = client;
 	}
-
-	private static Object instance;
-	private static Method NetworkManager_updateTileEntityField;
-	private static Method NetworkManager_initiateTileEntityEvent;
-	private static Method NetworkManager_initiateItemEvent;
-	private static Method NetworkManager_initiateClientTileEntityEvent;
-	private static Method NetworkManager_initiateClientItemEvent;
 }
 

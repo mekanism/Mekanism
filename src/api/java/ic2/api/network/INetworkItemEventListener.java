@@ -10,7 +10,7 @@ public interface INetworkItemEventListener {
 	/**
 	 * Called when a network event is received.
 	 * 
-	 * @param itemStack item stack
+	 * @param stack item stack
 	 * @param player player containing the item
 	 * @param event event ID
 	 */

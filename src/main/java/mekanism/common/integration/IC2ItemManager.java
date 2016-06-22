@@ -24,14 +24,14 @@ public class IC2ItemManager implements IElectricItemManager
 		if(energizedItem.canReceive(itemStack))
 		{
 			double energyNeeded = energizedItem.getMaxEnergy(itemStack)-energizedItem.getEnergy(itemStack);
-			double energyToStore = Math.min(Math.min(amount* general.FROM_IC2, energizedItem.getMaxEnergy(itemStack)*0.01), energyNeeded);
+			double energyToStore = Math.min(Math.min(amount*general.FROM_IC2, energizedItem.getMaxEnergy(itemStack)*0.01), energyNeeded);
 
 			if(!simulate)
 			{
 				energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) + energyToStore);
 			}
 
-			return (int)Math.round(energyToStore* general.TO_IC2);
+			return (int)Math.round(energyToStore*general.TO_IC2);
 		}
 
 		return 0;
@@ -42,7 +42,7 @@ public class IC2ItemManager implements IElectricItemManager
 	{
 		if(energizedItem.canSend(itemStack))
 		{
-			double energyWanted = amount* general.FROM_IC2;
+			double energyWanted = amount*general.FROM_IC2;
 			double energyToGive = Math.min(Math.min(energyWanted, energizedItem.getMaxEnergy(itemStack)*0.01), energizedItem.getEnergy(itemStack));
 
 			if(!simulate)
@@ -50,7 +50,7 @@ public class IC2ItemManager implements IElectricItemManager
 				energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) - energyToGive);
 			}
 
-			return (int)Math.round(energyToGive* general.TO_IC2);
+			return (int)Math.round(energyToGive*general.TO_IC2);
 		}
 
 		return 0;
@@ -59,13 +59,13 @@ public class IC2ItemManager implements IElectricItemManager
 	@Override
 	public boolean canUse(ItemStack itemStack, double amount)
 	{
-		return energizedItem.getEnergy(itemStack) >= amount* general.FROM_IC2;
+		return energizedItem.getEnergy(itemStack) >= amount*general.FROM_IC2;
 	}
 
 	@Override
 	public double getCharge(ItemStack itemStack)
 	{
-		return (int)Math.round(energizedItem.getEnergy(itemStack)* general.TO_IC2);
+		return (int)Math.round(energizedItem.getEnergy(itemStack)*general.TO_IC2);
 	}
 
 	@Override
@@ -84,5 +84,17 @@ public class IC2ItemManager implements IElectricItemManager
 	public String getToolTip(ItemStack itemStack)
 	{
 		return null;
+	}
+
+	@Override
+	public double getMaxCharge(ItemStack stack) 
+	{
+		return 0;
+	}
+
+	@Override
+	public int getTier(ItemStack stack) 
+	{
+		return 4;
 	}
 }

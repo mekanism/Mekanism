@@ -3,7 +3,9 @@ package mekanism.common.tile;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
+import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
 
@@ -55,13 +57,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
 			
 			if(registered != this)
 			{
 				if(registered instanceof IEnergyTile)
 				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
+					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
 				}
 				else if(registered == null)
 				{
@@ -77,11 +79,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
+				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
 			}
 		}
 	}
@@ -312,14 +314,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
+	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
 		return getConsumingSides().contains(direction);
 	}
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction)
+	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
 		return getOutputtingSides().contains(direction) && receiver instanceof IEnergyConductor;
 	}

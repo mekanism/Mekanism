@@ -1,5 +1,7 @@
 package ic2.api.crops;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,30 +27,18 @@ public interface ICropTile {
 	public void setCrop(CropCard cropCard);
 
 	/**
-	 * @deprecated IDs have been removed.
-	 */
-	@Deprecated
-	public short getID();
-
-	/**
-	 * @deprecated IDs have been removed.
-	 */
-	@Deprecated
-	public void setID(short id);
-
-	/**
 	 * Get the crop's plant size.
 	 *
 	 * @return Plant size, starting with 1 and maximum varies depending on plant
 	 */
-	public byte getSize();
+	public int getCurrentSize();
 
 	/**
 	 * Set the crop's plant size.
 	 *
 	 * @param size Plant size
 	 */
-	public void setSize(byte size);
+	public void setCurrentSize(int size);
 
 	/**
 	 * Get the crop's plant growth stat.
@@ -56,14 +46,14 @@ public interface ICropTile {
 	 *
 	 * @return Plant growth stat
 	 */
-	public byte getGrowth();
+	public int getStatGrowth();
 
 	/**
 	 * Set the crop's plant growth stat.
 	 *
 	 * @param growth Plant growth stat
 	 */
-	public void setGrowth(byte growth);
+	public void setStatGrowth(int growth);
 
 	/**
 	 * Get the crop's plant gain stat.
@@ -71,14 +61,14 @@ public interface ICropTile {
 	 *
 	 * @return Plant gain stat
 	 */
-	public byte getGain();
+	public int getStatGain();
 
 	/**
 	 * Set the crop's plant gain stat.
 	 *
 	 * @param gain Plant gain stat
 	 */
-	public void setGain(byte gain);
+	public void setStatGain(int gain);
 
 	/**
 	 * Get the crop's plant resistance stat.
@@ -86,14 +76,58 @@ public interface ICropTile {
 	 *
 	 * @return Plant resistance stat
 	 */
-	public byte getResistance();
+	public int getStatResistance();
 
 	/**
 	 * Set the crop's plant resistance stat.
 	 *
 	 * @param resistance Plant resistance stat
 	 */
-	public void setResistance(byte resistance);
+	public void setStatResistance(int resistance);
+
+	/**
+	 * Get the crop's nutrient storage.
+	 * Ranges from 0 to 100.
+	 *
+	 * @return Crop nutrient storage
+	 */
+	public int getStorageNutrient();
+
+	/**
+	 * Set the crop's nutrient storage.
+	 *
+	 * @param storageNutrient Crop nutrient storage
+	 */
+	public void setStorageNutrient(int storageNutrient);
+
+	/**
+	 * Get the crop's hydration storage.
+	 * 0 indicates nothing, 1-10 indicate water hydration and 11-100 for hydration cells.
+	 *
+	 * @return Crop hydration storage
+	 */
+	public int getStorageWater();
+
+	/**
+	 * Set the crop's water storage.
+	 *
+	 * @param storageWater Crop water storage
+	 */
+	public void setStorageWater(int storageWater);
+
+	/**
+	 * Get the crop's Weed-Ex storage.
+	 *
+	 * @return Crop Weed-Ex storage
+	 */
+	public int getStorageWeedEX();
+
+	/**
+	 * Set the crop's Weed-Ex storage.
+	 *
+	 * @param storageWeedEX Crop Weed-Ex storage
+	 */
+	public void setStorageWeedEX(int storageWeedEX);
 
 	/**
 	 * Get the crop's plant scan level.
@@ -101,14 +135,22 @@ public interface ICropTile {
 	 *
 	 * @return Plant scan level
 	 */
-	public byte getScanLevel();
+	public int getScanLevel();
 
 	/**
 	 * Set the crop's plant scan level.
 	 *
 	 * @param scanLevel Plant scan level
 	 */
-	public void setScanLevel(byte scanLevel);
+	public void setScanLevel(int scanLevel);
+
+	public int getGrowthPoints();
+
+	public void setGrowthPoints(int growthPoints);
+
+	public boolean isCrossingBase();
+
+	public void setCrossingBase(boolean crossingBase);
 
 	/**
 	 * Get the crop's plant custom data, stored alongside the crop.
@@ -119,50 +161,6 @@ public interface ICropTile {
 	public NBTTagCompound getCustomData();
 
 	/**
-	 * Get the crop's nutrient storage.
-	 * Ranges from 0 to 100.
-	 *
-	 * @return Crop nutrient storage
-	 */
-	public int getNutrientStorage();
-
-	/**
-	 * Set the crop's nutrient storage.
-	 *
-	 * @param nutrientStorage Crop nutrient storage
-	 */
-	public void setNutrientStorage(int nutrientStorage);
-
-	/**
-	 * Get the crop's hydration storage.
-	 * 0 indicates nothing, 1-10 indicate water hydration and 11-100 for hydration cells.
-	 *
-	 * @return Crop hydration storage
-	 */
-	public int getHydrationStorage();
-
-	/**
-	 * Set the crop's hydration storage.
-	 *
-	 * @param hydrationStorage Crop hydration storage
-	 */
-	public void setHydrationStorage(int hydrationStorage);
-
-	/**
-	 * Get the crop's Weed-Ex storage.
-	 *
-	 * @return Crop Weed-Ex storage
-	 */
-	public int getWeedExStorage();
-
-	/**
-	 * Set the crop's Weed-Ex storage.
-	 *
-	 * @param weedExStorage Crop Weed-Ex storage
-	 */
-	public void setWeedExStorage(int weedExStorage);
-
-	/**
 	 * Get the crop's humidity.
 	 * Ranges from 0 (dry) to 10 (humid).
 	 * Updates every couple of seconds or when an update is requested.
@@ -171,7 +169,7 @@ public interface ICropTile {
 	 *
 	 * @return Crop humidity level
 	 */
-	public byte getHumidity();
+	public int getHumidity();
 
 	/**
 	 * Get the crop's nutrient level.
@@ -182,7 +180,7 @@ public interface ICropTile {
 	 *
 	 * @return Crop nutrient level
 	 */
-	public byte getNutrients();
+	public int getNutrients();
 
 	/**
 	 * Get the crop's air quality.
@@ -193,7 +191,7 @@ public interface ICropTile {
 	 *
 	 * @return Crop air quality
 	 */
-	public byte getAirQuality();
+	public int getAirQuality();
 
 	/**
 	 * Get the crop's world.
@@ -219,27 +217,23 @@ public interface ICropTile {
 	/**
 	 * Pick the crop, removing and giving seeds for the plant.
 	 *
-	 * @param manual whether it was done by hand (not automated)
 	 * @return true if successfully picked
 	 */
-	public boolean pick(boolean manual);
+	public boolean pick();
 
 	/**
 	 * Harvest the crop, turning it into gain and resetting its size.
 	 * drop output on ground
-	 * @param manual
-	 * @return true if successfully harvested
 	 */
-	public boolean harvest(boolean manual);
+	public boolean performManualHarvest();
 
 	/**
 	 * Harvest the crop, turning it into gain and resetting its size.
 	 * drop output on ground
-	 * @param Optimal force check getOptimalHavestSize() for harvest
-	 * @return ItemStack[] of harvest output
+	 * @return List<ItemStack> of harvest output
 	 */
 
-	ItemStack[] harvest_automated(boolean Optimal);
+	public List<ItemStack> performHarvest();
 
 	/**
 	 * Fully clears the crop without dropping anything.
@@ -253,7 +247,7 @@ public interface ICropTile {
 
 	/**
 	 * Check if a block is under the farmland containing the crop.
-	 * Searches up to 2 blocks below the farmland or an air space, whichever appears first.
+	 * Searches up to 4 blocks below the farmland or an air space, whichever appears first.
 	 *
 	 * @param block block to search
 	 * @return Whether the block was found
@@ -261,20 +255,23 @@ public interface ICropTile {
 	public boolean isBlockBelow(Block block);
 
 	/**
+	 * Check if a block is under the farmland containing the crop.
+	 * Searches up to 4 blocks below the farmland or an air space, whichever appears first.
+	 *
+	 * @param oreDictionaryName blocks to search
+	 * @return Whether the blocks were found
+	 */
+	public boolean isBlockBelow(String oreDictionaryName);
+
+	/**
 	 * Generate plant seeds with the given parameters.
 	 *
 	 * @param crop plant
 	 * @param growth plant growth stat
 	 * @param gain plant gain stat
-	 * @param resis plant resistance stat
+	 * @param resistance plant resistance stat
 	 * @param scan plant scan level
 	 * @return Plant seed item
 	 */
-	public ItemStack generateSeeds(CropCard crop, byte growth, byte gain, byte resis, byte scan);
-
-	/**
-	 * @deprecated Use the CropCard version instead.
-	 */
-	@Deprecated
-	public ItemStack generateSeeds(short plant, byte growth, byte gain, byte resis, byte scan);
+	public ItemStack generateSeeds(CropCard crop, int growth, int gain, int resistance, int scan);
 }

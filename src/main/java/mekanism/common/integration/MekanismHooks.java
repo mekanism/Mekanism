@@ -1,13 +1,11 @@
 package mekanism.common.integration;
 
-import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.IMachineRecipeManager.RecipeIoContainer;
 import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeInputOreDict;
-import ic2.api.recipe.RecipeOutput;
 import ic2.api.recipe.Recipes;
 
 import java.util.List;
-import java.util.Map;
 
 import li.cil.oc.api.Driver;
 import mekanism.common.Mekanism;
@@ -74,11 +72,11 @@ public final class MekanismHooks
 	@Method(modid = "IC2")
 	public void hookIC2Recipes()
 	{
-		for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
+		for(RecipeIoContainer entry : Recipes.macerator.getRecipes())
 		{
-			if(!entry.getKey().getInputs().isEmpty())
+			if(!entry.input.getInputs().isEmpty())
 			{
-				List<String> names = MekanismUtils.getOreDictName(entry.getKey().getInputs().get(0));
+				List<String> names = MekanismUtils.getOreDictName(entry.input.getInputs().get(0));
 
 				for(String name : names)
 				{
@@ -86,7 +84,7 @@ public final class MekanismHooks
 
 					if(name.startsWith("ingot"))
 					{
-						RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+						RecipeHandler.addCrusherRecipe(entry.input.getInputs().get(0), entry.output.items.get(0));
 						did = true;
 					}
 
@@ -99,20 +97,20 @@ public final class MekanismHooks
 		}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(MekanismItems.Dust, 2, Resource.OSMIUM.ordinal()));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, false, new ItemStack(MekanismItems.Dust, 2, Resource.OSMIUM.ordinal()));
 		} catch(Exception e) {}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(MekanismItems.OtherDust, 1, 5));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Items.GLOWSTONE_DUST));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(MekanismItems.OtherDust, 1, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, false, new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, false, new ItemStack(MekanismItems.OtherDust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, false, new ItemStack(Items.GLOWSTONE_DUST));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, false, new ItemStack(MekanismItems.OtherDust, 1, 1));
 		} catch(Exception e) {}
 
 		try {
 			for(Resource resource : Resource.values())
 			{
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clump" + resource.getName()), null, new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clump" + resource.getName()), null, false, new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
 			}
 		} catch(Exception e) {}
 
@@ -120,7 +118,7 @@ public final class MekanismHooks
 
 		tag.setInteger("amplification", 50000);
 
-		Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(MekanismItems.EnrichedAlloy), 1), tag);
+		Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(MekanismItems.EnrichedAlloy), 1), tag, false);
 	}
 
 	@Method(modid = "ComputerCraft")

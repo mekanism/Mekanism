@@ -38,7 +38,7 @@ loading the chunk which contains it or after the user placing the block.
 The energy net implementation will use the event to add it to its energy grid map, taking it into
 account for further energy transfers.
 
-You can detect the loading by either using the 1st iteration of updateEntity() or by waiting for
+You can detect the loading by either using the 1st iteration of update() or by waiting for
 the next world tick after TileEntity.validate(). The 2nd approach is obviously more sophisticated
 and requires to use some tick queuing mechanism.
 

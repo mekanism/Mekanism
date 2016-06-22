@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergyAcceptor;
+import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 
@@ -136,9 +137,9 @@ public final class CableUtils
 				return true;
 			}
 		}
-		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergyAcceptor)
+		else if(MekanismUtils.useIC2() && orig instanceof IEnergyEmitter && tileEntity instanceof IEnergyAcceptor)
 		{
-			if(((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(orig, side.getOpposite()))
+			if(((IEnergyAcceptor)tileEntity).acceptsEnergyFrom((IEnergyEmitter)orig, side.getOpposite()))
 			{
 				return true;
 			}
@@ -258,7 +259,7 @@ public final class CableUtils
 		}
 		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink)
 		{
-			if(((IEnergySink)tileEntity).acceptsEnergyFrom((TileEntity)from, side.getOpposite()))
+			if(((IEnergySink)tileEntity).acceptsEnergyFrom(from, side.getOpposite()))
 			{
 				double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)tileEntity).getSinkTier())*general.FROM_IC2);
 				toSend = Math.min(Math.min(toSend, ((IEnergySink)tileEntity).getDemandedEnergy()*general.FROM_IC2), Integer.MAX_VALUE);

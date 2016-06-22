@@ -3,7 +3,9 @@ package mekanism.generators.common.tile.turbine;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
+import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 
 import java.util.EnumSet;
@@ -16,7 +18,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.content.turbine.TurbineFluidTank;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -97,13 +98,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
 			
 			if(registered != this)
 			{
 				if(registered instanceof IEnergyTile)
 				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
+					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
 				}
 				else if(registered == null)
 				{
@@ -119,11 +120,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
+				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
 			}
 		}
 	}
@@ -252,14 +253,14 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
+	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
 		return false;
 	}
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction)
+	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
 		return getOutputtingSides().contains(direction) && receiver instanceof IEnergyConductor;
 	}

@@ -3,7 +3,10 @@ package ic2.api.event;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
@@ -25,88 +28,91 @@ public class LaserEvent extends WorldEvent {
 	// Determines whether the laser will explode upon hitting something
 	public boolean explosive, smelt;
 
-	public LaserEvent(World world1, Entity lasershot1, EntityLivingBase owner1, float range1, float power1, int blockBreaks1, boolean explosive1, boolean smelt1) {
-		super(world1);
-		this.lasershot = lasershot1;
-		this.owner = owner1;
-		this.range = range1;
-		this.power = power1;
-		this.blockBreaks = blockBreaks1;
-		this.explosive = explosive1;
-		this.smelt = smelt1;
+	public LaserEvent(World world, Entity lasershot, EntityLivingBase owner, float range, float power, int blockBreaks, boolean explosive, boolean smelt) {
+		super(world);
+
+		this.lasershot = lasershot;
+		this.owner = owner;
+		this.range = range;
+		this.power = power;
+		this.blockBreaks = blockBreaks;
+		this.explosive = explosive;
+		this.smelt = smelt;
 	}
 
 	/**
 	 * Event when the Laser is getting shot by a Player.
-	 * 
+	 *
 	 * The Item is the Laser Gun which the "Player" has shot
 	 */
 	public static class LaserShootEvent extends LaserEvent {
-		ItemStack laseritem;
+		ItemStack laserItem;
 
-		public LaserShootEvent(World world1, Entity lasershot1, EntityLivingBase owner1, float range1, float power1, int blockBreaks1, boolean explosive1, boolean smelt1, ItemStack laseritem1) {
-			super(world1, lasershot1, owner1, range1, power1, blockBreaks1, explosive1, smelt1);
-			this.laseritem = laseritem1;
+		public LaserShootEvent(World world, Entity lasershot, EntityLivingBase owner, float range, float power, int blockBreaks, boolean explosive, boolean smelt, ItemStack laseritem) {
+			super(world, lasershot, owner, range, power, blockBreaks, explosive, smelt);
+
+			this.laserItem = laseritem;
 		}
 	}
 
 	/**
 	 * Event when the Laser is exploding for some Reason.
-	 * 
+	 *
 	 * The Laser will no longer exist after this Event is posted as it either Explodes or despawns after the Event is fired.
 	 */
 	public static class LaserExplodesEvent extends LaserEvent {
 		// explosion strength, even that can be changed!
-		public float explosionpower, explosiondroprate, explosionentitydamage;
+		public float explosionPower, explosionDropRate, explosionEntityDamage;
 
-		public LaserExplodesEvent(World world1, Entity lasershot1, EntityLivingBase owner1, float range1, float power1, int blockBreaks1, boolean explosive1, boolean smelt1, float explosionpower1, float explosiondroprate1, float explosionentitydamage1) {
-			super(world1, lasershot1, owner1, range1, power1, blockBreaks1, explosive1, smelt1);
-			this.explosionpower = explosionpower1;
-			this.explosiondroprate = explosiondroprate1;
-			this.explosionentitydamage = explosionentitydamage1;
+		public LaserExplodesEvent(World world, Entity lasershot, EntityLivingBase owner, float range, float power, int blockBreaks, boolean explosive, boolean smelt, float explosionpower1, float explosiondroprate1, float explosionentitydamage1) {
+			super(world, lasershot, owner, range, power, blockBreaks, explosive, smelt);
+
+			this.explosionPower = explosionpower1;
+			this.explosionDropRate = explosiondroprate1;
+			this.explosionEntityDamage = explosionentitydamage1;
 		}
 	}
 
 	/**
 	 * Event when the Laser is hitting a Block
 	 * x, y and z are the Coords of the Block.
-	 * 
+	 *
 	 * Canceling this Event stops the Laser from attempting to break the Block, what is very useful for Glass.
 	 * Use lasershot.setDead() to remove the Shot entirely.
 	 */
 	public static class LaserHitsBlockEvent extends LaserEvent {
 		// targeted block, even that can be changed!
-		public int x, y, z;
-		public int side;
+		public BlockPos pos;
+		public EnumFacing side;
 		// removeBlock determines if the Block will be removed. dropBlock determines if the Block should drop something.
 		public boolean removeBlock, dropBlock;
 		public float dropChance;
 
-		public LaserHitsBlockEvent(World world1, Entity lasershot1, EntityLivingBase owner1, float range1, float power1, int blockBreaks1, boolean explosive1, boolean smelt1, int x1, int y1, int z1, int side1, float dropChance1, boolean removeBlock1, boolean dropBlock1) {
-			super(world1, lasershot1, owner1, range1, power1, blockBreaks1, explosive1, smelt1);
-			this.x = x1;
-			this.y = y1;
-			this.z = z1;
-			this.side = side1;
-			this.removeBlock = removeBlock1;
-			this.dropBlock = dropBlock1;
-			this.dropChance = dropChance1;
+		public LaserHitsBlockEvent(World world, Entity lasershot, EntityLivingBase owner, float range, float power, int blockBreaks, boolean explosive1, boolean smelt1, BlockPos pos, EnumFacing side, float dropChance, boolean removeBlock, boolean dropBlock) {
+			super(world, lasershot, owner, range, power, blockBreaks, explosive1, smelt1);
+
+			this.pos = pos;
+			this.side = side;
+			this.removeBlock = removeBlock;
+			this.dropBlock = dropBlock;
+			this.dropChance = dropChance;
 		}
 	}
 
 	/**
 	 * Event when the Laser is getting at a Living Entity
-	 * 
+	 *
 	 * Canceling this Event ignores the Entity
 	 * Use lasershot.setDead() to remove the Shot entirely.
 	 */
 	public static class LaserHitsEntityEvent extends LaserEvent {
 		// the Entity which the Laser has shot at, even the target can be changed!
-		public Entity hitentity;
+		public Entity hitEntity;
 
-		public LaserHitsEntityEvent(World world1, Entity lasershot1, EntityLivingBase owner1, float range1, float power1, int blockBreaks1, boolean explosive1, boolean smelt1, Entity hitentity1) {
-			super(world1, lasershot1, owner1, range1, power1, blockBreaks1, explosive1, smelt1);
-			this.hitentity = hitentity1;
+		public LaserHitsEntityEvent(World world, Entity lasershot, EntityLivingBase owner, float range, float power, int blockBreaks, boolean explosive, boolean smelt, Entity hitentity) {
+			super(world, lasershot, owner, range, power, blockBreaks, explosive, smelt);
+
+			this.hitEntity = hitentity;
 		}
 	}
 }

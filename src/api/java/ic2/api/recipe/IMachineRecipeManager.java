@@ -1,28 +1,30 @@
 package ic2.api.recipe;
 
-import java.util.Map;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Recipe manager interface for basic machines.
  *
- * @author RichardG, Player
+ * @author Player, RichardG
  */
-public interface IMachineRecipeManager { // TODO: merge with IMachineRecipeManagerExt
+public interface IMachineRecipeManager {
 	/**
 	 * Adds a recipe to the machine.
 	 *
+	 * Meta data format:
+	 * - thermal centrifuge: {"minHeat": 1-xxx}
+	 * - ore washing plant: {"amount": 1-8000}
+	 *
+	 * @note Replace is only as reliable as IRecipeInput.getInputs().
+	 *
 	 * @param input Recipe input
-	 * @param metadata meta data for additional recipe properties, may be null
-	 * @param outputs Recipe outputs, zero or more depending on the machine
-	 *
-	 * For the thermal centrifuge   @param metadata meta data {"minHeat": 1-xxx}
-	 * For the ore washing plant  @param metadata meta data  {"amount": 1-8000}
-	 *
+	 * @param metadata Meta data for additional recipe properties, may be null.
+	 * @param replace Replace conflicting existing recipes, not recommended, may be ignored.
+	 * @param outputs Recipe outputs, zero or more depending on the machine.
+	 * @return true on success, false otherwise, e.g. on conflicts.
 	 */
-	public void addRecipe(IRecipeInput input, NBTTagCompound metadata, ItemStack... outputs);
+	public boolean addRecipe(IRecipeInput input, NBTTagCompound metadata, boolean replace, ItemStack... outputs);
 
 	/**
 	 * Gets the recipe output for the given input.
@@ -34,11 +36,31 @@ public interface IMachineRecipeManager { // TODO: merge with IMachineRecipeManag
 	public RecipeOutput getOutputFor(ItemStack input, boolean adjustInput);
 
 	/**
-	 * Gets a list of recipes.
+	 * Get all registered recipes (optional operation).
 	 *
+	 * The method is only available if {@link #isIterable()} is true.
 	 * You're a mad evil scientist if you ever modify this.
 	 *
-	 * @return List of recipes
+	 * @return Iterable of all recipes registered to the manager.
+	 * @throws UnsupportedOperationException if {@link #isIterable()} is false.
 	 */
-	public Map<IRecipeInput, RecipeOutput> getRecipes(); // TODO: Change to iterable/collection/list
+	public Iterable<RecipeIoContainer> getRecipes();
+
+	/**
+	 * Determine whether the recipes can be iterated.
+	 *
+	 * @return true if {@link #getRecipes()} is implemented, false otherwise.
+	 */
+	public boolean isIterable();
+
+
+	public static class RecipeIoContainer {
+		public RecipeIoContainer(IRecipeInput input, RecipeOutput output) {
+			this.input = input;
+			this.output = output;
+		}
+
+		public final IRecipeInput input;
+		public final RecipeOutput output;
+	}
 }

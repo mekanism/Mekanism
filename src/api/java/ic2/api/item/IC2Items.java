@@ -2,597 +2,824 @@ package ic2.api.item;
 
 import net.minecraft.item.ItemStack;
 
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+
+
 /**
  * Provides access to IC2 blocks and items.
- * 
- * Some items can be acquired through the ore dictionary which is the recommended way.
- * The items are initialized while IC2 is being loaded - try to use ModsLoaded() or load your mod after IC2.
- * Some blocks/items can be disabled by a config setting, so it's recommended to check if they're null first.
- * 
- * Getting the associated Block/Item for an ItemStack x:
- *   Blocks: Block.blocksList[x.itemID]
- *   Items: x.getItem()
+ *
+ * Some items can be acquired through the ore dictionary which is the
+ * recommended way. The items are initialized while IC2 is being loaded - try to
+ * use ModsLoaded() or load your mod after IC2. Some blocks/items can be
+ * disabled by a config setting, so it's recommended to check if they're null
+ * first.
+ *
+ * Getting the associated Block/Item for an ItemStack x: Blocks:
+ * ((ItemBlock)x.getItem).getBlock() Items: x.getItem()
+ * Alternatively, you can direwctly call IC2Items.instance.getItem(name) or IC2Items.instance.getBlock(name)
+ *
+ * It is recommended, that you keep a reference to the Items you get here.
+ *
+ * @author Aroma1997
  */
 public final class IC2Items {
+
+	/*
+	 * To find out the name and variant of an Item/ItemStack
+	 * have that Item in your hand in-game and type "/ic2 itemNameWithVariant"
+	 */
+
 	/**
-	 * Get an ItemStack for a specific item name, example: Items.getItem("resin")
-	 * See the list below for item names.
-	 * Make sure to copy() the ItemStack if you want to modify it.
+	 * Get an ItemStack for a specific item name.
 	 *
-	 * @param name item name
+	 * @param name
+	 *            item name
+	 * @param variant
+	 *            the variant/subtype for the Item.
+	 * @return The item or null if the item does not exist or an error occurred
+	 */
+	public static ItemStack getItem(String name, String variant) {
+		if (instance == null)  {
+			return null;
+		}
+		return instance.getItemStack(name, variant);
+	}
+
+	/**
+	 * Get an ItemStack for a specific item name.
+	 *
+	 * @param name
+	 *            item name
 	 * @return The item or null if the item does not exist or an error occurred
 	 */
 	public static ItemStack getItem(String name) {
-		try {
-			if (Ic2Items == null) Ic2Items = Class.forName(getPackage() + ".core.Ic2Items");
-
-			Object ret = Ic2Items.getField(name).get(null);
-
-			if (ret instanceof ItemStack) {
-				return (ItemStack) ret;
-			}
-			return null;
-		} catch (Exception e) {
-			System.out.println("IC2 API: Call getItem failed for "+name);
-
-			return null;
-		}
+		return getItem(name, null);
 	}
-
-	/* Possible values:
-
-	// ores
-	  copperOre; 			// Copper Ore block, currently not meta sensitive, meta in ItemStack set to 0, ore dictionary: oreCopper, null with enableWorldGenOreCopper = false
-	  tinOre; 			// Tin Ore block, currently not meta sensitive, meta in ItemStack set to 0, ore dictionary: oreTin, null with enableWorldGenOreTin = false
-	  uraniumOre; 		// Tin Ore block, currently not meta sensitive, meta in ItemStack set to 0, ore dictionary: oreUranium, null with enableWorldGenOreUranium = false
-	  leadOre;            // Lead Ore Block, currently not meta sensitive,  meta in ItemStack set to 0, ore dictionary: oreLead, null with enableWorldGenOreLead = false
-
-	// rubber related
-
-	  Rubber wood block, meta reflects the state, meta in ItemStack set to 0, ore dictionary: woodRubber (with meta 0), null with enableWorldGenTreeRubber = false
-	  dropped (as an item)  -> metadata 0
-	  block, no resin spot  -> metadata 0 or 1
-	  block, wet resin spot -> metadata 2-5 (according to the side)
-	  block, dry resin spot -> metadata 8-11 (wet state + 6)
-
-	  rubberWood;
-	  rubberLeaves; 		// Rubber Leaves block, currently not meta sensitive, meta in ItemStack set to 0, null with enableWorldGenTreeRubber = false
-	  rubberSapling; 		// Rubber Sapling block, currently not meta sensitive, meta in ItemStack set to 0, null with enableWorldGenTreeRubber = false
-	  resinSheet; 		// Resin Sheet block, currently not meta sensitive
-	  rubberTrampoline; 	// Rubber Trampoline block, meta reflects internal state, meta in ItemStack set to 0
-
-	// building/storage
-	  ironFence; 				// Iron Fence block, currently not meta sensitive
-
-	  reinforcedStone; 		// Reinforced Stone block, currently not meta sensitive
-	  reinforcedGlass; 		// Reinforced Glass block, currently not meta sensitive
-	  reinforcedDoorBlock; 	// Reinforced Door block, meta reflects the state (see vanilla doors), meta in ItemStack set to 0
-
-	  constructionreinforcedFoam; //  Construction Reinforced Foam block, currently not meta sensitive
-	  constructionFoam; 		// Construction Foam block, currently not meta sensitive
-	  constructionFoamWall; 	// Construction Foam Wall block, meta = color, implements IPaintableBlock
-	  scaffold; 				// Scaffold block, meta reflects internal physical model data
-	  ironScaffold; 				// Scaffold block, meta reflects internal physical model data
-
-	  bronzeBlock; 			// Bronze block, meta sensitive
-	  copperBlock; 			// Copper block, meta sensitive
-	  tinBlock; 				// Tin block, meta sensitive
-	  uraniumBlock; 			// Uranium block, meta sensitive
-	  leadBlock;          // Uranium block, meta sensitive
-
-	// cables (when placed as a block, inventory items are different; TE implements IEnergyConductor)
-
-	  copperCableBlock; 				// Copper Cable block, meta sensitive
-	  insulatedCopperCableBlock; 		// Insulated Copper Cable block, meta sensitive
-
-	  goldCableBlock; 				// Gold Cable block, meta sensitive
-	  insulatedGoldCableBlock; 		// Insulated Gold Cable block, meta sensitive
-	  doubleInsulatedGoldCableBlock; 	// Double Insulated Gold Cable block, meta sensitive
-
-	  ironCableBlock; 				// Iron Cable block, meta sensitive
-	  insulatedIronCableBlock; 		// Insulated Iron Cable block, meta sensitive
-	  doubleInsulatedIronCableBlock; 	// Double Insulated Iron Cable block, meta sensitive
-	  trippleInsulatedIronCableBlock; // Tripple Insulated Iron Cable block, meta sensitive
-
-	  glassFiberCableBlock; 			// Glass Fiber Cable block, meta sensitive
-
-	  tinCableBlock; 					// Tin Cable block, meta sensitive
-	  insulatedtinCableBlock;         // Insulated Tin Cable item, meta sensitive
-	  detectorCableBlock; 			// Detector Cable block, meta sensitive
-	  splitterCableBlock; 			// Splitter Cable block, meta sensitive
-
-	// generators + related (TE implements IEnergySource ex. reactorChamber)
-
-	  generator; 				// Generator block, meta sensitive
-	  geothermalGenerator; 	// Geothermal Generator block, meta sensitive
-	  waterMill; 				// Water Mill block, meta sensitive
-	  solarPanel; 			// Solar Panel block, meta sensitive
-	  windMill; 				// Wind Mill block, meta sensitive
-	  nuclearReactor; 		// Nuclear Reactor block, meta sensitive
-	  reactorChamber; 		// Reactor Chamber block, currently not meta sensitive
-	  RTGenerator;             //  Radioisotope Thermoelectric Generator block, meta sensitive
-	  semifluidGenerator;      //  Semifluid Generator block, meta sensitive
-
-
-	// energy storages (TE implements IEnergySource and IEnergyConductor)
-
-	  batBox; 			// BatBox block, meta sensitive
-	  cesuUnit;           // CESU Unit block, meta sensitive
-	  mfeUnit; 			// MFE Unit block, meta sensitive
-	  mfsUnit; 			// MFS Unit block, meta sensitive
-
-	// transformers (TE implements IEnergySource and IEnergyConductor)
-
-	  lvTransformer; 		// LV Transformer block, meta sensitive
-	  mvTransformer; 		// MV Transformer block, meta sensitive
-	  hvTransformer; 		// HV Transformer block, meta sensitive
-	  evTransformer; 		// EV Transformer block, meta sensitive
-
-	// machines + related (TE implements IEnergySink ex. machine, miningPipe, miningPipeTip)
-
-	  machine; 			// Machine block, meta sensitive
-	  advancedMachine; 	// Advanced Machine block, meta sensitive
-
-	  ironFurnace; 		// Iron Furnace block, meta sensitive
-	  electroFurnace; 	// Electro Furnace block, meta sensitive
-	  macerator; 			// Macerator block, meta sensitive
-	  extractor; 			// Extractor block, meta sensitive
-	  compressor; 		// Compressor block, meta sensitive
-	  canner; 			// Canner block, meta sensitive
-	  miner; 				// Miner block, meta sensitive
-	  pump; 				// Pump block, meta sensitive
-	  magnetizer;			// Magnetizer block, meta sensitive
-	  electrolyzer; 		// Electrolyzer block, meta sensitive
-	  recycler; 			// Recycler block, meta sensitive
-	  inductionFurnace; 	// Induction Furnace block, meta sensitive
-	  massFabricator; 	// Mass Fabricator block, meta sensitive
-	  terraformer;		// Terraformer block, meta sensitive
-	  teleporter; 		// Teleporter block, meta sensitive
-	  teslaCoil; 			// Tesla Coil block, meta sensitive
-	  luminator; 			// Passive (dark) Luminator block, meta = facing
-	  activeLuminator; 	// Active (bright) Luminator block, meta = facing
-	  centrifuge;         // Centrifuge block, meta sensitive
-	  metalformer;         // MetalFormer block , meta sensitive
-	  orewashingplant;    // Ore Wasching Plant, Meta sensitive
-	  patternstorage;    // Pattern Storage, Meta sensitive
-	  scanner;           // Scanner, Meta sensitive
-	  replicator;           // Replicator, Meta sensitive
-
-	  miningPipe; 		// Mining Pipe block, currently not meta sensitive, meta in ItemStack set to 0
-	  miningPipeTip; 		// Mining Pipe Tip block, currently not meta sensitive, meta in ItemStack set to 0
-
-
-	// personal blocks
-
-	  personalSafe; 		// Personal Safe block, meta sensitive
-	  tradeOMat; 			// Trade-O-Mat block, meta sensitive
-	  energyOMat; 		// Energy-O-Mat block, meta sensitive
-
-	// explosives
-
-	  industrialTnt; 			// Industrial TNT block, currently not meta sensitive
-	  nuke; 					// Nuke block, currently not meta sensitive
-	  dynamiteStick; 			// Dynamite Stick block, meta = placement, meta in ItemStack set to 0
-	  dynamiteStickWithRemote; // Dynamite Stick with Remote block, meta = placement, meta in ItemStack set to 0
-
-	// Agriculture Stuff
-
-	  crop; // Crop Block, empty, not meta sensitive
-	  cropmatron; // Cropmatron machien block, meta sensititve
-
-	// ----- items -----
-
-	// rubber + related
-	  resin; 				// Resin item, currently not meta sensitive
-	  rubber; 			// Rubber item, currently not meta sensitive, ore dictionary: itemRubber
-
-	  FluidCell;
-
-	//  Lithium -> Tritium
-
-	  reactorLithiumCell;    // LithiumCell use in Reaktor, , meta = damage value
-	  TritiumCell;           // Tritium, currently not meta sensitive
-
-	// Nuclear Fuel
-
-	  UranFuel;               // , currently not meta sensitive
-	  MOXFuel;                // , currently not meta sensitive
-	  Plutonium;              // , currently not meta sensitive
-	  smallPlutonium;         // , currently not meta sensitive
-	  Uran235;                // , currently not meta sensitive
-	  smallUran235;           // , currently not meta sensitive
-	  Uran238;                // , currently not meta sensitive
-
-	  reactorDepletedUraniumSimple;   // Depleted Uranium Cell items, currently not meta sensitive
-	  reactorDepletedUraniumDual;
-	  reactorDepletedUraniumQuad;
-	  reactorDepletedMOXSimple;   // Depleted MOX Cell items, currently not meta sensitive
-	  reactorDepletedMOXDual;
-	  reactorDepletedMOXQuad;
-	  reactorMOXSimple;   // Depleted MOX Cell items, currently not meta sensitive
-	  reactorMOXDual;
-	  reactorMOXQuad;
-	  RTGPellets;
-
-
-	// Recipe Parts
-
-	  coil;                   // Coil,  meta sensitive
-	  elemotor;               // electric motor,  meta sensitive
-	  powerunit;              // Item Power Unit,  meta sensitive
-	  powerunitsmall;              // Item Power Unit,  meta sensitive
-
-
-	// ItemCasing
-
-	  casingcopper;           //  Copper ItemCasing,  meta sensitive
-	  casingtin;              //  Tin ItemCasing,  meta sensitive
-	  casingbronze;           //  Bronze ItemCasing,  meta sensitive
-	  casinggold;             //  Gold ItemCasing,  meta sensitive
-	  casingiron;             //  Iron ItemCasing,  meta sensitive
-	@Deprecated
-	  casingadviron;          //  Refined Iron ItemCasing,  meta sensitive
-	  casinglead;             //  Lead ItemCasing,  meta sensitive
-
-	// Crushed Ore
-	  crushedIronOre;       // Crushed Iron Ore,  meta sensitive
-	  crushedCopperOre;     // Crushed Copper Ore,  meta sensitive
-	  crushedGoldOre;       // Crushed Gold Ore,  meta sensitive
-	  crushedTinOre;        // Crushed Tin Ore,  meta sensitive
-	  crushedUraniumOre;    // Crushed Uranium Ore,  meta sensitive
-	  crushedSilverOre;     // Crushed Silver Ore,  meta sensitive
-	  crushedLeadOre;       // Crushed Lead Ore,  meta sensitive
-
-
-	//Purify Crushed Ore
-	  purifiedCrushedIronOre;       // Purify Crushed Iron Ore,  meta sensitive
-	  purifiedCrushedCopperOre;     // Purify Crushed Copper Ore,  meta sensitive
-	  purifiedCrushedGoldOre;       // Purify Crushed Gold Ore,  meta sensitive
-	  purifiedCrushedTinOre;        // Purify Crushed Tin Ore,  meta sensitive
-	  purifiedCrushedUraniumOre;    // Purify Crushed Uranium Ore,  meta sensitive
-	  purifiedCrushedSilverOre;     // Purify Crushed Silver Ore,  meta sensitive
-	  purifiedCrushedLeadOre;       // Purify Crushed Lead Ore,  meta sensitive
-
-	// dusts
-	  stoneDust;
-	  bronzeDust; 		// Bronze Dust item,   meta sensitive, ore dictionary: dustBronze
-	  clayDust; 			// Clay Dust item,   meta sensitive, ore dictionary: dustClay
-	  coalDust; 			// Coal Dust item,   meta sensitive, ore dictionary: dustCoal
-	  copperDust; 		// Copper Dust item,   meta sensitive, ore dictionary: dustCopper
-	  goldDust; 			// Gold Dust item,   meta sensitive, ore dictionary: dustGold
-	  ironDust; 			// Iron Dust item,   meta sensitive, ore dictionary: dustIron
-	  silverDust; 		// Silver Dust item,   meta sensitive, ore dictionary: dustSilver
-	  tinDust; 			// Tin Dust item,   meta sensitive, ore dictionary: dustTin
-	  hydratedCoalDust; 	// Hydrated Coal Dust item,   meta sensitive
-	  leadDust;           // Lead Dust item,   meta sensitive, ore dictionary: dustLead
-	  obsidianDust;       // Obsidian Dust item,   meta sensitive, ore dictionary: dustObsidian
-	  lapiDust;           // Lapi Dust item,   meta sensitive, ore dictionary: dustLapi
-	  sulfurDust;         // Sulfur Dust item,   meta sensitive, ore dictionary: dustSulfur
-	  lithiumDust;        // Lithium dust,   meta sensitive, ore dictionary: dustLithium
-
-	// small dusts
-
-	  smallIronDust;      // Small Iron Dust item,  meta sensitive
-	  smallCopperDust;    // Small Copper Dust item, meta sensitive
-	  smallGoldDust;      // Small Gold Dust item,  meta sensitive
-	  smallTinDust;       // Small Tin Dust item,  meta sensitive
-	  smallSilverDust;    // Small Silver Dust item,  meta sensitive
-	  smallLeadDust;      // Small Lead Dust item,  meta sensitive
-	  smallSulfurDust;    // Small Sulfur Dust item,  meta sensitive
-	  smallLithiumDust;   // Small Lithium Dust item,  meta sensitive
-
-
-	// ingots
-	@Deprecated
-	  refinedIronIngot; 	// Refined Iron Ingot item, currently not meta sensitive, ore dictionary: ingotRefinedIron
-	  copperIngot; 		// Copper Ingot item, currently not meta sensitive, ore dictionary: ingotCopper
-	  tinIngot; 			// Tin Ingot item, currently not meta sensitive, ore dictionary: ingotTin
-	  bronzeIngot; 		// Bronze Ingot item, currently not meta sensitive, ore dictionary: ingotBronze
-	  mixedMetalIngot; 	// Mixed Metal Ingot item, currently not meta sensitive
-	  leadIngot;          // Lead Ingot item, currently not meta sensitive
-
-
-	// tools/weapons (without electric tools)
-	  treetap; 					// Treetap item, meta = damage value
-	  wrench; 					// Wrench item, meta = damage value
-	  cutter; 					// Insulation Cutter item, meta = damage value
-	  constructionFoamSprayer; 	// Construction Foam Sprayer item, meta = charges (as of v1.45)
-
-	  bronzePickaxe; 		// Bronze Pickaxe item, meta = damage value
-	  bronzeAxe; 			// Bronze Axe item, meta = damage value
-	  bronzeSword; 		// Bronze Sword item, meta = damage value
-	  bronzeShovel; 		// Bronze Shovel item, meta = damage value
-	  bronzeHoe; 			// Bronze Hoe item, meta = damage value
-
-	  ForgeHammer;             // Refine Iron Hammer item, meta = damage value
-
-	// el. tools/devices/weapons
-	  miningDrill; 		// Mining Drill item, meta = damage value for charge level
-	  diamondDrill; 		// Diamond Tipped Mining Drill item, meta = damage value for charge level
-	  iridiumDrill;		// Iridium Tipped Mining Drill item, meta = damage value for charge level
-	  chainsaw; 			// Chainsaw item, meta = damage value for charge level
-	  electricWrench;		// Electric Wrench item, meta = damage value for charge level
-	  electricTreetap;	// Electric Treetap item, meta = damage value for charge level
-	  miningLaser; 		// Mining Laser item, meta = damage value for charge level
-
-	  ecMeter; 			// EC-Mater item, meta = itemdata db index (as of v1.45)
-	  odScanner; 			// Ore Density Scanner item, meta = damage value for charge level
-	  ovScanner; 			// Ore Value Scanner item, meta = damage value for charge level
-	  obscurator;			// Obscurator item, meta = damage value for charge level
-
-	  frequencyTransmitter; // Frequency Transmitter item, meta = itemdata db index (as of v1.45)
-
-	  nanoSaber; 			// Idle Nano Saber item, meta = damage value for charge level
-	  enabledNanoSaber; 	// Enabled Nano Saber item, meta = damage value for charge level
-
-	  toolbox; 			// Open/Empty toolbox, meta = Open (0) / Closed (1)
-
-	// armor/wearable
-	  hazmatHelmet; 		// Hazmat Helmet item, meta = damage value
-	  hazmatChestplate; 	// Hazmat Chestplate item, meta = damage value
-	  hazmatLeggings; 	// Hazmat Leggings item, meta = damage value
-	  hazmatBoots; 		// Hazmat Boots item, meta = damage value
-
-	  bronzeHelmet; 		// Bronze Helmet Armor item, meta = damage value
-	  bronzeChestplate; 	// Bronze Chestplate Armor item, meta = damage value
-	  bronzeLeggings; 	// Bronze Leggings Armor item, meta = damage value
-	  bronzeBoots; 		// Bronze Boots Armor item, meta = damage value
-
-	  compositeArmor; 	// Composite Armor item, meta = damage value for charge level
-
-	  nanoHelmet; 		// Nano Helmet Armor item, meta = damage value for charge level
-	  nanoBodyarmor; 		// Nano Bodyarmor item, meta = damage value for charge level
-	  nanoLeggings; 		// Nano Leggings Armor item, meta = damage value for charge level
-	  nanoBoots; 			// Nano Boots Armor item, meta = damage value for charge level
-
-	  quantumHelmet; 		// Quantum Helmet Armor item, meta = damage value for charge level
-	  quantumBodyarmor; 	// Quantum Bodyarmor item, meta = damage value for charge level
-	  quantumLeggings; 	// Quantum Leggings Armor item, meta = damage value for charge level
-	  quantumBoots; 		// Quantum Boots Armor item, meta = damage value for charge level
-
-	  jetpack; 			// Jetpack item, meta = damage value for fuel level
-	  electricJetpack; 	// Electric Jetpack item, meta = damage value for charge level
-
-	  batPack; 			// BatPack item, meta = damage value for charge level
-	  advbatPack; 		// Adv.BatPack item, meta = damage value for charge level
-	  lapPack; 			// LapPack item, meta = damage value for charge level
-	  energyPack; 		// EnergyPack item, meta = damage value for charge level
-
-	  cfPack; 			// CF Pack item, meta = charges (as of v1.45)
-	  solarHelmet;		// Solar Helmet, currently not meta sensitive
-	  staticBoots;		// Static Boots, currently not meta sensitive
-	  nightvisionGoggles;	// Nightvision Goggles, meta = damage value for charge level
-
-	// batteries
-	  reBattery; 			// Empty RE Battery item, currently not meta sensitive
-	  chargedReBattery; 	// RE Battery item, meta = damage value for charge level
-	  advBattery;         // Adv Batteryitem, meta = damage value for charge level
-	  energyCrystal; 		// Energy Crystal item, meta = damage value for charge level
-	  lapotronCrystal; 	// Lapotron Crystal item, meta = damage value for charge level
-	  suBattery; 			// SU Battery item, meta = damage value for charge level
-
-	// cables
-	  copperCableItem; 				// Copper Cable item, meta sensitive
-	  insulatedCopperCableItem; 		// Insulated Copper Cable item, meta sensitive
-
-	  goldCableItem; 					// Gold Cable item, meta sensitive
-	  insulatedGoldCableItem; 		// Insulated Gold Cable item, meta sensitive
-
-	@Deprecated
-	  doubleInsulatedGoldCableItem; 	// Double Insulated Gold Cable item, meta sensitive
-
-	  ironCableItem; 					// Iron Cable item, meta sensitive
-	  insulatedIronCableItem; 		// Insulated Iron Cable item, meta sensitive
-
-	@Deprecated
-	  doubleInsulatedIronCableItem; 	// Double Insulated Iron Cable item, meta sensitive
-	@Deprecated
-	  trippleInsulatedIronCableItem; 	// Tripple Insulated Iron Cable item, meta sensitive
-	  insulatedTinCableItem;
-	  glassFiberCableItem; 			// Glass Fiber Cable item, meta sensitive
-	  tinCableItem; 					// Tin Cable item, meta sensitive
-
-
-	  detectorCableItem; 				// Detector Cable item, meta sensitive
-	  splitterCableItem; 				// Splitter Cable item, meta sensitive
-
-	// cells/containers (without reactor components)
-
-	  cell; 					// Empty Cell item, meta sensitive
-	  lavaCell; 				// Lava Cell item,  meta sensitive
-	  waterCell; 				// Water Cell item, meta sensitive
-	  UuMatterCell;			// UUMatter Cell item, meta sensitive
-	  CFCell;					// constructionFoam Cell item, meta sensitive
-
-
-	  fuelRod;                // Empy Fuel Rod item, currently not meta sensitive
-	  hydratedCoalCell; 		// Hydrated Coal Cell item, currently not meta sensitive
-	  bioCell; 				// Bio Cell item, currently not meta sensitive
-	  coalfuelCell; 			// Coalfuel Cell item, currently not meta sensitive
-	  biofuelCell; 			// Biofuel Cell item, currently not meta sensitive
-	  electrolyzedWaterCell; 	// Electrolyzed Water Cell item, currently not meta sensitive
-	  airCell; 				// Compressed Air item, currently not meta sensitive
-
-	  fuelCan; 				// Empty Fuel Can item, currently not meta sensitive
-	  filledFuelCan; 			// Fuel Can item, meta = fuel value (as of v1.45)
-
-	  tinCan; 				// Empty Tin Can item, currently not meta sensitive
-	  filledTinCan; 			// Filled Tin Can item, currently not meta sensitive
-
-	// reactor components
-	  reactorUraniumSimple; 	   // Uranium Cell items, meta = consumed uranium ticks
-	  reactorUraniumDual;
-	  reactorUraniumQuad;
-
-	  reactorCoolantSimple;
-	  reactorCoolantTriple ;		// Coolant Cell item, NBT for heat-storage, meta is 0-10000 for display
-	  reactorCoolantSix;
-
-	  reactorPlating; 			// Integrated Reactor Plating item, currently not meta sensitive
-	  reactorPlatingHeat;
-	  reactorPlatingExplosive;
-
-	  reactorHeatSwitch;	// Integrated Heat Disperser item,  NBT for heat-storage, meta is 0-10000 for display
-	  reactorHeatSwitchCore;
-	  reactorHeatSwitchSpread;
-	  reactorHeatSwitchDiamond;
-
-	  reactorVent;			// Heat Venting component,  NBT for heat-storage, meta is 0-10000 for display
-	  reactorVentCore;
-	  reactorVentGold;
-	  reactorVentSpread;// Special: Does not store heat
-	  reactorVentDiamond;
-
-	  reactorReflector;			// Increase efficiency without additional ticks,  NBT for heat-storage, meta is 0-10000 for display
-	  reactorReflectorThick;			// Increase efficiency without additional ticks,   NBT for heat-storage, meta is 0-10000 for display
-	  reactorCondensator;			// Consumes redstone to absorb heat, NBT for storage, meta is 0-10000 for display
-	  reactorCondensatorLap;			// Consumes redstone/lapis to absorb heat, mNBT for storage, meta is 0-10000 for display
-
-	// terraformer blueprints
-	  terraformerBlueprint; 				// Empty Terraformer Blueprint item, currently not meta sensitive
-	  cultivationTerraformerBlueprint; 	// Cultivation Terraformer Blueprint item, currently not meta sensitive
-	  irrigationTerraformerBlueprint; 	// Irrigation Terraformer Blueprint item, currently not meta sensitive
-	  chillingTerraformerBlueprint; 		// Chilling Terraformer Blueprint item, currently not meta sensitive
-	  desertificationTerraformerBlueprint; // Desertification Terraformer Blueprint item, currently not meta sensitive
-	  flatificatorTerraformerBlueprint; 	// Flatificator Terraformer Blueprint item, currently not meta sensitive
-	  mushroomTerraformerBlueprint; 	    // Mushroom Terraformer Blueprint item, currently not meta sensitive
-
-	// diamond chain
-	  coalBall; 			// Coal Ball item, currently not meta sensitive
-	  compressedCoalBall; // Compressed Coal Ball item, currently not meta sensitive
-	  coalChunk; 			// Coal Chunk item, currently not meta sensitive
-	  industrialDiamond; 	// Industrial Diamond item, currently not meta sensitive, DEPRECATED
-
-	// recycler chain
-	  scrap; 				// Scrap item, currently not meta sensitive
-	  scrapBox; 			// Scrap Box item, currently not meta sensitive
-
-	// fuel production chain
-	  hydratedCoalClump; 		// Hydrated Coal Clump item, currently not meta sensitive
-	  plantBall; 				// Plant Ball item, currently not meta sensitive
-	  compressedPlantBall; 	// Compressed Plant Ball item, currently not meta sensitive
-
-	// painting
-	  painter; 			// Painter item, currently not meta sensitive
-
-	  blackPainter; 		// Black Painter item, meta = damage value
-	  redPainter; 		// Red Painter item, meta = damage value
-	  greenPainter; 		// Green Painter item, meta = damage value
-	  brownPainter; 		// Brown Painter item, meta = damage value
-	  bluePainter; 		// Blue Painter item, meta = damage value
-	  purplePainter; 		// Purple Painter item, meta = damage value
-	  cyanPainter; 		// Cyan Painter item, meta = damage value
-	  lightGreyPainter; 	// Light Grey Painter item, meta = damage value
-	  darkGreyPainter; 	// Dark Grey Painter item, meta = damage value
-	  pinkPainter; 		// Pink Painter item, meta = damage value
-	  limePainter; 		// Lime Painter item, meta = damage value
-	  yellowPainter; 		// Yellow Painter item, meta = damage value
-	  cloudPainter; 		// Cloud Painter item, meta = damage value
-	  magentaPainter; 	// Magenta Painter item, meta = damage value
-	  orangePainter; 		// Orange Painter item, meta = damage value
-	  whitePainter; 		// White Painter item, meta = damage value
-
-	// explosives + related
-	  dynamite; 			// Throwable Dynamite item, currently not meta sensitive
-	  stickyDynamite; 	// Throwable Sticky Dynamite item, currently not meta sensitive
-
-	  remote; 			// Dynamite Remote item, currently not meta sensitive
-
-	// misc intermediate recipe ingredients
-	  electronicCircuit; 	// Electronic Circuit item, currently not meta sensitive
-	  advancedCircuit; 	// Advanced Circuit item, currently not meta sensitive
-
-	  advancedAlloy; 		// Advanced Alloy item, currently not meta sensitive
-
-	  carbonFiber; 		// Raw Carbon Fiber item, currently not meta sensitive
-	  carbonMesh; 		// Raw Carbon Mesh item, currently not meta sensitive
-	  carbonPlate; 		// Carbon Plate item, currently not meta sensitive
-
-	  matter; 			// UUA item, currently not meta sensitive
-	  iridiumOre; 		// Iridium Ore item, currently not meta sensitive
-	  iridiumPlate; 		// Iridium Plate item, currently not meta sensitive
-
-
-	// Metal Plates
-
-	  platecopper;               // Metal plate item, meta sensitive
-	  platetin;                  // Metal plate item, meta sensitive
-	  platebronze;               // Metal plate item, meta sensitive
-	  plategold;                 // Metal plate item, meta sensitive
-	  plateiron;                 // Metal plate item, meta sensitive
-	  platelead;                  // Metal plate item, meta sensitive
-	  platelapi;                  // Metal plate item, meta sensitive
-	  plateobsidian;              // Metal plate item, meta sensitive
-	  plateadviron;              // Metal plate item, meta sensitive
-
-	// Metal Dense Plates
-	  denseplatecopper;               // Metal dense plate item, meta sensitive
-	  denseplatetin;                  // Metal dense plate item, meta sensitive
-	  denseplatebronze;               // Metal dense  plate item, meta sensitive
-	  denseplategold;                 // Metal dense plate item, meta sensitive
-	  denseplateiron;                 // Metal dense plate item, meta sensitive
-	@Deprecated
-	  denseplateadviron;              // Metal dense plate item, meta sensitive
-	  denseplatelead;                  // Metal dense plate item, meta sensitive
-	  denseplatelapi;                  // Metal dense plate item, meta sensitive
-	  denseplateobsidian;              // Metal dense plate item, meta sensitive
-
-
-	// upgrade modules
-	  overclockerUpgrade;		// overclocker upgrade item, meta sensitive
-	  transformerUpgrade;		// transformer upgrade item, meta sensitive
-	  energyStorageUpgrade;	// energy storage upgrade item, meta sensitive
-	  ejectorUpgrade;			// ejector upgrade item, meta sensitive
-
-	// misc
-	  coin; 					// Coin item, currently not meta sensitive
-	  reinforcedDoor; 		// Reinforced Door item, currently not meta sensitive
-	  constructionFoamPowder; // Construction Foam Powder item, currently not meta sensitive
-	  grinPowder;				// Poisonous ingrident, currently not meta sensitive
-	  debug;					// Debug item, currently not meta sensitive
-	  boatCarbon;				// Carbon Fiber Canoe item, meta sensitive
-	  boatRubber;				// Rubber Dinghy item, meta sensitive
-	  boatRubberBroken;		// Damaged Rubber Dinghy item, meta sensitive
-	  boatElectric;			// Electric Boat item, meta sensitive
-
-	//Agriculture
-	  cropSeed; 				// Crop seeds, stuff stored in NBT, don't use for crafting recipes!
-	  cropnalyzer;			// Cropnalyzer handheld device
-	  fertilizer;				// Basic IC2Item, used to provide nutrients toCropBlocks
-	  hydratingCell;			// Cell used to hydrate Crops, meta = Content, 0= Full, 9999 = Near empty
-	  electricHoe;			// Electric Hoe, Metadata indicates charge level
-	  terraWart;				// Mystic opposite of NEtherWart, cures StatusEffects, simply consumeable
-	  weedEx;					// Spraying can of WEED-EX, meta indicates usages left
-
-	//Boozeception
-	  mugEmpty;				// Simple stone mug
-	  coffeeBeans;			// Harvested CoffeeBeans
-	  coffeePowder; 			// Processed Coffee Beans, used to craft drinkable Coffee
-	  mugCoffee;				// Mug of Coffee, Meta indicates status 0 = cold, 1 = Normal, 2 = Sugar'd
-	  hops;					// Hops, harvested freshly from crop
-	  barrel; 				// Carried Barrel, metadata encrypts the information about the liquid inside
-	  blockBarrel;			// Unobtainable "placed barrel", TileEntity controlling the Fermentation process
-	  mugBooze; 				// Mug filled with booze, metadata encrypts the information about the liquid inside
-
-	 */
 
 	/**
-	 * Get the base IC2 package name, used internally.
-	 * 
-	 * @return IC2 package name, if unable to be determined defaults to ic2
+	 * Get the ItemAPI Instance.
+	 * @return the ItemAPI instance.
 	 */
-	private static String getPackage() {
-		Package pkg = IC2Items.class.getPackage();
-
-		if (pkg != null) {
-			String packageName = pkg.getName();
-
-			return packageName.substring(0, packageName.length() - ".api.item".length());
-		}
-
-		return "ic2";
+	public static IItemAPI getItemAPI() {
+		return instance;
 	}
 
-	private static Class<?> Ic2Items;
+
+	private static IItemAPI instance;
+
+	/**
+	 * Sets the internal IItemAPI instance.
+	 * ONLY IC2 CAN DO THIS!!!!!!!
+	 */
+	public static void setInstance(IItemAPI api) {
+		ModContainer mc = Loader.instance().activeModContainer();
+
+		if (mc == null || !"IC2".equals(mc.getModId())) {
+			throw new IllegalAccessError("invoked from "+mc);
+		}
+
+		instance = api;
+	}
+
 }
 
+/*
+=================================================
+Info
+=================================================
+
+The different Items are separaed by an empty line.
+The first entry is always the itemname followed by a ":"
+If you only want to access the Item, you have to use getItemAPI().getItem() with that name.
+If you only want to access the Block, you have to use getItemAPI().getBlock() with that name.
+Then come the different variants as follows:
+If the item has variants, it is displayed like that:
+itemname,variant <TAB> Display name
+Otherwise, it is displayed like that:
+itemname <TAB> Display name
+You can access ItemStacks of Items without variants using the variant null
+
+
+=================================================
+Items
+=================================================
+
+boat:
+boat,broken_rubber	Damaged Rubber Dinghy
+boat,rubber	Rubber Dinghy
+boat,carbon	Carbon Fiber Canoe
+boat,electric	Electric Boat
+
+crushed:
+crushed,copper	Crushed Copper Ore
+crushed,gold	Crushed Gold Ore
+crushed,iron	Crushed Iron Ore
+crushed,lead	Crushed Lead Ore
+crushed,silver	Crushed Silver Ore
+crushed,tin	Crushed Tin Ore
+crushed,uranium	Crushed Uranium Ore
+
+purified:
+purified,copper	Purified Crushed Copper Ore
+purified,gold	Purified Crushed Gold Ore
+purified,iron	Purified Crushed Iron Ore
+purified,lead	Purified Crushed Lead Ore
+purified,silver	Purified Crushed Silver Ore
+purified,tin	Purified Crushed Tin Ore
+purified,uranium	Purified Crushed Uranium Ore
+
+dust:
+dust,bronze	Bronze Dust
+dust,clay	Clay Dust
+dust,coal	Coal Dust
+dust,coal_fuel	Hydrated Coal Dust
+dust,copper	Copper Dust
+dust,diamond	Diamond Dust
+dust,energium	Energium Dust
+dust,gold	Gold Dust
+dust,iron	Iron Dust
+dust,lapis	Lapis Lazuli Dust
+dust,lead	Lead Dust
+dust,lithium	Lithium Dust
+dust,obsidian	Obsidian Dust
+dust,silicon_dioxide	Silicon Dioxide
+dust,silver	Silver Dust
+dust,stone	Stone Dust
+dust,sulfur	Sulfur Dust
+dust,tin	Tin Dust
+dust,small_bronze	Tiny Pile of Bronze Dust
+dust,small_copper	Tiny Pile of Copper Dust
+dust,small_gold	Tiny Pile of Gold Dust
+dust,small_iron	Tiny Pile of Iron Dust
+dust,small_lapis	Tiny Pile of Lapis Dust
+dust,small_lead	Tiny Pile of Lead Dust
+dust,small_lithium	Tiny Pile of Lithium Dust
+dust,small_obsidian	Tiny Pile of Obsidian Dust
+dust,small_silver	Tiny Pile of Silver Dust
+dust,small_sulfur	Tiny Pile of Sulfur Dust
+dust,small_tin	Tiny Pile of Tin Dust
+
+ingot:
+ingot,alloy	Mixed Metal Ingot
+ingot,bronze	Bronze Ingot
+ingot,copper	Copper Ingot
+ingot,lead	Lead Ingot
+ingot,silver	Silver Ingot
+ingot,steel	Steel Ingot
+ingot,tin	Tin Ingot
+
+plate:
+plate,bronze	Bronze Plate
+plate,copper	Copper Plate
+plate,gold	Gold Plate
+plate,iron	Iron Plate
+plate,lapis	Lapis Lazuli Plate
+plate,lead	Lead Plate
+plate,obsidian	Obsidian Plate
+plate,steel	Steel Plate
+plate,tin	Tin Plate
+plate,dense_bronze	Dense Bronze Plate
+plate,dense_copper	Dense Copper Plate
+plate,dense_gold	Dense Gold Plate
+plate,dense_iron	Dense Iron Plate
+plate,dense_lapis	Dense Lapis Lazuli Plate
+plate,dense_lead	Dense Lead Plate
+plate,dense_obsidian	Dense Obsidian Plate
+plate,dense_steel	Dense Steel Plate
+plate,dense_tin	Dense Tin Plate
+
+casing:
+casing,bronze	Bronze Item Casing
+casing,copper	Copper Item Casing
+casing,gold	Gold Item Casing
+casing,iron	Iron Item Casing
+casing,lead	Lead Item Casing
+casing,steel	Steel Item Casing
+casing,tin	Tin Item Casing
+
+nuclear:
+nuclear,uranium	Enriched Uranium Nuclear Fuel
+nuclear,uranium_235	Uranium 235
+nuclear,uranium_238	Uranium 238
+nuclear,plutonium	Plutonium
+nuclear,mox	MOX Nuclear Fuel
+nuclear,small_uranium_235	Tiny Pile of Uranium 235
+nuclear,small_uranium_238	Tiny Pile of Uranium 238
+nuclear,small_plutonium	Tiny Pile of Plutonium
+nuclear,uranium_pellet	Pellets of Enriched Uranium Nuclear Fuel
+nuclear,mox_pellet	Pellets of MOX Nuclear Fuel
+nuclear,rtg_pellet	Pellets of RTG Fuel
+nuclear,depleted_uranium	Fuel Rod (Depleted Uranium)
+nuclear,depleted_dual_uranium	Dual Fuel Rod (Depleted Uranium)
+nuclear,depleted_quad_uranium	Quad Fuel Rod (Depleted Uranium)
+nuclear,depleted_mox	Fuel Rod (Depleted MOX)
+nuclear,depleted_dual_mox	Dual Fuel Rod (Depleted MOX)
+nuclear,depleted_quad_mox	Quad Fuel Rod (Depleted MOX)
+
+misc_resource:
+misc_resource,ashes	Ashes
+misc_resource,iridium_ore	Iridium Ore
+misc_resource,iridium_shard	Iridium Shard
+misc_resource,matter	UU-Matter
+misc_resource,resin	Sticky Resin
+misc_resource,slag	Slag
+
+block_cutting_blade:
+block_cutting_blade,iron	Block Cutting Blade (Iron)
+block_cutting_blade,steel	Block Cutting Blade (Steel)
+block_cutting_blade,diamond	Block Cutting Blade (Diamond)
+
+crafting:
+crafting,rubber	Rubber
+crafting,circuit	Electronic Circuit
+crafting,advanced_circuit	Advanced Circuit
+crafting,alloy	Advanced Alloy
+crafting,iridium	Iridium Reinforced Plate
+crafting,coil	Coil
+crafting,electric_motor	Electric Motor
+crafting,heat_conductor	Heat Conductor
+crafting,copper_boiler	Copper Boiler
+crafting,fuel_rod	Fuel Rod (Empty)
+crafting,tin_can	Tin Can
+crafting,small_power_unit	Small Power Unit
+crafting,power_unit	Power Unit
+crafting,carbon_fibre	Raw Carbon Fibre
+crafting,carbon_mesh	Raw Carbon Mesh
+crafting,carbon_plate	Carbon Plate
+crafting,coal_ball	Coal Ball
+crafting,coal_block	Compressed Coal Ball
+crafting,coal_chunk	Coal Chunk
+crafting,industrial_diamond	Industrial Diamond
+crafting,plant_ball	Plantball
+crafting,bio_chaff	Bio Chaff
+crafting,compressed_hydrated_coal	H. Coal
+crafting,scrap	Scrap
+crafting,scrap_box	Scrap Box
+crafting,cf_powder	CF Powder
+crafting,pellet	CF Pellet
+crafting,raw_crystal_memory	Crystal Memory (raw)
+crafting,iron_shaft	Shaft (Iron)
+crafting,steel_shaft	Shaft (Steel)
+crafting,wood_rotor_blade	Wood Rotor Blade
+crafting,iron_rotor_blade	Iron Rotor Blade
+crafting,steel_rotor_blade	Steel Rotor Blade
+crafting,carbon_rotor_blade	Carbon Rotor Blade
+crafting,steam_turbine_blade	Steam Turbine Blade
+crafting,steam_turbine	Steam Turbine
+
+crystal_memory:
+crystal_memory	Crystal Memory
+
+upgrade_kit:
+upgrade_kit,mfsu	MFSU Upgrade Kit
+
+crop_res:
+crop_res,coffee_beans	Coffee Beans
+crop_res,coffee_powder	Coffee Powder
+crop_res,fertilizer	Fertilizer
+crop_res,grin_powder	Grin Powder
+crop_res,hops	Hops
+crop_res,weed	Weed
+
+terra_wart:
+terra_wart	item.terra_wart
+
+re_battery:
+re_battery	RE-Battery
+
+advanced_re_battery:
+advanced_re_battery	Advanced RE-Battery
+
+energy_crystal:
+energy_crystal	Energy Crystal
+
+lapotron_crystal:
+lapotron_crystal	Lapotron Crystal
+
+single_use_battery:
+single_use_battery	Single-Use Battery
+
+charging_re_battery:
+charging_re_battery	Charging RE Battery
+
+advanced_charging_re_battery:
+advanced_charging_re_battery	Advanced Charging Battery
+
+charging_energy_crystal:
+charging_energy_crystal	Charging Energy Crystal
+
+charging_lapotron_crystal:
+charging_lapotron_crystal	Charging Lapotron Crystal
+
+heat_storage:
+heat_storage	10k Coolant Cell
+
+tri_heat_storage:
+tri_heat_storage	30k Coolant Cell
+
+hex_heat_storage:
+hex_heat_storage	60k Coolant Cell
+
+plating:
+plating	Reactor Plating
+
+heat_plating:
+heat_plating	Heat-Capacity Reactor Plating
+
+containment_plating:
+containment_plating	Containment Reactor Plating
+
+heat_exchanger:
+heat_exchanger	Heat Exchanger
+
+reactor_heat_exchanger:
+reactor_heat_exchanger	Reactor Heat Exchanger
+
+component_heat_exchanger:
+component_heat_exchanger	Component Heat Exchanger
+
+advanced_heat_exchanger:
+advanced_heat_exchanger	Advanced Heat Exchanger
+
+heat_vent:
+heat_vent	Heat Vent
+
+reactor_heat_vent:
+reactor_heat_vent	Reactor Heat Vent
+
+overclocked_heat_vent:
+overclocked_heat_vent	Overclocked Heat Vent
+
+component_heat_vent:
+component_heat_vent	Component Heat Vent
+
+advanced_heat_vent:
+advanced_heat_vent	Advanced Heat Vent
+
+neutron_reflector:
+neutron_reflector	Neutron Reflector
+
+thick_neutron_reflector:
+thick_neutron_reflector	Thick Neutron Reflector
+
+rsh_condensator:
+rsh_condensator	RSH-Condensator
+
+lzh_condensator:
+lzh_condensator	LZH-Condensator
+
+uranium_fuel_rod:
+uranium_fuel_rod	Fuel Rod (Uranium)
+
+dual_uranium_fuel_rod:
+dual_uranium_fuel_rod	Dual Fuel Rod (Uranium)
+
+quad_uranium_fuel_rod:
+quad_uranium_fuel_rod	Quad Fuel Rod (Uranium)
+
+mox_fuel_rod:
+mox_fuel_rod	Fuel Rod (MOX)
+
+dual_mox_fuel_rod:
+dual_mox_fuel_rod	Dual Fuel Rod (MOX)
+
+quad_mox_fuel_rod:
+quad_mox_fuel_rod	Quad Fuel Rod (MOX)
+
+lithium_fuel_rod:
+lithium_fuel_rod	Fuel Rod (Lithium)
+
+tfbp:
+tfbp,blank	TFBP - Empty
+tfbp,chilling	TFBP - Chilling
+tfbp,cultivation	TFBP - Cultivation
+tfbp,desertification	TFBP - Desertification
+tfbp,flatification	TFBP - Flatification
+tfbp,irrigation	TFBP - Irrigation
+tfbp,mushroom	TFBP - Mushroom
+
+bronze_axe:
+bronze_axe	Bronze Axe
+
+bronze_hoe:
+bronze_hoe	Bronze Hoe
+
+bronze_pickaxe:
+bronze_pickaxe	Bronze Pickaxe
+
+bronze_shovel:
+bronze_shovel	Bronze Shovel
+
+bronze_sword:
+bronze_sword	Bronze Sword
+
+containment_box:
+containment_box	Containment Box
+
+cutter:
+cutter	Cutter
+
+debug_item:
+debug_item	Debug Item
+
+foam_sprayer:
+foam_sprayer	CF Sprayer
+
+forge_hammer:
+forge_hammer	Forge Hammer
+
+frequency_transmitter:
+frequency_transmitter	Frequency Transmitter
+
+meter:
+meter	EU-Reader
+
+tool_box:
+tool_box	Tool Box
+
+treetap:
+treetap	Treetap
+
+wrench:
+wrench	Wrench
+
+barrel:
+barrel	Empty Booze Barrel
+
+booze_mug:
+booze_mug	Zero
+
+mug:
+mug,empty	Stone Mug
+mug,cold_coffee	Cold Coffee
+mug,dark_coffee	Dark Coffee
+mug,coffee	Coffee
+
+cropnalyzer:
+cropnalyzer	Cropnalyzer
+
+weeding_trowel:
+weeding_trowel	Weeding Trowel
+
+advanced_scanner:
+advanced_scanner	OV Scanner
+
+chainsaw:
+chainsaw	Chainsaw
+
+diamond_drill:
+diamond_drill	Diamond Drill
+
+drill:
+drill	Mining Drill
+
+electric_hoe:
+electric_hoe	Electric Hoe
+
+electric_treetap:
+electric_treetap	Electric Treetap
+
+electric_wrench:
+electric_wrench	Electric Wrench
+
+iridium_drill:
+iridium_drill	Iridium Drill
+
+mining_laser:
+mining_laser	Mining Laser
+
+nano_saber:
+nano_saber	Nano Saber
+
+obscurator:
+obscurator	Obscurator
+
+scanner:
+scanner	OD Scanner
+
+wind_meter:
+wind_meter	Windmeter
+
+painter:
+painter	Painter
+painter,black	Black Painter
+painter,blue	Blue Painter
+painter,brown	Brown Painter
+painter,cyan	Cyan Painter
+painter,gray	Dark Grey Painter
+painter,green	Green Painter
+painter,light_blue	Light Blue Painter
+painter,light_gray	Light Grey Painter
+painter,lime	Lime Painter
+painter,magenta	Magenta Painter
+painter,orange	Orange Painter
+painter,pink	Pink Painter
+painter,purple	Purple Painter
+painter,red	Red Painter
+painter,white	White Painter
+painter,yellow	Yellow Painter
+
+fluid_cell:
+fluid_cell	Universal Fluid Cell
+fluid_cell,ic2air	Universal Fluid Cell
+fluid_cell,ic2biogas	Universal Fluid Cell
+fluid_cell,ic2biomass	Universal Fluid Cell
+fluid_cell,ic2construction_foam	Universal Fluid Cell
+fluid_cell,ic2coolant	Universal Fluid Cell
+fluid_cell,ic2distilled_water	Universal Fluid Cell
+fluid_cell,ic2heavy_water	Universal Fluid Cell
+fluid_cell,ic2hot_coolant	Universal Fluid Cell
+fluid_cell,ic2hot_water	Universal Fluid Cell
+fluid_cell,ic2hydrogen	Universal Fluid Cell
+fluid_cell,ic2oxygen	Universal Fluid Cell
+fluid_cell,ic2pahoehoe_lava	Universal Fluid Cell
+fluid_cell,ic2steam	Universal Fluid Cell
+fluid_cell,ic2superheated_steam	Universal Fluid Cell
+fluid_cell,ic2uu_matter	Universal Fluid Cell
+fluid_cell,ic2weed_ex	Universal Fluid Cell
+fluid_cell,lava	Universal Fluid Cell
+fluid_cell,water	Universal Fluid Cell
+
+cable:
+cable,type:copper,insulation:0	Copper Cable
+cable,type:copper,insulation:1	Insulated Copper Cable
+cable,type:glass,insulation:0	Glass Fibre Cable
+cable,type:gold,insulation:0	Gold Cable
+cable,type:gold,insulation:1	Insulated Gold Cable
+cable,type:gold,insulation:2	2x Ins. Gold Cable
+cable,type:iron,insulation:0	HV Cable
+cable,type:iron,insulation:1	Insulated HV Cable
+cable,type:iron,insulation:2	2x Ins. HV Cable
+cable,type:iron,insulation:3	3x Ins. HV Cable
+cable,type:tin,insulation:0	Tin Cable
+cable,type:tin,insulation:1	Insulated Tin Cable
+cable,type:detector,insulation:0	EU-Detector Cable
+cable,type:splitter,insulation:0	EU-Splitter Cable
+
+upgrade:
+upgrade,overclocker	Overclocker Upgrade
+upgrade,transformer	Transformer Upgrade
+upgrade,energy_storage	Energy Storage Upgrade
+upgrade,redstone_inverter	Redstone Signal Inverter Upgrade
+upgrade,ejector	Ejector Upgrade
+upgrade,pulling	Pulling Upgrade
+upgrade,fluid_ejector	Fluid Ejector Upgrade
+
+advanced_batpack:
+advanced_batpack	Adv.Batpack
+
+alloy_chestplate:
+alloy_chestplate	Composite Vest
+
+batpack:
+batpack	BatPack
+
+bronze_boots:
+bronze_boots	Bronze Boots
+
+bronze_chestplate:
+bronze_chestplate	Bronze Chestplate
+
+bronze_helmet:
+bronze_helmet	Bronze Helmet
+
+bronze_leggings:
+bronze_leggings	Bronze Leggings
+
+cf_pack:
+cf_pack	CF Backpack
+cf_pack	CF Backpack
+
+energy_pack:
+energy_pack	Energypack
+
+hazmat_chestplate:
+hazmat_chestplate	Hazmat Suit
+
+hazmat_helmet:
+hazmat_helmet	Scuba Helmet
+
+hazmat_leggings:
+hazmat_leggings	Hazmat Suit Leggings
+
+jetpack:
+jetpack	Jetpack
+jetpack	Jetpack
+
+jetpack_electric:
+jetpack_electric	Electric Jetpack
+
+lappack:
+lappack	Lappack
+
+nano_boots:
+nano_boots	NanoSuit Boots
+
+nano_chestplate:
+nano_chestplate	NanoSuit Bodyarmor
+
+nano_helmet:
+nano_helmet	NanoSuit Helmet
+
+nano_leggings:
+nano_leggings	NanoSuit Leggings
+
+nightvision_goggles:
+nightvision_goggles	Nightvision Goggles
+
+quantum_boots:
+quantum_boots	QuantumSuit Boots
+
+quantum_chestplate:
+quantum_chestplate	QuantumSuit Bodyarmor
+
+quantum_helmet:
+quantum_helmet	QuantumSuit Helmet
+
+quantum_leggings:
+quantum_leggings	QuantumSuit Leggings
+
+rubber_boots:
+rubber_boots	Rubber Boots
+
+solar_helmet:
+solar_helmet	Solar Helmet
+
+static_boots:
+static_boots	Static Boots
+
+filled_tin_can:
+filled_tin_can	(Filled) Tin Can
+
+rotor_wood:
+rotor_wood	Kinetic Gearbox Rotor (Wood)
+
+rotor_iron:
+rotor_iron	Kinetic Gearbox Rotor (Iron)
+
+rotor_carbon:
+rotor_carbon	Kinetic Gearbox Rotor (Carbon)
+
+rotor_steel:
+rotor_steel	Kinetic Gearbox Rotor (Steel)
+
+
+=================================================
+Blocks:
+=================================================
+
+te:
+te,itnt	Industrial TNT
+te,nuke	Nuke
+te,generator	Generator
+te,geo_generator	Geothermal Generator
+te,kinetic_generator	Kinetic Generator
+te,rt_generator	Radioisotope Thermoelectric Generator
+te,semifluid_generator	Semifluid Generator
+te,solar_generator	Solar Panel
+te,stirling_generator	Stirling Generator
+te,water_generator	Water Mill
+te,wind_generator	Wind Mill
+te,electric_heat_generator	Electric Heater
+te,fluid_heat_generator	Liquid Fuel Firebox
+te,rt_heat_generator	Radioisotope Heat Generator
+te,solid_heat_generator	Solid Fuel Firebox
+te,electric_kinetic_generator	Electric Motor
+te,manual_kinetic_generator	Manual Kinetic Generator
+te,steam_kinetic_generator	Steam Turbine
+te,stirling_kinetic_generator	Stirling Kinetic Generator
+te,water_kinetic_generator	Water Turbine
+te,wind_kinetic_generator	Wind Turbine
+te,nuclear_reactor	Nuclear Reactor
+te,reactor_access_hatch	Reactor Access Hatch
+te,reactor_chamber	Reactor Chamber
+te,reactor_fluid_port	Reactor Fluid Port
+te,reactor_redstone_port	Reactor Redstone Port
+te,condenser	Condenser
+te,fluid_bottler	Bottling Plant
+te,fluid_distributor	Fluid Distributor
+te,fluid_regulator	Fluid Regulator
+te,liquid_heat_exchanger	Liquid Heat Exchanger
+te,pump	Pump
+te,solar_distiller	Solar Distiller
+te,steam_generator	Steam Boiler
+te,item_buffer	Item Buffer
+te,luminator_flat	Luminator
+te,magnetizer	Magnetizer
+te,sorting_machine	Electric Sorting Machine
+te,teleporter	Teleporter
+te,terraformer	Terraformer
+te,tesla_coil	Tesla Coil
+te,canner	Fluid/Solid Canning Machine
+te,compressor	Compressor
+te,electric_furnace	Electric Furnace
+te,extractor	Extractor
+te,iron_furnace	Iron Furnace
+te,macerator	Macerator
+te,recycler	Recycler
+te,solid_canner	Solid Canning Machine
+te,blast_furnace	Blast Furnace
+te,block_cutter	Block Cutting Machine
+te,centrifuge	Thermal Centrifuge
+te,fermenter	Fermenter
+te,induction_furnace	Induction Furnace
+te,metal_former	Metal Former
+te,ore_washing_plant	Ore Washing Plant
+te,advanced_miner	Advanced Miner
+te,crop_harvester	Crop Harvester
+te,cropmatron	Crop-Matron
+te,miner	Miner
+te,matter_generator	Mass Fabricator
+te,pattern_storage	Pattern Storage
+te,replicator	Replicator
+te,scanner	Scanner
+te,energy_o_mat	Energy-O-Mat
+te,personal_chest	Personal Safe
+te,trade_o_mat	Trade-O-Mat
+te,chargepad_batbox	Charge Pad (BatBox)
+te,chargepad_cesu	Charge Pad (CESU)
+te,chargepad_mfe	Charge Pad (MFE)
+te,chargepad_mfsu	Charge Pad (MFSU)
+te,batbox	BatBox
+te,cesu	CESU
+te,mfe	MFE
+te,mfsu	MFSU
+te,electrolyzer	Electrolyzer
+te,lv_transformer	LV-Transformer
+te,mv_transformer	MV-Transformer
+te,hv_transformer	HV-Transformer
+te,ev_transformer	EV-Transformer
+te,tank	Tank
+te,chunk_loader	Chunk Loader
+
+resource:
+resource,basalt	Basalt
+resource,copper_ore	Copper Ore
+resource,lead_ore	Lead Ore
+resource,tin_ore	Tin Ore
+resource,uranium_ore	Uranium Ore
+resource,bronze_block	Bronze Block
+resource,copper_block	Copper Block
+resource,lead_block	Lead Block
+resource,steel_block	Steel Block
+resource,tin_block	Tin Block
+resource,uranium_block	Uranium Block
+resource,reinforced_stone	Reinforced Stone
+resource,machine	Basic Machine Casing
+resource,advanced_machine	Advanced Machine Casing
+resource,reactor_vessel	Reactor Pressure Vessel
+
+leaves:
+leaves	Rubber Tree Leaves
+
+rubber_wood:
+rubber_wood	Rubber Wood
+
+sapling:
+sapling	Rubber Tree Sapling
+
+scaffold:
+scaffold,wood	Scaffold
+scaffold,reinforced_wood	Reinforced Scaffold
+scaffold,iron	Iron Scaffold
+scaffold,reinforced_iron	Reinforced Iron Scaffold
+
+foam:
+foam,normal	Construction Foam
+foam,reinforced	Reinforced Construction Foam
+
+fence:
+fence,iron	Iron Fence
+
+sheet:
+sheet,rubber	Rubber Sheet
+
+glass:
+glass,reinforced	Reinforced Glass
+
+wall:
+wall,black	Construction Foam Wall (Black)
+wall,blue	Construction Foam Wall (Blue)
+wall,brown	Construction Foam Wall (Brown)
+wall,cyan	Construction Foam Wall (Cyan)
+wall,gray	Construction Foam Wall (Gray)
+wall,green	Construction Foam Wall (Green)
+wall,light_blue	Construction Foam Wall (Light Blue)
+wall,light_gray	Construction Foam Wall (Light Gray)
+wall,lime	Construction Foam Wall (Lime)
+wall,magenta	Construction Foam Wall (Magenta)
+wall,orange	Construction Foam Wall (Orange)
+wall,pink	Construction Foam Wall (Pink)
+wall,purple	Construction Foam Wall (Purple)
+wall,red	Construction Foam Wall (Red)
+wall,white	Construction Foam Wall (White)
+wall,yellow	Construction Foam Wall (Yellow)
+
+mining_pipe:
+mining_pipe,pipe	Mining Pipe
+
+reinforced_door:
+reinforced_door	Reinforced Door
+
+ */

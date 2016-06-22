@@ -1,5 +1,7 @@
 package ic2.api.recipe;
 
+import ic2.api.item.IC2Items;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 
 public class RecipeInputFluidContainer implements IRecipeInput {
 	public RecipeInputFluidContainer(Fluid fluid) {
@@ -22,9 +25,15 @@ public class RecipeInputFluidContainer implements IRecipeInput {
 	@Override
 	public boolean matches(ItemStack subject) {
 		FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(subject);
-		if (fs == null) return false;
 
-		return fs.getFluid() == fluid;
+		if (fs == null && subject.getItem() instanceof IFluidContainerItem) {
+			IFluidContainerItem item = (IFluidContainerItem)subject.getItem();
+			fs = item.getFluid(subject);
+		}
+
+		// match amount precisely to avoid having to deal with leftover
+		return fs == null && fluid == null ||
+				fs != null && fs.getFluid() == fluid && fs.amount >= amount;
 	}
 
 	@Override
@@ -39,6 +48,7 @@ public class RecipeInputFluidContainer implements IRecipeInput {
 		for (FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData()) {
 			if (data.fluid.getFluid() == fluid) ret.add(data.filledContainer);
 		}
+		ret.add(IC2Items.getItem("fluid_cell", fluid.getName()));
 
 		return ret;
 	}

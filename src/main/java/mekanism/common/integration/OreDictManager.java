@@ -319,7 +319,7 @@ public final class OreDictManager
 	public static void addIC2BronzeRecipe()
 	{
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, StackUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, false, StackUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 		} catch(Exception e) {}
 	}
 
