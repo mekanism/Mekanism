@@ -1074,6 +1074,18 @@ item.SteelShovel.name=Steel Shovel
 item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
 
+//Lapis Lazuli
+item.LapisLazuliHelmet.name=Lapis Lazuli Helmet
+item.LapisLazuliChestplate.name=Lapis Lazuli Chestplate
+item.LapisLazuliLeggings.name=Lapis Lazuli Leggings
+item.LapisLazuliBoots.name=Lapis Lazuli Boots
+item.LapisLazuliPaxel.name=Lapis Lazuli Paxel
+item.LapisLazuliPickaxe.name=Lapis Lazuli Pickaxe
+item.LapisLazuliAxe.name=Lapis Lazuli Axe
+item.LapisLazliShovel.name=Lapis Lazuli Shovel
+item.LapisLazuliHoe.name=Lapis Lazuli Hoe
+item.LapisLazuliSword.name=Lapis Lazuli Sword
+
 //Config Gui
 mekanism.configgui.ctgy.tools.general=General
 mekanism.configgui.ctgy.tools.armor=Armor Balance
