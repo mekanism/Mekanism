@@ -416,6 +416,8 @@ public class Quad
         UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(this.builder.vertexFormat);
         builder.setQuadOrientation(this.builder.quadOrientation);
         builder.setQuadTint(this.builder.quadTint);
+        builder.setApplyDiffuseLighting(this.builder.applyDiffuseLighting);
+        builder.setTexture(this.uvsObj.getSprite());
 
         for(int v = 0; v < 4; v++) 
         {
