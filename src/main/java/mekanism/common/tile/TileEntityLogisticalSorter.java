@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.Range4D;
 import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
@@ -567,7 +568,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 
-			if(active)
+			if(active && client.enableMachineSounds)
 			{
 				worldObj.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), MekanismSounds.CLICK, SoundCategory.BLOCKS, 0.3F, 1);
 			}
