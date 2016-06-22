@@ -145,19 +145,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 	
 	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
-    {
-		boolean b = super.shouldRefresh(world, pos, oldState, newSate);
-		
-		if(!world.isRemote)
-		{
-			System.out.println(b);
-		}
-		
-		return b;
-    }
-	
-	@Override
 	public void doUpdate()
 	{
 		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))

@@ -182,7 +182,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public void upgrade()
 	{
 		worldObj.setBlockToAir(getPos());
-		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5+ tier.ordinal()+1), 3);
+		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5+tier.ordinal()+1), 3);
 		
 		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
 		
@@ -255,7 +255,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public void onUpdate()
 	{
 		super.onUpdate();
-
+		
 		if(worldObj.isRemote && updateDelay > 0)
 		{
 			updateDelay--;

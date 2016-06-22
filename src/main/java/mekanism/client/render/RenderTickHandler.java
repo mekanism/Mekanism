@@ -45,9 +45,7 @@ public class RenderTickHandler
 			{
 				EntityPlayer player = mc.thePlayer;
 				World world = mc.thePlayer.worldObj;
-	
 				FontRenderer font = mc.fontRendererObj;
-	
 				RayTraceResult pos = player.rayTrace(40.0D, 1.0F);
 	
 				if(pos != null)
