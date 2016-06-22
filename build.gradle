@@ -91,7 +91,7 @@ task coreJar(type: Jar) {
 
     from('etc/core') {
         include '*.info'
-        expand 'version': config.mod_version, 'mc_version': config.minecraft_version, 'fmp_version': config.FMP_version
+        expand 'version': config.mod_version, 'mc_version': config.minecraft_version, 'mcmp_version': config.FMP_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -104,7 +104,7 @@ task toolsJar(type: Jar) {
 
     from('etc/tools') {
         include '*.info'
-        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
+        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
