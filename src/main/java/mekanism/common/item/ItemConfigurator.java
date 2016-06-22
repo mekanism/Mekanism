@@ -294,9 +294,18 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	{
 		return user instanceof EntityPlayer && canUseWrench(item, (EntityPlayer)user, pos);
 	}
+	
+	@Override
+	public boolean isUsable(ItemStack item, EntityLivingBase user, Entity entity)
+	{
+		return user instanceof EntityPlayer && canUseWrench(item, (EntityPlayer)user, null);
+	}
 
 	@Override
 	public void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos) {}
+	
+	@Override
+	public void toolUsed(ItemStack item, EntityLivingBase user, Entity entity) {}
 	
 	public static enum ConfiguratorMode
 	{

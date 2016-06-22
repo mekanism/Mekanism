@@ -21,12 +21,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IComputerIntegration, ISpecialConfigData
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData
 {
 	@Override
 	public int getSizeInventory()
