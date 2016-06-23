@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.util.CapabilityUtils;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;

@@ -1,7 +1,7 @@
-package mekanism.api.capabilities;
+package mekanism.common.capabilities;
 
 import mekanism.api.IAlloyInteraction;
-import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;

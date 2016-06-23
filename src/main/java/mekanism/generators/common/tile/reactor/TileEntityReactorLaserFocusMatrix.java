@@ -1,7 +1,7 @@
 package mekanism.generators.common.tile.reactor;
 
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 

@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.BaseCapabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -38,7 +38,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			public void run()
 			{
 				TileEntity tile = message.coord4D.getTileEntity(player.worldObj);
-				ITileNetwork network = CapabilityUtils.getCapability(tile, BaseCapabilities.TILE_NETWORK_CAPABILITY, null);
+				ITileNetwork network = CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
 				
 				if(tile instanceof ISideConfiguration)
 				{

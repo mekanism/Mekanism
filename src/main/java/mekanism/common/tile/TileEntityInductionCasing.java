@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;

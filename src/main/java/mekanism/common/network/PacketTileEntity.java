@@ -8,7 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.BaseCapabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -37,9 +37,9 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 			{
 				TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 				
-				if(CapabilityUtils.hasCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null))
+				if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null))
 				{
-					ITileNetwork network = CapabilityUtils.getCapability(tileEntity, BaseCapabilities.TILE_NETWORK_CAPABILITY, null);
+					ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
 					
 					try {
 						network.handlePacketData(message.storedBuffer);

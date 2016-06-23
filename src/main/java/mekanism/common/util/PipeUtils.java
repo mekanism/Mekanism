@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;

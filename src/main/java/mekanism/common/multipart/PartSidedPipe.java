@@ -17,7 +17,6 @@ import mcmultipart.raytrace.RayTraceUtils.AdvancedRayTraceResultPart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -25,7 +24,7 @@ import mekanism.api.util.CapabilityUtils;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.BaseCapabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -928,14 +927,14 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == BaseCapabilities.TILE_NETWORK_CAPABILITY || 
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY || 
 				capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == BaseCapabilities.TILE_NETWORK_CAPABILITY 
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY 
 				|| capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY)
 		{
 			return (T)this;

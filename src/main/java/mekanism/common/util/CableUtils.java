@@ -12,11 +12,11 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;

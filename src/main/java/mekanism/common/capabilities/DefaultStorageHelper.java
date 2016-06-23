@@ -1,4 +1,4 @@
-package mekanism.api.capabilities;
+package mekanism.common.capabilities;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -21,6 +20,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.PressurizedInput;

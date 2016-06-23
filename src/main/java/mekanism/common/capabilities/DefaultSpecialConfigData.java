@@ -1,7 +1,7 @@
-package mekanism.api.capabilities;
+package mekanism.common.capabilities;
 
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
-import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 

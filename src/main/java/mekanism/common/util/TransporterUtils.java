@@ -4,10 +4,10 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.api.util.ListUtils;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;

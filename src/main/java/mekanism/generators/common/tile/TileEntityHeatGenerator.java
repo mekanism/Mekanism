@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismConfig.generators;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
@@ -447,6 +447,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		temperature += invHeatCapacity * heatToAbsorb;
 		heatToAbsorb = 0;
+		
 		return temperature;
 	}
 

@@ -1,7 +1,7 @@
-package mekanism.api.capabilities;
+package mekanism.common.capabilities;
 
-import mekanism.api.capabilities.DefaultStorageHelper.DefaultStorage;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.DefaultStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.INBTSerializable;

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.lasers.ILaserReceptor;
@@ -14,6 +13,7 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;

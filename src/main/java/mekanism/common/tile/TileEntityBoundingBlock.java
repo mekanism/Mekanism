@@ -8,7 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.BaseCapabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.block.Block;
@@ -127,13 +127,13 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == BaseCapabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
+		return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == BaseCapabilities.TILE_NETWORK_CAPABILITY)
+		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
 			return (T)this;
 		return super.getCapability(capability, facing);
 	}

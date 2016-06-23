@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.Set;
 
 import mekanism.api.IHeatTransfer;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.multipart.MultipartTransmitter;
 //import mekanism.common.multipart.MultipartTransmitter;
 import mekanism.common.util.MekanismUtils;

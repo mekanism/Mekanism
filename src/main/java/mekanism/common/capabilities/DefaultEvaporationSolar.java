@@ -1,7 +1,7 @@
-package mekanism.api.capabilities;
+package mekanism.common.capabilities;
 
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DefaultEvaporationSolar implements IEvaporationSolar

@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.capabilities.Capabilities;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

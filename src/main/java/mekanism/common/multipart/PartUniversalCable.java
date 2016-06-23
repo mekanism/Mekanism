@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.capabilities.Capabilities;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -17,6 +16,7 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
