@@ -63,7 +63,6 @@ public class GuiResistiveHeater extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				System.out.println(tileEntity.lastEnvironmentLoss);
 				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
 				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss*unit.intervalSize, false, unit);
 				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
