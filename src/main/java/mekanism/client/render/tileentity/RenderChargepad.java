@@ -18,7 +18,7 @@ public class RenderChargepad extends TileEntitySpecialRenderer<TileEntityChargep
 	public void renderTileEntityAt(TileEntityChargepad tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 1.5F);
+		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
 
 		switch(tileEntity.facing.ordinal()) /*TODO: switch the enum*/
