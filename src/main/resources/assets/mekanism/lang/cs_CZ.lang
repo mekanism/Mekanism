@@ -845,241 +845,241 @@ tooltip.TurbineCasing=Tlakuvzdorný plášť využitý k výrobě Průmyslové T
 tooltip.TurbineValve=Typ Turbínového Pláště zahrnující port na přenos energie a páry.
 tooltip.TurbineVent=Typ Turbínového Pláště s integrovaným ventilem pro vypouštění páry. Tyto by měly být umístěny na úrovni nebo výše Turbínového Rotačního Komplexu.
 
-tooltip.ReactorGlass=Reinforced glass that can be used in the Fusion Reactor multiblock.
-tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.
-tooltip.ReactorController=The controlling block for the entire Fusion Reactor structure.
-tooltip.ReactorFrame=Reinforced framing that can be used in the Fusion Reactor multiblock.
-tooltip.ReactorNeutronCapturePlate=A block that can be used to both block Fusion Reactor radiation and assist in the production of Tritium.
-tooltip.ReactorPort=A block of reinforced framing that is capable of managing both the gas and energy transfer of the Fusion Reactor.
-tooltip.ReactorLogicAdapter=A block that can be used to allow basic monitoring of a reactor using redstone.
+tooltip.ReactorGlass=Tvrzené sklo které může být použito v multibloku Fúzní Reaktor.
+tooltip.ReactorLaserFocusMatrix=Panel Reaktorového Skla který je schopný absorbovat optickou energii a tím zahřívat Fúzní Reaktor.
+tooltip.ReactorController=Kontrolní blok pro celou strukturu Fúzního Reaktoru.
+tooltip.ReactorFrame=Tvrzený rám který může být využit v multibloku Fúzní Reaktor.
+tooltip.ReactorNeutronCapturePlate=Blok který může být využit jak k zablokování radiace Fúzního Reaktoru tak k asistenci u produkce Trinia.
+tooltip.ReactorPort=Blok tvrzeného rámu který je schopen zpracovávat zároveň plyn i energii z a do Fúzního Reaktoru.
+tooltip.ReactorLogicAdapter=Blok který umožňuje základní sledování stavu reaktoru pomocí ruditu.
 
-tooltip.OsmiumOre=A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.
-tooltip.CopperOre=A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.
-tooltip.TinOre=A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.
+tooltip.OsmiumOre=Silný minerál který lze nalézt v jakékoli hloubce. Je znám pro své využití v konstrukci strojů.
+tooltip.CopperOre=Běžný, vodivý materiál který se využívá k výrobě kabelů. Jeho schopnost vydržet velké teploty ho činí podstatným pro pokročilé stroje.
+tooltip.TinOre=Lehký, ale tvrdý, vodivý materiál který je o trochu vzácnější než Měď.
 
 //Side data
-sideData.None=None
-sideData.Input=Input
-sideData.Output=Output
-sideData.Energy=Energy
-sideData.Gas=Gas
+sideData.None=Nic
+sideData.Input=Vstup
+sideData.Output=Výstup
+sideData.Energy=Energie
+sideData.Gas=Plyn
 sideData.Extra=Extra
-sideData.Infuse=Infuse
-sideData.Fluid=Fluid
-sideData.Fill=Fill
-sideData.Empty=Empty
-sideData.Charge=Charge
-sideData.Discharge=Discharge
+sideData.Infuse=Infúze
+sideData.Fluid=Kapalina
+sideData.Fill=Náplň
+sideData.Empty=Prázdný
+sideData.Charge=Náboj
+sideData.Discharge=Výboj
 
 //Redstone control
-control.disabled=Disabled
-control.high=High
-control.low=Low
-control.pulse=Pulse
-control.disabled.desc=Always active
-control.high.desc=Active with signal
-control.low.desc=Active without signal
-control.pulse.desc=Only active upon first receiving signal
+control.disabled=Vyplý
+control.high=Silný
+control.low=Slabý
+control.pulse=Pulz
+control.disabled.desc=Vždy aktivní
+control.high.desc=Vždy se signálem
+control.low.desc=Vždy bez signálu
+control.pulse.desc=Pouze aktivní s prvním příchozím signálem
 
 //Container edit modes
-fluidedit.both=Both
-fluidedit.fill=Fill
-fluidedit.empty=Empty
+fluidedit.both=Oboje
+fluidedit.fill=Plný
+fluidedit.empty=Prázdný
 
 //Colors
-color.black=Black
-color.darkBlue=Dark Blue
-color.darkGreen=Dark Green
-color.darkAqua=Dark Aqua
-color.darkRed=Dark Red
-color.purple=Purple
-color.orange=Orange
-color.grey=Grey
-color.darkGrey=Dark Grey
+color.black=Černá
+color.darkBlue=Tmavě Modrá
+color.darkGreen=Tmavě Zelená
+color.darkAqua=Tmavá Aqua
+color.darkRed=Tmavě Červená
+color.purple=Fialová
+color.orange=Oranžová
+color.grey=Šedá
+color.darkGrey=Tmavě Šedá
 color.indigo=Indigo
-color.brightGreen=Bright Green
+color.brightGreen=Světle Zelená
 color.aqua=Aqua
-color.red=Red
-color.pink=Pink
-color.yellow=Yellow
-color.white=White
-color.brown=Brown
-color.brightPink=Bright Pink
+color.red=Červená
+color.pink=Růžová
+color.yellow=Žlutá
+color.white=Bílá
+color.brown=Hnědá
+color.brightPink=Světle Růžová
 
 //Dyes
-dye.black=Black
-dye.darkBlue=Blue
-dye.brown=Brown
-dye.darkGreen=Green
-dye.darkAqua=Cyan
-dye.darkRed=Dark Red
-dye.purple=Purple
-dye.orange=Orange
-dye.grey=Light Grey
-dye.darkGrey=Grey
-dye.indigo=Light Blue
-dye.brightGreen=Lime
+dye.black=Černá
+dye.darkBlue=Modrá
+dye.brown=Hnědá
+dye.darkGreen=Zelená
+dye.darkAqua=Tyrkysová
+dye.darkRed=Tmavě Červená
+dye.purple=Nachová
+dye.orange=Oranžová
+dye.grey=Světle Šedá
+dye.darkGrey=Šedá
+dye.indigo=Světle Modrá
+dye.brightGreen=Limetka
 dye.aqua=Aqua
-dye.red=Red
-dye.brightPink=Pink
+dye.red=Červená
+dye.brightPink=Růžová
 dye.pink=Magenta
-dye.yellow=Yellow
-dye.white=White
+dye.yellow=Žlutá
+dye.white=Bílá
 
 //Reactor Logic modes
-reactor.disabled=Disabled
-reactor.disabled.desc=Will not emit a redstone signal
-reactor.ready=Ready for Ignition
-reactor.ready.desc=Reactor has reached the required heat level to ignite
-reactor.capacity=Heat Capacity Met
-reactor.capacity.desc=The reactor's core heat capacity has been met
-reactor.depleted=Insufficient Fuel
-reactor.depleted.desc=The reactor has insufficient fuel to sustain a reaction
+reactor.disabled=Deaktivovaný
+reactor.disabled.desc=Nebude vysílat ruditový signál
+reactor.ready=Připraven na Zážeh
+reactor.ready.desc=Reaktor dosáhl potřebné teploty pro zážeh
+reactor.capacity=Dosažena Tepelná Kapacita
+reactor.capacity.desc=Tepelná kapacita jádra reaktoru byla dosažena
+reactor.depleted=Nedostatek Paliva
+reactor.depleted.desc=Reaktor má nedostatek paliva k udržení reakce
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
-nei.chemicalInjectionChamber=C. Injection Chamber
-nei.rotaryCondensentrator=R. Condensentrator
+nei.chemicalInjectionChamber=Ch. Vstřikovací Komora
+nei.rotaryCondensentrator=R. Kondenzátor
 
 //**********//
 //GENERATORS//
 //**********//
 
 //Items
-item.SolarPanel.name=Solar Panel
+item.SolarPanel.name=Solární Panel
 item.Hohlraum.name=Hohlraum
-item.TurbineBlade.name=Turbine Blade
+item.TurbineBlade.name=Turbínová Lopatka
 
 //Generators
-tile.Generator.HeatGenerator.name=Heat Generator
-tile.Generator.SolarGenerator.name=Solar Generator
-tile.Generator.GasGenerator.name=Gas-Burning Generator
-tile.Generator.BioGenerator.name=Bio-Generator
-tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
-tile.Generator.WindGenerator.name=Wind Generator
-tile.Generator.TurbineRotor.name=Turbine Rotor
-tile.Generator.RotationalComplex.name=Rotational Complex
-tile.Generator.ElectromagneticCoil.name=Electromagnetic Coil
-tile.Generator.TurbineCasing.name=Turbine Casing
-tile.Generator.TurbineValve.name=Turbine Valve
-tile.Generator.TurbineVent.name=Turbine Vent
+tile.Generator.HeatGenerator.name=Tepelný Generátor
+tile.Generator.SolarGenerator.name=Solární Generátor
+tile.Generator.GasGenerator.name=Plyno-Spalovací Generátor
+tile.Generator.BioGenerator.name=Bio-Generátor
+tile.Generator.AdvancedSolarGenerator.name=Pokročilý Solární Generátor
+tile.Generator.WindGenerator.name=Větrný Generátor
+tile.Generator.TurbineRotor.name=Turbínový Rotor
+tile.Generator.RotationalComplex.name=Rotační Komplex
+tile.Generator.ElectromagneticCoil.name=Elektromagnetická Cívka
+tile.Generator.TurbineCasing.name=Plášť Turbíny
+tile.Generator.TurbineValve.name=Turbínový Ventil
+tile.Generator.TurbineVent.name=Turbínový Průduch
 
-tile.Reactor.ReactorController.name=Reactor Controller
-tile.Reactor.ReactorFrame.name=Reactor Frame
-tile.Reactor.ReactorNeutronCapturePlate.name=Neutron Capture Plate
-tile.Reactor.ReactorPort.name=Reactor Port
-tile.Reactor.ReactorLogicAdapter.name=Reactor Logic Adapter
+tile.Reactor.ReactorController.name=Kontroler Reaktoru
+tile.Reactor.ReactorFrame.name=Rám Reaktoru
+tile.Reactor.ReactorNeutronCapturePlate.name=Neutronový Zachytávací Plát
+tile.Reactor.ReactorPort.name=Port Reaktoru
+tile.Reactor.ReactorLogicAdapter.name=Logický Adaptér Reaktoru
 
-tile.ReactorGlass.ReactorGlass.name=Reactor Glass
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Focus Matrix
+tile.ReactorGlass.ReactorGlass.name=Sklo Reaktoru
+tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laserová Zaměřovací Matice
 
 //Gui text
-gui.heatGenerator.fuel=Fuel
-gui.solarGenerator.sun=Sun
-gui.bioGenerator.bioFuel=BioFuel
-gui.electrolyticSeparator.dump=Dump
+gui.heatGenerator.fuel=Palivo
+gui.solarGenerator.sun=Slunce
+gui.bioGenerator.bioFuel=Bio Palivo
+gui.electrolyticSeparator.dump=Vyhodit
 
-gui.passive=Air-Cooled
-gui.active=Water-Cooled
+gui.passive=Chlazen vzduchem
+gui.active=Chalzen vodou
 
-gui.minInject=Min. Inject Rate
-gui.ignition=Ignition Temp
-gui.maxPlasma=Max. Plasma Temp
-gui.maxCasing=Max. Casing Temp
-gui.passiveGeneration=Passive Generation
-gui.steamProduction=Steam Production
+gui.minInject=Min. Rychlost Vstřikování
+gui.ignition=Zážehová Teplota
+gui.maxPlasma=Max. Teplota Plasmy
+gui.maxCasing=Max. Teplota Pláště
+gui.passiveGeneration=Pasivní Generace
+gui.steamProduction=Produkce Páry
 
 //*****//
 //TOOLS//
 //*****//
 
 //Vanilla Paxels
-item.WoodPaxel.name=Wood Paxel
-item.StonePaxel.name=Stone Paxel
-item.IronPaxel.name=Iron Paxel
-item.DiamondPaxel.name=Diamond Paxel
-item.GoldPaxel.name=Gold Paxel
+item.WoodPaxel.name=Dřevěný Sekrumpáč
+item.StonePaxel.name=Kamenný Sekrumpáč
+item.IronPaxel.name=Železný Sekrumpáč
+item.DiamondPaxel.name=Diamantový Sekrumpáč
+item.GoldPaxel.name=Zlatý Sekrumpáč
 
 //Obsidian
-item.ObsidianHelmet.name=Obsidian Helmet
-item.ObsidianChestplate.name=Obsidian Chestplate
-item.ObsidianLeggings.name=Obsidian Leggings
-item.ObsidianBoots.name=Obsidian Boots
-item.ObsidianPaxel.name=Obsidian Paxel
-item.ObsidianPickaxe.name=Obsidian Pickaxe
-item.ObsidianAxe.name=Obsidian Axe
-item.ObsidianShovel.name=Obsidian Shovel
-item.ObsidianHoe.name=Obsidian Hoe
-item.ObsidianSword.name=Obsidian Sword
+item.ObsidianHelmet.name=Obsidiánová Helma
+item.ObsidianChestplate.name=Obsidiánové Brnění
+item.ObsidianLeggings.name=Obsidiánové Kalhoty
+item.ObsidianBoots.name=Obsidiánové Boty
+item.ObsidianPaxel.name=Obsidiánový Sekrumpáč
+item.ObsidianPickaxe.name=Obsidiánový Krumpáč
+item.ObsidianAxe.name=Obsidiánová Sekyra
+item.ObsidianShovel.name=Obsidiánová Lopata
+item.ObsidianHoe.name=Obsidiánová Motyka
+item.ObsidianSword.name=Obsidiánový Meč
 
 //Lapis Lazuli
-item.LazuliHelmet.name=Lapis Lazuli Helmet
-item.LazuliChestplate.name=Lapis Lazuli Chestplate
-item.LazuliLeggings.name=Lapis Lazuli Leggings
-item.LazuliBoots.name=Lapis Lazuli Boots
-item.LazuliPaxel.name=Lapis Lazuli Paxel
-item.LazuliPickaxe.name=Lapis Lazuli Pickaxe
-item.LazuliAxe.name=Lapis Lazuli Axe
-item.LazuliShovel.name=Lapis Lazuli Shovel
-item.LazuliHoe.name=Lapis Lazuli Hoe
-item.LazuliSword.name=Lapis Lazuli Sword
+item.LazuliHelmet.name=Lapis Lazuli Helma
+item.LazuliChestplate.name=Lapis Lazuli Brnění
+item.LazuliLeggings.name=Lapis Lazuli Kalhoty
+item.LazuliBoots.name=Lapis Lazuli Boty
+item.LazuliPaxel.name=Lapis Lazuli Sekrumpáč
+item.LazuliPickaxe.name=Lapis Lazuli Krumpáč
+item.LazuliAxe.name=Lapis Lazuli Sekyra
+item.LazuliShovel.name=Lapis Lazuli Lopata
+item.LazuliHoe.name=Lapis Lazuli Motyka
+item.LazuliSword.name=Lapis Lazuli Meč
 
 //Osmium
-item.OsmiumHelmet.name=Osmium Helmet
-item.OsmiumChestplate.name=Osmium Chestplate
-item.OsmiumLeggings.name=Osmium Leggings
-item.OsmiumBoots.name=Osmium Boots
-item.OsmiumPaxel.name=Osmium Paxel
-item.OsmiumPickaxe.name=Osmium Pickaxe
-item.OsmiumAxe.name=Osmium Axe
-item.OsmiumShovel.name=Osmium Shovel
-item.OsmiumHoe.name=Osmium Hoe
-item.OsmiumSword.name=Osmium Sword
+item.OsmiumHelmet.name=Osmiová Helma
+item.OsmiumChestplate.name=Osmiové Brnění
+item.OsmiumLeggings.name=Osmiové Kalhoty
+item.OsmiumBoots.name=Osmiové Boty
+item.OsmiumPaxel.name=Osmiový Sekrumpáč
+item.OsmiumPickaxe.name=Osmiový Krumpáč
+item.OsmiumAxe.name=Osmiová Sekyra
+item.OsmiumShovel.name=Osmiová Lopata
+item.OsmiumHoe.name=Osmiová Motyka
+item.OsmiumSword.name=Osmiový Meč
 
 //Bronze
-item.BronzeHelmet.name=Bronze Helmet
-item.BronzeChestplate.name=Bronze Chestplate
-item.BronzeLeggings.name=Bronze Leggings
-item.BronzeBoots.name=Bronze Boots
-item.BronzePaxel.name=Bronze Paxel
-item.BronzePickaxe.name=Bronze Pickaxe
-item.BronzeAxe.name=Bronze Axe
-item.BronzeShovel.name=Bronze Shovel
-item.BronzeHoe.name=Bronze Hoe
-item.BronzeSword.name=Bronze Sword
+item.BronzeHelmet.name=Bronzová Helma
+item.BronzeChestplate.name=Bronzové Brnění
+item.BronzeLeggings.name=Bronzové Kalhoty
+item.BronzeBoots.name=Bronzové Boty
+item.BronzePaxel.name=Bronzový Sekrumpáč
+item.BronzePickaxe.name=Bronzový Krumpáč
+item.BronzeAxe.name=Bronzová Sekyra
+item.BronzeShovel.name=Bronzová Lopata
+item.BronzeHoe.name=Bronzová Motyka
+item.BronzeSword.name=Bronzový Meč
 
 //Glow
-item.GlowstoneHelmet.name=Glowstone Helmet
-item.GlowstoneChestplate.name=Glowstone Chestplate
-item.GlowstoneLeggings.name=Glowstone Leggings
-item.GlowstoneBoots.name=Glowstone Boots
-item.GlowstonePaxel.name=Glowstone Paxel
-item.GlowstonePickaxe.name=Glowstone Pickaxe
-item.GlowstoneAxe.name=Glowstone Axe
-item.GlowstoneShovel.name=Glowstone Shovel
-item.GlowstoneHoe.name=Glowstone Hoe
-item.GlowstoneSword.name=Glowstone Sword
+item.GlowstoneHelmet.name=Světlitová Helma
+item.GlowstoneChestplate.name=Světlitové Brnění
+item.GlowstoneLeggings.name=Světlitové Kalhoty
+item.GlowstoneBoots.name=Světlitové Boty
+item.GlowstonePaxel.name=Světlitový Sekrumpáč
+item.GlowstonePickaxe.name=Světlitový Krumpáč
+item.GlowstoneAxe.name=Světlitová Sekyra
+item.GlowstoneShovel.name=Světlitová Lopata
+item.GlowstoneHoe.name=Světlitová Motyka
+item.GlowstoneSword.name=Světlitový Meč
 
 //Steel
-item.SteelHelmet.name=Steel Helmet
-item.SteelChestplate.name=Steel Chestplate
-item.SteelLeggings.name=Steel Leggings
-item.SteelBoots.name=Steel Boots
-item.SteelPaxel.name=Steel Paxel
-item.SteelPickaxe.name=Steel Pickaxe
-item.SteelAxe.name=Steel Axe
-item.SteelShovel.name=Steel Shovel
-item.SteelHoe.name=Steel Hoe
-item.SteelSword.name=Steel Sword
+item.SteelHelmet.name=Ocelová Helma
+item.SteelChestplate.name=Ocelové Brnění
+item.SteelLeggings.name=Ocelové Kalhoty
+item.SteelBoots.name=Ocelové Boty
+item.SteelPaxel.name=Ocelový Sekrumpáč
+item.SteelPickaxe.name=Ocelový Krumpáč
+item.SteelAxe.name=Ocelová Sekyra
+item.SteelShovel.name=Ocelová Lopata
+item.SteelHoe.name=Ocelová Motyka
+item.SteelSword.name=Ocelové Meč
 
 //Config Gui
-mekanism.configgui.ctgy.tools.general=General
-mekanism.configgui.ctgy.tools.armor=Armor Balance
-mekanism.configgui.ctgy.tools.tools=Tools Balance
+mekanism.configgui.ctgy.tools.general=Základní
+mekanism.configgui.ctgy.tools.armor=Vyvážení Brnění
+mekanism.configgui.ctgy.tools.tools=Vyvážení Nástrojů
 
 //Config Tooltips
-mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
-mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
-mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
+mekanism.configgui.ctgy.tools.general.tooltip=Nastavení týkající se základní konfigurace MekanismTools
+mekanism.configgui.ctgy.tools.armor.tooltip=Nastavení týkající se protekčních hodnot a vyvážení setů brnění MekanismTools
+mekanism.configgui.ctgy.tools.tools.tooltip=Nastavení týkající se efektivních hodnot a vyvážení setů nástrojů MekanismTools
