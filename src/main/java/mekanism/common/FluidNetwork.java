@@ -18,7 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -165,7 +165,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 					if(acceptor != null && fluidToSend != null)
 					{
-						fluidSent += acceptor.fill(side, PipeUtils.copy(fluidToSend, currentSending), doTransfer);
+						fluidSent += acceptor.fill(PipeUtils.copy(fluidToSend, currentSending), doTransfer);
 					}
 
 					if(fluidSent > prev)
@@ -306,7 +306,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			for(EnumFacing side : sides)
 			{
-				if(acceptor != null && acceptor.canFill(side, fluidToSend.getFluid()))
+				if(acceptor != null && PipeUtils.canFill(acceptor, fluidToSend))
 				{
 					toReturn.add(acceptor);
 					break;
