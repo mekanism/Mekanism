@@ -29,6 +29,12 @@ public class PRCRecipeHandler implements IRecipeHandler<PRCRecipeWrapper>
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull PRCRecipeWrapper recipe) {
+		return category.getUid();
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull PRCRecipeWrapper recipe)
 	{
 		return recipe;

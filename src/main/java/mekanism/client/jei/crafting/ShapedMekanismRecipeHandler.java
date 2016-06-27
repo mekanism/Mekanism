@@ -5,10 +5,19 @@ import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 
+import javax.annotation.Nonnull;
+
 public class ShapedMekanismRecipeHandler implements IRecipeHandler<ShapedMekanismRecipe>
 {
 	@Override
-	public String getRecipeCategoryUid() 
+	public String getRecipeCategoryUid()
+	{
+		return VanillaRecipeCategoryUid.CRAFTING;
+	}
+
+	@Nonnull
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ShapedMekanismRecipe recipe)
 	{
 		return VanillaRecipeCategoryUid.CRAFTING;
 	}

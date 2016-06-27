@@ -29,6 +29,12 @@ public class ChemicalOxidizerRecipeHandler implements IRecipeHandler<ChemicalOxi
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull ChemicalOxidizerRecipeWrapper recipe) {
+		return category.getUid();
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull ChemicalOxidizerRecipeWrapper recipe)
 	{
 		return recipe;

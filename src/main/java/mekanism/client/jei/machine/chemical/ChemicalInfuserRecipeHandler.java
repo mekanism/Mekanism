@@ -29,6 +29,12 @@ public class ChemicalInfuserRecipeHandler implements IRecipeHandler<ChemicalInfu
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull ChemicalInfuserRecipeWrapper recipe) {
+		return category.getUid();
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull ChemicalInfuserRecipeWrapper recipe)
 	{
 		return recipe;

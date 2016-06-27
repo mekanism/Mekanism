@@ -61,7 +61,7 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
+    version = config.minecraft_version + "-" + config.forge_version + "-1.10.0"
     mappings = "${config.mappings_version}"
     runDir = "run"
     useDepAts = true

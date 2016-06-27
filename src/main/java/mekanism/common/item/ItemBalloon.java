@@ -198,7 +198,9 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
 			Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().provider.getDimension());
-			EnumFacing side = EnumFacing.getFront(BlockDispenser.getFacing(source.getBlockMetadata()).ordinal());
+			//TODO: Needs fixes
+			//EnumFacing side = EnumFacing.getFront(BlockDispenser.getDispensePosition(source.getBlockMetadata()).ordinal());
+			EnumFacing side = EnumFacing.getFront((int) BlockDispenser.getDispensePosition(source).getX());
 
 			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());
 			boolean latched = false;
