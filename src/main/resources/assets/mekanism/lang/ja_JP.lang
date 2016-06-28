@@ -1026,7 +1026,6 @@ item.LazuliShovel.name=ラピスラズリのシャベル
 item.LazuliHoe.name=ラピスラズリのクワ
 item.LazuliSword.name=ラピスラズリの剣
 
-
 //Osmium
 item.OsmiumHelmet.name=オスミウムのヘルメット
 item.OsmiumChestplate.name=オスミウムのチェストプレート
@@ -1074,6 +1073,18 @@ item.SteelAxe.name=鋼鉄の斧
 item.SteelShovel.name=鋼鉄のシャベル
 item.SteelHoe.name=鋼鉄のクワ
 item.SteelSword.name=鋼鉄の剣
+
+//Lapis Lazuli
+item.LapisLazuliHelmet.name=ラピスラズリのヘルメット
+item.LapisLazuliChestplate.name=ラピスラズリのチェストプレート
+item.LapisLazuliLeggings.name=ラピスラズリのレギンス
+item.LapisLazuliBoots.name=ラピスラズリのブーツ
+item.LapisLazuliPaxel.name=ラピスラズリのパクセル
+item.LapisLazuliPickaxe.name=ラピスラズリのピッケル
+item.LapisLazuliAxe.name=ラピスラズリの斧
+item.LapisLazuliShovel.name=ラピスラズリのシャベル
+item.LapisLazuliHoe.name=ラピスラズリのクワ
+item.LapisLazuliSword.name=ラピスラズリの剣
 
 //Config Gui
 mekanism.configgui.ctgy.tools.general=General
