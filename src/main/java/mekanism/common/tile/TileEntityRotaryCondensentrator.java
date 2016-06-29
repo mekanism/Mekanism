@@ -505,7 +505,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
-		return drain(resource.amount, doDrain);
+		return fluidTank.drain(resource, doDrain);
 	}
 
 	@Override

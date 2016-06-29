@@ -7,8 +7,9 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.GasTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.util.LangUtils;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class SideData
 {
@@ -59,25 +60,25 @@ public class SideData
 		return false;
 	}
 	
-	public FluidTankInfo[] getFluidTankInfo(ITankManager manager)
+	public IFluidTankProperties[] getTankProperties(ITankManager manager)
 	{
 		Object[] tanks = manager.getTanks();
-		List<FluidTankInfo> infos = new ArrayList<FluidTankInfo>();
+		List<IFluidTankProperties> infos = new ArrayList<IFluidTankProperties>();
 		
 		if(tanks == null)
 		{
-			return infos.toArray(new FluidTankInfo[] {});
+			return infos.toArray(new IFluidTankProperties[] {});
 		}
 		
 		for(int slot : availableSlots)
 		{
-			if(slot <= tanks.length-1 && tanks[slot] instanceof IFluidTank)
+			if(slot <= tanks.length-1 && tanks[slot] instanceof FluidTank)
 			{
-				infos.add(((IFluidTank)tanks[slot]).getInfo());
+				infos.add(new FluidTankPropertiesWrapper(((FluidTank)tanks[slot])));
 			}
 		}
 		
-		return infos.toArray(new FluidTankInfo[] {});
+		return infos.toArray(new IFluidTankProperties[] {});
 	}
 	
 	public GasTank getGasTank(ITankManager manager)

@@ -56,7 +56,19 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public boolean finishedCalc = false;
 	
-	public FluidTank fluidTank = new FluidTank(10000);
+	public FluidTank fluidTank = new FluidTank(10000) {
+		@Override
+		public boolean canDrain()
+		{
+			return false;
+		}
+		
+		@Override
+		public boolean canFillFluidType(FluidStack fluid)
+		{
+			return fluid.getFluid().canBePlacedInWorld();
+		}
+	};
 	
 	/** How much energy this machine consumes per-tick. */
 	public double BASE_ENERGY_PER_TICK = usage.fluidicPlenisherUsage;
@@ -422,19 +434,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public IFluidTankProperties[] getTankProperties()
 	{
-		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank) {
-			@Override
-			public boolean canDrain()
-			{
-				return false;
-			}
-			
-			@Override
-			public boolean canFillFluidType(FluidStack fluid)
-			{
-				return fluid.getFluid().canBePlacedInWorld();
-			}
-		}};
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank)};
 	}
 
 	@Override

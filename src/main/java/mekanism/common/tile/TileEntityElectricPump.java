@@ -56,7 +56,13 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration, ISecurityTile
 {
 	/** This pump's tank */
-	public FluidTank fluidTank = new FluidTank(10000);
+	public FluidTank fluidTank = new FluidTank(10000) {
+		@Override
+		public boolean canFill()
+		{
+			return false;
+		}
+	};
 	
 	/** The type of fluid this pump is pumping */
 	public Fluid activeType;
@@ -446,13 +452,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public IFluidTankProperties[] getTankProperties()
 	{
-		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank) {
-			@Override
-			public boolean canFill()
-			{
-				return false;
-			}
-		}};
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank)};
 	}
 
 	@Override

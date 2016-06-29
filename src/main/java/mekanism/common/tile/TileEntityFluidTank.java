@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.FluidTankTier;
@@ -39,9 +40,11 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile
@@ -167,10 +170,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		{
 			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 
-			if(tileEntity instanceof IFluidHandler)
+			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP))
 			{
+				IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.output, fluidTank.getFluidAmount()));
-				fluidTank.drain(((IFluidHandler)tileEntity).fill(EnumFacing.UP, toDrain, true), true);
+				fluidTank.drain(handler.fill(toDrain, true), true);
 			}
 		}
 	}
@@ -231,11 +235,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		if(up.getTileEntity(worldObj) instanceof TileEntityFluidTank)
 		{
-			IFluidHandler handler = (IFluidHandler)up.getTileEntity(worldObj);
+			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(worldObj), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
 			
-			if(handler.canFill(EnumFacing.DOWN, fluid.getFluid()))
+			if(PipeUtils.canFill(handler, fluid))
 			{
-				return handler.fill(EnumFacing.DOWN, fluid, doFill);
+				return handler.fill(fluid, doFill);
 			}
 		}
 		
@@ -470,14 +474,19 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || 
+				capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || 
+				super.hasCapability(capability, side);
 	}
+	
+	private EnumFacing capabilitySide = EnumFacing.NORTH;
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 		{
+			capabilitySide = side;
 			return (T)this;
 		}
 		
@@ -485,9 +494,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(resource != null && canFill(from, resource.getFluid()))
+		if(resource != null && canFillInternal())
 		{
 			int filled = fluidTank.fill(resource, doFill);
 			
@@ -496,7 +505,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				filled += pushUp(PipeUtils.copy(resource, resource.amount-filled), doFill);
 			}
 			
-			if(filled > 0 && from == EnumFacing.UP)
+			if(filled > 0 && capabilitySide == EnumFacing.UP)
 			{
 				if(valve == 0)
 				{
@@ -514,31 +523,48 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
-		if(resource != null && canDrain(from, resource.getFluid()))
+		if(canDrainInternal())
 		{
-			return fluidTank.drain(resource.amount, doDrain);
+			return fluidTank.drain(resource, doDrain);
 		}
 		
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		if(canDrain(from, null))
+		if(canDrainInternal())
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
 		
 		return null;
 	}
-
+	
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		if(from == EnumFacing.DOWN && worldObj != null && getPos() != null)
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank) {
+			@Override
+			public boolean canFill()
+			{
+				return canFillInternal();
+			}
+
+			@Override
+			public boolean canDrain()
+			{
+				return canDrainInternal();
+			}
+		}};
+	}
+	
+	private boolean canFillInternal()
+	{
+		if(capabilitySide == EnumFacing.DOWN && worldObj != null && getPos() != null)
 		{
 			TileEntity tile = worldObj.getTileEntity(getPos().offset(EnumFacing.DOWN));
 			
@@ -548,28 +574,17 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			}
 		}
 		
-		return fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid;
+		return true;
 	}
 
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	private boolean canDrainInternal()
 	{
 		if(fluidTank != null)
 		{
-			if(fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == fluid)
-			{
-				return !(isActive && from == EnumFacing.DOWN);
-
-			}
+			return !(isActive && capabilitySide == EnumFacing.DOWN);
 		}
 		
 		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		return new FluidTankInfo[] {fluidTank.getInfo()};
 	}
 	
 	@Override

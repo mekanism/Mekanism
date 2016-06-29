@@ -20,7 +20,6 @@ import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -348,7 +347,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		int filled = fluidTank.fill(resource, doFill);
 		
-		if(structure != null && doFill)
+		if(doFill)
 		{
 			structure.newSteamInput += filled;
 		}
@@ -359,7 +358,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
-		if(structure != null && structure.fluidStored != null)
+		if(structure.fluidStored != null)
 		{
 			if(resource.getFluid() == structure.fluidStored.getFluid())
 			{
@@ -373,12 +372,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		if(structure != null)
-		{
-			return fluidTank.drain(maxDrain, doDrain);
-		}
-
-		return null;
+		return fluidTank.drain(maxDrain, doDrain);
 	}
 	
 	@Override

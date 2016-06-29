@@ -47,21 +47,33 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager, IRedstoneControl, IActiveState, ISecurityTile
 {
 	/** This separator's water slot. */
-	public FluidTank fluidTank = new FluidTank(24000);
+	public FluidTank fluidTank = new FluidTank(24000) {
+		@Override
+		public boolean canFillFluidType(FluidStack fluid)
+		{
+			return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
+		}
+
+		@Override
+		public boolean canDrain()
+		{
+			return false;
+		}
+	};
 
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 2400;
@@ -612,44 +624,27 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid);
+		return fluidTank.fill(resource, doFill);
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return false;
-	}
-
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-	{
-		if(Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(resource.getFluid()))
-		{
-			return fluidTank.fill(resource, doFill);
-		}
-
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		return new FluidTankInfo[] {fluidTank.getInfo()};
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank)};
 	}
 
 	@Override

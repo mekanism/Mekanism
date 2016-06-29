@@ -25,7 +25,6 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -346,12 +345,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(resource.getFluid() == FluidRegistry.LAVA)
-		{
-			return lavaTank.fill(resource, doFill);
-		}
-
-		return 0;
+		return lavaTank.fill(resource, doFill);
 	}
 
 	@Override

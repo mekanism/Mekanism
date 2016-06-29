@@ -334,7 +334,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			@Override
 			public boolean canDrainFluidType(FluidStack fluidStack) 
 			{
-				return false;
+				return canDrain();
 			}
 		}};
 	}

@@ -3,10 +3,10 @@ package mekanism.common.tile;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -48,14 +48,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
-		TileEntityThermalEvaporationController controller = getController();
-		
-		if(resource == null || resource.isFluidEqual(controller.outputTank.getFluid()))
-		{
-			return controller.outputTank.drain(resource.amount, doDrain);
-		}
-
-		return null;
+		return getController().outputTank.drain(resource, doDrain);
 	}
 
 	@Override
@@ -69,11 +62,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	{
 		TileEntityThermalEvaporationController controller = getController();
 		
-		if(controller == null)
-		{
-			return PipeUtils.EMPTY;
-		}
-
 		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(controller.inputTank), new FluidTankPropertiesWrapper(controller.outputTank)};
 	}
 
@@ -133,13 +121,20 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
+		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || 
+				(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) || 
+				super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null)
 		{
 			return (T)this;
 		}

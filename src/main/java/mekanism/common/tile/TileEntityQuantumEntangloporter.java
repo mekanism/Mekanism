@@ -405,54 +405,66 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
 	{
+		if(!tankProperties.canFill())
+		{
+			return 0;
+		}
+		
 		return frequency.storedFluid.fill(resource, doFill);
 	}
 
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
-		if(resource.isFluidEqual(frequency.storedFluid.getFluid()))
+		if(!tankProperties.canDrain())
 		{
-			return frequency.storedFluid.drain(resource.amount, doDrain);
+			return null;
 		}
 		
-		return null;
+		return frequency.storedFluid.drain(resource, doDrain);
 	}
 
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
+		if(!tankProperties.canDrain())
+		{
+			return null;
+		}
+		
 		return frequency.storedFluid.drain(maxDrain, doDrain);
 	}
+	
+	private IFluidTankProperties tankProperties = new FluidTankPropertiesWrapper(frequency.storedFluid) {
+		@Override
+		public boolean canFill()
+		{
+			if(configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing).ioState == IOState.INPUT)
+			{
+				return true;
+			}
+			
+			return false;
+		}
+
+		@Override
+		public boolean canDrain()
+		{
+			if(configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing).ioState == IOState.OUTPUT)
+			{
+				return true;
+			}
+			
+			return false;
+		}
+	};
 
 	@Override
 	public IFluidTankProperties[] getTankProperties()
 	{
 		if(configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing).ioState != IOState.OFF)
 		{
-			return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(frequency.storedFluid) {
-				@Override
-				public boolean canFillFluidType(FluidStack fluid)
-				{
-					if(configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing).ioState == IOState.INPUT)
-					{
-						return frequency.storedFluid.getFluid() == null || fluid.getFluid() == frequency.storedFluid.getFluid().getFluid();
-					}
-					
-					return false;
-				}
-
-				@Override
-				public boolean canDrainFluidType(FluidStack fluid)
-				{
-					if(configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing).ioState == IOState.OUTPUT)
-					{
-						return frequency.storedFluid.getFluid() == null || fluid.getFluid() == frequency.storedFluid.getFluid().getFluid();
-					}
-					
-					return false;
-				}
-			}};
+			return new IFluidTankProperties[] {tankProperties};
 		}
 		
 		return PipeUtils.EMPTY;

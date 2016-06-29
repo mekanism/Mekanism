@@ -43,13 +43,34 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedOutput, PressurizedRecipe> implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData, ITankManager
 {
-	public FluidTank inputFluidTank = new FluidTank(10000);
+	public FluidTank inputFluidTank = new FluidTank(10000) {
+		@Override
+		public boolean canDrain()
+		{
+			return false;
+		}
+		
+		@Override
+		public boolean canFill()
+		{
+			SideData data = configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing);
+			
+			if(data.hasSlot(0))
+			{
+				return true;
+			}
+			
+			return false;
+		}
+	};
+	
 	public GasTank inputGasTank = new GasTank(10000);
 	
 	public GasTank outputGasTank = new GasTank(10000);
@@ -353,53 +374,29 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(canFill(from, resource.getFluid()))
-		{
-			return inputFluidTank.fill(resource, doFill);
-		}
-		
-		return 0;
+		return inputFluidTank.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
+		SideData data = configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing);
 		
-		if(data.hasSlot(0))
-		{
-			return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().getFluid() == fluid;
-		}
-		
-		return false;
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
-		
-		return data.getFluidTankInfo(this);
+		return data.getTankProperties(this);
 	}
 
 	@Override
@@ -446,14 +443,18 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
-				|| super.hasCapability(capability, side);
+				|| capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
+	
+	private EnumFacing capabilitySide = EnumFacing.NORTH;
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
+		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY ||
+				capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 		{
+			capabilitySide = side;
 			return (T)this;
 		}
 		
