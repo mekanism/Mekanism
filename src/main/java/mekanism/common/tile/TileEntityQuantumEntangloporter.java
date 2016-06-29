@@ -39,10 +39,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandler, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration, ISecurityTile
@@ -402,15 +403,15 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		return !hasFrequency() ? 0 : frequency.storedFluid.fill(resource, doFill);
+		return frequency.storedFluid.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
-		if(hasFrequency() && resource.isFluidEqual(frequency.storedFluid.getFluid()))
+		if(resource.isFluidEqual(frequency.storedFluid.getFluid()))
 		{
 			return frequency.storedFluid.drain(resource.amount, doDrain);
 		}
@@ -419,47 +420,39 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		if(hasFrequency())
-		{
-			return frequency.storedFluid.drain(maxDrain, doDrain);
-		}
-		
-		return null;
+		return frequency.storedFluid.drain(maxDrain, doDrain);
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		if(hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT)
+		if(configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing).ioState != IOState.OFF)
 		{
-			return frequency.storedFluid.getFluid() == null || fluid == frequency.storedFluid.getFluid().getFluid();
-		}
-		
-		return false;
-	}
+			return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(frequency.storedFluid) {
+				@Override
+				public boolean canFillFluidType(FluidStack fluid)
+				{
+					if(configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing).ioState == IOState.INPUT)
+					{
+						return frequency.storedFluid.getFluid() == null || fluid.getFluid() == frequency.storedFluid.getFluid().getFluid();
+					}
+					
+					return false;
+				}
 
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		if(hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT)
-		{
-			return frequency.storedFluid.getFluid() == null || fluid == frequency.storedFluid.getFluid().getFluid();
-		}
-		
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(hasFrequency())
-		{
-			if(configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState != IOState.OFF)
-			{
-				return new FluidTankInfo[] {frequency.storedFluid.getInfo()};
-			}
+				@Override
+				public boolean canDrainFluidType(FluidStack fluid)
+				{
+					if(configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing).ioState == IOState.OUTPUT)
+					{
+						return frequency.storedFluid.getFluid() == null || fluid.getFluid() == frequency.storedFluid.getFluid().getFluid();
+					}
+					
+					return false;
+				}
+			}};
 		}
 		
 		return PipeUtils.EMPTY;
@@ -660,19 +653,23 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		return frequency != null && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState != IOState.OFF;
 	}
 	
+	private EnumFacing capabilitySide = EnumFacing.NORTH;
+	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
-				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
+				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY 
+				|| super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
+				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 		{
+			capabilitySide = side;
 			return (T)this;
 		}
 		

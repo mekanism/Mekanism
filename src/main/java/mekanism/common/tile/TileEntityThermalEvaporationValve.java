@@ -6,10 +6,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandler, IHeatTransfer
 {
@@ -40,18 +40,17 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	}
 	
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		TileEntityThermalEvaporationController controller = getController();
-		return controller == null ? 0 : controller.inputTank.fill(resource, doFill);
+		return getController().inputTank.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
 		TileEntityThermalEvaporationController controller = getController();
 		
-		if(controller != null && (resource == null || resource.isFluidEqual(controller.outputTank.getFluid())))
+		if(resource == null || resource.isFluidEqual(controller.outputTank.getFluid()))
 		{
 			return controller.outputTank.drain(resource.amount, doDrain);
 		}
@@ -60,34 +59,13 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		TileEntityThermalEvaporationController controller = getController();
-		
-		if(controller != null)
-		{
-			return controller.outputTank.drain(maxDrain, doDrain);
-		}
-
-		return null;
+		return getController().outputTank.drain(maxDrain, doDrain);
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		TileEntityThermalEvaporationController controller = getController();
-		return controller != null && controller.hasRecipe(fluid);
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		TileEntityThermalEvaporationController controller = getController();
-		return controller != null && controller.outputTank.getFluidAmount() > 0;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
+	public IFluidTankProperties[] getTankProperties()
 	{
 		TileEntityThermalEvaporationController controller = getController();
 		
@@ -96,7 +74,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 			return PipeUtils.EMPTY;
 		}
 
-		return new FluidTankInfo[] {new FluidTankInfo(controller.inputTank), new FluidTankInfo(controller.outputTank)};
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(controller.inputTank), new FluidTankPropertiesWrapper(controller.outputTank)};
 	}
 
 	@Override

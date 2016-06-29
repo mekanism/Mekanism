@@ -15,6 +15,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
@@ -29,7 +30,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,9 +45,11 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -154,10 +156,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(worldObj);
 
-			if(tileEntity instanceof IFluidHandler)
+			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN))
 			{
+				IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256*(upgradeComponent.getUpgrades(Upgrade.SPEED)+1), fluidTank.getFluidAmount()));
-				fluidTank.drain(((IFluidHandler)tileEntity).fill(EnumFacing.DOWN, toDrain, true), true);
+				fluidTank.drain(handler.fill(toDrain, true), true);
 			}
 		}
 	}
@@ -441,14 +444,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing direction)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		if(direction == EnumFacing.UP)
-		{
-			return new FluidTankInfo[] {fluidTank.getInfo()};
-		}
-
-		return PipeUtils.EMPTY;
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank) {
+			@Override
+			public boolean canFill()
+			{
+				return false;
+			}
+		}};
 	}
 
 	@Override
@@ -470,43 +474,21 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.getFront(1))
-		{
-			return drain(from, resource.amount, doDrain);
-		}
-
-		return null;
+		return fluidTank.drain(resource, doDrain);
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
 		return 0;
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		if(from == EnumFacing.getFront(1))
-		{
-			return fluidTank.drain(maxDrain, doDrain);
-		}
-
-		return null;
-	}
-
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return from == EnumFacing.getFront(1);
+		return fluidTank.drain(maxDrain, doDrain);
 	}
 
 	@Override
@@ -528,13 +510,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || 
+				(side == EnumFacing.UP && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || (side == EnumFacing.UP && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY))
 		{
 			return (T)this;
 		}

@@ -12,14 +12,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public final class PipeUtils
 {
-	public static final FluidTankInfo[] EMPTY = new FluidTankInfo[] {};
+	public static final IFluidTankProperties[] EMPTY = new IFluidTankProperties[] {};
 
 	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{

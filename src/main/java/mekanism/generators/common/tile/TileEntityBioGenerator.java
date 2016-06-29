@@ -14,18 +14,19 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {
 	/** The FluidSlot biofuel instance for this generator. */
-	public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
+	public FluidSlot bioFuelSlot = new FluidSlot(24000);
 
 	public TileEntityBioGenerator()
 	{
@@ -249,9 +250,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(FluidRegistry.isFluidRegistered("bioethanol") && from != facing)
+		if(FluidRegistry.isFluidRegistered("bioethanol"))
 		{
 			if(resource.getFluid() == FluidRegistry.getFluid("bioethanol"))
 			{
@@ -280,33 +281,62 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		return FluidRegistry.isFluidRegistered("bioethanol") && fluid == FluidRegistry.getFluid("bioethanol");
-	}
+		return new IFluidTankProperties[] {new IFluidTankProperties() {
+			@Override
+			public FluidStack getContents() 
+			{
+				if(FluidRegistry.isFluidRegistered("bioethanol"))
+				{
+					return new FluidStack(FluidRegistry.getFluid("bioethanol"), bioFuelSlot.fluidStored);
+				}
+				
+				return null;
+			}
 
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return false;
-	}
+			@Override
+			public int getCapacity() 
+			{
+				return bioFuelSlot.MAX_FLUID;
+			}
 
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		return null;
+			@Override
+			public boolean canFill() 
+			{
+				return true;
+			}
+
+			@Override
+			public boolean canDrain() 
+			{
+				return false;
+			}
+
+			@Override
+			public boolean canFillFluidType(FluidStack fluidStack) 
+			{
+				return FluidRegistry.isFluidRegistered("bioethanol") && fluidStack.getFluid() == FluidRegistry.getFluid("bioethanol");
+			}
+
+			@Override
+			public boolean canDrainFluidType(FluidStack fluidStack) 
+			{
+				return false;
+			}
+		}};
 	}
 
 	@Override
@@ -319,5 +349,22 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	public void readSustainedData(ItemStack itemStack) 
 	{
 		bioFuelSlot.setFluid(ItemDataUtils.getInt(itemStack, "fluidStored"));
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

@@ -1,6 +1,7 @@
 package mekanism.common.content.boiler;
 
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerWaterTank extends BoilerTank
@@ -26,5 +27,17 @@ public class BoilerWaterTank extends BoilerTank
 	public int getCapacity()
 	{
 		return steamBoiler.structure != null ? steamBoiler.structure.waterVolume*BoilerUpdateProtocol.WATER_PER_TANK : 0;
+	}
+	
+	@Override
+	public boolean canFill()
+	{
+		return steamBoiler.structure.upperRenderLocation != null && steamBoiler.getPos().getY() < steamBoiler.structure.upperRenderLocation.yCoord-1;
+	}
+	
+	@Override
+	public boolean canFillFluidType(FluidStack fluid)
+	{
+		return canFill() && fluid.getFluid() == FluidRegistry.WATER;
 	}
 }

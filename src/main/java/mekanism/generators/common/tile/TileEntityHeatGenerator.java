@@ -16,7 +16,6 @@ import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -31,9 +30,11 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData, IHeatTransfer
@@ -343,9 +344,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(resource.getFluid() == FluidRegistry.LAVA && from != facing)
+		if(resource.getFluid() == FluidRegistry.LAVA)
 		{
 			return lavaTank.fill(resource, doFill);
 		}
@@ -354,38 +355,33 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		return fluid == FluidRegistry.LAVA && from != facing;
-	}
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(lavaTank) {
+			@Override
+			public boolean canFillFluidType(FluidStack fluid)
+			{
+				return fluid != null && fluid.getFluid() == FluidRegistry.LAVA;
+			}
 
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(from == facing)
-		{
-			return PipeUtils.EMPTY;
-		}
-		
-		return new FluidTankInfo[] {lavaTank.getInfo()};
+			@Override
+			public boolean canDrainFluidType(FluidStack fluid)
+			{
+				return false;
+			}
+		}};
 	}
 
 	@Override
@@ -476,13 +472,15 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
+		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || 
+				(side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
+		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
+				(side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY))
 		{
 			return (T)this;
 		}

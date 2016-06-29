@@ -7,8 +7,9 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-public abstract class BoilerTank implements IFluidTank
+public abstract class BoilerTank implements IFluidTank, IFluidTankProperties
 {
 	public TileEntityBoilerCasing steamBoiler;
 
@@ -179,5 +180,35 @@ public abstract class BoilerTank implements IFluidTank
 	public FluidTankInfo getInfo()
 	{
 		return new FluidTankInfo(this);
+	}
+	
+	@Override
+	public FluidStack getContents() 
+	{
+		return getFluid() != null ? getFluid().copy() : null;
+	}
+	
+	@Override
+	public boolean canFill() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canDrain() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canFillFluidType(FluidStack fluidStack) 
+	{
+		return canFill();
+	}
+
+	@Override
+	public boolean canDrainFluidType(FluidStack fluidStack) 
+	{
+		return canDrain();
 	}
 }

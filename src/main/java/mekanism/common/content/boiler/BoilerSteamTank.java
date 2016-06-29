@@ -27,4 +27,10 @@ public class BoilerSteamTank extends BoilerTank
 	{
 		return steamBoiler.structure != null ? steamBoiler.structure.steamVolume*BoilerUpdateProtocol.STEAM_PER_TANK : 0;
 	}
+	
+	@Override
+	public boolean canDrain()
+	{
+		return steamBoiler.structure.upperRenderLocation != null && steamBoiler.getPos().getY() >= steamBoiler.structure.upperRenderLocation.yCoord-1;
+	}
 }

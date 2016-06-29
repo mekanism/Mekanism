@@ -488,6 +488,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
 				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+				|| capability == Capabilities.CONFIGURABLE_CAPABILITY
 				|| super.hasCapability(capability, facing);
 	}
 
@@ -495,9 +496,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
-			return (T) this;
-		if(capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
-			return (T) this;
+			return (T)this;
+		if(capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY)
+			return (T)this;
 		return super.getCapability(capability, facing);
 	}
 }

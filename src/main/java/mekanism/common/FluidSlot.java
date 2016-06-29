@@ -14,18 +14,13 @@ public class FluidSlot
 	/** The maximum amount of fluid this slot can handle. */
 	public int MAX_FLUID;
 
-	/** The fluid's ID. */
-	public int fluidID;
-
 	/**
-	 * Creates a FluidSlot with a defined fluid ID and max fluid. The fluid stored starts at 0.
+	 * Creates a FluidSlot with a defined max fluid. The fluid stored starts at 0.
 	 * @param max - max fluid
-	 * @param id - fluid id
 	 */
-	public FluidSlot(int max, int id)
+	public FluidSlot(int max)
 	{
 		MAX_FLUID = max;
-		fluidID = id;
 	}
 
 	/**

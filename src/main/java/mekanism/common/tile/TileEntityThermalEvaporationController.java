@@ -48,7 +48,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public static final int MAX_SOLARS = 4;
 	public static final int MAX_HEIGHT = 18;
 
-	public FluidTank inputTank = new FluidTank(0);
+	public FluidTank inputTank = new FluidTank(0) {
+		@Override
+		public boolean canFillFluidType(FluidStack fluid)
+		{
+			return hasRecipe(fluid.getFluid());
+		}
+	};
 	public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
 
 	public Set<Coord4D> tankParts = new HashSet<Coord4D>();
@@ -88,6 +94,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		super("ThermalEvaporationController");
 		
 		inventory = new ItemStack[4];
+		
+		inputTank.setCanDrain(false);
+		outputTank.setCanFill(false);
 	}
 
 	@Override

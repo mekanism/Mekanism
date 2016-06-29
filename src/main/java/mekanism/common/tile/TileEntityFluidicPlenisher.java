@@ -27,7 +27,6 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,9 +41,11 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -419,14 +420,21 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing direction)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		if(direction == EnumFacing.UP)
-		{
-			return new FluidTankInfo[] {fluidTank.getInfo()};
-		}
-
-		return PipeUtils.EMPTY;
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank) {
+			@Override
+			public boolean canDrain()
+			{
+				return false;
+			}
+			
+			@Override
+			public boolean canFillFluidType(FluidStack fluid)
+			{
+				return fluid.getFluid().canBePlacedInWorld();
+			}
+		}};
 	}
 
 	@Override
@@ -448,43 +456,21 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
-	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.UP)
-		{
-			return drain(from, resource.amount, doDrain);
-		}
-
-		return null;
-	}
-
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-	{
-		if(from == EnumFacing.UP && resource.getFluid().canBePlacedInWorld())
-		{
-			return fluidTank.fill(resource, true);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		return from == EnumFacing.UP && fluid.canBePlacedInWorld();
+		return fluidTank.fill(resource, true);
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		return false;
+		return null;
 	}
 	
 	@Override
@@ -508,13 +494,14 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || 
+				(side == EnumFacing.UP && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || (side == EnumFacing.UP && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY))
 		{
 			return (T)this;
 		}

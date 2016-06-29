@@ -16,17 +16,15 @@ import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -340,13 +338,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
+		return new IFluidTankProperties[] {fluidTank};
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
 		int filled = fluidTank.fill(resource, doFill);
 		
@@ -359,7 +357,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
 		if(structure != null && structure.fluidStored != null)
 		{
@@ -373,7 +371,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
 		if(structure != null)
 		{
@@ -381,23 +379,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		}
 
 		return null;
-	}
-
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		if(fluid == FluidRegistry.getFluid("steam"))
-		{
-			return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
-		}
-		
-		return false;
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
 	}
 	
 	@Override
@@ -409,15 +390,26 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return true;
+			}
+		}
+		
+		return super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
 		{
-			return (T)this;
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return (T)this;
+			}
 		}
 		
 		return super.getCapability(capability, side);

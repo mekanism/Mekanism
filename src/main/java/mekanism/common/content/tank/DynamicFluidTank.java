@@ -7,8 +7,9 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-public class DynamicFluidTank implements IFluidTank
+public class DynamicFluidTank implements IFluidTank, IFluidTankProperties
 {
 	public TileEntityDynamicTank dynamicTank;
 
@@ -193,5 +194,35 @@ public class DynamicFluidTank implements IFluidTank
 	public FluidTankInfo getInfo()
 	{
 		return new FluidTankInfo(this);
+	}
+
+	@Override
+	public FluidStack getContents() 
+	{
+		return getFluid() != null ? getFluid().copy() : null;
+	}
+
+	@Override
+	public boolean canFill() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canDrain() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canFillFluidType(FluidStack fluidStack) 
+	{
+		return canFill();
+	}
+
+	@Override
+	public boolean canDrainFluidType(FluidStack fluidStack) 
+	{
+		return canDrain();
 	}
 }

@@ -34,7 +34,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -42,14 +41,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -57,7 +57,19 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 {
 	public GasTank gasTank = new GasTank(MAX_FLUID);
 
-	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
+	public FluidTank fluidTank = new FluidTank(MAX_FLUID) {
+		@Override
+		public boolean canFillFluidType(FluidStack fluid)
+		{
+			return mode == 1 && (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().getFluid() == fluid.getFluid());
+		}
+
+		@Override
+		public boolean canDrainFluidType(FluidStack fluid)
+		{
+			return mode == 0;
+		}
+	};
 
 	public static final int MAX_FLUID = 10000;
 
@@ -448,13 +460,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
-				|| super.hasCapability(capability, side);
+				|| (side == MekanismUtils.getRight(facing) && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
+		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY ||
+				(side == MekanismUtils.getRight(facing) && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY))
 		{
 			return (T)this;
 		}
@@ -484,59 +497,27 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(canFill(from, resource.getFluid()))
-		{
-			return fluidTank.fill(resource, doFill);
-		}
-
-		return 0;
+		return fluidTank.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid())
-		{
-			return drain(from, resource.amount, doDrain);
-		}
-
-		return null;
+		return drain(resource.amount, doDrain);
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public IFluidTankProperties[] getTankProperties()
 	{
-		return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().getFluid() == fluid);
+		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(fluidTank)};
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		return mode == 0 && from == MekanismUtils.getRight(facing);
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(from == MekanismUtils.getRight(facing))
-		{
-			return new FluidTankInfo[] {fluidTank.getInfo()};
-		}
-
-		return PipeUtils.EMPTY;
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-	{
-		if(canDrain(from, null))
-		{
-			return fluidTank.drain(maxDrain, doDrain);
-		}
-
-		return null;
+		return fluidTank.drain(maxDrain, doDrain);
 	}
 
 	@Override
