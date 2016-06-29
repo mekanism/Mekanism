@@ -39,7 +39,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -54,19 +53,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		@Override
 		public boolean canDrain()
 		{
-			return false;
-		}
-		
-		@Override
-		public boolean canFill()
-		{
-			SideData data = configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing);
-			
-			if(data.hasSlot(0))
-			{
-				return true;
-			}
-			
 			return false;
 		}
 	};
@@ -376,6 +362,11 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
 	{
+		if(!canFill())
+		{
+			return 0;
+		}
+		
 		return inputFluidTank.fill(resource, doFill);
 	}
 
@@ -389,6 +380,18 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
 		return null;
+	}
+	
+	public boolean canFill()
+	{
+		SideData data = configComponent.getOutput(TransmissionType.FLUID, capabilitySide, facing);
+		
+		if(data.hasSlot(0))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override

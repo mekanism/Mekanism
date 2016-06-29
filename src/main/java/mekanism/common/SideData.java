@@ -5,6 +5,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.GasTank;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ITankManager;
 import mekanism.common.util.LangUtils;
 import net.minecraftforge.fluids.FluidTank;
