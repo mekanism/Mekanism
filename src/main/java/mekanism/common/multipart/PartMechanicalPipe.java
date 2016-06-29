@@ -7,20 +7,24 @@ import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandler
+public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
 {
 	public float currentScale;
 
@@ -54,11 +58,11 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 
 					if(container != null)
 					{
-						FluidStack received = container.drain(side.getOpposite(), getPullAmount(), false);
+						FluidStack received = container.drain(getPullAmount(), false);
 
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side.getOpposite(), takeFluid(received, true), true);
+							container.drain(takeFluid(received, true), true);
 						}
 					}
 				}
@@ -305,5 +309,23 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		packet.writeInt(tier.ordinal());
 		
 		super.writeUpdatePacket(packet);
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (side != null && getConnectionType(side) != ConnectionType.NONE))
+			|| super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (side != null && getConnectionType(side) != ConnectionType.NONE))
+		{
+			return (T)new FluidHandlerWrapper(this, side);
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

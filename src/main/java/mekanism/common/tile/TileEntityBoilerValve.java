@@ -1,18 +1,23 @@
 package mekanism.common.tile;
 
 import mekanism.api.Coord4D;
+import mekanism.api.util.CapabilityUtils;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandler
+public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper
 {
 	public BoilerTank waterTank;
 	public BoilerTank steamTank;
@@ -40,11 +45,13 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 					{
 						TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 						
-						if(tile instanceof IFluidHandler && !(tile instanceof TileEntityBoilerValve))
+						if(tile != null && !(tile instanceof TileEntityBoilerValve) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 						{
-							if(((IFluidHandler)tile).canFill(side.getOpposite(), structure.steamStored.getFluid()))
+							IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+							
+							if(PipeUtils.canFill(handler, structure.steamStored))
 							{
-								structure.steamStored.amount -= ((IFluidHandler)tile).fill(side.getOpposite(), structure.steamStored, true);
+								structure.steamStored.amount -= handler.fill(structure.steamStored, true);
 								
 								if(structure.steamStored.amount <= 0)
 								{
@@ -134,5 +141,33 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return true;
+			}
+		}
+		
+		return super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return (T)new FluidHandlerWrapper(this, side);
+			}
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

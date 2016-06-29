@@ -8,11 +8,14 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
@@ -41,10 +44,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile
+public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile
 {
 	public boolean isActive;
 
@@ -167,10 +171,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		{
 			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 
-			if(tileEntity instanceof IFluidHandler)
+			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP))
 			{
+				IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.output, fluidTank.getFluidAmount()));
-				fluidTank.drain(((IFluidHandler)tileEntity).fill(EnumFacing.UP, toDrain, true), true);
+				fluidTank.drain(handler.fill(toDrain, true), true);
 			}
 		}
 	}
@@ -231,11 +236,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		if(up.getTileEntity(worldObj) instanceof TileEntityFluidTank)
 		{
-			IFluidHandler handler = (IFluidHandler)up.getTileEntity(worldObj);
+			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(worldObj), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
 			
-			if(handler.canFill(EnumFacing.DOWN, fluid.getFluid()))
+			if(PipeUtils.canFill(handler, fluid))
 			{
-				return handler.fill(EnumFacing.DOWN, fluid, doFill);
+				return handler.fill(fluid, doFill);
 			}
 		}
 		
@@ -470,7 +475,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+				|| super.hasCapability(capability, side);
 	}
 
 	@Override
@@ -479,6 +485,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
 		{
 			return (T)this;
+		}
+		
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			return (T)new FluidHandlerWrapper(this, side);
 		}
 		
 		return super.getCapability(capability, side);

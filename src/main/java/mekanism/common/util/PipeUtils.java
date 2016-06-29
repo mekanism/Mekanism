@@ -11,10 +11,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public final class PipeUtils
 {
@@ -22,22 +23,18 @@ public final class PipeUtils
 
 	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
-		if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || !(tile instanceof IFluidHandler))
+		if(tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || 
+				!CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 		{
 			return false;
 		}
 
-		IFluidHandler container = (IFluidHandler)tile;
-		FluidTankInfo[] infoArray = container.getTankInfo(side.getOpposite());
+		IFluidHandler container = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+		IFluidTankProperties[] infoArray = container.getTankProperties();
 
-		if(container.canDrain(side.getOpposite(), FluidRegistry.WATER)
-			|| container.canFill(side.getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
+		if(infoArray != null && infoArray.length > 0)
 		{
-			return true;
-		}
-		else if(infoArray != null && infoArray.length > 0)
-		{
-			for(FluidTankInfo info : infoArray)
+			for(IFluidTankProperties info : infoArray)
 			{
 				if(info != null)
 				{
@@ -67,9 +64,10 @@ public final class PipeUtils
 		{
 			TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
 
-			if(acceptor instanceof IFluidHandler)
+			if(acceptor != null && CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite()))
 			{
-				acceptors[orientation.ordinal()] = (IFluidHandler)acceptor;
+				IFluidHandler handler = CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite());
+				acceptors[orientation.ordinal()] = handler;
 			}
 		}
 
@@ -97,7 +95,7 @@ public final class PipeUtils
 		{
 			IFluidHandler handler = possibleAcceptors[i];
 			
-			if(handler != null && handler.canFill(EnumFacing.getFront(i).getOpposite(), stack.getFluid()))
+			if(handler != null && canFill(handler, stack))
 			{
 				availableAcceptors.add(handler);
 			}
@@ -125,7 +123,7 @@ public final class PipeUtils
 				}
 				
 				EnumFacing dir = EnumFacing.getFront(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
-				toSend -= acceptor.fill(dir, copy(stack, currentSending), true);
+				toSend -= acceptor.fill(copy(stack, currentSending), true);
 			}
 		}
 
@@ -138,5 +136,31 @@ public final class PipeUtils
 		ret.amount = amount;
 		
 		return ret;
+	}
+	
+	public static boolean canFill(IFluidHandler handler, FluidStack stack)
+	{
+		for(IFluidTankProperties props : handler.getTankProperties())
+		{
+			if(props.canFillFluidType(stack))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean canDrain(IFluidHandler handler, FluidStack stack)
+	{
+		for(IFluidTankProperties props : handler.getTankProperties())
+		{
+			if(props.canDrainFluidType(stack))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
