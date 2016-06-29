@@ -17,6 +17,8 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine;
@@ -44,10 +46,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedOutput, PressurizedRecipe> implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData, ITankManager
+public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedOutput, PressurizedRecipe> implements IFluidHandlerWrapper, IGasHandler, ITubeConnection, ISustainedData, ITankManager
 {
 	public FluidTank inputFluidTank = new FluidTank(10000);
 	public GasTank inputGasTank = new GasTank(10000);
@@ -446,7 +448,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
-				|| super.hasCapability(capability, side);
+				|| capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
@@ -455,6 +457,11 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
 		{
 			return (T)this;
+		}
+		
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			return (T)new FluidHandlerWrapper(this, side);
 		}
 		
 		return super.getCapability(capability, side);

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -14,15 +16,16 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
+public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData
 {
 	/** The FluidSlot biofuel instance for this generator. */
 	public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
@@ -319,5 +322,22 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	public void readSustainedData(ItemStack itemStack) 
 	{
 		bioFuelSlot.setFluid(ItemDataUtils.getInt(itemStack, "fluidStored"));
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			return (T)new FluidHandlerWrapper(this, side);
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

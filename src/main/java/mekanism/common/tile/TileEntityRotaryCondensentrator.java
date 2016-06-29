@@ -19,7 +19,9 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
+import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
@@ -49,11 +51,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
+public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandlerWrapper, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
 {
 	public GasTank gasTank = new GasTank(MAX_FLUID);
 
@@ -448,7 +450,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
-				|| super.hasCapability(capability, side);
+				|| capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
@@ -457,6 +459,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
 		{
 			return (T)this;
+		}
+		
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			return (T)new FluidHandlerWrapper(this, side);
 		}
 		
 		return super.getCapability(capability, side);

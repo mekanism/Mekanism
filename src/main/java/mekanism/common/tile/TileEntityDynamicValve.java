@@ -1,15 +1,18 @@
 package mekanism.common.tile;
 
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandler
+public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper
 {
 	public DynamicFluidTank fluidTank;
 
@@ -72,5 +75,33 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	public String getName()
 	{
 		return LangUtils.localize("gui.dynamicTank");
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return true;
+			}
+		}
+		
+		return super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return (T)new FluidHandlerWrapper(this, side);
+			}
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

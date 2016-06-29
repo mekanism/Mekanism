@@ -7,6 +7,8 @@ import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -15,18 +17,18 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandler
+public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
 {
 	public float currentScale;
 
-	public FluidTank buffer = new FluidTank(Fluid.BUCKET_VOLUME);
+	public FluidTank buffer = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 
 	public FluidStack lastWrite;
 
@@ -216,39 +218,49 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public int fill(FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		return takeFluid(resource, doFill);
+		if(getConnectionType(from) == ConnectionType.NORMAL)
+		{
+			return takeFluid(resource, doFill);
+		}
+
+		return 0;
 	}
 
 	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public IFluidTankProperties[] getTankProperties()
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return new IFluidTankProperties[] {new FluidTankPropertiesWrapper(buffer) {
-			@Override
-		    public boolean canFillFluidType(FluidStack fluidStack)
-		    {
-		        return true;
-		    }
+		return getConnectionType(from) == ConnectionType.NORMAL;
+	}
 
-		    @Override
-		    public boolean canDrainFluidType(FluidStack fluidStack)
-		    {
-		        return false;
-		    }
-		}};
+	@Override
+	public boolean canDrain(EnumFacing from, Fluid fluid)
+	{
+		return false;
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
+	{
+		if(getConnectionType(from) != ConnectionType.NONE)
+		{
+			return new FluidTankInfo[] {buffer.getInfo()};
+		}
+
+		return new FluidTankInfo[0];
 	}
 
 	public int getPullAmount()
@@ -311,7 +323,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	{
 		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (side != null && getConnectionType(side) != ConnectionType.NONE))
 		{
-			return (T)this;
+			return (T)new FluidHandlerWrapper(this, side);
 		}
 		
 		return super.getCapability(capability, side);

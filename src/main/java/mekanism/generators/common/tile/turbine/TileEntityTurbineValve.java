@@ -12,7 +12,9 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,7 +27,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -36,7 +37,7 @@ import net.minecraftforge.fml.common.Optional.Method;
 	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
 	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2")
 })
-public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandler, IEnergyWrapper
+public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper
 {
 	public boolean ic2Registered = false;
 	
@@ -409,15 +410,26 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return true;
+			}
+		}
+		
+		return super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
 		{
-			return (T)this;
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return (T)new FluidHandlerWrapper(this, side);
+			}
 		}
 		
 		return super.getCapability(capability, side);
