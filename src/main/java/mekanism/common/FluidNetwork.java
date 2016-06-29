@@ -11,6 +11,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -18,9 +19,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 {
@@ -135,7 +139,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 	public int tickEmit(FluidStack fluidToSend, boolean doTransfer)
 	{
-		List<IFluidHandler> availableAcceptors = new ArrayList<>();
+		List<Pair<Coord4D, IFluidHandler>> availableAcceptors = new ArrayList<>();
 		availableAcceptors.addAll(getAcceptors(fluidToSend));
 
 		Collections.shuffle(availableAcceptors);
@@ -148,10 +152,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			int remaining = fluidToSend.amount % divider;
 			int sending = (fluidToSend.amount-remaining)/divider;
 
-			for(IFluidHandler acceptor : availableAcceptors)
+			for(Pair<Coord4D, IFluidHandler> pair : availableAcceptors)
 			{
 				int currentSending = sending;
-				EnumSet<EnumFacing> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+				IFluidHandler acceptor = pair.getRight();
+				EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
 
 				if(remaining > 0)
 				{
@@ -282,10 +287,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 
 	@Override
-	public Set<IFluidHandler> getAcceptors(Object data)
+	public Set<Pair<Coord4D, IFluidHandler>> getAcceptors(Object data)
 	{
 		FluidStack fluidToSend = (FluidStack)data;
-		Set<IFluidHandler> toReturn = new HashSet<>();
+		Set<Pair<Coord4D, IFluidHandler>> toReturn = new HashSet<>();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -301,14 +306,19 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				continue;
 			}
-			
-			IFluidHandler acceptor = (IFluidHandler)tile;
 
 			for(EnumFacing side : sides)
 			{
+				if(!CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side))
+				{
+					continue;
+				}
+				
+				IFluidHandler acceptor = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
+						
 				if(acceptor != null && PipeUtils.canFill(acceptor, fluidToSend))
 				{
-					toReturn.add(acceptor);
+					toReturn.add(Pair.of(coord, acceptor));
 					break;
 				}
 			}

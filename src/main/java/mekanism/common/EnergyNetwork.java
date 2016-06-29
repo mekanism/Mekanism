@@ -20,6 +20,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork>
 {
 	private double lastPowerScale = 0;
@@ -151,7 +153,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	{
 		double sent = 0;
 
-		List<EnergyAcceptorWrapper> availableAcceptors = new ArrayList<>();
+		List<Pair<Coord4D, EnergyAcceptorWrapper>> availableAcceptors = new ArrayList<>();
 		availableAcceptors.addAll(getAcceptors(null));
 
 		Collections.shuffle(availableAcceptors);
@@ -162,10 +164,11 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			double remaining = energyToSend % divider;
 			double sending = (energyToSend-remaining)/divider;
 
-			for(EnergyAcceptorWrapper acceptor : availableAcceptors)
+			for(Pair<Coord4D, EnergyAcceptorWrapper> pair : availableAcceptors)
 			{
+				EnergyAcceptorWrapper acceptor = pair.getRight();
 				double currentSending = sending+remaining;
-				EnumSet<EnumFacing> sides = acceptorDirections.get(acceptor.coord);
+				EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
 
 				if(sides == null || sides.isEmpty())
 				{
@@ -190,9 +193,9 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	}
 
 	@Override
-	public Set<EnergyAcceptorWrapper> getAcceptors(Object data)
+	public Set<Pair<Coord4D, EnergyAcceptorWrapper>> getAcceptors(Object data)
 	{
-		Set<EnergyAcceptorWrapper> toReturn = new HashSet<>();
+		Set<Pair<Coord4D, EnergyAcceptorWrapper>> toReturn = new HashSet<>();
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -217,7 +220,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 				{
 					if(acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side))
 					{
-						toReturn.add(acceptor);
+						toReturn.add(Pair.of(coord, acceptor));
 						break;
 					}
 				}

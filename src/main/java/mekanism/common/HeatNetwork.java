@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.Collection;
 import java.util.Set;
 
+import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -12,6 +13,8 @@ import mekanism.common.multipart.MultipartTransmitter;
 //import mekanism.common.multipart.MultipartTransmitter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 {
@@ -61,7 +64,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 	public void clampBuffer() {}
 
 	@Override
-	public Set<IHeatTransfer> getAcceptors(Object data)
+	public Set<Pair<Coord4D, IHeatTransfer>> getAcceptors(Object data)
 	{
 		return null;
 	}

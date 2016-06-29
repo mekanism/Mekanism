@@ -18,6 +18,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.collect.Lists;
 
 /**
@@ -140,7 +142,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 	public int tickEmit(GasStack stack)
 	{
-		List<IGasHandler> availableAcceptors = Lists.newArrayList();
+		List<Pair<Coord4D, IGasHandler>> availableAcceptors = Lists.newArrayList();
 
 		availableAcceptors.addAll(getAcceptors(stack.getGas()));
 
@@ -155,10 +157,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			int remaining = toSend % divider;
 			int sending = (toSend-remaining)/divider;
 
-			for(IGasHandler acceptor : availableAcceptors)
+			for(Pair<Coord4D, IGasHandler> pair : availableAcceptors)
 			{
+				IGasHandler acceptor = pair.getRight();
 				int currentSending = sending;
-				EnumSet<EnumFacing> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+				EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
 
 				if(remaining > 0)
 				{
@@ -285,10 +288,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 
 	@Override
-	public Set<IGasHandler> getAcceptors(Object data)
+	public Set<Pair<Coord4D, IGasHandler>> getAcceptors(Object data)
 	{
 		Gas type = (Gas)data;
-		Set<IGasHandler> toReturn = new HashSet<IGasHandler>();
+		Set<Pair<Coord4D, IGasHandler>> toReturn = new HashSet<>();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -316,7 +319,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 				
 				if(acceptor != null && acceptor.canReceiveGas(side, type))
 				{
-					toReturn.add(acceptor);
+					toReturn.add(Pair.of(coord, acceptor));
 					break;
 				}
 			}
