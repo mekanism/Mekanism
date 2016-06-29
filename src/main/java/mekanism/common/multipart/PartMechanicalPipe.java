@@ -302,14 +302,14 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return (getConnectionType(side) != ConnectionType.NONE && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) 
-				|| super.hasCapability(capability, side);
+		return (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (side != null && getConnectionType(side) != ConnectionType.NONE))
+			|| super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getConnectionType(side) != ConnectionType.NONE)
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (side != null && getConnectionType(side) != ConnectionType.NONE))
 		{
 			return (T)this;
 		}
