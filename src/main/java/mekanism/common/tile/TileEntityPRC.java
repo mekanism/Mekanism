@@ -407,12 +407,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
@@ -421,12 +415,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		}
 		
 		return null;
-	}
-
-	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override

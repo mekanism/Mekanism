@@ -130,29 +130,9 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
-		if(getReactor() != null)
-		{
-			if(getReactor().getSteamTank().getFluidAmount() > 0)
-			{
-				return new GasStack(GasRegistry.getGas("steam"), getReactor().getSteamTank().drain(amount, doTransfer).amount);
-			}
-		}
-
 		return null;
-	}
-
-	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override
@@ -164,7 +144,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
-		return (type == GasRegistry.getGas("steam"));
+		return false;
 	}
 
 	@Override

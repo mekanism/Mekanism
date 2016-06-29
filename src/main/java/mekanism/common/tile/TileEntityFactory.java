@@ -1094,12 +1094,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
 		if(configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0))
@@ -1125,12 +1119,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
-	}
-
-	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
-	{
-		return drawGas(side, amount, true);
 	}
 
 	@Override
