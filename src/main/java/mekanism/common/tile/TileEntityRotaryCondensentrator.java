@@ -45,12 +45,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -134,16 +132,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
 				}
 
-				if(inventory[2] != null)
+				if(FluidContainerUtils.isFluidContainer(inventory[2]))
 				{
-					if(inventory[2].getItem() instanceof IFluidContainerItem)
-					{
-						FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
-					}
-					else if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
-					{
-						FluidContainerUtils.handleRegistryItemFill(this, fluidTank, 2, 3);
-					}
+					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
 				}
 
 				if(getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
@@ -186,16 +177,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(inventory[2] != null)
+				if(FluidContainerUtils.isFluidContainer(inventory[2]))
 				{
-					if(inventory[2].getItem() instanceof IFluidContainerItem)
-					{
-						FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
-					}
-					else if(FluidContainerRegistry.isFilledContainer(inventory[2]))
-					{
-						FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 2, 3);
-					}
+					FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
 				}
 
 				if(getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))

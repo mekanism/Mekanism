@@ -25,7 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -35,9 +35,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState, IHasSound, ISoundSource
 {
-	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
+	public static final int MAX_WATER = 100 * Fluid.BUCKET_VOLUME;
 	public static final int MAX_STEAM = MAX_WATER * 100;
-	public static final int MAX_FUEL = 1 * FluidContainerRegistry.BUCKET_VOLUME;
+	public static final int MAX_FUEL = 1 * Fluid.BUCKET_VOLUME;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);
 	public FluidTank steamTank = new FluidTank(MAX_STEAM);

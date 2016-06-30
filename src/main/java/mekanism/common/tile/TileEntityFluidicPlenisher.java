@@ -45,7 +45,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -92,28 +91,15 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			ChargeUtils.discharge(2, this);
 			
-			if(inventory[0] != null)
+			if(FluidContainerUtils.isFluidContainer(inventory[0]))
 			{
-				if(inventory[0].getItem() instanceof IFluidContainerItem)
-				{
-					FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
-						@Override
-						public boolean isValid(Fluid f)
-						{
-							return f.canBePlacedInWorld();
-						}
-					});
-				}
-				else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
-				{
-					FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
-						@Override
-						public boolean isValid(Fluid f)
-						{
-							return f.canBePlacedInWorld();
-						}
-					});
-				}
+				FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
+					@Override
+					public boolean isValid(Fluid f)
+					{
+						return f.canBePlacedInWorld();
+					}
+				});
 			}
 			
 			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid().canBePlacedInWorld())
@@ -135,14 +121,14 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 					else {
 						Coord4D below = Coord4D.get(this).offset(EnumFacing.DOWN);
 						
-						if(canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
+						if(canReplace(below, false, false) && fluidTank.getFluidAmount() >= Fluid.BUCKET_VOLUME)
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
 								worldObj.setBlockState(below.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 								
 								setEnergy(getEnergy() - energyPerTick);
-								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+								fluidTank.drain(Fluid.BUCKET_VOLUME, true);
 							}
 						}
 					}
@@ -191,7 +177,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				{
 					worldObj.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 
-					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+					fluidTank.drain(Fluid.BUCKET_VOLUME, true);
 				}
 				
 				for(EnumFacing dir : dirs)

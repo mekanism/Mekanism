@@ -509,6 +509,8 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
                 case EAST:
                     yaw = 270;
                     break;
+            	default:
+					break;
             }
         }
 

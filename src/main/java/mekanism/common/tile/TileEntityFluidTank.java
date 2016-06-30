@@ -182,38 +182,15 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	
 	private void manageInventory()
 	{
-		if(inventory[0] != null)
+		if(FluidContainerUtils.isFluidContainer(inventory[0]))
 		{
-			if(inventory[0].getItem() instanceof IFluidContainerItem)
+			if(editMode == ContainerEditMode.FILL && fluidTank.getFluidAmount() > 0)
 			{
-				if(editMode == ContainerEditMode.FILL && fluidTank.getFluidAmount() > 0)
-				{
-					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
-				}
-				else if(editMode == ContainerEditMode.EMPTY)
-				{
-					FluidStack ret = FluidContainerUtils.handleContainerItemEmpty(this, inventory, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
-					
-					if(ret != null)
-					{
-						fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
-						
-						int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
-						
-						if(rejects > 0)
-						{
-							pushUp(PipeUtils.copy(ret, rejects), true);
-						}
-					}
-				}
+				FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
 			}
-			else if(FluidContainerRegistry.isEmptyContainer(inventory[0]) && (editMode == ContainerEditMode.BOTH || editMode == ContainerEditMode.FILL))
+			else if(editMode == ContainerEditMode.EMPTY)
 			{
-				FluidContainerUtils.handleRegistryItemFill(this, fluidTank, 0, 1);
-			}
-			else if(FluidContainerRegistry.isFilledContainer(inventory[0]) && (editMode == ContainerEditMode.BOTH || editMode == ContainerEditMode.EMPTY))
-			{
-				FluidStack ret = FluidContainerUtils.handleRegistryItemEmpty(this, inventory, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
+				FluidStack ret = FluidContainerUtils.handleContainerItemEmpty(this, inventory, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 				
 				if(ret != null)
 				{

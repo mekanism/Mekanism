@@ -62,6 +62,8 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 					GL11.glTranslated(x + 1.0001, y + 0.83, z + 0.73);
 					GlStateManager.rotate(-90, 0, 1, 0);
 					break;
+				default:
+					break;
 			}
 
 			float scale = 0.03125F;

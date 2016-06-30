@@ -64,7 +64,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -516,7 +516,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				        else {
 				    		FluidStack stored = getFluidStack(itemstack);
 							
-							if(stored == null || stored.amount < FluidContainerRegistry.BUCKET_VOLUME)
+							if(stored == null || stored.amount < Fluid.BUCKET_VOLUME)
 							{
 								return new ActionResult(EnumActionResult.FAIL, itemstack);
 							}
@@ -531,7 +531,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				            if(tryPlaceContainedLiquid(world, itemstack, trans.getPos()) && !entityplayer.capabilities.isCreativeMode)
 				            {
 				            	FluidStack newStack = stored.copy();
-				            	newStack.amount -= FluidContainerRegistry.BUCKET_VOLUME;
+				            	newStack.amount -= Fluid.BUCKET_VOLUME;
 				            	
 				            	setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);
 				            }
