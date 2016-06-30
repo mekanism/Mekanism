@@ -103,8 +103,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double transferEnergyToAcceptor(ForgeDirection side, double amount)
 		{
-			int needed = Math.min(acceptor.getMaxEnergyStored(side)-acceptor.getEnergyStored(side), Integer.MAX_VALUE);
-			int transferred = acceptor.receiveEnergy(side, Math.min(needed, toRF(amount)), false);
+			int transferred = acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), false);
 			
 			return fromRF(transferred);
 		}
