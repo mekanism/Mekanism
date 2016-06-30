@@ -84,7 +84,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -863,7 +862,7 @@ public final class MekanismUtils
 		{
 			if(!filter)
 			{
-				return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+				return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
 			}
 			else {
 				return new FluidStack(FluidRegistry.getFluid("heavywater"), 10);
@@ -871,7 +870,7 @@ public final class MekanismUtils
 		}
 		else if((block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) && state.getValue(BlockLiquid.LEVEL) == 0)
 		{
-			return new FluidStack(FluidRegistry.LAVA, FluidContainerRegistry.BUCKET_VOLUME);
+			return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
 		}
 		else if(block instanceof IFluidBlock)
 		{

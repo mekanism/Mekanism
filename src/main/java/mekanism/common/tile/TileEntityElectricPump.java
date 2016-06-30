@@ -49,7 +49,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -102,15 +101,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			ChargeUtils.discharge(2, this);
 	
-			if(inventory[0] != null && fluidTank.getFluid() != null)
+			if(fluidTank.getFluid() != null)
 			{
-				if(inventory[0].getItem() instanceof IFluidContainerItem)
+				if(FluidContainerUtils.isFluidContainer(inventory[0]))
 				{
 					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
-				}
-				else if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
-				{
-					FluidContainerUtils.handleRegistryItemFill(this, fluidTank, 0, 1);
 				}
 			}
 		}
@@ -129,7 +124,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					operatingTicks++;
 				} 
 				else {
-					if(fluidTank.getFluid() == null || fluidTank.getFluid().amount + FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity())
+					if(fluidTank.getFluid() == null || fluidTank.getFluid().amount + Fluid.BUCKET_VOLUME <= fluidTank.getCapacity())
 					{
 						if(!suck(true))
 						{

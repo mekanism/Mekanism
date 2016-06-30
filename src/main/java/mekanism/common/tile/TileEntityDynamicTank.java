@@ -24,10 +24,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager
@@ -130,31 +128,18 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		int needed = (structure.volume*TankUpdateProtocol.FLUID_PER_TANK)-(structure.fluidStored != null ? structure.fluidStored.amount : 0);
 
-		if(structure.inventory[0] != null)
+		if(FluidContainerUtils.isFluidContainer(structure.inventory[0]))
 		{
-			if(structure.inventory[0].getItem() instanceof IFluidContainerItem)
+			if(structure.editMode == ContainerEditMode.FILL && structure.fluidStored != null)
 			{
-				if(structure.editMode == ContainerEditMode.FILL && structure.fluidStored != null)
-				{
-					structure.fluidStored = FluidContainerUtils.handleContainerItemFill(this, structure.inventory, structure.fluidStored, 0, 1);
-				}
-				else if(structure.editMode == ContainerEditMode.EMPTY)
-				{
-					structure.fluidStored = FluidContainerUtils.handleContainerItemEmpty(this, structure.inventory, structure.fluidStored, needed, 0, 1, null);
-				}
+				structure.fluidStored = FluidContainerUtils.handleContainerItemFill(this, structure.inventory, structure.fluidStored, 0, 1);
 			}
-			else if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.FILL))
+			else if(structure.editMode == ContainerEditMode.EMPTY)
 			{
-				structure.fluidStored = FluidContainerUtils.handleRegistryItemFill(this, structure.inventory, structure.fluidStored, 0, 1);
-				
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				structure.fluidStored = FluidContainerUtils.handleContainerItemEmpty(this, structure.inventory, structure.fluidStored, needed, 0, 1, null);
 			}
-			else if(FluidContainerRegistry.isFilledContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.EMPTY))
-			{
-				structure.fluidStored = FluidContainerUtils.handleRegistryItemEmpty(this, structure.inventory, structure.fluidStored, needed, 0, 1, null);
-				
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			}
+			
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 		}
 	}
 	

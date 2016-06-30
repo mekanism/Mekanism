@@ -19,7 +19,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidContainerItem
 {
-	public static int CAPACITY = FluidContainerRegistry.BUCKET_VOLUME;
+	public static int CAPACITY = Fluid.BUCKET_VOLUME;
 	
 	public static final int TRANSFER_RATE = 16;
 	

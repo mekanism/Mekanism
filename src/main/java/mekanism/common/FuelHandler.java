@@ -5,7 +5,7 @@ import java.util.HashMap;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.common.util.MekanismUtils;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.ModAPIManager;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
@@ -55,7 +55,7 @@ public class FuelHandler
 
 		public FuelGas(IFuel bcFuel)
 		{
-			burnTicks = bcFuel.getTotalBurningTime() / FluidContainerRegistry.BUCKET_VOLUME;
+			burnTicks = bcFuel.getTotalBurningTime() / Fluid.BUCKET_VOLUME;
 			energyPerTick = bcFuel.getPowerPerCycle() * general.FROM_TE;
 		}
 	}

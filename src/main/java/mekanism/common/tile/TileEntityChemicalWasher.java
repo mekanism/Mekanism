@@ -55,7 +55,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -209,16 +208,9 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 	private void manageBuckets()
 	{
-		if(inventory[0] != null)
+		if(FluidContainerUtils.isFluidContainer(inventory[0]))
 		{
-			if(inventory[0].getItem() instanceof IFluidContainerItem)
-			{
-				FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, FluidChecker.check(FluidRegistry.WATER));
-			}
-			else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
-			{
-				FluidContainerUtils.handleRegistryItemEmpty(this, fluidTank, 0, 1, FluidChecker.check(FluidRegistry.WATER));
-			}
+			FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, FluidChecker.check(FluidRegistry.WATER));
 		}
 	}
 	

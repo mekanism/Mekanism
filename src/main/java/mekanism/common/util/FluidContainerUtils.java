@@ -1,17 +1,22 @@
 package mekanism.common.util;
 
-import mekanism.api.util.StackUtils;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public final class FluidContainerUtils 
 {
+	public static boolean isFluidContainer(ItemStack stack)
+	{
+		return stack != null && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+	}
+	
 	public static FluidStack extractFluid(FluidTank tileTank, ItemStack container)
 	{
 		return extractFluid(tileTank, container, FluidChecker.check(tileTank.getFluid()));
@@ -24,19 +29,19 @@ public final class FluidContainerUtils
 	
 	public static FluidStack extractFluid(int needed, ItemStack container, FluidChecker checker)
 	{
-		IFluidContainerItem item = (IFluidContainerItem)container.getItem();
+		IFluidHandler handler = FluidUtil.getFluidHandler(container);
 		
-		if(item.getFluid(container) == null)
+		if(handler == null || handler.drain(1, false) == null)
 		{
 			return null;
 		}
 		
-		if(checker != null && !checker.isValid(item.getFluid(container).getFluid()))
+		if(checker != null && !checker.isValid(handler.drain(1, false).getFluid()))
 		{
 			return null;
 		}
 		
-		return item.drain(container, needed, true);
+		return handler.drain(needed, true);
 	}
 	
 	public static int insertFluid(FluidTank tileTank, ItemStack container)
@@ -46,14 +51,14 @@ public final class FluidContainerUtils
 	
 	public static int insertFluid(FluidStack fluid, ItemStack container)
 	{
-		IFluidContainerItem item = (IFluidContainerItem)container.getItem();
+		IFluidHandler handler = FluidUtil.getFluidHandler(container);
 		
 		if(fluid == null)
 		{
 			return 0;
 		}
 		
-		return item.fill(container, fluid, true);
+		return handler.fill(fluid, true);
 	}
 	
 	public static void handleContainerItemFill(TileEntityContainerBlock tileEntity, FluidTank tank, int inSlot, int outSlot)
@@ -126,127 +131,12 @@ public final class FluidContainerUtils
 			tileEntity.markDirty();
 		}
 		
-		if(((IFluidContainerItem)inventory[inSlot].getItem()).getFluid(inventory[inSlot]) == null || needed == 0)
+		if(FluidUtil.getFluidContained(inventory[inSlot]) == null || needed == 0)
 		{
 			if(inventory[outSlot] == null)
 			{
 				inventory[outSlot] = inventory[inSlot].copy();
 				inventory[inSlot] = null;
-				
-				tileEntity.markDirty();
-			}
-		}
-		
-		return stored;
-	}
-	
-	public static void handleRegistryItemFill(TileEntityContainerBlock tileEntity, FluidTank tank, int inSlot, int outSlot)
-	{
-		tank.setFluid(handleRegistryItemFill(tileEntity, tileEntity.inventory, tank.getFluid(), inSlot, outSlot));
-	}
-	
-	public static FluidStack handleRegistryItemFill(TileEntity tileEntity, ItemStack[] inventory, FluidStack stack, int inSlot, int outSlot)
-	{
-		if(stack != null)
-		{
-			ItemStack filled = FluidContainerRegistry.fillFluidContainer(stack, inventory[inSlot]);
-			
-			if(filled != null)
-			{
-				if(inventory[outSlot] == null || (StackUtils.equalsWildcardWithNBT(inventory[outSlot], filled) && inventory[outSlot].stackSize+1 <= filled.getMaxStackSize()))
-				{
-					inventory[inSlot].stackSize--;
-
-					if(inventory[inSlot].stackSize <= 0)
-					{
-						inventory[inSlot] = null;
-					}
-
-					if(inventory[outSlot] == null)
-					{
-						inventory[outSlot] = filled;
-					}
-					else {
-						inventory[outSlot].stackSize++;
-					}
-
-					stack.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-					
-					if(stack.amount == 0)
-					{
-						return null;
-					}
-					
-					tileEntity.markDirty();
-				}
-			}
-		}
-		
-		return stack;
-	}
-	
-	public static void handleRegistryItemEmpty(TileEntityContainerBlock tileEntity, FluidTank tank, int inSlot, int outSlot)
-	{
-		handleRegistryItemEmpty(tileEntity, tank, inSlot, outSlot, null);
-	}
-	
-	public static void handleRegistryItemEmpty(TileEntityContainerBlock tileEntity, FluidTank tank, int inSlot, int outSlot, FluidChecker checker)
-	{
-		tank.setFluid(handleRegistryItemEmpty(tileEntity, tileEntity.inventory, tank.getFluid(), tank.getCapacity()-tank.getFluidAmount(), inSlot, outSlot, checker));
-	}
-	
-	public static FluidStack handleRegistryItemEmpty(TileEntity tileEntity, ItemStack[] inventory, FluidStack stored, int needed, int inSlot, int outSlot, final FluidChecker checker)
-	{
-		FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[inSlot]);
-		
-		if(itemFluid != null && itemFluid.amount <= needed)
-		{
-			if((stored != null && !stored.isFluidEqual(itemFluid)) || (checker != null && !checker.isValid(itemFluid.getFluid())))
-			{
-				return stored;
-			}
-
-			ItemStack containerItem = inventory[inSlot].getItem().getContainerItem(inventory[inSlot]);
-
-			boolean filled = false;
-
-			if(containerItem != null)
-			{
-				if(inventory[outSlot] == null || (StackUtils.equalsWildcardWithNBT(inventory[outSlot], containerItem) && inventory[outSlot].stackSize+1 <= containerItem.getMaxStackSize()))
-				{
-					inventory[inSlot] = null;
-
-					if(inventory[outSlot] == null)
-					{
-						inventory[outSlot] = containerItem;
-					}
-					else {
-						inventory[outSlot].stackSize++;
-					}
-
-					filled = true;
-				}
-			}
-			else {
-				inventory[inSlot].stackSize--;
-
-				if(inventory[inSlot].stackSize == 0)
-				{
-					inventory[inSlot] = null;
-				}
-
-				filled = true;
-			}
-
-			if(filled)
-			{
-				if(stored == null)
-				{
-					stored = itemFluid.copy();
-				}
-				else {
-					stored.amount += itemFluid.amount;
-				}
 				
 				tileEntity.markDirty();
 			}

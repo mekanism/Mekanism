@@ -33,11 +33,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -230,42 +228,25 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	
 	private void manageBuckets()
 	{
-		if(inventory[2] != null && outputTank.getFluid() != null)
+		if(outputTank.getFluid() != null)
 		{
-			if(inventory[2].getItem() instanceof IFluidContainerItem)
+			if(FluidContainerUtils.isFluidContainer(inventory[2]))
 			{
 				FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
-			}
-			else if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
-			{
-				FluidContainerUtils.handleRegistryItemFill(this, outputTank, 2, 3);
 			}
 		}
 		
 		if(structured)
 		{
-			if(inventory[0] != null)
+			if(FluidContainerUtils.isFluidContainer(inventory[0]))
 			{
-				if(inventory[0].getItem() instanceof IFluidContainerItem)
-				{
-					FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
-						@Override
-						public boolean isValid(Fluid f)
-						{
-							return hasRecipe(f);
-						}
-					});
-				}
-				else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
-				{
-					FluidContainerUtils.handleRegistryItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
-						@Override
-						public boolean isValid(Fluid f)
-						{
-							return hasRecipe(f);
-						}
-					});
-				}
+				FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
+					@Override
+					public boolean isValid(Fluid f)
+					{
+						return hasRecipe(f);
+					}
+				});
 			}
 		}
 	}

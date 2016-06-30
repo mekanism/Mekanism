@@ -64,6 +64,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -576,7 +577,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		{
 			if(FluidContainerRegistry.isEmptyContainer(itemStack))
 			{
-				if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount >= FluidContainerRegistry.BUCKET_VOLUME)
+				if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount >= Fluid.BUCKET_VOLUME)
 				{
 					ItemStack filled = FluidContainerRegistry.fillFluidContainer(tileEntity.structure.fluidStored, itemStack);
 

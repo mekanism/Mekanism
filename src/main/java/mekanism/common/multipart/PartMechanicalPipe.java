@@ -17,7 +17,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -28,7 +27,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 {
 	public float currentScale;
 
-	public FluidTank buffer = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
+	public FluidTank buffer = new FluidTank(Fluid.BUCKET_VOLUME);
 
 	public FluidStack lastWrite;
 

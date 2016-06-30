@@ -367,6 +367,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom + jRandom), yRandom, (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 					world.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom + jRandom), yRandom, (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -702,7 +704,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		{
 			if(FluidContainerRegistry.isEmptyContainer(itemStack))
 			{
-				if(tileEntity.fluidTank.getFluid() != null && tileEntity.fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+				if(tileEntity.fluidTank.getFluid() != null && tileEntity.fluidTank.getFluid().amount >= Fluid.BUCKET_VOLUME)
 				{
 					ItemStack filled = FluidContainerRegistry.fillFluidContainer(tileEntity.fluidTank.getFluid(), itemStack);
 
