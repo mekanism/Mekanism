@@ -466,9 +466,21 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack)
+	{
+		return receiveGas(side, stack, true);
+	}
+
+	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return !hasFrequency() ? null : frequency.storedGas.draw(amount, doTransfer);
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return drawGas(side, amount, true);
 	}
 
 	@Override

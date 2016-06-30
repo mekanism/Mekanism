@@ -399,9 +399,21 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	}
 
 	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack)
+	{
+		return receiveGas(side, stack, true);
+	}
+
+	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return drawGas(side, amount, true);
 	}
 
 	@Override

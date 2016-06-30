@@ -429,6 +429,12 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack)
+	{
+		return receiveGas(side, stack, true);
+	}
+
+	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
@@ -437,6 +443,12 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		}
 
 		return null;
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return drawGas(side, amount, true);
 	}
 
 	@Override
