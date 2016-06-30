@@ -579,8 +579,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					if(!entityplayer.isSneaking())
 					{
 						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
-
-						if(owner == null || entityplayer.getName().equals(owner))
+						
+						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getName().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 						} 
@@ -696,6 +696,25 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		}
 
 		return world.setBlockToAir(pos);
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride(IBlockState state)
+	{
+		return true;
+	}
+	
+	@Override
+	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
+	{
+		TileEntity tileEntity = world.getTileEntity(pos);
+		
+		if(tileEntity instanceof TileEntityFluidTank)
+		{
+			return ((TileEntityFluidTank)tileEntity).getRedstoneLevel();
+		}
+		
+		return 0;
 	}
 	
 	private boolean manageInventory(EntityPlayer player, TileEntityFluidTank tileEntity, EnumHand hand, ItemStack itemStack)

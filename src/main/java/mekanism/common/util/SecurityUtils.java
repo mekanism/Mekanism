@@ -11,6 +11,7 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
@@ -34,6 +35,11 @@ public final class SecurityUtils
 		
 		ISecurityItem security = (ISecurityItem)stack.getItem();
 		
+		if(MekanismUtils.isOp((EntityPlayerMP)player))
+		{
+			return true;
+		}
+		
 		return canAccess(security.getSecurity(stack), player.getName(), security.getOwner(stack));
 	}
 	
@@ -45,6 +51,11 @@ public final class SecurityUtils
 		}
 		
 		ISecurityTile security = (ISecurityTile)tile;
+		
+		if(MekanismUtils.isOp((EntityPlayerMP)player))
+		{
+			return true;
+		}
 		
 		return canAccess(security.getSecurity().getMode(), player.getName(), security.getSecurity().getOwner());
 	}
