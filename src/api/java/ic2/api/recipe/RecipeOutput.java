@@ -25,8 +25,7 @@ public final class RecipeOutput {
 			RecipeOutput ro = (RecipeOutput) obj;
 
 			if (items.size() == ro.items.size() &&
-					(metadata == null && ro.metadata == null || metadata != null && ro.metadata != null) &&
-					metadata.equals(ro.metadata)) {
+					(metadata == null && ro.metadata == null || metadata != null && ro.metadata != null && metadata.equals(ro.metadata))) {
 				Iterator<ItemStack> itA = items.iterator();
 				Iterator<ItemStack> itB = ro.items.iterator();
 

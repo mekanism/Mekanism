@@ -261,6 +261,15 @@ public interface ICropTile {
 	public boolean isBlockBelow(Block block);
 
 	/**
+	 * Check if a block is under the farmland containing the crop.
+	 * Searches up to 2 blocks below the farmland or an air space, whichever appears first.
+	 *
+	 * @param oreDictionaryName blocks to search
+	 * @return Whether the blocks were found
+	 */
+	public boolean isBlockBelow(String oreDictionaryName);
+
+	/**
 	 * Generate plant seeds with the given parameters.
 	 *
 	 * @param crop plant

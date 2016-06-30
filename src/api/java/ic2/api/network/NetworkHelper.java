@@ -178,7 +178,7 @@ public final class NetworkHelper {
 	 */
 	private static Object getInstance() {
 		try {
-			return Class.forName(getPackage() + ".core.IC2").getDeclaredField("network").get(null);
+			return Class.forName(getPackage() + ".core.util.SideGateway").getMethod("get").invoke(Class.forName(getPackage() + ".core.IC2").getDeclaredField("network").get(null));
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}

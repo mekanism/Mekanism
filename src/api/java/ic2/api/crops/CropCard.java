@@ -37,13 +37,16 @@ public abstract class CropCard {
 	/**
 	 * Determine the mod id owning this crop.
 	 *
-	 * It's recommended to hard code this to your mod id.
+	 * The owner serves as a name space. With every mod using a different owner, a mod only has to
+	 * make sure it doesn't have conflicts with name() in itself.
+	 * It's recommended to hard code this to your mod id as specified in the @Mod annotation.
+	 * Do not use IC2's mod id here.
 	 *
 	 * @note changing name or owner will cause existing crops in users' worlds to disappear.
 	 *
 	 * @return Mod id.
 	 */
-	public String owner() {
+	public String owner() { // TODO: make abstract
 		return modId;
 	}
 
@@ -100,7 +103,7 @@ public abstract class CropCard {
 	 * @param crop reference to ICropTile
 	 * @return roots lengt use in isBlockBelow
 	 */
-	public int getrootslength(ICropTile crop) {
+	public int getrootslength(ICropTile crop) { // TODO: camel case
 		return 1;
 	}
 
@@ -126,7 +129,7 @@ public abstract class CropCard {
 	 * @param n index of the requested stat
 	 * @return The requested value of the stats
 	 */
-	public abstract int stat(int n);
+	public abstract int stat(int n); // TODO: change to fixed property object or builder with other attributes like tier
 
 	/**
 	 * Additional attributes of the plant, also influencing breeding.
@@ -134,7 +137,7 @@ public abstract class CropCard {
 	 *
 	 * @return Attributes as an array of strings
 	 */
-	public abstract String[] attributes();
+	public abstract String[] attributes(); // TODO: default to none
 
 	/**
 	 * Determine the max crop size.
@@ -212,7 +215,7 @@ public abstract class CropCard {
 	 * @return 0-30
 	 */
 	public int weightInfluences(ICropTile crop, float humidity, float nutrients, float air) {
-		return (int) (humidity+nutrients+air);
+		return (int) (humidity + nutrients + air);
 	}
 
 	/**
@@ -247,7 +250,7 @@ public abstract class CropCard {
 	 * @return  need crop  size for best output.
 	 */
 
-	public abstract int getOptimalHavestSize(ICropTile crop);
+	public abstract int getOptimalHavestSize(ICropTile crop); // TODO: default to maxSize
 
 	/**
 	 * Check whether the crop can be harvested.
@@ -255,7 +258,7 @@ public abstract class CropCard {
 	 * @param crop reference to ICropTile
 	 * @return Whether the crop can be harvested in its current state.
 	 */
-	public abstract boolean canBeHarvested(ICropTile crop);
+	public abstract boolean canBeHarvested(ICropTile crop); // TODO: default to maxSize check
 
 	/**
 	 * Base chance for dropping the plant's gains, specify values greater than 1 for multiple drops.
@@ -263,10 +266,8 @@ public abstract class CropCard {
 	 *
 	 * @return Chance to drop the gains
 	 */
-	public float dropGainChance() {
-		float base = 1F;
-		for (int i = 0; i < tier(); i++) {base*=0.95;}
-		return base;
+	public float dropGainChance() { // TODO: change to double
+		return (float) Math.pow(0.95, tier());
 	}
 
 	/**
@@ -284,20 +285,20 @@ public abstract class CropCard {
 	 * @param crop reference to ICropTile
 	 * @return Plant size after harvesting
 	 */
-	public byte getSizeAfterHarvest(ICropTile crop) {return 1;}
+	public byte getSizeAfterHarvest(ICropTile crop) {return 1;} // TODO: change to int
 
 
 	/**
-	 * Called when the plant is leftclicked by a player.
+	 * Called when the plant is left clicked by a player.
 	 * Default action is picking the plant.
 	 *
-	 * Only called Serverside.
+	 * Only called server side.
 	 *
 	 * @param crop reference to ICropTile
-	 * @param player player leftclicked the crop
+	 * @param player player left clicked the crop
 	 * @return Whether the plant has changed
 	 */
-	public boolean leftclick(ICropTile crop, EntityPlayer player) {
+	public boolean leftclick(ICropTile crop, EntityPlayer player) { // TODO: camel case
 		return crop.pick(true);
 	}
 
@@ -398,7 +399,7 @@ public abstract class CropCard {
 	 */
 	public boolean isWeed(ICropTile crop) {
 		return crop.getSize() >= 2 &&
-				(crop == Crops.weed || crop.getGrowth() >= 24);
+				(crop.getCrop() == Crops.weed || crop.getGrowth() >= 24);
 	}
 
 
@@ -430,4 +431,5 @@ public abstract class CropCard {
 	protected IIcon textures[];
 
 	private final String modId; // TODO: make owner abstract, remove modId auto detection
+	// TODO: add a clean way to obtain world reference and position
 }

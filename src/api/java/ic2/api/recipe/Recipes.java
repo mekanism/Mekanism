@@ -3,7 +3,7 @@ package ic2.api.recipe;
 
 /**
  * General recipe registry.
- * 
+ *
  * @author Richard
  */
 public class Recipes {
@@ -23,12 +23,12 @@ public class Recipes {
 
 	/**
 	 * Reference amplifier values:
-	 * 
+	 *
 	 *  5000: Scrap
 	 * 45000: Scrapbox
-	 * 
+	 *
 	 * As Parameter for the Amplification Value you have to use the NBTTagCompound
-	 * 
+	 *
 	 * NBTTagCompound nbt = new NBTTagCompound();
 	 * nbt.setInteger("amplification", aValue);
 	 * matterAmplifier.addRecipe(yourStack, nbt);
@@ -57,4 +57,12 @@ public class Recipes {
 
 	public static ISemiFluidFuelManager semiFluidGenerator;
 	public static IFluidHeatManager FluidHeatGenerator;
+	/**
+	 * Used by the Liquid Heat Exchanger to cool down liquids and determine the amount of hu generated for every mb.
+	 */
+	public static ILiquidHeatExchangerManager liquidCooldownManager;
+	/**
+	 * Opposite of {@link #liquidCooldownManager}. This is for Liquids that can be heated up again.
+	 */
+	public static ILiquidHeatExchangerManager liquidHeatupManager;
 }
