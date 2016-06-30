@@ -11,10 +11,14 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.api.util.CapabilityUtils;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -24,9 +28,11 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, ITubeConnection, IHeatTransfer
+public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, ITubeConnection, IHeatTransfer
 {
 	public TileEntityReactorPort()
 	{
@@ -51,7 +57,30 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		
 		super.onUpdate();
 
-		CableUtils.emit(this);
+		if(!worldObj.isRemote)
+		{
+			CableUtils.emit(this);
+			
+			if(getReactor() != null && getReactor().getSteamTank().getFluidAmount() > 0)
+			{
+				IFluidTank tank = getReactor().getSteamTank();
+				
+				for(EnumFacing side : EnumFacing.values())
+				{
+					TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+					
+					if(tile != null && !(tile instanceof TileEntityBoilerValve) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+					{
+						IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+						
+						if(PipeUtils.canFill(handler, tank.getFluid()))
+						{
+							tank.drain(handler.fill(tank.getFluid(), true), true);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -104,7 +133,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(getReactor() == null)
 		{
-			return new FluidTankInfo[0];
+			return PipeUtils.EMPTY;
 		}
 		
 		return new FluidTankInfo[] {getReactor().getWaterTank().getInfo(), getReactor().getSteamTank().getInfo()};
@@ -168,7 +197,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
-				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
+				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+				|| super.hasCapability(capability, side);
 	}
 
 	@Override
@@ -178,6 +208,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
 		{
 			return (T)this;
+		}
+		
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			return (T)new FluidHandlerWrapper(this, side);
 		}
 		
 		return super.getCapability(capability, side);
