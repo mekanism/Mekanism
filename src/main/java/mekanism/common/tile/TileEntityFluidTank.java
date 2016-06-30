@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -59,6 +60,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public float prevScale;
 	
 	public boolean needsPacket;
+	
+	public int currentRedstoneLevel;
 	
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
@@ -137,6 +140,14 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			if(isActive)
 			{
 				activeEmit();
+			}
+			
+			int newRedstoneLevel = getRedstoneLevel();
+
+			if(newRedstoneLevel != currentRedstoneLevel)
+			{
+				markDirty();
+				currentRedstoneLevel = newRedstoneLevel;
 			}
 			
 			if(needsPacket)
@@ -351,6 +362,12 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
+	}
+	
+	public int getRedstoneLevel()
+	{
+        double fractionFull = (float)fluidTank.getFluidAmount()/(float)fluidTank.getCapacity();
+        return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
 	
 	public int getCurrentNeeded()

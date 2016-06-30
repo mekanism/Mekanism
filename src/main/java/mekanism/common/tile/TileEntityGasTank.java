@@ -52,6 +52,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public GasMode dumping;
 
 	public int currentGasAmount;
+	
+	public int currentRedstoneLevel;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType;
@@ -127,6 +129,14 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			}
 			
 			currentGasAmount = newGasAmount;
+			
+			int newRedstoneLevel = getRedstoneLevel();
+
+			if(newRedstoneLevel != currentRedstoneLevel)
+			{
+				markDirty();
+				currentRedstoneLevel = newRedstoneLevel;
+			}
 		}
 	}
 	

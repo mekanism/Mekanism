@@ -802,6 +802,25 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		return world.setBlockToAir(x, y, z);
 	}
 	
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+	
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		
+		if(tileEntity instanceof TileEntityFluidTank)
+		{
+			return ((TileEntityFluidTank)tileEntity).getRedstoneLevel();
+		}
+		
+		return 0;
+	}
+	
 	private boolean manageInventory(EntityPlayer player, TileEntityFluidTank tileEntity)
 	{
 		ItemStack itemStack = player.getCurrentEquippedItem();
