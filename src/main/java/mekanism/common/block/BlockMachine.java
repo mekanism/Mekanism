@@ -688,7 +688,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					{
 						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
 						
-						if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getCommandSenderName().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
 						}
