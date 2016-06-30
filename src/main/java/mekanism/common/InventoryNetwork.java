@@ -18,6 +18,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwork>
 {
 	public InventoryNetwork() {}
@@ -114,9 +116,9 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	public void clampBuffer() {}
 
 	@Override
-	public Set<IInventory> getAcceptors(Object data)
+	public Set<Pair<Coord4D, IInventory>> getAcceptors(Object data)
 	{
-		Set<IInventory> toReturn = new HashSet<IInventory>();
+		Set<Pair<Coord4D, IInventory>> toReturn = new HashSet<>();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
