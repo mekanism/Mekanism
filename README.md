@@ -1,4 +1,4 @@
-# Mekanism for Minecraft 1.7.10 #
+# Mekanism for Minecraft 1.9.4 #
 
 [**Official Website**](http://aidancbrady.com/mekanism/)
 
@@ -36,13 +36,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 **Artwork:** Cheapshot, Archadia
 
 **Contributors:** micdoodle
-
-**Credits:**
-
-Thanks to AbrarSyed, Lunatrius, and AtomicStryker for helping me with the port to 1.3.2.
-
-Thanks to _303 and skyboy for helping me with animated machine textures.
-
-Thanks to Mattredsox and Calclavia for helping me out with UE's electricity system.
-
-Last but not least, thanks to Alblaka, SirSengir, CovertJaguar, Calclavia and dan200 for their wonderful APIs and descriptive javadocs.

@@ -242,6 +242,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 		}
 		
 		((TurbineCache)cache).electricity += ((TurbineCache)merge).electricity;
+		((TurbineCache)cache).dumpMode = ((TurbineCache)merge).dumpMode;
 	}
 	
 	@Override

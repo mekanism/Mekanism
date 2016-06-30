@@ -105,8 +105,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double transferEnergyToAcceptor(EnumFacing side, double amount)
 		{
-			int needed = acceptor.getMaxEnergyStored(side)-acceptor.getEnergyStored(side);
-			int transferred = acceptor.receiveEnergy(side, Math.min(needed, toRF(amount)), false);
+			int transferred = acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), false);
 			
 			return fromRF(transferred);
 		}
@@ -166,7 +165,10 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double transferEnergyToAcceptor(EnumFacing side, double amount)
 		{
-			return amount - fromEU(acceptor.injectEnergy(side, Math.min(acceptor.getDemandedEnergy(), toEU(amount)), 0));
+			double toTransfer = Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE);
+			double rejects = acceptor.injectEnergy(side, toTransfer, 0);
+			
+			return fromEU(toTransfer - rejects);
 		}
 
 		@Override
