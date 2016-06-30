@@ -10,6 +10,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
@@ -22,6 +23,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, ITubeConnection, IHeatTransfer
 {
@@ -48,7 +50,28 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		
 		super.onUpdate();
 
-		CableUtils.emit(this);
+		if(!worldObj.isRemote)
+		{
+			CableUtils.emit(this);
+			
+			if(getReactor() != null && getReactor().getSteamTank().getFluidAmount() > 0)
+			{
+				IFluidTank tank = getReactor().getSteamTank();
+				
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				{
+					TileEntity tile = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+					
+					if(tile instanceof IFluidHandler && !(tile instanceof TileEntityBoilerValve))
+					{
+						if(((IFluidHandler)tile).canFill(side.getOpposite(), tank.getFluid().getFluid()))
+						{
+							tank.drain(((IFluidHandler)tile).fill(side.getOpposite(), tank.getFluid(), true), true);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
