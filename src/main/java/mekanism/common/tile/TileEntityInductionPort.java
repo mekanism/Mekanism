@@ -239,7 +239,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (int)Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), maxReceive* general.FROM_TE);
+			double toAdd = (int)Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), maxReceive* general.FROM_RF);
 
 			if(!simulate)
 			{
@@ -247,7 +247,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				structure.remainingInput -= toAdd;
 			}
 
-			return (int)Math.round(toAdd*general.TO_TE);
+			return (int)Math.round(toAdd*general.TO_RF);
 		}
 
 		return 0;
@@ -258,7 +258,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		if(getOutputtingSides().contains(from))
 		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_TE));
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_RF));
 
 			if(!simulate)
 			{
@@ -266,7 +266,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				structure.remainingOutput -= toSend;
 			}
 
-			return (int)Math.round(toSend*general.TO_TE);
+			return (int)Math.round(toSend*general.TO_RF);
 		}
 
 		return 0;
@@ -281,13 +281,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy()*general.TO_TE);
+		return (int)Math.round(getEnergy()*general.TO_RF);
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_TE);
+		return (int)Math.round(getMaxEnergy()*general.TO_RF);
 	}
 
 	@Override

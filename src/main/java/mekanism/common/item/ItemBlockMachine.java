@@ -64,10 +64,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.wrappers.FluidContainerItemWrapper;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -701,14 +703,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy*general.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy*general.FROM_RF, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive*general.TO_TE);
+			return (int)Math.round(toReceive*general.TO_RF);
 		}
 
 		return 0;
@@ -720,14 +722,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy*general.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy*general.FROM_RF), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend*general.TO_TE);
+			return (int)Math.round(toSend*general.TO_RF);
 		}
 
 		return 0;
@@ -736,13 +738,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)*general.TO_TE);
+		return (int)(getEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)*general.TO_TE);
+		return (int)(getMaxEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
@@ -896,4 +898,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		return hasSecurity(stack);
 	}
+	
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+    {
+        return new FluidContainerItemWrapper(this, stack);
+    }
 }

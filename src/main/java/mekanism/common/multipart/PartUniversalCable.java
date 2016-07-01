@@ -1,6 +1,8 @@
 package mekanism.common.multipart;
 
+import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.api.energy.tile.IEnergyTile;
 
 import java.util.Collection;
 import java.util.List;
@@ -86,7 +88,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 						}
 						else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
 						{
-							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(canDraw*general.TO_TE), true) * general.FROM_TE;
+							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(canDraw*general.TO_RF), true) * general.FROM_RF;
 							double toDraw = received;
 
 							if(received > 0)
@@ -94,19 +96,24 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 								toDraw -= takeEnergy(received, true);
 							}
 
-							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(toDraw*general.TO_TE), false);
+							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(toDraw*general.TO_RF), false);
 						}
-						else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
+						else if(MekanismUtils.useIC2())
 						{
-							double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, canDraw);
-							double toDraw = received;
-
-							if(received > 0)
+							IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
+							
+							if(tile instanceof IEnergySource)
 							{
-								toDraw -= takeEnergy(received, true);
+								double received = Math.min(((IEnergySource)tile).getOfferedEnergy()*general.FROM_IC2, canDraw);
+								double toDraw = received;
+	
+								if(received > 0)
+								{
+									toDraw -= takeEnergy(received, true);
+								}
+	
+								((IEnergySource)tile).drawEnergy(toDraw*general.TO_IC2);
 							}
-
-							((IEnergySource)outputter).drawEnergy(toDraw * general.TO_IC2);
 						}
 					}
 				}
@@ -228,7 +235,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		if(canReceiveEnergy(from))
 		{
-			return maxReceive - (int)Math.round(takeEnergy(maxReceive * general.FROM_TE, !simulate) * general.TO_TE);
+			return maxReceive - (int)Math.round(takeEnergy(maxReceive * general.FROM_RF, !simulate) * general.TO_RF);
 		}
 
 		return 0;
@@ -249,13 +256,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy() * general.TO_TE);
+		return (int)Math.round(getEnergy() * general.TO_RF);
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy() * general.TO_TE);
+		return (int)Math.round(getMaxEnergy() * general.TO_RF);
 	}
 
 	@Override

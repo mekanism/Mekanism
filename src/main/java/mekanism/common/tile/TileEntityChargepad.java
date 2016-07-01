@@ -141,9 +141,9 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*general.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*general.TO_RF)));
 
-				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_TE));
+				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_RF));
 			}
 		}
 	}

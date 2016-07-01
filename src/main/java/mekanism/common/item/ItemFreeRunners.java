@@ -135,14 +135,14 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy* general.FROM_RF, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive* general.TO_TE);
+			return (int)Math.round(toReceive* general.TO_RF);
 		}
 
 		return 0;
@@ -154,14 +154,14 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy*general.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy*general.FROM_RF), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend*general.TO_TE);
+			return (int)Math.round(toSend*general.TO_RF);
 		}
 
 		return 0;
@@ -170,13 +170,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)Math.round(getEnergy(theItem)*general.TO_TE);
+		return (int)Math.round(getEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)Math.round(getMaxEnergy(theItem)*general.TO_TE);
+		return (int)Math.round(getMaxEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override

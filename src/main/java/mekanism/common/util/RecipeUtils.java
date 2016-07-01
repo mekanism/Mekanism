@@ -29,7 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeUtils 
@@ -159,7 +159,7 @@ public class RecipeUtils
 			}
 		}
 		
-		if(toReturn.getItem() instanceof IFluidContainerItem)
+		if(FluidContainerUtils.isFluidContainer(toReturn))
 		{
 			FluidStack fluidFound = null;
 			
@@ -167,13 +167,13 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && itemstack.getItem() instanceof IFluidContainerItem)
+				if(FluidContainerUtils.isFluidContainer(itemstack))
 				{
-					FluidStack stored = ((IFluidContainerItem)itemstack.getItem()).getFluid(itemstack);
+					FluidStack stored = FluidUtil.getFluidContained(itemstack);
 					
 					if(stored != null)
 					{
-						if(((IFluidContainerItem)toReturn.getItem()).fill(toReturn, stored, false) == 0)
+						if(FluidUtil.getFluidHandler(itemstack).fill(stored, false) == 0)
 						{
 							return null;
 						}
@@ -196,8 +196,7 @@ public class RecipeUtils
 			
 			if(fluidFound != null)
 			{
-				fluidFound.amount = Math.min(((IFluidContainerItem)toReturn.getItem()).getCapacity(toReturn), fluidFound.amount);
-				((IFluidContainerItem)toReturn.getItem()).fill(toReturn, fluidFound, true);
+				FluidUtil.getFluidHandler(toReturn).fill(fluidFound, true);
 			}
 		}
 		

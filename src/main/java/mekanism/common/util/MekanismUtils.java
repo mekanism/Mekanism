@@ -1113,11 +1113,11 @@ public final class MekanismUtils
 			case J:
 				return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
 			case RF:
-				return UnitDisplayUtils.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX);
+				return UnitDisplayUtils.getDisplayShort(energy * general.TO_RF, ElectricUnit.REDSTONE_FLUX);
 			case EU:
 				return UnitDisplayUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS);
-			case MJ:
-				return UnitDisplayUtils.getDisplayShort(energy * general.TO_TE / 10, ElectricUnit.MINECRAFT_JOULES);
+			case T:
+				return UnitDisplayUtils.getDisplayShort(energy * general.TO_TESLA, ElectricUnit.TESLA);
 		}
 
 		return "error";
@@ -1133,11 +1133,11 @@ public final class MekanismUtils
 		switch(general.energyUnit)
 		{
 			case RF:
-				return energy * general.FROM_TE;
+				return energy * general.FROM_RF;
 			case EU:
 				return energy * general.FROM_IC2;
-			case MJ:
-				return energy * general.FROM_TE * 10;
+			case T:
+				return energy * general.FROM_TESLA;
 			default:
 				return energy;
 		}
@@ -1153,11 +1153,11 @@ public final class MekanismUtils
 		switch(general.energyUnit)
 		{
 			case RF:
-				return energy * general.TO_TE;
+				return energy * general.TO_RF;
 			case EU:
 				return energy * general.TO_IC2;
-			case MJ:
-				return energy * general.TO_TE / 10;
+			case T:
+				return energy * general.TO_RF / 10;
 			default:
 				return energy;
 		}
@@ -1200,13 +1200,21 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Whether or not RF power should be used, taking into account whether or not it is installed or another mod is
-	 * providing its API.
+	 * Whether or not RF power should be used.
 	 * @return if RF power should be used
 	 */
 	public static boolean useRF()
 	{
 		return !general.blacklistRF;
+	}
+	
+	/**
+	 * Whether or not Tesla power should be used.
+	 * @return if Tesla power should be used
+	 */
+	public static boolean useTesla()
+	{
+		return !general.blacklistTesla;
 	}
 
 	/**

@@ -56,7 +56,7 @@ public class FuelHandler
 		public FuelGas(IFuel bcFuel)
 		{
 			burnTicks = bcFuel.getTotalBurningTime() / Fluid.BUCKET_VOLUME;
-			energyPerTick = bcFuel.getPowerPerCycle() * general.FROM_TE;
+			energyPerTick = bcFuel.getPowerPerCycle() * general.FROM_RF;
 		}
 	}
 

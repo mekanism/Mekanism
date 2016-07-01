@@ -9,7 +9,7 @@ public class UnitDisplayUtils
 	{
 		JOULES("Joule", "J"),
 		REDSTONE_FLUX("Redstone Flux", "RF"),
-		MINECRAFT_JOULES("Minecraft Joule", "MJ"),
+		TESLA("Tesla", "T"),
 		ELECTRICAL_UNITS("Electrical Unit", "EU");
 
 		public String name;
@@ -286,7 +286,7 @@ public class UnitDisplayUtils
 		J,
 		RF,
 		EU,
-		MJ
+		T
 	}
 
 	public static enum TempType

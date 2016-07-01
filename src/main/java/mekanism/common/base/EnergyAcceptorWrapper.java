@@ -1,6 +1,8 @@
 package mekanism.common.base;
 
+import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -32,9 +34,14 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		{
 			wrapper = new RFAcceptor((IEnergyReceiver)tileEntity);
 		}
-		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink)
+		else if(MekanismUtils.useIC2())
 		{
-			wrapper = new IC2Acceptor((IEnergySink)tileEntity);
+			IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
+			
+			if(tile instanceof IEnergySink)
+			{
+				wrapper = new IC2Acceptor((IEnergySink)tile);
+			}
 		}
 		
 		if(wrapper != null)
@@ -144,12 +151,12 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 
 		public int toRF(double joules)
 		{
-			return (int)Math.round(joules * general.TO_TE);
+			return (int)Math.round(joules * general.TO_RF);
 		}
 
 		public double fromRF(int rf)
 		{
-			return rf * general.FROM_TE;
+			return rf * general.FROM_RF;
 		}
 	}
 
@@ -184,10 +191,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public void setEnergy(double energy)
-		{
-			return;
-		}
+		public void setEnergy(double energy) {}
 
 		@Override
 		public double getMaxEnergy()
@@ -209,6 +213,42 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public double fromEU(double eu)
 		{
 			return eu * general.FROM_IC2;
+		}
+	}
+	
+	public static class TeslaAcceptor extends EnergyAcceptorWrapper
+	{
+		@Override
+		public double transferEnergyToAcceptor(EnumFacing side, double amount) 
+		{
+			return 0;
+		}
+
+		@Override
+		public boolean canReceiveEnergy(EnumFacing side) 
+		{
+			return false;
+		}
+
+		@Override
+		public double getEnergy() 
+		{
+			return 0;
+		}
+
+		@Override
+		public void setEnergy(double energy) {}
+
+		@Override
+		public double getMaxEnergy() 
+		{
+			return 0;
+		}
+
+		@Override
+		public boolean needsEnergy(EnumFacing side)
+		{
+			return false;
 		}
 	}
 }

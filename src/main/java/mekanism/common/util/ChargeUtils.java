@@ -47,9 +47,9 @@ public final class ChargeUtils
 				IEnergyContainerItem item = (IEnergyContainerItem)inv.getStackInSlot(slotID).getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())* general.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())* general.TO_RF)));
 
-				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_TE));
+				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_RF));
 			}
 			else if(inv.getStackInSlot(slotID).getItem() == Items.REDSTONE && storer.getEnergy()+ general.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
@@ -90,9 +90,9 @@ public final class ChargeUtils
 				IEnergyContainerItem item = (IEnergyContainerItem)inv.getStackInSlot(slotID).getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getMaxEnergyStored(itemStack) - item.getEnergyStored(itemStack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()* general.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()* general.TO_RF)));
 
-				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(itemStack, toTransfer, false)* general.FROM_TE));
+				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(itemStack, toTransfer, false)* general.FROM_RF));
 			}
 		}
 	}

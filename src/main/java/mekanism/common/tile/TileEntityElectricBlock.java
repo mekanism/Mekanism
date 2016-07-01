@@ -221,14 +221,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*general.FROM_TE);
+			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*general.FROM_RF);
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
 
-			return (int)Math.round(toAdd*general.TO_TE);
+			return (int)Math.round(toAdd*general.TO_RF);
 		}
 
 		return 0;
@@ -239,14 +239,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getOutputtingSides().contains(from))
 		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_TE));
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_RF));
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() - toSend);
 			}
 
-			return (int)Math.round(toSend*general.TO_TE);
+			return (int)Math.round(toSend*general.TO_RF);
 		}
 
 		return 0;
@@ -261,13 +261,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy()*general.TO_TE);
+		return (int)Math.round(getEnergy()*general.TO_RF);
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_TE);
+		return (int)Math.round(getMaxEnergy()*general.TO_RF);
 	}
 
 	@Override
@@ -379,6 +379,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
+		
 		if(tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
 		{
 			return amount;
