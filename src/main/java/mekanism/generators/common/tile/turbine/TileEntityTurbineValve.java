@@ -15,6 +15,9 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.integration.TeslaIntegration;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
@@ -29,15 +32,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
-@InterfaceList({
-	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
-	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2")
-})
 public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper
 {
 	public boolean ic2Registered = false;
@@ -183,14 +179,14 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if(getOutputtingSides().contains(from))
 		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_TE));
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_RF));
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() - toSend);
 			}
 
-			return (int)Math.round(toSend*general.TO_TE);
+			return (int)Math.round(toSend*general.TO_RF);
 		}
 
 		return 0;
@@ -205,13 +201,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy()*general.TO_TE);
+		return (int)Math.round(getEnergy()*general.TO_RF);
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_TE);
+		return (int)Math.round(getMaxEnergy()*general.TO_RF);
 	}
 
 	@Override
@@ -239,7 +235,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Method(modid = "IC2")
 	public int addEnergy(int amount)
 	{
-		return (int)Math.round(getEnergy()*general.TO_IC2);
+		return 0;
 	}
 
 	@Override
@@ -340,6 +336,20 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		return 0;
 	}
+	
+	@Override
+	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	{
+		if(!getOutputtingSides().contains(side))
+		{
+			return 0;
+		}
+		
+		double toGive = Math.min(getEnergy(), amount);
+		setEnergy(getEnergy() - toGive);
+		
+		return toGive;
+	}
 
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
@@ -405,7 +415,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
 		{
-			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+					|| capability == Capabilities.ENERGY_STORAGE_CAPABILITY
+					|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+					|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
+					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
 			{
 				return true;
 			}
@@ -413,6 +427,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		
 		return super.hasCapability(capability, side);
 	}
+	
+	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(IEnergyWrapper.class, TeslaIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
@@ -422,6 +438,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			{
 				return (T)new FluidHandlerWrapper(this, side);
+			}
+			
+			if(capability == Capabilities.TESLA_HOLDER_CAPABILITY
+					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
+			{
+				return (T)teslaManager.getWrapper(this, facing);
 			}
 		}
 		

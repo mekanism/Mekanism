@@ -189,7 +189,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 					if(item.canProvideEnergy(inventory[27]))
 					{
-						double gain = ElectricItem.manager.discharge(inventory[27], (MAX_ELECTRICITY - getEnergy())* general.TO_IC2, 4, true, true, false)* general.FROM_IC2;
+						double gain = ElectricItem.manager.discharge(inventory[27], (MAX_ELECTRICITY - getEnergy())* general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
 						setEnergy(getEnergy() + gain);
 					}
 				}
@@ -199,9 +199,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 					IEnergyContainerItem item = (IEnergyContainerItem)inventory[27].getItem();
 
 					int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
-					int toTransfer = (int)Math.round(Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())* general.TO_TE)));
+					int toTransfer = (int)Math.round(Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*general.TO_RF)));
 
-					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_TE));
+					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_RF));
 				}
 				else if(inventory[27].getItem() == Items.REDSTONE && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{

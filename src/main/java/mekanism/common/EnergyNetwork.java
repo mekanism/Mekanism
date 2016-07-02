@@ -212,11 +212,12 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			}
 
 			TileEntity tile = coord.getTileEntity(getWorld());
-			EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile);
 
-			if(acceptor != null)
+			for(EnumFacing side : sides)
 			{
-				for(EnumFacing side : sides)
+				EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
+				
+				if(acceptor != null)
 				{
 					if(acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side))
 					{

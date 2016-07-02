@@ -41,8 +41,10 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.UPDATE_DELAY);
 			dataStream.writeDouble(general.FROM_IC2);
 			dataStream.writeDouble(general.TO_IC2);
-			dataStream.writeDouble(general.FROM_TE);
-			dataStream.writeDouble(general.TO_TE);
+			dataStream.writeDouble(general.FROM_RF);
+			dataStream.writeDouble(general.TO_RF);
+			dataStream.writeDouble(general.FROM_TESLA);
+			dataStream.writeDouble(general.TO_TESLA);
 			dataStream.writeDouble(general.FROM_H2);
 			dataStream.writeInt(general.ETHENE_BURN_TIME);
 			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
@@ -53,6 +55,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.minerSilkMultiplier);
 			dataStream.writeBoolean(general.blacklistIC2);
 			dataStream.writeBoolean(general.blacklistRF);
+			dataStream.writeBoolean(general.blacklistTesla);
 			dataStream.writeDouble(general.armoredJetpackDamageRatio);
 			dataStream.writeInt(general.armoredJetpackDamageMax);
 			dataStream.writeBoolean(general.aestheticWorldDamage);
@@ -129,8 +132,10 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.UPDATE_DELAY = dataStream.readInt();
 			general.FROM_IC2 = dataStream.readDouble();
 			general.TO_IC2 = dataStream.readDouble();
-			general.FROM_TE = dataStream.readDouble();
-			general.TO_TE = dataStream.readDouble();
+			general.FROM_RF = dataStream.readDouble();
+			general.TO_RF = dataStream.readDouble();
+			general.FROM_TESLA = dataStream.readDouble();
+			general.TO_TESLA = dataStream.readDouble();
 			general.FROM_H2 = dataStream.readDouble();
 			general.ETHENE_BURN_TIME = dataStream.readInt();
 			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
@@ -141,6 +146,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.minerSilkMultiplier = dataStream.readDouble();
 			general.blacklistIC2 = dataStream.readBoolean();
 			general.blacklistRF = dataStream.readBoolean();
+			general.blacklistTesla = dataStream.readBoolean();
 			general.armoredJetpackDamageRatio = dataStream.readDouble();
 			general.armoredJetpackDamageMax = dataStream.readInt();
 			general.aestheticWorldDamage = dataStream.readBoolean();

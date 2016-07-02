@@ -55,7 +55,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -145,30 +144,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory[0]))
 				{
-					if(inventory[0].getItem() instanceof IFluidContainerItem)
+					if(FluidContainerUtils.isFluidContainer(inventory[0]))
 					{
 						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
-					}
-					else {
-						FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-	
-						if(fluid != null && (fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity()))
-						{
-							fluidTank.fill(fluid, true);
-	
-							if(inventory[0].getItem().hasContainerItem(inventory[0]))
-							{
-								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
-							}
-							else {
-								inventory[0].stackSize--;
-							}
-	
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
-							}
-						}
 					}
 				}
 			}

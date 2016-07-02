@@ -34,7 +34,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -73,34 +72,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 			if(inventory[0] != null)
 			{
-				FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-				
-				if(inventory[0].getItem() instanceof IFluidContainerItem)
+				if(FluidContainerUtils.isFluidContainer(inventory[0]))
 				{
 					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory[0], FluidChecker.check(FluidRegistry.LAVA)), true);
-				}
-				else if(fluid != null)
-				{
-					if(fluid != null && fluid.getFluid() == FluidRegistry.LAVA)
-					{
-						if(lavaTank.getFluid() == null || lavaTank.getFluid().amount+fluid.amount <= lavaTank.getCapacity())
-						{
-							lavaTank.fill(fluid, true);
-	
-							if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
-							{
-								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
-							}
-							else {
-								inventory[0].stackSize--;
-							}
-	
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
-							}
-						}
-					}
 				}
 				else {
 					int fuel = getFuel(inventory[0]);

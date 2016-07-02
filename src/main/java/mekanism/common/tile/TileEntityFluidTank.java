@@ -39,12 +39,10 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -246,22 +244,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		if(slotID == 0)
 		{
-			if(itemstack.getItem() instanceof IFluidContainerItem)
+			if(FluidContainerUtils.isFluidContainer(itemstack))
 			{
 				return true;
-			}
-			else if(FluidContainerRegistry.isFilledContainer(itemstack))
-			{
-				FluidStack stack = FluidContainerRegistry.getFluidForFilledItem(itemstack);
-				
-				if(fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(stack))
-				{
-					return editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH;
-				}
-			}
-			else if(FluidContainerRegistry.isEmptyContainer(itemstack))
-			{
-				return editMode == ContainerEditMode.FILL || editMode == ContainerEditMode.BOTH;
 			}
 		}
 

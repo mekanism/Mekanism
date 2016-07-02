@@ -103,7 +103,7 @@ public class MekanismGenerators implements IModule
 				}
 			}
 
-			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("ethene"), (int)(240 * general.TO_TE), 40 * Fluid.BUCKET_VOLUME);
+			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("ethene"), (int)(240 * general.TO_RF), 40 * Fluid.BUCKET_VOLUME);
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))

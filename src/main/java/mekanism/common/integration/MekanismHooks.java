@@ -8,9 +8,11 @@ import ic2.api.recipe.Recipes;
 import java.util.List;
 
 import li.cil.oc.api.Driver;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
+import mekanism.common.multipart.TransmitterType;
 //import mekanism.common.multipart.TransmitterType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
@@ -35,6 +37,7 @@ public final class MekanismHooks
 	public boolean TELoaded = false;
 	public boolean CCLoaded = false;
 	public boolean AE2Loaded = false;
+	public boolean TeslaLoaded = false;
 
 	public boolean MetallurgyCoreLoaded = false;
 	public boolean MetallurgyBaseLoaded = false;
@@ -47,6 +50,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
+		if(Loader.isModLoaded("Tesla")) TeslaLoaded = true;
 		
 		if(Loader.isModLoaded("Metallurgy3Core"))
 		{
@@ -149,14 +153,15 @@ public final class MekanismHooks
 	}
 	
 	@Method(modid = "appliedenergistics2")
-	public void registerAE2P2P() {
+	public void registerAE2P2P() 
+	{
 		String energyP2P = "add-p2p-attunement-rf-power";
+		
 		if(IC2Loaded)
 		{
 			energyP2P = "add-p2p-attunement-ic2-power";
 		}
 		
-/*
 		for(TransmitterType type : TransmitterType.values())
 		{
 			if(type.getTransmission().equals(TransmissionType.ITEM))
@@ -177,8 +182,6 @@ public final class MekanismHooks
 				continue;
 			}
 
-		}
-*/
-		
+		}		
 	}
 }

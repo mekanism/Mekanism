@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -472,21 +471,22 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-				|| capability == Capabilities.CONFIG_CARD_CAPABILITY
-				|| capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
-				|| super.hasCapability(capability, facing);
+		if(getInv() == null)
+		{
+			return super.hasCapability(capability, facing);
+		}
+		
+		return getInv().hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY 
-				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-				|| capability == Capabilities.CONFIG_CARD_CAPABILITY
-				|| capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY)
-			return (T)this;
-		return super.getCapability(capability, facing);
+		if(getInv() == null)
+		{
+			return super.getCapability(capability, facing);
+		}
+		
+		return getInv().getCapability(capability, facing);
 	}
 }

@@ -18,7 +18,9 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.integration.TeslaItemWrapper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -39,6 +41,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -235,14 +238,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy*general.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy*general.FROM_RF, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive*general.TO_TE);
+			return (int)Math.round(toReceive*general.TO_RF);
 		}
 
 		return 0;
@@ -254,14 +257,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy*general.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy*general.FROM_RF), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend*general.TO_TE);
+			return (int)Math.round(toSend*general.TO_RF);
 		}
 
 		return 0;
@@ -270,13 +273,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)*general.TO_TE);
+		return (int)(getEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)*general.TO_TE);
+		return (int)(getMaxEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
@@ -343,5 +346,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	public boolean hasOwner(ItemStack stack)
 	{
 		return hasSecurity(stack);
+	}
+	
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
+	{
+		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper());
 	}
 }

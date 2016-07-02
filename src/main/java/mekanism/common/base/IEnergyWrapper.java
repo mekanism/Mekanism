@@ -28,4 +28,6 @@ public interface IEnergyWrapper extends IStrictEnergyStorage, IEnergyReceiver, I
 	public EnumSet<EnumFacing> getConsumingSides();
 
 	public double getMaxOutput();
+	
+	public double removeEnergyFromProvider(EnumFacing side, double amount);
 }
