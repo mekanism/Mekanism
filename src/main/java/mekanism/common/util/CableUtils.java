@@ -1,5 +1,9 @@
 package mekanism.common.util;
 
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergyTile;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -280,7 +284,7 @@ public final class CableUtils
 				sent += used*general.FROM_RF;
 			}
 		}
-		/*else if(MekanismUtils.useIC2())
+		else if(MekanismUtils.useIC2())
 		{
 			IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
 			
@@ -290,7 +294,7 @@ public final class CableUtils
 				toSend = Math.min(Math.min(toSend, ((IEnergySink)tile).getDemandedEnergy()), Integer.MAX_VALUE);
 				sent += (toSend - (((IEnergySink)tile).injectEnergy(side.getOpposite(), toSend, 0)))*general.FROM_IC2;
 			}
-		}*/
+		}
 
 		return sent;
 	}
