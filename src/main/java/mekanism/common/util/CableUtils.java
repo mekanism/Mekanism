@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
@@ -169,7 +168,7 @@ public final class CableUtils
 			
 			if(tile instanceof IEnergySink)
 			{
-				if(((IEnergySink)tile).acceptsEnergyFrom(orig instanceof IEnergyEmitter ? (IEnergyEmitter)orig : null, side.getOpposite()))
+				if(((IEnergySink)tile).acceptsEnergyFrom(null, side.getOpposite()))
 				{
 					return true;
 				}
