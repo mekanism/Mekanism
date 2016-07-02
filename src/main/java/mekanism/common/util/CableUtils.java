@@ -286,13 +286,17 @@ public final class CableUtils
 		}
 		else if(MekanismUtils.useIC2())
 		{
-			IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
-			
-			if(tile instanceof IEnergySink && ((IEnergySink)tile).acceptsEnergyFrom(from, side.getOpposite()))
-			{
-				double toSend = Math.min(currentSending*general.TO_IC2, EnergyNet.instance.getPowerFromTier(((IEnergySink)tile).getSinkTier()));
-				toSend = Math.min(Math.min(toSend, ((IEnergySink)tile).getDemandedEnergy()), Integer.MAX_VALUE);
-				sent += (toSend - (((IEnergySink)tile).injectEnergy(side.getOpposite(), toSend, 0)))*general.FROM_IC2;
+			try {
+				IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
+				
+				if(tile instanceof IEnergySink && ((IEnergySink)tile).acceptsEnergyFrom(from, side.getOpposite()))
+				{
+					double toSend = Math.min(currentSending*general.TO_IC2, EnergyNet.instance.getPowerFromTier(((IEnergySink)tile).getSinkTier()));
+					toSend = Math.min(Math.min(toSend, ((IEnergySink)tile).getDemandedEnergy()), Integer.MAX_VALUE);
+					sent += (toSend - (((IEnergySink)tile).injectEnergy(side.getOpposite(), toSend, 0)))*general.FROM_IC2;
+				}
+			} catch(Throwable e) {
+				e.printStackTrace();
 			}
 		}
 

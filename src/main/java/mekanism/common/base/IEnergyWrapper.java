@@ -19,6 +19,7 @@ import cofh.api.energy.IEnergyReceiver;
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
+	@Interface(iface = "ic2.api.energy.tile.IEnergyEmitter", modid = "IC2"),
 	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2")
 })
 public interface IEnergyWrapper extends IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter, IInventory
