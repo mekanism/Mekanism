@@ -1214,7 +1214,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useTesla()
 	{
-		return !general.blacklistTesla;
+		return Mekanism.hooks.TeslaLoaded && !general.blacklistTesla;
 	}
 
 	/**

@@ -1,8 +1,5 @@
 package mekanism.common.base;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -43,20 +40,5 @@ public class FluidHandlerWrapper implements IFluidHandler
 	public FluidStack drain(int maxDrain, boolean doDrain) 
 	{
 		return wrapper.drain(side, maxDrain, doDrain);
-	}
-	
-	public static class FluidHandlerWrapperManager
-	{
-		public Map<EnumFacing, FluidHandlerWrapper> wrappers = new HashMap<EnumFacing, FluidHandlerWrapper>();
-		
-		public FluidHandlerWrapper getWrapper(IFluidHandlerWrapper wrapper, EnumFacing facing)
-		{
-			if(wrappers.get(facing) == null)
-			{
-				wrappers.put(facing, new FluidHandlerWrapper(wrapper, facing));
-			}
-			
-			return wrappers.get(facing);
-		}
 	}
 }

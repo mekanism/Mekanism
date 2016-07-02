@@ -18,7 +18,9 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.integration.TeslaItemWrapper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -39,6 +41,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -343,5 +346,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	public boolean hasOwner(ItemStack stack)
 	{
 		return hasSecurity(stack);
+	}
+	
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
+	{
+		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper());
 	}
 }

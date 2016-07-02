@@ -18,6 +18,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Upgrade;
+import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
@@ -28,7 +29,9 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.integration.TeslaItemWrapper;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
@@ -69,7 +72,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.capability.wrappers.FluidContainerItemWrapper;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -902,6 +904,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
     {
-        return new FluidContainerItemWrapper(this, stack);
+        return new ItemCapabilityWrapper(stack, new FluidItemWrapper(), new TeslaItemWrapper());
     }
 }

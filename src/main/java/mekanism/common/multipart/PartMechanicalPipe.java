@@ -7,8 +7,9 @@ import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
-import mekanism.common.base.FluidHandlerWrapper.FluidHandlerWrapperManager;
+import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -316,7 +317,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
 	
-	public FluidHandlerWrapperManager manager = new FluidHandlerWrapperManager();
+	public CapabilityWrapperManager manager = new CapabilityWrapperManager(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)

@@ -11,7 +11,9 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.integration.TeslaItemWrapper;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,7 +27,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -135,14 +139,14 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy* general.FROM_RF, energyNeeded);
+			double toReceive = Math.min(energy*general.FROM_RF, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive* general.TO_RF);
+			return (int)Math.round(toReceive*general.TO_RF);
 		}
 
 		return 0;
@@ -214,5 +218,11 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 				event.setCanceled(true);
 			}
 		}
+	}
+	
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
+	{
+		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper());
 	}
 }

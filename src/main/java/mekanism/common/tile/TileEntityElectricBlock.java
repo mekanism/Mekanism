@@ -16,6 +16,8 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.integration.TeslaIntegration;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -408,6 +410,20 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 		return toUse;
 	}
+	
+	@Override
+	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	{
+		if(!(getOutputtingSides().contains(side) || side == null))
+		{
+			return 0;
+		}
+		
+		double toGive = Math.min(getEnergy(), amount);
+		setEnergy(getEnergy() - toGive);
+		
+		return toGive;
+	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
@@ -415,16 +431,30 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
 				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+				|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
+				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
+				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
 				|| super.hasCapability(capability, facing);
 	}
+	
+	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(IEnergyWrapper.class, TeslaIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
+		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
+				capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
+		{
 			return (T)this;
-		if(capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
-			return (T)this;
+		}
+		
+		if(capability == Capabilities.TESLA_HOLDER_CAPABILITY
+				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
+				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
+		{
+			return (T)teslaManager.getWrapper(this, facing);
+		}
+		
 		return super.getCapability(capability, facing);
 	}
 }
