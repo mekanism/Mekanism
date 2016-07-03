@@ -11,7 +11,6 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -35,7 +34,7 @@ public final class SecurityUtils
 		
 		ISecurityItem security = (ISecurityItem)stack.getItem();
 		
-		if(MekanismUtils.isOp((EntityPlayerMP)player))
+		if(MekanismUtils.isOp(player))
 		{
 			return true;
 		}
@@ -52,7 +51,7 @@ public final class SecurityUtils
 		
 		ISecurityTile security = (ISecurityTile)tile;
 		
-		if(MekanismUtils.isOp((EntityPlayerMP)player))
+		if(MekanismUtils.isOp(player))
 		{
 			return true;
 		}
