@@ -11,6 +11,7 @@ import java.util.EnumSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -359,31 +360,23 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 			structure.newSteamInput += filled;
 		}
 		
+		if(filled < structure.getFluidCapacity() && structure.dumpMode != GasMode.IDLE)
+		{
+			filled = structure.getFluidCapacity();
+		}
+		
 		return filled;
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(structure != null && structure.fluidStored != null)
-		{
-			if(resource.getFluid() == structure.fluidStored.getFluid())
-			{
-				return fluidTank.drain(resource.amount, doDrain);
-			}
-		}
-
 		return null;
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		if(structure != null)
-		{
-			return fluidTank.drain(maxDrain, doDrain);
-		}
-
 		return null;
 	}
 
@@ -401,7 +394,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+		return false;
 	}
 	
 	@Override

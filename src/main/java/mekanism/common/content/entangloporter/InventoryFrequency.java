@@ -90,7 +90,7 @@ public class InventoryFrequency extends Frequency
 		
 		if(nbtTags.hasKey("storedItem"))
 		{
-			storedItem.readFromNBT(nbtTags.getCompoundTag("storedItem"));
+			storedItem = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("storedItem"));
 		}
 		
 		temperature = nbtTags.getDouble("temperature");

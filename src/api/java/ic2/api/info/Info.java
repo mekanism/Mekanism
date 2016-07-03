@@ -1,5 +1,6 @@
 package ic2.api.info;
 
+import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 
 import cpw.mods.fml.common.Loader;
@@ -15,6 +16,12 @@ public class Info {
 	 * Getting assigned in preload.
 	 */
 	public static DamageSource DMG_ELECTRIC, DMG_NUKE_EXPLOSION, DMG_RADIATION;
+
+	/**
+	 * Potions used by IC2.
+	 * Getting assigned in preload.
+	 */
+	public static Potion POTION_RADIATION;
 
 	public static boolean isIc2Available() {
 		if (ic2Available != null) return ic2Available;

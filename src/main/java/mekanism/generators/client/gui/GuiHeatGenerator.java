@@ -2,6 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.List;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.util.ListUtils;
 import mekanism.api.util.UnitDisplayUtils;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
@@ -66,8 +67,9 @@ public class GuiHeatGenerator extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, TemperatureUnit.KELVIN);
-				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, TemperatureUnit.KELVIN);
+				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+				String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, false, unit);
+				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, false, unit);
 				return ListUtils.asList(LangUtils.localize("gui.transferred") + ": " + transfer + "/t", LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));

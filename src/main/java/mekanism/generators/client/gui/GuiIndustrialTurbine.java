@@ -1,7 +1,9 @@
 package mekanism.generators.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.util.ListUtils;
@@ -12,7 +14,11 @@ import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.sound.SoundHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -53,6 +59,11 @@ public class GuiIndustrialTurbine extends GuiMekanism
 				double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow);		
 				rate = Math.min(rate, tileEntity.structure.vents*generators.turbineVentGasFlow);
 				
+				if(rate == 0)
+				{
+					return 0;
+				}
+				
 				return (double)tileEntity.structure.lastSteamInput/rate;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png"), 40, 13));
@@ -89,6 +100,9 @@ public class GuiIndustrialTurbine extends GuiMekanism
 		renderScaledText(LangUtils.localize("gui.capacity") + ": " + tileEntity.structure.getFluidCapacity() + " mB", 53, 44, 0x00CD00, 106);
 		renderScaledText(LangUtils.localize("gui.maxFlow") + ": " + rate + " mB/t", 53, 53, 0x00CD00, 106);
 		
+		String name = chooseByMode(tileEntity.structure.dumpMode, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
+		renderScaledText(name, 156-(int)(fontRendererObj.getStringWidth(name)*getNeededScale(name, 66)), 73, 0x404040, 66);
+		
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)
 		{
 			drawCreativeTabHoveringText(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
@@ -105,6 +119,9 @@ public class GuiIndustrialTurbine extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		
+		int displayInt = chooseByMode(tileEntity.structure.dumpMode, 142, 150, 158);
+		drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
 		
 		if(tileEntity.getScaledFluidLevel(58) > 0)
 		{
@@ -153,5 +170,41 @@ public class GuiIndustrialTurbine extends GuiMekanism
 
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png"));
 		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+	}
+	
+	@Override
+	protected void mouseClicked(int x, int y, int button)
+	{
+		super.mouseClicked(x, y, button);
+
+		int xAxis = (x - (width - xSize) / 2);
+		int yAxis = (y - (height - ySize) / 2);
+
+		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
+		{
+			ArrayList data = new ArrayList();
+			data.add((byte)0);
+
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+			SoundHandler.playSound("gui.button.press");
+		}
+	}
+	
+	private <T> T chooseByMode(TileEntityGasTank.GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption)
+	{
+		if(dumping.equals(TileEntityGasTank.GasMode.IDLE))
+		{
+			return idleOption;
+		}
+		else if(dumping.equals(TileEntityGasTank.GasMode.DUMPING))
+		{
+			return dumpingOption;
+		}
+		else if(dumping.equals(TileEntityGasTank.GasMode.DUMPING_EXCESS))
+		{
+			return dumpingExcessOption;
+		}
+		
+		return idleOption; //should not happen;
 	}
 }

@@ -34,6 +34,11 @@ public final class SecurityUtils
 		
 		ISecurityItem security = (ISecurityItem)stack.getItem();
 		
+		if(MekanismUtils.isOp(player))
+		{
+			return true;
+		}
+		
 		return canAccess(security.getSecurity(stack), player.getCommandSenderName(), security.getOwner(stack));
 	}
 	
@@ -45,6 +50,11 @@ public final class SecurityUtils
 		}
 		
 		ISecurityTile security = (ISecurityTile)tile;
+		
+		if(MekanismUtils.isOp(player))
+		{
+			return true;
+		}
 		
 		return canAccess(security.getSecurity().getMode(), player.getCommandSenderName(), security.getSecurity().getOwner());
 	}

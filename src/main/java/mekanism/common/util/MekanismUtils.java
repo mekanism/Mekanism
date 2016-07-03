@@ -1501,8 +1501,15 @@ public final class MekanismUtils
 	 * @param player - player to check
 	 * @return if the player has operator privileges
 	 */
-	public static boolean isOp(EntityPlayerMP player)
+	public static boolean isOp(EntityPlayer p)
 	{
+		if(!(p instanceof EntityPlayerMP))
+		{
+			return false;
+		}
+		
+		EntityPlayerMP player = (EntityPlayerMP)p;
+		
 		return general.opsBypassRestrictions && player.mcServer.getConfigurationManager().func_152596_g(player.getGameProfile());
 	}
 	
