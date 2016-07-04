@@ -6,7 +6,7 @@
 tile.ObsidianTNT.name=TNT de Obsidiana
 item.EnrichedAlloy.name=Liga Enriquecida
 item.ReinforcedAlloy.name=Liga Reforçada
-item.AtomicAlloy.name=Liga Atômica
+item.AtomicAlloy.name=Liga Atómica
 item.EnergyTablet.name=Tablete de Energia
 item.SpeedUpgrade.name=Upgrade de Velocidade
 item.EnergyUpgrade.name=Upgrade de Energia
@@ -14,9 +14,9 @@ item.FilterUpgrade.name=Upgrade de Filtro
 item.MufflingUpgrade.name=Upgrade Silenciador
 item.GasUpgrade.name=Upgrade de Gás
 item.Robit.name=Robit
-item.AtomicDisassembler.name=Desintegrador Atômico
+item.AtomicDisassembler.name=Desintegrador Atómico
 item.ElectricBow.name=Arco Elétrico
-item.EnrichedIron.name=Ferro Enriquecido
+item.EnrichedIron.name=Ferro Enriquecido 
 item.CompressedCarbon.name=Carbono Prensado
 item.CompressedRedstone.name=Redstone Prensada
 item.CompressedDiamond.name=Diamante Prensado
@@ -282,14 +282,14 @@ item.copperIngot.name=Barra de Cobre
 item.tinIngot.name=Barra de Estanho
 
 //Gasses
-gas.hydrogen=Hidrogênio
-gas.oxygen=Oxigênio
+gas.hydrogen=Hidrogénio
+gas.oxygen=Oxigénio
 gas.water=Vapor de Água
 gas.chlorine=Cloro
 gas.sulfurDioxideGas=Dióxido de Enxofre
 gas.sulfurTrioxideGas=Trióxido de Enxofre
 gas.sulfuricAcid=Ácido Sulfúrico
-gas.hydrogenChloride=Cloreto de Hidrogênio
+gas.hydrogenChloride=Cloreto de Hidrogénio
 gas.liquidOsmium=Ósmio Líquido
 gas.liquidStone=Pedra Líquida
 gas.ethene=Etileno
@@ -323,13 +323,13 @@ gas.fuel=Combustível Vaporizado
 gas.oil=Óleo Vaporizado
 
 //Fluids
-fluid.hydrogen=Hidrogênio Líquido
-fluid.oxygen=Oxigênio Líquido
+fluid.hydrogen=Hidrogénio Líquido
+fluid.oxygen=Oxigénio Líquido
 fluid.chlorine=Cloro Líquido
 fluid.sulfurDioxideGas=Dióxido de Enxofre Líquido
 fluid.sulfurTrioxideGas=Trióxido de Enxofre Líquido
 fluid.sulfuricAcid=Ácido Sulfúrico Líquido
-fluid.hydrogenChloride=Cloreto de Hidrogênio Líquido
+fluid.hydrogenChloride=Cloreto de Hidrogénio Líquido
 fluid.brine=Salmoura
 fluid.ethene=Etileno Líquido
 fluid.sodium=Sódio Líquido
@@ -391,7 +391,7 @@ key.voice=Voz
 
 //Entities
 entity.Mekanism.Robit.name=Robit
-entity.Mekanism.BabySkeleton.name=Esqueleto Bebê
+entity.Mekanism.BabySkeleton.name=Esqueleto Bebé
 
 //Config Gui
 mekanism.configgui.ctgy.general=Configurações Gerais do Mekanism
@@ -1003,9 +1003,9 @@ item.DiamondPaxel.name=Pacachado de Diamante
 item.GoldPaxel.name=Pacachado de Ouro
 
 //Obsidian
-item.ObsidianHelmet.name=Elmo de Obsidiana
+item.ObsidianHelmet.name=Capacete de Obsidiana
 item.ObsidianChestplate.name=Peitoral de Obsidiana
-item.ObsidianLeggings.name=Calças de Obsidiana
+item.ObsidianLeggings.name=Perneiras de Obsidiana
 item.ObsidianBoots.name=Botas de Obsidiana
 item.ObsidianPaxel.name=Pacachado de Obsidiana
 item.ObsidianPickaxe.name=Picareta de Obsidiana
@@ -1015,9 +1015,9 @@ item.ObsidianHoe.name=Enxada de Obsidiana
 item.ObsidianSword.name=Espada de Obsidiana
 
 //Lapis Lazuli
-item.LazuliHelmet.name=Elmo de Lápis-Lazúli
+item.LazuliHelmet.name=Capacete de Lápis-Lazúli
 item.LazuliChestplate.name=Peitoral de Lápis-Lazúli
-item.LazuliLeggings.name=Calças de Lápis-Lazúli
+item.LazuliLeggings.name=Perneiras de Lápis-Lazúli
 item.LazuliBoots.name=Botas de Lápis-Lazúli
 item.LazuliPaxel.name=Pacachado de Lápis-Lazúli
 item.LazuliPickaxe.name=Picareta de Lápis-Lazúli
@@ -1027,9 +1027,9 @@ item.LazuliHoe.name=Enxada de Lápis-Lazúli
 item.LazuliSword.name=Espada de Lápis-Lazúli
 
 //Osmium
-item.OsmiumHelmet.name=Elmo de Ósmio
+item.OsmiumHelmet.name=Capacete de Ósmio
 item.OsmiumChestplate.name=Peitoral de Ósmio
-item.OsmiumLeggings.name=Calças de Ósmio
+item.OsmiumLeggings.name=Perneiras de Ósmio
 item.OsmiumBoots.name=Botas de Ósmio
 item.OsmiumPaxel.name=Pacachado de Ósmio
 item.OsmiumPickaxe.name=Picareta de Ósmio
@@ -1039,9 +1039,9 @@ item.OsmiumHoe.name=Enxada de Ósmio
 item.OsmiumSword.name=Espada de Ósmio
 
 //Bronze
-item.BronzeHelmet.name=Elmo de Bronze
+item.BronzeHelmet.name=Capacete de Bronze
 item.BronzeChestplate.name=Peitoral de Bronze
-item.BronzeLeggings.name=Calças de Bronze
+item.BronzeLeggings.name=Perneiras de Bronze
 item.BronzeBoots.name=Botas de Bronze
 item.BronzePaxel.name=Pacachado de Bronze
 item.BronzePickaxe.name=Picareta de Bronze
@@ -1051,9 +1051,9 @@ item.BronzeHoe.name=Enxada de Bronze
 item.BronzeSword.name=Espada de Bronze
 
 //Glow
-item.GlowstoneHelmet.name=Elmo de Pedra Luminosa
+item.GlowstoneHelmet.name=Capacete de Pedra Luminosa
 item.GlowstoneChestplate.name=Peitoral de Pedra Luminosa
-item.GlowstoneLeggings.name=Calças de Pedra Luminosa
+item.GlowstoneLeggings.name=Perneiras de Pedra Luminosa
 item.GlowstoneBoots.name=Botas de Pedra Luminosa
 item.GlowstonePaxel.name=Pacachado de Pedra Luminosa
 item.GlowstonePickaxe.name=Picareta de Pedra Luminosa
@@ -1063,9 +1063,9 @@ item.GlowstoneHoe.name=Enxada de Pedra Luminosa
 item.GlowstoneSword.name=Espada de Pedra Luminosa
 
 //Steel
-item.SteelHelmet.name=Elmo de Aço
+item.SteelHelmet.name=Capacete de Aço
 item.SteelChestplate.name=Peitoral de Aço
-item.SteelLeggings.name=Calças de Aço
+item.SteelLeggings.name=Perneiras de Aço
 item.SteelBoots.name=Botas de Aço
 item.SteelPaxel.name=Pacachado de Aço
 item.SteelPickaxe.name=Picareta de Aço
