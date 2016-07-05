@@ -42,7 +42,6 @@ public class RobitAIPickup extends EntityAIBase
 		theWorld = entityRobit.worldObj;
 		moveSpeed = speed;
 		thePathfinder = entityRobit.getNavigator();
-		setMutexBits(3);
 	}
 
 	@Override
@@ -52,6 +51,7 @@ public class RobitAIPickup extends EntityAIBase
 		{
 			return false;
 		}
+		
 		if(closest != null && closest.getDistanceSqToEntity(closest) > 100 && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ) != null)
 		{
 			return true;
@@ -81,7 +81,7 @@ public class RobitAIPickup extends EntityAIBase
 			}
 		}
 
-		if(closest == null)
+		if(closest == null || closest.isDead)
 		{
 			//No valid items
 			return false;
@@ -94,7 +94,7 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
+		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getDropPickup() && theRobit.getEnergy() > 0 && closest.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
 	}
 
 	@Override
@@ -115,12 +115,12 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public void updateTask()
 	{
-		theRobit.getLookHelper().setLookPositionWithEntity(closest, 6.0F, theRobit.getVerticalFaceSpeed()/10);
-
 		if(!theRobit.getDropPickup())
 		{
 			return;
 		}
+		
+		theRobit.getLookHelper().setLookPositionWithEntity(closest, 6.0F, theRobit.getVerticalFaceSpeed()/10);
 
 		if(--ticker <= 0)
 		{
@@ -147,7 +147,6 @@ public class RobitAIPickup extends EntityAIBase
 						}
 					}
 				}
-
 			}
 		}
 	}

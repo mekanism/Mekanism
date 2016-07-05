@@ -44,7 +44,6 @@ public class RobitAIFollow extends EntityAIBase
 		thePathfinder = entityRobit.getNavigator();
 		minDist = min;
 		maxDist = max;
-		setMutexBits(3);
 	}
 
 	@Override
