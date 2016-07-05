@@ -1,21 +1,25 @@
 package mekanism.common.inventory.container;
 
+import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class ContainerRobitRepair extends ContainerRepair
 {
-	public ContainerRobitRepair(InventoryPlayer inventory, World world)
+	public EntityRobit robit;
+	
+	public ContainerRobitRepair(InventoryPlayer inventory, EntityRobit entity)
 	{
-		super(inventory, world, BlockPos.ORIGIN, inventory.player);
+		super(inventory, entity.worldObj, BlockPos.ORIGIN, inventory.player);
+		
+		robit = entity;
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return true;
+		return !robit.isDead;
 	}
 }

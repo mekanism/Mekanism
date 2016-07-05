@@ -147,6 +147,7 @@ public class FrequencyManager
 		if(user.equals(freq.owner))
 		{
 			freq.activeCoords.add(coord);
+			freq.valid = true;
 			frequencies.add(freq);
 			dataHandler.markDirty();
 			

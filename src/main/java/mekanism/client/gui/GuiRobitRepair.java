@@ -7,6 +7,7 @@ import java.util.List;
 
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketRobit.RobitPacketType;
@@ -24,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -34,16 +34,16 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 {
-	public int entityId;
+	private EntityRobit robit;
 	private ContainerRepair repairContainer;
 	private GuiTextField itemNameField;
 	private InventoryPlayer playerInventory;
 
-	public GuiRobitRepair(InventoryPlayer inventory, World world, int id)
+	public GuiRobitRepair(InventoryPlayer inventory, EntityRobit entity)
 	{
-		super(new ContainerRobitRepair(inventory, world));
+		super(new ContainerRobitRepair(inventory, entity));
+		robit = entity;
 		xSize += 25;
-		entityId = id;
 		playerInventory = inventory;
 		repairContainer = (ContainerRobitRepair)inventorySlots;
 	}
@@ -154,26 +154,26 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 0, entityId, null));
-				mc.thePlayer.openGui(Mekanism.instance, 21, mc.theWorld, entityId, 0, 0);
+				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 0, robit.getEntityId(), null));
+				mc.thePlayer.openGui(Mekanism.instance, 21, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 1, entityId, null));
-				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, entityId, 0, 0);
+				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 1, robit.getEntityId(), null));
+				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 2, entityId, null));
-				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, entityId, 0, 0);
+				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 2, robit.getEntityId(), null));
+				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 3, entityId, null));
-				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, entityId, 0, 0);
+				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 3, robit.getEntityId(), null));
+				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
