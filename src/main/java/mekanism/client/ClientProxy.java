@@ -430,23 +430,33 @@ public class ClientProxy extends CommonProxy
 					return new GuiRobitMain(player.inventory, robit);
 				}
 			case 22:
-				return new GuiRobitCrafting(player.inventory, world, x);
-			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				robit = (EntityRobit)world.getEntityByID(x);
 
-				if(robit1 != null)
+				if(robit != null)
 				{
-					return new GuiRobitInventory(player.inventory, robit1);
+					return new GuiRobitCrafting(player.inventory, robit);
+				}
+			case 23:
+				robit = (EntityRobit)world.getEntityByID(x);
+
+				if(robit != null)
+				{
+					return new GuiRobitInventory(player.inventory, robit);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				robit = (EntityRobit)world.getEntityByID(x);
 
-				if(robit2 != null)
+				if(robit != null)
 				{
-					return new GuiRobitSmelting(player.inventory, robit2);
+					return new GuiRobitSmelting(player.inventory, robit);
 				}
 			case 25:
-				return new GuiRobitRepair(player.inventory, world, x);
+				robit = (EntityRobit)world.getEntityByID(x);
+
+				if(robit != null)
+				{
+					return new GuiRobitRepair(player.inventory, robit);
+				}
 			case 29:
 				return new GuiChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer)tileEntity);
 			case 30:

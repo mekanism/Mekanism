@@ -20,8 +20,8 @@ public class GuiRobitSmelting extends GuiMekanism
 	public GuiRobitSmelting(InventoryPlayer inventory, EntityRobit entity)
 	{
 		super(new ContainerRobitSmelting(inventory, entity));
-		xSize += 25;
 		robit = entity;
+		xSize += 25;
 	}
 
 	@Override

@@ -487,23 +487,33 @@ public class CommonProxy implements IGuiProvider
 					return new ContainerRobitMain(player.inventory, robit);
 				}
 			case 22:
-				return new ContainerRobitCrafting(player.inventory, world);
-			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				robit = (EntityRobit)world.getEntityByID(x);
 
-				if(robit1 != null)
+				if(robit != null)
 				{
-					return new ContainerRobitInventory(player.inventory, robit1);
+					return new ContainerRobitCrafting(player.inventory, robit);
+				}
+			case 23:
+				robit = (EntityRobit)world.getEntityByID(x);
+
+				if(robit != null)
+				{
+					return new ContainerRobitInventory(player.inventory, robit);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				robit = (EntityRobit)world.getEntityByID(x);
 
-				if(robit2 != null)
+				if(robit != null)
 				{
-					return new ContainerRobitSmelting(player.inventory, robit2);
+					return new ContainerRobitSmelting(player.inventory, robit);
 				}
 			case 25:
-				return new ContainerRobitRepair(player.inventory, world);
+				robit = (EntityRobit)world.getEntityByID(x);
+
+				if(robit != null)
+				{
+					return new ContainerRobitRepair(player.inventory, robit);
+				}
 			case 26:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 27:

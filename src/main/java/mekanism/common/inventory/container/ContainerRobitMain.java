@@ -45,7 +45,7 @@ public class ContainerRobitMain extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return true;
+		return !robit.isDead;
 	}
 
 	@Override
