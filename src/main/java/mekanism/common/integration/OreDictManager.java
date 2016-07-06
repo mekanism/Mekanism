@@ -267,6 +267,13 @@ public final class OreDictManager
 			RecipeHandler.addCrusherRecipe(new ItemStack(Items.gunpowder), StackUtils.size(OreDictionary.getOres("dustSaltpeter").get(0), 1));
 		} catch(Exception e) {}
 		
+		for(ItemStack ore : OreDictionary.getOres("sand"))
+		{
+			try {
+				RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("itemSilicon").get(0), 1));
+			} catch(Exception e) {}
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("dustSaltpeter"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.gunpowder));

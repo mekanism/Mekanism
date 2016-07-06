@@ -4,13 +4,10 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.MekKeyHandler;
-import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -36,13 +33,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils.localize("gui." + (isPrivateMode(itemstack) ? "private" : "public")));
 		}
 		
-		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
-		{
-			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
-		}
-		else {
-			super.addInformation(itemstack, entityplayer, list, flag);
-		}
+		super.addInformation(itemstack, entityplayer, list, flag);
 	}
 
 	@Override
