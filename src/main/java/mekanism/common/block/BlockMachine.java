@@ -714,6 +714,19 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			return ((TileEntityFluidTank)tileEntity).getRedstoneLevel();
 		}
 		
+		if(tileEntity instanceof TileEntityLaserAmplifier)
+		{
+			TileEntityLaserAmplifier amplifier = (TileEntityLaserAmplifier)tileEntity;
+			
+			if(amplifier.outputMode == TileEntityLaserAmplifier.RedstoneOutput.ENERGY_CONTENTS)
+			{
+				return amplifier.getRedstoneLevel();
+			}
+			else {
+				return getWeakPower(state, world, pos, null);
+			}
+		}
+		
 		return 0;
 	}
 	

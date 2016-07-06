@@ -18,6 +18,7 @@ import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlock;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
+import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -78,6 +79,11 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 		if(tile instanceof TileEntityReactorController)
 		{
 			state = state.withProperty(BlockStateReactor.activeProperty, ((IActiveState)tile).getActive());
+		}
+		
+		if(tile instanceof TileEntityReactorPort)
+		{
+			state = state.withProperty(BlockStateReactor.activeProperty, ((TileEntityReactorPort)tile).fluidEject);
 		}
 		
 		return state;
@@ -368,6 +374,11 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 				return "reactor_frame";
 			}
 		}
+		else if(type == ReactorBlockType.REACTOR_PORT)
+		{
+			return type.getName() + (state.getValue(BlockStateReactor.activeProperty) ? "_output" : "");
+		}
+		
 		return null;
 	}
 	

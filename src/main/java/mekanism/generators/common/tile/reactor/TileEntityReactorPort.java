@@ -1,5 +1,7 @@
 package mekanism.generators.common.tile.reactor;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -25,6 +27,7 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,6 +45,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, ITubeConnection, IHeatTransfer, IConfigurable
 {
@@ -438,6 +442,33 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public void handlePacketData(ByteBuf dataStream)
+	{
+		super.handlePacketData(dataStream);
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			boolean prevEject = fluidEject;
+			fluidEject = dataStream.readBoolean();
+			
+			if(prevEject != fluidEject)
+			{
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
+		}
+	}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		data.add(fluidEject);
+		
+		return data;
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,7 +44,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "9.0.3", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "9.1.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
@@ -53,7 +54,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(9, 0, 3);
+	public static Version versionNumber = new Version(9, 1, 0);
 	
 	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
 
@@ -156,6 +157,9 @@ public class MekanismGenerators implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 12), new Object[] {
 			" I ", "IFI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('F'), Blocks.IRON_BARS
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 13), new Object[] {
+			"STS", "TBT", "STS", Character.valueOf('S'), "ingotSteel", Character.valueOf('T'), "ingotTin", Character.valueOf('E'), Items.BUCKET
+		}));
 		
 		//Reactor Recipes
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 4, 1), new Object[] {
@@ -211,6 +215,7 @@ public class MekanismGenerators implements IModule
 		dataStream.writeInt(generators.turbineBladesPerCoil);
 		dataStream.writeDouble(generators.turbineVentGasFlow);
 		dataStream.writeDouble(generators.turbineDisperserGasFlow);
+		dataStream.writeInt(generators.condenserRate);
 	}
 
 	@Override
@@ -232,6 +237,7 @@ public class MekanismGenerators implements IModule
 		generators.turbineBladesPerCoil = dataStream.readInt();
 		generators.turbineVentGasFlow = dataStream.readDouble();
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
+		generators.condenserRate = dataStream.readInt();
 	}
 	
 	@Override

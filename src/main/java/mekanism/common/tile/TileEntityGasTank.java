@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -17,9 +18,11 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -38,7 +41,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, ISecurityTile
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable
 {
 	public enum GasMode
 	{
@@ -141,6 +144,23 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 				currentRedstoneLevel = newRedstoneLevel;
 			}
 		}
+	}
+	
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
+	{
+		if(upgradeTier.ordinal() != tier.ordinal()+1)
+		{
+			return false;
+		}
+		
+		tier = GasTankTier.values()[upgradeTier.ordinal()];
+		gasTank.setMaxGas(tier.storage);
+		
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		markDirty();
+		
+		return true;
 	}
 	
 	@Override
