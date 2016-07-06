@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.relauncher.Side;
@@ -52,9 +53,9 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		for(ReactorLogic type : ReactorLogic.values())
 		{
 			GlStateManager.pushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
+			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(type.getRenderStack(), 27, 35 + (22*type.ordinal()));
-			GL11.glDisable(GL11.GL_LIGHTING);
+			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 			
 			fontRendererObj.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34+(22*type.ordinal()), 0x404040);

@@ -27,6 +27,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -134,9 +135,9 @@ public class GuiOredictionificator extends GuiMekanism
 				if(stack != null)
 				{
 					GlStateManager.pushMatrix();
-					GL11.glEnable(GL11.GL_LIGHTING);
+					RenderHelper.enableGUIStandardItemLighting();
 					itemRender.renderItemAndEffectIntoGUI(stack, 13, yStart + 3);
-					GL11.glDisable(GL11.GL_LIGHTING);
+					RenderHelper.disableStandardItemLighting();
 					GlStateManager.popMatrix();
 				}
 

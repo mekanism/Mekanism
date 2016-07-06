@@ -31,6 +31,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.relauncher.Side;
@@ -186,7 +187,7 @@ public class GuiDigitalMiner extends GuiMekanism
 		{
 			GlStateManager.pushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
-			GL11.glEnable(GL11.GL_LIGHTING);
+			RenderHelper.enableGUIStandardItemLighting();
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
@@ -194,7 +195,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			drawTexturedRectFromIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
 			itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);
 			
-			GL11.glDisable(GL11.GL_LIGHTING);
+			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
 		else {

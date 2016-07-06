@@ -28,6 +28,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
@@ -208,12 +209,12 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 						drawGradientRect(guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition, guiWidth + slot.xDisplayPosition + 16, guiHeight + slot.yDisplayPosition + 16, -2137456640, -2137456640);
 					}
 					
-					GL11.glEnable(GL11.GL_LIGHTING);
+					RenderHelper.enableGUIStandardItemLighting();
 					MekanismRenderer.blendOn();
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
 					itemRender.renderItemAndEffectIntoGUI(stack, guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition);
 					MekanismRenderer.blendOff();
-					GL11.glDisable(GL11.GL_LIGHTING);
+					RenderHelper.disableStandardItemLighting();
 					GlStateManager.popMatrix();
 				}
 			}
