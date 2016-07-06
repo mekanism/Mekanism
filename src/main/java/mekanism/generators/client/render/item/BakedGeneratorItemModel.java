@@ -29,7 +29,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
@@ -128,9 +128,11 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
     	}
 		
 		Tessellator tessellator = Tessellator.getInstance();
+		VertexFormat prevFormat = null;
 		
 		if(MekanismRenderer.isDrawing(tessellator))
 		{
+			prevFormat = tessellator.getBuffer().getVertexFormat();
 			tessellator.draw();
 		}
 		
@@ -148,8 +150,11 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
     	GlStateManager.popMatrix();
     	
-    	VertexBuffer worldrenderer = tessellator.getBuffer();
-    	worldrenderer.begin(7, DefaultVertexFormats.ITEM);
+    	if(prevFormat != null)
+    	{
+	    	VertexBuffer worldrenderer = tessellator.getBuffer();
+	    	worldrenderer.begin(7, prevFormat);
+    	}
 		
 		if(Block.getBlockFromItem(stack.getItem()) != null)
 		{
