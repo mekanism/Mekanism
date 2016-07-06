@@ -3,7 +3,6 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -49,7 +48,11 @@ public class ItemTierInstaller extends ItemMekanism
 				{
 					stack.stackSize--;
 				}
+				
+				return true;
 			}
+			
+			return false;
 		}
 		
 		return false;
@@ -58,9 +61,9 @@ public class ItemTierInstaller extends ItemMekanism
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
-		for(FactoryTier tier : FactoryTier.values())
+		for(BaseTier tier : BaseTier.values())
 		{
-			icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getBaseTier().getName() + "TierInstaller");
+			icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getName() + "TierInstaller");
 		}
 	}
 	
@@ -73,7 +76,7 @@ public class ItemTierInstaller extends ItemMekanism
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
-		for(FactoryTier tier : FactoryTier.values())
+		for(BaseTier tier : BaseTier.values())
 		{
 			itemList.add(new ItemStack(item, 1, tier.ordinal()));
 		}
