@@ -138,6 +138,7 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
 		
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
+        GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
     	doRender(prevTransform);
         GlStateManager.enableLighting();
         GlStateManager.enableLight(0);

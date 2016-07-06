@@ -69,7 +69,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				else if(message.packetType == PacketType.ENERGY)
 				{
 					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
-
+					
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
 						IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);

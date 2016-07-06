@@ -55,6 +55,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
 	public List<ITileComponent> components = new ArrayList<ITileComponent>();
 
+	@Override
 	public void update()
 	{
 		if(!worldObj.isRemote && general.destroyDisabledBlocks)

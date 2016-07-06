@@ -3,6 +3,7 @@ package mekanism.common;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.MekanismConfig.general;
@@ -212,7 +213,7 @@ public class PacketHandler
 					encode(((ArrayList)data).toArray(), output);
 				}
 				else {
-					throw new RuntimeException("Un-encodable data passed to encode(): " + data);
+					throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));
 				}
 			}
 		} catch(Exception e) {

@@ -430,7 +430,7 @@ public class ClientProxy extends CommonProxy
 	
 	@Override
 	public void registerBlockRenders()
-	{		
+	{
 		ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock, machineMapper);
 		ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock2, machineMapper);
 		ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock3, machineMapper);

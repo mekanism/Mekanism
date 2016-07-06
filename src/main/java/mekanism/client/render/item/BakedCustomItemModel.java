@@ -431,6 +431,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(0.5F, 0.5F, 0.5F);
+		GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
     	doRender(prevTransform);
         GlStateManager.enableLighting();
         GlStateManager.enableLight(0);
@@ -450,7 +451,10 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 			
 			if(machineType != MachineType.DIGITAL_MINER)
 			{
-				generalQuads.addAll(baseModel.getQuads(state, side, rand));
+				if(!(stack.getItem() instanceof ItemBlockEnergyCube))
+				{
+					generalQuads.addAll(baseModel.getQuads(state, side, rand));
+				}
 			}
 		}
 		

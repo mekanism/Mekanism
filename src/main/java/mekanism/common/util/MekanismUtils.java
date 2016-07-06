@@ -778,7 +778,7 @@ public final class MekanismUtils
 	 */
 	public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig)
 	{
-		world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getDefaultState());
+		world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(0));
 
 		if(!world.isRemote)
 		{
@@ -794,7 +794,7 @@ public final class MekanismUtils
 	 */
 	public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig)
 	{
-		world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(1), 0);
+		world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(1));
 
 		if(!world.isRemote)
 		{
