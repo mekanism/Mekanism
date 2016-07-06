@@ -78,7 +78,10 @@ public class ItemTierInstaller extends ItemMekanism
 	{
 		for(BaseTier tier : BaseTier.values())
 		{
-			itemList.add(new ItemStack(item, 1, tier.ordinal()));
+			if(tier.isObtainable())
+			{
+				itemList.add(new ItemStack(item, 1, tier.ordinal()));
+			}
 		}
 	}
 
