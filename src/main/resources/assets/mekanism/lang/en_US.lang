@@ -216,10 +216,11 @@ tile.EnergyCubeElite.name=Elite Energy Cube
 tile.EnergyCubeUltimate.name=Ultimate Energy Cube
 tile.EnergyCubeCreative.name=Creative Energy Cube
 
-//Factory Installers
-item.basicFactoryInstaller.name=Basic Factory Installer
-item.advancedFactoryInstaller.name=Advanced Factory Installer
-item.eliteFactoryInstaller.name=Elite Factory Installer
+//Tier Installers
+item.basicTierInstaller.name=Basic Tier Installer
+item.advancedTierInstaller.name=Advanced Tier Installer
+item.eliteTierInstaller.name=Elite Tier Installer
+item.ultimateTierInstaller.name=Ultimate Tier Installer
 
 //Dust
 item.ironDust.name=Iron Dust
@@ -558,6 +559,7 @@ gui.burnRate=Burn Rate
 gui.entityDetection=Entity Detection
 gui.energyContents=Energy Contents
 gui.redstoneOutput=Redstone Output
+gui.maxWaterOutput=Max Water Output
 
 gui.reactor.injectionRate=Injection Rate
 

@@ -82,6 +82,7 @@ public class GuiTurbineStats extends GuiMekanism
 		rate = Math.min(rate, tileEntity.structure.vents*generators.turbineVentGasFlow);
 		
 		fontRendererObj.drawString(LangUtils.localize("gui.maxProduction") + ": " + MekanismUtils.getEnergyDisplay(rate*energyMultiplier), 8, 104, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.maxWaterOutput") + ": " + tileEntity.structure.condensers*generators.condenserRate + " mB/t", 8, 113, 0x404040);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

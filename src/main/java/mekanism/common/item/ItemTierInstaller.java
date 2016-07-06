@@ -15,11 +15,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-public class ItemFactoryInstaller extends ItemMekanism
+public class ItemTierInstaller extends ItemMekanism
 {
 	public IIcon[] icons = new IIcon[256];
 	
-	public ItemFactoryInstaller()
+	public ItemTierInstaller()
 	{
 		super();
 		setHasSubtypes(true);
@@ -34,7 +34,7 @@ public class ItemFactoryInstaller extends ItemMekanism
 		}
 		
 		TileEntity tile = world.getTileEntity(x, y, z);
-		FactoryTier tier = FactoryTier.values()[stack.getItemDamage()];
+		BaseTier tier = BaseTier.values()[stack.getItemDamage()];
 		
 		if(tile instanceof ITierUpgradeable)
 		{
@@ -43,7 +43,7 @@ public class ItemFactoryInstaller extends ItemMekanism
 				return true;
 			}
 			
-			if(((ITierUpgradeable)tile).upgrade(tier.getBaseTier()))
+			if(((ITierUpgradeable)tile).upgrade(tier))
 			{
 				if(!player.capabilities.isCreativeMode)
 				{
@@ -60,7 +60,7 @@ public class ItemFactoryInstaller extends ItemMekanism
 	{
 		for(FactoryTier tier : FactoryTier.values())
 		{
-			icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getBaseTier().getName() + "FactoryInstaller");
+			icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getBaseTier().getName() + "TierInstaller");
 		}
 	}
 	
@@ -82,6 +82,6 @@ public class ItemFactoryInstaller extends ItemMekanism
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + BaseTier.values()[item.getItemDamage()].getName().toLowerCase() + "FactoryInstaller";
+		return "item." + BaseTier.values()[item.getItemDamage()].getName().toLowerCase() + "TierInstaller";
 	}
 }

@@ -62,7 +62,8 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOn").registerIcons(register);
 			ctms[1][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
 			ctms[2][0] = new CTMData("ctm/ReactorNeutronCapture", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
-			ctms[3][0] = new CTMData("ctm/ReactorPort", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
+			ctms[3][0] = new CTMData("ctm/ReactorPortInput", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
+			ctms[3][1] = new CTMData("ctm/ReactorPortOutput", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
 			ctms[4][0] = new CTMData("ctm/ReactorLogicAdapter", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
 
 			icons[0][0] = ctms[0][0].sideOverrides[1].icon;
@@ -71,6 +72,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			icons[1][0] = ctms[1][0].mainTextureData.icon;
 			icons[2][0] = ctms[2][0].mainTextureData.icon;
 			icons[3][0] = ctms[3][0].mainTextureData.icon;
+			icons[3][1] = ctms[3][1].mainTextureData.icon;
 			icons[4][0] = ctms[4][0].mainTextureData.icon;
 		}
 		else if(this == GeneratorsBlocks.ReactorGlass)
@@ -120,8 +122,13 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 					return MekanismUtils.isActive(world, x, y, z) ? icons[0][1] : icons[0][0];
 				}
 				else {
-					return icons[0][2];
+					return icons[metadata][2];
 				}
+			}
+			else if(metadata == 3)
+			{
+				TileEntityReactorPort tileEntity = (TileEntityReactorPort)world.getTileEntity(x, y, z);
+				return icons[metadata][tileEntity.fluidEject ? 1 : 0];
 			}
 			else {
 				return icons[metadata][0];
@@ -300,6 +307,13 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
 		{
 			return ctms[meta][1];
+		}
+		
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof TileEntityReactorPort)
+		{
+			return ctms[meta][((TileEntityReactorPort)tile).fluidEject ? 1 : 0];
 		}
 
 		return ctms[meta][0];
