@@ -17,11 +17,13 @@ import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -44,7 +46,9 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public double diggingProgress;
 	
 	public boolean emittingRedstone;
-	public boolean entityDetection;
+	public int currentRedstoneLevel;
+	
+	public RedstoneOutput outputMode = RedstoneOutput.OFF;
 	
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
@@ -91,7 +95,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += lastFired;
-
+						
 						if(diggingProgress < hardness*general.laserEnergyNeededPerHardness)
 						{
 							Mekanism.proxy.addHitEffects(hitCoord, mop);
@@ -163,9 +167,17 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 			}
 			
-			if(!entityDetection)
+			if(outputMode != RedstoneOutput.ENTITY_DETECTION)
 			{
 				emittingRedstone = false;
+			}
+			
+			int newRedstoneLevel = getRedstoneLevel();
+
+			if(newRedstoneLevel != currentRedstoneLevel)
+			{
+				markDirty();
+				currentRedstoneLevel = newRedstoneLevel;
 			}
 			
 			if(emittingRedstone != prevRedstone)
@@ -196,6 +208,17 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	{
 		return shouldFire() ? Math.min(collectedEnergy, maxThreshold) : 0;
 	}
+	
+	public int getRedstoneLevel()
+	{
+		if(outputMode != RedstoneOutput.ENERGY_CONTENTS)
+		{
+			return 0;
+		}
+		
+		double fractionFull = getEnergy()/getMaxEnergy();
+		return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
@@ -210,7 +233,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		data.add(lastFired);
 		data.add(controlType.ordinal());
 		data.add(emittingRedstone);
-		data.add(entityDetection);
+		data.add(outputMode.ordinal());
 
 		return data;
 	}
@@ -232,7 +255,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					time = dataStream.readInt();
 					break;
 				case 3:
-					entityDetection = !entityDetection;
+					outputMode = RedstoneOutput.values()[outputMode.ordinal() == RedstoneOutput.values().length-1 ? 0 : outputMode.ordinal()+1];
 					break;
 			}
 			
@@ -251,7 +274,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			lastFired = dataStream.readDouble();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			emittingRedstone = dataStream.readBoolean();
-			entityDetection = dataStream.readBoolean();
+			outputMode = RedstoneOutput.values()[dataStream.readInt()];
 		}
 	}
 	
@@ -267,7 +290,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		collectedEnergy = nbtTags.getDouble("collectedEnergy");
 		lastFired = nbtTags.getDouble("lastFired");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-		entityDetection = nbtTags.getBoolean("entityDetection");
+		outputMode = RedstoneOutput.values()[nbtTags.getInteger("outputMode")];
 	}
 
 	@Override
@@ -282,7 +305,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		nbtTags.setDouble("collectedEnergy", collectedEnergy);
 		nbtTags.setDouble("lastFired", lastFired);
 		nbtTags.setInteger("controlType", controlType.ordinal());
-		nbtTags.setBoolean("entityDetection", entityDetection);
+		nbtTags.setInteger("outputMode", outputMode.ordinal());
 	}
 
 	@Override
@@ -341,5 +364,24 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public TileComponentSecurity getSecurity() 
 	{
 		return securityComponent;
+	}
+	
+	public static enum RedstoneOutput
+	{
+		OFF("off"),
+		ENTITY_DETECTION("entityDetection"),
+		ENERGY_CONTENTS("energyContents");
+		
+		private String unlocalizedName;
+		
+		private RedstoneOutput(String name)
+		{
+			unlocalizedName = name;
+		}
+		
+		public String getName()
+		{
+			return LangUtils.localize("gui." + unlocalizedName);
+		}
 	}
 }

@@ -36,6 +36,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
+import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
@@ -77,6 +78,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 10: Turbine Casing
  * 11: Turbine Valve
  * 12: Turbine Vent
+ * 13: Saturating Condenser
  * @author AidanBrady
  *
  */
@@ -117,6 +119,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		icons[10][0] = ctms[10].mainTextureData.icon;
 		icons[11][0] = ctms[11].mainTextureData.icon;
 		icons[12][0] = ctms[12].mainTextureData.icon;
+		icons[13][0] = register.registerIcon("mekanism:SteelCasing");
 	}
 	
 	@Override
@@ -767,7 +770,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		ELECTROMAGNETIC_COIL(9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false),
 		TURBINE_CASING(10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false),
 		TURBINE_VALVE(11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false),
-		TURBINE_VENT(12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false);
+		TURBINE_VENT(12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false),
+		SATURATING_CONDENSER(13, "SaturatingCondenser", -1, -1, TileEntitySaturatingCondenser.class, false);
 
 		public int meta;
 		public String name;

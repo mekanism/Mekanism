@@ -4,13 +4,8 @@ import java.util.List;
 
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.tile.TileEntityAdvancedElectricMachine;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityElectricMachine;
-import mekanism.common.tile.TileEntityFactory;
-import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +22,6 @@ public class ItemFactoryInstaller extends ItemMekanism
 	public ItemFactoryInstaller()
 	{
 		super();
-		setMaxStackSize(1);
 		setHasSubtypes(true);
 	}
 	
@@ -42,89 +36,23 @@ public class ItemFactoryInstaller extends ItemMekanism
 		TileEntity tile = world.getTileEntity(x, y, z);
 		FactoryTier tier = FactoryTier.values()[stack.getItemDamage()];
 		
-		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).playersUsing.size() > 0)
+		if(tile instanceof ITierUpgradeable)
 		{
-			return true;
-		}
-		
-		if(tile instanceof TileEntityFactory && tier != FactoryTier.BASIC)
-		{
-			TileEntityFactory factory = (TileEntityFactory)tile;
-			
-			if(factory.tier.ordinal()+1 == tier.ordinal())
+			if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).playersUsing.size() > 0)
 			{
-				if(!world.isRemote)
-				{
-					factory.upgrade();
-				}
-				
-				if(!player.capabilities.isCreativeMode)
-				{
-					stack.stackSize = 0;
-				}
-				
 				return true;
 			}
-		}
-		else if(tile != null && tier == FactoryTier.BASIC)
-		{
-			RecipeType type = null;
 			
-			for(RecipeType iterType : RecipeType.values())
+			if(((ITierUpgradeable)tile).upgrade(tier.getBaseTier()))
 			{
-				ItemStack machineStack = iterType.getStack();
-				
-				if(Block.getBlockFromItem(machineStack.getItem()) == world.getBlock(x, y, z) && machineStack.getItemDamage() == world.getBlockMetadata(x, y, z))
+				if(!player.capabilities.isCreativeMode)
 				{
-					type = iterType;
-					break;
-				}
-			}
-			
-			if(type != null)
-			{
-				if(tile instanceof TileEntityElectricMachine)
-				{
-					((TileEntityElectricMachine)tile).upgrade(type);
-					
-					if(!player.capabilities.isCreativeMode)
-					{
-						stack.stackSize = 0;
-					}
-					
-					return true;
-				}
-				else if(tile instanceof TileEntityAdvancedElectricMachine)
-				{
-					((TileEntityAdvancedElectricMachine)tile).upgrade(type);
-					
-					if(!player.capabilities.isCreativeMode)
-					{
-						stack.stackSize = 0;
-					}
-					
-					return true;
-				}
-				else if(tile instanceof TileEntityMetallurgicInfuser)
-				{
-					((TileEntityMetallurgicInfuser)tile).upgrade(type);
-					
-					if(!player.capabilities.isCreativeMode)
-					{
-						stack.stackSize = 0;
-					}
-					
-					return true;
+					stack.stackSize--;
 				}
 			}
 		}
 		
 		return false;
-	}
-	
-	private int getOutputSlot(FactoryTier tier, int operation)
-	{
-		return 5+tier.processes+operation;
 	}
 	
 	@Override

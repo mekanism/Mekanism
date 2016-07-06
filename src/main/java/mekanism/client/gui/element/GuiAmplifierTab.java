@@ -18,13 +18,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiDetectionTab extends GuiElement
+public class GuiAmplifierTab extends GuiElement
 {
 	public TileEntity tileEntity;
 
-	public GuiDetectionTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
+	public GuiAmplifierTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiDetectionTab.png"), gui, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiAmplifierTab.png"), gui, def);
 
 		tileEntity = tile;
 	}
@@ -41,13 +41,14 @@ public class GuiDetectionTab extends GuiElement
 		mc.renderEngine.bindTexture(RESOURCE);
 
 		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
+		int outputOrdinal = ((TileEntityLaserAmplifier)tileEntity).outputMode.ordinal();
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
 		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26, 0, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18*outputOrdinal, 0, 18, 18);
 		}
 		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26, 18, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18*outputOrdinal, 18, 18, 18);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -60,8 +61,8 @@ public class GuiDetectionTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
 		{
-			String text = LangUtils.transOnOff(((TileEntityLaserAmplifier)tileEntity).entityDetection);
-			displayTooltip(LangUtils.localize("gui.entityDetection") + ": " + text, xAxis, yAxis);
+			String text = LangUtils.localize("gui.redstoneOutput") + ": ";
+			displayTooltip(text + ((TileEntityLaserAmplifier)tileEntity).outputMode.getName(), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

@@ -76,7 +76,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 						setEnergy(getEnergy()+((int)rate)*energyMultiplier);
 						
 						structure.fluidStored.amount -= rate;
-						structure.clientFlow = (int)rate;
+						structure.clientFlow = Math.min((int)rate, structure.condensers*generators.condenserRate);
+						structure.flowRemaining = (int)rate;
 						
 						if(structure.fluidStored.amount == 0)
 						{
@@ -181,6 +182,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			data.add(structure.vents);
 			data.add(structure.blades);
 			data.add(structure.coils);
+			data.add(structure.condensers);
 			data.add(structure.getDispersers());
 			data.add(structure.electricityStored);
 			data.add(structure.clientFlow);
@@ -236,6 +238,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 				structure.vents = dataStream.readInt();
 				structure.blades = dataStream.readInt();
 				structure.coils = dataStream.readInt();
+				structure.condensers = dataStream.readInt();
 				structure.clientDispersers = dataStream.readInt();
 				structure.electricityStored = dataStream.readDouble();
 				structure.clientFlow = dataStream.readInt();

@@ -818,6 +818,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 			return ((TileEntityFluidTank)tileEntity).getRedstoneLevel();
 		}
 		
+		if(tileEntity instanceof TileEntityLaserAmplifier)
+		{
+			TileEntityLaserAmplifier amplifier = (TileEntityLaserAmplifier)tileEntity;
+			
+			if(amplifier.outputMode == TileEntityLaserAmplifier.RedstoneOutput.ENERGY_CONTENTS)
+			{
+				return amplifier.getRedstoneLevel();
+			}
+			else {
+				return isProvidingWeakPower(world, x, y, z, par5);
+			}
+		}
+		
 		return 0;
 	}
 	

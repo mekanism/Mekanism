@@ -145,6 +145,7 @@ public class MekanismConfig
 		public static int turbineBladesPerCoil;
 		public static double turbineVentGasFlow;
 		public static double turbineDisperserGasFlow;
+		public static int condenserRate;
 	}
 
 	public static class tools

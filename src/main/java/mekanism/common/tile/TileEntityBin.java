@@ -574,6 +574,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		setActive(!getActive());
 		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		
 		return true;
 	}
 

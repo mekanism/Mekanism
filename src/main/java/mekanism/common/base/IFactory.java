@@ -242,6 +242,24 @@ public interface IFactory
 		{
 			return fuelSpeed;
 		}
+		
+		public static RecipeType getFromMachine(Block block, int meta)
+		{
+			RecipeType type = null;
+			
+			for(RecipeType iterType : RecipeType.values())
+			{
+				ItemStack machineStack = iterType.getStack();
+				
+				if(Block.getBlockFromItem(machineStack.getItem()) == block && machineStack.getItemDamage() == meta)
+				{
+					type = iterType;
+					break;
+				}
+			}
+			
+			return type;
+		}
 
 		private RecipeType(String s, String s1, ItemStack is, boolean b, boolean b1, Recipe r)
 		{
