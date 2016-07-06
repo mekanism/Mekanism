@@ -42,8 +42,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
 	public EnumFacing clientFacing = facing;
 
-	public HashSet<EntityPlayer> openedThisTick = new HashSet<EntityPlayer>();
-
 	/** The players currently using this block. */
 	public HashSet<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 
@@ -80,8 +78,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
 		if(!worldObj.isRemote)
 		{
-			openedThisTick.clear();
-
 			if(doAutoSync && playersUsing.size() > 0)
 			{
 				for(EntityPlayer player : playersUsing)

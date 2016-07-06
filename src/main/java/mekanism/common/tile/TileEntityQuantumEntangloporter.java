@@ -659,7 +659,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return frequency != null && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState != IOState.OFF;
+		return hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState != IOState.OFF;
 	}
 	
 	@Override
