@@ -11,9 +11,11 @@ import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -31,7 +33,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
@@ -98,6 +100,22 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	
 			prevScale = newScale;
 		}
+	}
+	
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
+	{
+		if(upgradeTier.ordinal() != tier.ordinal()+1)
+		{
+			return false;
+		}
+		
+		tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
+		
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		markDirty();
+		
+		return true;
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
@@ -240,6 +241,24 @@ public interface IFactory
 		public boolean fuelEnergyUpgrades()
 		{
 			return fuelSpeed;
+		}
+		
+		public static RecipeType getFromMachine(Block block, int meta)
+		{
+			RecipeType type = null;
+			
+			for(RecipeType iterType : RecipeType.values())
+			{
+				ItemStack machineStack = iterType.getStack();
+				
+				if(Block.getBlockFromItem(machineStack.getItem()) == block && machineStack.getItemDamage() == meta)
+				{
+					type = iterType;
+					break;
+				}
+			}
+			
+			return type;
 		}
 
 		private RecipeType(String s, String s1, MachineType t, boolean b, boolean b1, Recipe r)

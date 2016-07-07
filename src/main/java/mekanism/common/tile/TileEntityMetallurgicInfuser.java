@@ -19,10 +19,12 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
@@ -46,7 +48,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
+public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile, ITierUpgradeable
 {
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
@@ -203,12 +205,19 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		}
 	}
 	
-	public void upgrade(RecipeType type)
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
 	{
+		if(upgradeTier != BaseTier.BASIC)
+		{
+			return false;
+		}
+		
 		worldObj.setBlockToAir(getPos());
 		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 		
 		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
+		RecipeType type = RecipeType.INFUSING;
 		
 		//Basic
 		factory.facing = facing;
@@ -261,8 +270,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		}
 		
 		factory.upgraded = true;
-		
 		factory.markDirty();
+		
+		return true;
 	}
 
 	@Override

@@ -134,7 +134,10 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		{
 			return (T)this;
+		}
+		
 		return super.getCapability(capability, facing);
 	}
 }

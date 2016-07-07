@@ -32,6 +32,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -473,9 +474,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 					if(itemFilter.itemType != null)
 					{
 						GlStateManager.pushMatrix();
-						GL11.glEnable(GL11.GL_LIGHTING);
+						RenderHelper.enableGUIStandardItemLighting();
 						itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
-						GL11.glDisable(GL11.GL_LIGHTING);
+						RenderHelper.disableStandardItemLighting();
 						GlStateManager.popMatrix();
 					}
 
@@ -495,9 +496,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 					{
 						try {
 							GlStateManager.pushMatrix();
-							GL11.glEnable(GL11.GL_LIGHTING);
+							RenderHelper.enableGUIStandardItemLighting();
 							itemRender.renderItemAndEffectIntoGUI(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-							GL11.glDisable(GL11.GL_LIGHTING);
+							RenderHelper.disableStandardItemLighting();
 							GlStateManager.popMatrix();
 						} catch(final Exception e) {}
 					}
@@ -512,9 +513,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 					if(itemFilter.materialItem != null)
 					{
 						GlStateManager.pushMatrix();
-						GL11.glEnable(GL11.GL_LIGHTING);
+						RenderHelper.enableGUIStandardItemLighting();
 						itemRender.renderItemAndEffectIntoGUI(itemFilter.materialItem, 59, yStart + 3);
-						GL11.glDisable(GL11.GL_LIGHTING);
+						RenderHelper.disableStandardItemLighting();
 						GlStateManager.popMatrix();
 					}
 
@@ -534,9 +535,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 					{
 						try {
 							GlStateManager.pushMatrix();
-							GL11.glEnable(GL11.GL_LIGHTING);
+							RenderHelper.enableGUIStandardItemLighting();
 							itemRender.renderItemAndEffectIntoGUI(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-							GL11.glDisable(GL11.GL_LIGHTING);
+							RenderHelper.disableStandardItemLighting();
 							GlStateManager.popMatrix();
 						} catch(final Exception e) {}
 					}

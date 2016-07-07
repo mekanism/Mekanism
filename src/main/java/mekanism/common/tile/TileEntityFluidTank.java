@@ -11,6 +11,7 @@ import mekanism.api.Range4D;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IActiveState;
@@ -18,6 +19,7 @@ import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -47,7 +49,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile
+public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile, ITierUpgradeable
 {
 	public boolean isActive;
 
@@ -80,6 +82,23 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		fluidTank = new FluidTank(tier.storage);
 		inventory = new ItemStack[2];
+	}
+	
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
+	{
+		if(upgradeTier.ordinal() != tier.ordinal()+1)
+		{
+			return false;
+		}
+		
+		tier = FluidTankTier.values()[upgradeTier.ordinal()];
+		fluidTank.setCapacity(tier.storage);
+		
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		markDirty();
+		
+		return true;
 	}
 	
 	@Override

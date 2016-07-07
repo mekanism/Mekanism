@@ -1,9 +1,15 @@
 package mekanism.generators.common.tile.reactor;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
+import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -11,18 +17,26 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.api.util.CapabilityUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.item.ItemHohlraum;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -31,14 +45,35 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, ITubeConnection, IHeatTransfer
+public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, ITubeConnection, IHeatTransfer, IConfigurable
 {
+	public boolean fluidEject;
+	
 	public TileEntityReactorPort()
 	{
 		super("name", 1);
 		
 		inventory = new ItemStack[0];
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		fluidEject = nbtTags.getBoolean("fluidEject");
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setBoolean("fluidEject", fluidEject);
+		
+		return nbtTags;
 	}
 
 	@Override
@@ -61,7 +96,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			CableUtils.emit(this);
 			
-			if(getReactor() != null && getReactor().getSteamTank().getFluidAmount() > 0)
+			if(fluidEject && getReactor() != null && getReactor().getSteamTank().getFluidAmount() > 0)
 			{
 				IFluidTank tank = getReactor().getSteamTank();
 				
@@ -86,7 +121,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(resource.getFluid() == FluidRegistry.WATER && getReactor() != null)
+		if(resource.getFluid() == FluidRegistry.WATER && getReactor() != null && !fluidEject)
 		{
 			return getReactor().getWaterTank().fill(resource, doFill);
 		}
@@ -119,13 +154,13 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return (getReactor() != null && fluid == FluidRegistry.WATER);
+		return (getReactor() != null && fluid == FluidRegistry.WATER && !fluidEject);
 	}
 
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return (getReactor() != null && fluid == FluidRegistry.WATER);
+		return (getReactor() != null && fluid == FluidRegistry.getFluid("steam"));
 	}
 
 	@Override
@@ -198,14 +233,14 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
 				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-				|| super.hasCapability(capability, side);
+				|| capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
+				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY)
 		{
 			return (T)this;
 		}
@@ -407,5 +442,54 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public void handlePacketData(ByteBuf dataStream)
+	{
+		super.handlePacketData(dataStream);
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			boolean prevEject = fluidEject;
+			fluidEject = dataStream.readBoolean();
+			
+			if(prevEject != fluidEject)
+			{
+				MekanismUtils.updateBlock(worldObj, getPos());
+			}
+		}
+	}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		data.add(fluidEject);
+		
+		return data;
+	}
+
+	@Override
+	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
+	{
+		if(!worldObj.isRemote)
+		{
+			fluidEject = !fluidEject;
+			String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
+			player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
+			
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			markDirty();
+		}
+		
+		return EnumActionResult.SUCCESS;
+	}
+
+	@Override
+	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
+	{
+		return EnumActionResult.PASS;
 	}
 }

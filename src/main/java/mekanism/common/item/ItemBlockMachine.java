@@ -194,8 +194,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				
 				if(fluidStack != null)
 				{
-					list.add(EnumColor.PINK + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
+					list.add(EnumColor.AQUA + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
 				}
+				else {
+					list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
+				}
+				
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + FluidTankTier.values()[getBaseTier(itemstack).ordinal()].storage + " mB");
 			}
 
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");

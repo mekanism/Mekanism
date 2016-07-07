@@ -5,8 +5,10 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -21,7 +23,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
-public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ItemStackOutput, RECIPE>
+public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ItemStackOutput, RECIPE> implements ITierUpgradeable
 {
 	/**
 	 * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1),
@@ -56,12 +58,19 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
 	
-	public void upgrade(RecipeType type)
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
 	{
+		if(upgradeTier != BaseTier.BASIC)
+		{
+			return false;
+		}
+		
 		worldObj.setBlockToAir(getPos());
 		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 		
 		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
+		RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
 		
 		//Basic
 		factory.facing = facing;
@@ -109,8 +118,9 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		}
 		
 		factory.upgraded = true;
-		
 		factory.markDirty();
+		
+		return true;
 	}
 
 	@Override

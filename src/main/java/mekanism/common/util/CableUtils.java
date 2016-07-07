@@ -1,10 +1,5 @@
 package mekanism.common.util;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.energy.tile.IEnergyTile;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +12,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.IC2Integration;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -131,14 +127,9 @@ public final class CableUtils
 			return true;
 		}
 		
-		if(MekanismUtils.useIC2())
+		if(MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side))
 		{
-			IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
-			
-			if(tile instanceof IEnergySource && ((IEnergySource)tile).emitsEnergyTo(null, side.getOpposite()))
-			{
-				return true;
-			}
+			return true;
 		}
 		
 		return false;
@@ -162,17 +153,9 @@ public final class CableUtils
 		{
 			return true;
 		}
-		else if(MekanismUtils.useIC2())
+		else if(MekanismUtils.useIC2() && IC2Integration.isAcceptor(orig, tileEntity, side))
 		{
-			IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
-			
-			if(tile instanceof IEnergySink)
-			{
-				if(((IEnergySink)tile).acceptsEnergyFrom(null, side.getOpposite()))
-				{
-					return true;
-				}
-			}
+			return true;
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{
@@ -287,14 +270,7 @@ public final class CableUtils
 		}
 		else if(MekanismUtils.useIC2())
 		{
-			IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
-			
-			if(tile instanceof IEnergySink && ((IEnergySink)tile).acceptsEnergyFrom(from, side.getOpposite()))
-			{
-				double toSend = Math.min(currentSending*general.TO_IC2, EnergyNet.instance.getPowerFromTier(((IEnergySink)tile).getSinkTier()));
-				toSend = Math.min(Math.min(toSend, ((IEnergySink)tile).getDemandedEnergy()), Integer.MAX_VALUE);
-				sent += (toSend - (((IEnergySink)tile).injectEnergy(side.getOpposite(), toSend, 0)))*general.FROM_IC2;
-			}
+			sent += IC2Integration.emitEnergy(from, tileEntity, side, currentSending);
 		}
 
 		return sent;

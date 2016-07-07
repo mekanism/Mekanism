@@ -14,7 +14,7 @@ import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.ItemFactoryInstaller;
+import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
@@ -69,7 +69,7 @@ public class MekanismItems
 	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER);
 	public static final Item MufflingUpgrade = new ItemUpgrade(Upgrade.MUFFLING);
 	public static final Item GasUpgrade = new ItemUpgrade(Upgrade.GAS);
-	public static final Item FactoryInstaller = new ItemFactoryInstaller();
+	public static final Item TierInstaller = new ItemTierInstaller();
 	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000);
 	public static final ItemRobit Robit = (ItemRobit)new ItemRobit();
 	public static final ItemAtomicDisassembler AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler();
@@ -163,7 +163,7 @@ public class MekanismItems
 		GameRegistry.register(init(GlowPanel, "GlowPanel"));
 		GameRegistry.register(init(Flamethrower, "Flamethrower"));
 		GameRegistry.register(init(GaugeDropper, "GaugeDropper"));
-		GameRegistry.register(init(FactoryInstaller, "FactoryInstaller"));
+		GameRegistry.register(init(TierInstaller, "TierInstaller"));
 		GameRegistry.register(init(OtherDust, "OtherDust"));
 
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);

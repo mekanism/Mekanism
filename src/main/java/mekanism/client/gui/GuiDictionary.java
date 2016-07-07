@@ -9,6 +9,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
@@ -45,9 +46,9 @@ public class GuiDictionary extends GuiMekanism
 		if(itemType != null)
 		{
 			GlStateManager.pushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
+			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(itemType, 6, 6);
-			GL11.glDisable(GL11.GL_LIGHTING);
+			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
 

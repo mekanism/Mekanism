@@ -19,6 +19,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -130,18 +131,18 @@ public class GuiMMaterialFilter extends GuiMekanism
 		if(filter.materialItem != null)
 		{
 			GlStateManager.pushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
+			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(filter.materialItem, 12, 19);
-			GL11.glDisable(GL11.GL_LIGHTING);
+			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
 		
 		if(filter.replaceStack != null)
 		{
 			GlStateManager.pushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
+			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
-			GL11.glDisable(GL11.GL_LIGHTING);
+			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
 		

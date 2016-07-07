@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -132,7 +133,9 @@ public class GuiSeismicReader extends GuiScreen
 					GlStateManager.scale(0.8f, 0.8f, 0.8f);
 				}
 				
+				RenderHelper.enableGUIStandardItemLighting();
 				itemRender.renderItemAndEffectIntoGUI(stack, 0, 0);
+				RenderHelper.disableStandardItemLighting();
 				GlStateManager.popMatrix();
 			}
 		}

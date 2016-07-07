@@ -28,6 +28,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
+import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
@@ -59,6 +60,7 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityReactorLogicAdapter.class, "ReactorLogicAdapter");
 		GameRegistry.registerTileEntity(TileEntityRotationalComplex.class, "RotationalComplex");
 		GameRegistry.registerTileEntity(TileEntityElectromagneticCoil.class, "ElectromagneticCoil");
+		GameRegistry.registerTileEntity(TileEntitySaturatingCondenser.class, "SaturatingCondenser");
 	}
 
 	/**
@@ -108,6 +110,7 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		generators.turbineBladesPerCoil = Mekanism.configuration.get("generation", "TurbineBladesPerCoil", 4).getInt();
 		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
 		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
+		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserRate", 8000).getInt();
 
 		if(Mekanism.configuration.hasChanged())
 		{

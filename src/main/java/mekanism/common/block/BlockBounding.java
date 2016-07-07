@@ -29,6 +29,7 @@ public class BlockBounding extends Block
 		setResistance(8F);
 	}
 
+	@Override
 	public BlockStateContainer createBlockState()
 	{
 		return new BlockStateBounding(this);
@@ -37,9 +38,7 @@ public class BlockBounding extends Block
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		boolean isAdvanced = meta > 0;
-
-		return getDefaultState().withProperty(BlockStateBounding.advancedProperty, isAdvanced);
+		return getDefaultState().withProperty(BlockStateBounding.advancedProperty, meta > 0);
 	}
 
 	@Override

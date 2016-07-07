@@ -23,6 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -170,9 +171,9 @@ public class GuiMModIDFilter extends GuiMekanism
 		{
 			try {
 				GlStateManager.pushMatrix();
-				GL11.glEnable(GL11.GL_LIGHTING);
+				RenderHelper.enableGUIStandardItemLighting();
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
-				GL11.glDisable(GL11.GL_LIGHTING);
+				RenderHelper.disableStandardItemLighting();
 				GlStateManager.popMatrix();
 			} catch(Exception e) {}
 		}
@@ -180,9 +181,9 @@ public class GuiMModIDFilter extends GuiMekanism
 		if(filter.replaceStack != null)
 		{
 			GlStateManager.pushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
+			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
-			GL11.glDisable(GL11.GL_LIGHTING);
+			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
 		

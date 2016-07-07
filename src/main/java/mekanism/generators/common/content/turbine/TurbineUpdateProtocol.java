@@ -14,6 +14,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
+import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
@@ -49,7 +50,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
 		
 		return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex ||
-				tile instanceof TileEntityPressureDisperser || tile instanceof TileEntityElectromagneticCoil;
+				tile instanceof TileEntityPressureDisperser || tile instanceof TileEntityElectromagneticCoil ||
+				tile instanceof TileEntitySaturatingCondenser;
 	}
 	
 	@Override
@@ -69,6 +71,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				Set<Coord4D> turbines = new HashSet<Coord4D>();
 				Set<Coord4D> dispersers = new HashSet<Coord4D>();
 				Set<Coord4D> coils = new HashSet<Coord4D>();
+				Set<Coord4D> condensers = new HashSet<Coord4D>();
 				
 				//Scan for complex
 				for(Coord4D coord : innerNodes)
@@ -106,6 +109,10 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					{
 						coils.add(coord);
 					}
+					else if(tile instanceof TileEntitySaturatingCondenser)
+					{
+						condensers.add(coord);
+					}
 				}
 				
 				//Terminate if complex doesn't exist
@@ -138,6 +145,17 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				{
 					return false;
 				}
+				
+				//Make sure all condensers are in proper locations
+				for(Coord4D coord : condensers)
+				{
+					if(coord.yCoord <= complex.yCoord)
+					{
+						return false;
+					}
+				}
+				
+				structure.condensers = condensers.size();
 				
 				int turbineHeight = 0;
 				

@@ -360,9 +360,14 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
+		if(structure == null)
+		{
+			return 0;
+		}
+		
 		int filled = fluidTank.fill(resource, doFill);
 		
-		if(structure != null && doFill)
+		if(doFill)
 		{
 			structure.newSteamInput += filled;
 		}

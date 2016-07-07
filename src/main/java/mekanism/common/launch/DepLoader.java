@@ -1,4 +1,4 @@
-package codechicken.core.launch;
+package mekanism.common.launch;
 
 import java.awt.Desktop;
 import java.awt.Dialog.ModalityType;
@@ -63,7 +63,7 @@ import com.google.gson.JsonParser;
  */
 public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook {
     private static ByteBuffer downloadBuffer = ByteBuffer.allocateDirect(1 << 23);
-    private static final String owner = "CB's DepLoader";
+    private static final String owner = "Mekanism DepLoader";
     private static DepLoadInst inst;
 
     public interface IDownloadDisplay {

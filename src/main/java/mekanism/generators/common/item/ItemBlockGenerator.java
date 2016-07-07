@@ -58,6 +58,7 @@ import cofh.api.energy.IEnergyContainerItem;
  * 10: Turbine Casing
  * 11: Turbine Valve
  * 12: Turbine Vent
+ * 13: Saturating Condenser
  * @author AidanBrady
  *
  */

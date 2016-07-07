@@ -172,8 +172,9 @@ public class GlowPanelModel extends OBJBakedModelBase
     {
     	if(transformType == TransformType.GUI)
     	{
+    		GlStateManager.rotate(180, 1, 0, 0);
     		ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.transforms.get(transformType).getMatrix());
-    		GlStateManager.translate(0.65F, -0.55F, 0.0F);
+    		GlStateManager.translate(0.65F, 0.45F, 0.0F);
     		GlStateManager.rotate(90, 1, 0, 0);
     		GlStateManager.scale(1.6F, 1.6F, 1.6F);
     		

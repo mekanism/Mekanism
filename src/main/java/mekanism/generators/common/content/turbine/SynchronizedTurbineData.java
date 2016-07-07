@@ -25,6 +25,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 	public int blades;
 	public int vents;
 	public int coils;
+	public int condensers;
 	
 	public int lowerVolume;
 	
@@ -32,6 +33,8 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 	
 	public int lastSteamInput;
 	public int newSteamInput;
+	
+	public int flowRemaining;
 	
 	public int clientDispersers;
 	public int clientFlow;

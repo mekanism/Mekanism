@@ -150,7 +150,7 @@ public class CTMModelFactory implements IPerspectiveAwareModel
     }
 
     public static Map<TransformType, TRSRTransformation> transforms = ImmutableMap.<TransformType, TRSRTransformation>builder()
-            .put(TransformType.GUI,                         get(0, 0, 0, 30, 45, 0, 0.625f))
+            .put(TransformType.GUI,                         get(0, 0, 0, 30, 225, 0, 0.625f))
             .put(TransformType.THIRD_PERSON_RIGHT_HAND,     get(0, 2.5f, 0, 75, 45, 0, 0.375f))
             .put(TransformType.THIRD_PERSON_LEFT_HAND,      get(0, 2.5f, 0, 75, 45, 0, 0.375f))
             .put(TransformType.FIRST_PERSON_RIGHT_HAND,     get(0, 0, 0, 0, 45, 0, 0.4f))

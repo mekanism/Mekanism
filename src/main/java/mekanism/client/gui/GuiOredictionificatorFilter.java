@@ -19,6 +19,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -152,9 +153,9 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		{
 			try {
 				GlStateManager.pushMatrix();
-				GL11.glEnable(GL11.GL_LIGHTING);
+				RenderHelper.enableGUIStandardItemLighting();
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 45, 19);
-				GL11.glDisable(GL11.GL_LIGHTING);
+				RenderHelper.disableStandardItemLighting();
 				GlStateManager.popMatrix();
 			} catch(Exception e) {}
 		}
