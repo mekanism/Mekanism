@@ -67,11 +67,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -909,6 +911,17 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
     {
-        return new ItemCapabilityWrapper(stack, new FluidItemWrapper(), new TeslaItemWrapper());
+        return new ItemCapabilityWrapper(stack, new FluidItemWrapper(), new TeslaItemWrapper()) {
+        	@Override
+        	public boolean hasCapability(Capability<?> capability, EnumFacing facing) 
+        	{
+        		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        		{
+        			return MachineType.get(itemStack) == MachineType.FLUID_TANK;
+        		}
+        		
+        		return super.hasCapability(capability, facing);
+        	}
+        };
     }
 }

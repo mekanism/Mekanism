@@ -20,7 +20,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -29,11 +28,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -134,7 +133,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(slotID == 0)
 		{
-			return getFuel(itemstack) > 0 || (FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluid() == FluidRegistry.LAVA);
+			return getFuel(itemstack) > 0 || (FluidUtil.getFluidContained(itemstack) != null && FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry.LAVA);
 		}
 		else if(slotID == 1)
 		{
@@ -183,7 +182,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		}
 		else if(slotID == 0)
 		{
-			return FluidContainerRegistry.isEmptyContainer(itemstack);
+			return FluidUtil.getFluidContained(itemstack) == null;
 		}
 
 		return false;
@@ -219,11 +218,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 	public int getFuel(ItemStack itemstack)
 	{
-		if(itemstack.getItem() == Items.LAVA_BUCKET)
-		{
-			return 1000;
-		}
-
 		return TileEntityFurnace.getItemBurnTime(itemstack)/2;
 	}
 

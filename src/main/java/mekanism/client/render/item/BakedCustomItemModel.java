@@ -259,6 +259,9 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		{
 			GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
 		}
+		else {
+			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+		}
 		
 		if(stack.getItem() == MekanismItems.Jetpack)
 		{

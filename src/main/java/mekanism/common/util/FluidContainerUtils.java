@@ -31,12 +31,12 @@ public final class FluidContainerUtils
 	{
 		IFluidHandler handler = FluidUtil.getFluidHandler(container);
 		
-		if(handler == null || handler.drain(1, false) == null)
+		if(handler == null || FluidUtil.getFluidContained(container) == null)
 		{
 			return null;
 		}
 		
-		if(checker != null && !checker.isValid(handler.drain(1, false).getFluid()))
+		if(checker != null && !checker.isValid(FluidUtil.getFluidContained(container).getFluid()))
 		{
 			return null;
 		}
@@ -74,13 +74,10 @@ public final class FluidContainerUtils
 			
 			stack.amount -= insertFluid(stack, inventory[inSlot]);
 			
-			if(prev == stack.amount || stack.amount == 0)
+			if(inventory[outSlot] == null)
 			{
-				if(inventory[outSlot] == null)
-				{
-					inventory[outSlot] = inventory[inSlot].copy();
-					inventory[inSlot] = null;
-				}
+				inventory[outSlot] = inventory[inSlot].copy();
+				inventory[inSlot] = null;
 			}
 			
 			if(stack.amount == 0)
@@ -143,6 +140,32 @@ public final class FluidContainerUtils
 		}
 		
 		return stored;
+	}
+	
+	public static void handleContainerItem(TileEntityContainerBlock tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot)
+	{
+		handleContainerItem(tileEntity, editMode, tank, inSlot, outSlot, null);
+	}
+	
+	public static void handleContainerItem(TileEntityContainerBlock tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot, FluidChecker checker)
+	{
+		tank.setFluid(handleContainerItem(tileEntity, tileEntity.inventory, editMode, tank.getFluid(), tank.getCapacity()-tank.getFluidAmount(), inSlot, outSlot, checker));
+	}
+	
+	public static FluidStack handleContainerItem(TileEntity tileEntity, ItemStack[] inventory, ContainerEditMode editMode, FluidStack stack, int needed, int inSlot, int outSlot, final FluidChecker checker)
+	{
+		FluidStack fluidStack = FluidUtil.getFluidContained(inventory[inSlot]);
+		
+		if(editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH && fluidStack == null))
+		{
+			return handleContainerItemFill(tileEntity, inventory, stack, inSlot, outSlot);
+		}
+		else if(editMode == ContainerEditMode.EMPTY || (editMode == ContainerEditMode.BOTH && fluidStack != null))
+		{
+			return handleContainerItemEmpty(tileEntity, inventory, stack, needed, inSlot, outSlot, checker);
+		}
+		
+		return stack;
 	}
 	
 	public static enum ContainerEditMode

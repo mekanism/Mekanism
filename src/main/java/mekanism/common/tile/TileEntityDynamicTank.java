@@ -130,14 +130,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
 		if(FluidContainerUtils.isFluidContainer(structure.inventory[0]))
 		{
-			if(structure.editMode == ContainerEditMode.FILL && structure.fluidStored != null)
-			{
-				structure.fluidStored = FluidContainerUtils.handleContainerItemFill(this, structure.inventory, structure.fluidStored, 0, 1);
-			}
-			else if(structure.editMode == ContainerEditMode.EMPTY)
-			{
-				structure.fluidStored = FluidContainerUtils.handleContainerItemEmpty(this, structure.inventory, structure.fluidStored, needed, 0, 1, null);
-			}
+			structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.inventory, structure.editMode, structure.fluidStored, needed, 0, 1, null);
 			
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 		}
