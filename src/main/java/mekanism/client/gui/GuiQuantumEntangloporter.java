@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -33,8 +34,6 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiQuantumEntangloporter extends GuiMekanism
 {
-	public static int MAX_LENGTH = 16;
-	
 	public ResourceLocation resource;
 	
 	public TileEntityQuantumEntangloporter tileEntity;
@@ -88,7 +87,8 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		deleteButton = new GuiButton(3, guiWidth + 89, guiHeight + 116, 60, 20, LangUtils.localize("gui.delete"));
 		
 		frequencyField = new GuiTextField(4, fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
-		frequencyField.setMaxStringLength(MAX_LENGTH);
+		frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
+		
 		frequencyField.setEnableBackgroundDrawing(false);
 		
 		updateButtons();
@@ -230,7 +230,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || Character.isLetter(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c))
 		{
 			frequencyField.textboxKeyTyped(c, i);
 		}

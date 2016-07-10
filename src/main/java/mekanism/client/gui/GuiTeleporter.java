@@ -16,6 +16,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -44,8 +45,6 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiTeleporter extends GuiMekanism
 {
-	public static int MAX_LENGTH = 16;
-	
 	public EnumHand currentHand;
 	
 	public ResourceLocation resource;
@@ -165,9 +164,10 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			teleportButton = new GuiButton(4, guiWidth + 42, guiHeight + 140, 92, 20, LangUtils.localize("gui.teleport"));
 		}
-		
+
 		frequencyField = new GuiTextField(5, fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
-		frequencyField.setMaxStringLength(MAX_LENGTH);
+		frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
+		
 		frequencyField.setEnableBackgroundDrawing(false);
 		
 		updateButtons();
@@ -331,7 +331,7 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			super.keyTyped(c, i);
 		}
-
+		
 		if(i == Keyboard.KEY_RETURN)
 		{
 			if(frequencyField.isFocused())
@@ -341,7 +341,7 @@ public class GuiTeleporter extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || Character.isLetter(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c))
 		{
 			frequencyField.textboxKeyTyped(c, i);
 		}
