@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -471,7 +472,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(getInv() == null)
+		if(getInv() == null || capability == Capabilities.TILE_NETWORK_CAPABILITY)
 		{
 			return super.hasCapability(capability, facing);
 		}
@@ -482,7 +483,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(getInv() == null)
+		if(getInv() == null || capability == Capabilities.TILE_NETWORK_CAPABILITY)
 		{
 			return super.getCapability(capability, facing);
 		}

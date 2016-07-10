@@ -1136,7 +1136,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						continue;
 					}
 
-					BlockPos pos1 = getPos().add(x, y,z);
+					BlockPos pos1 = getPos().add(x, y, z);
 					MekanismUtils.makeAdvancedBoundingBlock(worldObj, pos1, Coord4D.get(this));
 		            worldObj.notifyNeighborsOfStateChange(pos1, getBlockType());
 				}
