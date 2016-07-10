@@ -148,7 +148,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || c == '.' || c == 'E' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i))
 		{
 			minField.textboxKeyTyped(c, i);
 			maxField.textboxKeyTyped(c, i);

@@ -213,7 +213,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			}
 		}
 
-		if(SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i))
 		{
 			trustedField.textboxKeyTyped(c, i);
 		}

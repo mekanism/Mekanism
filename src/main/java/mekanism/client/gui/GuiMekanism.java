@@ -18,6 +18,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
@@ -72,6 +73,18 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 			
 			GL11.glPopMatrix();
 		}
+	}
+	
+	public static boolean isTextboxKey(char c, int i)
+	{
+		if(i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT ||
+				i == Keyboard.KEY_END || i == Keyboard.KEY_HOME || i == Keyboard.KEY_BACK || c == 1 || c == 3 || c == 22
+				|| c == 24)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
