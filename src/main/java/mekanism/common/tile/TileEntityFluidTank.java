@@ -212,24 +212,17 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		if(FluidContainerUtils.isFluidContainer(inventory[0]))
 		{
-			if(editMode == ContainerEditMode.FILL && fluidTank.getFluidAmount() > 0)
+			FluidStack ret = FluidContainerUtils.handleContainerItem(this, inventory, editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
+			
+			if(ret != null)
 			{
-				FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
-			}
-			else if(editMode == ContainerEditMode.EMPTY)
-			{
-				FluidStack ret = FluidContainerUtils.handleContainerItemEmpty(this, inventory, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
+				fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
 				
-				if(ret != null)
+				int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
+				
+				if(rejects > 0)
 				{
-					fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
-					
-					int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
-					
-					if(rejects > 0)
-					{
-						pushUp(PipeUtils.copy(ret, rejects), true);
-					}
+					pushUp(PipeUtils.copy(ret, rejects), true);
 				}
 			}
 		}

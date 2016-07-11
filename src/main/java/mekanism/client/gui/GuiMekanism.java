@@ -20,6 +20,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import org.lwjgl.input.Keyboard;
+
 public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
 	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
@@ -72,6 +74,18 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 			
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	public static boolean isTextboxKey(char c, int i)
+	{
+		if(i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT ||
+				i == Keyboard.KEY_END || i == Keyboard.KEY_HOME || i == Keyboard.KEY_BACK || isKeyComboCtrlA(i) || 
+				isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
