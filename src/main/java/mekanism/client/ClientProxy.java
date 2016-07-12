@@ -400,9 +400,6 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.ElectrolyticCore);
 		registerItemRender(MekanismItems.Sawdust);
 		registerItemRender(MekanismItems.Salt);
-		registerItemRender(MekanismItems.BrineBucket);
-		registerItemRender(MekanismItems.LithiumBucket);
-		registerItemRender(MekanismItems.HeavyWaterBucket);
 		registerItemRender(MekanismItems.Crystal);
 		registerItemRender(MekanismItems.FreeRunners);
 		registerItemRender(MekanismItems.ArmoredJetpack);

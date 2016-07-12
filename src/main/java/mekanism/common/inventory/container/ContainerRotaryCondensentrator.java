@@ -6,12 +6,12 @@ import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 
 public class ContainerRotaryCondensentrator extends Container
 {
@@ -87,7 +87,7 @@ public class ContainerRotaryCondensentrator extends Container
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
+			else if(FluidContainerUtils.isFluidContainer(slotStack))
 			{
 				if(slotID != 2 && slotID != 3)
 				{

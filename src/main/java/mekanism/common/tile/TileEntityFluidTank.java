@@ -234,7 +234,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		if(up.getTileEntity(worldObj) instanceof TileEntityFluidTank)
 		{
-			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(worldObj), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
+			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(worldObj), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
 			
 			if(PipeUtils.canFill(handler, fluid))
 			{

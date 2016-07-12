@@ -9,7 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerFluidicPlenisher extends Container
 {
@@ -83,7 +83,7 @@ public class ContainerFluidicPlenisher extends Container
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isFilledContainer(slotStack))
+			else if(FluidUtil.getFluidContained(slotStack) != null && FluidUtil.getFluidContained(slotStack).getFluid().canBePlacedInWorld())
 			{
 				if(slotID != 0)
 				{
