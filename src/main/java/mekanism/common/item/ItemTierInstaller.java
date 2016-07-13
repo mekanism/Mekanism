@@ -63,7 +63,10 @@ public class ItemTierInstaller extends ItemMekanism
 	{
 		for(BaseTier tier : BaseTier.values())
 		{
-			icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getName() + "TierInstaller");
+			if(tier.isObtainable())
+			{
+				icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getName() + "TierInstaller");
+			}
 		}
 	}
 	
