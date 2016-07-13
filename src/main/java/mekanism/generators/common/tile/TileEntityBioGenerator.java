@@ -18,11 +18,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData
@@ -45,26 +46,19 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		{
 			ChargeUtils.charge(1, this);
 			
-			FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
+			FluidStack fluid = FluidUtil.getFluidContained(inventory[0]);
 
 			if(fluid != null && FluidRegistry.isFluidRegistered("bioethanol"))
 			{
 				if(fluid.getFluid() == FluidRegistry.getFluid("bioethanol"))
 				{
-					int fluidToAdd = fluid.amount;
-
-					if(bioFuelSlot.fluidStored+fluidToAdd <= bioFuelSlot.MAX_FLUID)
+					IFluidHandler handler = FluidUtil.getFluidHandler(inventory[0]);
+					FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID-bioFuelSlot.fluidStored, true);
+					
+					if(drained != null)
 					{
-						bioFuelSlot.setFluid(bioFuelSlot.fluidStored+fluidToAdd);
-
-						if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
-						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
-						}
-						else {
-							inventory[0].stackSize--;
-						}
-
+						bioFuelSlot.fluidStored += drained.amount;
+						
 						if(inventory[0].stackSize == 0)
 						{
 							inventory[0] = null;
@@ -131,9 +125,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			else {
 				if(FluidRegistry.isFluidRegistered("bioethanol"))
 				{
-					if(FluidContainerRegistry.getFluidForFilledItem(itemstack) != null)
+					if(FluidUtil.getFluidContained(itemstack) != null)
 					{
-						if(FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluid() == FluidRegistry.getFluid("bioethanol"))
+						if(FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry.getFluid("bioethanol"))
 						{
 							return true;
 						}

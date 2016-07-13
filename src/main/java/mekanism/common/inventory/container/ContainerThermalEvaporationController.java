@@ -2,13 +2,13 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerThermalEvaporationController extends Container
 {
@@ -75,7 +75,7 @@ public class ContainerThermalEvaporationController extends Container
 					return null;
 				}
 			}
-			else if(FluidContainerRegistry.isEmptyContainer(slotStack))
+			else if(FluidContainerUtils.isFluidContainer(slotStack) && FluidUtil.getFluidContained(slotStack) == null)
 			{
 				if(slotID != 2)
 				{
@@ -92,7 +92,7 @@ public class ContainerThermalEvaporationController extends Container
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isFilledContainer(slotStack) && FluidContainerRegistry.getFluidForFilledItem(slotStack).getFluid() == FluidRegistry.WATER)
+			else if(tileEntity.hasRecipe(FluidUtil.getFluidContained(slotStack).getFluid()))
 			{
 				if(slotID != 0)
 				{

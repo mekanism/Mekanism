@@ -4,12 +4,13 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerElectricPump extends Container
 {
@@ -83,7 +84,7 @@ public class ContainerElectricPump extends Container
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isEmptyContainer(slotStack))
+			else if(FluidContainerUtils.isFluidContainer(slotStack) && FluidUtil.getFluidContained(slotStack) == null)
 			{
 				if(slotID != 0)
 				{

@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import mekanism.api.util.StackUtils;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -9,6 +10,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class FluidContainerUtils 
 {
@@ -70,13 +72,30 @@ public final class FluidContainerUtils
 	{
 		if(stack != null)
 		{
-			int prev = stack.amount;
+			ItemStack inputCopy = StackUtils.size(inventory[inSlot].copy(), 1);
 			
-			stack.amount -= insertFluid(stack, inventory[inSlot]);
+			int drained = insertFluid(stack, inputCopy);
+			
+			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].stackSize == inventory[outSlot].getMaxStackSize()))
+			{
+				return stack;
+			}
+			
+			stack.amount -= drained;
 			
 			if(inventory[outSlot] == null)
 			{
-				inventory[outSlot] = inventory[inSlot].copy();
+				inventory[outSlot] = inputCopy;
+			}
+			else if(ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy))
+			{
+				inventory[outSlot].stackSize++;
+			}
+			
+			inventory[inSlot].stackSize--;
+			
+			if(inventory[inSlot].stackSize == 0)
+			{
 				inventory[inSlot] = null;
 			}
 			
@@ -104,14 +123,30 @@ public final class FluidContainerUtils
 	public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, ItemStack[] inventory, FluidStack stored, int needed, int inSlot, int outSlot, final FluidChecker checker)
 	{
 		final Fluid storedFinal = stored != null ? stored.getFluid() : null;
+		final ItemStack input = StackUtils.size(inventory[inSlot].copy(), 1);
 		
-		FluidStack ret = extractFluid(needed, inventory[inSlot], new FluidChecker() {
+		FluidStack ret = extractFluid(needed, input, new FluidChecker() {
 			@Override
 			public boolean isValid(Fluid f)
 			{
 				return (checker == null || checker.isValid(f)) && (storedFinal == null || storedFinal == f);
 			}
 		});
+		
+		ItemStack inputCopy = input.copy();
+		
+		if(inputCopy.stackSize == 0)
+		{
+			inputCopy = null;
+		}
+		
+		if(FluidUtil.getFluidContained(inputCopy) == null && inputCopy != null)
+		{
+			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].stackSize == inventory[outSlot].getMaxStackSize()))
+			{
+				return stored;
+			}
+		}
 		
 		if(ret != null)
 		{
@@ -128,15 +163,31 @@ public final class FluidContainerUtils
 			tileEntity.markDirty();
 		}
 		
-		if(FluidUtil.getFluidContained(inventory[inSlot]) == null || needed == 0)
+		if(FluidUtil.getFluidContained(inputCopy) == null || needed == 0)
 		{
-			if(inventory[outSlot] == null)
+			if(inputCopy != null)
 			{
-				inventory[outSlot] = inventory[inSlot].copy();
-				inventory[inSlot] = null;
-				
-				tileEntity.markDirty();
+				if(inventory[outSlot] == null)
+				{
+					inventory[outSlot] = inputCopy;
+				}
+				else if(ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy))
+				{
+					inventory[outSlot].stackSize++;
+				}
 			}
+			
+			inventory[inSlot].stackSize--;
+			
+			if(inventory[inSlot].stackSize == 0)
+			{
+				inventory[inSlot] = null;
+			}
+			
+			tileEntity.markDirty();
+		}
+		else {
+			inventory[inSlot] = inputCopy;
 		}
 		
 		return stored;

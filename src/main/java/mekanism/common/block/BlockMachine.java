@@ -8,6 +8,7 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.util.StackUtils;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
@@ -45,6 +46,7 @@ import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -80,9 +82,10 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import buildcraft.api.tools.IToolWrench;
@@ -539,7 +542,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					{
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
-							if(stack != null && FluidContainerRegistry.isContainer(stack))
+							if(stack != null && FluidContainerUtils.isFluidContainer(stack))
 							{
 								if(manageInventory(entityplayer, (TileEntityFluidTank)tileEntity, hand, stack))
 								{
@@ -732,73 +735,72 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	
 	private boolean manageInventory(EntityPlayer player, TileEntityFluidTank tileEntity, EnumHand hand, ItemStack itemStack)
 	{
-		if(itemStack != null)
+		ItemStack copyStack = StackUtils.size(itemStack.copy(), 1);
+		
+		if(FluidContainerUtils.isFluidContainer(itemStack))
 		{
-			if(FluidContainerRegistry.isEmptyContainer(itemStack))
+			IFluidHandler handler = FluidUtil.getFluidHandler(copyStack);
+			
+			if(FluidUtil.getFluidContained(copyStack) == null)
 			{
-				if(tileEntity.fluidTank.getFluid() != null && tileEntity.fluidTank.getFluid().amount >= Fluid.BUCKET_VOLUME)
+				if(tileEntity.fluidTank.getFluid() != null)
 				{
-					ItemStack filled = FluidContainerRegistry.fillFluidContainer(tileEntity.fluidTank.getFluid(), itemStack);
-
-					if(filled != null)
+					int filled = handler.fill(tileEntity.fluidTank.getFluid(), !player.capabilities.isCreativeMode);
+					
+					if(filled > 0)
 					{
 						if(player.capabilities.isCreativeMode)
 						{
-							tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
-
-							return true;
-						}
-
-						if(itemStack.stackSize > 1)
-						{
-							if(player.inventory.addItemStackToInventory(filled))
-							{
-								itemStack.stackSize--;
-
-								tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
-							}
+							tileEntity.fluidTank.drain(filled, true);
 						}
 						else if(itemStack.stackSize == 1)
 						{
-							player.setHeldItem(hand, filled);
-
-							tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
-
-							return true;
+							tileEntity.fluidTank.drain(filled, true);
+							player.setHeldItem(hand, copyStack);
 						}
+						else if(itemStack.stackSize > 1 && player.inventory.addItemStackToInventory(copyStack))
+						{
+							tileEntity.fluidTank.drain(filled, true);
+							itemStack.stackSize--;
+						}
+						
+						return true;
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isFilledContainer(itemStack))
-			{
-				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
+			else {
+				FluidStack itemFluid = FluidUtil.getFluidContained(copyStack);
 				int needed = tileEntity.getCurrentNeeded();
 				
-				if((tileEntity.fluidTank.getFluid() == null && itemFluid.amount <= tileEntity.fluidTank.getCapacity()) || itemFluid.amount <= needed)
+				if(tileEntity.fluidTank.getFluid() != null && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid))
 				{
-					if(tileEntity.fluidTank.getFluid() != null && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid))
-					{
-						return false;
-					}
-					
-					boolean filled = false;
-					
+					return false;
+				}
+				
+				boolean filled = false;
+				FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
+				
+				if(copyStack.stackSize == 0)
+				{
+					copyStack = null;
+				}
+				
+				if(drained != null)
+				{
 					if(player.capabilities.isCreativeMode)
 					{
 						filled = true;
 					}
 					else {
-						ItemStack containerItem = itemStack.getItem().getContainerItem(itemStack);
-	
-						if(containerItem != null)
+						if(copyStack != null)
 						{
 							if(itemStack.stackSize == 1)
 							{
-								player.setHeldItem(hand, containerItem);
+								player.setHeldItem(hand, copyStack);
 								filled = true;
 							}
 							else {
-								if(player.inventory.addItemStackToInventory(containerItem))
+								if(player.inventory.addItemStackToInventory(copyStack))
 								{
 									itemStack.stackSize--;
 	
@@ -817,16 +819,16 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 							filled = true;
 						}
 					}
-
+	
 					if(filled)
 					{
-						int toFill = Math.min(tileEntity.fluidTank.getCapacity()-tileEntity.fluidTank.getFluidAmount(), itemFluid.amount);
+						int toFill = Math.min(tileEntity.fluidTank.getCapacity()-tileEntity.fluidTank.getFluidAmount(), drained.amount);
 						
-						tileEntity.fluidTank.fill(itemFluid, true);
+						tileEntity.fluidTank.fill(drained, true);
 						
-						if(itemFluid.amount-toFill > 0)
+						if(drained.amount-toFill > 0)
 						{
-							tileEntity.pushUp(PipeUtils.copy(itemFluid, itemFluid.amount-toFill), true);
+							tileEntity.pushUp(PipeUtils.copy(itemFluid, drained.amount-toFill), true);
 						}
 						
 						return true;

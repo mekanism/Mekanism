@@ -6,6 +6,7 @@ import java.util.Random;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.util.StackUtils;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
@@ -35,6 +36,7 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -64,9 +66,9 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -573,85 +575,83 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 
 	public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity, EnumHand hand, ItemStack itemStack)
 	{
-		if(itemStack != null && tileEntity.structure != null)
+		if(tileEntity.structure == null)
 		{
-			if(FluidContainerRegistry.isEmptyContainer(itemStack))
+			return false;
+		}
+		
+		ItemStack copyStack = StackUtils.size(itemStack.copy(), 1);
+		
+		if(FluidContainerUtils.isFluidContainer(itemStack))
+		{
+			IFluidHandler handler = FluidUtil.getFluidHandler(copyStack);
+			
+			if(FluidUtil.getFluidContained(copyStack) == null)
 			{
-				if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount >= Fluid.BUCKET_VOLUME)
+				if(tileEntity.structure.fluidStored != null)
 				{
-					ItemStack filled = FluidContainerRegistry.fillFluidContainer(tileEntity.structure.fluidStored, itemStack);
-
-					if(filled != null)
+					int filled = handler.fill(tileEntity.structure.fluidStored, !player.capabilities.isCreativeMode);
+					
+					if(filled > 0)
 					{
 						if(player.capabilities.isCreativeMode)
 						{
-							tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-
-							if(tileEntity.structure.fluidStored.amount == 0)
-							{
-								tileEntity.structure.fluidStored = null;
-							}
-
-							return true;
-						}
-
-						if(itemStack.stackSize > 1)
-						{
-							if(player.inventory.addItemStackToInventory(filled))
-							{
-								itemStack.stackSize--;
-
-								tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-
-								if(tileEntity.structure.fluidStored.amount == 0)
-								{
-									tileEntity.structure.fluidStored = null;
-								}
-
-								return true;
-							}
+							tileEntity.structure.fluidStored.amount -= filled;
 						}
 						else if(itemStack.stackSize == 1)
 						{
-							player.setHeldItem(hand, filled);
-
-							tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-
-							if(tileEntity.structure.fluidStored.amount == 0)
-							{
-								tileEntity.structure.fluidStored = null;
-							}
-
-							return true;
+							tileEntity.structure.fluidStored.amount -= filled;
+							player.setHeldItem(hand, copyStack);
 						}
+						else if(itemStack.stackSize > 1 && player.inventory.addItemStackToInventory(copyStack))
+						{
+							tileEntity.structure.fluidStored.amount -= filled;
+							itemStack.stackSize--;
+						}
+						
+						if(tileEntity.structure.fluidStored.amount == 0)
+						{
+							tileEntity.structure.fluidStored = null;
+						}
+						
+						return true;
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isFilledContainer(itemStack))
-			{
-				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
-				int max = tileEntity.structure.volume*TankUpdateProtocol.FLUID_PER_TANK;
-
-				if(tileEntity.structure.fluidStored == null || (tileEntity.structure.fluidStored.isFluidEqual(itemFluid) && (tileEntity.structure.fluidStored.amount+itemFluid.amount <= max)))
+			else {
+				FluidStack itemFluid = FluidUtil.getFluidContained(copyStack);
+				int stored = tileEntity.structure.fluidStored != null ? tileEntity.structure.fluidStored.amount : 0;
+				int needed = (tileEntity.structure.volume*TankUpdateProtocol.FLUID_PER_TANK)-stored;
+				
+				if(tileEntity.structure.fluidStored != null && !tileEntity.structure.fluidStored.isFluidEqual(itemFluid))
 				{
-					boolean filled = false;
-					
+					return false;
+				}
+				
+				boolean filled = false;
+				FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
+				
+				if(copyStack.stackSize == 0)
+				{
+					copyStack = null;
+				}
+				
+				if(drained != null)
+				{
 					if(player.capabilities.isCreativeMode)
 					{
 						filled = true;
 					}
 					else {
-						ItemStack containerItem = itemStack.getItem().getContainerItem(itemStack);
-	
-						if(containerItem != null)
+						if(copyStack != null)
 						{
 							if(itemStack.stackSize == 1)
 							{
-								player.setHeldItem(hand, containerItem);
+								player.setHeldItem(hand, copyStack);
 								filled = true;
 							}
 							else {
-								if(player.inventory.addItemStackToInventory(containerItem))
+								if(player.inventory.addItemStackToInventory(copyStack))
 								{
 									itemStack.stackSize--;
 	
@@ -670,15 +670,15 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 							filled = true;
 						}
 					}
-
+	
 					if(filled)
 					{
 						if(tileEntity.structure.fluidStored == null)
 						{
-							tileEntity.structure.fluidStored = itemFluid;
+							tileEntity.structure.fluidStored = drained;
 						}
 						else {
-							tileEntity.structure.fluidStored.amount += itemFluid.amount;
+							tileEntity.structure.fluidStored.amount += drained.amount;
 						}
 						
 						return true;

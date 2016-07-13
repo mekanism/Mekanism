@@ -14,7 +14,6 @@ import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
@@ -31,16 +30,13 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemShard;
+import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
@@ -61,9 +57,6 @@ public class MekanismItems
 	public static final Item CompressedRedstone = new ItemMekanism();
 	public static final Item CompressedDiamond = new ItemMekanism();
 	public static final Item CompressedObsidian = new ItemMekanism();
-	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.BUCKET);
-	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.BUCKET);
-	public static final Item HeavyWaterBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.BUCKET);
 	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED);
 	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY);
 	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER);
@@ -148,9 +141,6 @@ public class MekanismItems
 		GameRegistry.register(init(ElectrolyticCore, "ElectrolyticCore"));
 		GameRegistry.register(init(Sawdust, "Sawdust"));
 		GameRegistry.register(init(Salt, "Salt"));
-		GameRegistry.register(init(BrineBucket, "BrineBucket"));
-		GameRegistry.register(init(LithiumBucket, "LithiumBucket"));
-		GameRegistry.register(init(HeavyWaterBucket, "HeavyWaterBucket"));
 		GameRegistry.register(init(Crystal, "Crystal"));
 		GameRegistry.register(init(FreeRunners, "FreeRunners"));
 		GameRegistry.register(init(ArmoredJetpack, "ArmoredJetpack"));
@@ -165,10 +155,6 @@ public class MekanismItems
 		GameRegistry.register(init(GaugeDropper, "GaugeDropper"));
 		GameRegistry.register(init(TierInstaller, "TierInstaller"));
 		GameRegistry.register(init(OtherDust, "OtherDust"));
-
-		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("lithium"), new ItemStack(LithiumBucket), FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("heavywater"), new ItemStack(HeavyWaterBucket), FluidContainerRegistry.EMPTY_BUCKET);
 
 		MinecraftForge.EVENT_BUS.register(GasMask);
 		MinecraftForge.EVENT_BUS.register(FreeRunners);
