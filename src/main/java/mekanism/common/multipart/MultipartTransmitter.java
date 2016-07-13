@@ -57,7 +57,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 		{
 			IGridTransmitter transmitter = CapabilityUtils.getCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
 
-			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()))
+			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()) && containingPart.isValidTransmitter(potentialTransmitterTile))
 			{
 				return sideCoord;
 			}

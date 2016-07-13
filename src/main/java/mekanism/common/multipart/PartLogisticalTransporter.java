@@ -337,8 +337,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
 		TransporterUtils.incrementColor(getTransmitter());
-		refreshConnections();
-		notifyTileChange();
+		onPartChanged(this);
 		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld())));
 		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));

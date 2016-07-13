@@ -724,6 +724,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		{
 			boolean prevPowered = redstonePowered;
 			refreshConnections();
+			
 			if(prevPowered != redstonePowered)
 			{
 				markDirtyTransmitters();
