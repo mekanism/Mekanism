@@ -116,7 +116,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			return;
 		}
 
-		if(Character.isLetter(c) || Character.isDigit(c) || isTextboxKey(c, i))
+		if(Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || isTextboxKey(c, i))
 		{
 			oreDictText.textboxKeyTyped(c, i);
 		}
