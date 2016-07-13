@@ -29,6 +29,12 @@ public class ElectrolyticSeparatorRecipeHandler implements IRecipeHandler<Electr
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull ElectrolyticSeparatorRecipeWrapper recipe) {
+		return category.getUid();
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull ElectrolyticSeparatorRecipeWrapper recipe)
 	{
 		return recipe;

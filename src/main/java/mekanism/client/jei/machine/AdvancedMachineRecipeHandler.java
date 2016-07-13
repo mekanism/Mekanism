@@ -33,6 +33,12 @@ public class AdvancedMachineRecipeHandler<T extends AdvancedMachineRecipeWrapper
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull T recipe) {
+		return category.getUid();
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull T recipe)
 	{
 		return recipe;

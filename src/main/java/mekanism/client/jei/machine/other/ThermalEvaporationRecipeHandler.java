@@ -29,6 +29,12 @@ public class ThermalEvaporationRecipeHandler implements IRecipeHandler<ThermalEv
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull ThermalEvaporationRecipeWrapper recipe) {
+		return category.getUid();
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull ThermalEvaporationRecipeWrapper recipe)
 	{
 		return recipe;
