@@ -291,6 +291,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				return true;
 			}
 		}
+		
 		if(cachedAcceptors[side.ordinal()] != null)
 		{
 			cachedAcceptors[side.ordinal()] = null;
