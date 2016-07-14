@@ -227,27 +227,27 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 			
 			if(!latched)
 			{
-				Pos3D pos = new Pos3D(coord);
+				Pos3D pos = new Pos3D(coord).translate(0, -0.5, 0);
 				
 				switch(side)
 				{
 					case DOWN:
-						pos.translate(0, -2.5, 0);
+						pos = pos.translate(0, -2.5, 0);
 						break;
 					case UP:
-						pos.translate(0, 0, 0);
+						pos = pos.translate(0, 0, 0);
 						break;
 					case NORTH:
-						pos.translate(0, -1, -0.5);
+						pos = pos.translate(0, -1, -0.5);
 						break;
 					case SOUTH:
-						pos.translate(0, -1, 0.5);
+						pos = pos.translate(0, -1, 0.5);
 						break;
 					case WEST:
-						pos.translate(-0.5, -1, 0);
+						pos = pos.translate(-0.5, -1, 0);
 						break;
 					case EAST:
-						pos.translate(0.5, -1, 0);
+						pos = pos.translate(0.5, -1, 0);
 						break;
 					default:
 						break;
@@ -255,7 +255,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 				
 				if(!source.getWorld().isRemote)
 				{
-					source.getWorld().spawnEntityInWorld(new EntityBalloon(source.getWorld(), new Coord4D(new BlockPos(pos), source.getWorld()), getColor(stack)));
+					source.getWorld().spawnEntityInWorld(new EntityBalloon(source.getWorld(), pos.xCoord, pos.yCoord, pos.zCoord, getColor(stack)));
 				}
 			}
 			
