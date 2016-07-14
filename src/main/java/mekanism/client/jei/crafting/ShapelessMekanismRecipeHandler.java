@@ -35,4 +35,10 @@ public class ShapelessMekanismRecipeHandler implements IRecipeHandler<ShapelessM
 	{
 		return true;
 	}
+
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ShapelessMekanismRecipe recipe) 
+	{
+		return VanillaRecipeCategoryUid.CRAFTING;
+	}
 }

@@ -39,4 +39,10 @@ public class MetallurgicInfuserRecipeHandler implements IRecipeHandler<Metallurg
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull MetallurgicInfuserRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

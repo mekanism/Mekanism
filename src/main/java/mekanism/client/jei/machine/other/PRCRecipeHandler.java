@@ -39,4 +39,10 @@ public class PRCRecipeHandler implements IRecipeHandler<PRCRecipeWrapper>
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull PRCRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

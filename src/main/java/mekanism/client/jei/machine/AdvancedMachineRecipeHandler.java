@@ -43,4 +43,10 @@ public class AdvancedMachineRecipeHandler<T extends AdvancedMachineRecipeWrapper
 	{
 		return recipe.category == category;
 	}
+
+	@Override
+	public String getRecipeCategoryUid(@Nonnull T recipe) 
+	{
+		return category.getUid();
+	}
 }

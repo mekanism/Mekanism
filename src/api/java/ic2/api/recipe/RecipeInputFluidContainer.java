@@ -1,20 +1,21 @@
 package ic2.api.recipe;
 
-import ic2.api.item.IC2Items;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
+import ic2.api.item.IC2Items;
+
 public class RecipeInputFluidContainer implements IRecipeInput {
 	public RecipeInputFluidContainer(Fluid fluid) {
-		this(fluid, FluidContainerRegistry.BUCKET_VOLUME);
+		this(fluid, Fluid.BUCKET_VOLUME);
 	}
 
 	public RecipeInputFluidContainer(Fluid fluid, int amount) {
