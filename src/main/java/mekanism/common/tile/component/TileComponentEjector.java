@@ -155,9 +155,11 @@ public class TileComponentEjector implements ITileComponent
 
 		for(int i = 0; i < configurable.getConfig().getConfig(type).length; i++)
 		{
-			if(configurable.getConfig().getConfig(type)[i] == configurable.getConfig().getOutputs(type).indexOf(data))
+			EnumFacing side = MekanismUtils.getBaseOrientation(EnumFacing.getFront(i), tileEntity.facing);
+			
+			if(configurable.getConfig().getConfig(type)[side.ordinal()] == configurable.getConfig().getOutputs(type).indexOf(data))
 			{
-				outputSides.add(MekanismUtils.getBaseOrientation(EnumFacing.getFront(i), EnumFacing.getFront(tileEntity.facing.ordinal())));
+				outputSides.add(EnumFacing.getFront(i));
 			}
 		}
 		
