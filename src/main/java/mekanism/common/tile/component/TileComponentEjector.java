@@ -154,9 +154,11 @@ public class TileComponentEjector implements ITileComponent
 
 		for(int i = 0; i < configurable.getConfig().getConfig(type).length; i++)
 		{
-			if(configurable.getConfig().getConfig(type)[i] == configurable.getConfig().getOutputs(type).indexOf(data))
+			int side = MekanismUtils.getBaseOrientation(i, tileEntity.facing);
+			
+			if(configurable.getConfig().getConfig(type)[side] == configurable.getConfig().getOutputs(type).indexOf(data))
 			{
-				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
+				outputSides.add(ForgeDirection.getOrientation(i));
 			}
 		}
 		
