@@ -44,4 +44,19 @@
   "screenshots": [
   ]
 }
+{
+  "modid": "MekanismAdditions",
+  "name": "MekanismAdditions",
+  "description": "Adds a secound way to get Heavy Water",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "updateUrl": "",
+  "authors": [
+    "Chaoschaot234"
+  ],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [
+  ]
+}
 ]

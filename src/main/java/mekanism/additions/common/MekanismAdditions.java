@@ -8,6 +8,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import io.netty.buffer.ByteBuf;
+import mekanism.additions.client.AdditionsClientProxy;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -42,8 +43,7 @@ public class MekanismAdditions implements IModule{
     }
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
+    public void preInit(FMLPreInitializationEvent event) {
         AdditionsItems.register();
     }
 
