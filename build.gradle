@@ -90,7 +90,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismaddons/**', 'mcmod.info'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismadditions/**', 'mcmod.info'
     }
 }
 
@@ -121,7 +121,7 @@ task generatorsJar(type: Jar) {
 }
 
 task additionsJar(type: Jar) {
-    baseName = 'MekanismAdditiond'
+    baseName = 'MekanismAdditions'
 
     from('etc/additions') {
         include '*.info'
@@ -129,7 +129,7 @@ task additionsJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/additions/**', 'assets/mekanismadditions'
+        include 'mekanism/additions/**', 'assets/mekanismadditions/**'
     }
 }
 
