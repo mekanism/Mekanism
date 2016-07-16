@@ -8,7 +8,7 @@ public class TransmitterIcons
 {
 	private IIcon[] sideIcons;
 	private IIcon[] centerIcons;
-	private boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
+	private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 
 	public TransmitterIcons(int numCentres, int numSides)
 	{
@@ -20,7 +20,7 @@ public class TransmitterIcons
 	{
 		for(int i = 0; i < centerIcons.length; i++)
 		{
-			if(!this.opaque) {
+			if(!opaque) {
                 centerIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
             } else {
                 centerIcons[i] = register.registerIcon("mekanism:models/opaque/" + filenames[i]);
@@ -32,7 +32,7 @@ public class TransmitterIcons
 	{
 		for(int i = 0; i < sideIcons.length; i++)
 		{
-			if(!this.opaque) {
+			if(!opaque) {
                 sideIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
             } else {
                 sideIcons[i] = register.registerIcon("mekanism:models/opaque/" + filenames[i]);
