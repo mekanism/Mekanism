@@ -48,6 +48,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
 
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(8, 16);
+    private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 
 	public int pullDelay = 0;
 
@@ -94,7 +95,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0)
+		if(pass == 0 && !opaque)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
 		}
