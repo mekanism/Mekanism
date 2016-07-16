@@ -1,5 +1,7 @@
 package mekanism.common.multipart;
 
+import mekanism.api.MekanismConfig;
+import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
@@ -7,6 +9,7 @@ public class TransmitterIcons
 {
 	private IIcon[] sideIcons;
 	private IIcon[] centerIcons;
+	private boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 
 	public TransmitterIcons(int numCentres, int numSides)
 	{
@@ -18,7 +21,11 @@ public class TransmitterIcons
 	{
 		for(int i = 0; i < centerIcons.length; i++)
 		{
-			centerIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+			if(!this.opaque) {
+                centerIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+            } else {
+                centerIcons[i] = register.registerIcon("mekanism:models/opaque/" + filenames[i]);
+            }
 		}
 	}
 
@@ -26,7 +33,11 @@ public class TransmitterIcons
 	{
 		for(int i = 0; i < sideIcons.length; i++)
 		{
-			sideIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+			if(!this.opaque) {
+                sideIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+            } else {
+                sideIcons[i] = register.registerIcon("mekanism:models/opaque/" + filenames[i]);
+            }
 		}
 	}
 

@@ -81,6 +81,7 @@ public class MekanismConfig
 		public static boolean renderCTM = true;
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
+        public static boolean opaque = false;
 	}
 	
 	public static class machines

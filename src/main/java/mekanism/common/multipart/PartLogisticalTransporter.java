@@ -46,7 +46,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork> implements ITransporterTile
 {
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
-
+	private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(8, 16);
 
 	public int pullDelay = 0;
@@ -82,19 +82,28 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 
 	public static void registerIcons(IIconRegister register)
 	{
-		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporterBasic", "LogisticalTransporterAdvanced", "LogisticalTransporterElite", "LogisticalTransporterUltimate", "RestrictiveTransporter", 
-				"DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
-		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVerticalBasic", "LogisticalTransporterVerticalAdvanced", "LogisticalTransporterVerticalElite", "LogisticalTransporterVerticalUltimate", 
-				"LogisticalTransporterHorizontalBasic", "LogisticalTransporterHorizontalAdvanced", "LogisticalTransporterHorizontalElite", "LogisticalTransporterHorizontalUltimate", "RestrictiveTransporterVertical", 
-				"RestrictiveTransporterHorizontal", "LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored",
-				"DiversionTransporterVertical", "DiversionTransporterHorizontal"});
+		if(!PartLogisticalTransporter.opaque) {
+            transporterIcons.registerCenterIcons(register, new String[]{"LogisticalTransporterBasic", "LogisticalTransporterAdvanced", "LogisticalTransporterElite", "LogisticalTransporterUltimate", "RestrictiveTransporter",
+                    "DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
+            transporterIcons.registerSideIcons(register, new String[]{"LogisticalTransporterVerticalBasic", "LogisticalTransporterVerticalAdvanced", "LogisticalTransporterVerticalElite", "LogisticalTransporterVerticalUltimate",
+                    "LogisticalTransporterHorizontalBasic", "LogisticalTransporterHorizontalAdvanced", "LogisticalTransporterHorizontalElite", "LogisticalTransporterHorizontalUltimate", "RestrictiveTransporterVertical",
+                    "RestrictiveTransporterHorizontal", "LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored",
+                    "DiversionTransporterVertical", "DiversionTransporterHorizontal"});
+        } else {
+            transporterIcons.registerCenterIcons(register, new String[]{"LogisticalTransporterBasic", "LogisticalTransporterAdvanced", "LogisticalTransporterElite", "LogisticalTransporterUltimate", "RestrictiveTransporter",
+                    "DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
+            transporterIcons.registerSideIcons(register, new String[]{"LogisticalTransporterVerticalBasic", "LogisticalTransporterVerticalAdvanced", "LogisticalTransporterVerticalElite", "LogisticalTransporterVerticalUltimate",
+                    "LogisticalTransporterHorizontalBasic", "LogisticalTransporterHorizontalAdvanced", "LogisticalTransporterHorizontalElite", "LogisticalTransporterHorizontalUltimate", "RestrictiveTransporterVertical",
+                    "RestrictiveTransporterHorizontal", "LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored",
+                    "DiversionTransporterVertical", "DiversionTransporterHorizontal"});
+        }
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0)
+		if(pass == 0 && !opaque)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
 		}
