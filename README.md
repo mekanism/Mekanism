@@ -1,4 +1,4 @@
-# Mekanism for Minecraft 1.9.4 #
+# Mekanism for Minecraft 1.10 #
 
 [**Official Website**](http://aidancbrady.com/mekanism/)
 
