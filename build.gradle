@@ -90,7 +90,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismadditions/**', 'mcmod.info'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/additions/**', 'assets/mekanismadditions/**', 'mcmod.info'
     }
 }
 
