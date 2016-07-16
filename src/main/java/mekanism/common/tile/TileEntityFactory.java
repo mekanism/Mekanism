@@ -54,11 +54,13 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -923,6 +925,11 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Override
 	public String getInventoryName()
 	{
+		if(StatCollector.canTranslate("tile." + tier.getBaseTier().getName() + recipeType.getUnlocalizedName() + "Factory"))
+		{
+			return LangUtils.localize("tile." + tier.getBaseTier().getName() + recipeType.getUnlocalizedName() + "Factory");
+		}
+		
 		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getInventoryName();
 	}
 
