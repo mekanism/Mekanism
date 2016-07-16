@@ -1,0 +1,25 @@
+//********//
+//MEKANISM//
+//********//
+
+//gasses
+gas.dihydrogensulfidGas=Dihydrogensulfid
+
+gas.enrichedDihydrogenSulfidGas=Enriched Dihydrogensulfid I
+gas.enrichedDihydrogenSulfidSnd=Enriched Dihydrogensulfid II
+gas.enrichedDihydrogenSulfidRd=Enriched Dihydrogensulfid III
+
+gas.enrichedWater=Enriched Water I (gaseous)
+gas.enrichedWaterSnd=Enriched Water II (gaseous)
+gas.enrichedWaterRd=Enriched Water II (gaseous)
+
+//fluids
+fluid.dihydrogensulfid=Flüssiger Schwefelwasserstoff
+
+fluid.enrichedDihydrogenSulfidGas=Liquid Enriched Dihydrogensulfid I
+fluid.enrichedDihydrogenSulfidSnd=Liquid Enriched Dihydrogensulfid II
+fluid.enrichedDihydrogenSulfidRd=Liquid Enriched Dihydrogensulfid III
+
+fluid.enrichedWater=Enriched Water I
+fluid.enrichedWaterSnd=Enriched Water II
+fluid.enrichedWaterRd=Enriched Water III
