@@ -14,6 +14,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.CableTier;
@@ -38,7 +39,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	public Tier.CableTier tier;
 
 	public static TransmitterIcons cableIcons = new TransmitterIcons(4, 8);
-
+	private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 	public double currentPower = 0;
 	public double lastWrite = 0;
 
@@ -184,10 +185,17 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 
 	public static void registerIcons(IIconRegister register)
 	{
-		cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
-				"UniversalCableElite", "UniversalCableUltimate"});
-		cableIcons.registerSideIcons(register, new String[] {"UniversalCableVerticalBasic", "UniversalCableVerticalAdvanced", "UniversalCableVerticalElite", "UniversalCableVerticalUltimate",
-				"UniversalCableHorizontalBasic", "UniversalCableHorizontalAdvanced", "UniversalCableHorizontalElite", "UniversalCableHorizontalUltimate"});
+		if(!PartUniversalCable.opaque) {
+            cableIcons.registerCenterIcons(register, new String[]{"UniversalCableBasic", "UniversalCableAdvanced",
+                    "UniversalCableElite", "UniversalCableUltimate"});
+            cableIcons.registerSideIcons(register, new String[]{"UniversalCableVerticalBasic", "UniversalCableVerticalAdvanced", "UniversalCableVerticalElite", "UniversalCableVerticalUltimate",
+                    "UniversalCableHorizontalBasic", "UniversalCableHorizontalAdvanced", "UniversalCableHorizontalElite", "UniversalCableHorizontalUltimate"});
+        } else {
+            cableIcons.registerCenterIcons(register, new String[]{"UniversalCableBasic", "UniversalCableAdvanced",
+                    "UniversalCableElite", "UniversalCableUltimate"});
+            cableIcons.registerSideIcons(register, new String[]{"UniversalCableVerticalBasic", "UniversalCableVerticalAdvanced", "UniversalCableVerticalElite", "UniversalCableVerticalUltimate",
+                    "UniversalCableHorizontalBasic", "UniversalCableHorizontalAdvanced", "UniversalCableHorizontalElite", "UniversalCableHorizontalUltimate"});
+        }
 	}
 
 	@Override

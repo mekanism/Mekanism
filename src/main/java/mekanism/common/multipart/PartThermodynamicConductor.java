@@ -7,6 +7,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HeatNetwork;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
@@ -26,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, HeatNetwork> implements IHeatTransfer
 {
 	public Tier.ConductorTier tier;
-	
+	private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 	public static TransmitterIcons conductorIcons = new TransmitterIcons(4, 8);
 	
 	public double temperature = 0;
@@ -71,10 +72,17 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 
 	public static void registerIcons(IIconRegister register)
 	{
-		conductorIcons.registerCenterIcons(register, new String[] {"ThermodynamicConductorBasic", "ThermodynamicConductorAdvanced",
-				"ThermodynamicConductorElite", "ThermodynamicConductorUltimate"});
-		conductorIcons.registerSideIcons(register, new String[] {"ThermodynamicConductorVerticalBasic", "ThermodynamicConductorVerticalAdvanced", "ThermodynamicConductorVerticalElite", "ThermodynamicConductorVerticalUltimate",
-				"ThermodynamicConductorHorizontalBasic", "ThermodynamicConductorHorizontalAdvanced", "ThermodynamicConductorHorizontalElite", "ThermodynamicConductorHorizontalUltimate"});
+		if(!PartThermodynamicConductor.opaque) {
+            conductorIcons.registerCenterIcons(register, new String[]{"ThermodynamicConductorBasic", "ThermodynamicConductorAdvanced",
+                    "ThermodynamicConductorElite", "ThermodynamicConductorUltimate"});
+            conductorIcons.registerSideIcons(register, new String[]{"ThermodynamicConductorVerticalBasic", "ThermodynamicConductorVerticalAdvanced", "ThermodynamicConductorVerticalElite", "ThermodynamicConductorVerticalUltimate",
+                    "ThermodynamicConductorHorizontalBasic", "ThermodynamicConductorHorizontalAdvanced", "ThermodynamicConductorHorizontalElite", "ThermodynamicConductorHorizontalUltimate"});
+        } else {
+            conductorIcons.registerCenterIcons(register, new String[]{"ThermodynamicConductorBasic", "ThermodynamicConductorAdvanced",
+                    "ThermodynamicConductorElite", "ThermodynamicConductorUltimate"});
+            conductorIcons.registerSideIcons(register, new String[]{"ThermodynamicConductorVerticalBasic", "ThermodynamicConductorVerticalAdvanced", "ThermodynamicConductorVerticalElite", "ThermodynamicConductorVerticalUltimate",
+                    "ThermodynamicConductorHorizontalBasic", "ThermodynamicConductorHorizontalAdvanced", "ThermodynamicConductorHorizontalElite", "ThermodynamicConductorHorizontalUltimate"});
+        }
 	}
 
 	@Override

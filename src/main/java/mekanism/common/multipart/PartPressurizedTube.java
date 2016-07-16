@@ -10,6 +10,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
@@ -28,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {
 	public Tier.TubeTier tier = Tier.TubeTier.BASIC;
-	
+	private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 	public static TransmitterIcons tubeIcons = new TransmitterIcons(4, 8);
 
 	public float currentScale;
@@ -176,9 +177,15 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 
 	public static void registerIcons(IIconRegister register)
 	{
-		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
-		tubeIcons.registerSideIcons(register, new String[] {"PressurizedTubeVerticalBasic", "PressurizedTubeVerticalAdvanced", "PressurizedTubeVerticalElite", "PressurizedTubeVerticalUltimate",
-				"PressurizedTubeHorizontalBasic", "PressurizedTubeHorizontalAdvanced", "PressurizedTubeHorizontalElite", "PressurizedTubeHorizontalUltimate"});
+        if(!PartPressurizedTube.opaque){
+            tubeIcons.registerCenterIcons(register, new String[]{"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
+            tubeIcons.registerSideIcons(register, new String[]{"PressurizedTubeVerticalBasic", "PressurizedTubeVerticalAdvanced", "PressurizedTubeVerticalElite", "PressurizedTubeVerticalUltimate",
+                    "PressurizedTubeHorizontalBasic", "PressurizedTubeHorizontalAdvanced", "PressurizedTubeHorizontalElite", "PressurizedTubeHorizontalUltimate"});
+        } else {
+            tubeIcons.registerCenterIcons(register, new String[]{"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
+            tubeIcons.registerSideIcons(register, new String[]{"PressurizedTubeVerticalBasic", "PressurizedTubeVerticalAdvanced", "PressurizedTubeVerticalElite", "PressurizedTubeVerticalUltimate",
+                    "PressurizedTubeHorizontalBasic", "PressurizedTubeHorizontalAdvanced", "PressurizedTubeHorizontalElite", "PressurizedTubeHorizontalUltimate"});
+        }
 	}
 
 	@Override
@@ -233,7 +240,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0)
+		if(pass == 0 && !opaque)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}
