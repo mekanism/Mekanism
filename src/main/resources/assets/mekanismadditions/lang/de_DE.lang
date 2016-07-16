@@ -5,21 +5,21 @@
 //gasses
 gas.dihydrogensulfidGas=Schwefelwasserstoff
 
-gas.enrichedDihydrogenSulfidGas=Angereicherter Schwefelwasserstoff I
-gas.enrichedDihydrogenSulfidSnd=Angereicherter Schwefelwasserstoff II
-gas.enrichedDihydrogenSulfidRd=Angereicherter Schwefelwasserstoff III
+gas.enricheddihydrogensulfidGas=Angereicherter Schwefelwasserstoff I
+gas.enricheddihydrogensulfidsnd=Angereicherter Schwefelwasserstoff II
+gas.enricheddihydrogensulfidrd=Angereicherter Schwefelwasserstoff III
 
-gas.enrichedWater=Angereichertes Wasser
-gas.enrichedWaterSnd=Angereichertes Wasser II
-gas.enrichedWaterRd=Angereichertes Wasser II
+gas.enrichedwater=Angereichertes Wasser
+gas.enrichedwatersnd=Angereichertes Wasser II
+gas.enrichedwaterrd=Angereichertes Wasser II
 
 //fluids
 fluid.dihydrogensulfid=Flüssiger Schwefelwasserstoff
 
-fluid.enrichedDihydrogenSulfidGas=Angereicherter flüssiger Schwefelwasserstoff I
-fluid.enrichedDihydrogenSulfidSnd=Angereicherter flüssiger Schwefelwasserstoff II
-fluid.enrichedDihydrogenSulfidRd=Angereicherter flüssiger Schwefelwasserstoff III
+fluid.enricheddihydrogensulfidGas=Angereicherter flüssiger Schwefelwasserstoff I
+fluid.enricheddihydrogensulfidsnd=Angereicherter flüssiger Schwefelwasserstoff II
+fluid.enricheddihydrogensulfidrd=Angereicherter flüssiger Schwefelwasserstoff III
 
-fluid.enrichedWater=Angereichertes Wasser
-fluid.enrichedWaterSnd=Angereichertes Wasser II
-fluid.enrichedWaterRd=Angereichertes Wasser II
+fluid.enrichedwater=Angereichertes Wasser
+fluid.enrichedwatersnd=Angereichertes Wasser II
+fluid.enrichedwaterrd=Angereichertes Wasser II

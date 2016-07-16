@@ -5,21 +5,21 @@
 //gasses
 gas.dihydrogensulfidGas=Dihydrogensulfid
 
-gas.enrichedDihydrogenSulfidGas=Enriched Dihydrogensulfid I
-gas.enrichedDihydrogenSulfidSnd=Enriched Dihydrogensulfid II
-gas.enrichedDihydrogenSulfidRd=Enriched Dihydrogensulfid III
+gas.enricheddihydrogensulfidGas=Enriched Dihydrogensulfid I
+gas.enricheddihydrogensulfidsnd=Enriched Dihydrogensulfid II
+gas.enricheddihydrogensulfidrd=Enriched Dihydrogensulfid III
 
-gas.enrichedWater=Enriched Water I (gaseous)
-gas.enrichedWaterSnd=Enriched Water II (gaseous)
-gas.enrichedWaterRd=Enriched Water II (gaseous)
+gas.enrichedwater=Enriched Water I (gaseous)
+gas.enrichedwatersnd=Enriched Water II (gaseous)
+gas.enrichedwaterrd=Enriched Water II (gaseous)
 
 //fluids
 fluid.dihydrogensulfid=Flüssiger Schwefelwasserstoff
 
-fluid.enrichedDihydrogenSulfidGas=Liquid Enriched Dihydrogensulfid I
-fluid.enrichedDihydrogenSulfidSnd=Liquid Enriched Dihydrogensulfid II
-fluid.enrichedDihydrogenSulfidRd=Liquid Enriched Dihydrogensulfid III
+fluid.enricheddihydrogensulfidGas=Liquid Enriched Dihydrogensulfid I
+fluid.enricheddihydrogensulfidsnd=Liquid Enriched Dihydrogensulfid II
+fluid.enricheddihydrogensulfidrd=Liquid Enriched Dihydrogensulfid III
 
-fluid.enrichedWater=Enriched Water I
-fluid.enrichedWaterSnd=Enriched Water II
-fluid.enrichedWaterRd=Enriched Water III
+fluid.enrichedwater=Enriched Water I
+fluid.enrichedwatersnd=Enriched Water II
+fluid.enrichedwaterrd=Enriched Water III
