@@ -14,7 +14,7 @@ gas.enrichedwatersnd=Enriched Water II (gaseous)
 gas.enrichedwaterrd=Enriched Water II (gaseous)
 
 //fluids
-fluid.dihydrogensulfid=Flüssiger Schwefelwasserstoff
+fluid.dihydrogensulfid=Liquid Dihydrogensulfid
 
 fluid.enricheddihydrogensulfidGas=Liquid Enriched Dihydrogensulfid I
 fluid.enricheddihydrogensulfidsnd=Liquid Enriched Dihydrogensulfid II
