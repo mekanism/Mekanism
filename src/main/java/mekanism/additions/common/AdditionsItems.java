@@ -35,15 +35,16 @@ public class AdditionsItems {
         GasRegistry.register(new Gas("enricheddihydrogensulfidsnd")).registerFluid();
         GasRegistry.register(new Gas("enricheddihydrogensulfidrd")).registerFluid();
 
+        FluidRegistry.registerFluid(new Fluid("dihydrogensulfid"));
         FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfidGas"));
         FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfidsnd"));
-        FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfidsnd"));
+        FluidRegistry.registerFluid(new Fluid("enricheddihydrogensulfidrd"));
 
-        /*FluidRegistry.registerFluid(new Fluid("enrichedwater"));
+        FluidRegistry.registerFluid(new Fluid("enrichedwater"));
         FluidRegistry.registerFluid(new Fluid("enrichedwatersnd"));
-        FluidRegistry.registerFluid(new Fluid("enrichedwaterrd"));*/
+        FluidRegistry.registerFluid(new Fluid("enrichedwaterrd"));
 
-        FluidRegistry.registerFluid(new Fluid("dihydrogensulfid"));
+
 
 
         /** new fluids for GPS */

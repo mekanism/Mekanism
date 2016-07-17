@@ -11,7 +11,7 @@ gas.enricheddihydrogensulfidrd=Angereicherter Schwefelwasserstoff III
 
 gas.enrichedwater=Angereichertes Wasser
 gas.enrichedwatersnd=Angereichertes Wasser II
-gas.enrichedwaterrd=Angereichertes Wasser II
+gas.enrichedwaterrd=Angereichertes Wasser III
 
 //fluids
 fluid.dihydrogensulfid=Flüssiger Schwefelwasserstoff
@@ -22,4 +22,4 @@ fluid.enricheddihydrogensulfidrd=Angereicherter flüssiger Schwefelwasserstoff I
 
 fluid.enrichedwater=Angereichertes Wasser
 fluid.enrichedwatersnd=Angereichertes Wasser II
-fluid.enrichedwaterrd=Angereichertes Wasser II
+fluid.enrichedwaterrd=Angereichertes Wasser III
