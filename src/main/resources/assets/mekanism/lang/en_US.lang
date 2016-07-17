@@ -1090,3 +1090,21 @@ mekanism.configgui.ctgy.tools.tools=Tools Balance
 mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
 mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
 mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
+
+//gasses
+gas.enricheddihydrogensulfid=Enriched Dihydrogensulfid I (gaseous)
+gas.enricheddihydrogensulfidsnd=Enriched Dihydrogensulfid II (gaseous)
+gas.enricheddihydrogensulfidrd=Enriched Dihydrogensulfid III (gaseous)
+
+gas.enrichedwater=Enriched Water I (gaseous)
+gas.enrichedwatersnd=Enriched Water II (gaseous)
+gas.enrichedwaterrd=Enriched Water III (gaseous)
+
+//fluids
+fluid.enricheddihydrogensulfid=Liquid Enriched Dihydrogensulfid I
+fluid.enricheddihydrogensulfidsnd=Liquid Enriched Dihydrogensulfid II
+fluid.enricheddihydrogensulfidrd=Liquid Enriched Dihydrogensulfid III
+
+fluid.enrichedwater=Enriched Water I
+fluid.enrichedwatersnd=Enriched Water II
+fluid.enrichedwaterrd=Enriched Water III

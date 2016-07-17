@@ -90,7 +90,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/additions/**', 'assets/mekanismadditions/**', 'mcmod.info'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mcmod.info'
     }
 }
 
@@ -120,23 +120,9 @@ task generatorsJar(type: Jar) {
     }
 }
 
-task additionsJar(type: Jar) {
-    baseName = 'MekanismAdditions'
-
-    from('etc/additions') {
-        include '*.info'
-        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
-    }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/additions/**', 'assets/mekanismadditions/**'
-    }
-}
-
 coreJar.dependsOn('reobf')
 toolsJar.dependsOn('reobf')
 generatorsJar.dependsOn('reobf')
-additionsJar.dependsOn('reobf')
 
 task MDKZip(type: Zip) {
     baseName = 'MDK'
@@ -148,7 +134,6 @@ task releaseJars(type: Copy) {
     from coreJar
     from toolsJar
     from generatorsJar
-    from additionsJar
     from MDKZip
     rename '-(.*)jar', '.jar'
     rename '-(.*)zip', '.zip'

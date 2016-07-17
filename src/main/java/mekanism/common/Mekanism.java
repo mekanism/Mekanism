@@ -988,10 +988,10 @@ public class Mekanism
 		FuelHandler.addGas(GasRegistry.getGas("hydrogen"), 1, general.FROM_H2);
 
         //secound way for heavy water
-        /**RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidgas"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidsnd"), 1));
+        RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfid"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidsnd"), 1));
         RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidsnd"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidrd"), 1));
 
-        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("enricheddihydrogensulfidgas"), 1), new GasStack(GasRegistry.getGas("enrichedwater"), 1));
+        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("enricheddihydrogensulfid"), 1), new GasStack(GasRegistry.getGas("enrichedwater"), 1));
         RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("enricheddihydrogensulfidsnd"), 1), new GasStack(GasRegistry.getGas("enrichedwatersnd"), 1));
         RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("enricheddihydrogensulfidrd"), 1), new GasStack(GasRegistry.getGas("enrichedwaterrd"), 1));
 
@@ -1000,8 +1000,8 @@ public class Mekanism
         RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("enrichedwaterrd", 10), 4 * usage.heavyWaterElectrolysisUsage, new GasStack(GasRegistry.getGas("deuterium"), 1), new GasStack(GasRegistry.getGas("oxygen"), 1));
 
         //Chemical Washer Recipes for Gsp
-        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("dihydrogensulfid"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfidgas"), 1));
-        */
+        RecipeHandler.addChemicalWasherRecipe(new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 1), new GasStack(GasRegistry.getGas("enricheddihydrogensulfid"), 1));
+
         //end-secound way for heavy water
 
 		//RecipeSorter registrations
@@ -1262,16 +1262,16 @@ public class Mekanism
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 
         //secound way for heavy water
-        /**
-         GasRegistry.register(new Gas("enrichedwater")).registerFluid();
-         GasRegistry.register(new Gas("enrichedwatersnd")).registerFluid();
-         GasRegistry.register(new Gas("enrichedwaterrd")).registerFluid();
-         GasRegistry.register(new Gas("dihydrogensulfid")).registerFluid();
 
-         GasRegistry.register(new Gas("enricheddihydrogensulfidGas")).registerFluid();
-         GasRegistry.register(new Gas("enricheddihydrogensulfidsnd")).registerFluid();
-         GasRegistry.register(new Gas("enricheddihydrogensulfidrd")).registerFluid();
-         */
+        GasRegistry.register(new Gas("enrichedwater")).registerFluid();
+        GasRegistry.register(new Gas("enrichedwatersnd")).registerFluid();
+        GasRegistry.register(new Gas("enrichedwaterrd")).registerFluid();
+        GasRegistry.register(new Gas("dihydrogensulfid")).registerFluid();
+
+        GasRegistry.register(new Gas("enricheddihydrogensulfid")).registerFluid();
+        GasRegistry.register(new Gas("enricheddihydrogensulfidsnd")).registerFluid();
+        GasRegistry.register(new Gas("enricheddihydrogensulfidrd")).registerFluid();
+
         //end-secound way for heavy water
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));

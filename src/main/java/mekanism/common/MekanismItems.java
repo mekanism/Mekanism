@@ -95,14 +95,14 @@ public class MekanismItems
 	public static final Item Balloon = new ItemBalloon().setUnlocalizedName("Balloon");
 
     //secound way for heavy water/
-    /**public static final Item EnrichedWaterI = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedWaterIBucket");
+    public static final Item EnrichedWaterI = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedWaterIBucket");
     public static final Item EnrichedWaterII = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedWaterIIBucket");
     public static final Item EnrichedWaterIII = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedWaterIIIBucket");
 
     public static final Item EnrichedDihydrogenSulfidI = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedDihydrogenSulfidIBucket");
     public static final Item EnrichedDihydrogenSulfidII = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedDihydrogenSulfidIIBucket");
     public static final Item EnrichedDihydrogenSulfidIII = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("EnrichedDihydrogenSulfidIIIBucket");
-    *///end-secound way for heavy water
+    //end-secound way for heavy water
 
 	//Multi-ID Items
 	public static final Item OtherDust = new ItemOtherDust();
@@ -182,14 +182,14 @@ public class MekanismItems
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("heavywater"), new ItemStack(HeavyWaterBucket), FluidContainerRegistry.EMPTY_BUCKET);
 
         //secound way for heavy water
-        /**FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enrichedwater"), new ItemStack(EnrichedWaterI), FluidContainerRegistry.EMPTY_BUCKET);
+        FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enrichedwater"), new ItemStack(EnrichedWaterI), FluidContainerRegistry.EMPTY_BUCKET);
         FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enrichedwatersnd"), new ItemStack(EnrichedWaterII), FluidContainerRegistry.EMPTY_BUCKET);
         FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enrichedwaterrd"), new ItemStack(EnrichedWaterIII), FluidContainerRegistry.EMPTY_BUCKET);
 
-        FluidContainerRegistry.registerFluidContainer(GasRegistry.getGas("enricheddihydrogensulfidgas").getFluid(), new ItemStack(EnrichedDihydrogenSulfidI), FluidContainerRegistry.EMPTY_BUCKET);
+        FluidContainerRegistry.registerFluidContainer(GasRegistry.getGas("enricheddihydrogensulfid").getFluid(), new ItemStack(EnrichedDihydrogenSulfidI), FluidContainerRegistry.EMPTY_BUCKET);
         FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enricheddihydrogensulfidsnd"), new ItemStack(EnrichedDihydrogenSulfidII), FluidContainerRegistry.EMPTY_BUCKET);
         FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("enricheddihydrogensulfidrd"), new ItemStack(EnrichedDihydrogenSulfidIII), FluidContainerRegistry.EMPTY_BUCKET);
-        *///end-secound way for heavy water
+        //end-secound way for heavy water
 
 		MinecraftForge.EVENT_BUS.register(GasMask);
 		MinecraftForge.EVENT_BUS.register(FreeRunners);

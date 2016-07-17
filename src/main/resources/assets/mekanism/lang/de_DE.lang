@@ -1082,3 +1082,21 @@ mekanism.configgui.ctgy.tools.tools=Werkzeug-Balance
 mekanism.configgui.ctgy.tools.general.tooltip=Einstellungen bezüglich MekanismTools' genereller Konfiguration
 mekanism.configgui.ctgy.tools.armor.tooltip=Einstellungen bezüglich der Schutzwerte und Balance der MekanismTools Rüstungssets
 mekanism.configgui.ctgy.tools.tools.tooltip=Einstellungen bezüglich der Effizientwerte und Balance der MekanismTools Werkzeugsets
+
+//gasses
+gas.enricheddihydrogensulfid=Angereicherter Schwefelwasserstoff I (Gas)
+gas.enricheddihydrogensulfidsnd=Angereicherter Schwefelwasserstoff II (Gas)
+gas.enricheddihydrogensulfidrd=Angereicherter Schwefelwasserstoff III (Gas)
+
+gas.enrichedwater=Angereichertes Wasser I (Gas)
+gas.enrichedwatersnd=Angereichertes Wasser II (Gas)
+gas.enrichedwaterrd=Angereichertes Wasser III (Gas)
+
+//fluids
+fluid.enricheddihydrogensulfid=Angereicherter flüssiger Schwefelwasserstoff I
+fluid.enricheddihydrogensulfidsnd=Angereicherter flüssiger Schwefelwasserstoff II
+fluid.enricheddihydrogensulfidrd=Angereicherter flüssiger Schwefelwasserstoff III
+
+fluid.enrichedwater=Angereichertes Wasser
+fluid.enrichedwatersnd=Angereichertes Wasser II
+fluid.enrichedwaterrd=Angereichertes Wasser III
