@@ -3,7 +3,7 @@
 //********//
 
 //gasses
-gas.dihydrogensulfidGas=Schwefelwasserstoff
+gas.dihydrogensulfid=Schwefelwasserstoff
 
 gas.enricheddihydrogensulfidGas=Angereicherter Schwefelwasserstoff I
 gas.enricheddihydrogensulfidsnd=Angereicherter Schwefelwasserstoff II
@@ -16,7 +16,7 @@ gas.enrichedwaterrd=Angereichertes Wasser III
 //fluids
 fluid.dihydrogensulfid=Flüssiger Schwefelwasserstoff
 
-fluid.enricheddihydrogensulfidGas=Angereicherter flüssiger Schwefelwasserstoff I
+fluid.enricheddihydrogensulfidgas=Angereicherter flüssiger Schwefelwasserstoff I
 fluid.enricheddihydrogensulfidsnd=Angereicherter flüssiger Schwefelwasserstoff II
 fluid.enricheddihydrogensulfidrd=Angereicherter flüssiger Schwefelwasserstoff III
 
