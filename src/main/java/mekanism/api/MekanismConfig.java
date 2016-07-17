@@ -40,6 +40,7 @@ public class MekanismConfig
 		public static double FROM_TE;
 		public static int laserRange;
 		public static double laserEnergyNeededPerHardness;
+		public static boolean minerAltOperation;
 		public static double minerSilkMultiplier = 6;
 		public static boolean blacklistIC2;
 		public static boolean blacklistRF;

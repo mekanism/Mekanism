@@ -7,6 +7,7 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -39,6 +40,31 @@ public final class MinerVisualRenderer
 		GL11.glPopMatrix();
 	}
 	
+	// *------*
+	// Support functions for alternative miner operations
+	private static boolean isInsideSphere( int x, int y, int z, int radius )
+	{
+		return Math.pow( x, 2 ) + Math.pow( y, 2 ) + Math.pow( z, 2 ) - Math.pow( radius, 2 ) <= 0;
+	}
+	
+	private static boolean isSurface( int x, int y, int z, int radius )
+	{
+		int setCount = 0;
+		int unsetCount = 0;
+		
+		if( isInsideSphere( x+1, y, z, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x-1, y, z, radius) ) setCount++; else unsetCount++;
+
+		if( isInsideSphere( x, y+1, z, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x, y-1, z, radius) ) setCount++; else unsetCount++;
+
+		if( isInsideSphere( x, y, z+1, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x, y, z-1, radius) ) setCount++; else unsetCount++;
+
+		return setCount > 0 && unsetCount > 0;
+	}
+	// *------*
+	
 	private static DisplayInteger getList(MinerRenderData data)
 	{
 		if(cachedVisuals.containsKey(data))
@@ -51,15 +77,40 @@ public final class MinerVisualRenderer
 		
 		List<Model3D> models = new ArrayList<Model3D>();
 		
-		for(int x = -data.radius; x <= data.radius; x++)
+		if( general.minerAltOperation )
 		{
-			for(int y = data.minY-data.yCoord; y <= data.maxY-data.yCoord; y++)
+			// Alternate style operation:
+			// *------*
+			// Above miner: Hemisphere of radius <data.radius>
+			// Below miner: Cylinder of radius <data.radius> all the way to bottom of map.
+			// *------*
+			for(int y = data.radius; y >= -data.yCoord; y--)
 			{
 				for(int z = -data.radius; z <= data.radius; z++)
 				{
-					if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
+					for(int x = -data.radius; x <= data.radius; x++)
 					{
-						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.dimensionId)));
+						// Calculate if point is inside area of operation
+						if( isInsideSphere( x, Math.max( y, 0 ), z, data.radius ) && isSurface( x, Math.max( y, 0 ), z, data.radius )  )
+							models.add( createModel( new Coord4D( x, y, z, mc.theWorld.provider.dimensionId ) ) );
+					}
+				}
+			}
+		}
+		else
+		{
+			// Original style operation:
+			// Draw cubic region
+			for(int x = -data.radius; x <= data.radius; x++)
+			{
+				for(int y = data.minY-data.yCoord; y <= data.maxY-data.yCoord; y++)
+				{
+					for(int z = -data.radius; z <= data.radius; z++)
+					{
+						if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
+						{
+							models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.dimensionId)));
+						}
 					}
 				}
 			}
