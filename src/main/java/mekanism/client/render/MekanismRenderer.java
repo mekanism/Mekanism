@@ -115,6 +115,16 @@ public class MekanismRenderer
 			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDT"));
 			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidLithium"));
 
+            //secound way for heavy water
+            /**GasRegistry.getGas("enricheddihydrogensulfidgas").setIcon(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedDihydrogenSulfidGas"));
+            GasRegistry.getGas("enricheddihydrogensulfidsnd").setIcon(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedDihydrogenSulfidSnd"));
+            GasRegistry.getGas("enricheddihydrogensulfidrd").setIcon(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedDihydrogenSulfidRd"));
+
+            GasRegistry.getGas("enrichedwater").setIcon(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedWater"));
+            GasRegistry.getGas("enrichedwatersnd").setIcon(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedWaterSnd"));
+            GasRegistry.getGas("enrichedwaterrd").setIcon(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedWaterRd"));
+            *///end-secound way for heavy water
+
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
 				if(gas instanceof OreGas)
@@ -132,7 +142,17 @@ public class MekanismRenderer
 			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:liquid/LiquidBrine"));
 			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:liquid/LiquidHeavyWater"));
 			FluidRegistry.getFluid("steam").setIcons(event.map.registerIcon("mekanism:liquid/LiquidSteam"));
-			
+
+            //secound way for heavy water
+            /**
+            FluidRegistry.getFluid("enricheddihydrogensulfidsnd").setIcons(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedDihydrogenSulfidSnd"));
+            FluidRegistry.getFluid("enricheddihydrogensulfidrd").setIcons(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedDihydrogenSulfidRd"));
+
+            FluidRegistry.getFluid("enrichedwater").setIcons(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedWater"));
+            FluidRegistry.getFluid("enrichedwatersnd").setIcons(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedWaterSnd"));
+            FluidRegistry.getFluid("enrichedwaterrd").setIcons(event.map.registerIcon("mekanismadditions:textures/blocks/liquid/LiquidEnrichedWaterRd"));
+            *///end-secound way for heavy water
+
 			for(InfuseType type : InfuseRegistry.getInfuseMap().values())
 			{
 				type.setIcon(event.map.registerIcon(type.textureLocation));
