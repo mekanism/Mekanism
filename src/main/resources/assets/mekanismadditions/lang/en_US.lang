@@ -16,7 +16,7 @@ gas.enrichedwaterrd=Enriched Water III (gaseous)
 //fluids
 fluid.dihydrogensulfid=Liquid Dihydrogensulfid
 
-fluid.enricheddihydrogensulfidgas=Liquid Enriched Dihydrogensulfid I
+fluid.enricheddihydrogensulfid=Liquid Enriched Dihydrogensulfid I
 fluid.enricheddihydrogensulfidsnd=Liquid Enriched Dihydrogensulfid II
 fluid.enricheddihydrogensulfidrd=Liquid Enriched Dihydrogensulfid III
 
