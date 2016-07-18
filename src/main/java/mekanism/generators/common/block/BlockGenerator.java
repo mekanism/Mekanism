@@ -22,6 +22,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -121,6 +122,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 				ctmData[10] = new CTMData(GeneratorType.TURBINE_CASING);
 				ctmData[11] = new CTMData(GeneratorType.TURBINE_VALVE);
 				ctmData[12] = new CTMData(GeneratorType.TURBINE_VENT);
+				ctmData[13] = new CTMData(GeneratorType.SATURATING_CONDENSER);
 				
 				break;
 		}
@@ -617,7 +619,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
-		if(itemStack.getTagCompound() == null)
+		if(itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock))
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
@@ -644,7 +646,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			electricItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
 		}
 
-		if(tileEntity instanceof TileEntityContainerBlock)
+		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).handleInventory())
 		{
 			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
 			inventory.setInventory(((TileEntityContainerBlock)tileEntity).getInventory(), itemStack);

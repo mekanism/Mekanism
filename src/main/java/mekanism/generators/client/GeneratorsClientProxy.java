@@ -146,7 +146,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		
 		CTMRegistry.registerCTMs("mekanismgenerators", "turbine_vent", "turbine_valve", "turbine_casing", "electromagnetic_coil", 
 				"reactor_controller", "reactor_frame", "reactor_port", "reactor_port_output", "reactor_glass", "laser_focus_matrix", 
-				"reactor_logic_adapter", "reactor_controller_on");
+				"reactor_logic_adapter", "reactor_controller_on", "saturating_condenser");
 	}
 
 	@Override
