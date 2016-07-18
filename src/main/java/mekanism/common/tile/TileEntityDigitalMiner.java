@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.EnumSet;
@@ -12,8 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
@@ -58,8 +60,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock
 {
@@ -211,7 +211,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						{
 							int index = set.nextSetBit(next);
 							Coord4D coord = getCoordFromIndex(index);
-	
+
 							if(index == -1)
 							{
 								toRemove.add(chunk);
@@ -1044,7 +1044,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public int getTotalSize()
 	{
-		return getDiameter()*getDiameter()*(maxY-minY+1);
+		// Get total size based on operation type
+		if( general.minerAltOperation )
+			return getDiameter()*getDiameter()*(yCoord+radius+1);
+		else
+			return getDiameter()*getDiameter()*(maxY-minY+1);
 	}
 
 	public int getDiameter()
@@ -1054,17 +1058,21 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public Coord4D getStartingCoord()
 	{
-		return new Coord4D(xCoord-radius, minY, zCoord-radius, worldObj.provider.dimensionId);
+		// Get stating coordinates based on operation type
+		if( general.minerAltOperation )
+			return new Coord4D(xCoord-radius, yCoord+radius, zCoord-radius, worldObj.provider.dimensionId);
+		else
+			return new Coord4D(xCoord-radius, minY, zCoord-radius, worldObj.provider.dimensionId);
 	}
 
 	public Coord4D getCoordFromIndex(int index)
 	{
 		int diameter = getDiameter();
 		Coord4D start = getStartingCoord();
-
+		
 		int x = start.xCoord+index%diameter;
 		int z = start.zCoord+(index/diameter)%diameter;
-		int y = start.yCoord+(index/diameter/diameter);
+		int y = general.minerAltOperation ? start.yCoord-(index/diameter/diameter) : start.yCoord+(index/diameter/diameter);
 
 		return new Coord4D(x, y, z, worldObj.provider.dimensionId);
 	}

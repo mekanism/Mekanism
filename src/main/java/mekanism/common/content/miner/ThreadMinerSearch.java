@@ -6,6 +6,7 @@ import java.util.Map;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.util.BlockInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -33,6 +34,31 @@ public class ThreadMinerSearch extends Thread
 		tileEntity = tile;
 	}
 
+	// *------*
+	// Support functions for alternative miner operations
+	private boolean isInsideSphere( int x, int y, int z, int radius )
+	{
+		return Math.pow( x, 2 ) + Math.pow( y, 2 ) + Math.pow( z, 2 ) - Math.pow( radius, 2 ) <= 0;
+	}
+	
+	private boolean isSurface( int x, int y, int z, int radius )
+	{
+		int setCount = 0;
+		int unsetCount = 0;
+		
+		if( isInsideSphere( x+1, y, z, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x-1, y, z, radius) ) setCount++; else unsetCount++;
+
+		if( isInsideSphere( x, y+1, z, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x, y-1, z, radius) ) setCount++; else unsetCount++;
+
+		if( isInsideSphere( x, y, z+1, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x, y, z-1, radius) ) setCount++; else unsetCount++;
+
+		return setCount > 0 && unsetCount > 0;
+	}
+	// *------*
+
 	@Override
 	public void run()
 	{
@@ -43,7 +69,7 @@ public class ThreadMinerSearch extends Thread
 			state = State.FINISHED;
 			return;
 		}
-
+		
 		Coord4D coord = tileEntity.getStartingCoord();
 		int diameter = tileEntity.getDiameter();
 		int size = tileEntity.getTotalSize();
@@ -53,7 +79,7 @@ public class ThreadMinerSearch extends Thread
 		{
 			int x = coord.xCoord+i%diameter;
 			int z = coord.zCoord+(i/diameter)%diameter;
-			int y = coord.yCoord+(i/diameter/diameter);
+			int y = general.minerAltOperation ? coord.yCoord-(i/diameter/diameter) : coord.yCoord+(i/diameter/diameter);
 
 			if(tileEntity.isInvalid())
 			{
@@ -61,13 +87,21 @@ public class ThreadMinerSearch extends Thread
 			}
 
 			try {
+				if( y < 0 )
+				{
+					// Sanity check - shouldn't be needed, but just in case
+					// Skip blocks outside map bounds
+					continue;
+				}
 				if(tileEntity.xCoord == x && tileEntity.yCoord == y && tileEntity.zCoord == z)
 				{
+					// Skip block containing miner
 					continue;
 				}
 	
 				if(!tileEntity.getWorldObj().getChunkProvider().chunkExists(x >> 4, z >> 4))
 				{
+					// Skip ungenerated chunks
 					continue;
 				}
 	
@@ -75,6 +109,7 @@ public class ThreadMinerSearch extends Thread
 				
 				if(tile instanceof TileEntityBoundingBlock)
 				{
+					// Skip bounding blocks
 					continue;
 				}
 	
@@ -83,9 +118,20 @@ public class ThreadMinerSearch extends Thread
 				
 				if(info.block instanceof BlockLiquid || info.block instanceof IFluidBlock)
 				{
+					// Skip fluid blocks
 					continue;
 				}
-	
+
+				// Perform checks related to alternative operations
+				if( general.minerAltOperation )
+				{
+					if( !isInsideSphere( x - tileEntity.xCoord, Math.max( y - tileEntity.yCoord, 0 ), z - tileEntity.zCoord, diameter / 2 ) )
+					{
+						// Skip blocks outside operating boundaries
+						continue;
+					}
+				}
+
 				if(info.block != null && !tileEntity.getWorldObj().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorldObj(), x, y, z) >= 0)
 				{
 					MinerFilter filterFound = null;
