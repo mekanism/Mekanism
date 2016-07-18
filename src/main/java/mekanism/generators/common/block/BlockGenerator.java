@@ -22,6 +22,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -669,7 +670,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(x, y, z));
 
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.stackTagCompound == null && !(tileEntity instanceof TileEntityMultiblock))
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
@@ -696,7 +697,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			electricItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
 		}
 
-		if(tileEntity instanceof TileEntityContainerBlock)
+		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).handleInventory())
 		{
 			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
 			inventory.setInventory(((TileEntityContainerBlock)tileEntity).getInventory(), itemStack);

@@ -157,7 +157,7 @@ public class MekanismGenerators implements IModule
 			" I ", "IFI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('F'), Blocks.iron_bars
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 13), new Object[] {
-			"STS", "TBT", "STS", Character.valueOf('S'), "ingotSteel", Character.valueOf('T'), "ingotTin", Character.valueOf('E'), Items.bucket
+			"STS", "TBT", "STS", Character.valueOf('S'), "ingotSteel", Character.valueOf('T'), "ingotTin", Character.valueOf('B'), Items.bucket
 		}));
 		
 		//Reactor Recipes

@@ -105,7 +105,7 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		generators.turbineBladesPerCoil = Mekanism.configuration.get("generation", "TurbineBladesPerCoil", 4).getInt();
 		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
 		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
-		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserRate", 8000).getInt();
+		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
 
 		if(Mekanism.configuration.hasChanged())
 		{
