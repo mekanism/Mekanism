@@ -83,7 +83,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			if(player.isSneaking() && item instanceof ItemConfigurator)
 			{
 				ItemConfigurator configurator = (ItemConfigurator)item;
-
+				
 				int toSet = configurator.getState(toolStack).ordinal() < ConfiguratorMode.values().length-1 ? configurator.getState(toolStack).ordinal() + 1 : 0;
 				configurator.setState(toolStack, ConfiguratorMode.values()[toSet]);
 				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(EnumHand.MAIN_HAND, configurator.getState(toolStack)));

@@ -1063,9 +1063,8 @@ public class ClientProxy extends CommonProxy
 		
 		CTMRegistry.registerCTMs("mekanism", "dynamic_tank", "structural_glass", "dynamic_valve", "teleporter", "teleporter_frame", "induction_casing", "induction_port", "induction_port_output",
 				"induction_cell_basic", "induction_cell_advanced", "induction_cell_elite", "induction_cell_ultimate", "induction_provider_basic", "induction_provider_advanced", "induction_provider_elite",
-				"induction_provider_ultimate", "thermal_evaporation_controller", "thermal_evaporation_controller_on", "thermal_evaporation_valve", "superheating_element", "superheating_element_on", "reactor_port",
-				"reactor_neutron_capture", "reactor_logic_adapter", "reactor_laser_focus", "reactor_glass", "reactor_frame", "reactor_controller_on", "reactor_controller_off", "boiler_casing", "boiler_valve",
-				"electromagnetic_coil", "thermal_evaporation_valve", "thermal_evaporation_block", "turbine_casing", "turbine_vent", "turbine_valve");
+				"induction_provider_ultimate", "thermal_evaporation_controller", "thermal_evaporation_controller_on", "thermal_evaporation_valve", "superheating_element", "superheating_element_on",
+				"boiler_casing", "boiler_valve", "thermal_evaporation_valve", "thermal_evaporation_block");
 	}
 
 	@Override
