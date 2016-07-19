@@ -18,7 +18,6 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
@@ -85,15 +84,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			CableUtils.emit(this);
 			
-			if(fluidEject && getReactor() != null && getReactor().getSteamTank().getFluidAmount() > 0)
+			IFluidTank tank = getReactor().getSteamTank();
+			
+			if(fluidEject && getReactor() != null && tank.getFluid() != null)
 			{
-				IFluidTank tank = getReactor().getSteamTank();
-				
 				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 				{
 					TileEntity tile = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
 					
-					if(tile instanceof IFluidHandler && !(tile instanceof TileEntityBoilerValve))
+					if(tile instanceof IFluidHandler && !(tile instanceof TileEntityReactorPort))
 					{
 						if(((IFluidHandler)tile).canFill(side.getOpposite(), tank.getFluid().getFluid()))
 						{
