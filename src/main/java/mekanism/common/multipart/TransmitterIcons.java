@@ -1,6 +1,6 @@
 package mekanism.common.multipart;
 
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.client;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
@@ -8,23 +8,25 @@ public class TransmitterIcons
 {
 	private IIcon[] sideIcons;
 	private IIcon[] centerIcons;
-	private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
+	
+	private IIcon[] sideIcons_opaque;
+	private IIcon[] centerIcons_opaque;
 
 	public TransmitterIcons(int numCentres, int numSides)
 	{
 		sideIcons = new IIcon[numSides];
 		centerIcons = new IIcon[numCentres];
+		
+		sideIcons_opaque = new IIcon[numSides];
+		centerIcons_opaque = new IIcon[numCentres];
 	}
 
 	public void registerCenterIcons(IIconRegister register, String[] filenames)
 	{
 		for(int i = 0; i < centerIcons.length; i++)
 		{
-			if(!opaque) {
-				centerIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
-			} else {
-				centerIcons[i] = register.registerIcon("mekanism:models/opaque/" + filenames[i]);
-			}
+			centerIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+			centerIcons_opaque[i] = register.registerIcon("mekanism:models/opaque/" + filenames[i]);
 		}
 	}
 
@@ -32,21 +34,18 @@ public class TransmitterIcons
 	{
 		for(int i = 0; i < sideIcons.length; i++)
 		{
-			if(!opaque) {
-				sideIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
-			} else {
-				sideIcons[i] = register.registerIcon("mekanism:models/opaque/" + filenames[i]);
-			}
+			sideIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+			sideIcons_opaque[i] = register.registerIcon("mekanism:models/opaque/" + filenames[i]);
 		}
 	}
 
 	public IIcon getSideIcon(int n)
 	{
-		return sideIcons[n];
+		return client.opaqueTransmitters ? sideIcons_opaque[n] : sideIcons[n];
 	}
 
 	public IIcon getCenterIcon(int n)
 	{
-		return centerIcons[n];
+		return client.opaqueTransmitters ? centerIcons_opaque[n] : centerIcons[n];
 	}
 }

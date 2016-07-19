@@ -4,10 +4,10 @@ import java.util.Collection;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HeatNetwork;
-import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
@@ -29,7 +29,6 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	public Tier.ConductorTier tier;
 	
 	public static TransmitterIcons conductorIcons = new TransmitterIcons(4, 8);
-    private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 
 	public double temperature = 0;
 	public double clientTemperature = 0;
@@ -125,7 +124,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0 && !opaque)
+		if(pass == 0 && !client.opaqueTransmitters)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

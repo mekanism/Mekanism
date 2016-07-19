@@ -2,10 +2,10 @@ package mekanism.common.multipart;
 
 import java.util.Collection;
 
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
-import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
@@ -31,7 +31,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandler
 {
 	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 8);
-    private static boolean opaque = Mekanism.configuration.get("client", "opaque", false).getBoolean();
 
 	public float currentScale;
 
@@ -229,7 +228,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0 && !opaque)
+		if(pass == 0 && !client.opaqueTransmitters)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

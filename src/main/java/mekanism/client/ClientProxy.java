@@ -216,18 +216,18 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadConfiguration();
 
-		client.enablePlayerSounds = Mekanism.configuration.get("client", "EnablePlayerSounds", true).getBoolean(true);
-		client.enableMachineSounds = Mekanism.configuration.get("client", "EnableMachineSounds", true).getBoolean(true);
-		client.fancyUniversalCableRender = Mekanism.configuration.get("client", "FancyUniversalCableRender", true).getBoolean(true);
-		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean(true);
-		client.baseSoundVolume = (float)Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble(1D);
-		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean(true);
+		client.enablePlayerSounds = Mekanism.configuration.get("client", "EnablePlayerSounds", true).getBoolean();
+		client.enableMachineSounds = Mekanism.configuration.get("client", "EnableMachineSounds", true).getBoolean();
+		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean();
+		client.baseSoundVolume = (float)Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble();
+		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean();
 		client.oldTransmitterRender = Mekanism.configuration.get("client", "OldTransmitterRender", false).getBoolean();
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
 		client.renderCTM = Mekanism.configuration.get("client", "CTMRenderer", true).getBoolean();
-		client.enableAmbientLighting = Mekanism.configuration.get("general", "EnableAmbientLighting", true).getBoolean();
-		client.ambientLightingLevel = Mekanism.configuration.get("general", "AmbientLightingLevel", 15).getInt();
+		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
+		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
+		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{
