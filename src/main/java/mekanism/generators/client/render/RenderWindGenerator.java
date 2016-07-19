@@ -36,8 +36,7 @@ public class RenderWindGenerator extends TileEntitySpecialRenderer
 
 		GL11.glRotatef(180, 0F, 0F, 1F);
 
-		if(!Mekanism.proxy.isPaused() &&
-				tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
+		if(!Mekanism.proxy.isPaused() && tileEntity.getActive())
 		{
 			tileEntity.angle = (tileEntity.angle+((tileEntity.yCoord+4F)/256F)*8) % 360;
 		}
