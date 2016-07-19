@@ -40,7 +40,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 			{
 				setActive((currentMultiplier = getMultiplier()) > 0);
 			}
-			System.out.println(currentMultiplier + " " + worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord));
+			
 			if(getActive())
 			{
 				setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
