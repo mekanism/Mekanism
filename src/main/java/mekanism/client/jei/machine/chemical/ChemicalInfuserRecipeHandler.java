@@ -39,4 +39,10 @@ public class ChemicalInfuserRecipeHandler implements IRecipeHandler<ChemicalInfu
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ChemicalInfuserRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

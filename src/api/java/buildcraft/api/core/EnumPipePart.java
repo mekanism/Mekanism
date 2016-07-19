@@ -1,17 +1,17 @@
 package buildcraft.api.core;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Locale;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
-
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTBase.NBTPrimitive;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 
-import io.netty.buffer.ByteBuf;
+import com.google.common.collect.Maps;
 
 public enum EnumPipePart implements IStringSerializable, INetworkLoadable_BC8<EnumPipePart> {
     DOWN(EnumFacing.DOWN),
@@ -100,7 +100,7 @@ public enum EnumPipePart implements IStringSerializable, INetworkLoadable_BC8<En
             String string = nbtString.getString();
             return nameMap.containsKey(string) ? nameMap.get(string) : CENTER;
         } else {
-            byte ord = ((NBTPrimitive) base).getByte();
+            byte ord = ((NBTTagByte) base).getByte();
             if (ord < 0 || ord > 6) return CENTER;
             return values()[ord];
         }

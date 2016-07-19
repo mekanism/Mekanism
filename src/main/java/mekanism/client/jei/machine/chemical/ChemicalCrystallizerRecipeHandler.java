@@ -39,4 +39,10 @@ public class ChemicalCrystallizerRecipeHandler implements IRecipeHandler<Chemica
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ChemicalCrystallizerRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

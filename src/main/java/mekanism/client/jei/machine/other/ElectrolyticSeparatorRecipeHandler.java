@@ -39,4 +39,10 @@ public class ElectrolyticSeparatorRecipeHandler implements IRecipeHandler<Electr
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ElectrolyticSeparatorRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

@@ -39,4 +39,10 @@ public class SolarNeutronRecipeHandler implements IRecipeHandler<SolarNeutronRec
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull SolarNeutronRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

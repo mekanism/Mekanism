@@ -39,4 +39,10 @@ public class ThermalEvaporationRecipeHandler implements IRecipeHandler<ThermalEv
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ThermalEvaporationRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

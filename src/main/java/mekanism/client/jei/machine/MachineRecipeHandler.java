@@ -43,4 +43,10 @@ public class MachineRecipeHandler<T extends MachineRecipeWrapper> implements IRe
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull T recipe) 
+	{
+		return category.getUid();
+	}
 }

@@ -30,4 +30,10 @@ public class ShapedMekanismRecipeHandler implements IRecipeHandler<ShapedMekanis
 	{
 		return true;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(ShapedMekanismRecipe recipe) 
+	{
+		return VanillaRecipeCategoryUid.CRAFTING;
+	}
 }

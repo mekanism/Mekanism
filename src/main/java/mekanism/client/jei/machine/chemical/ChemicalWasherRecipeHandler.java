@@ -39,4 +39,10 @@ public class ChemicalWasherRecipeHandler implements IRecipeHandler<ChemicalWashe
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ChemicalWasherRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

@@ -2,17 +2,39 @@ package ic2.api.reactor;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
- * Interface implemented by the tile entity of nuclear reactors.
+ * Interface implemented nuclear reactors, expected to be a {@link TileEntity}, but does not have to be.
  */
 public interface IReactor {
 	/**
 	 * Return the tile entity representing the reactor core.
+	 * <br/>
+	 * If null, {@link #getReactorWorld()} and {@link #getReactorPos()} can still be used if it's world and/or position are desired.
 	 *
 	 * @return the reactor core's TE or null.
 	 */
 	public TileEntity getCoreTe();
+
+	/**
+	 * Return the reactor's current world instance (it's position can be acquired using {@link #getReactorPos()}.
+	 * <br/>
+	 * Should be the same world as {@link #getCoreTe()} returns if it's not null.
+	 *
+	 * @return The reactor's world object
+	 */
+	public World getReactorWorld(); //getWorld has obfuscation issues (https://github.com/md-5/SpecialSource/issues/12)
+
+	/**
+	 * Return the reactor's current position in the world ({@link #getReactorWorld()}.
+	 * <br/>
+	 * Should be the same position as {@link #getCoreTe()} returns if it's not null.
+	 *
+	 * @return The reactor's current position
+	 */
+	public BlockPos getReactorPos(); //As would getPos
 
 	/**
 	 * Get the reactor's heat.

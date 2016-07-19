@@ -39,4 +39,10 @@ public class ChemicalDissolutionChamberRecipeHandler implements IRecipeHandler<C
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ChemicalDissolutionChamberRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }

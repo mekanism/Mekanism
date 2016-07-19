@@ -39,4 +39,10 @@ public class RotaryCondensentratorRecipeHandler implements IRecipeHandler<Rotary
 	{
 		return recipe.category == category;
 	}
+	
+	@Override
+	public String getRecipeCategoryUid(@Nonnull RotaryCondensentratorRecipeWrapper recipe) 
+	{
+		return category.getUid();
+	}
 }
