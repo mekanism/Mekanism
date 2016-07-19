@@ -84,10 +84,10 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			CableUtils.emit(this);
 			
-			IFluidTank tank = getReactor().getSteamTank();
-			
-			if(fluidEject && getReactor() != null && tank.getFluid() != null)
+			if(fluidEject && getReactor() != null && getReactor().getSteamTank().getFluid() != null)
 			{
+				IFluidTank tank = getReactor().getSteamTank();
+				
 				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 				{
 					TileEntity tile = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
