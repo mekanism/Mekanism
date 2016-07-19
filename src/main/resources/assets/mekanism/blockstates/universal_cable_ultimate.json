@@ -4,7 +4,9 @@
     "model": "mekanism:transmitter_small.obj.mek",
     "textures": {
       "#side": "mekanism:blocks/models/multipart/UniversalCableVerticalUltimate",
-      "#center": "mekanism:blocks/models/multipart/UniversalCableUltimate"
+      "#center": "mekanism:blocks/models/multipart/UniversalCableUltimate",
+      "#side_opaque": "mekanism:blocks/models/multipart/opaque/UniversalCableVerticalUltimate",
+      "#center_opaque": "mekanism:blocks/models/multipart/opaque/UniversalCableUltimate"
     },
     "custom": {
       "flip-v": true

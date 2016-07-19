@@ -1,5 +1,6 @@
 package mekanism.client.render.transmitter;
 
+import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.ColourTemperature;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.multipart.PartThermodynamicConductor;
@@ -19,6 +20,11 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<PartTher
 	@Override
 	public void renderMultipartAt(PartThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage)
 	{
+		if(client.opaqueTransmitters)
+		{
+			return;
+		}
+		
 		push();
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexBuffer worldRenderer = tessellator.getBuffer();

@@ -2,6 +2,7 @@ package mekanism.client.render.transmitter;
 
 import java.util.HashMap;
 
+import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -34,6 +35,11 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 	@Override
 	public void renderMultipartAt(PartMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage)
 	{
+		if(client.opaqueTransmitters)
+		{
+			return;
+		}
+		
 		float targetScale;
 		
 		if(pipe.getTransmitter().hasTransmitterNetwork())
