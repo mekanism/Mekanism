@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
@@ -66,7 +67,13 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 						network.updateCapacity();
 					}
 				}
-				else if(message.packetType == PacketType.ENERGY)
+				
+				if(client.opaqueTransmitters || message.coord4D == null || player == null)
+				{
+					return;
+				}
+				
+				if(message.packetType == PacketType.ENERGY)
 				{
 					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 					

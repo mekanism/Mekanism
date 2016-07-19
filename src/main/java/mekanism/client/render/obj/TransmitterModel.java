@@ -2,13 +2,13 @@ package mekanism.client.render.obj;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.vecmath.Matrix4f;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.ctm.CTMModelFactory;
@@ -42,28 +42,34 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 public class TransmitterModel extends OBJBakedModelBase
 {
+	private static Set<TransmitterModel> modelInstances = new HashSet<TransmitterModel>();
+	
 	private Map<Integer, List<BakedQuad>> modelCache = new HashMap<Integer, List<BakedQuad>>();
 	private TransmitterModel itemCache;
 	
 	private IBlockState tempState;
 	private ItemStack tempStack;
 	
-	private static TextureAtlasSprite transporter_center;
-	private static TextureAtlasSprite transporter_center_color;
-	private static TextureAtlasSprite transporter_side;
-	private static TextureAtlasSprite transporter_side_color;
+	private static TextureAtlasSprite[] transporter_center = new TextureAtlasSprite[2];
+	private static TextureAtlasSprite[] transporter_center_color = new TextureAtlasSprite[2];
+	private static TextureAtlasSprite[] transporter_side = new TextureAtlasSprite[2];
+	private static TextureAtlasSprite[] transporter_side_color = new TextureAtlasSprite[2];
 	
 	private TransmitterOverride override = new TransmitterOverride();
 	
 	public TransmitterModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform)
 	{
 		super(base, model, state, format, textures, transform);
+		
+		modelInstances.add(this);
 	}
 	
 	private class TransmitterOverride extends ItemOverrideList 
@@ -174,28 +180,36 @@ public class TransmitterModel extends OBJBakedModelBase
 			
 			if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT)
 			{
+				int opaqueVal = client.opaqueTransmitters ? 1 : 0;
+				
 				if(prop != null && prop.color != null)
 				{
-					return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center_color : transporter_side_color;
+					return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center_color[opaqueVal] : transporter_side_color[opaqueVal];
 				}
 				else {
-					return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center : transporter_side;
+					return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center[opaqueVal] : transporter_side[opaqueVal];
 				}
 			}
 			else {
 				if(groupName.endsWith("NONE") && sideIconOverride)
 				{
-					for(Group g : getModel().getMatLib().getGroups().values())
+					for(String s : getModel().getMatLib().getMaterialNames())
 					{
-						for(Face testFace : g.getFaces())
+						if(s.contains("Texture.Name"))
 						{
-							String s = testFace.getMaterialName();
-							
-							if(!s.contains("Center") && !s.contains("Centre"))
-							{
-								return textureMap.get(s);
-							}
+							continue;
 						}
+						
+						if(!s.contains("Center") && !s.contains("Centre") && (client.opaqueTransmitters ? s.contains("Opaque") : !s.contains("Opaque")))
+						{
+							return textureMap.get(s);
+						}
+					}
+				}
+				else {
+					if(client.opaqueTransmitters)
+					{
+						return textureMap.get(f.getMaterialName() + "_Opaque");
 					}
 				}
 			}
@@ -260,9 +274,23 @@ public class TransmitterModel extends OBJBakedModelBase
 	
 	public static void registerIcons(TextureMap map)
 	{
-		transporter_center = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlass"));
-		transporter_center_color = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlassColored"));
-		transporter_side = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlass"));
-		transporter_side_color = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlassColored"));
+		transporter_center[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlass"));
+		transporter_center_color[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlassColored"));
+		transporter_side[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlass"));
+		transporter_side_color[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlassColored"));
+		
+		transporter_center[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterGlass"));
+		transporter_center_color[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterGlassColored"));
+		transporter_side[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalGlass"));
+		transporter_side_color[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalGlassColored"));
+	}
+	
+	public static void clearCache()
+	{
+		for(TransmitterModel model : modelInstances)
+		{
+			model.modelCache.clear();
+			model.itemCache = null;
+		}
 	}
 }

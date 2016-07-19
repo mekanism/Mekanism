@@ -75,7 +75,6 @@ public class MekanismConfig
 	{
 		public static boolean enablePlayerSounds = true;
 		public static boolean enableMachineSounds = true;
-		public static boolean fancyUniversalCableRender = true;
 		public static boolean holidays = true;
 		public static float baseSoundVolume = 1F;
 		public static boolean machineEffects = true;
@@ -84,6 +83,7 @@ public class MekanismConfig
 		public static boolean renderCTM = true;
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
+		public static boolean opaqueTransmitters = false;
 	}
 	
 	public static class machines

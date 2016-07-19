@@ -22,7 +22,6 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
@@ -96,15 +95,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			CableUtils.emit(this);
 			
-			if(fluidEject && getReactor() != null && getReactor().getSteamTank().getFluidAmount() > 0)
+			if(fluidEject && getReactor() != null && getReactor().getSteamTank().getFluid() != null)
 			{
 				IFluidTank tank = getReactor().getSteamTank();
 				
 				for(EnumFacing side : EnumFacing.values())
 				{
 					TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(worldObj);
-					
-					if(tile != null && !(tile instanceof TileEntityBoilerValve) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+
+					if(tile != null && !(tile instanceof TileEntityReactorPort) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 					{
 						IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
 						

@@ -1264,14 +1264,14 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		//Register tier information
-		Tier.init();
-		
 		File config = event.getSuggestedConfigurationFile();
 		
 		//Set the mod's configuration
 		configuration = new Configuration(config);
-		
+
+        //Register tier information
+        Tier.init();
+
 		if(config.getAbsolutePath().contains("voltz"))
 		{
 			logger.info("Detected Voltz in root directory - hello, fellow user!");

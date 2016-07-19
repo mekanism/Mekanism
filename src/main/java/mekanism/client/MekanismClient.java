@@ -6,6 +6,7 @@ import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.MekanismConfig.general;
+import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
@@ -50,6 +51,8 @@ public class MekanismClient extends Mekanism
 		}
 
 		ClientTickHandler.tickingSet.clear();
+		
+		TransmitterModel.clearCache();
 
 		MekanismAPI.getBoxIgnore().clear();
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
