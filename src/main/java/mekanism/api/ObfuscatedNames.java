@@ -11,8 +11,8 @@ public final class ObfuscatedNames
 	public static String[] SoundHandler_sndManager = new String[] {"sndManager", "field_147694_f"};
 	public static String[] SoundManager_sndSystem = new String[] {"sndSystem", "field_148620_e"};
 	public static String[] SoundManager_invPlayingSounds = new String[] {"invPlayingSounds", "field_148630_i"};
-	public static String[] AbstractClientPlayer_getPlayerInfo = new String[] {"getPlayerInfo", "func_110303_q"};
-	public static String[] NetworkPlayerInfo_locationCape = new String[] {"locationCape", "field_178862_f"};
+	public static String[] AbstractClientPlayer_getPlayerInfo = new String[] {"getPlayerInfo", "func_175155_b"};
+	public static String[] NetworkPlayerInfo_playerTextures = new String[] {"playerTextures", "field_187107_a"};
 	public static String[] Entity_copyDataFromOld = new String[] {"copyDataFromOld", "func_180432_n"};
 	public static String[] VertexBuffer_isDrawing = new String[] {"isDrawing", "field_179010_r"};
 }
