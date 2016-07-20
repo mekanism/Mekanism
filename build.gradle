@@ -85,7 +85,7 @@ task coreJar(type: Jar) {
     baseName = 'Mekanism'
 
     manifest {
-        attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
+        attributes 'FMLCorePlugin': 'mekanism.common.launch.LoadingHook'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 
