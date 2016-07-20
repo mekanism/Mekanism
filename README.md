@@ -15,30 +15,9 @@ As long as you follow the terms laid out in the license below, go right ahead.  
 
 # License #
 
-**Note that this license exists for Mekanism v9.1 or later. Previous versions of Mekanism utilize the MIT license.**
+Licenses are not really my friend -- strict closed source software really drives me nuts.  Even more, with a derivative work coded in a language such as Java, nothing can really prevent people from looking through my source with JD-GUI.  I learned to program through a combination of textbooks, trial-and-error and browsing open source projects.  As such, I have decided to license Mekanism under the MIT license, allowing for anyone with an interest in the project to fork/pull/distribute.
 
-Licenses are not really my friend -- strict closed source software really drives me nuts.  Even more, with a derivative work coded in a language such as Java, nothing can really prevent people from looking through my source with JD-GUI.  I learned to program through a combination of textbooks, trial-and-error and browsing open source projects.  As such, I have decided to utilize a fairly lenient policy in hopes that my work will educate and inspire others with interests in computer science.  
-
-I'm choosing to not adopt a specific license, meaning that all rights to source code, assets and distributed binaries are reserved to me by default.  However, I've made some notable exceptions in regards to Mekanism's source code, which can be listed below.  Read each section carefully to make sure you understand exactly what you can and can't do.  Don't try to work in the 'grey area' - if it's not listed, don't attempt it.
-
-**Mekanism's artwork and sounds are licensed under Creative Commons Attribution-ShareAlike 4.0 International.**
-
-**You may:**
-- Use any Mekanism binaries.  Free of charge :)
-- View Mekanism's source code, either through this website or decompiling.
-- Utilize and/or package copies of Mekanism's API (MDK) in third-party projects.
-- Create and make profit from Mekanism-dependent, third-party Mekanism modules, as long as no Mekanism source code (other than the API) is included in public releases.
-- Learn from, utilize, and/or distribute **small snippets** of Mekanism code for use in third-party projects, with credit to the author.
-- Include and distribute official Mekanism binaries in public modpacks, with credit to the author.
-- Distribute **modified** Mekanism binaries for **private** use, with or without credit to the author.
-
-**You may, with permission (via Twitter or Email):**
-- Distribute **modified** Mekanism binaries for use in **public** modpacks with credit to the author.
-
-**You may *not*:**
-- Distribute **official** Mekanism binaries in **public** modpacks without credit to the author.
-- Distribute **modified** Mekanism binaries in **public** modpacks without permission from the author.
-- Publicly distribute 10% or more of Mekanism's raw or compiled source code, without explicit permission from the author, with the exception of modpacks.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 **Copyright © 2016 Aidan Brady**
 
