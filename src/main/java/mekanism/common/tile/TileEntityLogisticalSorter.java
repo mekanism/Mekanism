@@ -393,12 +393,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					filters.add(TransporterFilter.readFromPacket(dataStream));
 				}
 			}
-			
-			if(clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
-			}
 		}
 	}
 
