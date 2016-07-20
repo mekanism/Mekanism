@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/ctm/dynamic_glass"
+      "all": "mekanism:blocks/ctm/structural_glass"
     }
   },
   "variants": {
