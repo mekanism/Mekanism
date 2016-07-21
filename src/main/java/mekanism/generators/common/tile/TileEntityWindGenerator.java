@@ -16,6 +16,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
+	public static final float SPEED = 32F;
+	public static final float SPEED_SCALED = 256F/SPEED;
+	
 	/** The angle the blades of this Wind Turbine are currently at. */
 	public double angle;
 	
@@ -44,6 +47,12 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 			if(getActive())
 			{
 				setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
+			}
+		}
+		else {
+			if(getActive())
+			{
+				angle = (angle+(getPos().getY()+4F)/SPEED_SCALED) % 360;
 			}
 		}
 	}

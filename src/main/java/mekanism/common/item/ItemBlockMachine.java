@@ -297,7 +297,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 						BlockPos pos1 = pos.add(xPos, yPos, zPos);
 						Block b = world.getBlockState(pos1).getBlock();
 
-						if(yPos > 255 || !b.isReplaceable(world, pos1))
+						if(pos1.getY() > 255 || !b.isReplaceable(world, pos1))
 						{
 							place = false;
 						}

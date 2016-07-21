@@ -30,6 +30,12 @@ public final class PipeUtils
 		}
 
 		IFluidHandler container = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+		
+		if(container == null)
+		{
+			return false;
+		}
+		
 		IFluidTankProperties[] infoArray = container.getTankProperties();
 
 		if(infoArray != null && infoArray.length > 0)
