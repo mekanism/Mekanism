@@ -225,9 +225,14 @@ public class MekanismRenderer
 		return map.containsKey(fluid) ? map.get(fluid) : missingIcon;
 	}
 	
-	public static boolean isDrawing(Tessellator tessellator)
+	public static boolean isDrawing(Tessellator tess)
 	{
-		return (boolean)ReflectionUtils.getPrivateValue(tessellator.getBuffer(), VertexBuffer.class, ObfuscatedNames.VertexBuffer_isDrawing);
+		return isDrawing(tess.getBuffer());
+	}
+	
+	public static boolean isDrawing(VertexBuffer buffer)
+	{
+		return (boolean)ReflectionUtils.getPrivateValue(buffer, VertexBuffer.class, ObfuscatedNames.VertexBuffer_isDrawing);
 	}
 
 	public static class Model3D

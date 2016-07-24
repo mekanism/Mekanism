@@ -111,7 +111,6 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 				}
 			}
 
-			isDrawing = false;
 			DisplayInteger[] displayLists = getListAndRender(null, fluid);
 
 			if(displayLists != null)
