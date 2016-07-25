@@ -158,6 +158,7 @@ public class CTMModelFactory implements IPerspectiveAwareModel
             .put(TransformType.GROUND,                      get(0, 2, 0, 0, 0, 0, 0.25f))
             .put(TransformType.HEAD,                        get(0, 0, 0, 0, 0, 0, 1))
             .put(TransformType.FIXED,                       get(0, 0, 0, 0, 0, 0, 1))
+            .put(TransformType.NONE,                        get(0, 0, 0, 0, 0, 0, 0))
             .build();
     
     @Override
