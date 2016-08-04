@@ -1,5 +1,5 @@
 {
-    "parent": "mekanism:item/standard_item",
+    "parent": "item/handheld",
     "textures": { 
         "layer0": "mekanismtools:items/ObsidianHoe"
     }
