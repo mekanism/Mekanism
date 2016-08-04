@@ -62,7 +62,6 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -426,12 +425,9 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexFormat prevFormat = null;
+		int prevMode = -1;
 		
-		if(MekanismRenderer.isDrawing(tessellator))
-		{
-			prevFormat = tessellator.getBuffer().getVertexFormat();
-			tessellator.draw();
-		}
+		MekanismRenderer.pauseRenderer(tessellator);
 		
 		List<BakedQuad> generalQuads = new LinkedList<BakedQuad>();
 		
@@ -448,11 +444,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
     	GlStateManager.popMatrix();
     	
-    	if(prevFormat != null)
-    	{
-	    	VertexBuffer worldrenderer = tessellator.getBuffer();
-	    	worldrenderer.begin(7, prevFormat);
-    	}
+    	MekanismRenderer.resumeRenderer(tessellator);
     	
 		if(Block.getBlockFromItem(stack.getItem()) != null)
 		{

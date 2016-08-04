@@ -11,12 +11,21 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class TeslaCapabilities {
     
+    /**
+     * Access to the consumer capability. Can be used for making checks.
+     */
     @CapabilityInject(ITeslaConsumer.class)
     public static Capability<ITeslaConsumer> CAPABILITY_CONSUMER = null;
     
+    /**
+     * Access to the producer capability. Can be used for making checks.
+     */
     @CapabilityInject(ITeslaProducer.class)
     public static Capability<ITeslaProducer> CAPABILITY_PRODUCER = null;
     
+    /**
+     * Access to the holder capability. Can be used for making checks.
+     */
     @CapabilityInject(ITeslaHolder.class)
     public static Capability<ITeslaHolder> CAPABILITY_HOLDER = null;
     

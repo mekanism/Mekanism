@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -223,6 +224,30 @@ public class MekanismRenderer
 		Map<Fluid, TextureAtlasSprite> map = textureMap.get(type);
 		
 		return map.containsKey(fluid) ? map.get(fluid) : missingIcon;
+	}
+	
+	private static VertexFormat prevFormat = null;
+	private static int prevMode = -1;
+	
+	public static void pauseRenderer(Tessellator tess)
+	{
+		if(MekanismRenderer.isDrawing(tess))
+		{
+			prevFormat = tess.getBuffer().getVertexFormat();
+			prevMode = tess.getBuffer().getDrawMode();
+			tess.draw();
+		}
+	}
+	
+	public static void resumeRenderer(Tessellator tess)
+	{
+    	if(prevFormat != null)
+    	{
+	    	tess.getBuffer().begin(prevMode, prevFormat);
+    	}
+    	
+    	prevFormat = null;
+    	prevMode = -1;
 	}
 	
 	public static boolean isDrawing(Tessellator tess)
