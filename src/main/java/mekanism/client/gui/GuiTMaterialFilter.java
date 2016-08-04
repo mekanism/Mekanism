@@ -129,7 +129,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 
 		if(filter.materialItem != null)
 		{
-			fontRendererObj.drawString(filter.materialItem.getDisplayName(), 35, 41, 0x00CD00);
+			renderScaledText(filter.materialItem.getDisplayName(), 35, 41, 0x00CD00, 107);
 		}
 
 		if(filter.materialItem != null)

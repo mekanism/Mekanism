@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -60,7 +60,7 @@ public abstract class MinerFilter
 		
 		if(dataStream.readBoolean())
 		{
-			replaceStack = new ItemStack(Block.getBlockById(dataStream.readInt()), 1, dataStream.readInt());
+			replaceStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
 		}
 		else {
 			replaceStack = null;
