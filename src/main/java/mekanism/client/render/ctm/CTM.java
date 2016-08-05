@@ -12,6 +12,7 @@ import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.EnumMap;
+import java.util.List;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
@@ -157,6 +158,19 @@ public class CTM {
 		return submapCache;
 	}
     
+    public int[] createSubmapIndices(long data, EnumFacing side){
+		submapCache = new int[] { 18, 19, 17, 16 };
+
+		buildConnectionMap(data, side);
+
+		// Map connections to submap indeces
+		for (int i = 0; i < 4; i++) {
+			fillSubmaps(i);
+		}
+
+		return submapCache;
+	}
+    
     public int[] getSubmapIndices() {
         return submapCache;
     }
@@ -174,6 +188,18 @@ public class CTM {
             connectionMap.put(dir, dir.isConnected(this, world, pos, side, state));
         }
     }
+    
+    public void buildConnectionMap(long data, EnumFacing side){
+		for (Dir dir : Dir.VALUES){
+			connectionMap.put(dir, false);
+		}
+		List<CTMConnections> connections = CTMConnections.decode(data);
+		for (CTMConnections loc : connections){
+			if (loc.getDirForSide(side) != null){
+				connectionMap.put(loc.getDirForSide(side), true);
+			}
+		}
+	}
 
 	private void fillSubmaps(int idx) {
 		Dir[] dirs = submapMap.get(idx);
@@ -298,7 +324,7 @@ public class CTM {
         return ret;
     }
 
-	public IBlockState getBlockOrFacade(IBlockAccess world, BlockPos pos, EnumFacing side) {
+	public static IBlockState getBlockOrFacade(IBlockAccess world, BlockPos pos, EnumFacing side) {
 		IBlockState state = world.getBlockState(pos);
 		return state;
 	}

@@ -232,6 +232,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.recipeType = recipeType;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 		factory.securityComponent.readFrom(securityComponent);
+		factory.infuseStored = infuseStored;
 		
 		for(int i = 0; i < tier.processes+5; i++)
 		{
