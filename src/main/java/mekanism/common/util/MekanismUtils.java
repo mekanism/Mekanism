@@ -1366,7 +1366,9 @@ public final class MekanismUtils
 			return new ItemStack(dmgItems[0].getItem(), 1, solve);
 		}
 
-		for(IRecipe recipe : (List<IRecipe>)CraftingManager.getInstance().getRecipeList())
+		List<IRecipe> list = (List<IRecipe>)((ArrayList<IRecipe>)CraftingManager.getInstance().getRecipeList()).clone();
+		
+		for(IRecipe recipe : list)
 		{
 			if(recipe.matches(inv, world))
 			{
@@ -1501,15 +1503,17 @@ public final class MekanismUtils
 			return true;
 		}
 		
-		if(isBCWrench(tool.getItem()) && ((IToolWrench)tool.getItem()).canWrench(player, pos))
-		{
-			return true;
-		}
-		
-		if(isCoFHHammer(tool.getItem()) && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
-		{
-			return true;
-		}
+		try {
+			if(isBCWrench(tool.getItem()) && ((IToolWrench)tool.getItem()).canWrench(player, pos))
+			{
+				return true;
+			}
+			
+			if(isCoFHHammer(tool.getItem()) && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
+			{
+				return true;
+			}
+		} catch(Throwable t) {}
 		
 		return false;
 	}

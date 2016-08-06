@@ -13,9 +13,9 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "Tesla"),
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaProducer", modid = "Tesla"),
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "Tesla")
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla"),
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaProducer", modid = "tesla"),
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "tesla")
 })
 public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, ITeslaConsumer, ITeslaProducer
 {
@@ -33,7 +33,7 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
 	}
 
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long takePower(long power, boolean simulated) 
 	{
 		if(getItem().canSend(getStack()))
@@ -53,7 +53,7 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
 	}
 
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long givePower(long power, boolean simulated) 
 	{
 		if(getItem().canReceive(getStack()))
@@ -73,14 +73,14 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
 	}
 
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long getStoredPower() 
 	{
 		return (long)Math.round(getItem().getEnergy(getStack())*general.TO_TESLA);
 	}
 
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long getCapacity() 
 	{
 		return (long)Math.round(getItem().getEnergy(getStack())*general.TO_TESLA);

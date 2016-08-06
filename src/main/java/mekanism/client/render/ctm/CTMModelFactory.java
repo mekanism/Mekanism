@@ -1,8 +1,10 @@
 package mekanism.client.render.ctm;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
@@ -20,43 +22,48 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 
 /**
- * Model for all chisel blocks
+ * Model for all CTM blocks, credit to Chisel
  */
 @SuppressWarnings("deprecation")
 public class CTMModelFactory implements IPerspectiveAwareModel 
 {
-    private List<BakedQuad> face;
-    private List<BakedQuad> general;
+	private ListMultimap<BlockRenderLayer, BakedQuad> genQuads = MultimapBuilder.enumKeys(BlockRenderLayer.class).arrayListValues().build();
+    private Table<BlockRenderLayer, EnumFacing, List<BakedQuad>> faceQuads = Tables.newCustomTable(Maps.newEnumMap(BlockRenderLayer.class), () -> Maps.newEnumMap(EnumFacing.class));
 
     private ModelCTM model;
     
     private CTMOverride override = new CTMOverride();
 
-    public CTMModelFactory(List<BakedQuad> f, List<BakedQuad> g, ModelCTM m)
+    public CTMModelFactory(ModelCTM m)
     {
-        face = f;
-        general = g;
         model = m;
     }
-
-    public CTMModelFactory(ModelCTM model)
-    {
-        this(Collections.emptyList(), Collections.emptyList(), model);
-    }
-
+    
+    private static Cache<Integer, CTMModelFactory> ctmCache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).maximumSize(500).<Integer, CTMModelFactory>build();
+    
     @Override
     public List<BakedQuad> getQuads(IBlockState stateIn, EnumFacing side, long rand) 
     {
@@ -65,14 +72,29 @@ public class CTMModelFactory implements IPerspectiveAwareModel
     	if(stateIn != null && stateIn.getBlock() instanceof ICTMBlock && stateIn instanceof IExtendedBlockState) 
         {
             IExtendedBlockState state = (IExtendedBlockState)stateIn;
+            IBlockState clean = state.getClean();
             CTMBlockRenderContext ctxList = state.getValue(BlockStateBasic.ctmProperty);
-            baked = createModel(stateIn, model, ctxList);
+            
+            try {
+	            if(ctxList == null)
+	            {
+	            	baked = ctmCache.get(Objects.hash(clean, -1), () -> createModel(state, model, null));
+	            }
+	            else {
+	            	long serialized = ctxList.serialize();
+	                baked = ctmCache.get(Objects.hash(clean, serialized), () -> createModel(state, model, ctxList));
+	            }
+            } catch(Exception e) {
+            	e.printStackTrace();
+            	return Lists.newArrayList();
+            }
         } 
         else {
             baked = this;
         }
     	
-        return side == null ? baked.general : FluentIterable.from(baked.face).filter(quad -> quad.getFace() == side).toList();
+    	BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+        return side == null ? baked.genQuads.get(layer) : layer == null ? baked.faceQuads.column(side).values().stream().flatMap(List::stream).collect(Collectors.toList()) : baked.faceQuads.get(layer, side);
     }
 
     @Override
@@ -107,33 +129,48 @@ public class CTMModelFactory implements IPerspectiveAwareModel
     
     private CTMModelFactory createModel(IBlockState state, ModelCTM model, CTMBlockRenderContext ctx) 
     {
-        List<BakedQuad> faceQuads = Lists.newArrayList();
-        List<BakedQuad> generalQuads = Lists.newArrayList();
+    	CTMModelFactory ret = new CTMModelFactory(model);
+        IBakedModel baked = model.getModel(state);
+        int quadGoal = ctx == null ? 1 : CTM.QUADS_PER_SIDE;
+        List<BakedQuad> quads = Lists.newArrayList();
         
-        for(EnumFacing facing : EnumFacing.VALUES)
+        for(BlockRenderLayer layer : BlockRenderLayer.values())
         {
-            TextureCTM face = model.getFace(facing);
-            ICTMBlock block = (ICTMBlock)state.getBlock();
-            CTMData data = block.getCTMData(state);
-            
-            if(block.getOverrideTexture(state, facing) != null)
-            {
-            	face = CTMRegistry.textureCache.get(block.getOverrideTexture(state, facing));
-            }
+	        for(EnumFacing facing : EnumFacing.VALUES)
+	        {
+	            TextureCTM face = model.getFace(facing);
+	            
+	            if(ctx == null || layer == face.layer)
+	            {
+		            ICTMBlock block = (ICTMBlock)state.getBlock();
+		            CTMData data = block.getCTMData(state);
+		            
+		            if(block.getOverrideTexture(state, facing) != null)
+		            {
+		            	face = CTMRegistry.textureCache.get(block.getOverrideTexture(state, facing));
+		            }
 
-            int quadGoal = ctx == null ? 1 : CTM.QUADS_PER_SIDE;
-            IBakedModel baked = model.getModel(state);
-            List<BakedQuad> origFaceQuads = baked.getQuads(state, facing, 0);
-            List<BakedQuad> origGeneralQuads = FluentIterable.from(baked.getQuads(state, null, 0)).filter(q -> q.getFace() == facing).toList();
-            addAllQuads(origFaceQuads, face, ctx, state, quadGoal, faceQuads);
-            addAllQuads(origGeneralQuads, face, ctx, state, quadGoal, generalQuads);
+		            List<BakedQuad> temp = baked.getQuads(state, facing, 0);
+                    addAllQuads(temp, face, ctx, state, quadGoal, quads);
+                    ret.faceQuads.put(layer, facing, ImmutableList.copyOf(quads));
+		            
+                    temp = FluentIterable.from(baked.getQuads(state, null, 0)).filter(q -> q.getFace() == facing).toList();
+                    addAllQuads(temp, face, ctx, state, quadGoal, quads);
+                    ret.genQuads.putAll(layer, temp);
+	            }
+	            else {
+	            	ret.faceQuads.put(layer, facing, Lists.newArrayList());
+	            }
+	        }
         }
         
-        return new CTMModelFactory(faceQuads, generalQuads, model);
+        return ret;
     }
     
     private void addAllQuads(List<BakedQuad> from, TextureCTM tex, @Nullable CTMBlockRenderContext ctx, IBlockState state, int quadGoal, List<BakedQuad> to)
     {
+    	to.clear();
+    	
         for(BakedQuad q : from)
         {
             to.addAll(tex.transformQuad(q, ctx == null ? null : ctx, quadGoal));
@@ -158,6 +195,7 @@ public class CTMModelFactory implements IPerspectiveAwareModel
             .put(TransformType.GROUND,                      get(0, 2, 0, 0, 0, 0, 0.25f))
             .put(TransformType.HEAD,                        get(0, 0, 0, 0, 0, 0, 1))
             .put(TransformType.FIXED,                       get(0, 0, 0, 0, 0, 0, 1))
+            .put(TransformType.NONE,                        get(0, 0, 0, 0, 0, 0, 0))
             .build();
     
     @Override

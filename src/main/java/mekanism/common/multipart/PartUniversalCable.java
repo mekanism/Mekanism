@@ -36,7 +36,7 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
 @InterfaceList({
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "Tesla")
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla")
 })
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, ITeslaConsumer
 {

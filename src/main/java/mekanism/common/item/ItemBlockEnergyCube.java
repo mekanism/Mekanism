@@ -11,6 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
@@ -117,6 +118,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
 			tileEntity.tier = EnergyCubeTier.values()[getBaseTier(stack).ordinal()];
 			tileEntity.electricityStored = getEnergy(stack);
+			
+			if(tileEntity.tier == EnergyCubeTier.CREATIVE)
+			{
+				tileEntity.configComponent.fillConfig(TransmissionType.ENERGY, tileEntity.getEnergy() > 0 ? 2 : 1);
+			}
 			
 			if(tileEntity instanceof ISecurityTile)
 			{

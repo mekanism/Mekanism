@@ -12,9 +12,9 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "Tesla"),
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaProducer", modid = "Tesla"),
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "Tesla")
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla"),
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaProducer", modid = "tesla"),
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "tesla")
 })
 public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaProducer
 {
@@ -29,28 +29,28 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
 	}
 
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long getStoredPower() 
 	{
 		return (long)Math.round(tileEntity.getEnergy()*general.TO_TESLA);
 	}
 
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long getCapacity() 
 	{
 		return (long)Math.round(tileEntity.getMaxEnergy()*general.TO_TESLA);
 	}
 	
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long takePower(long power, boolean simulated) 
 	{
 		return (long)Math.round(tileEntity.removeEnergyFromProvider(side, power*general.FROM_TESLA)*general.TO_TESLA);
 	}
 	
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long givePower(long power, boolean simulated) 
 	{
 		return (long)Math.round(tileEntity.transferEnergyToAcceptor(side, power*general.FROM_TESLA)*general.TO_TESLA);

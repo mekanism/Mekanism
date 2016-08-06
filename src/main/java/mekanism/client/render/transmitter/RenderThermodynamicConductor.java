@@ -38,7 +38,6 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<PartTher
 		MekanismRenderer.glowOn();
 		
 		tessellator.draw();
-		isDrawing = false;
 
 		MekanismRenderer.glowOff();
 		pop();

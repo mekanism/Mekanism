@@ -38,7 +38,6 @@ public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCab
 		MekanismRenderer.glowOn();
 
 		tessellator.draw();
-		isDrawing = false;
 
 		MekanismRenderer.glowOff();
 		pop();

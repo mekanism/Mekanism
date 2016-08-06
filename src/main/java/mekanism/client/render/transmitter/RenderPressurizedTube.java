@@ -38,7 +38,6 @@ public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurized
 		MekanismRenderer.glowOn(0);
 
 		tessellator.draw();
-		isDrawing = false;
 
 		MekanismRenderer.glowOff();
 		

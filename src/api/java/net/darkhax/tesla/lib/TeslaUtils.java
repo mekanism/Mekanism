@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.darkhax.tesla.api.ITeslaConsumer;
+import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.client.resources.I18n;
@@ -12,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class TeslaUtils {
     
@@ -100,6 +102,140 @@ public class TeslaUtils {
     public static String getLocalizedUnitType (long tesla) {
         
         return I18n.format("unit.tesla." + getUnitType(tesla));
+    }
+    
+    /**
+     * Checks if a capability provider has support for Tesla.
+     * 
+     * @param provider The provider to check. ItemStack/TileEntity/Entity and so on.
+     * @param side The side to check.
+     * @return Whether or not the provider has support for Tesla.
+     */
+    public static boolean hasTeslaSupport (ICapabilityProvider provider, EnumFacing side) {
+        
+        return isTeslaHolder(provider, side) || isTeslaConsumer(provider, side) || isTeslaProducer(provider, side);
+    }
+    
+    /**
+     * Checks if a capability provider is a Tesla holder.
+     * 
+     * @param provider The provider to check. ItemStack/TileEntity/Entity and so on.
+     * @param side The side to check.
+     * @return Whether or not the provider is a Tesla holder.
+     */
+    public static boolean isTeslaHolder (ICapabilityProvider provider, EnumFacing side) {
+        
+        return provider.hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
+    }
+    
+    /**
+     * Checks if a capability provider is a Tesla consumer.
+     * 
+     * @param provider The provider to check. ItemStack/TileEntity/Entity and so on.
+     * @param side The side to check.
+     * @return Whether or not the provider is a Tesla consumer.
+     */
+    public static boolean isTeslaConsumer (ICapabilityProvider provider, EnumFacing side) {
+        
+        return provider.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, side);
+    }
+    
+    /**
+     * Checks if a capability provider is a Tesla producer.
+     * 
+     * @param provider The provider to check. ItemStack/TileEntity/Entity and so on.
+     * @param side The side to check.
+     * @return Whether or not the provider is a Tesla producer.
+     */
+    public static boolean isTeslaProducer (ICapabilityProvider provider, EnumFacing side) {
+        
+        return provider.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, side);
+    }
+    
+    /**
+     * Gets an ITeslaHolder implementation from the capability provider.
+     * 
+     * @param provider The provider to get the capability from.
+     * @param side The side to access;
+     * @return A Tesla holder implementation, or null if none could be found.
+     */
+    public static ITeslaHolder getTeslaHolder (ICapabilityProvider provider, EnumFacing side) {
+        
+        return (ITeslaHolder) provider.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
+    }
+    
+    /**
+     * Gets an ITeslaConsumer implementation from the capability provider.
+     * 
+     * @param provider The provider to get the capability from.
+     * @param side The side to access;
+     * @return A Tesla consumer implementation, or null if none could be found.
+     */
+    public static ITeslaConsumer getTeslaConsumer (ICapabilityProvider provider, EnumFacing side) {
+        
+        return (ITeslaConsumer) provider.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
+    }
+    
+    /**
+     * Gets an ITeslaProducer implementation from the capability provider.
+     * 
+     * @param provider The provider to get the capability from.
+     * @param side The side to access;
+     * @return A Tesla producer implementation, or null if none could be found.
+     */
+    public static ITeslaProducer getTeslaProducer (ICapabilityProvider provider, EnumFacing side) {
+        
+        return (ITeslaProducer) provider.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
+    }
+    
+    /**
+     * Gets the capacity of a provider.
+     * 
+     * @param provider The provider to access.
+     * @param side The side to access.
+     * @return The capacity of the provider. 0 if it has no capacity.
+     */
+    public static long getCapacity (ICapabilityProvider provider, EnumFacing side) {
+        
+        return isTeslaHolder(provider, side) ? getTeslaHolder(provider, side).getCapacity() : 0;
+    }
+    
+    /**
+     * Gets the stored power of a provider.
+     * 
+     * @param provider The provider to access.
+     * @param side The side to access.
+     * @return The amount of power stored.
+     */
+    public static long getStoredPower (ICapabilityProvider provider, EnumFacing side) {
+        
+        return isTeslaHolder(provider, side) ? getTeslaHolder(provider, side).getStoredPower() : 0;
+    }
+    
+    /**
+     * Attempt to give power to a provider.
+     * 
+     * @param power The amount of power to offer.
+     * @param simulated Whether or not this is being called as part of a simulation.
+     *        Simulations are used to get information without affecting the Tesla Producer.
+     * @return The amount of power that the consumer accepts.
+     */
+    public static long givePower (ICapabilityProvider provider, EnumFacing side, long power, boolean simulated) {
+        
+        return isTeslaConsumer(provider, side) ? getTeslaConsumer(provider, side).givePower(power, simulated) : 0;
+    }
+    
+    /**
+     * Attempts to take power from a provider.
+     * 
+     * @param power The amount of power to request.
+     * @param simulated Whether or not this is being called as part of a simulation.
+     *        Simulations are used to get information without affecting the Tesla Producer.
+     * @return The amount of power that the Tesla Producer will give.
+     */
+    public static long takePower (ICapabilityProvider provider, EnumFacing side, long power, boolean simulated) {
+        
+        return isTeslaProducer(provider, side) ? getTeslaProducer(provider, side).takePower(power, simulated) : 0;
     }
     
     /**
