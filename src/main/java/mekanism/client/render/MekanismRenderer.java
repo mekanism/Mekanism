@@ -480,9 +480,12 @@ public class MekanismRenderer
 
 	public static void colorFluid(Fluid fluid)
 	{
-	    int color = fluid.getColor();
-	    
-	    float cR = (color >> 16 & 0xFF) / 255.0F;
+		color(fluid.getColor());
+	}
+	
+	public static void color(int color)
+	{
+		float cR = (color >> 16 & 0xFF) / 255.0F;
 	    float cG = (color >> 8 & 0xFF) / 255.0F;
 	    float cB = (color & 0xFF) / 255.0F;
 	    

@@ -42,6 +42,17 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	}
 	
 	@Override
+	public int getRenderColor()
+	{
+		if(dummy)
+		{
+			return dummyType.getColor();
+		}
+		
+		return infoHandler.getTank().getFluid().getFluid().getColor();
+	}
+	
+	@Override
 	public TransmissionType getTransmission()
 	{
 		return TransmissionType.FLUID;
@@ -88,6 +99,11 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
         {
             return 0;
         }
+        
+        if(infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE)
+        {
+        	return height-2;
+        }
 		
 		return infoHandler.getTank().getFluidAmount()*(height-2) / infoHandler.getTank().getCapacity();
 	}
@@ -111,7 +127,9 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 			return dummyType.getLocalizedName(null);
 		}
 		
-		return infoHandler.getTank().getFluid() != null ? LangUtils.localizeFluidStack(infoHandler.getTank().getFluid()) + ": " + infoHandler.getTank().getFluidAmount() + "mB" : LangUtils.localize("gui.empty");
+		String amountStr = (infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : infoHandler.getTank().getFluidAmount() + " mB");
+		
+		return infoHandler.getTank().getFluid() != null ? LangUtils.localizeFluidStack(infoHandler.getTank().getFluid()) + ": " + amountStr : LangUtils.localize("gui.empty");
 	}
 
 	public static interface IFluidInfoHandler

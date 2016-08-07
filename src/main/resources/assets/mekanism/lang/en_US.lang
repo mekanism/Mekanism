@@ -67,6 +67,7 @@ tile.FluidTankBasic.name=Basic Fluid Tank
 tile.FluidTankAdvanced.name=Advanced Fluid Tank
 tile.FluidTankElite.name=Elite Fluid Tank
 tile.FluidTankUltimate.name=Ultimate Fluid Tank
+tile.FluidTankCreative.name=Creative Fluid Tank
 
 //Cardboard Box
 tile.CardboardBox.name=Cardboard Box

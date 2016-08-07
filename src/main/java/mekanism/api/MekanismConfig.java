@@ -47,7 +47,6 @@ public class MekanismConfig
 		public static boolean blacklistRF;
 		public static boolean blacklistTesla;
 		public static boolean destroyDisabledBlocks;
-		public static boolean prefilledFluidTanks;
 		public static boolean prefilledGasTanks;
 		public static double armoredJetpackDamageRatio;
 		public static int armoredJetpackDamageMax;

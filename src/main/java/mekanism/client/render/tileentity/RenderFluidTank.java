@@ -46,6 +46,11 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 			MekanismRenderer.colorFluid(fluid);
 	
 			DisplayInteger[] displayList = getListAndRender(fluid);
+			
+			if(tier == FluidTankTier.CREATIVE)
+			{
+				fluidScale = 1;
+			}
 	
 			if(fluid.isGaseous())
 			{

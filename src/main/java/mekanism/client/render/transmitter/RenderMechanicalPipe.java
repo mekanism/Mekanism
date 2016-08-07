@@ -105,8 +105,12 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 					GL11.glTranslated(0.5, 0.5, 0.5);
 					Tessellator tessellator = Tessellator.getInstance();
 					VertexBuffer worldRenderer = tessellator.getBuffer();
-					renderFluidInOut(worldRenderer, side, pipe);
-					tessellator.draw();
+					
+					if(renderFluidInOut(worldRenderer, side, pipe))
+					{
+						tessellator.draw();
+					}
+					
 					GL11.glTranslated(-0.5, -0.5, -0.5);
 				}
 			}
@@ -260,14 +264,18 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 		return displays;
 	}
 	
-	public void renderFluidInOut(VertexBuffer renderer, EnumFacing side, PartMechanicalPipe pipe)
+	public boolean renderFluidInOut(VertexBuffer renderer, EnumFacing side, PartMechanicalPipe pipe)
 	{
 		if(pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null)
 		{
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(pipe.getTransmitter().getTransmitterNetwork().refFluid, FluidType.STILL);
 			renderTransparency(renderer, tex, getModelForSide(pipe, side), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
+			
+			return true;
 		}
+		
+		return false;
 	}
 	
     public static void onStitch()

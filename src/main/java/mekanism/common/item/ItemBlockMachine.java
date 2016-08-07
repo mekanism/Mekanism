@@ -196,13 +196,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				
 				if(fluidStack != null)
 				{
-					list.add(EnumColor.AQUA + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
+					int amount = getFluidStack(itemstack).amount;
+					String amountStr = amount == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : amount + "mB";
+					list.add(EnumColor.AQUA + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + amountStr);
 				}
 				else {
 					list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
 				}
 				
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + FluidTankTier.values()[getBaseTier(itemstack).ordinal()].storage + " mB");
+				int cap = FluidTankTier.values()[getBaseTier(itemstack).ordinal()].storage;
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap + " mB"));
 			}
 
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
@@ -780,6 +783,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		if(MachineType.get(container) == MachineType.FLUID_TANK && resource != null)
 		{
+			if(getBaseTier(container) == BaseTier.CREATIVE)
+			{
+				setFluidStack(PipeUtils.copy(resource, Integer.MAX_VALUE), container);
+			}
+			
 			FluidStack stored = getFluidStack(container);
 			int toFill;
 
@@ -819,7 +827,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				FluidStack toDrain = PipeUtils.copy(stored, Math.min(stored.amount, maxDrain));
 				
-				if(doDrain)
+				if(doDrain && getBaseTier(container) != BaseTier.CREATIVE)
 				{
 					stored.amount -= toDrain.amount;
 					setFluidStack(stored.amount > 0 ? stored : null, container);
