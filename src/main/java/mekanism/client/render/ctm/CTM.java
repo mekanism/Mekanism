@@ -19,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
@@ -120,8 +121,10 @@ public class CTM {
 	protected EnumMap<Dir, Boolean> connectionMap = Maps.newEnumMap(Dir.class);
 	protected int[] submapCache;
 
-	protected CTM() {
-		for (Dir dir : Dir.VALUES) {
+	protected CTM() 
+	{
+		for (Dir dir : Dir.VALUES) 
+		{
 			connectionMap.put(dir, false);
 		}
 
@@ -293,28 +296,13 @@ public class CTM {
 
         boolean disableObscured = disableObscuredFaceCheck.or(disableObscuredFaceCheckConfig);
 
-        IBlockState con = getBlockOrFacade(world, connection, dir);
-        IBlockState obscuring = disableObscured ? null : getBlockOrFacade(world, pos2, dir);
-        
-        CTMData data = ((ICTMBlock)state.getBlock()).getCTMData(state);
+        IBlockState obscuring = disableObscured ? null : getConnectedState(world, pos2, dir);
 
-        // no block or a bad API user
-        if (con == null || data == null) 
-        {
-            return false;
-        }
-
-        boolean ret = false;
-        
-        if(con.getBlock() instanceof ICTMBlock && ((ICTMBlock)con.getBlock()).getCTMData(con) != null)
-        {
-            String state2 = ((IStringSerializable)con.getValue(((ICTMBlock)con.getBlock()).getTypeProperty())).getName();
-            
-            ret = data.acceptableBlockStates.contains(state2);
-        }
+        boolean ret = canConnect(world, current, connection);
 
         // no block obscuring this face
-        if (obscuring == null) {
+        if(obscuring == null)
+        {
             return ret;
         }
 
@@ -323,8 +311,34 @@ public class CTM {
 
         return ret;
     }
+    
+    public static boolean canConnect(IBlockAccess world, BlockPos pos, BlockPos connection)
+    {
+    	IBlockState state = world.getBlockState(pos);
+    	IBlockState con = world.getBlockState(connection);
+    	
+    	CTMData data = ((ICTMBlock)state.getBlock()).getCTMData(state);
 
-	public static IBlockState getBlockOrFacade(IBlockAccess world, BlockPos pos, EnumFacing side) {
+        // no block or a bad API user
+        if(con == null || data == null) 
+        {
+            return false;
+        }
+        
+        boolean ret = false;
+        
+        if(con.getBlock() instanceof ICTMBlock && ((ICTMBlock)con.getBlock()).getCTMData(con) != null)
+        {
+            String state2 = ((IStringSerializable)con.getValue(((ICTMBlock)con.getBlock()).getTypeProperty())).getName();
+            
+            ret = data.acceptableBlockStates.contains(state2);
+        }
+        
+        return ret;
+    }
+
+	public static IBlockState getConnectedState(IBlockAccess world, BlockPos pos, EnumFacing side)
+	{
 		IBlockState state = world.getBlockState(pos);
 		return state;
 	}

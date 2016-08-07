@@ -47,6 +47,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -119,9 +120,9 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		{
 			case GENERATOR_BLOCK_1:
 				ctmData[9] = new CTMData(GeneratorType.ELECTROMAGNETIC_COIL);
-				ctmData[10] = new CTMData(GeneratorType.TURBINE_CASING);
-				ctmData[11] = new CTMData(GeneratorType.TURBINE_VALVE);
-				ctmData[12] = new CTMData(GeneratorType.TURBINE_VENT);
+				ctmData[10] = new CTMData(GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VALVE, GeneratorType.TURBINE_VENT);
+				ctmData[11] = new CTMData(GeneratorType.TURBINE_VALVE, GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VENT);
+				ctmData[12] = new CTMData(GeneratorType.TURBINE_VENT, GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VALVE);
 				ctmData[13] = new CTMData(GeneratorType.SATURATING_CONDENSER);
 				
 				break;
@@ -572,6 +573,13 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
+	@Override
+	public BlockRenderLayer getBlockLayer()
+	{
+		return BlockRenderLayer.CUTOUT;
+	}
+	
 	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)

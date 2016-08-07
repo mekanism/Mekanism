@@ -53,9 +53,7 @@ public enum CTMConnections
     NORTH_NORTH(EnumFacing.NORTH, null, true),
     SOUTH_SOUTH(EnumFacing.SOUTH, null, true),
     EAST_EAST(EnumFacing.EAST, null, true),
-    WEST_WEST(EnumFacing.WEST, null, true),
-    
-    ;
+    WEST_WEST(EnumFacing.WEST, null, true);
     
     public static final CTMConnections[] VALUES = values();
     
@@ -66,56 +64,75 @@ public enum CTMConnections
     private Dir dir;
     private boolean offset;
 
-    private CTMConnections(Dir dir) {
+    private CTMConnections(Dir dir) 
+    {
         this(EnumFacing.SOUTH, dir);
     }
     
-    private CTMConnections(Dir dir, boolean offset) {
+    private CTMConnections(Dir dir, boolean offset) 
+    {
         this(EnumFacing.SOUTH, dir, offset);
     }
     
-    private CTMConnections(EnumFacing normal, Dir dir){
+    private CTMConnections(EnumFacing normal, Dir dir)
+    {
         this(normal, dir, false);
     }
     
-    private CTMConnections(EnumFacing normal, Dir dir, boolean offset) {
+    private CTMConnections(EnumFacing normal, Dir dir, boolean offset) 
+    {
         this.normal = normal;
         this.dir = dir;
         this.offset = offset;
     }
 
-    public Dir getDirForSide(EnumFacing facing){
+    public Dir getDirForSide(EnumFacing facing)
+    {
         return dir == null ? null : dir;//TODO .relativize()
     }
 
-    public EnumFacing clipOrDestroy(EnumFacing direction) {
+    public EnumFacing clipOrDestroy(EnumFacing direction) 
+    {
         EnumFacing[] dirs = dir == null ? new EnumFacing[] {normal, normal} : dir.getNormalizedDirs(direction);
-        if (dirs[0] == direction) {
+        
+        if(dirs[0] == direction) 
+        {
             return dirs.length > 1 ? dirs[1] : null;
-        } else if (dirs.length > 1 && dirs[1] == direction) {
+        } 
+        else if(dirs.length > 1 && dirs[1] == direction) 
+        {
             return dirs[0];
-        } else {
+        } 
+        else {
             return null;
         }
     }
 
-    public BlockPos transform(BlockPos pos) {
-        if (dir != null) {
-            for (EnumFacing facing : dir.getNormalizedDirs(normal)) {
+    public BlockPos transform(BlockPos pos) 
+    {
+        if(dir != null) 
+        {
+            for(EnumFacing facing : dir.getNormalizedDirs(normal))
+            {
                 pos = pos.offset(facing);
             }
-        } else {
+        } 
+        else {
             pos = pos.offset(normal);
         }
 
-        if (offset) {
+        if(offset) 
+        {
             pos = pos.offset(normal);
         }
+        
         return pos;
     }
 
-    public static CTMConnections fromFacing(EnumFacing facing){
-        switch (facing){
+    public static CTMConnections fromFacing(EnumFacing facing)
+    {
+        switch(facing)
+        {
             case NORTH: return NORTH;
             case SOUTH: return SOUTH;
             case EAST: return EAST;
@@ -126,8 +143,10 @@ public enum CTMConnections
         }
     }
 
-    public static EnumFacing toFacing(CTMConnections loc){
-        switch (loc){
+    public static EnumFacing toFacing(CTMConnections loc)
+    {
+        switch(loc)
+        {
             case NORTH: return EnumFacing.NORTH;
             case SOUTH: return EnumFacing.SOUTH;
             case EAST: return EnumFacing.EAST;
@@ -138,45 +157,68 @@ public enum CTMConnections
         }
     }
 
-    public static List<CTMConnections> decode(long data) {
+    public static List<CTMConnections> decode(long data)
+    {
         List<CTMConnections> list = new ArrayList<>();
-        for (CTMConnections loc : values()) {
-            if ((1 & (data >> loc.ordinal())) != 0) {
+        
+        for(CTMConnections loc : values())
+        {
+            if((1 & (data >> loc.ordinal())) != 0) 
+            {
                 list.add(loc);
             }
         }
+        
         return list;
     }
 
-    public long getMask(){
+    public long getMask()
+    {
         return 1 << ordinal();
     }
 
-    public static List<CTMConnections> getConnections(IBlockAccess world, BlockPos pos, CTMConnections[] values){
+    public static List<CTMConnections> getConnections(IBlockAccess world, BlockPos pos, CTMConnections[] values)
+    {
         List<CTMConnections> locs = new ArrayList<>();
+        
         IBlockState state = world.getBlockState(pos);
-        for (CTMConnections loc : values) {
+        
+        for(CTMConnections loc : values) 
+        {
             BlockPos second = loc.transform(pos);
-            if (state.equals(CTM.getBlockOrFacade(world, second, null))){
+            
+            if(CTM.canConnect(world, pos, second))
+            {
                 locs.add(loc);
             }
         }
+        
         return locs;
     }
 
-    public static long getData(IBlockAccess world, BlockPos pos, CTMConnections[] values){
+    public static long getData(IBlockAccess world, BlockPos pos, CTMConnections[] values)
+    {
         List<CTMConnections> locs = getConnections(world, pos, values);
+        
         long data = 0;
-        for (CTMConnections loc : locs){
+        
+        for(CTMConnections loc : locs)
+        {
             data = data | loc.getMask();
         }
-        if (MekanismAPI.debug) {
+        
+        if(MekanismAPI.debug) 
+        {
             String s = Long.toBinaryString(data);
-            while (s.length() < 32) {
+            
+            while(s.length() < 32)
+            {
                 s = "0" + s;
             }
+            
             System.out.println(pos + ": " + s);
         }
+        
         return data;
     }
 }
