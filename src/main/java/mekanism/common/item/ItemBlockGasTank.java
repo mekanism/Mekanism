@@ -121,10 +121,12 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
 		}
 		else {
-			list.add(EnumColor.ORANGE + gasStack.getGas().getLocalizedName() + ": " + EnumColor.GREY + gasStack.amount);
+			String amount = "" + (gasStack.amount == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : gasStack.amount);
+			list.add(EnumColor.ORANGE + gasStack.getGas().getLocalizedName() + ": " + EnumColor.GREY + amount);
 		}
 		
-		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + GasTankTier.values()[getBaseTier(itemstack).ordinal()].storage);
+		int cap = GasTankTier.values()[getBaseTier(itemstack).ordinal()].storage;
+		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap));
 
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
@@ -193,7 +195,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 				if(type.isVisible())
 				{
 					ItemStack filled = new ItemStack(this);
-					setBaseTier(filled, BaseTier.ULTIMATE);
+					setBaseTier(filled, BaseTier.CREATIVE);
 					setGas(filled, new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 					list.add(filled);
 				}
@@ -243,6 +245,12 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			return 0;
 		}
 
+		if(getBaseTier(itemstack) == BaseTier.CREATIVE)
+		{
+			setGas(itemstack, new GasStack(stack.getGas(), Integer.MAX_VALUE));
+			return stack.amount;
+		}
+		
 		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
 		setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack)+toUse));
 

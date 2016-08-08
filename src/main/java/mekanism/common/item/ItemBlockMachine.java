@@ -786,6 +786,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(getBaseTier(container) == BaseTier.CREATIVE)
 			{
 				setFluidStack(PipeUtils.copy(resource, Integer.MAX_VALUE), container);
+				return resource.amount;
 			}
 			
 			FluidStack stored = getFluidStack(container);

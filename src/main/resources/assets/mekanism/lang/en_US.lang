@@ -61,6 +61,7 @@ tile.GasTankBasic.name=Basic Gas Tank
 tile.GasTankAdvanced.name=Advanced Gas Tank
 tile.GasTankElite.name=Elite Gas Tank
 tile.GasTankUltimate.name=Ultimate Gas Tank
+tile.GasTankCreative.name=Creative Gas Tank
 
 //Fluid Tank (part of MachineBlock2, naming handled differently)
 tile.FluidTankBasic.name=Basic Fluid Tank

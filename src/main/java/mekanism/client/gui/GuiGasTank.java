@@ -49,7 +49,8 @@ public class GuiGasTank extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		String capacityInfo = tileEntity.gasTank.getStored() + "/" + tileEntity.tier.storage;
+		String stored = "" + (tileEntity.gasTank.getStored() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tileEntity.gasTank.getStored());
+		String capacityInfo = stored + " / " + (tileEntity.tier.storage == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tileEntity.tier.storage);
 
 		fontRendererObj.drawString(tileEntity.getName(), (xSize / 2) - (fontRendererObj.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
 		fontRendererObj.drawString(capacityInfo, 45, 40, 0x404040);

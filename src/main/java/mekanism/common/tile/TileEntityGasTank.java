@@ -100,31 +100,39 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		{
 			if(inventory[0] != null && gasTank.getGas() != null)
 			{
-				gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
+				gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), tier != GasTankTier.CREATIVE);
 			}
 
 			if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
 			{
 				gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
+				
+				if(tier == GasTankTier.CREATIVE && gasTank.getGas() != null)
+				{
+					gasTank.getGas().amount = Integer.MAX_VALUE;
+				}
 			}
 
-			if(gasTank.getGas() != null && MekanismUtils.canFunction(this) && dumping != GasMode.DUMPING)
+			if(gasTank.getGas() != null && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING))
 			{
 				if(configComponent.isEjecting(TransmissionType.GAS))
 				{
 					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), tier.output));
-					gasTank.draw(GasTransmission.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, facing, 2)), true);
+					gasTank.draw(GasTransmission.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, facing, 2)), tier != GasTankTier.CREATIVE);
 				}
 			}
 
-			if(dumping == GasMode.DUMPING)
+			if(tier != GasTankTier.CREATIVE)
 			{
-				gasTank.draw(tier.storage/400, true);
-			}
-	
-			if(dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.output)
-			{
-				gasTank.draw(tier.output-gasTank.getNeeded(), true);
+				if(dumping == GasMode.DUMPING)
+				{
+					gasTank.draw(tier.storage/400, true);
+				}
+		
+				if(dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.output)
+				{
+					gasTank.draw(tier.output-gasTank.getNeeded(), true);
+				}
 			}
 			
 			int newGasAmount = gasTank.getStored();
@@ -209,6 +217,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
+		if(tier == GasTankTier.CREATIVE)
+		{
+			return stack != null ? stack.amount : 0;
+		}
+		
 		return gasTank.receive(stack, doTransfer);
 	}
 
