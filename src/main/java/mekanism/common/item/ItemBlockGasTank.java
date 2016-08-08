@@ -268,7 +268,11 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		Gas type = getGas(itemstack).getGas();
 
 		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
+		
+		if(getBaseTier(itemstack) != BaseTier.CREATIVE)
+		{
+			setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
+		}
 
 		return new GasStack(type, gasToUse);
 	}
