@@ -1,8 +1,13 @@
 package mekanism.common.chunkloading;
 
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import java.util.Set;
+
+import mekanism.common.tile.component.TileComponentChunkLoader;
+import net.minecraft.util.math.ChunkPos;
 
 public interface IChunkLoader
 {
-	public void forceChunks(Ticket ticket);
+	public TileComponentChunkLoader getChunkLoader();
+	
+	public Set<ChunkPos> getChunkSet();
 }

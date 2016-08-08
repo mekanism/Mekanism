@@ -344,7 +344,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 	
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long givePower(long power, boolean simulated) 
 	{
 		return power - (long)Math.round(takeEnergy(power*general.FROM_TESLA, !simulated)*general.TO_TESLA);
