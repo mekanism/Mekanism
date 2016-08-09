@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
@@ -59,6 +60,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -1552,5 +1554,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 		
 		return super.getCapability(capability, side);
+	}
+	
+	public Set<ChunkPos> getChunkSet()
+	{
+		return new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream().map(t -> t.getPos()).collect(Collectors.toSet());
 	}
 }
