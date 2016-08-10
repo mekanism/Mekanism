@@ -14,7 +14,7 @@ public class GeneratorsJEI implements IModPlugin
 	@Override
 	public void register(IModRegistry registry)
 	{
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(GeneratorsBlocks.Generator), MekanismJEI.UNUSED_TAGS);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(GeneratorsBlocks.Generator), MekanismJEI.NBT_INTERPRETER);
 	}
 	
 	@Override
