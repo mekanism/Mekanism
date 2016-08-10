@@ -7,8 +7,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.nbt.NBTTagCompound;
@@ -105,6 +108,11 @@ public class TileComponentChunkLoader implements ITileComponent
 			ForgeChunkManager.forceChunk(chunkTicket, chunk);
 		}
 	}
+	
+	public boolean canOperate()
+	{
+		return general.allowChunkloading && ((IUpgradeTile)tileEntity).getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
+	}
 
 	@Override
 	public void tick() 
@@ -117,14 +125,14 @@ public class TileComponentChunkLoader implements ITileComponent
 				prevCoord = Coord4D.get(tileEntity);
 			}
 			
-			if(chunkTicket != null && chunkTicket.world == tileEntity.getWorld())
+			if(chunkTicket != null && (!canOperate() || chunkTicket.world == tileEntity.getWorld()))
 			{
 				release();
 			}
 			
 			refreshChunkSet();
 			
-			if(chunkTicket == null)
+			if(canOperate() && chunkTicket == null)
 			{
 				Ticket ticket = ForgeChunkManager.requestTicket(Mekanism.instance, tileEntity.getWorld(), Type.NORMAL);
 	            

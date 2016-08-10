@@ -11,6 +11,7 @@ import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
@@ -83,6 +84,7 @@ public class GuiTeleporter extends GuiMekanism
 		resource = MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png");
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, resource));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, resource));
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
 			public String getTooltip()

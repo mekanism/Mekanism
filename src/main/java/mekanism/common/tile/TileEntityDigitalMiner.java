@@ -28,6 +28,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -38,6 +39,7 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -70,7 +72,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock
 {
 	public static int[] EJECT_INV;
 
@@ -127,12 +129,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 28);
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
+	public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
 
 	public TileEntityDigitalMiner()
 	{
 		super("DigitalMiner", BlockStateMachine.MachineType.DIGITAL_MINER.baseEnergy);
 		inventory = new ItemStack[29];
 		radius = 10;
+		
+		upgradeComponent.setSupported(Upgrade.ANCHOR);
 	}
 
 	@Override
@@ -1556,6 +1561,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return super.getCapability(capability, side);
 	}
 	
+	@Override
+	public TileComponentChunkLoader getChunkLoader()
+	{
+		return chunkLoaderComponent;
+	}
+	
+	@Override
 	public Set<ChunkPos> getChunkSet()
 	{
 		return new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream().map(t -> t.getPos()).collect(Collectors.toSet());

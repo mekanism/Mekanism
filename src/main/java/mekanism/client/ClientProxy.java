@@ -372,6 +372,7 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.FilterUpgrade);
 		registerItemRender(MekanismItems.MufflingUpgrade);
 		registerItemRender(MekanismItems.GasUpgrade);
+		registerItemRender(MekanismItems.AnchorUpgrade);
 		registerItemRender(MekanismItems.Robit);
 		registerItemRender(MekanismItems.AtomicDisassembler);
 		registerItemRender(MekanismItems.EnrichedAlloy);

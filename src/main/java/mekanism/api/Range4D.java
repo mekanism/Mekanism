@@ -87,7 +87,7 @@ public class Range4D
 		
 		for(int chunkX = xMin >> 4; chunkX <= xMax-1 >> 4; chunkX++)
 		{	
-			for(int chunkZ = zMin >> 4; chunkZ <= zMin-1 >> 4; chunkZ++)
+			for(int chunkZ = zMin >> 4; chunkZ <= zMax-1 >> 4; chunkZ++)
 			{
 				set.add(new Chunk3D(chunkX, chunkZ, dimensionId));
 			}
