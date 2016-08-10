@@ -929,7 +929,7 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public int getColorFromItemstack(ItemStack stack, int tintIndex) 
 			{
-				EnumDyeColor dyeColor = EnumDyeColor.byMetadata(stack.getItemDamage()&15);
+				EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getItemDamage()&15);
 				EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
 				
 				return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);

@@ -1036,7 +1036,7 @@ public class Mekanism
 	public void registerOreDict()
 	{
 		//Add specific items to ore dictionary for recipe usage in other mods.
-//		OreDictionary.registerOre("universalCable", new ItemStack(MekanismItems.PartTransmitter, 8, 0));
+		OreDictionary.registerOre("universalCable", new ItemStack(MekanismItems.PartTransmitter, 8, 0));
 		OreDictionary.registerOre("battery", MekanismItems.EnergyTablet.getUnchargedItem());
 		OreDictionary.registerOre("pulpWood", MekanismItems.Sawdust);
 		OreDictionary.registerOre("dustWood", MekanismItems.Sawdust);
@@ -1354,14 +1354,13 @@ public class Mekanism
 				}
 			}
 		}
-
-		//Load this module
-		addRecipes();
-		addEntities();
 		
 		//Integrate certain OreDictionary recipes
 		registerOreDict();
 
+		//Load this module
+		addRecipes();
+		addEntities();
 		
 		//Integrate with Waila
 		FMLInterModComms.sendMessage("Waila", "register", "mekanism.common.integration.WailaDataProvider.register");
