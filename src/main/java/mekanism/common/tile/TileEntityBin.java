@@ -36,6 +36,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
@@ -80,12 +81,6 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		markDirty();
 		
 		return true;
-	}
-
-	@Override
-	public void update()
-	{
-		super.update();
 	}
 
 	public void sortStacks()
@@ -149,25 +144,31 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 	public ItemStack add(ItemStack stack)
 	{
-		if(isValid(stack) && getItemCount() != tier.storage)
+		if(isValid(stack) && (tier == BinTier.CREATIVE || getItemCount() != tier.storage))
 		{
 			if(itemType == null)
 			{
 				setItemType(stack);
 			}
 
-			if(getItemCount() + stack.stackSize <= tier.storage)
+			if(tier != BinTier.CREATIVE)
 			{
-				setItemCount(getItemCount() + stack.stackSize);
-				return null;
+				if(getItemCount() + stack.stackSize <= tier.storage)
+				{
+					setItemCount(getItemCount() + stack.stackSize);
+					return null;
+				}
+				else {
+					ItemStack rejects = itemType.copy();
+					rejects.stackSize = (getItemCount()+stack.stackSize) - tier.storage;
+	
+					setItemCount(tier.storage);
+	
+					return rejects;
+				}
 			}
 			else {
-				ItemStack rejects = itemType.copy();
-				rejects.stackSize = (getItemCount()+stack.stackSize) - tier.storage;
-
-				setItemCount(tier.storage);
-
-				return rejects;
+				setItemCount(Integer.MAX_VALUE);
 			}
 		}
 
@@ -193,8 +194,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		ItemStack ret = itemType.copy();
 		ret.stackSize = Math.min(Math.min(amount, itemType.getMaxStackSize()), getItemCount());
-
-		setItemCount(getItemCount() - ret.stackSize);
+		
+		if(tier != BinTier.CREATIVE)
+		{
+			setItemCount(getItemCount() - ret.stackSize);
+		}
 
 		return ret;
 	}
@@ -395,12 +399,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				return;
 			}
 
-			if(itemstack == null)
+			if(tier != BinTier.CREATIVE)
 			{
-				setItemCount(getItemCount() - bottomStack.stackSize);
-			}
-			else {
-				setItemCount(getItemCount() - (bottomStack.stackSize-itemstack.stackSize));
+				if(itemstack == null)
+				{
+					setItemCount(getItemCount() - bottomStack.stackSize);
+				}
+				else {
+					setItemCount(getItemCount() - (bottomStack.stackSize-itemstack.stackSize));
+				}
 			}
 		}
 		else if(i == 1)
@@ -410,7 +417,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				topStack = null;
 			}
 			else {
-				if(isValid(itemstack) && itemstack.stackSize > StackUtils.getSize(topStack))
+				if(isValid(itemstack) && itemstack.stackSize > StackUtils.getSize(topStack) && tier != BinTier.CREATIVE)
 				{
 					add(StackUtils.size(itemstack, itemstack.stackSize-StackUtils.getSize(topStack)));
 				}
@@ -642,5 +649,22 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return EnumActionResult.PASS;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

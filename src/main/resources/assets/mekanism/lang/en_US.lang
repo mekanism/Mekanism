@@ -90,6 +90,7 @@ tile.BasicBlock.BinBasic.name=Basic Bin
 tile.BasicBlock.BinAdvanced.name=Advanced Bin
 tile.BasicBlock.BinElite.name=Elite Bin
 tile.BasicBlock.BinUltimate.name=Ultimate Bin
+tile.BasicBlock.BinCreative.name=Creative Bin
 tile.BasicBlock.TeleporterFrame.name=Teleporter Frame
 tile.BasicBlock.SteelCasing.name=Steel Casing
 tile.BasicBlock.DynamicTank.name=Dynamic Tank

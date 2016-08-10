@@ -255,7 +255,7 @@ public class ClientProxy extends CommonProxy
 	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
 		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
 		"solar_neutron_activator", "chemical_dissolution_chamber", "chemical_crystallizer", "seismic_vibrator", "security_desk",
-		"quantum_entangloporter", "resistive_heater", "EnergyCube", "digital_miner"};
+		"quantum_entangloporter", "resistive_heater", "EnergyCube", "digital_miner", "bin_creative"};
 	
 	private static final IStateMapper machineMapper = new MachineBlockStateMapper();
 	private static final IStateMapper basicMapper = new BasicBlockStateMapper();
@@ -575,7 +575,7 @@ public class ClientProxy extends CommonProxy
 						{
 							tierPointer = BaseTier.values()[tierPointer.ordinal()+1];
 							
-							if(tierPointer.isObtainable())
+							if(type == BasicBlockType.BIN || tierPointer.isObtainable())
 							{
 								resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
 								

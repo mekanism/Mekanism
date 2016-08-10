@@ -39,31 +39,41 @@ public class InventoryBin
 			return null;
 		}
 
-		setItemCount(getItemCount() - stack.stackSize);
+		if(getTier() != BinTier.CREATIVE)
+		{
+			setItemCount(getItemCount() - stack.stackSize);
+		}
+		
 		return stack.copy();
 	}
 
 	public ItemStack add(ItemStack stack)
 	{
-		if(isValid(stack) && getItemCount() != getMaxStorage())
+		if(isValid(stack) && (getTier() == BinTier.CREATIVE || getItemCount() != getMaxStorage()))
 		{
 			if(getItemType() == null)
 			{
 				setItemType(stack);
 			}
 
-			if(getItemCount() + stack.stackSize <= getMaxStorage())
+			if(getTier() != BinTier.CREATIVE)
 			{
-				setItemCount(getItemCount() + stack.stackSize);
-				return null;
+				if(getItemCount() + stack.stackSize <= getMaxStorage())
+				{
+					setItemCount(getItemCount() + stack.stackSize);
+					return null;
+				}
+				else {
+					ItemStack rejects = getItemType().copy();
+					rejects.stackSize = (getItemCount()+stack.stackSize) - getMaxStorage();
+	
+					setItemCount(getMaxStorage());
+	
+					return rejects;
+				}
 			}
 			else {
-				ItemStack rejects = getItemType().copy();
-				rejects.stackSize = (getItemCount()+stack.stackSize) - getMaxStorage();
-
-				setItemCount(getMaxStorage());
-
-				return rejects;
+				setItemCount(Integer.MAX_VALUE);
 			}
 		}
 
@@ -97,7 +107,12 @@ public class InventoryBin
 	
 	public int getMaxStorage()
 	{
-		return BinTier.values()[((ITierItem)bin.getItem()).getBaseTier(bin).ordinal()].storage;
+		return getTier().storage;
+	}
+	
+	public BinTier getTier()
+	{
+		return BinTier.values()[((ITierItem)bin.getItem()).getBaseTier(bin).ordinal()];
 	}
 
 	public int getItemCount()

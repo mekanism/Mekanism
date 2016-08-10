@@ -312,7 +312,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 					case BIN:
 						for(BaseTier tier : BaseTier.values())
 						{
-							if(tier.isObtainable())
+							if(type == BasicBlockType.BIN || tier.isObtainable())
 							{
 								ItemStack stack = new ItemStack(item, 1, type.meta);
 								((ItemBlockBasic)stack.getItem()).setBaseTier(stack, tier);
