@@ -162,28 +162,6 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Gets the latest version using getHTML and returns it as a string.
-	 * @return latest version
-	 */
-	public static String getLatestVersion()
-	{
-		String[] text = merge(getHTML("https://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt")).split(":");
-		if(text.length > 1 && !text[0].contains("UTF-8") && !text[0].contains("HTML") && !text[0].contains("http")) return text[0];
-		return "null";
-	}
-
-	/**
-	 * Gets the recent news using getHTML and returns it as a string.
-	 * @return recent news
-	 */
-	public static String getRecentNews()
-	{
-		String[] text = merge(getHTML("https://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt")).split(":");
-		if(text.length > 1 && !text[1].contains("UTF-8") && !text[1].contains("HTML") && !text[1].contains("http")) return text[1];
-		return "null";
-	}
-
-	/**
 	 * Updates the donator list by retrieving the most recent information from a foreign document.
 	 */
 	public static void updateDonators()
@@ -203,17 +181,14 @@ public final class MekanismUtils
 	 */
 	public static List<String> getHTML(String urlToRead)
 	{
-		URL url;
-		HttpURLConnection conn;
-		BufferedReader rd;
 		String line;
 		List<String> result = new ArrayList<String>();
 
 		try {
-			url = new URL(urlToRead);
-			conn = (HttpURLConnection)url.openConnection();
+			URL url = new URL(urlToRead);
+			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 			conn.setRequestMethod("GET");
-			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
 			while((line = rd.readLine()) != null)
 			{

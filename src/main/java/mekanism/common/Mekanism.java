@@ -160,7 +160,7 @@ import com.mojang.authlib.GameProfile;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "9.1.1", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "Mekanism", name = "Mekanism", version = "9.2.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:mcmultipart;after:JEI;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
 				"after:ComputerCraft;after:Galacticraft API;after:MetallurgyCore")
 public class Mekanism
@@ -186,7 +186,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(9, 1, 1);
+	public static Version versionNumber = new Version(9, 2, 0);
 	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");
