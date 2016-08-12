@@ -111,7 +111,7 @@ public final class CableUtils
 		{
 			ICableOutputter outputter = CapabilityUtils.getCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite());
 			
-			if(outputter.canOutputTo(side.getOpposite()))
+			if(outputter != null && outputter.canOutputTo(side.getOpposite()))
 			{
 				return true;
 			}
