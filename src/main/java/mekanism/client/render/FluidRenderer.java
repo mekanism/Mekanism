@@ -165,7 +165,7 @@ public final class FluidRenderer
 			case UP:
 			{
 				toReturn.minX = .3;
-				toReturn.minY = -(data.height-2) - .01;
+				toReturn.minY = -data.height - .01;
 				toReturn.minZ = .3;
 
 				toReturn.maxX = .7;
@@ -257,7 +257,6 @@ public final class FluidRenderer
 	{
 		public EnumFacing side;
 		public Coord4D valveLocation;
-		public Fluid fluidType;
 
 		public static ValveRenderData get(RenderData renderData, ValveData valveData)
 		{
@@ -278,8 +277,7 @@ public final class FluidRenderer
 		@Override
 		public boolean equals(Object data)
 		{
-			return data instanceof ValveRenderData && super.equals(data) && 
-					((ValveRenderData)data).side.equals(side) && ((ValveRenderData)data).fluidType == fluidType;
+			return data instanceof ValveRenderData && super.equals(data) && ((ValveRenderData)data).side.equals(side);
 		}
 
 		@Override
@@ -289,7 +287,6 @@ public final class FluidRenderer
 			code = 31 * code + super.hashCode();
 			code = 31 * code + side.ordinal();
 			code = 31 * code + valveLocation.hashCode();
-			code = 31 * code + fluidType.getName().hashCode();
 			return code;
 		}
 	}
