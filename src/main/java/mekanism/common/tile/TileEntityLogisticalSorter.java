@@ -142,7 +142,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 									break outer;
 								}
 							}
-
 						}
 					}
 

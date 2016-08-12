@@ -188,8 +188,5 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	}
 	
 	@SubscribeEvent
-	public void onStitch(TextureStitchEvent.Pre event)
-	{
-		RenderIndustrialTurbine.resetDisplayInts();
-	}
+	public void onStitch(TextureStitchEvent.Pre event) {}
 }

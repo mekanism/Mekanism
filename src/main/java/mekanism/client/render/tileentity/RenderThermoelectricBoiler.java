@@ -3,12 +3,13 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.client.render.FluidRenderer.RenderData;
+import mekanism.client.render.FluidRenderer.ValveRenderData;
+import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.tileentity.RenderDynamicTank.RenderData;
-import mekanism.client.render.tileentity.RenderDynamicTank.ValveRenderData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -47,48 +48,47 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 				data.height = (tileEntity.structure.upperRenderLocation.yCoord-1)-tileEntity.structure.renderLocation.yCoord;
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
+				data.fluidType = WATER;
 
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				
 				if(data.location != null && data.height >= 1 && tileEntity.structure.waterStored.getFluid() != null)
 				{
-					push();
+					FluidRenderer.push();
 
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					FluidRenderer.translateToOrigin(data.location);
 
 					MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.waterStored.getFluid());
 
-					DisplayInteger[] displayList = getLowerDisplay(data, tileEntity.structure.waterStored.getFluid(), tileEntity.getWorld());
-
 					if(tileEntity.structure.waterStored.getFluid().isGaseous())
 					{
 						GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.waterStored.amount / (float)tileEntity.clientWaterCapacity)+MekanismRenderer.GAS_RENDER_BASE));
-						displayList[getStages(data.height)-1].render();
+						FluidRenderer.getTankDisplay(data).render();
 					}
 					else {
-						displayList[Math.min(getStages(data.height)-1, (int)(tileEntity.prevWaterScale*((float)getStages(data.height)-1)))].render();
+						FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
 					}
 
 					MekanismRenderer.glowOff();
 					MekanismRenderer.resetColor();
 
-					pop();
+					FluidRenderer.pop();
 
 					for(ValveData valveData : tileEntity.valveViewing)
 					{
-						push();
+						FluidRenderer.push();
 
-						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
+						FluidRenderer.translateToOrigin(valveData.location);
 
 						MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
 
-						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.waterStored.getFluid(), tileEntity.getWorld()).render();
+						FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
 
 						MekanismRenderer.glowOff();
 						MekanismRenderer.resetColor();
 
-						pop();
+						FluidRenderer.pop();
 					}
 				}
 			}
@@ -101,19 +101,20 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 				data.height = (tileEntity.structure.renderLocation.yCoord+tileEntity.structure.volHeight-2)-(tileEntity.structure.upperRenderLocation.yCoord);
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
+				data.fluidType = STEAM;
 
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				
 				if(data.location != null && data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null)
 				{
-					push();
+					FluidRenderer.push();
 					
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					FluidRenderer.translateToOrigin(data.location);
 					
 					MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.steamStored.getFluid());
 	
-					DisplayInteger display = getUpperDisplay(data, tileEntity.structure.steamStored.getFluid(), tileEntity.getWorld());
+					DisplayInteger display = FluidRenderer.getTankDisplay(data);
 	
 					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.steamStored.amount / (float)tileEntity.clientSteamCapacity)+MekanismRenderer.GAS_RENDER_BASE));
 					display.render();
@@ -121,229 +122,14 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 					MekanismRenderer.glowOff();
 					MekanismRenderer.resetColor();
 	
-					pop();
+					FluidRenderer.pop();
 				}
 			}
 		}
-	}
-	
-	private void pop()
-	{
-		GL11.glPopAttrib();
-		GlStateManager.popMatrix();
-	}
-
-	private void push()
-	{
-		GlStateManager.pushMatrix();
-		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	}
-	
-	private DisplayInteger[] getLowerDisplay(RenderData data, Fluid fluid, World world)
-	{
-		if(cachedLowerFluids.containsKey(data))
-		{
-			return cachedLowerFluids.get(data);
-		}
-
-		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.WATER;
-		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
-
-		final int stages = getStages(data.height);
-		DisplayInteger[] displays = new DisplayInteger[stages];
-
-		cachedLowerFluids.put(data, displays);
-
-		for(int i = 0; i < stages; i++)
-		{
-			displays[i] = DisplayInteger.createAndStart();
-
-			if(fluid.getStill() != null)
-			{
-				toReturn.minX = 0 + .01;
-				toReturn.minY = 0 + .01;
-				toReturn.minZ = 0 + .01;
-
-				toReturn.maxX = data.length - .01;
-				toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-				toReturn.maxZ = data.width - .01;
-
-				MekanismRenderer.renderObject(toReturn);
-			}
-
-			GL11.glEndList();
-		}
-
-		return displays;
-	}
-	
-	private DisplayInteger getUpperDisplay(RenderData data, Fluid fluid, World world)
-	{
-		if(cachedUpperFluids.containsKey(data))
-		{
-			return cachedUpperFluids.get(data);
-		}
-
-		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.WATER;
-		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
-
-		final int stages = getStages(data.height);
-		DisplayInteger display = DisplayInteger.createAndStart();
-
-		cachedUpperFluids.put(data, display);
-		
-		if(STEAM.getStill() != null)
-		{
-			toReturn.minX = 0 + .01;
-			toReturn.minY = 0 + .01;
-			toReturn.minZ = 0 + .01;
-
-			toReturn.maxX = data.length - .01;
-			toReturn.maxY = data.height - .01;
-			toReturn.maxZ = data.width - .01;
-
-			MekanismRenderer.renderObject(toReturn);
-		}
-
-		GL11.glEndList();
-
-		return display;
-	}
-
-	private DisplayInteger getValveDisplay(ValveRenderData data, Fluid fluid, World world)
-	{
-		if(cachedValveFluids.containsKey(data))
-		{
-			return cachedValveFluids.get(data);
-		}
-
-		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.WATER;
-		MekanismRenderer.prepFlowing(toReturn, fluid);
-
-		DisplayInteger display = DisplayInteger.createAndStart();
-
-		cachedValveFluids.put(data, display);
-
-		switch(data.side)
-		{
-			case DOWN:
-			{
-				toReturn.minX = .3;
-				toReturn.minY = 1 + .01;
-				toReturn.minZ = .3;
-
-				toReturn.maxX = .7;
-				toReturn.maxY = 1.4 + .1;
-				toReturn.maxZ = .7;
-				break;
-			}
-			case UP:
-			{
-				toReturn.minX = .3;
-				toReturn.minY = -(data.height-2) - .01;
-				toReturn.minZ = .3;
-
-				toReturn.maxX = .7;
-				toReturn.maxY = -.01;
-				toReturn.maxZ = .7;
-				break;
-			}
-			case NORTH:
-			{
-				toReturn.minX = .3;
-				toReturn.minY = -(getValveFluidHeight(data)) + .01;
-				toReturn.minZ = 1 + .02;
-
-				toReturn.maxX = .7;
-				toReturn.maxY = .7;
-				toReturn.maxZ = 1.4;
-				break;
-			}
-			case SOUTH:
-			{
-				toReturn.minX = .3;
-				toReturn.minY = -(getValveFluidHeight(data)) + .01;
-				toReturn.minZ = -.4;
-
-				toReturn.maxX = .7;
-				toReturn.maxY = .7;
-				toReturn.maxZ = -.02;
-				break;
-			}
-			case WEST:
-			{
-				toReturn.minX = 1 + .02;
-				toReturn.minY = -(getValveFluidHeight(data)) + .01;
-				toReturn.minZ = .3;
-
-				toReturn.maxX = 1.4;
-				toReturn.maxY = .7;
-				toReturn.maxZ = .7;
-				break;
-			}
-			case EAST:
-			{
-				toReturn.minX = -.4;
-				toReturn.minY = -(getValveFluidHeight(data)) + .01;
-				toReturn.minZ = .3;
-
-				toReturn.maxX = -.02;
-				toReturn.maxY = .7;
-				toReturn.maxZ = .7;
-				break;
-			}
-			default:
-			{
-				break;
-			}
-		}
-
-		if(fluid.getFlowing() != null)
-		{
-			MekanismRenderer.renderObject(toReturn);
-		}
-		
-		display.endList();
-
-		return display;
-	}
-
-	private int getValveFluidHeight(ValveRenderData data)
-	{
-		return data.valveLocation.yCoord - data.location.yCoord;
 	}
 
 	private int getStages(int height)
 	{
 		return height*(TankUpdateProtocol.FLUID_PER_TANK/10);
-	}
-
-	private double getX(int x)
-	{
-		return x - TileEntityRendererDispatcher.staticPlayerX;
-	}
-
-	private double getY(int y)
-	{
-		return y - TileEntityRendererDispatcher.staticPlayerY;
-	}
-
-	private double getZ(int z)
-	{
-		return z - TileEntityRendererDispatcher.staticPlayerZ;
-	}
-	
-	public static void resetDisplayInts()
-	{
-		cachedLowerFluids.clear();
-		cachedUpperFluids.clear();
-		cachedValveFluids.clear();
 	}
 }
