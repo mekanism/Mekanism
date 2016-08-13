@@ -11,6 +11,7 @@ import mcmultipart.block.TileMultipartContainer;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.INormallyOccludingPart;
 import mcmultipart.multipart.Multipart;
+import mcmultipart.multipart.OcclusionHelper;
 import mcmultipart.raytrace.PartMOP;
 import mcmultipart.raytrace.RayTraceUtils;
 import mcmultipart.raytrace.RayTraceUtils.AdvancedRayTraceResultPart;
@@ -524,7 +525,8 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		}
 
 		testingSide = side;
-		boolean unblocked = true;//getContainer().canReplacePart(this, this);
+		IMultipart testPart = new OcclusionHelper.NormallyOccludingPart(getTransmitterType().getSize() == Size.SMALL ? smallSides[side.ordinal()] : largeSides[side.ordinal()]);
+		boolean unblocked = OcclusionHelper.occlusionTest(testPart, (part) -> part==this, getContainer().getParts());//getContainer().canReplacePart(this, this);
 		testingSide = null;
 		
 		return unblocked;
