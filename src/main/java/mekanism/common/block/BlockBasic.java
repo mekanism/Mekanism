@@ -1033,4 +1033,9 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	{
 		return getBasicBlock().getProperty();
 	}
+
+	@Override
+	public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beacon) {
+		return BasicBlockType.get(worldObj.getBlockState(pos)).isBeaconBase;
+	}
 }
