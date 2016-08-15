@@ -393,7 +393,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.stackTagCompound == null || !general.allowProtection)
 		{
 			return SecurityMode.PUBLIC;
 		}

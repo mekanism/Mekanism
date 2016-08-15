@@ -2,6 +2,7 @@ package mekanism.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.util.ListUtils;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
@@ -129,6 +130,9 @@ public class GuiSecurityTab extends GuiElement
 	
 	private SecurityMode getSecurity()
 	{
+		if(!general.allowProtection) {
+			return SecurityMode.PUBLIC;
+		}
 		if(isItem)
 		{
 			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
@@ -172,7 +176,7 @@ public class GuiSecurityTab extends GuiElement
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		if(button == 0)
+		if(button == 0 && general.allowProtection)
 		{
 			if(getOwner() != null && mc.thePlayer.getCommandSenderName().equals(getOwner()))
 			{
