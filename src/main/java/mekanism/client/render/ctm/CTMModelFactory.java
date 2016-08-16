@@ -140,7 +140,7 @@ public class CTMModelFactory implements IPerspectiveAwareModel
 	        {
 	            TextureCTM face = model.getFace(facing);
 	            
-	            if(ctx == null || layer == face.layer)
+	            if(ctx == null || layer == state.getBlock().getBlockLayer())
 	            {
 		            ICTMBlock block = (ICTMBlock)state.getBlock();
 		            CTMData data = block.getCTMData(state);

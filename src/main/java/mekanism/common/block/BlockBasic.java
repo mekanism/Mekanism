@@ -580,7 +580,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			return false;
 		}
 		
-		ItemStack copyStack = StackUtils.size(itemStack.copy(), 1);
+		ItemStack copyStack = StackUtils.size(itemStack, 1);
 		
 		if(FluidContainerUtils.isFluidContainer(itemStack))
 		{
@@ -1035,7 +1035,8 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	}
 
 	@Override
-	public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beacon) {
+	public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beacon) 
+	{
 		return BasicBlockType.get(worldObj.getBlockState(pos)).isBeaconBase;
 	}
 }

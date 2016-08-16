@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.model.ModelRotation;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -79,6 +78,6 @@ public class CTMRegistry
     	register(callbacks[0]);
     	register(callbacks[1]);
     	
-    	return new TextureCTM(BlockRenderLayer.CUTOUT, callbacks);
+    	return new TextureCTM(callbacks);
     }
 }

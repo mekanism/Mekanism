@@ -15,13 +15,10 @@ import net.minecraft.util.ResourceLocation;
 
 public class TextureCTM 
 {
-    protected BlockRenderLayer layer;
-
     public TextureSpriteCallback[] sprites;
     
-    public TextureCTM(BlockRenderLayer layer, TextureSpriteCallback[] sprites) 
+    public TextureCTM(TextureSpriteCallback[] sprites) 
     {
-        this.layer = layer;
         this.sprites = sprites;
     }
 
