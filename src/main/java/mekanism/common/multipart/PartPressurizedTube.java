@@ -261,13 +261,15 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 			return buffer.receive(gasStack, doEmit);
 		}
 	}
-
+	
 	@Override
 	public IGasHandler getCachedAcceptor(EnumFacing side)
 	{
+		TileEntity tile = getCachedTile(side);
+		
 		if(CapabilityUtils.hasCapability(cachedAcceptors[side.ordinal()], Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()))
 		{
-			return super.getCachedAcceptor(side);
+			return CapabilityUtils.getCapability(cachedAcceptors[side.ordinal()], Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
 		}
 		
 		return null;

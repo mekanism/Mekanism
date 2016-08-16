@@ -371,14 +371,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public EnergyAcceptorWrapper getCachedAcceptor(EnumFacing side)
 	{
-		ConnectionType type = connectionTypes[side.ordinal()];
-
-		if(type == ConnectionType.PULL || type == ConnectionType.NONE)
-		{
-			return null;
-		}
-
-		return connectionMapContainsSide(currentAcceptorConnections, side) ? EnergyAcceptorWrapper.get(cachedAcceptors[side.ordinal()], side.getOpposite()) : null;
+		return EnergyAcceptorWrapper.get(getCachedTile(side), side.getOpposite());
 	}
 
 	@Override

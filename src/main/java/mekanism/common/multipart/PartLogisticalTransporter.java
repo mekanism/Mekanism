@@ -8,6 +8,7 @@ import java.util.Collection;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.InventoryNetwork;
@@ -85,6 +86,12 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		{
 			PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
 		}
+	}
+	
+	@Override
+	public IInventory getCachedAcceptor(EnumFacing side)
+	{
+		return (IInventory)getCachedTile(side);
 	}
 
 	@Override

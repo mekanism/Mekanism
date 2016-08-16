@@ -3,6 +3,7 @@ package mekanism.common.multipart;
 import java.util.Collection;
 
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
@@ -268,6 +269,19 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		return tier.pipePullAmount;
 	}
 
+	@Override
+	public IFluidHandler getCachedAcceptor(EnumFacing side)
+	{
+		TileEntity tile = getCachedTile(side);
+		
+		if(CapabilityUtils.hasCapability(cachedAcceptors[side.ordinal()], CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+		{
+			return CapabilityUtils.getCapability(cachedAcceptors[side.ordinal()], CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+		}
+		
+		return null;
+	}
+	
 	public int takeFluid(FluidStack fluid, boolean doEmit)
 	{
 		if(getTransmitter().hasTransmitterNetwork())
