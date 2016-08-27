@@ -210,11 +210,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					}
 					
 					RenderHelper.enableGUIStandardItemLighting();
-					MekanismRenderer.blendOn();
-					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
 					itemRender.renderItemAndEffectIntoGUI(stack, guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition);
-					MekanismRenderer.blendOff();
-					RenderHelper.disableStandardItemLighting();
+					MekanismRenderer.resetColor();
 					GlStateManager.popMatrix();
 				}
 			}
