@@ -197,15 +197,20 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 			}
 			else if(getState(stack) == ConfiguratorMode.ROTATE) //Rotate
 			{
-				List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, pos));
-
-				if(!player.isSneaking() && l.contains(side))
+				EnumFacing[] rotations = block.getValidRotations(world, pos);
+				
+				if(rotations != null && rotations.length > 0)
 				{
-					block.rotateBlock(world, pos, side);
-				}
-				else if(player.isSneaking() && l.contains(side.getOpposite()))
-				{
-					block.rotateBlock(world, pos, side.getOpposite());
+					List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, pos));
+	
+					if(!player.isSneaking() && l.contains(side))
+					{
+						block.rotateBlock(world, pos, side);
+					}
+					else if(player.isSneaking() && l.contains(side.getOpposite()))
+					{
+						block.rotateBlock(world, pos, side.getOpposite());
+					}
 				}
 
 				return EnumActionResult.SUCCESS;
