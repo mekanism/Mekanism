@@ -19,7 +19,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
@@ -316,6 +315,11 @@ public class CTM {
     {
     	IBlockState state = world.getBlockState(pos);
     	IBlockState con = world.getBlockState(connection);
+    	
+    	if(!(state.getBlock() instanceof ICTMBlock))
+    	{
+    		return false;
+    	}
     	
     	CTMData data = ((ICTMBlock)state.getBlock()).getCTMData(state);
 

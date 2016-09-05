@@ -125,7 +125,7 @@ public class TileComponentChunkLoader implements ITileComponent
 				prevCoord = Coord4D.get(tileEntity);
 			}
 			
-			if(chunkTicket != null && (!canOperate() || chunkTicket.world == tileEntity.getWorld()))
+			if(chunkTicket != null && (!canOperate() || chunkTicket.world != tileEntity.getWorld()))
 			{
 				release();
 			}
