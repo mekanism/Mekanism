@@ -31,7 +31,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 			return null;
 		}
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

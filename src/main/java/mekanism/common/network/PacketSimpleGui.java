@@ -31,7 +31,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

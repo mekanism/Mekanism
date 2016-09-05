@@ -20,7 +20,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

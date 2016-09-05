@@ -25,7 +25,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

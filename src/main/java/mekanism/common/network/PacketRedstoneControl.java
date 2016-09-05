@@ -19,7 +19,7 @@ public class PacketRedstoneControl implements IMessageHandler<RedstoneControlMes
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

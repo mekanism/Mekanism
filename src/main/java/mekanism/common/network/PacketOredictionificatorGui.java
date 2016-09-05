@@ -35,7 +35,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

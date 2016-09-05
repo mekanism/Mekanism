@@ -17,7 +17,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage>
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

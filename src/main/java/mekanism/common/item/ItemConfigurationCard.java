@@ -99,7 +99,7 @@ public class ItemConfigurationCard extends ItemMekanism
 			}
 		}
 		
-		return EnumActionResult.FAIL;
+		return EnumActionResult.PASS;
 	}
 	
 	private NBTTagCompound getBaseData(TileEntity tile)
