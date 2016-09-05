@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 
 public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 {
-	public static final int FLUID_PER_TANK = 16000;
+	public static final int FLUID_PER_TANK = 64000;
 
 	public TankUpdateProtocol(TileEntityDynamicTank tileEntity)
 	{
