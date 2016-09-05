@@ -14,6 +14,7 @@ import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -47,12 +48,18 @@ public class RenderTickHandler
 				World world = mc.thePlayer.worldObj;
 				FontRenderer font = mc.fontRendererObj;
 				RayTraceResult pos = player.rayTrace(40.0D, 1.0F);
+				
+				if(font == null)
+				{
+					return;
+				}
 	
 				if(pos != null)
 				{	
 					Coord4D obj = new Coord4D(pos.getBlockPos(), world);
+					Block block = obj.getBlock(world);
 	
-					if(MekanismAPI.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
+					if(block != null && MekanismAPI.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 					{
 						String tileDisplay = "";
 	
@@ -64,7 +71,7 @@ public class RenderTickHandler
 							}
 						}
 	
-						font.drawStringWithShadow("Block: " + obj.getBlock(world).getUnlocalizedName(), 1, 1, 0x404040);
+						font.drawStringWithShadow("Block: " + block.getUnlocalizedName(), 1, 1, 0x404040);
 						font.drawStringWithShadow("Metadata: " + obj.getBlockState(world), 1, 10, 0x404040);
 						font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
 						font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);

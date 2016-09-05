@@ -28,7 +28,9 @@ public class TransmitterNetworkRegistry
 	private HashSet<DynamicNetwork> networksToChange = Sets.newHashSet();
 
 	private HashSet<IGridTransmitter> invalidTransmitters = Sets.newHashSet();
+	 
 	private HashMap<Coord4D, IGridTransmitter> orphanTransmitters = Maps.newHashMap();
+	private HashMap<Coord4D, IGridTransmitter> newOrphanTransmitters = Maps.newHashMap();
 
 	private Logger logger = LogManager.getLogger("MekanismTransmitters");
 
@@ -48,6 +50,7 @@ public class TransmitterNetworkRegistry
 		getInstance().networksToChange.clear();
 		getInstance().invalidTransmitters.clear();
 		getInstance().orphanTransmitters.clear();
+		getInstance().newOrphanTransmitters.clear();
 	}
 
 	public static void invalidateTransmitter(IGridTransmitter transmitter)
@@ -57,7 +60,7 @@ public class TransmitterNetworkRegistry
 
 	public static void registerOrphanTransmitter(IGridTransmitter transmitter)
 	{
-		getInstance().orphanTransmitters.put(transmitter.coord(), transmitter);
+		getInstance().newOrphanTransmitters.put(transmitter.coord(), transmitter);
 	}
 
 	public static void registerChangedNetwork(DynamicNetwork network)
@@ -131,6 +134,9 @@ public class TransmitterNetworkRegistry
 
 	public void assignOrphans()
 	{
+		orphanTransmitters = (HashMap<Coord4D, IGridTransmitter>)newOrphanTransmitters.clone();
+		newOrphanTransmitters.clear();
+		
 		if(MekanismAPI.debug && !orphanTransmitters.isEmpty())
 		{
 			logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
