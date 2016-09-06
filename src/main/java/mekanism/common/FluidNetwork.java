@@ -251,6 +251,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			if(buffer != null)
 			{
 				prevTransferAmount = tickEmit(buffer, true);
+				
 				if(buffer != null)
 				{
 					buffer.amount -= prevTransferAmount;

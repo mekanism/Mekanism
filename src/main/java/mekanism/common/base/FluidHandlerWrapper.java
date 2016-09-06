@@ -27,18 +27,33 @@ public class FluidHandlerWrapper implements IFluidHandler
 	@Override
 	public int fill(FluidStack resource, boolean doFill) 
 	{
-		return wrapper.fill(side, resource, doFill);
+		if(wrapper.canFill(side, resource != null ? resource.getFluid() : null))
+		{
+			return wrapper.fill(side, resource, doFill);
+		}
+		
+		return 0;
 	}
 
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) 
 	{
-		return wrapper.drain(side, resource, doDrain);
+		if(wrapper.canDrain(side, resource != null ? resource.getFluid() : null))
+		{
+			return wrapper.drain(side, resource, doDrain);
+		}
+		
+		return null;
 	}
 
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain) 
 	{
-		return wrapper.drain(side, maxDrain, doDrain);
+		if(wrapper.canDrain(side, null))
+		{
+			return wrapper.drain(side, maxDrain, doDrain);
+		}
+		
+		return null;
 	}
 }

@@ -454,36 +454,6 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		
 		return 0;
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean renderStatic(Vector3 pos, int pass)
-	{
-		if(pass == 0)
-		{
-			RenderPartTransmitter.getInstance().renderStatic(this, pass);
-			return true;
-		}
-		else if(pass == 1 && transparencyRender())
-		{
-			RenderPartTransmitter.getInstance().renderStatic(this, pass);
-			return true;
-		}
-		
-		return false;
-	}
-
-	@Override
-	public void addHitEffects(RayTraceResult hit, EffectRenderer effectRenderer)
-	{
-		IconHitEffects.addHitEffects(this, hit, effectRenderer);
-	}
-
-	@Override
-	public void addDestroyEffects(RayTraceResult mop, EffectRenderer effectRenderer)
-	{
-		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
-	}
 */
 
 	public abstract boolean isValidAcceptor(TileEntity tile, EnumFacing side);

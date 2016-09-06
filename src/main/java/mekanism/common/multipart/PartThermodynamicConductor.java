@@ -129,9 +129,9 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	{
 		TileEntity tile = getCachedTile(side);
 		
-		if(CapabilityUtils.hasCapability(cachedAcceptors[side.ordinal()], Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			return CapabilityUtils.getCapability(cachedAcceptors[side.ordinal()], Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+			return CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 		}
 		
 		return null;

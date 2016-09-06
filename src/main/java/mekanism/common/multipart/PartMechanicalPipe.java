@@ -27,13 +27,13 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
 {
+	public Tier.PipeTier tier;
+	
 	public float currentScale;
 
 	public FluidTank buffer = new FluidTank(Fluid.BUCKET_VOLUME);
 
 	public FluidStack lastWrite;
-
-	public Tier.PipeTier tier;
 
 	public PartMechanicalPipe(Tier.PipeTier pipeTier)
 	{
@@ -274,9 +274,9 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	{
 		TileEntity tile = getCachedTile(side);
 		
-		if(CapabilityUtils.hasCapability(cachedAcceptors[side.ordinal()], CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 		{
-			return CapabilityUtils.getCapability(cachedAcceptors[side.ordinal()], CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+			return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
 		}
 		
 		return null;

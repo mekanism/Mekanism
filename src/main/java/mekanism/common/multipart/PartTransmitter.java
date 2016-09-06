@@ -69,13 +69,23 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	}
 	
 	@Override
+	public void onUnloaded()
+	{
+		if(!getWorld().isRemote)
+		{
+			getTransmitter().takeShare();
+		}
+		
+		super.onUnloaded();
+	}
+	
+	@Override
 	public void onWorldSeparate() 
 	{
 		unloaded = true;
 		
 		if(!getWorld().isRemote)
 		{
-			getTransmitter().takeShare();
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
 		else {

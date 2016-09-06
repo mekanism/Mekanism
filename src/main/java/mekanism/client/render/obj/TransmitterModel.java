@@ -131,8 +131,8 @@ public class TransmitterModel extends OBJBakedModelBase
 			{
 				color = -1;
 			}
-	
-			int hash = Objects.hash(layer.ordinal(), color, obj.hashCode());
+			
+			int hash = Objects.hash(layer.ordinal(), color, ConnectionProperty.INSTANCE.valueToString(extended.getValue(ConnectionProperty.INSTANCE)));
 			
 			if(obj.getVisibilityMap().containsKey(Group.ALL) || obj.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
 	        {

@@ -35,6 +35,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	{
 		super();
 		tier = tubeTier;
+		buffer.setMaxGas(getCapacity());
 	}
 
 	@Override
@@ -267,9 +268,9 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	{
 		TileEntity tile = getCachedTile(side);
 		
-		if(CapabilityUtils.hasCapability(cachedAcceptors[side.ordinal()], Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()))
 		{
-			return CapabilityUtils.getCapability(cachedAcceptors[side.ordinal()], Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
+			return CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
 		}
 		
 		return null;
