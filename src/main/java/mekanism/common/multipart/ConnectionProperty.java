@@ -1,8 +1,9 @@
 package mekanism.common.multipart;
 
+import java.util.Arrays;
+
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import scala.actors.threadpool.Arrays;
 
 public class ConnectionProperty implements IUnlistedProperty<ConnectionProperty>
 {
