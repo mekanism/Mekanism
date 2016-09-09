@@ -438,7 +438,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
-		return null;
+        return outputTank.draw(amount, doTransfer);
 	}
 
 	@Override
@@ -450,7 +450,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return false;
+		return side == MekanismUtils.getRight(facing) && outputTank.canDraw(type);
 	}
 	
 	@Override
