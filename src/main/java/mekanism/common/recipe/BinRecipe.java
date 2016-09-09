@@ -1,6 +1,7 @@
 package mekanism.common.recipe;
 
 import mekanism.common.MekanismItems;
+import mekanism.common.Tier.BinTier;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemProxy;
@@ -95,12 +96,15 @@ public class BinRecipe implements IRecipe
 
 		if(addStack != null)
 		{
-			if(binInv.getItemType() != null && !binInv.getItemType().isItemEqual(addStack))
+			if(!(addStack.getItem() instanceof ItemProxy))
 			{
-				return null;
+				if(binInv.getItemType() != null && !binInv.getItemType().isItemEqual(addStack))
+				{
+					return null;
+				}
+	
+				binInv.add(addStack);
 			}
-
-			binInv.add(addStack);
 			
 			return bin;
 		}
@@ -144,8 +148,14 @@ public class BinRecipe implements IRecipe
 						int size = inv.getItemCount();
 
 						ItemStack testRemove = inv.removeStack();
+						int newCount = size-(testRemove != null ? testRemove.stackSize : 0);
+						
+						if(inv.getTier() == BinTier.CREATIVE)
+						{
+							newCount = size;
+						}
 
-						ItemDataUtils.setInt(bin, "newCount", size-(testRemove != null ? testRemove.stackSize : 0));
+						ItemDataUtils.setInt(bin, "newCount", newCount);
 					}
 				}
 			}
@@ -179,8 +189,6 @@ public class BinRecipe implements IRecipe
 				else {
 					event.craftMatrix.setInventorySlotContents(other, null);
 				}
-
-				event.craftMatrix.setInventorySlotContents(bin, null);
 			}
 		}
 	}

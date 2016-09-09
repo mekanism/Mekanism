@@ -1,6 +1,5 @@
 package mekanism.generators.client.render;
 
-import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
@@ -29,13 +28,14 @@ public class RenderWindGenerator extends TileEntitySpecialRenderer<TileEntityWin
 
 		GlStateManager.rotate(180, 0F, 0F, 1F);
 
-		if(!Mekanism.proxy.isPaused() &&
-				tileEntity.getWorld().canBlockSeeSky(tileEntity.getPos().add(0, 4, 0)))
+		double angle = tileEntity.angle;
+		
+		if(tileEntity.isActive)
 		{
-			tileEntity.angle = (tileEntity.angle+((tileEntity.getPos().getY()+4F)/256F)*8) % 360;
+			angle = (tileEntity.angle+((tileEntity.getPos().getY()+4F)/TileEntityWindGenerator.SPEED_SCALED)*partialTick)%360;
 		}
 
-		model.render(0.0625F, tileEntity.angle);
+		model.render(0.0625F, angle);
 		GlStateManager.popMatrix();
 	}
 }

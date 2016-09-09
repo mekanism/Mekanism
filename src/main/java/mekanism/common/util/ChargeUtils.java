@@ -51,7 +51,7 @@ public final class ChargeUtils
 
 				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_RF));
 			}
-			else if(inv.getStackInSlot(slotID).getItem() == Items.REDSTONE && storer.getEnergy()+ general.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
+			else if(inv.getStackInSlot(slotID).getItem() == Items.REDSTONE && storer.getEnergy()+general.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
 				storer.setEnergy(storer.getEnergy() + general.ENERGY_PER_REDSTONE);
 				inv.getStackInSlot(slotID).stackSize--;
@@ -155,7 +155,7 @@ public final class ChargeUtils
 				return energyContainer.extractEnergy(itemstack, 1, true) > 0;
 			}
 		}
-		else if(itemstack.getItem() instanceof ISpecialElectricItem)
+		else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof ISpecialElectricItem)
 		{
 			IElectricItemManager manager = ((ISpecialElectricItem)itemstack.getItem()).getManager(itemstack);
 			

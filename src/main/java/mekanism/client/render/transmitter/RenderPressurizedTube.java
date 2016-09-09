@@ -1,5 +1,6 @@
 package mekanism.client.render.transmitter;
 
+import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.multipart.PartPressurizedTube;
@@ -19,7 +20,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurized
 	@Override
 	public void renderMultipartAt(PartPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		if(!tube.getTransmitter().hasTransmitterNetwork() || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
+		if(client.opaqueTransmitters || !tube.getTransmitter().hasTransmitterNetwork() || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
 		{
 			return;
 		}
@@ -37,7 +38,6 @@ public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurized
 		MekanismRenderer.glowOn(0);
 
 		tessellator.draw();
-		isDrawing = false;
 
 		MekanismRenderer.glowOff();
 		

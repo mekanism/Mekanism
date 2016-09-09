@@ -63,14 +63,11 @@ public abstract class RenderTransmitterBase<T extends PartTransmitter> extends M
 		GL11.glPopMatrix();
 	}
 	
-	public static boolean isDrawing = false;
-	
 	public void renderTransparency(VertexBuffer renderer, TextureAtlasSprite icon, IBakedModel cc, ColourRGBA color)
 	{
-		if(!isDrawing)
+		if(!MekanismRenderer.isDrawing(renderer))
 		{
 			renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
-			isDrawing = true;
 		}
 		
 		for(EnumFacing side : EnumFacing.values())

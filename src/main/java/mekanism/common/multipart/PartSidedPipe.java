@@ -11,6 +11,7 @@ import mcmultipart.block.TileMultipartContainer;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.INormallyOccludingPart;
 import mcmultipart.multipart.Multipart;
+import mcmultipart.multipart.OcclusionHelper;
 import mcmultipart.raytrace.PartMOP;
 import mcmultipart.raytrace.RayTraceUtils;
 import mcmultipart.raytrace.RayTraceUtils.AdvancedRayTraceResultPart;
@@ -453,36 +454,6 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		
 		return 0;
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean renderStatic(Vector3 pos, int pass)
-	{
-		if(pass == 0)
-		{
-			RenderPartTransmitter.getInstance().renderStatic(this, pass);
-			return true;
-		}
-		else if(pass == 1 && transparencyRender())
-		{
-			RenderPartTransmitter.getInstance().renderStatic(this, pass);
-			return true;
-		}
-		
-		return false;
-	}
-
-	@Override
-	public void addHitEffects(RayTraceResult hit, EffectRenderer effectRenderer)
-	{
-		IconHitEffects.addHitEffects(this, hit, effectRenderer);
-	}
-
-	@Override
-	public void addDestroyEffects(RayTraceResult mop, EffectRenderer effectRenderer)
-	{
-		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
-	}
 */
 
 	public abstract boolean isValidAcceptor(TileEntity tile, EnumFacing side);
@@ -524,7 +495,8 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		}
 
 		testingSide = side;
-		boolean unblocked = true;//getContainer().canReplacePart(this, this);
+		IMultipart testPart = new OcclusionHelper.NormallyOccludingPart(getTransmitterType().getSize() == Size.SMALL ? smallSides[side.ordinal()] : largeSides[side.ordinal()]);
+		boolean unblocked = OcclusionHelper.occlusionTest(testPart, (part) -> part==this, getContainer().getParts());//getContainer().canReplacePart(this, this);
 		testingSide = null;
 		
 		return unblocked;

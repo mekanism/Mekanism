@@ -125,6 +125,19 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 	
 	@Override
+	public IHeatTransfer getCachedAcceptor(EnumFacing side)
+	{
+		TileEntity tile = getCachedTile(side);
+		
+		if(CapabilityUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
+		{
+			return CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+		}
+		
+		return null;
+	}
+	
+	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception 
 	{
 		temperature = dataStream.readDouble();

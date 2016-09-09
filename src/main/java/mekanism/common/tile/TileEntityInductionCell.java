@@ -29,14 +29,15 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
-	{
-		super.handlePacketData(dataStream);
-		
+	{		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			InductionCellTier prevTier = tier;
 			
 			tier = InductionCellTier.values()[dataStream.readInt()];
+			
+			super.handlePacketData(dataStream);
+			
 			electricityStored = dataStream.readDouble();
 	
 			if(prevTier != tier)

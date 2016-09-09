@@ -21,7 +21,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -130,11 +129,7 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexFormat prevFormat = null;
 		
-		if(MekanismRenderer.isDrawing(tessellator))
-		{
-			prevFormat = tessellator.getBuffer().getVertexFormat();
-			tessellator.draw();
-		}
+		MekanismRenderer.pauseRenderer(tessellator);
 		
 		List<BakedQuad> generalQuads = new LinkedList<BakedQuad>();
 		
@@ -150,11 +145,7 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
     	GlStateManager.popMatrix();
     	
-    	if(prevFormat != null)
-    	{
-	    	VertexBuffer worldrenderer = tessellator.getBuffer();
-	    	worldrenderer.begin(7, prevFormat);
-    	}
+    	MekanismRenderer.resumeRenderer(tessellator);
 		
 		if(Block.getBlockFromItem(stack.getItem()) != null)
 		{

@@ -54,6 +54,11 @@ public abstract class GuiGauge<T> extends GuiElement
 	public abstract TextureAtlasSprite getIcon();
 
 	public abstract String getTooltipText();
+	
+	public int getRenderColor()
+	{
+		return -1;
+	}
 
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
@@ -96,11 +101,18 @@ public abstract class GuiGauge<T> extends GuiElement
 			}
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+			
+			if(getRenderColor() != -1)
+			{
+				MekanismRenderer.color(getRenderColor());
+			}
 
 			for(int i = 0; i < number; i++)
 			{
 				guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16*i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
 			}
+			
+			MekanismRenderer.resetColor();
 
 			start+=16;
 

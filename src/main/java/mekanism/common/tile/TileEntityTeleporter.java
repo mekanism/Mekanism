@@ -17,7 +17,9 @@ import mekanism.api.util.ReflectionUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.frequency.Frequency;
@@ -28,7 +30,9 @@ import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
@@ -46,16 +50,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile, IUpgradeTile
 {
 	private MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
@@ -73,8 +75,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public List<Frequency> publicCache = new ArrayList<Frequency>();
 	public List<Frequency> privateCache = new ArrayList<Frequency>();
-	
-	public Ticket chunkTicket;
 
 	/** This teleporter's current status. */
 	public byte status = 0;
@@ -82,13 +82,19 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileComponentSecurity securityComponent;
+	public TileComponentChunkLoader chunkLoaderComponent;
+	public TileComponentUpgrade upgradeComponent;
 
 	public TileEntityTeleporter()
 	{
 		super("Teleporter", BlockStateMachine.MachineType.TELEPORTER.baseEnergy);
-		inventory = new ItemStack[1];
+		inventory = new ItemStack[2];
 		
 		securityComponent = new TileComponentSecurity(this);
+		chunkLoaderComponent = new TileComponentChunkLoader(this);
+		upgradeComponent = new TileComponentUpgrade(this, 1);
+		upgradeComponent.clearSupportedTypes();
+		upgradeComponent.setSupported(Upgrade.ANCHOR);
 	}
 
 	@Override
@@ -103,20 +109,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 		if(!worldObj.isRemote)
 		{
-			if(chunkTicket == null)
-			{
-				Ticket ticket = ForgeChunkManager.requestTicket(Mekanism.instance, worldObj, Type.NORMAL);
-				
-				if(ticket != null)
-				{
-					ticket.getModData().setInteger("xCoord", getPos().getX());
-					ticket.getModData().setInteger("yCoord", getPos().getY());
-					ticket.getModData().setInteger("zCoord", getPos().getZ());
-					
-					forceChunks(ticket);
-				}
-			}
-			
 			FrequencyManager manager = getManager(frequency);
 			
 			if(manager != null)
@@ -263,8 +255,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		
 		if(!worldObj.isRemote)
 		{
-			releaseChunks();
-			
 			if(frequency != null)
 			{
 				FrequencyManager manager = getManager(frequency);
@@ -761,24 +751,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public void forceChunks(Ticket ticket)
-	{
-		releaseChunks();
-		chunkTicket = ticket;
-		
-		ForgeChunkManager.forceChunk(chunkTicket, new Chunk3D(Coord4D.get(this)).getPos());
-	}
-	
-	public void releaseChunks()
-	{
-		if(chunkTicket != null)
-		{
-			ForgeChunkManager.releaseTicket(chunkTicket);
-			chunkTicket = null;
-		}
-	}
-
-	@Override
 	public RedstoneControl getControlType()
 	{
 		return controlType;
@@ -800,5 +772,27 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	public TileComponentSecurity getSecurity()
 	{
 		return securityComponent;
+	}
+	
+	@Override
+	public TileComponentChunkLoader getChunkLoader()
+	{
+		return chunkLoaderComponent;
+	}
+	
+	@Override
+	public Set<ChunkPos> getChunkSet()
+	{
+		Set<ChunkPos> ret = new HashSet<ChunkPos>();
+		
+		ret.add(new Chunk3D(Coord4D.get(this)).getPos());
+		
+		return ret;
+	}
+
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
 	}
 }

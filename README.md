@@ -11,21 +11,15 @@ Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to
 # Modpacks, websites, reviews, or anything else #
 
 Some people really don't like others to review or distribute their mods, something which I honestly don't understand.  You are the ones who help get this mod into the Minecraft community's hands, which seems like a good thing from my perspective.
-So go ahead, do whatever you like.  I honestly just don't want you messaging me on IRC or on the forums, asking my permission.  If you need proof, provide a link to this page, or give them information on the MIT license.
+As long as you follow the terms laid out in the license below, go right ahead.  I honestly just don't want you messaging me on IRC or on the forums, asking my permission.  If you need proof, provide a link to this page.
 
 # License #
 
-Licenses are not really my friend -- strict closed source software really drives me nuts.  Even more, with a derivative work coded in a language such as Java, nothing can really prevent people from looking through my source with JD-GUI.
-However, I welcome people wanting to learn how to mod, and because of this, I have licensed Mekanism under the MIT License, which doesn't include many guidelines.  This basically means you have the right to use my mod's source code, learn
-from it, and even use it in your own mod.  You even have the right to distribute this mod to the public and make money off of it, although this is something I wouldn't necessarily encourage! :)
-
-Copyright © 2016 Aidan Brady
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Licenses are not really my friend -- strict closed source software really drives me nuts.  Even more, with a derivative work coded in a language such as Java, nothing can really prevent people from looking through my source with JD-GUI.  I learned to program through a combination of textbooks, trial-and-error and browsing open source projects.  As such, I have decided to license Mekanism under the MIT license, allowing for anyone with an interest in the project to fork/pull/distribute.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+**Copyright © 2016 Aidan Brady**
 
 # Developers & Credits #
 

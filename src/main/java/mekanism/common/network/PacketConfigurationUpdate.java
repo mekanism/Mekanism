@@ -33,7 +33,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

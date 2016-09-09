@@ -312,7 +312,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 					case BIN:
 						for(BaseTier tier : BaseTier.values())
 						{
-							if(tier.isObtainable())
+							if(type == BasicBlockType.BIN || tier.isObtainable())
 							{
 								ItemStack stack = new ItemStack(item, 1, type.meta);
 								((ItemBlockBasic)stack.getItem()).setBaseTier(stack, tier);
@@ -580,7 +580,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			return false;
 		}
 		
-		ItemStack copyStack = StackUtils.size(itemStack.copy(), 1);
+		ItemStack copyStack = StackUtils.size(itemStack, 1);
 		
 		if(FluidContainerUtils.isFluidContainer(itemStack))
 		{
@@ -1032,5 +1032,11 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	public PropertyEnum<BasicBlockType> getTypeProperty()
 	{
 		return getBasicBlock().getProperty();
+	}
+
+	@Override
+	public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beacon) 
+	{
+		return BasicBlockType.get(worldObj.getBlockState(pos)).isBeaconBase;
 	}
 }

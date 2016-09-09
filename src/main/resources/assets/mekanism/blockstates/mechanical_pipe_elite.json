@@ -4,7 +4,9 @@
     "model": "mekanism:transmitter_large.obj.mek",
     "textures": {
       "#side": "mekanism:blocks/models/multipart/MechanicalPipeVerticalElite",
-      "#center": "mekanism:blocks/models/multipart/MechanicalPipeElite"
+      "#center": "mekanism:blocks/models/multipart/MechanicalPipeElite",
+      "#side_opaque": "mekanism:blocks/models/multipart/opaque/MechanicalPipeVerticalElite",
+      "#center_opaque": "mekanism:blocks/models/multipart/opaque/MechanicalPipeElite"
     },
     "custom": {
       "flip-v": true

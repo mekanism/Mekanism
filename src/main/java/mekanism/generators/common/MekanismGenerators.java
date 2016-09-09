@@ -44,7 +44,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "9.1.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "9.2.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
@@ -54,7 +54,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(9, 1, 0);
+	public static Version versionNumber = new Version(9, 2, 0);
 	
 	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
 
@@ -158,7 +158,7 @@ public class MekanismGenerators implements IModule
 			" I ", "IFI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('F'), Blocks.IRON_BARS
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 13), new Object[] {
-			"STS", "TBT", "STS", Character.valueOf('S'), "ingotSteel", Character.valueOf('T'), "ingotTin", Character.valueOf('E'), Items.BUCKET
+			"STS", "TBT", "STS", Character.valueOf('S'), "ingotSteel", Character.valueOf('T'), "ingotTin", Character.valueOf('B'), Items.BUCKET
 		}));
 		
 		//Reactor Recipes

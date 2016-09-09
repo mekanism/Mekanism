@@ -155,13 +155,15 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 					if(inv.getItemCount() > 0)
 					{
 						list.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
-						list.add(EnumColor.PURPLE + LangUtils.localize("tooltip.itemAmount") + ": " + EnumColor.GREY + inv.getItemCount());
+						String amountStr = inv.getItemCount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : "" + inv.getItemCount();
+						list.add(EnumColor.PURPLE + LangUtils.localize("tooltip.itemAmount") + ": " + EnumColor.GREY + amountStr);
 					}
 					else {
 						list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty"));
 					}
 					
-					list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + BinTier.values()[getBaseTier(itemstack).ordinal()].storage + " " + LangUtils.localize("transmission.Items"));
+					int cap = BinTier.values()[getBaseTier(itemstack).ordinal()].storage;
+					list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap) + " " + LangUtils.localize("transmission.Items"));
 				}
 				else if(type == BasicBlockType.INDUCTION_CELL)
 				{

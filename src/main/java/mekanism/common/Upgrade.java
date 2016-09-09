@@ -21,7 +21,8 @@ public enum Upgrade
 	ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),
 	FILTER("filter", 1, EnumColor.DARK_AQUA),
 	GAS("gas", 8, EnumColor.YELLOW),
-	MUFFLING("muffling", 4, EnumColor.DARK_GREY);
+	MUFFLING("muffling", 4, EnumColor.DARK_GREY),
+	ANCHOR("anchor", 1, EnumColor.DARK_GREEN);
 	
 	private String name;
 	private int maxStack;
@@ -73,6 +74,8 @@ public enum Upgrade
 				return new ItemStack(MekanismItems.MufflingUpgrade);
 			case GAS:
 				return new ItemStack(MekanismItems.GasUpgrade);
+			case ANCHOR:
+				return new ItemStack(MekanismItems.AnchorUpgrade);
 		}
 		
 		return null;

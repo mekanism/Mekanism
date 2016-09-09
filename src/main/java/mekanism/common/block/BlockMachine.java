@@ -432,19 +432,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 							list.add(stack);
 						}
 
-						if(general.prefilledFluidTanks)
-						{
-							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
-							{
-								try { //Prevent bad IDs
-									ItemStack filled = new ItemStack(item, 1, type.meta);
-									itemMachine.setBaseTier(filled, BaseTier.ULTIMATE);
-									itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
-									list.add(filled);
-								} catch(Exception e) {}
-							}
-						}
-
 						break;
 					default:
 						list.add(new ItemStack(item, 1, type.meta));
@@ -749,19 +736,18 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					
 					if(filled > 0)
 					{
-						if(player.capabilities.isCreativeMode)
+						if(itemStack.stackSize == 1)
 						{
-							tileEntity.fluidTank.drain(filled, true);
-						}
-						else if(itemStack.stackSize == 1)
-						{
-							tileEntity.fluidTank.drain(filled, true);
 							player.setHeldItem(hand, copyStack);
 						}
 						else if(itemStack.stackSize > 1 && player.inventory.addItemStackToInventory(copyStack))
 						{
-							tileEntity.fluidTank.drain(filled, true);
 							itemStack.stackSize--;
+						}
+						
+						if(tileEntity.tier != FluidTankTier.CREATIVE)
+						{
+							tileEntity.fluidTank.drain(filled, true);
 						}
 						
 						return true;
@@ -822,9 +808,14 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	
 					if(filled)
 					{
-						int toFill = Math.min(tileEntity.fluidTank.getCapacity()-tileEntity.fluidTank.getFluidAmount(), drained.amount);
+						int toFill = tileEntity.fluidTank.getCapacity()-tileEntity.fluidTank.getFluidAmount();
 						
-						tileEntity.fluidTank.fill(drained, true);
+						if(tileEntity.tier != FluidTankTier.CREATIVE)
+						{
+							toFill = Math.min(toFill, drained.amount);
+						}
+						
+						tileEntity.fluidTank.fill(PipeUtils.copy(drained, toFill), true);
 						
 						if(drained.amount-toFill > 0)
 						{

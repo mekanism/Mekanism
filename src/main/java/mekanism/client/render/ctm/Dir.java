@@ -90,7 +90,7 @@ public enum Dir {
         return connection;
     }
 
-	private EnumFacing[] getNormalizedDirs(EnumFacing normal) {
+	public EnumFacing[] getNormalizedDirs(EnumFacing normal) {
 		if (normal == NORMAL) {
 			return dirs;
 		} else if (normal == NORMAL.getOpposite()) {

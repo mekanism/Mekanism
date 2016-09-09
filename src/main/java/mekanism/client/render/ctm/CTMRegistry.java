@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.model.ModelRotation;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -75,10 +74,10 @@ public class CTMRegistry
     	
     	callbacks[0] = new TextureSpriteCallback(new ResourceLocation(domain + ":blocks/ctm/" + name));
     	callbacks[1] = new TextureSpriteCallback(new ResourceLocation(domain + ":blocks/ctm/" + name + "-ctm"));
-    	
+    
     	register(callbacks[0]);
     	register(callbacks[1]);
     	
-    	return new TextureCTM(BlockRenderLayer.SOLID, callbacks);
+    	return new TextureCTM(callbacks);
     }
 }

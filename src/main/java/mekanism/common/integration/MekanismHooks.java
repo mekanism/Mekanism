@@ -49,7 +49,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
-		if(Loader.isModLoaded("Tesla")) TeslaLoaded = true;
+		if(Loader.isModLoaded("tesla")) TeslaLoaded = true;
 		
 		if(Loader.isModLoaded("Metallurgy3Core"))
 		{

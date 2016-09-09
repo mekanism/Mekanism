@@ -3,6 +3,7 @@ package mekanism.client.model;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -201,44 +202,19 @@ public class ModelLogisticalSorter extends ModelBase
 
 	public void render(float size, boolean active)
 	{
-		portBack.render(size);
-		portBackLarge.render(size);
-		connectorBack.render(size);
-		portFront.render(size);
-		ring1.render(size);
-		ring2.render(size);
-		ring3.render(size);
-		ring4.render(size);
-		ring5.render(size);
-		ring6.render(size);
-		ring7.render(size);
-		pistonBar1.render(size);
-		pipe.render(size);
-		pistonBase1.render(size);
-		pistonBrace1.render(size);
-		pistonConnector1.render(size);
-		pistonBrace2.render(size);
-		pistonConnector2.render(size);
-		pistonBar2.render(size);
-		pistonBase2.render(size);
-		panel2.render(size);
+		MekanismRenderer.glowOn();
+		MekanismRenderer.blendOn();
 		
-		if(active)
-		{
-			MekanismRenderer.glowOn();
-		}
+		GlStateManager.scale(1.001F, 1.001F, 1.001F);
+		GlStateManager.translate(0, -0.0011F, 0);
 		
 		led4.render(size);
 		led3.render(size);
 		led2.render(size);
 		led1.render(size);
 		
-		if(active)
-		{
-			MekanismRenderer.glowOff();
-		}
-		
-		panel1.render(size);
+		MekanismRenderer.blendOff();
+		MekanismRenderer.glowOff();
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

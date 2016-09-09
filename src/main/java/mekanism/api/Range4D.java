@@ -1,5 +1,8 @@
 package mekanism.api;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -66,6 +69,31 @@ public class Range4D
 		zMax += chunks*16;
 		
 		return this;
+	}
+	
+	public Range4D expandFromCenter(int radius)
+	{
+		xMin -= radius;
+		xMax += radius;
+		zMin -= radius;
+		zMax += radius;
+		
+		return this;
+	}
+	
+	public Set<Chunk3D> getIntersectingChunks()
+	{
+		Set<Chunk3D> set = new HashSet<Chunk3D>();
+		
+		for(int chunkX = xMin >> 4; chunkX <= xMax-1 >> 4; chunkX++)
+		{	
+			for(int chunkZ = zMin >> 4; chunkZ <= zMax-1 >> 4; chunkZ++)
+			{
+				set.add(new Chunk3D(chunkX, chunkZ, dimensionId));
+			}
+		}
+		
+		return set;
 	}
 	
 	public boolean intersects(Range4D range)

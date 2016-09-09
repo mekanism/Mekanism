@@ -22,6 +22,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -46,6 +47,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -118,9 +120,10 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		{
 			case GENERATOR_BLOCK_1:
 				ctmData[9] = new CTMData(GeneratorType.ELECTROMAGNETIC_COIL);
-				ctmData[10] = new CTMData(GeneratorType.TURBINE_CASING);
-				ctmData[11] = new CTMData(GeneratorType.TURBINE_VALVE);
-				ctmData[12] = new CTMData(GeneratorType.TURBINE_VENT);
+				ctmData[10] = new CTMData(GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VALVE, GeneratorType.TURBINE_VENT);
+				ctmData[11] = new CTMData(GeneratorType.TURBINE_VALVE, GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VENT);
+				ctmData[12] = new CTMData(GeneratorType.TURBINE_VENT, GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VALVE);
+				ctmData[13] = new CTMData(GeneratorType.SATURATING_CONDENSER);
 				
 				break;
 		}
@@ -570,6 +573,13 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
+	@Override
+	public BlockRenderLayer getBlockLayer()
+	{
+		return BlockRenderLayer.CUTOUT;
+	}
+	
 	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
@@ -617,7 +627,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
-		if(itemStack.getTagCompound() == null)
+		if(itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock))
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
@@ -644,7 +654,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			electricItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
 		}
 
-		if(tileEntity instanceof TileEntityContainerBlock)
+		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).handleInventory())
 		{
 			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
 			inventory.setInventory(((TileEntityContainerBlock)tileEntity).getInventory(), itemStack);

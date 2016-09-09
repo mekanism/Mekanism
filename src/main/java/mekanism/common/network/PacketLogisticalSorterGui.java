@@ -35,7 +35,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

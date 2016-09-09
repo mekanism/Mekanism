@@ -65,6 +65,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	
 	public ItemStack lastFormulaStack;
 	public boolean needsFormulaUpdate = false;
+	public ItemStack lastOutputStack;
 	
 	public TileEntityFormulaicAssemblicator()
 	{
@@ -225,10 +226,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 					dummyInv.setInventorySlotContents(i, inventory[27+i]);
 				}
 				
-				isRecipe = MekanismUtils.findMatchingRecipe(dummyInv, worldObj) != null;
+				lastOutputStack = MekanismUtils.findMatchingRecipe(dummyInv, worldObj);
+				isRecipe = lastOutputStack != null;
 			}
 			else {
 				isRecipe = formula.matches(worldObj, inventory, 27);
+				lastOutputStack = isRecipe ? formula.recipe.getRecipeOutput() : null;
 			}
 		}
 	}
@@ -240,7 +243,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			dummyInv.setInventorySlotContents(i, inventory[27+i]);
 		}
 		
-		ItemStack output = MekanismUtils.findMatchingRecipe(dummyInv, worldObj);
+		ItemStack output = lastOutputStack;
 		
 		if(output != null && tryMoveToOutput(output, false))
 		{

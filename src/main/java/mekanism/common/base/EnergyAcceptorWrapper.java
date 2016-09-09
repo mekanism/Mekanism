@@ -20,7 +20,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 
 	public static EnergyAcceptorWrapper get(TileEntity tileEntity, EnumFacing side)
 	{
-		if(tileEntity != null && tileEntity.getWorld() == null)
+		if(tileEntity == null || tileEntity.getWorld() == null)
 		{
 			return null;
 		}

@@ -44,7 +44,7 @@ import com.google.common.base.Predicates;
 public class BlockStateBasic extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
-	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class, BaseTier.BASIC, BaseTier.ADVANCED, BaseTier.ELITE, BaseTier.ULTIMATE);
+	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 	public static final PropertyCTMRenderContext ctmProperty = new PropertyCTMRenderContext();
 
 	public BlockStateBasic(BlockBasic block, PropertyEnum<BasicBlockType> typeProperty)
@@ -85,32 +85,32 @@ public class BlockStateBasic extends ExtendedBlockState
 
 	public static enum BasicBlockType implements IStringSerializable
 	{
-		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "OsmiumBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, "BronzeBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, "RefinedObsidian", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, "CharcoalBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, "RefinedGlowstone", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, "SteelBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin.class, true, Plane.HORIZONTAL, true, true),
-		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", TileEntityDynamicTank.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", TileEntityStructuralGlass.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		THERMAL_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "ThermalEvaporationController", TileEntityThermalEvaporationController.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		THERMAL_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "ThermalEvaporationBlock", TileEntityThermalEvaporationBlock.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", TileEntityInductionCell.class, true, Predicates.<EnumFacing>alwaysFalse(), false, true),
-		INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", TileEntityInductionProvider.class, true, Predicates.<EnumFacing>alwaysFalse(), false, true),
-		SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", TileEntitySuperheatingElement.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser",TileEntityPressureDisperser.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false),
-		SECURITY_DESK(BasicBlock.BASIC_BLOCK_2, 9, "SecurityDesk", TileEntitySecurityDesk.class, true, Plane.HORIZONTAL, false, false);
+		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "OsmiumBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
+		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, "BronzeBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
+		REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, "RefinedObsidian", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
+		COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, "CharcoalBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, "RefinedGlowstone", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
+		STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, "SteelBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
+		BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin.class, true, Plane.HORIZONTAL, true, true, false),
+		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", TileEntityDynamicTank.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", TileEntityStructuralGlass.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
+		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
+		THERMAL_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "ThermalEvaporationController", TileEntityThermalEvaporationController.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		THERMAL_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "ThermalEvaporationBlock", TileEntityThermalEvaporationBlock.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", TileEntityInductionCell.class, true, Predicates.<EnumFacing>alwaysFalse(), false, true, false),
+		INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", TileEntityInductionProvider.class, true, Predicates.<EnumFacing>alwaysFalse(), false, true, false),
+		SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", TileEntitySuperheatingElement.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser",TileEntityPressureDisperser.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true, Predicates.<EnumFacing>alwaysFalse(), false, false, false),
+		SECURITY_DESK(BasicBlock.BASIC_BLOCK_2, 9, "SecurityDesk", TileEntitySecurityDesk.class, true, Plane.HORIZONTAL, false, false, false);
 
 		public BasicBlock blockType;
 		public int meta;
@@ -121,8 +121,9 @@ public class BlockStateBasic extends ExtendedBlockState
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 		public boolean tiers;
+		public boolean isBeaconBase;
 
-		private BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t)
+		private BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase)
 		{
 			blockType = block;
 			meta = metadata;
@@ -132,6 +133,7 @@ public class BlockStateBasic extends ExtendedBlockState
 			facingPredicate = facingAllowed;
 			activable = activeState;
 			tiers = t;
+			isBeaconBase = beaconBase;
 		}
 
 		public static BasicBlockType get(IBlockState state)
@@ -277,6 +279,11 @@ public class BlockStateBasic extends ExtendedBlockState
 			if(type.tiers)
 			{
 				BaseTier tier = state.getValue(tierProperty);
+				
+				if(tier == BaseTier.CREATIVE && type != BasicBlockType.BIN)
+				{
+					tier = BaseTier.ULTIMATE;
+				}
 				
 				nameOverride = type.getName() + "_" + tier.getName();
 			}

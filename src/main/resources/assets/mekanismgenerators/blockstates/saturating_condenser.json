@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanismgenerators:blocks/saturating_condenser"
+      "all": "mekanismgenerators:blocks/ctm/saturating_condenser"
     }
   },
   "variants": {

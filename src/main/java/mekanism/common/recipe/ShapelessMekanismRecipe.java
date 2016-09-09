@@ -2,6 +2,7 @@ package mekanism.common.recipe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import mekanism.common.Mekanism;
 import mekanism.common.util.RecipeUtils;
@@ -110,9 +111,9 @@ public class ShapelessMekanismRecipe implements IRecipe
                     {
                         match = RecipeUtils.areItemsEqualForCrafting((ItemStack)next, slot);
                     }
-                    else if(next instanceof ArrayList)
+                    else if(next instanceof List)
                     {
-                        Iterator<ItemStack> itr = ((ArrayList<ItemStack>)next).iterator();
+                        Iterator<ItemStack> itr = ((List<ItemStack>)next).iterator();
                         
                         while(itr.hasNext() && !match)
                         {

@@ -84,6 +84,9 @@ import mekanism.client.jei.machine.other.ThermalEvaporationRecipeHandler;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.base.IFactory;
+import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -105,6 +108,7 @@ import mekanism.common.util.ItemDataUtils;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -114,7 +118,25 @@ import net.minecraft.item.ItemStack;
 @JEIPlugin
 public class MekanismJEI implements IModPlugin
 {
-	public static final String[] UNUSED_TAGS = new String[] {ItemDataUtils.DATA_ID};
+	public static ISubtypeInterpreter NBT_INTERPRETER = new ISubtypeInterpreter() {
+		@Override
+		public String getSubtypeInfo(ItemStack itemStack) 
+		{
+			String ret = "";
+			
+			if(itemStack.getItem() instanceof ITierItem)
+			{
+				ret += ((ITierItem)itemStack.getItem()).getBaseTier(itemStack).getSimpleName();
+			}
+			
+			if(itemStack.getItem() instanceof IFactory)
+			{
+				ret += RecipeType.values()[((IFactory)itemStack.getItem()).getRecipeType(itemStack)].getName();
+			}
+			
+			return ret.isEmpty() ? null : ret.toLowerCase();
+		}
+	};
 	
 	@Override
 	public void register(IModRegistry registry)
@@ -127,14 +149,14 @@ public class MekanismJEI implements IModPlugin
 		registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(MekanismItems.ItemProxy));
 		registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(MekanismBlocks.BoundingBlock));
 		
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(MekanismBlocks.EnergyCube), UNUSED_TAGS);
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(MekanismBlocks.MachineBlock), UNUSED_TAGS);
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), UNUSED_TAGS);
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), UNUSED_TAGS);
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(MekanismBlocks.BasicBlock), UNUSED_TAGS);
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), UNUSED_TAGS);
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(MekanismBlocks.GasTank), UNUSED_TAGS);
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Item.getItemFromBlock(MekanismBlocks.CardboardBox), UNUSED_TAGS);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.EnergyCube), NBT_INTERPRETER);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock), NBT_INTERPRETER);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), NBT_INTERPRETER);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), NBT_INTERPRETER);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.BasicBlock), NBT_INTERPRETER);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), NBT_INTERPRETER);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.GasTank), NBT_INTERPRETER);
+		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.CardboardBox), NBT_INTERPRETER);
 		
 		try {
 			registerBasicMachine(registry, Recipe.ENRICHMENT_CHAMBER, "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE, EnrichmentRecipeHandler.class, EnrichmentRecipeWrapper.class);

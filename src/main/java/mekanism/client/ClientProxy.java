@@ -255,7 +255,7 @@ public class ClientProxy extends CommonProxy
 	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
 		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
 		"solar_neutron_activator", "chemical_dissolution_chamber", "chemical_crystallizer", "seismic_vibrator", "security_desk",
-		"quantum_entangloporter", "resistive_heater", "EnergyCube", "digital_miner"};
+		"quantum_entangloporter", "resistive_heater", "EnergyCube", "digital_miner", "bin_creative"};
 	
 	private static final IStateMapper machineMapper = new MachineBlockStateMapper();
 	private static final IStateMapper basicMapper = new BasicBlockStateMapper();
@@ -268,18 +268,17 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadConfiguration();
 
-		client.enablePlayerSounds = Mekanism.configuration.get("client", "EnablePlayerSounds", true).getBoolean(true);
-		client.enableMachineSounds = Mekanism.configuration.get("client", "EnableMachineSounds", true).getBoolean(true);
-		client.fancyUniversalCableRender = Mekanism.configuration.get("client", "FancyUniversalCableRender", true).getBoolean(true);
-		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean(true);
-		client.baseSoundVolume = (float)Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble(1D);
-		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean(true);
-		client.oldTransmitterRender = Mekanism.configuration.get("client", "OldTransmitterRender", false).getBoolean();
+		client.enablePlayerSounds = Mekanism.configuration.get("client", "EnablePlayerSounds", true).getBoolean();
+		client.enableMachineSounds = Mekanism.configuration.get("client", "EnableMachineSounds", true).getBoolean();
+		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean();
+		client.baseSoundVolume = (float)Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble();
+		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean();
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
 		client.renderCTM = Mekanism.configuration.get("client", "CTMRenderer", true).getBoolean();
-		client.enableAmbientLighting = Mekanism.configuration.get("general", "EnableAmbientLighting", true).getBoolean();
-		client.ambientLightingLevel = Mekanism.configuration.get("general", "AmbientLightingLevel", 15).getInt();
+		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
+		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
+		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{
@@ -373,6 +372,7 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.FilterUpgrade);
 		registerItemRender(MekanismItems.MufflingUpgrade);
 		registerItemRender(MekanismItems.GasUpgrade);
+		registerItemRender(MekanismItems.AnchorUpgrade);
 		registerItemRender(MekanismItems.Robit);
 		registerItemRender(MekanismItems.AtomicDisassembler);
 		registerItemRender(MekanismItems.EnrichedAlloy);
@@ -576,7 +576,7 @@ public class ClientProxy extends CommonProxy
 						{
 							tierPointer = BaseTier.values()[tierPointer.ordinal()+1];
 							
-							if(tierPointer.isObtainable())
+							if(type == BasicBlockType.BIN || tierPointer.isObtainable())
 							{
 								resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
 								
@@ -930,7 +930,7 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public int getColorFromItemstack(ItemStack stack, int tintIndex) 
 			{
-				EnumDyeColor dyeColor = EnumDyeColor.byMetadata(stack.getItemDamage()&15);
+				EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getItemDamage()&15);
 				EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
 				
 				return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
@@ -1063,9 +1063,8 @@ public class ClientProxy extends CommonProxy
 		
 		CTMRegistry.registerCTMs("mekanism", "dynamic_tank", "structural_glass", "dynamic_valve", "teleporter", "teleporter_frame", "induction_casing", "induction_port", "induction_port_output",
 				"induction_cell_basic", "induction_cell_advanced", "induction_cell_elite", "induction_cell_ultimate", "induction_provider_basic", "induction_provider_advanced", "induction_provider_elite",
-				"induction_provider_ultimate", "thermal_evaporation_controller", "thermal_evaporation_controller_on", "thermal_evaporation_valve", "superheating_element", "superheating_element_on", "reactor_port",
-				"reactor_neutron_capture", "reactor_logic_adapter", "reactor_laser_focus", "reactor_glass", "reactor_frame", "reactor_controller_on", "reactor_controller_off", "boiler_casing", "boiler_valve",
-				"electromagnetic_coil", "thermal_evaporation_valve", "thermal_evaporation_block", "turbine_casing", "turbine_vent", "turbine_valve");
+				"induction_provider_ultimate", "thermal_evaporation_controller", "thermal_evaporation_controller_on", "thermal_evaporation_valve", "superheating_element", "superheating_element_on",
+				"boiler_casing", "boiler_valve", "thermal_evaporation_valve", "thermal_evaporation_block");
 	}
 
 	@Override

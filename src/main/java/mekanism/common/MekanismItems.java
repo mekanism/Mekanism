@@ -62,6 +62,7 @@ public class MekanismItems
 	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER);
 	public static final Item MufflingUpgrade = new ItemUpgrade(Upgrade.MUFFLING);
 	public static final Item GasUpgrade = new ItemUpgrade(Upgrade.GAS);
+	public static final Item AnchorUpgrade = new ItemUpgrade(Upgrade.ANCHOR);
 	public static final Item TierInstaller = new ItemTierInstaller();
 	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000);
 	public static final ItemRobit Robit = (ItemRobit)new ItemRobit();
@@ -113,6 +114,7 @@ public class MekanismItems
 		GameRegistry.register(init(FilterUpgrade, "FilterUpgrade"));
 		GameRegistry.register(init(MufflingUpgrade, "MufflingUpgrade"));
 		GameRegistry.register(init(GasUpgrade, "GasUpgrade"));
+		GameRegistry.register(init(AnchorUpgrade, "AnchorUpgrade"));
 		GameRegistry.register(init(Robit, "Robit"));
 		GameRegistry.register(init(AtomicDisassembler, "AtomicDisassembler"));
 		GameRegistry.register(init(EnrichedAlloy, "EnrichedAlloy"));

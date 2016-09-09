@@ -1,8 +1,9 @@
 package mekanism.common.multipart;
 
+import java.util.Arrays;
+
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import scala.actors.threadpool.Arrays;
 
 public class ConnectionProperty implements IUnlistedProperty<ConnectionProperty>
 {
@@ -44,7 +45,7 @@ public class ConnectionProperty implements IUnlistedProperty<ConnectionProperty>
 	@Override
 	public String valueToString(ConnectionProperty value) 
 	{
-		return Byte.toString(connectionByte) + "_" + Byte.toString(transmitterConnections) + "_" 
-				+ Arrays.toString(connectionTypes) + "_" + renderCenter;
+		return Byte.toString(value.connectionByte) + "_" + Byte.toString(value.transmitterConnections) + "_" 
+				+ Arrays.toString(value.connectionTypes) + "_" + value.renderCenter;
 	}
 }

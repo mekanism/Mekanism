@@ -47,7 +47,6 @@ public class MekanismConfig
 		public static boolean blacklistRF;
 		public static boolean blacklistTesla;
 		public static boolean destroyDisabledBlocks;
-		public static boolean prefilledFluidTanks;
 		public static boolean prefilledGasTanks;
 		public static double armoredJetpackDamageRatio;
 		public static int armoredJetpackDamageMax;
@@ -69,13 +68,13 @@ public class MekanismConfig
 		public static double superheatingHeatTransfer = 10000;
 		public static double heatPerFuelTick = 4;
 		public static boolean allowTransmitterAlloyUpgrade;
+		public static boolean allowChunkloading;
 	}
 
 	public static class client
 	{
 		public static boolean enablePlayerSounds = true;
 		public static boolean enableMachineSounds = true;
-		public static boolean fancyUniversalCableRender = true;
 		public static boolean holidays = true;
 		public static float baseSoundVolume = 1F;
 		public static boolean machineEffects = true;
@@ -84,6 +83,7 @@ public class MekanismConfig
 		public static boolean renderCTM = true;
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
+		public static boolean opaqueTransmitters = false;
 	}
 	
 	public static class machines

@@ -37,7 +37,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Thread() {
+		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()
 			{

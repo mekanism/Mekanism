@@ -20,7 +20,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCab
 	@Override
 	public void renderMultipartAt(PartUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage)
 	{
-		if(!client.fancyUniversalCableRender || cable.currentPower == 0)
+		if(client.opaqueTransmitters || cable.currentPower == 0)
 		{
 			return;
 		}
@@ -38,7 +38,6 @@ public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCab
 		MekanismRenderer.glowOn();
 
 		tessellator.draw();
-		isDrawing = false;
 
 		MekanismRenderer.glowOff();
 		pop();

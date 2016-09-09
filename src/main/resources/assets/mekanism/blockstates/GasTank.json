@@ -16,7 +16,8 @@
       "basic": {"textures": {"all": "mekanism:blocks/models/gas_tank_basic"}},
       "advanced": {"textures": {"all": "mekanism:blocks/models/gas_tank_advanced"}},
       "elite": {"textures": {"all": "mekanism:blocks/models/gas_tank_elite"}},
-      "ultimate": {"textures": {"all": "mekanism:blocks/models/gas_tank_ultimate"}}
+      "ultimate": {"textures": {"all": "mekanism:blocks/models/gas_tank_ultimate"}},
+      "creative": {"textures": {"all": "mekanism:blocks/models/gas_tank_creative"}}
     },
     "inventory": [{}]
   }

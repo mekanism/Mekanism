@@ -28,7 +28,7 @@ public class ItemBlockPlastic extends ItemBlock
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
-		EnumDyeColor dyeColour = EnumDyeColor.byMetadata(stack.getItemDamage()&15);
+		EnumDyeColor dyeColour = EnumDyeColor.byDyeDamage(stack.getItemDamage()&15);
 		EnumColor colour = EnumColor.DYES[dyeColour.getDyeDamage()];
 		String colourName;
 

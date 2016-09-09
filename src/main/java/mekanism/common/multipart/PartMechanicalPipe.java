@@ -3,6 +3,7 @@ package mekanism.common.multipart;
 import java.util.Collection;
 
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.CapabilityUtils;
 import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
@@ -26,13 +27,13 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
 {
+	public Tier.PipeTier tier;
+	
 	public float currentScale;
 
 	public FluidTank buffer = new FluidTank(Fluid.BUCKET_VOLUME);
 
 	public FluidStack lastWrite;
-
-	public Tier.PipeTier tier;
 
 	public PartMechanicalPipe(Tier.PipeTier pipeTier)
 	{
@@ -268,6 +269,19 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		return tier.pipePullAmount;
 	}
 
+	@Override
+	public IFluidHandler getCachedAcceptor(EnumFacing side)
+	{
+		TileEntity tile = getCachedTile(side);
+		
+		if(CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+		{
+			return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+		}
+		
+		return null;
+	}
+	
 	public int takeFluid(FluidStack fluid, boolean doEmit)
 	{
 		if(getTransmitter().hasTransmitterNetwork())

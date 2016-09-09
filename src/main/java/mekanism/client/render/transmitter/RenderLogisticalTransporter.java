@@ -3,6 +3,7 @@ package mekanism.client.render.transmitter;
 import java.util.HashMap;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.client;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -51,9 +52,13 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 	@Override
 	public void renderMultipartAt(PartLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage)
 	{
+		if(client.opaqueTransmitters)
+		{
+			return;
+		}
+		
 		GL11.glPushMatrix();
 
-		//possibly TODO
 		entityItem.setNoDespawn();
 		entityItem.hoverStart = 0;
 

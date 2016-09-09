@@ -203,7 +203,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			{
 				IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.output, fluidTank.getFluidAmount()));
-				fluidTank.drain(handler.fill(toDrain, true), true);
+				fluidTank.drain(handler.fill(toDrain, true), tier != FluidTankTier.CREATIVE);
 			}
 		}
 	}
@@ -218,11 +218,23 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			{
 				fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
 				
-				int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
-				
-				if(rejects > 0)
+				if(tier == FluidTankTier.CREATIVE)
 				{
-					pushUp(PipeUtils.copy(ret, rejects), true);
+					fluidTank.getFluid().amount = Integer.MAX_VALUE;
+				}
+				else {
+					int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
+					
+					if(rejects > 0)
+					{
+						pushUp(PipeUtils.copy(ret, rejects), true);
+					}
+				}
+			}
+			else {
+				if(tier != FluidTankTier.CREATIVE)
+				{
+					fluidTank.setFluid(null);
 				}
 			}
 		}
@@ -364,6 +376,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		int needed = fluidTank.getCapacity()-fluidTank.getFluidAmount();
 		
+		if(tier == FluidTankTier.CREATIVE)
+		{
+			return Integer.MAX_VALUE;
+		}
+		
 		Coord4D top = Coord4D.get(this).offset(EnumFacing.UP);
 		TileEntity topTile = top.getTileEntity(worldObj);
 		
@@ -489,6 +506,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
+		if(tier == FluidTankTier.CREATIVE)
+		{
+			return resource != null ? resource.amount : 0;
+		}
+		
 		if(resource != null && canFill(from, resource.getFluid()))
 		{
 			int filled = fluidTank.fill(resource, doFill);
@@ -520,7 +542,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		if(resource != null && canDrain(from, resource.getFluid()))
 		{
-			return fluidTank.drain(resource.amount, doDrain);
+			return fluidTank.drain(resource.amount, tier != FluidTankTier.CREATIVE);
 		}
 		
 		return null;
@@ -531,7 +553,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		if(canDrain(from, null))
 		{
-			return fluidTank.drain(maxDrain, doDrain);
+			return fluidTank.drain(maxDrain, tier != FluidTankTier.CREATIVE);
 		}
 		
 		return null;
@@ -548,6 +570,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			{
 				return false;
 			}
+		}
+		
+		if(tier == FluidTankTier.CREATIVE)
+		{
+			return true;
 		}
 		
 		return fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid;

@@ -50,6 +50,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
  * @author AidanBrady
@@ -402,7 +404,8 @@ public class ClientTickHandler
 			if(obj instanceof NetworkPlayerInfo)
 			{
 				NetworkPlayerInfo info = (NetworkPlayerInfo)obj;
-				ReflectionUtils.setPrivateValue(info, cape, NetworkPlayerInfo.class, ObfuscatedNames.NetworkPlayerInfo_locationCape);
+				Map<MinecraftProfileTexture.Type, ResourceLocation> map = (Map<MinecraftProfileTexture.Type, ResourceLocation>)ReflectionUtils.getPrivateValue(info, NetworkPlayerInfo.class, ObfuscatedNames.NetworkPlayerInfo_playerTextures);
+				map.put(MinecraftProfileTexture.Type.CAPE, cape);
 			}
 		} catch(Exception e) {}
 	}

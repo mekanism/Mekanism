@@ -1,5 +1,9 @@
 package mekanism.generators.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
@@ -12,8 +16,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
+	public static final float SPEED = 32F;
+	public static final float SPEED_SCALED = 256F/SPEED;
+	
 	/** The angle the blades of this Wind Turbine are currently at. */
 	public double angle;
+	
+	public float currentMultiplier;
 
 	public TileEntityWindGenerator()
 	{
@@ -30,15 +39,43 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 		{
 			ChargeUtils.charge(0, this);
 			
-			if(canOperate())
+			if(ticker % 20 == 0)
 			{
-				setActive(true);
-				setEnergy(electricityStored + (generators.windGenerationMin*getMultiplier()));
+				setActive((currentMultiplier = getMultiplier()) > 0);
 			}
-			else {
-				setActive(false);
+			
+			if(getActive())
+			{
+				setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
 			}
 		}
+		else {
+			if(getActive())
+			{
+				angle = (angle+(getPos().getY()+4F)/SPEED_SCALED) % 360;
+			}
+		}
+	}
+	
+	@Override
+	public void handlePacketData(ByteBuf dataStream)
+	{
+		super.handlePacketData(dataStream);
+
+		if(worldObj.isRemote)
+		{
+			currentMultiplier = dataStream.readFloat();
+		}
+	}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+
+		data.add(currentMultiplier);
+
+		return data;
 	}
 
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/

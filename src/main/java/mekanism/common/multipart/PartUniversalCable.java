@@ -36,7 +36,7 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
 @InterfaceList({
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "Tesla")
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla")
 })
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, ITeslaConsumer
 {
@@ -229,13 +229,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public void onUnloaded()
-	{
-		takeShare();
-		super.onUnloaded();
-	}
-
-	@Override
 	public Object getBuffer()
 	{
 		return buffer;
@@ -344,7 +337,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 	
 	@Override
-	@Method(modid = "Tesla")
+	@Method(modid = "tesla")
 	public long givePower(long power, boolean simulated) 
 	{
 		return power - (long)Math.round(takeEnergy(power*general.FROM_TESLA, !simulated)*general.TO_TESLA);
@@ -371,14 +364,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public EnergyAcceptorWrapper getCachedAcceptor(EnumFacing side)
 	{
-		ConnectionType type = connectionTypes[side.ordinal()];
-
-		if(type == ConnectionType.PULL || type == ConnectionType.NONE)
-		{
-			return null;
-		}
-
-		return connectionMapContainsSide(currentAcceptorConnections, side) ? EnergyAcceptorWrapper.get(cachedAcceptors[side.ordinal()], side.getOpposite()) : null;
+		return EnergyAcceptorWrapper.get(getCachedTile(side), side.getOpposite());
 	}
 
 	@Override

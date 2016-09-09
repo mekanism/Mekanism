@@ -4,7 +4,9 @@
     "model": "mekanism:transmitter_large.obj.mek",
     "textures": {
       "#side": "mekanism:blocks/models/multipart/LogisticalTransporterVerticalAdvanced",
-      "#center": "mekanism:blocks/models/multipart/LogisticalTransporterAdvanced"
+      "#center": "mekanism:blocks/models/multipart/LogisticalTransporterAdvanced",
+      "#side_opaque": "mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalAdvanced",
+      "#center_opaque": "mekanism:blocks/models/multipart/opaque/LogisticalTransporterAdvanced"
     },
     "custom": {
       "flip-v": true

@@ -11,11 +11,13 @@ import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -118,6 +120,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 			tileEntity.tier = EnergyCubeTier.values()[getBaseTier(stack).ordinal()];
 			tileEntity.electricityStored = getEnergy(stack);
 			
+			if(tileEntity.tier == EnergyCubeTier.CREATIVE)
+			{
+				tileEntity.configComponent.fillConfig(TransmissionType.ENERGY, tileEntity.getEnergy() > 0 ? 2 : 1);
+			}
+			
 			if(tileEntity instanceof ISecurityTile)
 			{
 				ISecurityTile security = (ISecurityTile)tileEntity;
@@ -131,6 +138,17 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 				if(getOwner(stack) == null)
 				{
 					security.getSecurity().setOwner(player.getName());
+				}
+			}
+			
+			if(tileEntity instanceof ISideConfiguration)
+			{
+				ISideConfiguration config = (ISideConfiguration)tileEntity;
+
+				if(ItemDataUtils.hasData(stack, "sideDataStored"))
+				{
+					config.getConfig().read(ItemDataUtils.getDataMap(stack));
+					config.getEjector().read(ItemDataUtils.getDataMap(stack));
 				}
 			}
 

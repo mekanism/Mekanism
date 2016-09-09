@@ -45,7 +45,7 @@ public class GuiWindGenerator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.windGenerationMin*tileEntity.getMultiplier() : 0) + "/t",
+						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.windGenerationMin*tileEntity.currentMultiplier : 0) + "/t",
 						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
@@ -59,12 +59,12 @@ public class GuiWindGenerator extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.power") + ": " + powerFormat.format(MekanismUtils.convertToDisplay(generators.windGenerationMin*tileEntity.getMultiplier())), 51, 35, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.power") + ": " + powerFormat.format(MekanismUtils.convertToDisplay(generators.windGenerationMin*tileEntity.currentMultiplier)), 51, 35, 0x00CD00);
 		fontRendererObj.drawString(LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
 
 		int size = 44;
 
-		if(!tileEntity.getWorld().canSeeSky(tileEntity.getPos().add(0, 4, 0)))
+		if(!tileEntity.getActive())
 		{
 			size += 9;
 			fontRendererObj.drawString(EnumColor.DARK_RED + LangUtils.localize("gui.skyBlocked"), 51, size, 0x00CD00);

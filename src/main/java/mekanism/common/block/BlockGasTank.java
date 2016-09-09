@@ -5,6 +5,7 @@ import java.util.Random;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateFacing;
@@ -13,6 +14,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -290,6 +292,14 @@ public class BlockGasTank extends BlockContainer
 				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
+		}
+		
+		if(tileEntity instanceof ISideConfiguration)
+		{
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
+
+			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
 		}
 		
 		ITierItem tierItem = (ITierItem)itemStack.getItem();

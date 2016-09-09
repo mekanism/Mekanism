@@ -12,6 +12,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,50 +50,56 @@ public class ItemConfigurationCard extends ItemMekanism
 			
 			if(CapabilityUtils.hasCapability(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side))
 			{
-				if(player.isSneaking())
+				if(SecurityUtils.canAccess(player, tileEntity))
 				{
-					NBTTagCompound data = getBaseData(tileEntity);
-					
-					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side))
+					if(player.isSneaking())
 					{
-						ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
-						data = special.getConfigurationData(data);
-					}
-					
-					if(data != null)
-					{
-						data.setString("dataType", getNameFromTile(tileEntity, side));
-						setData(stack, data);
-						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
-					}
-					
-					return EnumActionResult.SUCCESS;
-				}
-				else if(getData(stack) != null)
-				{
-					if(getNameFromTile(tileEntity, side).equals(getDataType(stack)))
-					{
-						setBaseData(getData(stack), tileEntity);
+						NBTTagCompound data = getBaseData(tileEntity);
 						
 						if(CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side))
 						{
 							ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
-							special.setConfigurationData(getData(stack));
+							data = special.getConfigurationData(data);
 						}
 						
-						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
-						setData(stack, null);
+						if(data != null)
+						{
+							data.setString("dataType", getNameFromTile(tileEntity, side));
+							setData(stack, data);
+							player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
+						}
+						
+						return EnumActionResult.SUCCESS;
 					}
-					else {
-						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.configurationCard.unequal") + "."));
+					else if(getData(stack) != null)
+					{
+						if(getNameFromTile(tileEntity, side).equals(getDataType(stack)))
+						{
+							setBaseData(getData(stack), tileEntity);
+							
+							if(CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side))
+							{
+								ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
+								special.setConfigurationData(getData(stack));
+							}
+							
+							player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
+							setData(stack, null);
+						}
+						else {
+							player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.configurationCard.unequal") + "."));
+						}
+						
+						return EnumActionResult.SUCCESS;
 					}
-					
-					return EnumActionResult.SUCCESS;
+				}
+				else {
+					SecurityUtils.displayNoAccess(player);
 				}
 			}
 		}
 		
-		return EnumActionResult.FAIL;
+		return EnumActionResult.PASS;
 	}
 	
 	private NBTTagCompound getBaseData(TileEntity tile)

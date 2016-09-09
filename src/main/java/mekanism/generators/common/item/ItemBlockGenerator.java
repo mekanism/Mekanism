@@ -197,7 +197,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			outer:
 			for(int yPos = 1; yPos <= 4; yPos++)
 			{
-				if(!world.isAirBlock(pos.add(0, yPos, 0)) || yPos > 255)
+				if(!world.isAirBlock(pos.add(0, yPos, 0)) || pos.getY()+yPos > 255)
 				{
 					place = false;
 					break outer;

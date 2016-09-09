@@ -181,7 +181,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 		if(filter.itemType != null)
 		{
-			fontRendererObj.drawString(filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
+			renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 89);
 		}
 
 		if(filter.itemType != null)

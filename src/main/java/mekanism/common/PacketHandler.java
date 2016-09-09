@@ -265,7 +265,7 @@ public class PacketHandler
 		return Mekanism.proxy.getPlayer(context);
 	}
 	
-	public static void handlePacket(Thread runnable, EntityPlayer player)
+	public static void handlePacket(Runnable runnable, EntityPlayer player)
 	{
 		Mekanism.proxy.handlePacket(runnable, player);
 	}

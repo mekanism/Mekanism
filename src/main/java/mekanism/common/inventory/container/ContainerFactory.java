@@ -116,7 +116,7 @@ public class ContainerFactory extends Container
 	{
 		ItemStack stack = null;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
-
+		
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
 			ItemStack slotStack = currentSlot.getStack();
@@ -178,7 +178,7 @@ public class ContainerFactory extends Container
 			}
 			else if(tileEntity.recipeType.getItemGas(slotStack) != null)
 			{
-				if(slotID > tileEntity.inventory.length-1)
+				if(slotID >= tileEntity.inventory.length-1)
 				{
 					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
@@ -194,7 +194,7 @@ public class ContainerFactory extends Container
 			}
 			else if(tileEntity.recipeType == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
 			{
-				if(slotID > tileEntity.inventory.length-1)
+				if(slotID >= tileEntity.inventory.length-1)
 				{
 					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
@@ -267,25 +267,11 @@ public class ContainerFactory extends Container
 
 	public boolean isInputSlot(int slot)
 	{
-		if(tileEntity.tier == Tier.FactoryTier.BASIC)
-			return slot >= 4 && slot <= 6;
-		if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
-			return slot >= 4 && slot <= 8;
-		if(tileEntity.tier == Tier.FactoryTier.ELITE)
-			return slot >= 4 && slot <= 10;
-
-		return false;
+		return slot >= 4 && slot < 4+tileEntity.tier.processes;
 	}
 
 	public boolean isOutputSlot(int slot)
 	{
-		if(tileEntity.tier == Tier.FactoryTier.BASIC)
-			return slot >= 7 && slot <= 9;
-		if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
-			return slot >= 9 && slot <= 13;
-		if(tileEntity.tier == Tier.FactoryTier.ELITE)
-			return slot >= 11 && slot <= 17;
-
-		return false;
+		return slot >= 4+tileEntity.tier.processes && slot < 4+tileEntity.tier.processes*2;
 	}
 }

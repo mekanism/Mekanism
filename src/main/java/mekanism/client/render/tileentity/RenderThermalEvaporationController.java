@@ -3,7 +3,7 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.Coord4D;
+import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -11,7 +11,6 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -40,11 +39,9 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 			
 			if(data.height >= 1 && tileEntity.inputTank.getCapacity() > 0)
 			{
-				Coord4D renderLoc = tileEntity.getRenderLocation();
-
 				push();
 
-				GL11.glTranslated(getX(renderLoc.xCoord), getY(renderLoc.yCoord), getZ(renderLoc.zCoord));
+				FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
 
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
 
@@ -161,21 +158,6 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 	private int getStages(int height)
 	{
 		return height*(TankUpdateProtocol.FLUID_PER_TANK/10);
-	}
-
-	private double getX(int x)
-	{
-		return x - TileEntityRendererDispatcher.staticPlayerX;
-	}
-
-	private double getY(int y)
-	{
-		return y - TileEntityRendererDispatcher.staticPlayerY;
-	}
-
-	private double getZ(int z)
-	{
-		return z - TileEntityRendererDispatcher.staticPlayerZ;
 	}
 
 	public static class SalinationRenderData

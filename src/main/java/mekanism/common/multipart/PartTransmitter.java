@@ -14,6 +14,7 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
@@ -68,37 +69,28 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	}
 	
 	@Override
-	public void onWorldSeparate() {}
-
-	@Override
 	public void onUnloaded()
 	{
+		if(!getWorld().isRemote)
+		{
+			getTransmitter().takeShare();
+		}
+		
 		super.onUnloaded();
-
+	}
+	
+	@Override
+	public void onWorldSeparate() 
+	{
 		unloaded = true;
 		
 		if(!getWorld().isRemote)
 		{
-			getTransmitter().takeShare();
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
 		else {
 			getTransmitter().setTransmitterNetwork(null);
 		}
-	}
-
-	@Override
-	public void onRemoved()
-	{
-		if(!getWorld().isRemote)
-		{
-			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
-		} 
-		else {
-			getTransmitter().setTransmitterNetwork(null);
-		}
-
-		super.onRemoved();
 	}
 
 	@Override
@@ -123,7 +115,9 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		}
 	}
 
-	public A getCachedAcceptor(EnumFacing side)
+	public abstract A getCachedAcceptor(EnumFacing side);
+	
+	protected TileEntity getCachedTile(EnumFacing side)
 	{
 		ConnectionType type = connectionTypes[side.ordinal()];
 		
@@ -132,7 +126,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 			return null;
 		}
 		
-		return connectionMapContainsSide(currentAcceptorConnections, side) ? (A)cachedAcceptors[side.ordinal()] : null;
+		return connectionMapContainsSide(currentAcceptorConnections, side) ? cachedAcceptors[side.ordinal()] : null;
 	}
 	
 	@Override
