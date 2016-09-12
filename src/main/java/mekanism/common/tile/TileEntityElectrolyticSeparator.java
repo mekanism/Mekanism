@@ -16,6 +16,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.util.ListUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -46,7 +47,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -198,19 +198,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				if(dumpLeft != GasMode.DUMPING)
 				{
 					GasStack toSend = new GasStack(leftTank.getGas().getGas(), Math.min(leftTank.getStored(), output));
-
-					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
-
-					if(tileEntity instanceof IGasHandler)
-					{
-						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), leftTank.getGas().getGas()))
-						{
-							leftTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend, true), true);
-						}
-					}
+					leftTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
 				}
-				else
-				{
+				else {
 					leftTank.draw(dumpAmount, true);
 				}
 				
@@ -225,19 +215,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				if(dumpRight != GasMode.DUMPING)
 				{
 					GasStack toSend = new GasStack(rightTank.getGas().getGas(), Math.min(rightTank.getStored(), output));
-
-					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
-
-					if(tileEntity instanceof IGasHandler)
-					{
-						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), rightTank.getGas().getGas()))
-						{
-							rightTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
-						}
-					}
+					rightTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
 				}
-				else
-				{
+				else {
 					rightTank.draw(dumpAmount, true);
 				}
 				
