@@ -122,16 +122,16 @@ public class MekanismJEI implements IModPlugin
 		@Override
 		public String getSubtypeInfo(ItemStack itemStack) 
 		{
-			String ret = "";
+			String ret = Integer.toString(itemStack.getMetadata());
 			
 			if(itemStack.getItem() instanceof ITierItem)
 			{
-				ret += ((ITierItem)itemStack.getItem()).getBaseTier(itemStack).getSimpleName();
+				ret += ":" + ((ITierItem)itemStack.getItem()).getBaseTier(itemStack).getSimpleName();
 			}
 			
 			if(itemStack.getItem() instanceof IFactory)
 			{
-				ret += RecipeType.values()[((IFactory)itemStack.getItem()).getRecipeType(itemStack)].getName();
+				ret += ":" + RecipeType.values()[((IFactory)itemStack.getItem()).getRecipeType(itemStack)].getName();
 			}
 			
 			return ret.isEmpty() ? null : ret.toLowerCase();
