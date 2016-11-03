@@ -16,6 +16,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 	
 	/** For use by rendering segment */
 	public FluidStack prevFluid;
+	public int prevFluidStage = 0;
 	
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
@@ -32,7 +33,11 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 		
 		if(fluidStored != null && prevFluid != null)
 		{
-			if((fluidStored.getFluid() != prevFluid.getFluid()) || (fluidStored.amount != prevFluid.amount))
+			int totalStage 		= (volHeight - 2) * (TankUpdateProtocol.FLUID_PER_TANK / 100);
+			int currentStage 	= (int)((fluidStored.amount / (float)(volume*TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
+			boolean stageChanged 	= currentStage != prevFluidStage;
+			prevFluidStage 		= currentStage;
+			if((fluidStored.getFluid() != prevFluid.getFluid()) || stageChanged)
 			{
 				return true;
 			}
