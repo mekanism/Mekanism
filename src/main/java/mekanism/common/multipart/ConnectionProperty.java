@@ -45,6 +45,9 @@ public class ConnectionProperty implements IUnlistedProperty<ConnectionProperty>
 	@Override
 	public String valueToString(ConnectionProperty value) 
 	{
+		if (value == null){
+			return ""; //fill in later
+		}
 		return Byte.toString(value.connectionByte) + "_" + Byte.toString(value.transmitterConnections) + "_" 
 				+ Arrays.toString(value.connectionTypes) + "_" + value.renderCenter;
 	}
