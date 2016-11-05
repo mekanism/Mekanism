@@ -132,8 +132,15 @@ public class TransmitterModel extends OBJBakedModelBase
 				color = -1;
 			}
 			
-			int hash = Objects.hash(layer.ordinal(), color, ConnectionProperty.INSTANCE.valueToString(extended.getValue(ConnectionProperty.INSTANCE)));
+			int hash;
 			
+			if(extended.getValue(ConnectionProperty.INSTANCE) == null){
+				//what do we do if its null?
+			} else {
+			
+				hash = Objects.hash(layer.ordinal(), color, ConnectionProperty.INSTANCE.valueToString(extended.getValue(ConnectionProperty.INSTANCE)));
+			
+			}
 			if(obj.getVisibilityMap().containsKey(Group.ALL) || obj.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
 	        {
 	            updateStateVisibilityMap(obj);
