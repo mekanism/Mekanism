@@ -437,7 +437,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		nbtTags.setBoolean("dropPickup", getDropPickup());
 
-		homeLocation.write(nbtTags);
+		if(homeLocation != null)
+		{
+			homeLocation.write(nbtTags);
+		}
 
 		NBTTagList tagList = new NBTTagList();
 
