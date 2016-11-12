@@ -939,4 +939,9 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 			return name().toLowerCase();
 		}
 	}
+
+	@Override
+	public boolean shouldBreakingUseExtendedState() {
+		return true;
+	}
 }
