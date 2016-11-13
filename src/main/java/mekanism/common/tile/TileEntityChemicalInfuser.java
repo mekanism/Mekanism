@@ -17,6 +17,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.util.ListUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -39,7 +40,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.common.capabilities.Capability;
@@ -152,16 +152,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			if(centerTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
-
-				TileEntity tileEntity = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
-
-				if(tileEntity instanceof IGasHandler)
-				{
-					if(((IGasHandler)tileEntity).canReceiveGas(facing.getOpposite(), centerTank.getGas().getGas()))
-					{
-						centerTank.draw(((IGasHandler)tileEntity).receiveGas(facing.getOpposite(), toSend, true), true);
-					}
-				}
+				centerTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(facing)), true);
 			}
 
 			prevEnergy = getEnergy();
