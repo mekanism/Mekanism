@@ -1,6 +1,0 @@
-{
-	"repo": "http://maven.amadornes.com/MCMultiPart/MCMultiPart-experimental/${mcmp_version}/",
-	"file": "MCMultiPart-experimental-${mcmp_version}-universal.jar",
-	"dev": "MCMultiPart-experimental-${mcmp_version}-deobf.jar",
-	"class": "mcmultipart.MCMultiPartMod"
-}
