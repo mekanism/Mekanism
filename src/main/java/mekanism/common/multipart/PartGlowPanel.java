@@ -203,4 +203,9 @@ public class PartGlowPanel extends Multipart implements INormallyOccludingPart
 		
 		return hash;
 	}
+
+	@Override
+	public boolean shouldBreakingUseExtendedState() {
+		return true;
+	}
 }
