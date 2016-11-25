@@ -1,8 +1,9 @@
 build
 output
-.gradle
 .idea
 *.iml
+/.gradle
+/.git
 *.ipr
 *.iws
 out
@@ -10,13 +11,10 @@ out
 Mekanism*.jar
 MDK.zip
 /run
-/gradle
-*.bat
 *.classpath
 *.project
 /.settings
 /eclipse
-gradlew
 *.txt
 
 *.blend1
