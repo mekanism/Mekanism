@@ -55,7 +55,7 @@ public class BlockPlastic extends Block
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return state.getValue(BlockStatePlastic.colorProperty).getMetadata();
+		return state.getValue(BlockStatePlastic.colorProperty).getDyeDamage();
 	}
 
 	@Override

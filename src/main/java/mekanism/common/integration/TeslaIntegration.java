@@ -2,7 +2,6 @@ package mekanism.common.integration;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.tile.TileEntityElectricBlock;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -22,7 +21,7 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
 	
 	public EnumFacing side;
 	
-	public TeslaIntegration(TileEntityElectricBlock tile, EnumFacing facing)
+	public TeslaIntegration(IEnergyWrapper tile, EnumFacing facing)
 	{
 		tileEntity = tile;
 		side = facing;

@@ -12,9 +12,9 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.util.ListUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
@@ -36,7 +36,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.common.capabilities.Capability;
@@ -148,16 +147,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			if(gasTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
-
-				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
-
-				if(tileEntity instanceof IGasHandler)
-				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), gasTank.getGas().getGas()))
-					{
-						gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
-					}
-				}
+				gasTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
 			}
 		}
 	}

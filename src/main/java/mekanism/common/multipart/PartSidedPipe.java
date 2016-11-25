@@ -72,7 +72,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	public boolean sendDesc = false;
 	public boolean redstonePowered = false;
 
-	public boolean redstoneReactive = true;
+	public boolean redstoneReactive = false;
 	
 	public boolean forceUpdate = true;
 	
@@ -938,5 +938,10 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		{
 			return name().toLowerCase();
 		}
+	}
+
+	@Override
+	public boolean shouldBreakingUseExtendedState() {
+		return true;
 	}
 }

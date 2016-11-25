@@ -68,7 +68,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 			fluid = pipe.getBuffer() == null ? null : pipe.getBuffer().getFluid();
 		}
 
-		float scale = pipe.currentScale;
+		float scale = Math.min(pipe.currentScale, 1);
 
 		if(scale > 0.01 && fluid != null)
 		{

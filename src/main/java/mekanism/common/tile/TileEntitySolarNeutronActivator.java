@@ -15,6 +15,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.util.ListUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -128,16 +129,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			if(outputTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
-
-				TileEntity tileEntity = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
-
-				if(tileEntity instanceof IGasHandler)
-				{
-					if(((IGasHandler)tileEntity).canReceiveGas(facing.getOpposite(), outputTank.getGas().getGas()))
-					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(facing.getOpposite(), toSend, true), true);
-					}
-				}
+				outputTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(facing)), true);
 			}
 		}
 	}
