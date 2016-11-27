@@ -84,11 +84,6 @@ processResources
 task coreJar(type: Jar) {
     baseName = 'Mekanism'
 
-    manifest {
-        attributes 'FMLCorePlugin': 'mekanism.common.launch.LoadingHook'
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
-    }
-
     from('etc/core') {
         include '*.info'
         expand 'version':config.mod_version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
