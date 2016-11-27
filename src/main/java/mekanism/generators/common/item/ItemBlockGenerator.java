@@ -520,7 +520,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.stackTagCompound == null || !general.allowProtection)
 		{
 			return SecurityMode.PUBLIC;
 		}
