@@ -92,7 +92,7 @@ public class ShapedMekanismRecipe implements IRecipe
 
 		HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
 
-		for(; idx < recipe.length; idx += 2)
+		for(; idx < recipe.length; idx += 1)
 		{
 			Character chr = (Character)recipe[idx];
 			Object in = recipe[idx + 1];
