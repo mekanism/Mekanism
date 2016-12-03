@@ -142,11 +142,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		return true;
 	}
 
-	public ItemStack add(ItemStack stack)
+	public ItemStack add(ItemStack stack, boolean simulate)
 	{
 		if(isValid(stack) && (tier == BinTier.CREATIVE || getItemCount() != tier.storage))
 		{
-			if(itemType == null)
+			if(itemType == null && !simulate)
 			{
 				setItemType(stack);
 			}
@@ -155,24 +155,38 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				if(getItemCount() + stack.stackSize <= tier.storage)
 				{
-					setItemCount(getItemCount() + stack.stackSize);
+					if (!simulate)
+					{
+						setItemCount(getItemCount() + stack.stackSize);
+					}
 					return null;
 				}
 				else {
-					ItemStack rejects = itemType.copy();
+					ItemStack rejects = stack.copy();
 					rejects.stackSize = (getItemCount()+stack.stackSize) - tier.storage;
-	
-					setItemCount(tier.storage);
+
+					if (!simulate)
+					{
+						setItemCount(tier.storage);
+					}
 	
 					return rejects;
 				}
 			}
 			else {
-				setItemCount(Integer.MAX_VALUE);
+				if (!simulate)
+				{
+					setItemCount(Integer.MAX_VALUE);
+				}
 			}
 		}
 
 		return stack;
+	}
+
+	public ItemStack add(ItemStack stack)
+	{
+		return add(stack, false);
 	}
 
 	public ItemStack removeStack()
@@ -185,7 +199,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		return remove(bottomStack.stackSize);
 	}
 
-	public ItemStack remove(int amount)
+	public ItemStack remove(int amount, boolean simulate)
 	{
 		if(getItemCount() == 0)
 		{
@@ -195,12 +209,17 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		ItemStack ret = itemType.copy();
 		ret.stackSize = Math.min(Math.min(amount, itemType.getMaxStackSize()), getItemCount());
 		
-		if(tier != BinTier.CREATIVE)
+		if(tier != BinTier.CREATIVE && !simulate)
 		{
 			setItemCount(getItemCount() - ret.stackSize);
 		}
 
 		return ret;
+	}
+
+	public ItemStack remove(int amount)
+	{
+		return remove(amount, false);
 	}
 
 	public int getItemCount()
