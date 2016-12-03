@@ -39,6 +39,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 @Interface(iface = "powercrystals.minefactoryreloaded.api.IDeepStorageUnit", modid = "MineFactoryReloaded")
@@ -66,6 +68,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public int prevCount;
 
 	public int clientAmount;
+
+	private BinItemHandler myItemHandler;
+
+	public TileEntityBin(){
+		this.myItemHandler = new BinItemHandler(this);
+	}
 	
 	@Override
 	public boolean upgrade(BaseTier upgradeTier)
@@ -673,7 +681,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
@@ -683,7 +691,53 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		{
 			return (T)this;
 		}
+		else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			return (T)myItemHandler;
+		}
 		
 		return super.getCapability(capability, side);
+	}
+
+	private class BinItemHandler implements IItemHandler
+	{
+		private TileEntityBin tileEntityBin;
+
+		public BinItemHandler(TileEntityBin tileEntityBin)
+		{
+			this.tileEntityBin = tileEntityBin;
+		}
+
+		public int getSlots(){return 1;}
+
+		public ItemStack getStackInSlot(int slot)
+		{
+			if (slot != 0 || tileEntityBin.itemType == null)
+			{
+				return null;
+			}
+
+			return MekanismUtils.size(tileEntityBin.itemType, tileEntityBin.getItemCount());
+		}
+
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			if (slot != 0)
+			{
+				return null;
+			}
+			return tileEntityBin.add(stack, simulate);
+
+		}
+
+		public ItemStack extractItem(int slot, int amount, boolean simulate)
+		{
+			if (slot != 0)
+			{
+				return null;
+			}
+
+			return tileEntityBin.remove(amount, simulate);
+		}
 	}
 }
