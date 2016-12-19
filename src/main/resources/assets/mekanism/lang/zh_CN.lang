@@ -12,6 +12,7 @@ item.SpeedUpgrade.name=速度升级
 item.EnergyUpgrade.name=能量升级
 item.FilterUpgrade.name=过滤升级
 item.MufflingUpgrade.name=降噪升级
+item.AnchorUpgrade.name=稳定升级
 item.GasUpgrade.name=气体升级
 item.Robit.name=机器人
 item.AtomicDisassembler.name=原子分解机
@@ -62,12 +63,14 @@ tile.GasTankBasic.name=基础燃气储罐
 tile.GasTankAdvanced.name=高级燃气储罐
 tile.GasTankElite.name=精英燃气储罐
 tile.GasTankUltimate.name=终极燃气储罐
+tile.GasTankCreative.name=创造燃气储罐
 
 //Fluid Tank (part of MachineBlock2, naming handled differently)
 tile.FluidTankBasic.name=基础液体储罐
 tile.FluidTankAdvanced.name=高级液体储罐
 tile.FluidTankElite.name=精英液体储罐
 tile.FluidTankUltimate.name=终极液体储罐
+tile.FluidTankCreative.name=创造液体储罐
 
 //Cardboard Box
 tile.CardboardBox.name=纸箱
@@ -89,6 +92,7 @@ tile.BasicBlock.Bin.name=基础箱柜
 tile.BasicBlock.BinAdvanced.name=高级箱柜
 tile.BasicBlock.BinElite.name=精英箱柜
 tile.BasicBlock.BinUltimate.name=终极箱柜
+tile.BasicBlock.BinCreative.name=创造箱柜
 tile.BasicBlock.TeleporterFrame.name=传送框架
 tile.BasicBlock.SteelCasing.name=钢质机壳
 tile.BasicBlock.DynamicTank.name=动态储罐
@@ -129,6 +133,7 @@ tile.MachineBlock.EnergizedSmelter.name=充能冶炼炉
 tile.MachineBlock.Teleporter.name=传送机
 tile.MachineBlock.ElectricPump.name=电动泵
 tile.MachineBlock.ElectricChest.name=电动箱子
+tile.MachineBlock.PersonalChest.name=私人的箱子
 tile.MachineBlock.Chargepad.name=充电台
 tile.MachineBlock.LogisticalSorter.name=物流整理机
 tile.MachineBlock.DigitalMiner.name=数字型采矿机
@@ -215,10 +220,11 @@ tile.EnergyCubeAdvanced.name=高级能量立方
 tile.EnergyCubeElite.name=精英能量立方
 tile.EnergyCubeUltimate.name=终极能量立方
 tile.EnergyCubeCreative.name=创造能量立方
-//Factory Installers
-item.basicFactoryInstaller.name=基础工厂安装器
-item.advancedFactoryInstaller.name=高级工厂安装器
-item.eliteFactoryInstaller.name=精英工厂安装器
+//Tier Installers
+item.basicTierInstaller.name=基础工厂安装器
+item.advancedTierInstaller.name=高级工厂安装器
+item.eliteTierInstaller.name=精英工厂安装器
+item.ultimateTierInstaller.name=终极工厂安装器
 
 //Dust
 item.ironDust.name=铁粉
@@ -262,7 +268,7 @@ item.tinCrystal.name=锡晶体
 item.silverCrystal.name=银晶体
 item.leadCrystal.name=铅晶体
 
-//DirtyDust
+//Dirty Dust
 item.dirtyIronDust.name=污浊的铁粉
 item.dirtyGoldDust.name=污浊的金粉
 item.dirtyOsmiumDust.name=污浊的锇粉
@@ -381,6 +387,8 @@ upgrade.gas=气体
 upgrade.gas.desc=提高机器使用气体的效率.
 upgrade.muffling=降噪
 upgrade.muffling.desc=减少机器发出的噪音.
+upgrade.anchor=稳定
+upgrade.anchor.desc=保持机器的稳定.
 
 //Key description text
 key.mode=模式切换
@@ -393,14 +401,14 @@ entity.BabySkeleton.name=骷髅射手宝宝
 //Config Gui
 mekanism.configgui.ctgy.general=通用机械常规设定
 mekanism.configgui.ctgy.machines=机器设定
-mekanism.configgui.ctgy.usage=能耗设定
+mekanism.configgui.ctgy.tier=能耗设定
 mekanism.configgui.ctgy.usage=使用设定
 mekanism.configgui.ctgy.client=客户端设定
 
 //Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=通用机械及其下所有模块的常规设定
 mekanism.configgui.ctgy.machines.tooltip=是否启用特定机器的设定
-mekanism.configgui.ctgy.usage.tooltip=通用机械物品等级以及属性设定
+mekanism.configgui.ctgy.tier.tooltip=通用机械物品等级以及属性设定
 mekanism.configgui.ctgy.usage.tooltip=有关机械以及能耗的设定
 mekanism.configgui.ctgy.client.tooltip=通用机械及其下所有模块在客户端的特殊设定
 
@@ -567,7 +575,7 @@ gui.upgrades.effect=效果
 
 gui.chemicalInfuser.short=化学灌注器
 gui.chemicalDissolutionChamber.short=化学溶解室
-gui.solarEvaporationController.short=盐化控制器
+gui.thermalEvaporationController.short=盐化控制器
 
 gui.dictionary.noKey=无关键字.
 
@@ -807,7 +815,7 @@ tooltip.ChemicalOxidizer=一台能够将!n固态材料氧化成气态产物的�
 tooltip.ChemicalInfuser=一台能够通过注入其它两种!n气体产生新的气体的机器.
 tooltip.SeismicVibrator=一台能够利用地震震动!n提供关于这个世界!n地质结构的机器.
 tooltip.PressurizedReactionChamber=一台能够处理!n固体,液体和气体混合物,并且能!n产生气态和固态产物的高级机器.
-tooltip.PortableTank=一个便利的携带式水槽,能够让你!n无论何处都能携带!n14桶液体. 同时可以当做水桶来用!
+tooltip.FluidTank=一个便利的携带式水槽,能够让你!n无论何处都能携带!n14桶液体. 同时可以当做水桶来用!
 tooltip.FluidicPlenisher=一台能够用液体填充沟壑!n从而产生一整个湖的机器.
 tooltip.Laser=一种高级的能量传输形式!n,利用平行光线实现能量!n的直线传输.
 tooltip.LaserAmplifier=一个能用于合并,转向和!n增幅激光的方块,易于控!n制.
@@ -818,6 +826,7 @@ tooltip.Factory=一台经过工业化升级的机器,能够一次同时处理多
 tooltip.ResistiveHeater=一台能直接将能量转化成热能的机器
 tooltip.FormulaicAssemblicator=一台快速制作成品的机器
 tooltip.FuelwoodHeater=一台通过燃烧可燃物来生产热量的机器
+tooltip.QuantumEntangloporter=一个可以远距离传输能!n量的机器.
 tooltip.HeatGenerator=一台使用岩浆热量或者!n其它可燃资源产生能量的发电机.
 tooltip.SolarGenerator=一台使用!n太阳能量发电的发电机.
 tooltip.GasGenerator=一台利用!n不同的气体供能的发电机.
@@ -827,16 +836,17 @@ tooltip.WindTurbine=一台利用风能!n产生能量的发电机, 高度越高!n
 tooltip.TurbineRotor=放置在工业涡轮中的钢制转子
 tooltip.RotationalComplex=放置在涡轮转子上方的转化元件,能够将转子的动能转化.
 tooltip.ElectromagneticCoil=一块类似磁铁的装置,能使得动能在其中转化为电磁能,它必须放置在旋钮装置的上方并保证它们是相连的.
-tooltip.TurbineCasing=用于工业涡轮的耐压外壳
+tooltip.TurbineCasing=用于工业涡轮的耐压 外壳
 tooltip.TurbineValve=用于输送蒸汽并导出能量的工业涡轮阀门
 tooltip.TurbineVent=用于将剩余蒸汽排出的涡轮外壳,它们必须安装在旋钮装置以上的位置.
+tooltip.SaturatingCondenser=用于将工业涡轮机处理!n的蒸汽冷凝成可用水必!n须安装在的旋钮装置以!n上位置.
 tooltip.ReactorGlass=能用于聚变反应结构的!n强化玻璃.
 tooltip.ReactorLaserFocusMatrix=一个可吸收光能并加热!n聚变反应堆的强化玻璃!n板.
 tooltip.ReactorController=整个聚变反应结构的控!n制方块.
 tooltip.ReactorFrame=能用于聚变反映结构的!n强化框架.
 tooltip.ReactorNeutronCapturePlate=一个能用于阻隔聚变辐!n射或协助氚生成的方块.
 tooltip.ReactorPort=一个强化的框架方块,能!n处理聚变反应堆中气体!n和能量的输送.
-tooltip.ReactorLogicAdapter=A block that can be used to allow basic monitoring of a reactor using redstone.
+tooltip.ReactorLogicAdapter=一个可用红石对反应堆!n进行监控的方块.
 
 tooltip.OsmiumOre=一种牢固的材料,它能够在!n这个世界任何高度被发现. !n它因经常用于!n机器建造而闻名.
 tooltip.CopperOre=一种常见的导电材料,能够!n用于线缆的!n产出. 它耐高温的特性!n也使它成为生成!n高级机械的重要材料.
@@ -948,6 +958,7 @@ tile.Generator.ElectromagneticCoil.name=电磁线圈
 tile.Generator.TurbineCasing.name=涡轮外壳
 tile.Generator.TurbineValve.name=涡轮阀门
 tile.Generator.TurbineVent.name=涡轮排气口
+tile.Generator.SaturatingCondenser.name=冷凝器
 
 tile.Reactor.ReactorController.name=反应控制器
 tile.Reactor.ReactorFrame.name=反应堆框架
@@ -1056,6 +1067,18 @@ item.SteelAxe.name=钢斧头
 item.SteelShovel.name=钢铲子
 item.SteelHoe.name=钢锄头
 item.SteelSword.name=钢剑
+
+//Lapis Lazuli
+item.LapisLazuliHelmet.name=青金石头盔
+item.LapisLazuliChestplate.name=青金石胸甲
+item.LapisLazuliLeggings.name=青金石护腿
+item.LapisLazuliBoots.name=青金石靴子
+item.LapisLazuliPaxel.name=青金石斧锹
+item.LapisLazuliPickaxe.name=秦金石稿
+item.LapisLazuliAxe.name=青金石斧头
+item.LapisLazliShovel.name=青金石铲子
+item.LapisLazuliHoe.name=青金石锄头
+item.LapisLazuliSword.name=青金石剑
 
 //Config Gui
 mekanism.configgui.ctgy.tools.general=常规
