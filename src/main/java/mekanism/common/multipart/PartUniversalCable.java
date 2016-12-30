@@ -85,7 +85,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 						{
 							IStrictEnergyStorage storage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
 							
-							if(storage.getEnergy() == null)
+							if(storage == null)
 							{
 								
 							} else {
