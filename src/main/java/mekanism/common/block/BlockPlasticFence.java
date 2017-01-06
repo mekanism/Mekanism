@@ -44,7 +44,7 @@ public class BlockPlasticFence extends BlockFence
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return state.getValue(colorProperty).getMetadata();
+		return state.getValue(colorProperty).getDyeDamage();
 	}
 
     @Override
