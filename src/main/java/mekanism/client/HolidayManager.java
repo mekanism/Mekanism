@@ -96,7 +96,7 @@ public final class HolidayManager
 		@Override
 		public YearlyDate getDate()
 		{
-			return new YearlyDate(1, 8);
+			return new YearlyDate(12, 25);
 		}
 
 		@Override
