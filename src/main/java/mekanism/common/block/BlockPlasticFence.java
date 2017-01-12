@@ -38,13 +38,13 @@ public class BlockPlasticFence extends BlockFence
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(colorProperty, EnumDyeColor.byMetadata(meta));
+		return this.getDefaultState().withProperty(colorProperty, EnumDyeColor.byDyeDamage(meta));
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return state.getValue(colorProperty).getMetadata();
+		return state.getValue(colorProperty).getDyeDamage();
 	}
 
     @Override
