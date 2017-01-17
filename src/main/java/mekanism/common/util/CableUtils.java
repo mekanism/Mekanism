@@ -189,18 +189,7 @@ public final class CableUtils
 
 				if(outputtingSides.size() > 0)
 				{
-					double sent = 0;
-					boolean tryAgain = false;
-					int i = 0;
-
-					do {
-						double prev = sent;
-						sent += emit_do(emitter, outputtingSides, energyToSend-sent, tryAgain);
-
-						tryAgain = energyToSend-sent > 0 && sent-prev > 0 && i < 100;
-
-						i++;
-					} while(tryAgain);
+					double sent = emit_do(emitter, outputtingSides, energyToSend);
 
 					emitter.setEnergy(emitter.getEnergy() - sent);
 				}
@@ -208,38 +197,22 @@ public final class CableUtils
 		}
 	}
 
-	private static double emit_do(IEnergyWrapper emitter, List<EnumFacing> outputtingSides, double totalToSend, boolean tryAgain)
+	private static double emit_do(IEnergyWrapper emitter, List<EnumFacing> outputtingSides, double totalToSend)
 	{
 		double remains = totalToSend%outputtingSides.size();
 		double splitSend = (totalToSend-remains)/outputtingSides.size();
 		double sent = 0;
 
-		List<EnumFacing> toRemove = new ArrayList<EnumFacing>();
-
 		for(EnumFacing side : outputtingSides)
 		{
 			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).offset(side).getTileEntity(((TileEntity)emitter).getWorld());
-			double toSend = splitSend+remains;
-			remains = 0;
-
-			double prev = sent;
-			sent += emit_do_do(emitter, tileEntity, side, toSend, tryAgain);
-
-			if(sent-prev == 0)
-			{
-				toRemove.add(side);
-			}
-		}
-
-		for(EnumFacing side : toRemove)
-		{
-			outputtingSides.remove(side);
+			sent += emit_do_do(emitter, tileEntity, side, toSend);
 		}
 
 		return sent;
 	}
 
-	private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending, boolean tryAgain)
+	private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending)
 	{
 		double sent = 0;
 
