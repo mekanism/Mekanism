@@ -258,7 +258,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public boolean needsEnergy(EnumFacing side)
 		{
-			return false;
+			return acceptor.givePower(1, true) > 0;
 		}
 		
 		public long toTesla(double joules)
