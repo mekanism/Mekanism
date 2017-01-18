@@ -10,23 +10,14 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class CommonEventHandler {
 
-    private boolean canFly = false;
-
     @EventHandler
     public void onPlayerTick(TickEvent.PlayerTickEvent event){
         if(event.phase == TickEvent.Phase.START && event.side == Side.SERVER){
-            if(canFly){
-                if(!(event.player.inventory.armorInventory[1].getItem() instanceof ItemJetpack)){
-                    canFly = false;
-                    event.player.capabilities.allowFlying = canFly;
-                }
+            if(!(event.player.inventory.armorInventory[1].getItem() instanceof ItemJetpack)){
+                event.player.capabilities.allowFlying = false;
             } else {
-                if(event.player.inventory.armorInventory[1].getItem() instanceof ItemJetpack){
-                    canFly = true;
-                    event.player.capabilities.allowFlying = canFly;
-                }
+                event.player.capabilities.allowFlying = true;
             }
         }
     }
-
 }
