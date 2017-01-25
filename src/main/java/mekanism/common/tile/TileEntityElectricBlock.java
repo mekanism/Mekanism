@@ -8,10 +8,6 @@ import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
@@ -26,6 +22,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
 
 public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IEnergyWrapper
 {
@@ -387,7 +386,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			return amount;
 		}
 
-		return amount-transferEnergyToAcceptor(direction, amount*general.FROM_IC2)*general.TO_IC2;
+		return amount-transferEnergyToAcceptor(direction, amount*general.FROM_IC2, false)*general.TO_IC2;
 	}
 
 	@Override
@@ -398,7 +397,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 	{
 		if(!(getConsumingSides().contains(side) || side == null))
 		{
@@ -406,13 +405,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 
 		double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
-		setEnergy(getEnergy() + toUse);
+		if (!simulated) setEnergy(getEnergy() + toUse);
 
 		return toUse;
 	}
 	
 	@Override
-	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	public double removeEnergyFromProvider(EnumFacing side, double amount, boolean simulated)
 	{
 		if(!(getOutputtingSides().contains(side) || side == null))
 		{
@@ -420,7 +419,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 		
 		double toGive = Math.min(getEnergy(), amount);
-		setEnergy(getEnergy() - toGive);
+		if (!simulated) setEnergy(getEnergy() - toGive);
 		
 		return toGive;
 	}

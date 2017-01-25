@@ -223,7 +223,7 @@ public final class CableUtils
 
 			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{
-				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), currentSending);
+				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), currentSending, false);
 			}
 		}
 		else if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))

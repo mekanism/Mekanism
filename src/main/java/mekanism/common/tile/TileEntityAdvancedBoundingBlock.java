@@ -317,14 +317,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 	{
 		if(getInv() == null || !canReceiveEnergy(side))
 		{
 			return 0;
 		}
 
-		return getInv().transferEnergyToAcceptor(side, amount);
+		return getInv().transferEnergyToAcceptor(side, amount, simulated);
 	}
 
 	@Override
