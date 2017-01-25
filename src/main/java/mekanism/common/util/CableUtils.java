@@ -1,9 +1,8 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import cofh.api.energy.IEnergyConnection;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
@@ -18,9 +17,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import cofh.api.energy.IEnergyConnection;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public final class CableUtils
 {
@@ -206,6 +206,7 @@ public final class CableUtils
 		for(EnumFacing side : outputtingSides)
 		{
 			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).offset(side).getTileEntity(((TileEntity)emitter).getWorld());
+			double toSend = splitSend+remains;
 			sent += emit_do_do(emitter, tileEntity, side, toSend);
 		}
 
