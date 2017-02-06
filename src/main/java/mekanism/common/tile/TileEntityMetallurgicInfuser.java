@@ -399,13 +399,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		super.handlePacketData(dataStream);
+
  		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			infuseStored.amount = dataStream.readInt();
 			return;
 		}
-
-		super.handlePacketData(dataStream);
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
