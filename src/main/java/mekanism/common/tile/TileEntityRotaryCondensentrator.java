@@ -502,7 +502,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == MekanismUtils.getRight(facing))
+		if(from == null || from == MekanismUtils.getRight(facing))
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}

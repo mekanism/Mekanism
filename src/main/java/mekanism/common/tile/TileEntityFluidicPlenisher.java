@@ -409,7 +409,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing direction)
 	{
-		if(direction == EnumFacing.UP)
+		if(direction == null || direction == EnumFacing.UP)
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}

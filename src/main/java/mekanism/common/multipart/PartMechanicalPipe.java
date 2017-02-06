@@ -256,7 +256,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(getConnectionType(from) != ConnectionType.NONE)
+		if(from == null || getConnectionType(from) != ConnectionType.NONE)
 		{
 			return new FluidTankInfo[] {buffer.getInfo()};
 		}

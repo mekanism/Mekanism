@@ -455,6 +455,11 @@ public final class MekanismUtils
 	 */
 	public static EnumFacing getBaseOrientation(EnumFacing side, EnumFacing blockFacing)
 	{
+		if (side == null || blockFacing == null)
+		{
+			return null;
+		}
+
 		if(blockFacing == EnumFacing.DOWN)
 		{
 			switch(side)
