@@ -786,7 +786,7 @@ public final class MekanismUtils
 	{
 		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).renderUpdate())
 		{
-			world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
+			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
 
 		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).lightUpdate() && client.machineEffects)
