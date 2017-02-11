@@ -440,6 +440,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
 		{
+			if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
+			{
+				return (T)this;
+			}
+
 			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			{
 				return (T)new FluidHandlerWrapper(this, side);
