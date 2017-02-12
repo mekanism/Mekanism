@@ -418,10 +418,10 @@ public class MekanismTools implements IModule
 				, Mekanism.configuration.get("tools.armor-balance.obsidian", "durability", 50).getInt()
 				, new int[]
 				{
+						Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "feet", 5).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "legs", 8).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "chest", 12).getInt(),
 						Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "head", 5).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "chest", 12).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "legs", 8).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "feet", 5).getInt()
 				}
 				, Mekanism.configuration.get("tools.armor-balance.obsidian", "enchantability", 40).getInt()
 				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
@@ -431,10 +431,10 @@ public class MekanismTools implements IModule
 				, Mekanism.configuration.get("tools.armor-balance.lapis", "durability", 13).getInt()
 				, new int[]
 				{
+						Mekanism.configuration.get("tools.armor-balance.lapis.protection", "feet", 2).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.lapis.protection", "legs", 6).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.lapis.protection", "chest", 5).getInt(),
 						Mekanism.configuration.get("tools.armor-balance.lapis.protection", "head", 2).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.lapis.protection", "chest", 5).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.lapis.protection", "legs", 6).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.lapis.protection", "feet", 2).getInt()
 				}
 				, Mekanism.configuration.get("tools.armor-balance.lapis", "enchantability", 8).getInt()
 				, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND
@@ -444,10 +444,10 @@ public class MekanismTools implements IModule
 				, Mekanism.configuration.get("tools.armor-balance.osmium", "durability", 30).getInt()
 				, new int[]
 				{
+						Mekanism.configuration.get("tools.armor-balance.osmium.protection", "feet", 3).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.osmium.protection", "legs", 6).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.osmium.protection", "chest", 5).getInt(),
 						Mekanism.configuration.get("tools.armor-balance.osmium.protection", "head", 3).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.osmium.protection", "chest", 5).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.osmium.protection", "legs", 6).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.osmium.protection", "feet", 3).getInt()
 				}
 				, Mekanism.configuration.get("tools.armor-balance.osmium", "enchantability", 12).getInt()
 				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
@@ -457,10 +457,10 @@ public class MekanismTools implements IModule
 				, Mekanism.configuration.get("tools.armor-balance.bronze", "durability", 35).getInt()
 				, new int[]
 				{
+						Mekanism.configuration.get("tools.armor-balance.bronze.protection", "feet", 2).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.bronze.protection", "legs", 5).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.bronze.protection", "chest", 6).getInt(),
 						Mekanism.configuration.get("tools.armor-balance.bronze.protection", "head", 3).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.bronze.protection", "chest", 6).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.bronze.protection", "legs", 5).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.bronze.protection", "feet", 2).getInt()
 				}
 				, Mekanism.configuration.get("tools.armor-balance.bronze", "enchantability", 10).getInt()
 				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
@@ -470,10 +470,10 @@ public class MekanismTools implements IModule
 				, Mekanism.configuration.get("tools.armor-balance.glowstone", "durability", 18).getInt()
 				, new int[]
 				{
+						Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "feet", 3).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "legs", 6).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "chest", 7).getInt(),
 						Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "head", 3).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "chest", 7).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "legs", 6).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "feet", 3).getInt()
 				}
 				, Mekanism.configuration.get("tools.armor-balance.glowstone", "enchantability", 18).getInt()
 				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
@@ -483,10 +483,10 @@ public class MekanismTools implements IModule
 				, Mekanism.configuration.get("tools.armor-balance.steel", "durability", 40).getInt()
 				, new int[]
 				{
+						Mekanism.configuration.get("tools.armor-balance.steel.protection", "feet", 3).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.steel.protection", "legs", 6).getInt(),
+						Mekanism.configuration.get("tools.armor-balance.steel.protection", "chest", 7).getInt(),
 						Mekanism.configuration.get("tools.armor-balance.steel.protection", "head", 3).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.steel.protection", "chest", 7).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.steel.protection", "legs", 6).getInt()
-						, Mekanism.configuration.get("tools.armor-balance.steel.protection", "feet", 3).getInt()
 				}
 				, Mekanism.configuration.get("tools.armor-balance.steel", "enchantability", 10).getInt()
 				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
