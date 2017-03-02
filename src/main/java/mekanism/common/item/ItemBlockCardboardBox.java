@@ -4,6 +4,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
@@ -48,11 +49,18 @@ public class ItemBlockCardboardBox extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
-		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
+		BlockData blockData = getBlockData(itemstack);
+		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(blockData != null));
 
-		if(getBlockData(itemstack) != null)
+		if(blockData != null)
 		{
-			list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(getBlockData(itemstack).block, getBlockData(itemstack).meta).getDisplayName());
+			try {
+				// many items can't be made into an item stack and will throw NPE, crashing the client.
+				list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(blockData.block, blockData.meta).getDisplayName());
+			} catch (Exception e) {
+				//Mekanism.logger.debug("Unable to get tooltip info for block `" + blockData.block + "`");
+			}
+
 			list.add(LangUtils.localize("tooltip.meta") + ": " + getBlockData(itemstack).meta);
 
 			if(getBlockData(itemstack).tileTag != null)
