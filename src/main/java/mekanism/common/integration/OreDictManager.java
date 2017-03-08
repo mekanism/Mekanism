@@ -31,7 +31,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictManager
 {
-	private static final List<String> minorCompat = Arrays.asList("Nickel", "Aluminum", "Uranium");
+	private static final List<String> minorCompat = Arrays.asList("Nickel", "Aluminum", "Uranium", "Draconium");
 	
 	public static void init()
 	{
