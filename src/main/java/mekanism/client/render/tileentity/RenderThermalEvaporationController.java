@@ -46,7 +46,10 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
 
 				DisplayInteger[] displayList = getListAndRender(data, tileEntity.inputTank.getFluid().getFluid());
-				displayList[(int)(((float)tileEntity.inputTank.getFluidAmount()/tileEntity.inputTank.getCapacity())*((float)getStages(data.height)-1))].render();
+
+				float tankFillPercentage = Math.min(((float)tileEntity.inputTank.getFluidAmount()/tileEntity.inputTank.getCapacity()), 1);
+
+				displayList[(int)(tankFillPercentage * ((float)getStages(data.height)-1))].render();
 
 				MekanismRenderer.glowOff();
 
