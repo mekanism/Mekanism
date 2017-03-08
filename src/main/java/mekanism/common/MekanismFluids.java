@@ -29,6 +29,8 @@ public class MekanismFluids
 		GasRegistry.register(new Gas("fusionFuelDT", "mekanism:blocks/liquid/LiquidDT")).registerFluid();
 		GasRegistry.register(new Gas("lithium", "mekanism:blocks/liquid/LiquidLithium")).registerFluid();
 		
+		FluidRegistry.getFluid("brine").setGaseous(false);
+		
 		FluidRegistry.registerFluid(new Fluid("heavyWater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater")));
 		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true));
 		
