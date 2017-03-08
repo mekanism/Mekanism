@@ -69,9 +69,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(EnumFacing side, double amount)
+		public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 		{
-			return acceptor.transferEnergyToAcceptor(side, amount);
+			return acceptor.transferEnergyToAcceptor(side, amount, simulated);
 		}
 
 		@Override
@@ -115,9 +115,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(EnumFacing side, double amount)
+		public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 		{
-			return fromRF(acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), false));
+			return fromRF(acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), simulated));
 		}
 
 		@Override
@@ -173,7 +173,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(EnumFacing side, double amount)
+		public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 		{
 			double toTransfer = Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE);
 			double rejects = acceptor.injectEnergy(side, toTransfer, 0);
@@ -229,9 +229,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 		
 		@Override
-		public double transferEnergyToAcceptor(EnumFacing side, double amount) 
+		public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 		{
-			return fromTesla(acceptor.givePower(toTesla(amount), false));
+			return fromTesla(acceptor.givePower(toTesla(amount), simulated));
 		}
 
 		@Override
@@ -258,7 +258,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public boolean needsEnergy(EnumFacing side)
 		{
-			return false;
+			return acceptor.givePower(1, true) > 0;
 		}
 		
 		public long toTesla(double joules)

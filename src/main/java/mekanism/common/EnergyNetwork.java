@@ -1,13 +1,5 @@
 package mekanism.common;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -19,8 +11,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
-
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
 
 public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork>
 {
@@ -179,7 +172,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 				{
 					double prev = sent;
 
-					sent += acceptor.transferEnergyToAcceptor(side, currentSending);
+					sent += acceptor.transferEnergyToAcceptor(side, currentSending, false);
 
 					if(sent > prev)
 					{

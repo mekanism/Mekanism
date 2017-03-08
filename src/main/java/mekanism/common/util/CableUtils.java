@@ -1,9 +1,8 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import cofh.api.energy.IEnergyConnection;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
@@ -18,9 +17,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import cofh.api.energy.IEnergyConnection;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public final class CableUtils
 {
@@ -189,18 +189,7 @@ public final class CableUtils
 
 				if(outputtingSides.size() > 0)
 				{
-					double sent = 0;
-					boolean tryAgain = false;
-					int i = 0;
-
-					do {
-						double prev = sent;
-						sent += emit_do(emitter, outputtingSides, energyToSend-sent, tryAgain);
-
-						tryAgain = energyToSend-sent > 0 && sent-prev > 0 && i < 100;
-
-						i++;
-					} while(tryAgain);
+					double sent = emit_do(emitter, outputtingSides, energyToSend);
 
 					emitter.setEnergy(emitter.getEnergy() - sent);
 				}
@@ -208,38 +197,23 @@ public final class CableUtils
 		}
 	}
 
-	private static double emit_do(IEnergyWrapper emitter, List<EnumFacing> outputtingSides, double totalToSend, boolean tryAgain)
+	private static double emit_do(IEnergyWrapper emitter, List<EnumFacing> outputtingSides, double totalToSend)
 	{
 		double remains = totalToSend%outputtingSides.size();
 		double splitSend = (totalToSend-remains)/outputtingSides.size();
 		double sent = 0;
 
-		List<EnumFacing> toRemove = new ArrayList<EnumFacing>();
-
 		for(EnumFacing side : outputtingSides)
 		{
 			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).offset(side).getTileEntity(((TileEntity)emitter).getWorld());
 			double toSend = splitSend+remains;
-			remains = 0;
-
-			double prev = sent;
-			sent += emit_do_do(emitter, tileEntity, side, toSend, tryAgain);
-
-			if(sent-prev == 0)
-			{
-				toRemove.add(side);
-			}
-		}
-
-		for(EnumFacing side : toRemove)
-		{
-			outputtingSides.remove(side);
+			sent += emit_do_do(emitter, tileEntity, side, toSend);
 		}
 
 		return sent;
 	}
 
-	private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending, boolean tryAgain)
+	private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending)
 	{
 		double sent = 0;
 
@@ -249,13 +223,13 @@ public final class CableUtils
 
 			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{
-				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), currentSending);
+				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), currentSending, false);
 			}
 		}
 		else if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))
 		{
 			ITeslaConsumer consumer = CapabilityUtils.getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite());
-			sent += consumer.givePower((long)Math.round(currentSending*general.TO_TESLA), false);
+			sent += consumer.givePower((long)Math.round(currentSending*general.TO_TESLA), false) * general.FROM_TESLA;
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{

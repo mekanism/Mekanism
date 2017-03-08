@@ -7,9 +7,6 @@ import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
-
-import java.util.EnumSet;
-
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -33,6 +30,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Method;
+
+import java.util.EnumSet;
 
 public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper
 {
@@ -332,13 +331,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 	{
 		return 0;
 	}
 	
 	@Override
-	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	public double removeEnergyFromProvider(EnumFacing side, double amount, boolean simulated)
 	{
 		if(!getOutputtingSides().contains(side))
 		{
@@ -346,7 +345,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		}
 		
 		double toGive = Math.min(getEnergy(), amount);
-		setEnergy(getEnergy() - toGive);
+		if (!simulated) setEnergy(getEnergy() - toGive);
 		
 		return toGive;
 	}

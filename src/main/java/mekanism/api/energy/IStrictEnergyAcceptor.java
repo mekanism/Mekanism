@@ -14,12 +14,12 @@ public interface IStrictEnergyAcceptor extends IStrictEnergyStorage
 	 * @param amount - amount to transfer
 	 * @return energy used
 	 */
-	public double transferEnergyToAcceptor(EnumFacing side, double amount);
+	double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated);
 
 	/**
 	 * Whether or not this tile entity accepts energy from a certain side.
 	 * @param side - side to check
 	 * @return if tile entity accepts energy
 	 */
-	public boolean canReceiveEnergy(EnumFacing side);
+	boolean canReceiveEnergy(EnumFacing side);
 }

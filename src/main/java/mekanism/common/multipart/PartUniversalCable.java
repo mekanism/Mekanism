@@ -1,12 +1,10 @@
 package mekanism.common.multipart;
 
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
-
-import java.util.Collection;
-import java.util.List;
-
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -32,8 +30,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
+
+import java.util.Collection;
+import java.util.List;
 
 @InterfaceList({
 	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla")
@@ -281,7 +280,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 	{
 		if(!canReceiveEnergy(side))
 		{
@@ -289,7 +288,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		}
 
 		double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
-		setEnergy(getEnergy() + toUse);
+		if (!simulated) setEnergy(getEnergy() + toUse);
 
 		return toUse;
 	}

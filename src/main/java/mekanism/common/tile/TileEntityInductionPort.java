@@ -8,10 +8,6 @@ import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -40,6 +36,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -408,7 +407,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			return amount;
 		}
 
-		return amount-transferEnergyToAcceptor(direction, amount*general.FROM_IC2)*general.TO_IC2;
+		return amount-transferEnergyToAcceptor(direction, amount*general.FROM_IC2, false)*general.TO_IC2;
 	}
 
 	@Override
@@ -424,7 +423,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
 	{
 		if(!getConsumingSides().contains(side))
 		{
@@ -432,14 +431,16 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		}
 
 		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount);
-		setEnergy(getEnergy() + toUse);
-		structure.remainingInput -= toUse;
+		if (!simulated) {
+			setEnergy(getEnergy() + toUse);
+			structure.remainingInput -= toUse;
+		}
 
 		return toUse;
 	}
 	
 	@Override
-	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	public double removeEnergyFromProvider(EnumFacing side, double amount, boolean simulated)
 	{
 		if(!getOutputtingSides().contains(side))
 		{
@@ -447,7 +448,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		}
 		
 		double toGive = Math.min(getEnergy(), amount);
-		setEnergy(getEnergy() - toGive);
+		if (!simulated) setEnergy(getEnergy() - toGive);
 		
 		return toGive;
 	}

@@ -23,10 +23,10 @@ public class DefaultStrictEnergyAcceptor extends DefaultStrictEnergyStorage impl
     }
 
     @Override
-    public double transferEnergyToAcceptor(EnumFacing side, double amount)
+    public double transferEnergyToAcceptor(EnumFacing side, double amount, boolean simulated)
     {
         double used = Math.min(amount, Math.max(0, getMaxEnergy() - getEnergy()));
-        setEnergy(getEnergy() + used);
+        if (!simulated) setEnergy(getEnergy() + used);
         return used;
     }
 
