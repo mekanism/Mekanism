@@ -49,16 +49,19 @@ public class ItemBlockCardboardBox extends ItemBlock
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
 		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
-
-		if(getBlockData(itemstack) != null)
+		BlockData data = getBlockData(itemstack);
+		
+		if(data != null)
 		{
-			list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(getBlockData(itemstack).block, getBlockData(itemstack).meta).getDisplayName());
-			list.add(LangUtils.localize("tooltip.meta") + ": " + getBlockData(itemstack).meta);
-
-			if(getBlockData(itemstack).tileTag != null)
-			{
-				list.add(LangUtils.localize("tooltip.tile") + ": " + getBlockData(itemstack).tileTag.getString("id"));
-			}
+			try {
+				list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, data.meta).getDisplayName());
+				list.add(LangUtils.localize("tooltip.meta") + ": " + data.meta);
+	
+				if(data.tileTag != null)
+				{
+					list.add(LangUtils.localize("tooltip.tile") + ": " + data.tileTag.getString("id"));
+				}
+			} catch(Exception e) {}
 		}
 	}
 
