@@ -255,7 +255,7 @@ public final class CableUtils
 		else if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))
 		{
 			ITeslaConsumer consumer = CapabilityUtils.getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite());
-			sent += consumer.givePower((long)Math.round(currentSending*general.TO_TESLA), false);
+			sent += consumer.givePower((long)Math.round(currentSending*general.TO_TESLA), false)*general.FROM_TESLA;
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{
