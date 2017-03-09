@@ -889,6 +889,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
+		if(!general.allowProtection)
+		{
+			return SecurityMode.PUBLIC;
+		}
+		
 		return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
 	}
 

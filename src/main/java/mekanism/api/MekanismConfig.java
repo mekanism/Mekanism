@@ -69,6 +69,7 @@ public class MekanismConfig
 		public static double heatPerFuelTick = 4;
 		public static boolean allowTransmitterAlloyUpgrade;
 		public static boolean allowChunkloading;
+		public static boolean allowProtection = true;
 	}
 
 	public static class client

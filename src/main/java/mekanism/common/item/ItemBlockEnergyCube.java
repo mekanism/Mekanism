@@ -346,6 +346,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
+		if(!general.allowProtection)
+		{
+			return SecurityMode.PUBLIC;
+		}
+		
 		return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
 	}
 

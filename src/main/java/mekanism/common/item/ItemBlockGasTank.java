@@ -364,6 +364,11 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
+		if(!general.allowProtection)
+		{
+			return SecurityMode.PUBLIC;
+		}
+		
 		return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
 	}
 
