@@ -65,17 +65,22 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		if(getEnergy(itemstack) > 0)
 		{
-			if(attacker instanceof EntityPlayer) {
+			if(attacker instanceof EntityPlayer) 
+			{
 				target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), 20);
-			} else {
+			} 
+			else {
 				target.attackEntityFrom(DamageSource.causeMobDamage(attacker), 20);
 			}
+			
 			setEnergy(itemstack, getEnergy(itemstack) - 2000);
 		}
 		else {
-			if(attacker instanceof EntityPlayer) {
+			if(attacker instanceof EntityPlayer) 
+			{
 				target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)attacker), 4);
-			} else {
+			} 
+			else {
 				target.attackEntityFrom(DamageSource.causeMobDamage(attacker), 4);
 			}
 

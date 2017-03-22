@@ -40,8 +40,12 @@ public abstract class MekKeyHandler
 
 	public static boolean getIsKeyPressed(KeyBinding keyBinding)
 	{
-		int keyCode = keyBinding.getKeyCode();
-		return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode);
+		try {
+			int keyCode = keyBinding.getKeyCode();
+			return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode);
+		} catch(Exception e) {
+			return false;
+		}
 	}
 
 	public KeyBinding[] getKeyBindings ()

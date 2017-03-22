@@ -15,7 +15,7 @@ public abstract class TransporterFilter
 {
 	public static final int MAX_LENGTH = 24;
 	
-	public static final List<Character> SPECIAL_CHARS = Arrays.asList('*', '-', ' ', '|');
+	public static final List<Character> SPECIAL_CHARS = Arrays.asList('*', '-', ' ', '|', '_');
 	
 	public EnumColor color;
 

@@ -38,6 +38,12 @@ public final class ItemRegistryUtils
 		}
 		
 		ResourceLocation itemResourceLocation = Item.REGISTRY.getNameForObject(stack.getItem());
+		
+		if(itemResourceLocation == null) 
+		{
+			return "null";
+		}
+		
 		String modId = itemResourceLocation.getResourceDomain();
 		String lowercaseModId = modId.toLowerCase(Locale.ENGLISH);
 		String modName = modIDMap.get(lowercaseModId);
