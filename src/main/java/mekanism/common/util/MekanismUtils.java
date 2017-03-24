@@ -455,6 +455,11 @@ public final class MekanismUtils
 	 */
 	public static EnumFacing getBaseOrientation(EnumFacing side, EnumFacing blockFacing)
 	{
+		if (side == null || blockFacing == null)
+		{
+			return null;
+		}
+
 		if(blockFacing == EnumFacing.DOWN)
 		{
 			switch(side)
@@ -786,7 +791,7 @@ public final class MekanismUtils
 	{
 		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).renderUpdate())
 		{
-			world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
+			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
 
 		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).lightUpdate() && client.machineEffects)

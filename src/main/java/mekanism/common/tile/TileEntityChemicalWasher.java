@@ -554,7 +554,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == EnumFacing.UP)
+		if(from == null || from == EnumFacing.UP)
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}

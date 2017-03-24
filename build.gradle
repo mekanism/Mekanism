@@ -137,7 +137,7 @@ task releaseJars(type: Copy) {
     from MDKZip
     rename '-(.*)jar', '.jar'
     rename '-(.*)zip', '.zip'
-    into '.'
+    into 'releaseJars'
 }
 
 task fullBuild(type: Delete) {

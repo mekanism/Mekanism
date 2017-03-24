@@ -458,7 +458,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		if(hasFrequency())
 		{
-			if(configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState != IOState.OFF)
+			if(from == null || configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState != IOState.OFF)
 			{
 				return new FluidTankInfo[] {frequency.storedFluid.getInfo()};
 			}

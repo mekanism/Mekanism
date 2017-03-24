@@ -246,47 +246,40 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		int height = Math.round(placer.rotationPitch);
-		int change = 3;
-
 		if(tileEntity == null)
 		{
 			return;
 		}
 
-		if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
-		{
-			if(height >= 65)
-			{
-				change = 1;
-			} else if(height <= -65)
-			{
-				change = 0;
-			}
-		}
+		int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int height = Math.round(placer.rotationPitch);
+		int newFacing = 3;
 
-		if(change != 0 && change != 1)
+		if(height >= 65 && tileEntity.canSetFacing(1))
 		{
+			newFacing = 1;
+		}
+		else if(height <= -65 && tileEntity.canSetFacing(0))
+		{
+			newFacing = 0;
+		}
+		else {
 			switch(side)
 			{
 				case 0:
-					change = 2;
+					newFacing = 2;
 					break;
 				case 1:
-					change = 5;
+					newFacing = 5;
 					break;
 				case 2:
-					change = 3;
+					newFacing = 3;
 					break;
 				case 3:
-					change = 4;
+					newFacing = 4;
 					break;
 			}
 		}
-
-		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
 
 		if(tileEntity instanceof TileEntityLogisticalSorter)
 		{
@@ -300,12 +293,15 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 					if(tile instanceof IInventory)
 					{
-						tileEntity.setFacing((short)dir.getOpposite().ordinal());
+						newFacing = dir.getOpposite().ordinal();
 						break;
 					}
 				}
 			}
 		}
+
+		tileEntity.setFacing((short)newFacing);
+		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
 
 		if(tileEntity instanceof IBoundingBlock)
 		{

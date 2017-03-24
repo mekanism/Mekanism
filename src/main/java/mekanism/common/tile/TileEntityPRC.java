@@ -1,8 +1,11 @@
 package mekanism.common.tile;
 
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
@@ -399,8 +402,30 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
+		if (from == null) {
+			List<FluidTankInfo> infos = null;
+			for (EnumFacing f : EnumFacing.values()) {
+				SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
+				if (data != null) {
+					FluidTankInfo[] infoArray = data.getFluidTankInfo(this);
+					if (infoArray != null && infoArray.length > 0) {
+						if (infos == null) {
+							infos = new ArrayList<>();
+						}
+						infos.addAll(Arrays.asList(infoArray));
+					}
+				}
+			}
+			if (infos == null) {
+				return new FluidTankInfo[0];
+			}
+			return infos.toArray(new FluidTankInfo[infos.size()]);
+		}
+
 		SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
-		
+		if (data == null) {
+			return new FluidTankInfo[0];
+		}
 		return data.getFluidTankInfo(this);
 	}
 
