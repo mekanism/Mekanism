@@ -45,13 +45,13 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
 	@Method(modid = "tesla")
 	public long takePower(long power, boolean simulated) 
 	{
-		return (long)Math.round(tileEntity.removeEnergyFromProvider(side, power*general.FROM_TESLA)*general.TO_TESLA);
+		return (long)(tileEntity.extractEnergy(side, (int)(power*general.FROM_TESLA*general.TO_RF), simulated)*general.FROM_RF*general.TO_TESLA);
 	}
 	
 	@Override
 	@Method(modid = "tesla")
 	public long givePower(long power, boolean simulated) 
 	{
-		return (long)Math.round(tileEntity.transferEnergyToAcceptor(side, power*general.FROM_TESLA)*general.TO_TESLA);
+		return (long)(tileEntity.receiveEnergy(side, (int)(power*general.FROM_TESLA*general.TO_RF), simulated)*general.FROM_RF*general.TO_TESLA);
 	}
 }
