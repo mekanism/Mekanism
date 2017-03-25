@@ -221,7 +221,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		if(getConsumingSides().contains(from))
+		if(getConsumingSides().contains(from) || from == ForgeDirection.UNKNOWN)
 		{
 			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*general.FROM_RF);
 
