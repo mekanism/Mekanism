@@ -1242,8 +1242,10 @@ public class Mekanism
 		for(Object obj : FurnaceRecipes.instance().getSmeltingList().entrySet())
 		{
 			Map.Entry<ItemStack, ItemStack> entry = (Map.Entry<ItemStack, ItemStack>)obj;
-			SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
-			Recipe.ENERGIZED_SMELTER.put(recipe);
+			if (entry.getKey() != null && entry.getValue() != null) if (entry.getKey().getItem() != null && entry.getValue.getItem != null) {
+				SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
+				Recipe.ENERGIZED_SMELTER.put(recipe);
+			}
 		}
 		
 		event.registerServerCommand(new CommandMekanism());
