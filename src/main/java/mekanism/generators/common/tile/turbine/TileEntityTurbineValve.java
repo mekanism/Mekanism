@@ -56,7 +56,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 			register();
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null)
 			{
@@ -96,9 +96,9 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Method(modid = "IC2")
 	public void register()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
 			if(registered != this)
 			{
@@ -118,9 +118,9 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Method(modid = "IC2")
 	public void deregister()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
@@ -354,7 +354,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
 	}
 
 	@Override
@@ -397,7 +397,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if(fluid == FluidRegistry.getFluid("steam"))
 		{
-			return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+			return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
 		}
 		
 		return false;
@@ -418,7 +418,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
 					|| capability == Capabilities.ENERGY_STORAGE_CAPABILITY
@@ -438,7 +438,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
 			{

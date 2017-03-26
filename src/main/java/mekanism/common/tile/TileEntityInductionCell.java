@@ -42,7 +42,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	
 			if(prevTier != tier)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}

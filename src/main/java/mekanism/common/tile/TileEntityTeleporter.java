@@ -107,7 +107,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			resetBounds();
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			FrequencyManager manager = getManager(frequency);
 			
@@ -215,7 +215,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			{
 				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwner());
 				Mekanism.privateTeleporters.put(getSecurity().getOwner(), manager);
-				manager.createOrLoad(worldObj);
+				manager.createOrLoad(world);
 			}
 			
 			return Mekanism.privateTeleporters.get(getSecurity().getOwner());
@@ -237,7 +237,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		super.onChunkUnload();
 		
-		if(!worldObj.isRemote && frequency != null)
+		if(!world.isRemote && frequency != null)
 		{
 			FrequencyManager manager = getManager(frequency);
 			
@@ -253,7 +253,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		super.invalidate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(frequency != null)
 			{
@@ -271,7 +271,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		List<UUID> list = new ArrayList<UUID>();
 		
-		for(Entity e : (List<Entity>)worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds))
+		for(Entity e : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, teleportBounds))
 		{
 			list.add(e.getPersistentID());
 		}
@@ -348,7 +348,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public void teleport()
 	{
-		if(worldObj.isRemote) return;
+		if(world.isRemote) return;
 
 		List<Entity> entitiesInPortal = getToTeleport();
 
@@ -385,7 +385,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
 
-				worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
+				world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
 			}
 		}
 	}
@@ -398,13 +398,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			WorldServer oldWorld = player.mcServer.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
 			WorldServer newWorld = player.mcServer.worldServerForDimension(player.dimension);
-			player.connection.sendPacket(new SPacketRespawn(player.dimension, player.worldObj.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+			player.connection.sendPacket(new SPacketRespawn(player.dimension, player.world.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
 			oldWorld.removeEntityDangerously(player);
 			player.isDead = false;
 
 			if(player.isEntityAlive())
 			{
-				newWorld.spawnEntityInWorld(player);
+				newWorld.spawnEntity(player);
 				player.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 				newWorld.updateEntityWithOptionalForce(player, false);
 				player.setWorld(newWorld);
@@ -434,18 +434,18 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
 
-		if(entity.worldObj.provider.getDimension() != coord.dimensionId)
+		if(entity.world.provider.getDimension() != coord.dimensionId)
 		{
-			entity.worldObj.removeEntity(entity);
+			entity.world.removeEntity(entity);
 			entity.isDead = false;
 
-			world.spawnEntityInWorld(entity);
+			world.spawnEntity(entity);
 			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
 			world.updateEntityWithOptionalForce(entity, false);
 			entity.setWorld(world);
 			world.resetUpdateEntityTick();
 
-			Entity e = EntityList.createEntityByName(EntityList.getEntityString(entity), world);
+			Entity e = EntityList.newEntity(entity.getClass(), world);
 
 			if(e != null)
 			{
@@ -456,7 +456,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 					exception.printStackTrace();
 				}
 				
-				world.spawnEntityInWorld(e);
+				world.spawnEntity(e);
 				teleporter.didTeleport.add(e.getPersistentID());
 			}
 
@@ -476,7 +476,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
         for(EnumFacing iterSide : MekanismUtils.SIDE_DIRS)
         {
-            if(upperCoord.offset(iterSide).isAirBlock(player.worldObj))
+            if(upperCoord.offset(iterSide).isAirBlock(player.world))
             {
                 side = iterSide;
                 break;
@@ -509,7 +509,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public List<Entity> getToTeleport()
 	{
-		List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds);
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, teleportBounds);
 		List<Entity> ret = new ArrayList<Entity>();
 
 		for(Entity entity : entities)
@@ -527,7 +527,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		int energyCost = 1000;
 
-		if(entity.worldObj.provider.getDimension() != coords.dimensionId)
+		if(entity.world.provider.getDimension() != coords.dimensionId)
 		{
 			energyCost+=10000;
 		}
@@ -555,7 +555,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public boolean isFrame(int x, int y, int z)
 	{
-		IBlockState state = worldObj.getBlockState(new BlockPos(x, y, z));
+		IBlockState state = world.getBlockState(new BlockPos(x, y, z));
 		return state.getBlock() == MekanismBlocks.BasicBlock && state.getBlock().getMetaFromState(state) == 7;
 	}
 

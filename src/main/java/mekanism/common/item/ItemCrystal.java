@@ -1,12 +1,11 @@
 package mekanism.common.item;
 
-import java.util.List;
-
 import mekanism.common.Resource;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public class ItemCrystal extends ItemMekanism implements IMetaItem
 {
@@ -29,7 +28,7 @@ public class ItemCrystal extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
+	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
 		for(int counter = 0; counter < Resource.values().length; counter++)
 		{

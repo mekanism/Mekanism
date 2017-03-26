@@ -207,7 +207,7 @@ public class TileComponentEjector implements ITileComponent
 					}
 				}
 
-				if(stack == null || prev.stackSize != stack.stackSize)
+				if(stack == null || prev.getCount() != stack.getCount())
 				{
 					trackers.get(TransmissionType.ITEM)[index] = side.ordinal();
 				}

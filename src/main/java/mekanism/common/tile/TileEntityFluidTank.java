@@ -110,7 +110,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public void onUpdate() 
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -119,7 +119,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, getPos());
+					MekanismUtils.updateBlock(world, getPos());
 				}
 			}
 			
@@ -197,7 +197,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(world);
 			
 			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP))
 			{
@@ -244,9 +244,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		Coord4D up = Coord4D.get(this).offset(EnumFacing.UP);
 		
-		if(up.getTileEntity(worldObj) instanceof TileEntityFluidTank)
+		if(up.getTileEntity(world) instanceof TileEntityFluidTank)
 		{
-			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(worldObj), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
+			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(world), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
 			
 			if(PipeUtils.canFill(handler, fluid))
 			{
@@ -361,7 +361,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -369,7 +369,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public int getRedstoneLevel()
 	{
         double fractionFull = (float)fluidTank.getFluidAmount()/(float)fluidTank.getCapacity();
-        return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return MathHelper.floor((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
 	
 	public int getCurrentNeeded()
@@ -382,7 +382,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		}
 		
 		Coord4D top = Coord4D.get(this).offset(EnumFacing.UP);
-		TileEntity topTile = top.getTileEntity(worldObj);
+		TileEntity topTile = top.getTileEntity(world);
 		
 		if(topTile instanceof TileEntityFluidTank)
 		{
@@ -465,10 +465,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			setActive(!getActive());
-			worldObj.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+			world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
 		}
 		
 		return EnumActionResult.SUCCESS;
@@ -562,9 +562,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if(from == EnumFacing.DOWN && worldObj != null && getPos() != null)
+		if(from == EnumFacing.DOWN && world != null && getPos() != null)
 		{
-			TileEntity tile = worldObj.getTileEntity(getPos().offset(EnumFacing.DOWN));
+			TileEntity tile = world.getTileEntity(getPos().offset(EnumFacing.DOWN));
 			
 			if(isActive && !(tile instanceof TileEntityFluidTank))
 			{

@@ -75,9 +75,9 @@ public class TileComponentUpgrade implements ITileComponent
 						upgradeTicks = 0;
 						addUpgrade(type);
 
-						tileEntity.inventory[upgradeSlot].stackSize--;
+						tileEntity.inventory[upgradeSlot].shrink(1);
 
-						if(tileEntity.inventory[upgradeSlot].stackSize == 0)
+						if(tileEntity.inventory[upgradeSlot].getCount() == 0)
 						{
 							tileEntity.inventory[upgradeSlot] = null;
 						}

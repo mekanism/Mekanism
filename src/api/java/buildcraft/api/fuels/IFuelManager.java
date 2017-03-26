@@ -12,9 +12,9 @@ import net.minecraftforge.fluids.FluidStack;
 public interface IFuelManager {
     IFuel addFuel(IFuel fuel);
 
-    IFuel addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime);
+    IFuel addFuel(Fluid fluid, long powerPerCycle, int totalBurningTime);
 
-    IDirtyFuel addDirtyFuel(Fluid fuel, int powerPerCycle, int totalBurningTime, FluidStack residue);
+    IDirtyFuel addDirtyFuel(Fluid fuel, long powerPerCycle, int totalBurningTime, FluidStack residue);
 
     Collection<IFuel> getFuels();
 

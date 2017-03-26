@@ -57,7 +57,7 @@ public class ItemCraftingFormula extends ItemMekanism
 				{
 					if(InventoryUtils.canStack(stack, iterStack))
 					{
-						iterStack.stackSize += stack.stackSize;
+						iterStack.grow(stack.getCount());
 						found = true;
 					}
 				}
@@ -73,13 +73,15 @@ public class ItemCraftingFormula extends ItemMekanism
 		
 		for(ItemStack stack : stacks)
 		{
-			list.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.stackSize + ")");
+			list.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.getCount() + ")");
 		}
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
@@ -141,7 +143,7 @@ public class ItemCraftingFormula extends ItemMekanism
 
 			if(slotID >= 0 && slotID < 9)
 			{
-				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+				inventory[slotID] = InventoryUtils.loadFromNBT(tagCompound);
 			}
 		}
 		

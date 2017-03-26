@@ -99,16 +99,16 @@ public class ItemElectricBow extends ItemEnergized
     				
 					entityarrow.setFire(getFireState(itemstack) ? 100 : 0);
     				
-    				world.spawnEntityInWorld(entityarrow);
+    				world.spawnEntity(entityarrow);
 				}
 				
 				world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
                 if(!noConsume)
                 {
-                    ammo.stackSize--;
+                    ammo.shrink(1);
 
-                    if(ammo.stackSize == 0)
+                    if(ammo.getCount() == 0)
                     {
                     	player.inventory.deleteStack(ammo);
                     }
@@ -162,8 +162,9 @@ public class ItemElectricBow extends ItemEnergized
     }
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
 	{
+		ItemStack itemStackIn = playerIn.getHeldItem(hand);
 		boolean flag = findAmmo(playerIn) != null;
 
 		ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(itemStackIn, worldIn, playerIn, hand, flag);

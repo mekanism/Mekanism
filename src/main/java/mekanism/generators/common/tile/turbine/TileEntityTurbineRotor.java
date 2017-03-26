@@ -39,7 +39,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	@Override
 	public void onNeighborChange(Block block)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			updateRotors();
 		}
@@ -81,7 +81,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		while(true)
 		{
 			newRotors.add(pointer.clone());
-			newBlades += ((TileEntityTurbineRotor)pointer.getTileEntity(worldObj)).getHousedBlades();
+			newBlades += ((TileEntityTurbineRotor)pointer.getTileEntity(world)).getHousedBlades();
 			
 			if(isRotor(pointer.offset(EnumFacing.UP)))
 			{
@@ -94,14 +94,14 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		
 		if(isComplex(pointer.offset(EnumFacing.UP)))
 		{
-			id = ((TileEntityRotationalComplex)pointer.offset(EnumFacing.UP).getTileEntity(worldObj)).multiblockUUID;
+			id = ((TileEntityRotationalComplex)pointer.offset(EnumFacing.UP).getTileEntity(world)).multiblockUUID;
 			complex = true;
 		}
 		
 		//Update all rotors, send packet if necessary
 		for(Coord4D coord : newRotors)
 		{
-			TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)coord.getTileEntity(worldObj);
+			TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)coord.getTileEntity(world);
 			int prevHoused = rotor.getHousedBlades();
 			int prevBlades = rotor.blades;
 			
@@ -132,7 +132,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		{
 			for(Coord4D coord : rotors)
 			{
-				TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)coord.getTileEntity(worldObj);
+				TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)coord.getTileEntity(world);
 				rotor.internalEditBlade(add);
 			}
 			
@@ -157,7 +157,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	
 	public int getHousedBlades()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(rotors.size() > 0)
 			{
@@ -174,12 +174,12 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	
 	private boolean isRotor(Coord4D coord)
 	{
-		return coord.getTileEntity(worldObj) instanceof TileEntityTurbineRotor;
+		return coord.getTileEntity(world) instanceof TileEntityTurbineRotor;
 	}
 	
 	private boolean isComplex(Coord4D coord)
 	{
-		return coord.getTileEntity(worldObj) instanceof TileEntityRotationalComplex;
+		return coord.getTileEntity(world) instanceof TileEntityRotationalComplex;
 	}
 	
 	@Override
@@ -187,7 +187,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	{
 		super.onChunkLoad();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			updateRotors();
 		}

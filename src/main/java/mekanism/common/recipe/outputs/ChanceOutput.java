@@ -3,6 +3,7 @@ package mekanism.common.recipe.outputs;
 import java.util.Random;
 
 import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -28,8 +29,8 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		primaryOutput = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("primaryOutput"));
-		secondaryOutput = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("secondaryOutput"));
+		primaryOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("primaryOutput"));
+		secondaryOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("secondaryOutput"));
 		secondaryChance = nbtTags.getDouble("secondaryChance");
 	}
 
@@ -64,11 +65,11 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 					inventory[primaryIndex] = primaryOutput.copy();
 				}
 			} 
-			else if(inventory[primaryIndex].isItemEqual(primaryOutput) && inventory[primaryIndex].stackSize + primaryOutput.stackSize <= inventory[primaryIndex].getMaxStackSize())
+			else if(inventory[primaryIndex].isItemEqual(primaryOutput) && inventory[primaryIndex].getCount() + primaryOutput.getCount() <= inventory[primaryIndex].getMaxStackSize())
 			{
 				if(doEmit)
 				{
-					inventory[primaryIndex].stackSize += primaryOutput.stackSize;
+					inventory[primaryIndex].grow(primaryOutput.getCount());
 				}
 			}
 			else {
@@ -87,11 +88,11 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 				
 				return true;
 			} 
-			else if(inventory[secondaryIndex].isItemEqual(secondaryOutput) && inventory[secondaryIndex].stackSize + primaryOutput.stackSize <= inventory[secondaryIndex].getMaxStackSize())
+			else if(inventory[secondaryIndex].isItemEqual(secondaryOutput) && inventory[secondaryIndex].getCount() + primaryOutput.getCount() <= inventory[secondaryIndex].getMaxStackSize())
 			{
 				if(doEmit)
 				{
-					inventory[secondaryIndex].stackSize += secondaryOutput.stackSize;
+					inventory[secondaryIndex].grow(secondaryOutput.getCount());
 				}
 				
 				return true;

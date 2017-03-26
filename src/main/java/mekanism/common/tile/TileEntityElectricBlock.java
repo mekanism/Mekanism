@@ -57,9 +57,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public void register()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
 			if(registered != this)
 			{
@@ -79,9 +79,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public void deregister()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{

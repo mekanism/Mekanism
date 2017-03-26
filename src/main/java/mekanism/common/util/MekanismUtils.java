@@ -127,28 +127,28 @@ public final class MekanismUtils
 
 					if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list.isEmpty())
 					{
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
 
 						if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
 						{
-							entityplayer.addChatMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
+							entityplayer.sendMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
 						}
 
 						for(IModule module : list)
 						{
-							entityplayer.addChatMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion()));
+							entityplayer.sendMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion()));
 						}
 
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 						return true;
 					}
 					else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
 					{
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
 						return true;
 					}
 				}
@@ -259,7 +259,7 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Copies an ItemStack and returns it with a defined stackSize.
+	 * Copies an ItemStack and returns it with a defined getCount().
 	 * @param itemstack - stack to change size
 	 * @param size - size to change to
 	 * @return resized ItemStack
@@ -267,7 +267,7 @@ public final class MekanismUtils
 	public static ItemStack size(ItemStack itemstack, int size)
 	{
 		ItemStack newStack = itemstack.copy();
-		newStack.stackSize = size;
+		newStack.setCount(size);
 		return newStack;
 	}
 
@@ -1058,7 +1058,7 @@ public final class MekanismUtils
 		double posY = player.posY;
 		double posZ = player.posZ;
 
-		if(!player.worldObj.isRemote)
+		if(!player.world.isRemote)
 		{
 			posY += player.getEyeHeight();
 
@@ -1330,7 +1330,7 @@ public final class MekanismUtils
 			return null;
 		}
 
-		if((dmgItems[1] != null) && (dmgItems[0].getItem() == dmgItems[1].getItem()) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && dmgItems[0].getItem().isRepairable())
+		if((dmgItems[1] != null) && (dmgItems[0].getItem() == dmgItems[1].getItem()) && (dmgItems[0].getCount() == 1) && (dmgItems[1].getCount() == 1) && dmgItems[0].getItem().isRepairable())
 		{
 			Item theItem = dmgItems[0].getItem();
 			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamage();
@@ -1479,7 +1479,7 @@ public final class MekanismUtils
 		}
 		
 		try {
-			if(isBCWrench(tool.getItem()) && ((IToolWrench)tool.getItem()).canWrench(player, pos))
+			if(isBCWrench(tool.getItem())) //TODO too much hassle to check BC wrench-ability
 			{
 				return true;
 			}

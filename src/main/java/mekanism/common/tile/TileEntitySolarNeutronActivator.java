@@ -79,18 +79,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onUpdate() 
 	{
-		if(worldObj.isRemote && updateDelay > 0)
+		if(world.isRemote && updateDelay > 0)
 		{
 			updateDelay--;
 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -114,9 +114,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			
 			SolarNeutronRecipe recipe = getRecipe();
 
-			boolean sky =  ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.getHasNoSky() && worldObj.canSeeSky(getPos().up());
+			boolean sky =  ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.hasNoSky() && world.canSeeSky(getPos().up());
 			
-			if(worldObj.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this))
+			if(world.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 				
@@ -144,7 +144,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeForCoords(getPos()) instanceof BiomeDesert;
+		return world.provider.getBiomeForCoords(getPos()) instanceof BiomeDesert;
 	}
 	
 	public SolarNeutronRecipe getRecipe()
@@ -208,7 +208,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -279,14 +279,14 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, Coord4D.get(this).offset(EnumFacing.UP).getPos(), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(world, Coord4D.get(this).offset(EnumFacing.UP).getPos(), Coord4D.get(this));
 	}
 
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlockToAir(getPos().up());
-		worldObj.setBlockToAir(getPos());
+		world.setBlockToAir(getPos().up());
+		world.setBlockToAir(getPos());
 	}
 
 	@Override

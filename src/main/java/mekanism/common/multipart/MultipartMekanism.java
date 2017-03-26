@@ -186,7 +186,7 @@ public class MultipartMekanism implements IPartFactory
         item.motionY = multipart.getWorld().rand.nextGaussian() * 0.05 + 0.2;
         item.motionZ = multipart.getWorld().rand.nextGaussian() * 0.05;
         item.setDefaultPickupDelay();
-        multipart.getWorld().spawnEntityInWorld(item);
+        multipart.getWorld().spawnEntity(item);
 	}
 	
 	public static void dropItems(Multipart multipart)

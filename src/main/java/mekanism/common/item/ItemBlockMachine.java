@@ -20,6 +20,7 @@ import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFactory;
+import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -72,7 +73,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -128,7 +128,7 @@ import cofh.api.energy.IEnergyContainerItem;
 @InterfaceList({
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IEnergyContainerItem, IFluidContainerItem, ITierItem, ISecurityItem
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IEnergyContainerItem, IFluidItemWrapper, ITierItem, ISecurityItem
 {
 	public Block metaBlock;
 
@@ -270,8 +270,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 	
 	@Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
+		ItemStack stack = player.getHeldItem(hand);
 		MachineType type = MachineType.get(stack);
 		
 		if(type == MachineType.FLUID_TANK && getBucketMode(stack))
@@ -279,7 +280,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			return EnumActionResult.PASS;
 		}
 		
-		return super.onItemUse(stack, player, world, pos, hand, side, hitX, hitY, hitZ);
+		return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
     }
 
 	@Override
@@ -385,7 +386,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				factory.recipeType = recipeType;
 				factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 				factory.secondaryEnergyPerTick = factory.getSecondaryEnergyPerTick(recipeType);
-				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType());
+				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
 				
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
 			}
@@ -453,8 +454,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     }
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
 		MachineType type = MachineType.get(itemstack);
 		
 		if(MachineType.get(itemstack) == MachineType.PERSONAL_CHEST)

@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
+import mekanism.common.recipe.outputs.ItemStackOutput;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -25,20 +28,12 @@ public class ChanceMachineRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
-	{
-		return Arrays.asList(((ItemStackInput)recipe.getInput()).ingredient);
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
 		ChanceOutput output = (ChanceOutput)recipe.getOutput();
-		
-		return Arrays.asList(output.primaryOutput, output.secondaryOutput);
+		ingredients.setInput(ItemStack.class, ((AdvancedMachineInput)recipe.getInput()).itemStack);
+		ingredients.setOutputs(ItemStack.class, Arrays.asList(output.primaryOutput, output.secondaryOutput));
 	}
 	
 	@Override

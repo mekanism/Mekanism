@@ -84,7 +84,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			delayTicks = Math.max(0, delayTicks-1);
 
@@ -95,8 +95,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			if(MekanismUtils.canFunction(this) && delayTicks == 0)
 			{
-				TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
-				TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
+				TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
+				TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(world);
 
 				if(back instanceof IInventory && (front != null && CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()) || front instanceof IInventory))
 				{
@@ -134,7 +134,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 								if(used != null)
 								{
-									invStack.use(used.stackSize);
+									invStack.use(used.getCount());
 									inventory.markDirty();
 									setActive(true);
 									sentItems = true;
@@ -155,7 +155,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 							
 							if(used != null)
 							{
-								invStack.use(used.stackSize);
+								invStack.use(used.getCount());
 								inventory.markDirty();
 								setActive(true);
 							}
@@ -468,7 +468,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean canSendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
 
 		if(back instanceof IInventory)
 		{
@@ -480,12 +480,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean hasInventory()
 	{
-		return Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj) instanceof IInventory;
+		return Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world) instanceof IInventory;
 	}
 
 	public ItemStack sendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
 
 		if(back instanceof IInventory)
 		{
@@ -527,7 +527,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public void openInventory(EntityPlayer player)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}
@@ -562,7 +562,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			if(active && client.enableMachineSounds)
 			{
-				worldObj.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), MekanismSounds.CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+				world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), MekanismSounds.CLICK, SoundCategory.BLOCKS, 0.3F, 1);
 			}
 
 			clientActive = active;

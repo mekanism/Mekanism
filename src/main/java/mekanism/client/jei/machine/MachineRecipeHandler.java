@@ -26,13 +26,6 @@ public class MachineRecipeHandler<T extends MachineRecipeWrapper> implements IRe
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() 
-	{
-		return category.getUid();
-	}
-
-	@Nonnull
-	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull T recipe)
 	{
 		return recipe;

@@ -1,7 +1,5 @@
 package mekanism.generators.common.block;
 
-import java.util.List;
-
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
@@ -35,7 +33,10 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -152,7 +153,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(!world.isRemote)
 		{
@@ -166,7 +167,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing facing, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -175,6 +176,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 
 		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
+		ItemStack stack = entityplayer.getHeldItem(hand);
 
 		if(stack != null)
 		{
@@ -186,7 +188,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 					return true;
 				}
 
-				((IToolWrench)stack.getItem()).wrenchUsed(entityplayer, pos);
+				((IToolWrench)stack.getItem()).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
 
 				return true;
 			}
@@ -215,7 +217,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(BlockStateReactor.ReactorBlockType type : BlockStateReactor.ReactorBlockType.values())
 		{
@@ -347,7 +349,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;

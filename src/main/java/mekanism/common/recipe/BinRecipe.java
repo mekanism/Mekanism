@@ -10,6 +10,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -42,7 +43,7 @@ public class BinRecipe implements IRecipe
 			return false;
 		}
 
-		return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.stackSize <= 1;
+		return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.getCount() <= 1;
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class BinRecipe implements IRecipe
 			}
 		}
 
-		if(bin == null || bin.stackSize > 1)
+		if(bin == null || bin.getCount() > 1)
 		{
 			return null;
 		}
@@ -126,7 +127,7 @@ public class BinRecipe implements IRecipe
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
@@ -148,7 +149,7 @@ public class BinRecipe implements IRecipe
 						int size = inv.getItemCount();
 
 						ItemStack testRemove = inv.removeStack();
-						int newCount = size-(testRemove != null ? testRemove.stackSize : 0);
+						int newCount = size-(testRemove != null ? testRemove.getCount() : 0);
 						
 						if(inv.getTier() == BinTier.CREATIVE)
 						{
@@ -180,7 +181,7 @@ public class BinRecipe implements IRecipe
 
 				ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
 
-				if(testRemain != null && testRemain.stackSize > 0)
+				if(testRemain != null && testRemain.getCount() > 0)
 				{
 					ItemStack proxy = new ItemStack(MekanismItems.ItemProxy);
 					((ItemProxy)proxy.getItem()).setSavedItem(proxy, testRemain.copy());

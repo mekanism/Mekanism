@@ -68,7 +68,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			changed = false;
 		}
 		
-		if(!worldObj.isRemote && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed()))
+		if(!world.isRemote && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed()))
 		{
 			updateController();
 		}
@@ -104,7 +104,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	{
 		super.onAdded();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(getReactor() != null)
 			{
@@ -148,13 +148,13 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			{
 				Coord4D coord = pos.offset(side);
 				
-				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntityReactorBlock)
+				if(!iterated.contains(coord) && coord.getTileEntity(world) instanceof TileEntityReactorBlock)
 				{
-					((TileEntityReactorBlock)coord.getTileEntity(worldObj)).attempted = true;
+					((TileEntityReactorBlock)coord.getTileEntity(world)).attempted = true;
 					
-					if(coord.getTileEntity(worldObj) instanceof TileEntityReactorController)
+					if(coord.getTileEntity(world) instanceof TileEntityReactorController)
 					{
-						found = (TileEntityReactorController)coord.getTileEntity(worldObj);
+						found = (TileEntityReactorController)coord.getTileEntity(world);
 						return;
 					}
 					

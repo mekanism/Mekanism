@@ -54,9 +54,9 @@ public final class ChargeUtils
 			else if(inv.getStackInSlot(slotID).getItem() == Items.REDSTONE && storer.getEnergy()+general.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
 				storer.setEnergy(storer.getEnergy() + general.ENERGY_PER_REDSTONE);
-				inv.getStackInSlot(slotID).stackSize--;
+				inv.getStackInSlot(slotID).shrink(1);
 
-				if(inv.getStackInSlot(slotID).stackSize <= 0)
+				if(inv.getStackInSlot(slotID).getCount() <= 0)
 				{
 					inv.setInventorySlotContents(slotID, null);
 				}

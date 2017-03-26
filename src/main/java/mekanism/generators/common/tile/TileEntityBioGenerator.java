@@ -59,7 +59,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					{
 						bioFuelSlot.fluidStored += drained.amount;
 						
-						if(inventory[0].stackSize == 0)
+						if(inventory[0].getCount() == 0)
 						{
 							inventory[0] = null;
 						}
@@ -83,10 +83,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
 						}
 						else {
-							inventory[0].stackSize--;
+							inventory[0].shrink(1);
 						}
 
-						if(inventory[0].stackSize == 0)
+						if(inventory[0].getCount() == 0)
 						{
 							inventory[0] = null;
 						}
@@ -97,7 +97,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
 		if(canOperate())
 		{
-			if(!worldObj.isRemote)
+			if(!world.isRemote)
 			{
 				setActive(true);
 			}
@@ -106,7 +106,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			setEnergy(electricityStored + generators.bioGeneration);
 		}
 		else {
-			if(!worldObj.isRemote)
+			if(!world.isRemote)
 			{
 				setActive(false);
 			}

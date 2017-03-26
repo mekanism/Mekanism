@@ -53,7 +53,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(isActive)
 			{
@@ -67,7 +67,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, getPos());
+					MekanismUtils.updateBlock(world, getPos());
 				}
 			}
 		}
@@ -145,7 +145,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -233,14 +233,14 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, getPos().up(), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(world, getPos().up(), Coord4D.get(this));
 	}
 
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlockToAir(getPos().up());
-		worldObj.setBlockToAir(getPos());
+		world.setBlockToAir(getPos().up());
+		world.setBlockToAir(getPos());
 	}
 	
 	@Override

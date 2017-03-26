@@ -11,6 +11,7 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.util.LangUtils;
+import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -72,9 +73,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 			e.renderBackground(0, 0, -xOffset, -yOffset);
 		}
 	}
-
-	@Override
-	public void drawAnimations(Minecraft minecraft) {}
 	
 	@Override
 	public void drawTexturedRect(int x, int y, int u, int v, int w, int h) 
@@ -172,4 +170,16 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	public void addGuiElements() {}
 	
 	public static class GuiDummy extends Gui {}
+	
+	@Override
+	public IDrawable getIcon() 
+	{
+		return null;
+	}
+
+	@Override
+	public List getTooltipStrings(int mouseX, int mouseY) 
+	{
+		return null;
+	}
 }

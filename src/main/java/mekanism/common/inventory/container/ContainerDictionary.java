@@ -64,7 +64,7 @@ public class ContainerDictionary extends Container
 				}
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
 				currentSlot.putStack((ItemStack)null);
 			}
@@ -72,12 +72,12 @@ public class ContainerDictionary extends Container
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
 				return null;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;

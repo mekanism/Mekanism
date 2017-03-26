@@ -310,12 +310,12 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					filter.itemType = stack.copy();
-					filter.itemType.stackSize = 1;
+					filter.itemType.setCount(1);
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{

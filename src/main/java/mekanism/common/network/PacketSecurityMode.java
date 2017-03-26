@@ -28,7 +28,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 			{
 				if(message.packetType == SecurityPacketType.BLOCK)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 					
 					if(tileEntity instanceof ISecurityTile)
 					{

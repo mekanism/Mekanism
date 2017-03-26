@@ -1,17 +1,17 @@
 package buildcraft.api.core;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 
-import com.google.common.collect.Maps;
+import io.netty.buffer.ByteBuf;
 
 public enum EnumPipePart implements IStringSerializable, INetworkLoadable_BC8<EnumPipePart> {
     DOWN(EnumFacing.DOWN),
@@ -24,6 +24,7 @@ public enum EnumPipePart implements IStringSerializable, INetworkLoadable_BC8<En
     CENTER(null);
 
     public static final EnumPipePart[] VALUES = values();
+    public static final EnumPipePart[] FACES = { DOWN, UP, NORTH, SOUTH, WEST, EAST };
     private static final Map<EnumFacing, EnumPipePart> facingMap = Maps.newEnumMap(EnumFacing.class);
     private static final Map<String, EnumPipePart> nameMap = Maps.newHashMap();
     private static final int MAX_VALUES = values().length;
@@ -47,12 +48,12 @@ public enum EnumPipePart implements IStringSerializable, INetworkLoadable_BC8<En
     }
 
     public static EnumPipePart[] validFaces() {
-        return new EnumPipePart[] { DOWN, UP, NORTH, SOUTH, WEST, EAST };
+        return FACES;
     }
 
     public static EnumPipePart fromMeta(int meta) {
         if (meta < 0 || meta >= MAX_VALUES) return EnumPipePart.CENTER;
-        return values()[meta];
+        return VALUES[meta];
     }
 
     private EnumPipePart(EnumFacing face) {
@@ -100,7 +101,7 @@ public enum EnumPipePart implements IStringSerializable, INetworkLoadable_BC8<En
             String string = nbtString.getString();
             return nameMap.containsKey(string) ? nameMap.get(string) : CENTER;
         } else {
-            byte ord = ((NBTTagByte) base).getByte();
+            byte ord = ((NBTPrimitive) base).getByte();
             if (ord < 0 || ord > 6) return CENTER;
             return values()[ord];
         }

@@ -102,10 +102,10 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 			return false;
 		}
 		
-		worldObj.setBlockToAir(getPos());
-		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
+		world.setBlockToAir(getPos());
+		world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 		
-		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
+		TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
 		RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
 		
 		//Basic
@@ -177,7 +177,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(3, this);
 
@@ -235,9 +235,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 			{
 				gasTank.receive(stack, true);
 
-				inventory[1].stackSize--;
+				inventory[1].shrink(1);
 
-				if(inventory[1].stackSize == 0)
+				if(inventory[1].getCount() == 0)
 				{
 					inventory[1] = null;
 				}

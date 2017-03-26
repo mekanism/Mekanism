@@ -273,7 +273,7 @@ public class RecipeUtils
 		
 		if(nbtTags.hasKey("itemstack"))
 		{
-			return ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("itemstack"));
+			return InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemstack"));
 		}
 		else if(nbtTags.hasKey("itemname"))
 		{

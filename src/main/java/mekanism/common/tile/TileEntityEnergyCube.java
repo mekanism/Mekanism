@@ -81,7 +81,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(0, this);
 			ChargeUtils.discharge(1, this);
@@ -235,7 +235,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	
 			if(prevTier != tier)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -293,7 +293,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	public int getRedstoneLevel()
 	{
 		double fractionFull = getEnergy()/getMaxEnergy();
-		return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+		return MathHelper.floor((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
 
 	@Override

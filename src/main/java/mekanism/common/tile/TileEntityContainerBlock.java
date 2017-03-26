@@ -34,6 +34,20 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	{
 		fullName = name;
 	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		for(ItemStack stack : inventory)
+		{
+			if(!stack.isEmpty())
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
@@ -52,7 +66,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 				if(slotID >= 0 && slotID < getSizeInventory())
 				{
-					setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
+					setInventorySlotContents(slotID, InventoryUtils.loadFromNBT(tagCompound));
 				}
 			}
 		}
@@ -103,7 +117,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		{
 			ItemStack tempStack;
 
-			if(getStackInSlot(slotID).stackSize <= amount)
+			if(getStackInSlot(slotID).getCount() <= amount)
 			{
 				tempStack = getStackInSlot(slotID);
 				setInventorySlotContents(slotID, null);
@@ -112,7 +126,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 			else {
 				tempStack = getStackInSlot(slotID).splitStack(amount);
 
-				if(getStackInSlot(slotID).stackSize == 0)
+				if(getStackInSlot(slotID).getCount() == 0)
 				{
 					setInventorySlotContents(slotID, null);
 				}
@@ -144,16 +158,16 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	{
 		inventory[slotID] = itemstack;
 
-		if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+		if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
 		{
-			itemstack.stackSize = getInventoryStackLimit();
+			itemstack.setCount(getInventoryStackLimit());
 		}
 		
 		markDirty();
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(EntityPlayer entityplayer)
 	{
 		return !isInvalid();
 	}
@@ -223,7 +237,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 			if(slotID >= 0 && slotID < inventory.length)
 			{
-				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+				inventory[slotID] = InventoryUtils.loadFromNBT(tagCompound);
 			}
 		}
 	}

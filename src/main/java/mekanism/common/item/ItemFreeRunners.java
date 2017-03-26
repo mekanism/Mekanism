@@ -29,6 +29,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -88,7 +89,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
+	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
 		ItemStack discharged = new ItemStack(this);
 		list.add(discharged);
@@ -212,7 +213,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		{
 			ItemFreeRunners boots = (ItemFreeRunners)stack.getItem();
 
-			if(boots.getEnergy(stack) > 0 && event.getSource() == DamageSource.fall)
+			if(boots.getEnergy(stack) > 0 && event.getSource() == DamageSource.FALL)
 			{
 				boots.setEnergy(stack, boots.getEnergy(stack)-event.getAmount()*50);
 				event.setCanceled(true);

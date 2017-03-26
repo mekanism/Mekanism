@@ -156,7 +156,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(!initCalc)
 			{
@@ -207,7 +207,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								break;
 							}
 	
-							if(!coord.exists(worldObj))
+							if(!coord.exists(world))
 							{
 								set.clear(index);
 								
@@ -220,11 +220,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								continue;
 							}
 
-							IBlockState state = coord.getBlockState(worldObj);
+							IBlockState state = coord.getBlockState(world);
 							Block block = state.getBlock();
 							int meta = block.getMetaFromState(state);
 	
-							if(block == null || coord.isAirBlock(worldObj))
+							if(block == null || coord.isAirBlock(world))
 							{
 								set.clear(index);
 								
@@ -262,7 +262,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								continue;
 							}
 	
-							List<ItemStack> drops = MinerUtils.getDrops(worldObj, coord, silkTouch);
+							List<ItemStack> drops = MinerUtils.getDrops(world, coord, silkTouch);
 	
 							if(canInsert(drops) && setReplace(coord, index))
 							{
@@ -275,7 +275,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 									toRemove.add(chunk);
 								}
 	
-								worldObj.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
+								world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
 	
 								missingStack = null;
 							}
@@ -369,11 +369,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	 */
 	public boolean setReplace(Coord4D obj, int index)
 	{
-		IBlockState state = obj.getBlockState(worldObj);
+		IBlockState state = obj.getBlockState(world);
 		Block block = state.getBlock();
 		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, obj.xCoord, obj.yCoord, obj.zCoord).get();
-		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(worldObj, obj.getPos(), state, dummy);
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, obj.xCoord, obj.yCoord, obj.zCoord).get();
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, obj.getPos(), state, dummy);
 		MinecraftForge.EVENT_BUS.post(event);
 		
 		if(!event.isCanceled())
@@ -382,13 +382,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			 
 			if(stack != null)
 			{
-				worldObj.setBlockState(obj.getPos(), Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
+				world.setBlockState(obj.getPos(), Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
 
-				IBlockState s = obj.getBlockState(worldObj);
-				if(s.getBlock() instanceof BlockBush && !((BlockBush)s.getBlock()).canBlockStay(worldObj, obj.getPos(), s))
+				IBlockState s = obj.getBlockState(world);
+				if(s.getBlock() instanceof BlockBush && !((BlockBush)s.getBlock()).canBlockStay(world, obj.getPos(), s))
 				{
-					s.getBlock().dropBlockAsItem(worldObj, obj.getPos(), s, 1);
-					worldObj.setBlockToAir(obj.getPos());
+					s.getBlock().dropBlockAsItem(world, obj.getPos(), s, 1);
+					world.setBlockToAir(obj.getPos());
 				}
 				
 				return true;
@@ -398,7 +398,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				
 				if(filter == null || (filter.replaceStack == null || !filter.requireStack))
 				{
-					worldObj.setBlockToAir(obj.getPos());
+					world.setBlockToAir(obj.getPos());
 					
 					return true;
 				}
@@ -425,9 +425,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			if(inventory[i] != null && inventory[i].isItemEqual(filter.replaceStack))
 			{
-				inventory[i].stackSize--;
+				inventory[i].shrink(1);
 
-				if(inventory[i].stackSize == 0)
+				if(inventory[i].getCount() == 0)
 				{
 					inventory[i] = null;
 				}
@@ -520,9 +520,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					continue stacks;
 				}
-				else if(testInv[i].isItemEqual(stack) && testInv[i].stackSize+stack.stackSize <= stack.getMaxStackSize())
+				else if(testInv[i].isItemEqual(stack) && testInv[i].getCount()+stack.getCount() <= stack.getMaxStackSize())
 				{
-					testInv[i].stackSize += stack.stackSize;
+					testInv[i].grow(stack.getCount());
 					added++;
 
 					continue stacks;
@@ -540,14 +540,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileEntity getPullInv()
 	{
-		return Coord4D.get(this).translate(0, 2, 0).getTileEntity(worldObj);
+		return Coord4D.get(this).translate(0, 2, 0).getTileEntity(world);
 	}
 
 	public TileEntity getEjectInv()
 	{
 		EnumFacing side = facing.getOpposite();
 
-		return worldObj.getTileEntity(getPos().up().offset(side, 2));
+		return world.getTileEntity(getPos().up().offset(side, 2));
 	}
 
 	public void add(List<ItemStack> stacks)
@@ -568,9 +568,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					continue stacks;
 				}
-				else if(inventory[i].isItemEqual(stack) && inventory[i].stackSize+stack.stackSize <= stack.getMaxStackSize())
+				else if(inventory[i].isItemEqual(stack) && inventory[i].getCount()+stack.getCount() <= stack.getMaxStackSize())
 				{
-					inventory[i].stackSize += stack.stackSize;
+					inventory[i].grow(stack.getCount());
 
 					continue stacks;
 				}
@@ -648,7 +648,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		super.openInventory(player);
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
 		}
@@ -892,7 +892,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			if(clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -1045,7 +1045,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public Coord4D getStartingCoord()
 	{
-		return new Coord4D(getPos().getX()-radius, minY, getPos().getZ()-radius, worldObj.provider.getDimension());
+		return new Coord4D(getPos().getX()-radius, minY, getPos().getZ()-radius, world.provider.getDimension());
 	}
 
 	public Coord4D getCoordFromIndex(int index)
@@ -1057,7 +1057,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		int y = start.yCoord+(index/diameter/diameter);
 		int z = start.zCoord+(index/diameter)%diameter;
 
-		return new Coord4D(x, y, z, worldObj.provider.getDimension());
+		return new Coord4D(x, y, z, world.provider.getDimension());
 	}
 
 	@Override
@@ -1144,8 +1144,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					}
 
 					BlockPos pos1 = getPos().add(x, y, z);
-					MekanismUtils.makeAdvancedBoundingBlock(worldObj, pos1, Coord4D.get(this));
-		            worldObj.notifyNeighborsOfStateChange(pos1, getBlockType());
+					MekanismUtils.makeAdvancedBoundingBlock(world, pos1, Coord4D.get(this));
+		            world.notifyNeighborsOfStateChange(pos1, getBlockType(), true);
 				}
 			}
 		}
@@ -1166,7 +1166,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				for(int z = -1; z <= +1; z++)
 				{
-					worldObj.setBlockToAir(getPos().add(x, y, z));
+					world.setBlockToAir(getPos().add(x, y, z));
 				}
 			}
 		}
@@ -1181,7 +1181,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public TileEntity getEjectTile()
 	{
 		EnumFacing side = facing.getOpposite();
-		return worldObj.getTileEntity(getPos().up().offset(side));
+		return world.getTileEntity(getPos().up().offset(side));
 	}
 
 	@Override

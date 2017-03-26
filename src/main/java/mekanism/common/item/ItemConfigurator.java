@@ -37,6 +37,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -69,8 +70,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(!world.isRemote)
 		{
 			Block block = world.getBlockState(pos).getBlock();
@@ -87,7 +90,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					{
 						if(!player.isSneaking())
 						{
-							player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + initial.color + initial.localize() + " (" + initial.color.getColoredName() + ")"));
+							player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + initial.color + initial.localize() + " (" + initial.color.getColoredName() + ")"));
 						}
 						else {
 							if(getEnergy(stack) >= ENERGY_PER_CONFIGURE)
@@ -97,7 +100,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 									MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
 									SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
-									player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getColoredName() + ")"));
+									player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getColoredName() + ")"));
 		
 									if(config instanceof TileEntityBasicBlock)
 									{
@@ -158,16 +161,16 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 								float yRandom = random.nextFloat() * 0.8F + 0.1F;
 								float zRandom = random.nextFloat() * 0.8F + 0.1F;
 
-								while(slotStack.stackSize > 0)
+								while(slotStack.getCount() > 0)
 								{
 									int j = random.nextInt(21) + 10;
 
-									if(j > slotStack.stackSize)
+									if(j > slotStack.getCount())
 									{
-										j = slotStack.stackSize;
+										j = slotStack.getCount();
 									}
 
-									slotStack.stackSize -= j;
+									slotStack.shrink(j);
 									EntityItem item = new EntityItem(world, pos.getX() + xRandom, pos.getY() + yRandom, pos.getZ() + zRandom, new ItemStack(slotStack.getItem(), j, slotStack.getItemDamage()));
 
 									if(slotStack.hasTagCompound())
@@ -179,7 +182,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									item.motionX = random.nextGaussian() * k;
 									item.motionY = random.nextGaussian() * k + 0.2F;
 									item.motionZ = random.nextGaussian() * k;
-									world.spawnEntityInWorld(item);
+									world.spawnEntity(item);
 
 									inv.setInventorySlotContents(i, null);
 									setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
@@ -264,23 +267,14 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 	@Override
 	@Method(modid = "BuildCraft")
-	public boolean canWrench(EntityPlayer player, BlockPos pos)
+	public boolean canWrench(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace)
 	{
-		return canUseWrench(player.inventory.getCurrentItem(), player, pos);
+		return canUseWrench(wrench, player, rayTrace.getBlockPos());
 	}
 
 	@Override
 	@Method(modid = "BuildCraft")
-	public void wrenchUsed(EntityPlayer player, BlockPos pos) {}
-
-	@Override
-	public boolean canWrench(EntityPlayer player, Entity entity)
-	{
-		return false;
-	}
-
-	@Override
-	public void wrenchUsed(EntityPlayer player, Entity entity) {}
+	public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {}
 
 	@Override
 	public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos)

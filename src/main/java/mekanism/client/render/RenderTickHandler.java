@@ -42,10 +42,10 @@ public class RenderTickHandler
 	{
 		if(event.phase == Phase.END)
 		{
-			if(mc.thePlayer != null && mc.theWorld != null && !mc.isGamePaused())
+			if(mc.player != null && mc.world != null && !mc.isGamePaused())
 			{
-				EntityPlayer player = mc.thePlayer;
-				World world = mc.thePlayer.worldObj;
+				EntityPlayer player = mc.player;
+				World world = mc.player.world;
 				FontRenderer font = mc.fontRendererObj;
 				RayTraceResult pos = player.rayTrace(40.0D, 1.0F);
 				
@@ -109,7 +109,7 @@ public class RenderTickHandler
 				{
 					for(String s : Mekanism.jetpackOn)
 					{
-						EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
+						EntityPlayer p = mc.world.getPlayerEntityByName(s);
 
 						if(p == null)
 						{
@@ -154,7 +154,7 @@ public class RenderTickHandler
 					{
 						for(String s : Mekanism.gasmaskOn)
 						{
-							EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
+							EntityPlayer p = mc.world.getPlayerEntityByName(s);
 	
 							if(p == null || !p.isInWater())
 							{

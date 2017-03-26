@@ -22,9 +22,10 @@ public class ItemAlloy extends ItemMekanism
 	}
 	
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 		TileEntity tile = world.getTileEntity(pos);
+		ItemStack stack = player.getHeldItem(hand);
 		
 		if(general.allowTransmitterAlloyUpgrade && CapabilityUtils.hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side))
 		{

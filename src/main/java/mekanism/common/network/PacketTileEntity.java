@@ -35,7 +35,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 			@Override
 			public void run()
 			{
-				TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+				TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 				
 				if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null))
 				{

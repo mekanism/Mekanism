@@ -34,7 +34,7 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	
 			if(prevTier != tier)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}

@@ -25,7 +25,7 @@ public class CommonPlayerTracker
 	@SubscribeEvent
 	public void onPlayerLoginEvent(PlayerLoggedInEvent event)
 	{
-		if(!event.player.worldObj.isRemote)
+		if(!event.player.world.isRemote)
 		{
 			Mekanism.packetHandler.sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP)event.player);
@@ -52,7 +52,7 @@ public class CommonPlayerTracker
 		Mekanism.gasmaskOn.remove(event.player.getName());
 		Mekanism.flamethrowerActive.remove(event.player.getName());
 
-		if(!event.player.worldObj.isRemote)
+		if(!event.player.world.isRemote)
 		{
 			Mekanism.packetHandler.sendTo(new JetpackDataMessage(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new ScubaTankDataMessage(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);

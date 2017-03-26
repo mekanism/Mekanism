@@ -1,8 +1,6 @@
 package ic2.api.crops;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,40 +19,48 @@ public abstract class CropCard {
 	}
 
 	/**
-	 * Plant name for identifying this crop within your mod.
+	 * Plant id for identifying this crop within your mod.
+	 * <br/>
+	 * The id has to be unique within the mod and is used for saving.
+	 * <br/>
+	 * By default this id will be also used to determine {@link #getUnlocalizedName()} and {@link #getTexturesLocation()}.
 	 *
-	 * The name has to be unique within the mod and is used for saving.
-	 * By default this name will be also used to determine displayKey() and registerSprites().
+	 * @note changing the id or owner will cause existing crops in users' worlds to disappear.
 	 *
-	 * @note changing name or owner will cause existing crops in users' worlds to disappear.
-	 *
-	 * @return Plant name
+	 * @return Plant id
 	 */
-	public abstract String getName();
+	public abstract String getId();
 
 	/**
-	 * Determine the mod id owning this crop.
+	 * Determine the mod owning this crop.
 	 *
 	 * The owner serves as a name space. With every mod using a different owner, a mod only has to
-	 * make sure it doesn't have conflicts with name() in itself.
-	 * It's recommended to hard code this to your mod id as specified in the @Mod annotation.
-	 * Do not use IC2's mod id here.
+	 * make sure it doesn't have getId() conflicts within itself. The identifier has to be lower
+	 * case to ensure compatibility with future versions.
+	 * <br/>
+	 * It's recommended to hard code this to your lower case mod id as specified in the @Mod
+	 * annotation, as {@link #getUnlocalizedName()} will use it by default.
+	 * <br/>
+	 * <b>Do not use IC2's mod id here.</b>
 	 *
-	 * @note changing name or owner will cause existing crops in users' worlds to disappear.
+	 * @note changing the id or owner will cause existing crops in users' worlds to disappear.
+	 *
+	 * @return owning mod identifier, lower case.
 	 */
 	public abstract String getOwner();
 
 	/**
 	 * Translation key for display to the player.
 	 *
-	 * It's highly recommended to specify a valid key from your language file here, e.g. add
-	 * "yourmod.crop.yourCropName = Your crop's name" to the language file, override name() to
-	 * return "yourCropName" and override displayName() to return "yourmod.crop."+name().
+	 * It's recommended to specify a valid key from your language file here.
+	 * <br/>
+	 * e.g. Add <code>"yourmod.crop.yourCropName = Your crop's name"</code> to the language file,
+	 * override {@link #getId()} to return "yourCropName" and override {@link #getOwner()} to return "yourmod".
 	 *
 	 * @return Unlocalized name.
 	 */
-	public String getDisplayName() {
-		return getName(); // return the raw name for backwards compatibility
+	public String getUnlocalizedName() {
+		return getOwner() + ".crop." + getId(); //Good enough default
 	}
 
 	/**
@@ -81,14 +87,14 @@ public abstract class CropCard {
 		if (i == 0) {
 			String s = att[0];
 			if (att.length >= 2) {
-				s+=", "+att[1];
-				if (att.length >= 3) s+=",";
+				s += ", " + att[1];
+				if (att.length >= 3) s += ",";
 			}
 			return s;
 		}
 		if (att.length < 3) return "";
 		String s = att[2];
-		if (att.length >= 4) s+=", "+att[3];
+		if (att.length >= 4) s += ", " + att[3];
 		return s;
 	}
 
@@ -102,7 +108,7 @@ public abstract class CropCard {
 	}
 
 	/**
-	 * Object containing the crop properties info - See ic2.api.crops.CropProperties for more info.
+	 * Object containing the crop properties info - See {@link CropProperties} for more info.
 	 */
 	public abstract CropProperties getProperties();
 
@@ -113,13 +119,13 @@ public abstract class CropCard {
 	 * @return Attributes as an array of strings
 	 */
 	public String[] getAttributes() {
-		return new String[] {};
+		return new String[0];
 	}
 
 	/**
 	 * Determine the max crop size.
 	 *
-	 * Currently only used for texture allocation.
+	 * Currently used for texture allocation, growth and harvesting control (by default).
 	 */
 	public abstract int getMaxSize();
 
@@ -266,9 +272,9 @@ public abstract class CropCard {
 	public float dropSeedChance(ICropTile crop) {
 		if (crop.getCurrentSize() == 1) return 0;
 		float base = 0.5F;
-		if (crop.getCurrentSize() == 2) base/=2F;
+		if (crop.getCurrentSize() == 2) base /= 2F;
 		for (int i = 0; i < getProperties().getTier(); i++) {
-			base*=0.8;
+			base *= 0.8;
 		}
 		return base;
 	}
@@ -291,7 +297,7 @@ public abstract class CropCard {
 	 * @param crop reference to ICropTile
 	 */
 	public void onNeighbourChange(ICropTile crop) {
-		//
+		// NO-OP
 	}
 
 	/**
@@ -303,7 +309,7 @@ public abstract class CropCard {
 		return false;
 	}
 
-	/***
+	/**
 	 * Get the emitted redstone signal strength.
 	 *
 	 * @return The redstone signal strength.
@@ -361,8 +367,7 @@ public abstract class CropCard {
 	 * @return Whether the plant spreads weed
 	 */
 	public boolean isWeed(ICropTile cropTile) {
-		return cropTile.getCurrentSize() >= 2 &&
-				(cropTile.getCrop() == Crops.weed || cropTile.getStatGrowth() >= 24);
+		return cropTile.getCurrentSize() >= 2 && (cropTile.getCrop() == Crops.weed || cropTile.getStatGrowth() >= 24);
 	}
 
 	/**
@@ -371,22 +376,8 @@ public abstract class CropCard {
 	 * @return The crop world object.
 	 */
 	public World getWorld(ICropTile cropTile) {
-		return cropTile.getWorld();
+		return cropTile.getWorldObj();
 	}
 
-	/**
-	 * Retrieve the crop's unlocalized name.
-	 * @return Unlocalized name
-	 */
-	public String getUnlocalizedName() {
-		return "crop." + getName() + ".name";
-	}
-
-	public List<ResourceLocation> getModelLocation() {
-		List<ResourceLocation> ret = new ArrayList<ResourceLocation>();
-		for (int i = 1; i <= getMaxSize(); i++) {
-			ret.add(new ResourceLocation(getOwner().toLowerCase(Locale.ENGLISH), "blocks/crop/"+getName()+"_"+i));
-		}
-		return ret;
-	}
+	public abstract List<ResourceLocation> getTexturesLocation();
 }

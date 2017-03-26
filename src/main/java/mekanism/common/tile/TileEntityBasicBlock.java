@@ -58,14 +58,14 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote && general.destroyDisabledBlocks)
+		if(!world.isRemote && general.destroyDisabledBlocks)
 		{
 			MachineType type = BlockStateMachine.MachineType.get(getBlockType(), getBlockMetadata());
 			
 			if(type != null && !type.isEnabled())
 			{
 				Mekanism.logger.info("[Mekanism] Destroying machine of type '" + type.machineName + "' at coords " + Coord4D.get(this) + " as according to config.");
-				worldObj.setBlockToAir(getPos());
+				world.setBlockToAir(getPos());
 				return;
 			}
 		}
@@ -77,7 +77,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
 		onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(doAutoSync && playersUsing.size() > 0)
 			{
@@ -126,8 +126,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	
 			if(clientFacing != facing)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
-				worldObj.notifyNeighborsOfStateChange(getPos(), worldObj.getBlockState(getPos()).getBlock());
+				MekanismUtils.updateBlock(world, getPos());
+				world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
 				clientFacing = facing;
 			}
 	
@@ -168,7 +168,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	{
 		super.validate();
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
 		}
@@ -230,7 +230,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 			facing = EnumFacing.getFront(direction);
 		}
 
-		if(!(facing == clientFacing || worldObj.isRemote))
+		if(!(facing == clientFacing || world.isRemote))
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 			markDirty();
@@ -262,7 +262,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
 	public void onNeighborChange(Block block)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			updatePower();
 		}
@@ -270,7 +270,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	
 	private void updatePower()
 	{
-		boolean power = worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0;
+		boolean power = world.isBlockIndirectlyGettingPowered(getPos()) > 0;
 
 		if(redstone != power)
 		{

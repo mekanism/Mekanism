@@ -80,19 +80,19 @@ public class StackSearcher
 				if(theInventory.getStackInSlot(i) != null && StackUtils.equalsWildcard(theInventory.getStackInSlot(i), type))
 				{
 					ItemStack stack = theInventory.getStackInSlot(i);
-					int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
+					int current = ret.getStack() != null ? ret.getStack().getCount() : 0;
 
-					if(current+stack.stackSize <= max)
+					if(current+stack.getCount() <= max)
 					{
 						ret.appendStack(i, stack.copy());
 					}
 					else {
 						ItemStack copy = stack.copy();
-						copy.stackSize = max-current;
+						copy.setCount(max-current);
 						ret.appendStack(i, copy);
 					}
 
-					if(ret.getStack() != null && ret.getStack().stackSize == max)
+					if(ret.getStack() != null && ret.getStack().getCount() == max)
 					{
 						return ret;
 					}
@@ -112,9 +112,9 @@ public class StackSearcher
 					if(sidedInventory.getStackInSlot(slotID) != null && StackUtils.equalsWildcard(theInventory.getStackInSlot(slotID), type))
 					{
 						ItemStack stack = sidedInventory.getStackInSlot(slotID);
-						int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
+						int current = ret.getStack() != null ? ret.getStack().getCount() : 0;
 
-						if(current+stack.stackSize <= max)
+						if(current+stack.getCount() <= max)
 						{
 							ItemStack copy = stack.copy();
 
@@ -128,12 +128,12 @@ public class StackSearcher
 
 							if(sidedInventory.canExtractItem(slotID, copy, side.getOpposite()))
 							{
-								copy.stackSize = max-current;
+								copy.setCount(max-current);
 								ret.appendStack(slotID, copy);
 							}
 						}
 
-						if(ret.getStack() != null && ret.getStack().stackSize == max)
+						if(ret.getStack() != null && ret.getStack().getCount() == max)
 						{
 							return ret;
 						}
@@ -142,7 +142,7 @@ public class StackSearcher
 			}
 		}
 
-		if(ret != null && ret.getStack() != null && ret.getStack().stackSize >= min)
+		if(ret != null && ret.getStack() != null && ret.getStack().getCount() >= min)
 		{
 			return ret;
 		}

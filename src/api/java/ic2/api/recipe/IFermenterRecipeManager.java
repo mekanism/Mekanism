@@ -13,11 +13,11 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public interface IFermenterRecipeManager extends ILiquidAcceptManager {
 	/**
-	 * Add a new fluid to the fermenter.
+	 * Add a new recipe to the fermenter.
 	 *
 	 * @param input The name of the fluid to ferment
-	 * @param inputAmount The amount of input fluid used per operation
-	 * @param ticks The total amount of heat needed to convert the input into the output
+	 * @param inputAmount The amount of input fluid used per operation (in millibuckets)
+	 * @param heat The total amount of heat needed to convert the input into the output
 	 * @param output The name of the fluid that is being fermented into
 	 * @param outputAmount The amount of output fluid produced per operation
 	 */
@@ -44,7 +44,7 @@ public interface IFermenterRecipeManager extends ILiquidAcceptManager {
 	 */
 	Map<String, FermentationProperty> getRecipeMap();
 
-	public static class FermentationProperty {
+	public static final class FermentationProperty {
 		public FermentationProperty(int inputAmount, int heat, String output, int outputAmount) {
 			this.inputAmount = inputAmount;
 			this.heat = heat;

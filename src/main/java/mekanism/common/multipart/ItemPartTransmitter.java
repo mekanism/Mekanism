@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -136,7 +137,7 @@ public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> listToAddTo)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> listToAddTo)
 	{
 		for(TransmitterType type : TransmitterType.values())
 		{

@@ -210,7 +210,7 @@ public class GuiSideConfiguration extends GuiMekanism
 
 		TileEntity tile = (TileEntity)configurable;
 
-		if(tile == null || mc.theWorld.getTileEntity(tile.getPos()) == null)
+		if(tile == null || mc.world.getTileEntity(tile.getPos()) == null)
 		{
 			mc.displayGuiScreen(null);
 		}

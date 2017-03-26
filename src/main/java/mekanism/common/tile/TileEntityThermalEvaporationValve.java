@@ -22,7 +22,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if((master == null) == prevMaster)
 			{
@@ -30,9 +30,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
 
-					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock))
+					if(!obj.isAirBlock(world) && !(obj.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos(), getPos());
+						obj.getBlock(world).onNeighborChange(world, obj.getPos(), getPos());
 					}
 				}
 			}

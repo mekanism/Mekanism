@@ -86,12 +86,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(changed)
 		{
-			worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+			world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 		}
 		
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			CableUtils.emit(this);
 			
@@ -101,7 +101,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 				
 				for(EnumFacing side : EnumFacing.values())
 				{
-					TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+					TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
 
 					if(tile != null && !(tile instanceof TileEntityReactorPort) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 					{
@@ -364,7 +364,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 		
 		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
@@ -396,9 +396,9 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			getReactor().getInventory()[slotID] = itemstack;
 
-			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+			if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
 			{
-				itemstack.stackSize = getInventoryStackLimit();
+				itemstack.setCount(getInventoryStackLimit());
 			}
 		}
 	}
@@ -447,7 +447,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 			
 			if(prevEject != fluidEject)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -465,12 +465,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			fluidEject = !fluidEject;
 			String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
-			player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
-			
+			player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			markDirty();
 		}

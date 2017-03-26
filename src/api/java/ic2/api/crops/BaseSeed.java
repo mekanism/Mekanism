@@ -14,14 +14,20 @@ public class BaseSeed {
 	 * @param statResistance plant resistance stat
 	 * @param stackSize for internal usage only
 	 */
-	public BaseSeed(CropCard crop, int size, int statGrowth, int statGain, int statResistance, int stackSize) {
-		super();
+	public BaseSeed(CropCard crop, int size, int statGrowth, int statGain, int statResistance) {
 		this.crop = crop;
 		this.size = size;
 		this.statGrowth = statGrowth;
 		this.statGain = statGain;
 		this.statResistance = statResistance;
-		this.stackSize = stackSize;
+	}
+
+	/**
+	 * @deprecated use the other constructor instead
+	 */
+	@Deprecated
+	public BaseSeed(CropCard crop, int size, int statGrowth, int statGain, int statResistance, int stackSize) {
+		this(crop, size, statGrowth, statGain, statResistance);
 	}
 
 	/**
@@ -48,9 +54,4 @@ public class BaseSeed {
 	 * Plant resistance stat.
 	 */
 	public int statResistance;
-
-	/**
-	 * For internal usage only.
-	 */
-	public int stackSize;
 }

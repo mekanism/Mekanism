@@ -42,7 +42,7 @@ public final class HolidayManager
 				{
 					if(holiday.getDate().equals(date))
 					{
-						holiday.onEvent(mc.thePlayer);
+						holiday.onEvent(mc.player);
 						holidaysNotified.add(holiday);
 					}
 				}
@@ -103,13 +103,13 @@ public final class HolidayManager
 		public void onEvent(EntityPlayer player)
 		{
 			String themedLines = getThemedLines(new EnumColor[] {EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
-			player.addChatMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
-			player.addChatMessage(new TextComponentString(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
-			player.addChatMessage(new TextComponentString(EnumColor.RED + "May you have plenty of Christmas cheer"));
-			player.addChatMessage(new TextComponentString(EnumColor.RED + "and have a relaxing holiday with your"));
-			player.addChatMessage(new TextComponentString(EnumColor.RED + "family :)"));
-			player.addChatMessage(new TextComponentString(EnumColor.DARK_GREY + "-aidancbrady"));
-			player.addChatMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
+			player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
+			player.sendMessage(new TextComponentString(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
+			player.sendMessage(new TextComponentString(EnumColor.RED + "May you have plenty of Christmas cheer"));
+			player.sendMessage(new TextComponentString(EnumColor.RED + "and have a relaxing holiday with your"));
+			player.sendMessage(new TextComponentString(EnumColor.RED + "family :)"));
+			player.sendMessage(new TextComponentString(EnumColor.DARK_GREY + "-aidancbrady"));
+			player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
 		}
 
 		@Override
@@ -152,12 +152,12 @@ public final class HolidayManager
 		public void onEvent(EntityPlayer player)
 		{
 			String themedLines = getThemedLines(new EnumColor[] {EnumColor.WHITE, EnumColor.YELLOW}, 13);
-			player.addChatMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
-			player.addChatMessage(new TextComponentString(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
-			player.addChatMessage(new TextComponentString(EnumColor.AQUA + "Best wishes to you as we enter this"));
-			player.addChatMessage(new TextComponentString(EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
-			player.addChatMessage(new TextComponentString(EnumColor.DARK_GREY + "-aidancbrady"));
-			player.addChatMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
+			player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
+			player.sendMessage(new TextComponentString(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
+			player.sendMessage(new TextComponentString(EnumColor.AQUA + "Best wishes to you as we enter this"));
+			player.sendMessage(new TextComponentString(EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
+			player.sendMessage(new TextComponentString(EnumColor.DARK_GREY + "-aidancbrady"));
+			player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
 		}
 	}
 

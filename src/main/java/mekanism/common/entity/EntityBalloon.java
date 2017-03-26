@@ -13,6 +13,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRedstone;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -75,7 +76,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	public EntityBalloon(EntityLivingBase entity, EnumColor c)
 	{
-		this(entity.worldObj);
+		this(entity.world);
 
 		latchedEntity = entity;
 		setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
@@ -122,11 +123,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			return;
 		}
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(dataManager.get(IS_LATCHED) == 1)
 			{
-				latched = new Coord4D((int)dataManager.get(LATCHED_X), (int)dataManager.get(LATCHED_Y), (int)dataManager.get(LATCHED_Z), worldObj.provider.getDimension());
+				latched = new Coord4D((int)dataManager.get(LATCHED_X), (int)dataManager.get(LATCHED_Y), (int)dataManager.get(LATCHED_Z), world.provider.getDimension());
 			}
 			else {
 				latched = null;
@@ -134,7 +135,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 			if(dataManager.get(IS_LATCHED) == 2)
 			{
-				latchedEntity = (EntityLivingBase)worldObj.getEntityByID(dataManager.get(LATCHED_ID));
+				latchedEntity = (EntityLivingBase)world.getEntityByID(dataManager.get(LATCHED_ID));
 			}
 			else {
 				latchedEntity = null;
@@ -158,16 +159,16 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			if(latched != null && (latched.exists(worldObj) && latched.isAirBlock(worldObj)))
+			if(latched != null && (latched.exists(world) && latched.isAirBlock(world)))
 			{
 				latched = null;
 
 				dataManager.set(IS_LATCHED, (byte)0);
 			}
 
-			if(latchedEntity != null && (latchedEntity.getHealth() <= 0 || latchedEntity.isDead || !worldObj.loadedEntityList.contains(latchedEntity)))
+			if(latchedEntity != null && (latchedEntity.getHealth() <= 0 || latchedEntity.isDead || !world.loadedEntityList.contains(latchedEntity)))
 			{
 				latchedEntity = null;
 
@@ -179,7 +180,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			motionY = Math.min(motionY*1.02F, 0.2F);
 
-			moveEntity(motionX, motionY, motionZ);
+			move(MoverType.SELF, motionX, motionY, motionZ);
 
 			motionX *= 0.98;
 			motionZ *= 0.98;
@@ -232,7 +233,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		for(BlockPos posi = pos; posi.getY() > 0; posi = posi.down())
 		{
-			if(posi.getY() < 256 && !worldObj.isAirBlock(posi))
+			if(posi.getY() < 256 && !world.isAirBlock(posi))
 			{
 				return posi.getY()+1+(entity instanceof EntityPlayer ? 1 : 0);
 			}
@@ -243,7 +244,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	private void findCachedEntity()
 	{
-		for(Object obj : worldObj.loadedEntityList)
+		for(Object obj : world.loadedEntityList)
 		{
 			if(obj instanceof EntityLivingBase)
 			{
@@ -261,7 +262,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	{
 		playSound(MekanismSounds.POP, 1, 1);
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			for(int i = 0; i < 10; i++)
 			{
@@ -279,7 +280,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	{
 		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
 
-		Particle fx = new ParticleRedstone.Factory().getEntityFX(0, worldObj, pos.xCoord, pos.yCoord, pos.zCoord, 0, 0, 0);
+		Particle fx = new ParticleRedstone.Factory().createParticle(0, world, pos.xCoord, pos.yCoord, pos.zCoord, 0, 0, 0);
 		fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
 
 		Minecraft.getMinecraft().effectRenderer.addEffect(fx);
@@ -387,7 +388,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		}
 		else if(type == 2)
 		{
-			latchedEntity = (EntityLivingBase)worldObj.getEntityByID(data.readInt());
+			latchedEntity = (EntityLivingBase)world.getEntityByID(data.readInt());
 		}
 		else {
 			latched = null;
@@ -427,7 +428,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		else {
 			setBeenAttacked();
 
-			if(dmgSource != DamageSource.magic && dmgSource != DamageSource.drown && dmgSource != DamageSource.fall)
+			if(dmgSource != DamageSource.MAGIC && dmgSource != DamageSource.DROWN && dmgSource != DamageSource.FALL)
 			{
 				pop();
 				return true;
@@ -439,7 +440,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	public boolean isLatched()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			return latched != null || latchedEntity != null;
 		}

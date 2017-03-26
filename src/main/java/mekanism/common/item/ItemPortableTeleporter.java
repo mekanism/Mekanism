@@ -40,14 +40,16 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
+		
 		if(!world.isRemote)
 		{
 			if(getOwner(itemstack) == null)
 			{
 				setOwner(itemstack, entityplayer.getName());
-				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
+				entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
 			}
 			else {
 				if(SecurityUtils.canAccess(entityplayer, itemstack))
@@ -72,7 +74,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 
 		int neededEnergy = 1000;
 
-		if(entity.worldObj.provider.getDimension() != coords.dimensionId)
+		if(entity.world.provider.getDimension() != coords.dimensionId)
 		{
 			neededEnergy += 10000;
 		}

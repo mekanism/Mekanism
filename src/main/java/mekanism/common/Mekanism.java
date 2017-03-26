@@ -1191,11 +1191,11 @@ public class Mekanism
 	public void addEntities()
 	{
 		//Registrations
-		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 0, this, 64, 5, true);
-		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 64, 2, true);
-		EntityRegistry.registerModEntity(EntityBalloon.class, "Balloon", 2, this, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityBabySkeleton.class, "BabySkeleton", 3, this, 64, 5, true);
-		EntityRegistry.registerModEntity(EntityFlame.class, "Flame", 4, this, 64, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "ObsidianTNT"), EntityObsidianTNT.class, "ObsidianTNT", 0, this, 64, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Robit"), EntityRobit.class, "Robit", 1, this, 64, 2, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Balloon"), EntityBalloon.class, "Balloon", 2, this, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "BabySkeleton"), EntityBabySkeleton.class, "BabySkeleton", 3, this, 64, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Flame"), EntityFlame.class, "Flame", 4, this, 64, 5, true);
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
@@ -1556,7 +1556,7 @@ public class Mekanism
 					return;
 				}
 	
-				ChunkPos coordPair = event.getChunk().getChunkCoordIntPair();
+				ChunkPos coordPair = event.getChunk().getPos();
 				worldTickHandler.addRegenChunk(event.getWorld().provider.getDimension(), coordPair);
 			}
 		}

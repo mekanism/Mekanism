@@ -1,12 +1,10 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
@@ -22,21 +20,14 @@ public class MetallurgicInfuserRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		List<ItemStack> list = new ArrayList<ItemStack>();
-		list.add(recipe.getInput().inputStack);
-		list.addAll(MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInput().infuse.type));
+		List<ItemStack> inputStacks = Arrays.asList(recipe.recipeInput.inputStack);
+		List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInput().infuse.type);
 		
-		return list;
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return Arrays.asList(recipe.getOutput().output);
+		ingredients.setInput(ItemStack.class, recipe.recipeInput.inputStack);
+		ingredients.setInputLists(ItemStack.class, Arrays.asList(inputStacks, infuseStacks));
+		ingredients.setOutput(ItemStack.class, recipe.recipeOutput.output);
 	}
 }

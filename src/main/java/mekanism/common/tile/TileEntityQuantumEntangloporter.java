@@ -101,7 +101,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(configComponent.isEjecting(TransmissionType.ENERGY))
 			{
@@ -156,7 +156,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		super.invalidate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(frequency != null)
 			{
@@ -197,7 +197,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			{
 				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwner());
 				Mekanism.privateEntangloporters.put(getSecurity().getOwner(), manager);
-				manager.createOrLoad(worldObj);
+				manager.createOrLoad(world);
 			}
 			
 			return Mekanism.privateEntangloporters.get(getSecurity().getOwner());
@@ -526,9 +526,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		{
 			frequency.storedItem = itemstack;
 	
-			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+			if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
 			{
-				itemstack.stackSize = getInventoryStackLimit();
+				itemstack.setCount(getInventoryStackLimit());
 			}
 		}
 	}
@@ -585,7 +585,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 		
 		if(hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, facing).ioState == IOState.INPUT)
 		{

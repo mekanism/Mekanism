@@ -94,9 +94,9 @@ public class ClientTickHandler
 	{
 		MekanismClient.ticksPassed++;
 
-		if(!hasNotified && mc.theWorld != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
+		if(!hasNotified && mc.world != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 		{
-			MekanismUtils.checkForUpdates(mc.thePlayer);
+			MekanismUtils.checkForUpdates(mc.player);
 			hasNotified = true;
 		}
 
@@ -116,7 +116,7 @@ public class ClientTickHandler
 			}
 		}
 
-		if(mc.theWorld != null)
+		if(mc.world != null)
 		{
 			shouldReset = true;
 		}
@@ -126,15 +126,15 @@ public class ClientTickHandler
 			shouldReset = false;
 		}
 
-		if(mc.theWorld != null && !Mekanism.proxy.isPaused())
+		if(mc.world != null && !Mekanism.proxy.isPaused())
 		{
-			if((!initHoliday || MekanismClient.ticksPassed % 1200 == 0) && mc.thePlayer != null)
+			if((!initHoliday || MekanismClient.ticksPassed % 1200 == 0) && mc.player != null)
 			{
 				HolidayManager.check();
 				initHoliday = true;
 			}
 
-			for(EntityPlayer entityPlayer : mc.theWorld.playerEntities)
+			for(EntityPlayer entityPlayer : mc.world.playerEntities)
 			{
 				if(entityPlayer instanceof AbstractClientPlayer)
 				{
@@ -203,63 +203,63 @@ public class ClientTickHandler
 				}
 			}
 			
-			ItemStack bootStack = mc.thePlayer.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+			ItemStack bootStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
 			if(bootStack != null && bootStack.getItem() instanceof ItemFreeRunners)
 			{
-				mc.thePlayer.stepHeight = 1.002F;
+				mc.player.stepHeight = 1.002F;
 			}
 			else {
-				if(mc.thePlayer.stepHeight == 1.002F)
+				if(mc.player.stepHeight == 1.002F)
 				{
-					mc.thePlayer.stepHeight = 0.5F;
+					mc.player.stepHeight = 0.5F;
 				}
 			}
 			
-			if(Mekanism.flamethrowerActive.contains(mc.thePlayer.getName()) != isFlamethrowerOn(mc.thePlayer))
+			if(Mekanism.flamethrowerActive.contains(mc.player.getName()) != isFlamethrowerOn(mc.player))
 			{
-				if(isFlamethrowerOn(mc.thePlayer))
+				if(isFlamethrowerOn(mc.player))
 				{
-					Mekanism.flamethrowerActive.add(mc.thePlayer.getName());
+					Mekanism.flamethrowerActive.add(mc.player.getName());
 				}
 				else {
-					Mekanism.flamethrowerActive.remove(mc.thePlayer.getName());
+					Mekanism.flamethrowerActive.remove(mc.player.getName());
 				}
 				
-				Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.UPDATE, null, mc.thePlayer.getName(), isFlamethrowerOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.UPDATE, null, mc.player.getName(), isFlamethrowerOn(mc.player)));
 			}
 
-			if(Mekanism.jetpackOn.contains(mc.thePlayer.getName()) != isJetpackOn(mc.thePlayer))
+			if(Mekanism.jetpackOn.contains(mc.player.getName()) != isJetpackOn(mc.player))
 			{
-				if(isJetpackOn(mc.thePlayer))
+				if(isJetpackOn(mc.player))
 				{
-					Mekanism.jetpackOn.add(mc.thePlayer.getName());
+					Mekanism.jetpackOn.add(mc.player.getName());
 				}
 				else {
-					Mekanism.jetpackOn.remove(mc.thePlayer.getName());
+					Mekanism.jetpackOn.remove(mc.player.getName());
 				}
 
-				Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.UPDATE, mc.thePlayer.getName(), isJetpackOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.UPDATE, mc.player.getName(), isJetpackOn(mc.player)));
 			}
 
-			if(Mekanism.gasmaskOn.contains(mc.thePlayer.getName()) != isGasMaskOn(mc.thePlayer))
+			if(Mekanism.gasmaskOn.contains(mc.player.getName()) != isGasMaskOn(mc.player))
 			{
-				if(isGasMaskOn(mc.thePlayer) && mc.currentScreen == null)
+				if(isGasMaskOn(mc.player) && mc.currentScreen == null)
 				{
-					Mekanism.gasmaskOn.add(mc.thePlayer.getName());
+					Mekanism.gasmaskOn.add(mc.player.getName());
 				}
 				else {
-					Mekanism.gasmaskOn.remove(mc.thePlayer.getName());
+					Mekanism.gasmaskOn.remove(mc.player.getName());
 				}
 
-				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, mc.thePlayer.getName(), isGasMaskOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, mc.player.getName(), isGasMaskOn(mc.player)));
 			}
 
 			if(client.enablePlayerSounds)
 			{
 				for(String username : Mekanism.jetpackOn)
 				{
-					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
+					EntityPlayer player = mc.world.getPlayerEntityByName(username);
 
 					if(player != null)
 					{
@@ -274,7 +274,7 @@ public class ClientTickHandler
 
 				for(String username : Mekanism.gasmaskOn)
 				{
-					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
+					EntityPlayer player = mc.world.getPlayerEntityByName(username);
 
 					if(player != null)
 					{
@@ -287,7 +287,7 @@ public class ClientTickHandler
 					}
 				}
 
-				for(EntityPlayer player : (List<EntityPlayer>)mc.theWorld.playerEntities)
+				for(EntityPlayer player : (List<EntityPlayer>)mc.world.playerEntities)
 				{
 					if(hasFlamethrower(player))
 					{
@@ -301,7 +301,7 @@ public class ClientTickHandler
 				}
 			}
 
-			ItemStack chestStack = mc.thePlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+			ItemStack chestStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 			
 			if(chestStack != null && chestStack.getItem() instanceof ItemJetpack)
 			{
@@ -309,84 +309,84 @@ public class ClientTickHandler
 				MekanismClient.updateKey(mc.gameSettings.keyBindSneak, KeySync.DESCEND);
 			}
 			
-			if(isFlamethrowerOn(mc.thePlayer))
+			if(isFlamethrowerOn(mc.player))
 			{
-				ItemFlamethrower flamethrower = (ItemFlamethrower)mc.thePlayer.inventory.getCurrentItem().getItem();
+				ItemFlamethrower flamethrower = (ItemFlamethrower)mc.player.inventory.getCurrentItem().getItem();
 				
-				if(!mc.thePlayer.capabilities.isCreativeMode)
+				if(!mc.player.capabilities.isCreativeMode)
 				{
-					flamethrower.useGas(mc.thePlayer.inventory.getCurrentItem());
+					flamethrower.useGas(mc.player.inventory.getCurrentItem());
 				}
 			}
 			
-			if(isJetpackOn(mc.thePlayer))
+			if(isJetpackOn(mc.player))
 			{
 				ItemJetpack jetpack = (ItemJetpack)chestStack.getItem();
 
 				if(jetpack.getMode(chestStack) == JetpackMode.NORMAL)
 				{
-					mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.5D);
-					mc.thePlayer.fallDistance = 0.0F;
+					mc.player.motionY = Math.min(mc.player.motionY + 0.15D, 0.5D);
+					mc.player.fallDistance = 0.0F;
 				}
 				else if(jetpack.getMode(chestStack) == JetpackMode.HOVER)
 				{
 					if((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) || (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null)
 					{
-						if(mc.thePlayer.motionY > 0)
+						if(mc.player.motionY > 0)
 						{
-							mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, 0);
+							mc.player.motionY = Math.max(mc.player.motionY - 0.15D, 0);
 						}
-						else if(mc.thePlayer.motionY < 0)
+						else if(mc.player.motionY < 0)
 						{
-							if(!CommonPlayerTickHandler.isOnGround(mc.thePlayer))
+							if(!CommonPlayerTickHandler.isOnGround(mc.player))
 							{
-								mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0);
+								mc.player.motionY = Math.min(mc.player.motionY + 0.15D, 0);
 							}
 						}
 					}
 					else {
 						if(mc.gameSettings.keyBindJump.isKeyDown() && mc.currentScreen == null)
 						{
-							mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.2D);
+							mc.player.motionY = Math.min(mc.player.motionY + 0.15D, 0.2D);
 						}
 						else if(mc.gameSettings.keyBindSneak.isKeyDown() && mc.currentScreen == null)
 						{
-							if(!CommonPlayerTickHandler.isOnGround(mc.thePlayer))
+							if(!CommonPlayerTickHandler.isOnGround(mc.player))
 							{
-								mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
+								mc.player.motionY = Math.max(mc.player.motionY - 0.15D, -0.2D);
 							}
 						}
 					}
 
-					mc.thePlayer.fallDistance = 0.0F;
+					mc.player.fallDistance = 0.0F;
 				}
 
 				jetpack.useGas(chestStack);
 			}
 
-			if(isGasMaskOn(mc.thePlayer))
+			if(isGasMaskOn(mc.player))
 			{
 				ItemScubaTank tank = (ItemScubaTank)chestStack.getItem();
 
 				final int max = 300;
 				
 				tank.useGas(chestStack);
-				GasStack received = tank.useGas(chestStack, max-mc.thePlayer.getAir());
+				GasStack received = tank.useGas(chestStack, max-mc.player.getAir());
 
 				if(received != null)
 				{
-					mc.thePlayer.setAir(mc.thePlayer.getAir()+received.amount);
+					mc.player.setAir(mc.player.getAir()+received.amount);
 				}
 				
-				if(mc.thePlayer.getAir() == max)
+				if(mc.player.getAir() == max)
 				{
-					for(Object obj : mc.thePlayer.getActivePotionEffects())
+					for(Object obj : mc.player.getActivePotionEffects())
 					{
 						if(obj instanceof PotionEffect)
 						{
 							for(int i = 0; i < 9; i++)
 							{
-								((PotionEffect)obj).onUpdate(mc.thePlayer);
+								((PotionEffect)obj).onUpdate(mc.player);
 							}
 						}
 					}
@@ -423,12 +423,12 @@ public class ClientTickHandler
 
 	public static boolean isJetpackOn(EntityPlayer player)
 	{
-		if(player != mc.thePlayer)
+		if(player != mc.player)
 		{
 			return Mekanism.jetpackOn.contains(player.getName());
 		}
 
-		ItemStack stack = player.inventory.armorInventory[2];
+		ItemStack stack = player.inventory.armorInventory.get(2);
 
 		if(stack != null && !player.capabilities.isCreativeMode)
 		{
@@ -464,13 +464,13 @@ public class ClientTickHandler
 
 	public static boolean isGasMaskOn(EntityPlayer player)
 	{
-		if(player != mc.thePlayer)
+		if(player != mc.player)
 		{
 			return Mekanism.gasmaskOn.contains(player.getName());
 		}
 
-		ItemStack tank = player.inventory.armorInventory[2];
-		ItemStack mask = player.inventory.armorInventory[3];
+		ItemStack tank = player.inventory.armorInventory.get(2);
+		ItemStack mask = player.inventory.armorInventory.get(3);
 
 		if(tank != null && mask != null)
 		{
@@ -493,7 +493,7 @@ public class ClientTickHandler
 	
 	public static boolean isFlamethrowerOn(EntityPlayer player)
 	{
-		if(player != mc.thePlayer)
+		if(player != mc.player)
 		{
 			return Mekanism.flamethrowerActive.contains(player.getName());
 		}

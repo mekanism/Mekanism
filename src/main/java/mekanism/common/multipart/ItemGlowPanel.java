@@ -1,7 +1,5 @@
 package mekanism.common.multipart;
 
-import java.util.List;
-
 import mcmultipart.item.ItemMultiPart;
 import mcmultipart.multipart.IMultipart;
 import mekanism.api.EnumColor;
@@ -13,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.translation.I18n;
@@ -46,7 +45,7 @@ public class ItemGlowPanel extends ItemMultiPart implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List listToAddTo)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> listToAddTo)
 	{
 		for(EnumColor color : EnumColor.DYES)
 		{

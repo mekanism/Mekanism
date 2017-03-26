@@ -4,30 +4,29 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.tools;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.RayTraceResult;
 
 /*** Implement this interface on subclasses of Item to have that item work as a wrench for buildcraft */
 public interface IToolWrench {
 
-    /*** Called to ensure that the wrench can be used. To get the ItemStack that is used, check
-     * player.inventory.getCurrentItem()
+    /*** Called to ensure that the wrench can be used.
      *
      * @param player - The player doing the wrenching
-     * @param pos - The coordinates for the block being wrenched
+     * @param hand - Which hand was holding the wrench
+     * @param wrench - The item stack that holds the wrench
+     * @param rayTrace - The object that is being wrenched
      *
      * @return true if wrenching is allowed, false if not */
-    boolean canWrench(EntityPlayer player, BlockPos pos);
+    boolean canWrench(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace);
 
-    /*** Callback after the wrench has been used. This can be used to decrease durability or for other purposes. To get
-     * the ItemStack that was used, check player.inventory.getCurrentItem()
+    /*** Callback after the wrench has been used. This can be used to decrease durability or for other purposes.
      *
      * @param player - The player doing the wrenching
-     * @param pos - The position of the block being wrenched */
-    void wrenchUsed(EntityPlayer player, BlockPos pos);
-
-    boolean canWrench(EntityPlayer player, Entity entity);
-
-    void wrenchUsed(EntityPlayer player, Entity entity);
+     * @param hand - Which hand was holding the wrench
+     * @param wrench - The item stack that holds the wrench
+     * @param rayTrace - The object that is being wrenched */
+    void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace);
 }

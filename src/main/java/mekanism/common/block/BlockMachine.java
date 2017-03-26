@@ -1,11 +1,9 @@
 package mekanism.common.block;
 
-import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.util.StackUtils;
@@ -13,7 +11,6 @@ import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
@@ -73,16 +70,16 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -246,7 +243,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(placer.rotationPitch);
 		int change = 3;
 
@@ -403,7 +400,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(MachineType type : MachineType.getValidMachines())
 		{
@@ -441,7 +438,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -450,6 +447,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
+		ItemStack stack = entityplayer.getHeldItem(hand);
 
 		if(stack != null)
 		{
@@ -468,7 +466,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 					if(MekanismUtils.isBCWrench(tool))
 					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
+						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
 					}
 
 					int change = tileEntity.facing.rotateY().ordinal();
@@ -491,7 +489,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					}
 
 					tileEntity.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this);
+					world.notifyNeighborsOfStateChange(pos, this, true);
 				} 
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -682,7 +680,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return world.setBlockToAir(pos);
@@ -736,13 +734,13 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					
 					if(filled > 0)
 					{
-						if(itemStack.stackSize == 1)
+						if(itemStack.getCount() == 1)
 						{
 							player.setHeldItem(hand, copyStack);
 						}
-						else if(itemStack.stackSize > 1 && player.inventory.addItemStackToInventory(copyStack))
+						else if(itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(copyStack))
 						{
-							itemStack.stackSize--;
+							itemStack.shrink(1);
 						}
 						
 						if(tileEntity.tier != FluidTankTier.CREATIVE)
@@ -766,7 +764,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				boolean filled = false;
 				FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
 				
-				if(copyStack.stackSize == 0)
+				if(copyStack.getCount() == 0)
 				{
 					copyStack = null;
 				}
@@ -780,7 +778,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					else {
 						if(copyStack != null)
 						{
-							if(itemStack.stackSize == 1)
+							if(itemStack.getCount() == 1)
 							{
 								player.setHeldItem(hand, copyStack);
 								filled = true;
@@ -788,16 +786,16 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 							else {
 								if(player.inventory.addItemStackToInventory(copyStack))
 								{
-									itemStack.stackSize--;
+									itemStack.shrink(1);
 	
 									filled = true;
 								}
 							}
 						}
 						else {
-							itemStack.stackSize--;
+							itemStack.shrink(1);
 	
-							if(itemStack.stackSize == 0)
+							if(itemStack.getCount() == 0)
 							{
 								player.setHeldItem(hand, null);
 							}
@@ -832,7 +830,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(!world.isRemote)
 		{
@@ -977,7 +975,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;
@@ -1011,7 +1009,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
     }
 	
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
 		{

@@ -59,7 +59,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(playersUsing.size() > 0)
 			{
@@ -79,9 +79,9 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 				{
 					if(inventory[1] == null)
 					{
-						inventory[0].stackSize--;
+						inventory[0].shrink(1);
 						
-						if(inventory[0].stackSize <= 0)
+						if(inventory[0].getCount() <= 0)
 						{
 							inventory[0] = null;
 						}
@@ -89,16 +89,16 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 						inventory[1] = result;
 						didProcess = true;
 					}
-					else if(inventory[1].isItemEqual(result) && inventory[1].stackSize < inventory[1].getMaxStackSize())
+					else if(inventory[1].isItemEqual(result) && inventory[1].getCount() < inventory[1].getMaxStackSize())
 					{
-						inventory[0].stackSize--;
+						inventory[0].shrink(1);
 						
-						if(inventory[0].stackSize <= 0)
+						if(inventory[0].getCount() <= 0)
 						{
 							inventory[0] = null;
 						}
 						
-						inventory[1].stackSize++;
+						inventory[1].grow(1);
 						didProcess = true;
 					}
 					
@@ -319,7 +319,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public void openInventory(EntityPlayer player)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}

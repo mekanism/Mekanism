@@ -9,18 +9,22 @@ import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.oredict.OreDictionary;
 
+/**
+ * @deprecated Use {@link Recipes#inputFactory} instead.
+ */
+@Deprecated
 public class RecipeInputOreDict implements IRecipeInput {
-	public RecipeInputOreDict(String input1) {
-		this(input1, 1);
+	public RecipeInputOreDict(String input) {
+		this(input, 1);
 	}
 
-	public RecipeInputOreDict(String input1, int amount1) {
-		this(input1, amount1, null);
+	public RecipeInputOreDict(String input, int amount) {
+		this(input, amount, null);
 	}
 
-	public RecipeInputOreDict(String input1, int amount1, Integer meta) {
-		this.input = input1;
-		this.amount = amount1;
+	public RecipeInputOreDict(String input, int amount, Integer meta) {
+		this.input = input;
+		this.amount = amount;
 		this.meta = meta;
 	}
 
@@ -56,21 +60,23 @@ public class RecipeInputOreDict implements IRecipeInput {
 		List<ItemStack> ores = getOres();
 
 		// check if we have to filter the list first
-		boolean hasInvalidEntries = false;
+		boolean hasUnsuitableEntries = false;
 
 		for (ItemStack stack : ores) {
-			if (stack.getItem() == null) {
-				hasInvalidEntries = true;
+			if (stack.getItem() == null || stack.getCount() != getAmount()) {
+				hasUnsuitableEntries = true;
 				break;
 			}
 		}
 
-		if (!hasInvalidEntries) return ores;
+		if (!hasUnsuitableEntries) return ores;
 
 		List<ItemStack> ret = new ArrayList<ItemStack>(ores.size());
 
 		for (ItemStack stack : ores) {
-			if (stack.getItem() != null) ret.add(stack); // ignore invalid
+			if (stack.getItem() != null) { // ignore invalid
+				ret.add(RecipeUtil.setImmutableSize(stack, getAmount()));
+			}
 		}
 
 		return Collections.unmodifiableList(ret);

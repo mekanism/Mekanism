@@ -64,7 +64,7 @@ public class ItemGasMask extends ItemArmor
 
 				if(tank.getFlowing(chestStack) && tank.getGas(chestStack) != null)
 				{
-					if(event.getSource() == DamageSource.magic)
+					if(event.getSource() == DamageSource.MAGIC)
 					{
 						event.setCanceled(true);
 					}

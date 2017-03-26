@@ -300,7 +300,7 @@ public final class TransporterPathfinder
 		
 		if(p.getPath().size() >= 2)
 		{
-			if(TransporterManager.getToUse(stack.itemStack, rejects).stackSize >= min)
+			if(TransporterManager.getToUse(stack.itemStack, rejects).getCount() >= min)
 			{
 				PathfinderCache.cachedPaths.put(new PathData(start.coord(), dest, p.side), p.getPath());
 				

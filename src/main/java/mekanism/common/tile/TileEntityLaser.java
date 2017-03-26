@@ -44,12 +44,12 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 	{
 		super.onUpdate();
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(isActive)
 			{
-				RayTraceResult mop = LaserManager.fireLaserClient(this, facing, usage.laserUsage, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, worldObj);
+				RayTraceResult mop = LaserManager.fireLaserClient(this, facing, usage.laserUsage, world);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -59,9 +59,9 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 
 				if(hitCoord != null)
 				{
-					IBlockState blockHit = hitCoord.getBlockState(worldObj);
-					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
+					IBlockState blockHit = hitCoord.getBlockState(world);
+					TileEntity tileHit = hitCoord.getTileEntity(world);
+					float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
 					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))))
 					{
@@ -80,8 +80,8 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 			{
 				setActive(true);
 				
-				LaserInfo info = LaserManager.fireLaser(this, facing, usage.laserUsage, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, worldObj);
+				LaserInfo info = LaserManager.fireLaser(this, facing, usage.laserUsage, world);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -91,9 +91,9 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 
 				if(hitCoord != null)
 				{
-					IBlockState blockHit = hitCoord.getBlockState(worldObj);
-					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
+					IBlockState blockHit = hitCoord.getBlockState(world);
+					TileEntity tileHit = hitCoord.getTileEntity(world);
+					float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 					
 					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))))
 					{
@@ -101,7 +101,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 
 						if(diggingProgress >= hardness*general.laserEnergyNeededPerHardness)
 						{
-							LaserManager.breakBlock(hitCoord, true, worldObj);
+							LaserManager.breakBlock(hitCoord, true, world);
 							diggingProgress = 0;
 						}
 					}
@@ -174,7 +174,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 			if(clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}

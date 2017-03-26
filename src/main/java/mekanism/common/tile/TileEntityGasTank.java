@@ -96,7 +96,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(inventory[0] != null && gasTank.getGas() != null)
 			{
@@ -309,7 +309,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	
 			if(prevTier != tier)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -377,7 +377,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public int getRedstoneLevel()
 	{
         double fractionFull = (float)gasTank.getStored()/(float)gasTank.getMaxGas();
-        return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return MathHelper.floor((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
 	
 	@Override

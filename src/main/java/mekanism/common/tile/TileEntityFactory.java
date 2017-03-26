@@ -191,10 +191,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			return false;
 		}
 		
-		worldObj.setBlockToAir(getPos());
-		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5+tier.ordinal()+1), 3);
+		world.setBlockToAir(getPos());
+		world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5+tier.ordinal()+1), 3);
 		
-		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
+		TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
 		
 		//Basic
 		factory.facing = facing;
@@ -269,22 +269,22 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote && updateDelay > 0)
+		if(world.isRemote && updateDelay > 0)
 		{
 			updateDelay--;
 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(ticker == 1)
 			{
-				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 			}
 
 			if(updateDelay > 0)
@@ -338,7 +338,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 						secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
-						worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+						world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 
 						MekanismUtils.saveChunk(this);
 					}
@@ -487,7 +487,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		public int size()
 		{
-			return stack != null ? stack.stackSize : 0;
+			return stack != null ? stack.getCount() : 0;
 		}
 
 		public Item item()
@@ -532,9 +532,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				{
 					gasTank.receive(stack, true);
 	
-					inventory[4].stackSize--;
+					inventory[4].shrink(1);
 	
-					if(inventory[4].stackSize == 0)
+					if(inventory[4].getCount() == 0)
 					{
 						inventory[4] = null;
 					}
@@ -552,9 +552,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						{
 							infuseStored.amount += infuse.stored;
 							infuseStored.type = infuse.type;
-							inventory[4].stackSize--;
+							inventory[4].shrink(1);
 
-							if(inventory[4].stackSize <= 0)
+							if(inventory[4].getCount() <= 0)
 							{
 								inventory[4] = null;
 							}
@@ -780,7 +780,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				
 				if(!upgraded)
 				{
-					MekanismUtils.updateBlock(worldObj, getPos());
+					MekanismUtils.updateBlock(world, getPos());
 				}
 			}
 	
@@ -801,13 +801,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 			
 			if(upgraded)
 			{
 				markDirty();
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 				upgraded = false;
 			}
 		}

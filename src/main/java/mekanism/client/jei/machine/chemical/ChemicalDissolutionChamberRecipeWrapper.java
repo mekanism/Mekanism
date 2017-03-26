@@ -8,8 +8,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.util.LangUtils;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
@@ -25,18 +27,12 @@ public class ChemicalDissolutionChamberRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return Arrays.asList(recipe.getInput().ingredient);
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return new ArrayList<ItemStack>();
+		ingredients.setInput(GasStack.class, new GasStack(GasRegistry.getGas("sulfuricAcid"), 1000));
+		ingredients.setInput(ItemStack.class, recipe.recipeInput.ingredient);
+		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
 	}
 	
 	@Nullable

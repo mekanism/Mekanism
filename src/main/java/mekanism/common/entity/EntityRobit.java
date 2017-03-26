@@ -13,12 +13,13 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
-import mekanism.common.RobitAIFollow;
-import mekanism.common.RobitAIPickup;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.entity.ai.RobitAIFollow;
+import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
 import net.minecraft.entity.EntityCreature;
@@ -140,7 +141,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	@Override
 	public void onEntityUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(getFollowing() && getOwner() != null && getDistanceSqToEntity(getOwner()) > 4 && !getNavigator().noPath() && getEnergy() > 0)
 			{
@@ -150,7 +151,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		super.onEntityUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(getDropPickup())
 			{
@@ -206,9 +207,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				else if(inventory[27].getItem() == Items.REDSTONE && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
 					setEnergy(getEnergy() + general.ENERGY_PER_REDSTONE);
-					inventory[27].stackSize--;
+					inventory[27].shrink(1);
 
-					if(inventory[27].stackSize <= 0)
+					if(inventory[27].getCount() <= 0)
 					{
 						inventory[27] = null;
 					}
@@ -220,7 +221,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				furnaceBurnTime--;
 			}
 
-			if(!worldObj.isRemote)
+			if(!world.isRemote)
 			{
 				if(furnaceBurnTime == 0 && canSmelt())
 				{
@@ -230,9 +231,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 					{
 						if(inventory[29] != null)
 						{
-							inventory[29].stackSize--;
+							inventory[29].shrink(1);
 
-							if(inventory[29].stackSize == 0)
+							if(inventory[29].getCount() == 0)
 							{
 								inventory[29] = inventory[29].getItem().getContainerItem(inventory[29]);
 							}
@@ -259,7 +260,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	private void collectItems()
 	{
-		List<EntityItem> items = worldObj.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().expand(1.5, 1.5, 1.5));
+		List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().expand(1.5, 1.5, 1.5));
 
 		if(items != null && !items.isEmpty())
 		{
@@ -277,24 +278,24 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 					if(itemStack == null)
 					{
 						inventory[i] = item.getEntityItem();
-						onItemPickup(item, item.getEntityItem().stackSize);
+						onItemPickup(item, item.getEntityItem().getCount());
 						item.setDead();
 
 						playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
 						break;
 					}
-					else if(itemStack.isItemEqual(item.getEntityItem()) && itemStack.stackSize < itemStack.getMaxStackSize())
+					else if(itemStack.isItemEqual(item.getEntityItem()) && itemStack.getCount() < itemStack.getMaxStackSize())
 					{
-						int needed = itemStack.getMaxStackSize() - itemStack.stackSize;
-						int toAdd = Math.min(needed, item.getEntityItem().stackSize);
+						int needed = itemStack.getMaxStackSize() - itemStack.getCount();
+						int toAdd = Math.min(needed, item.getEntityItem().getCount());
 
-						itemStack.stackSize += toAdd;
-						item.getEntityItem().stackSize -= toAdd;
+						itemStack.grow(toAdd);
+						item.getEntityItem().shrink(toAdd);
 
 						onItemPickup(item, toAdd);
 
-						if(item.getEntityItem().stackSize == 0)
+						if(item.getEntityItem().getCount() == 0)
 						{
 							item.setDead();
 						}
@@ -312,7 +313,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		setFollowing(false);
 
-		if(worldObj.provider.getDimension() != homeLocation.dimensionId)
+		if(world.provider.getDimension() != homeLocation.dimensionId)
 		{
 			changeDimension(homeLocation.dimensionId);
 		}
@@ -335,7 +336,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			if(itemstack == null) return false;
 			if(inventory[30] == null) return true;
 			if(!inventory[30].isItemEqual(itemstack)) return false;
-			int result = inventory[30].stackSize + itemstack.stackSize;
+			int result = inventory[30].getCount() + itemstack.getCount();
 			return (result <= getInventoryStackLimit() && result <= itemstack.getMaxStackSize());
 		}
 	}
@@ -352,12 +353,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			}
 			else if(inventory[30].isItemEqual(itemstack))
 			{
-				inventory[30].stackSize += itemstack.stackSize;
+				inventory[30].grow(itemstack.getCount());
 			}
 
-			inventory[28].stackSize--;
+			inventory[28].shrink(1);
 
-			if(inventory[28].stackSize <= 0)
+			if(inventory[28].getCount() <= 0)
 			{
 				inventory[28] = null;
 			}
@@ -368,7 +369,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		BlockPos pos = new BlockPos(this);
 
-		if(worldObj.getTileEntity(pos) instanceof TileEntityChargepad)
+		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
 		{
 			return true;
 		}
@@ -377,13 +378,15 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public EnumActionResult applyPlayerInteraction(EntityPlayer entityplayer, Vec3d vec, ItemStack stack, EnumHand hand)
+	public EnumActionResult applyPlayerInteraction(EntityPlayer entityplayer, Vec3d vec, EnumHand hand)
 	{
+		ItemStack stack = entityplayer.getHeldItem(hand);
+		
 		if(entityplayer.isSneaking())
 		{
 			if(stack != null && stack.getItem() instanceof ItemConfigurator)
 			{
-				if(!worldObj.isRemote)
+				if(!world.isRemote)
 				{
 					drop();
 				}
@@ -395,7 +398,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			}
 		}
 		else {
-			entityplayer.openGui(Mekanism.instance, 21, worldObj, getEntityId(), 0, 0);
+			entityplayer.openGui(Mekanism.instance, 21, world, getEntityId(), 0, 0);
 			return EnumActionResult.SUCCESS;
 		}
 
@@ -404,7 +407,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public void drop()
 	{
-		EntityItem entityItem = new EntityItem(worldObj, posX, posY+0.3, posZ, new ItemStack(MekanismItems.Robit));
+		EntityItem entityItem = new EntityItem(world, posX, posY+0.3, posZ, new ItemStack(MekanismItems.Robit));
 
 		ItemRobit item = (ItemRobit)entityItem.getEntityItem().getItem();
 		item.setEnergy(entityItem.getEntityItem(), getEnergy());
@@ -416,7 +419,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		entityItem.motionY = rand.nextGaussian() * k + 0.2F;
 		entityItem.motionZ = 0;
 
-		worldObj.spawnEntityInWorld(entityItem);
+		world.spawnEntity(entityItem);
 	}
 
 	@Override
@@ -488,7 +491,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 			if(slotID >= 0 && slotID < inventory.length)
 			{
-				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+				inventory[slotID] = InventoryUtils.loadFromNBT(tagCompound);
 			}
 		}
 	}
@@ -537,7 +540,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public EntityPlayer getOwner()
 	{
-		return worldObj.getPlayerEntityByName(getOwnerName());
+		return world.getPlayerEntityByName(getOwnerName());
 	}
 
 	public String getOwnerName()
@@ -589,7 +592,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		{
 			ItemStack tempStack;
 
-			if(getStackInSlot(slotID).stackSize <= amount)
+			if(getStackInSlot(slotID).getCount() <= amount)
 			{
 				tempStack = getStackInSlot(slotID);
 				setInventorySlotContents(slotID, null);
@@ -598,7 +601,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			else {
 				tempStack = getStackInSlot(slotID).splitStack(amount);
 
-				if(getStackInSlot(slotID).stackSize == 0)
+				if(getStackInSlot(slotID).getCount() == 0)
 				{
 					setInventorySlotContents(slotID, null);
 				}
@@ -630,9 +633,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		inventory[slotID] = itemstack;
 
-		if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+		if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
 		{
-			itemstack.stackSize = getInventoryStackLimit();
+			itemstack.setCount(getInventoryStackLimit());
 		}
 	}
 
@@ -646,7 +649,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void markDirty() {}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(EntityPlayer entityplayer)
 	{
 		return true;
 	}
@@ -698,7 +701,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 			if(slotID >= 0 && slotID < inventory.length)
 			{
-				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+				inventory[slotID] = InventoryUtils.loadFromNBT(tagCompound);
 			}
 		}
 	}
@@ -720,6 +723,20 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		}
 
 		return tagList;
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		for(ItemStack stack : inventory)
+		{
+			if(stack != null)
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	@Override

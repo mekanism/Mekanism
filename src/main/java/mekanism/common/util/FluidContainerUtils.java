@@ -76,7 +76,7 @@ public final class FluidContainerUtils
 			
 			int drained = insertFluid(stack, inputCopy);
 			
-			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].stackSize == inventory[outSlot].getMaxStackSize()))
+			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].getCount() == inventory[outSlot].getMaxStackSize()))
 			{
 				return stack;
 			}
@@ -89,12 +89,12 @@ public final class FluidContainerUtils
 			}
 			else if(ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy))
 			{
-				inventory[outSlot].stackSize++;
+				inventory[outSlot].grow(1);
 			}
 			
-			inventory[inSlot].stackSize--;
+			inventory[inSlot].shrink(1);
 			
-			if(inventory[inSlot].stackSize == 0)
+			if(inventory[inSlot].getCount() == 0)
 			{
 				inventory[inSlot] = null;
 			}
@@ -135,14 +135,14 @@ public final class FluidContainerUtils
 		
 		ItemStack inputCopy = input.copy();
 		
-		if(inputCopy.stackSize == 0)
+		if(inputCopy.getCount() == 0)
 		{
 			inputCopy = null;
 		}
 		
 		if(FluidUtil.getFluidContained(inputCopy) == null && inputCopy != null)
 		{
-			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].stackSize == inventory[outSlot].getMaxStackSize()))
+			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].getCount() == inventory[outSlot].getMaxStackSize()))
 			{
 				return stored;
 			}
@@ -173,13 +173,13 @@ public final class FluidContainerUtils
 				}
 				else if(ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy))
 				{
-					inventory[outSlot].stackSize++;
+					inventory[outSlot].grow(1);
 				}
 			}
 			
-			inventory[inSlot].stackSize--;
+			inventory[inSlot].shrink(1);
 			
-			if(inventory[inSlot].stackSize == 0)
+			if(inventory[inSlot].getCount() == 0)
 			{
 				inventory[inSlot] = null;
 			}

@@ -8,6 +8,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -91,7 +92,7 @@ public class InventoryFrequency extends Frequency
 		
 		if(nbtTags.hasKey("storedItem"))
 		{
-			storedItem = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("storedItem"));
+			storedItem = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("storedItem"));
 		}
 		
 		temperature = nbtTags.getDouble("temperature");

@@ -39,7 +39,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 			@Override
 			public void run()
 			{
-				if(!player.worldObj.isRemote)
+				if(!player.world.isRemote)
 				{
 					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		
@@ -49,16 +49,16 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 					}
 				}
 				else {
-					if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityOredictionificator)
+					if(message.coord4D.getTileEntity(player.world) instanceof TileEntityOredictionificator)
 					{
 						try {
 							if(message.packetType == OredictionificatorGuiPacket.CLIENT)
 							{
-								FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+								FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), -1));
 							}
 							else if(message.packetType == OredictionificatorGuiPacket.CLIENT_INDEX)
 							{
-								FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+								FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), message.index));
 							}
 		
 							player.openContainer.windowId = message.windowId;

@@ -149,7 +149,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 						if(TransporterManager.didEmit(stack.getStack(), rejects))
 						{
 							did = true;
-							stack.use(TransporterManager.getToUse(stack.getStack(), rejects).stackSize);
+							stack.use(TransporterManager.getToUse(stack.getStack(), rejects).getCount());
 						}
 					}
 				}
@@ -347,7 +347,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		onPartChanged(this);
 		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld())));
-		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
+		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
 		return EnumActionResult.SUCCESS;
 	}
@@ -356,7 +356,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		super.onRightClick(player, side);
-		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : "None")));
+		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : "None")));
 		
 		return EnumActionResult.SUCCESS;
 	}

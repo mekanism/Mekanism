@@ -68,7 +68,7 @@ minecraft {
 }
 
 dependencies {
-    deobfCompile "MCMultiPart:MCMultiPart-experimental:${config.mcmp_version}:universal"
+    deobfCompile "MCMultiPart2:MCMultiPart-exp:${config.mcmp_version}:universal"
     deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
 }
 

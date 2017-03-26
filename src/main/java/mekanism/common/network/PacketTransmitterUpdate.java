@@ -45,7 +45,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			{
 				if(message.packetType == PacketType.UPDATE)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
@@ -56,7 +56,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 						
 						for(Coord4D coord : message.transmitterCoords)
 						{
-							TileEntity tile = coord.getTileEntity(player.worldObj);
+							TileEntity tile = coord.getTileEntity(player.world);
 
 							if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 							{
@@ -75,7 +75,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				
 				if(message.packetType == PacketType.ENERGY)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 					
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
@@ -89,7 +89,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				}
 				else if(message.packetType == PacketType.GAS)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
@@ -111,7 +111,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				}
 				else if(message.packetType == PacketType.FLUID)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{

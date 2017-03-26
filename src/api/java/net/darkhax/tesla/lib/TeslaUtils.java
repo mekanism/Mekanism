@@ -3,17 +3,26 @@ package net.darkhax.tesla.lib;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
+import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TeslaUtils {
     
@@ -41,11 +50,11 @@ public class TeslaUtils {
      * The amount of Telsa in a TeraTesla. One Trillion.
      */
     public static final long TERATESLA = 1000000000000L;
-    
+
     /**
-     * The amount of Tesla in a PentaTesla. One Quadrilli.on
+     * The amount of Tesla in a PentaTesla. One Quadrillion.
      */
-    public static final long PENTATESLA = 1000000000000000L;
+    public static final long PETATESLA = 1000000000000000L;
     
     /**
      * The amount of Tesla in a ExaTesla. One Quintilian.
@@ -173,7 +182,7 @@ public class TeslaUtils {
      */
     public static ITeslaConsumer getTeslaConsumer (ICapabilityProvider provider, EnumFacing side) {
         
-        return (ITeslaConsumer) provider.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
+        return (ITeslaConsumer) provider.getCapability(TeslaCapabilities.CAPABILITY_CONSUMER, side);
     }
     
     /**
@@ -185,7 +194,7 @@ public class TeslaUtils {
      */
     public static ITeslaProducer getTeslaProducer (ICapabilityProvider provider, EnumFacing side) {
         
-        return (ITeslaProducer) provider.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
+        return (ITeslaProducer) provider.getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, side);
     }
     
     /**
@@ -298,5 +307,119 @@ public class TeslaUtils {
             recievedPower += producer.takePower(amount, simulated);
             
         return recievedPower;
+    }
+    
+    /**
+     * Checks if a capability is for the Tesla holder.
+     * 
+     * @param capability The capability to check.
+     * @return Whether or not the capability is for the Tesla holder.
+     */
+    public static boolean isHolderCapability (Capability<?> capability) {
+        
+        return capability == TeslaCapabilities.CAPABILITY_HOLDER;
+    }
+    
+    /**
+     * Checks if a capability is for the Tesla consumer.
+     * 
+     * @param capability The capability to check.
+     * @return Whether or not the capability is for the Tesla consumer.
+     */
+    public static boolean isConsumerCapability (Capability<?> capability) {
+        
+        return capability == TeslaCapabilities.CAPABILITY_CONSUMER;
+    }
+    
+    /**
+     * Checks if a capability is for the Tesla producer.
+     * 
+     * @param capability The capability to check.
+     * @return Whether or not the capability is for the Tesla producer.
+     */
+    public static boolean isProducerCapability (Capability<?> capability) {
+        
+        return capability == TeslaCapabilities.CAPABILITY_PRODUCER;
+    }
+    
+    /**
+     * Checks if a capability is a Tesla capability
+     * 
+     * @param capability The capability to check.
+     * @return Whether or not the capability is a Tesla capability.
+     */
+    public static boolean isTeslaCapability (Capability<?> capability) {
+        
+        return isHolderCapability(capability) || isConsumerCapability(capability) || isProducerCapability(capability);
+    }
+    
+    /**
+     * Generates tooltip data for an ItemStack that has the ITeslaHolder interface.
+     * Additionally, if the holder is a BaseTeslaContainer, input/output rates will be shown.
+     * 
+     * @param stack The ItemStack to make the tooltip for.
+     * @param tooltip A list of strings which represent the lines of the tooltip.
+     */
+    @SideOnly(Side.CLIENT)
+    public static void createTooltip (ItemStack stack, List<String> tooltip) {
+        
+        if (isTeslaHolder(stack, EnumFacing.DOWN)) {
+            
+            final KeyBinding keyBindSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak;
+            final ITeslaHolder holder = TeslaUtils.getTeslaHolder(stack, EnumFacing.DOWN);
+            
+            if (GameSettings.isKeyDown(keyBindSneak)) {
+                
+                addHolderInfo(holder, tooltip);
+                
+                if (holder instanceof BaseTeslaContainer) {
+                    
+                    final BaseTeslaContainer container = (BaseTeslaContainer) holder;
+                    tooltip.add(ChatFormatting.DARK_AQUA + I18n.format("tooltip.tesla.input", Long.toString(container.getInputRate())));
+                    tooltip.add(ChatFormatting.DARK_AQUA + I18n.format("tooltip.tesla.output", Long.toString(container.getOutputRate())));
+                }
+            }
+            
+            else
+                tooltip.add(I18n.format("tooltip.tesla.showinfo", ChatFormatting.DARK_AQUA, keyBindSneak.getDisplayName(), ChatFormatting.GRAY));
+        }
+    }
+    
+    /**
+     * Adds Tesla holder info to a tooltip.
+     * 
+     * @param stack The ItemStack to display info for.
+     * @param tooltip The tooltip to add the info to.
+     */
+    @SideOnly(Side.CLIENT)
+    public static void addHolderInfo (ItemStack stack, List<String> tooltip) {
+        
+        if (isTeslaHolder(stack, EnumFacing.DOWN))
+            addHolderInfo(getTeslaHolder(stack, EnumFacing.DOWN), tooltip);
+    }
+    
+    /**
+     * Adds Tesla holder info to a tooltip.
+     * 
+     * @param holder The ITeslaHolder to display info for.
+     * @param tooltip The tooltip to add the info to.
+     */
+    @SideOnly(Side.CLIENT)
+    public static void addHolderInfo (ITeslaHolder holder, List<String> tooltip) {
+        
+        addHolderInfo(holder.getStoredPower(), holder.getCapacity(), tooltip);
+    }
+    
+    /**
+     * Adds Tesla holder info to a tooltip.
+     * 
+     * @param stored The amount of stored power.
+     * @param capacity The max capacity.
+     * @param tooltip The tooltip to add the info to.
+     */
+    @SideOnly(Side.CLIENT)
+    public static void addHolderInfo (long stored, long capacity, List<String> tooltip) {
+        
+        tooltip.add(ChatFormatting.DARK_AQUA + I18n.format("tooltip.tesla.powerinfo", Long.toString(stored), Long.toString(capacity)));
     }
 }

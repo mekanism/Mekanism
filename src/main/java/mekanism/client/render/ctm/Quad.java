@@ -484,6 +484,12 @@ public class Quad
         private boolean applyDiffuseLighting;
         
         @Override
+        public void setTexture(TextureAtlasSprite sprite) 
+        {
+        	//TODO ignore for now
+        }
+        
+        @Override
         public void setQuadTint(int tint)
         {
         	quadTint = tint;

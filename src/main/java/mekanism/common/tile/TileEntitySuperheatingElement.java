@@ -38,7 +38,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
 		
 		super.setMultiblock(id);
 		
-		if(packet && !worldObj.isRemote)
+		if(packet && !world.isRemote)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}
@@ -47,7 +47,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			boolean newHot = false;
 			
@@ -58,7 +58,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
 			
 			if(prevHot != newHot)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 				
 				prevHot = newHot;
 			}

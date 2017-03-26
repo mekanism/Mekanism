@@ -116,7 +116,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 				}
 			}
 
-			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			ItemStack stack = mc.player.inventory.getItemStack();
 
 			if(stack != null && stack.getItem() instanceof ItemConfigurator && hovering != null)
 			{
@@ -158,7 +158,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY)
 	{
-		return isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);
+		return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
 	}
 
 	@Override

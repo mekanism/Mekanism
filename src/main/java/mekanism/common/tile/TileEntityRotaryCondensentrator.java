@@ -97,7 +97,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -106,12 +106,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, getPos());
+					MekanismUtils.updateBlock(world, getPos());
 				}
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -280,7 +280,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}

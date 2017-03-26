@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import java.util.List;
 import java.util.Random;
 
 import mekanism.api.energy.IEnergizedItem;
@@ -36,9 +35,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -107,7 +108,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(!world.isRemote)
 		{
@@ -124,7 +125,7 @@ public class BlockEnergyCube extends BlockContainer
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		int side = MathHelper.floor_double((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int side = MathHelper.floor((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(placer.rotationPitch);
 		int change = 3;
 
@@ -164,7 +165,7 @@ public class BlockEnergyCube extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(EnergyCubeTier tier : EnergyCubeTier.values())
 		{
@@ -187,7 +188,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -195,6 +196,7 @@ public class BlockEnergyCube extends BlockContainer
 		}
 
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
+		ItemStack stack = entityplayer.getHeldItem(hand);
 
 		if(stack != null)
 		{
@@ -213,13 +215,13 @@ public class BlockEnergyCube extends BlockContainer
 	
 					if(MekanismUtils.isBCWrench(tool))
 	                {
-	                    ((IToolWrench)tool).wrenchUsed(entityplayer, pos);
+						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
 	                }
 	
 					int change = tileEntity.facing.rotateAround(side.getAxis()).ordinal();
 	
 					tileEntity.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this);
+					world.notifyNeighborsOfStateChange(pos, this, true);
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -259,7 +261,7 @@ public class BlockEnergyCube extends BlockContainer
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return world.setBlockToAir(pos);
@@ -340,7 +342,7 @@ public class BlockEnergyCube extends BlockContainer
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;

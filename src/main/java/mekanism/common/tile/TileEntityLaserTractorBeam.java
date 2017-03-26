@@ -62,12 +62,12 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(on)
 			{
-				RayTraceResult mop = LaserManager.fireLaserClient(this, facing, lastFired, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, worldObj);
+				RayTraceResult mop = LaserManager.fireLaserClient(this, facing, lastFired, world);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -77,9 +77,9 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 				if(hitCoord != null)
 				{
-					IBlockState blockHit = hitCoord.getBlockState(worldObj);
-					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
+					IBlockState blockHit = hitCoord.getBlockState(world);
+					TileEntity tileHit = hitCoord.getTileEntity(world);
+					float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 					
 					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))))
 					{
@@ -106,8 +106,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				LaserInfo info = LaserManager.fireLaser(this, facing, firing, worldObj);
-				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, worldObj);
+				LaserInfo info = LaserManager.fireLaser(this, facing, firing, world);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -117,9 +117,9 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 				if(hitCoord != null)
 				{
-					IBlockState blockHit = hitCoord.getBlockState(worldObj);
-					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos());
+					IBlockState blockHit = hitCoord.getBlockState(world);
+					TileEntity tileHit = hitCoord.getTileEntity(world);
+					float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 					
 					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))))
 					{
@@ -127,7 +127,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 						if(diggingProgress >= hardness * general.laserEnergyNeededPerHardness)
 						{
-							List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, worldObj);
+							List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, world);
 							if(drops != null) receiveDrops(drops);
 							diggingProgress = 0;
 						}
@@ -167,27 +167,30 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 					inventory[i] = drop;
 					continue outer;
 				}
+				
 				ItemStack slot = inventory[i];
+				
 				if(StackUtils.equalsWildcardWithNBT(slot, drop))
 				{
-					int change = Math.min(drop.stackSize, slot.getMaxStackSize() - slot.stackSize);
-					slot.stackSize += change;
-					drop.stackSize -= change;
-					if(drop.stackSize <= 0) continue outer;
+					int change = Math.min(drop.getCount(), slot.getMaxStackSize() - slot.getCount());
+					slot.grow(change);
+					drop.shrink(change);
+					if(drop.getCount() <= 0) continue outer;
 				}
 			}
+			
 			dropItem(drop);
 		}
 	}
 
 	public void dropItem(ItemStack stack)
 	{
-		EntityItem item = new EntityItem(worldObj, getPos().getX() + 0.5, getPos().getY() + 1, getPos().getZ() + 0.5, stack);
-		item.motionX = worldObj.rand.nextGaussian() * 0.05;
-		item.motionY = worldObj.rand.nextGaussian() * 0.05 + 0.2;
-		item.motionZ = worldObj.rand.nextGaussian() * 0.05;
+		EntityItem item = new EntityItem(world, getPos().getX() + 0.5, getPos().getY() + 1, getPos().getZ() + 0.5, stack);
+		item.motionX = world.rand.nextGaussian() * 0.05;
+		item.motionY = world.rand.nextGaussian() * 0.05 + 0.2;
+		item.motionZ = world.rand.nextGaussian() * 0.05;
 		item.setPickupDelay(10);
-		worldObj.spawnEntityInWorld(item);
+		world.spawnEntity(item);
 	}
 
 	@Override

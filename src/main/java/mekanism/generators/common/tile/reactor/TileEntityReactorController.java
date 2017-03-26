@@ -106,7 +106,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			updateSound();
 		}
@@ -115,7 +115,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			getReactor().simulate();
 			
-			if(!worldObj.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000))
+			if(!world.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000))
 			{
 				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				clientBurning = getReactor().isBurning();
@@ -268,7 +268,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 				if(getReactor() == null)
 				{
 					setReactor(new FusionReactor(this));
-					MekanismUtils.updateBlock(worldObj, getPos());
+					MekanismUtils.updateBlock(world, getPos());
 				}
 				
 				((FusionReactor)getReactor()).formed = true;
@@ -287,7 +287,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			else if(getReactor() != null)
 			{
 				setReactor(null);
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -409,7 +409,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.validate();
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			initSounds();
 		}

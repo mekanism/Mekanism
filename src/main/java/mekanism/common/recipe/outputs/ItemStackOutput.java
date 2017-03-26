@@ -1,5 +1,6 @@
 package mekanism.common.recipe.outputs;
 
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -17,7 +18,7 @@ public class ItemStackOutput extends MachineOutput<ItemStackOutput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		output = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("output"));
+		output = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("output"));
 	}
 
 	public boolean applyOutputs(ItemStack[] inventory, int index, boolean doEmit)
@@ -31,11 +32,11 @@ public class ItemStackOutput extends MachineOutput<ItemStackOutput>
 			
 			return true;
 		} 
-		else if(inventory[index].isItemEqual(output) && inventory[index].stackSize + output.stackSize <= inventory[index].getMaxStackSize())
+		else if(inventory[index].isItemEqual(output) && inventory[index].getCount() + output.getCount() <= inventory[index].getMaxStackSize())
 		{
 			if(doEmit)
 			{
-				inventory[index].stackSize += output.stackSize;
+				inventory[index].grow(output.getCount());
 			}
 			
 			return true;

@@ -3,6 +3,7 @@ package mekanism.common.recipe.inputs;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
@@ -29,7 +30,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		theSolid = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("itemInput"));
+		theSolid = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemInput"));
 		theFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("fluidInput"));
 		theGas = GasStack.readFromNBT(nbtTags.getCompoundTag("gasInput"));
 	}
@@ -65,7 +66,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	 */
 	public boolean containsType(ItemStack stack)
 	{
-		if(stack == null || stack.stackSize == 0)
+		if(stack == null || stack.getCount() == 0)
 		{
 			return false;
 		}
@@ -120,7 +121,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 			return false;
 		}
 
-		return input.theSolid.stackSize >= theSolid.stackSize && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
+		return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
 	}
 
 	@Override

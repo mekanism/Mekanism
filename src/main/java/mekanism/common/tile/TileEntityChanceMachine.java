@@ -51,7 +51,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(1, this);
 

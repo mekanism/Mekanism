@@ -327,7 +327,7 @@ public class GuiMModIDFilter extends GuiMekanism
 			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 			{
 				boolean doNull = false;
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 				ItemStack toUse = null;
 
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
@@ -337,7 +337,7 @@ public class GuiMModIDFilter extends GuiMekanism
 						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							toUse = stack.copy();
-							toUse.stackSize = 1;
+							toUse.setCount(1);
 						}
 					}
 				}

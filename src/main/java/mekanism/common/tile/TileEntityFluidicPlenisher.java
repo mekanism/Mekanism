@@ -87,7 +87,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(2, this);
 			
@@ -125,7 +125,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
-								worldObj.setBlockState(below.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
+								world.setBlockState(below.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 								
 								setEnergy(getEnergy() - energyPerTick);
 								fluidTank.drain(Fluid.BUCKET_VOLUME, true);
@@ -171,11 +171,11 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		for(Coord4D coord : activeNodes)
 		{
-			if(coord.exists(worldObj))
+			if(coord.exists(world))
 			{
 				if(canReplace(coord, true, false))
 				{
-					worldObj.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
+					world.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
 
 					fluidTank.drain(Fluid.BUCKET_VOLUME, true);
 				}
@@ -184,7 +184,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				{
 					Coord4D sideCoord = coord.offset(dir);
 					
-					if(sideCoord.exists(worldObj) && canReplace(sideCoord, true, true))
+					if(sideCoord.exists(world) && canReplace(sideCoord, true, true))
 					{
 						activeNodes.add(sideCoord);
 					}
@@ -212,17 +212,17 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			return false;
 		}
 		
-		if(coord.isAirBlock(worldObj) || MekanismUtils.isDeadFluid(worldObj, coord))
+		if(coord.isAirBlock(world) || MekanismUtils.isDeadFluid(world, coord))
 		{
 			return true;
 		}
 		
-		if(MekanismUtils.isFluid(worldObj, coord))
+		if(MekanismUtils.isFluid(world, coord))
 		{
 			return isPathfinding;
 		}
 		
-		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.getPos());
+		return coord.getBlock(world).isReplaceable(world, coord.getPos());
 	}
 	
 	@Override
@@ -482,7 +482,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		usedNodes.clear();
 		finishedCalc = false;
 		
-		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
+		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
 
 		return EnumActionResult.SUCCESS;
 	}

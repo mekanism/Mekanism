@@ -8,10 +8,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import ic2.api.info.ILocatable;
+
 /**
  * Interface implemented by the crop tile entity.
  */
-public interface ICropTile {
+public interface ICropTile extends ILocatable {
 	/**
 	 * Get the crop.
 	 *
@@ -91,14 +93,14 @@ public interface ICropTile {
 	 *
 	 * @return Crop nutrient storage
 	 */
-	public int getStorageNutrient();
+	public int getStorageNutrients();
 
 	/**
 	 * Set the crop's nutrient storage.
 	 *
-	 * @param storageNutrient Crop nutrient storage
+	 * @param nutrients Crop nutrient storage
 	 */
-	public void setStorageNutrient(int storageNutrient);
+	public void setStorageNutrients(int nutrients);
 
 	/**
 	 * Get the crop's hydration storage.
@@ -111,9 +113,9 @@ public interface ICropTile {
 	/**
 	 * Set the crop's water storage.
 	 *
-	 * @param storageWater Crop water storage
+	 * @param water Crop water storage
 	 */
-	public void setStorageWater(int storageWater);
+	public void setStorageWater(int water);
 
 	/**
 	 * Get the crop's Weed-Ex storage.
@@ -125,9 +127,9 @@ public interface ICropTile {
 	/**
 	 * Set the crop's Weed-Ex storage.
 	 *
-	 * @param storageWeedEX Crop Weed-Ex storage
+	 * @param weedEX Crop Weed-Ex storage
 	 */
-	public void setStorageWeedEX(int storageWeedEX);
+	public void setStorageWeedEX(int weedEX);
 
 	/**
 	 * Get the crop's plant scan level.
@@ -169,7 +171,7 @@ public interface ICropTile {
 	 *
 	 * @return Crop humidity level
 	 */
-	public int getHumidity();
+	public int getTerrainHumidity();
 
 	/**
 	 * Get the crop's nutrient level.
@@ -180,7 +182,7 @@ public interface ICropTile {
 	 *
 	 * @return Crop nutrient level
 	 */
-	public int getNutrients();
+	public int getTerrainNutrients();
 
 	/**
 	 * Get the crop's air quality.
@@ -191,20 +193,25 @@ public interface ICropTile {
 	 *
 	 * @return Crop air quality
 	 */
-	public int getAirQuality();
+	public int getTerrainAirQuality();
 
 	/**
 	 * Get the crop's world.
+	 * @deprecated This method causes a MethodNotFoundException in a obfuscated environment.
+	 * Use {@link #getWorldObj()} instead
 	 *
 	 * @return Crop world
 	 */
+	@Deprecated
 	public World getWorld();
 
 	/**
 	 * Get the crop's location.
+	 * @deprecated Use {@link #getPosition()} instead.
 	 *
 	 * @return Crop location
 	 */
+	@Deprecated
 	public BlockPos getLocation();
 
 	/**

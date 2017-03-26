@@ -1,6 +1,7 @@
 package mekanism.common.recipe.inputs;
 
 import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
@@ -19,7 +20,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		ingredient = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("input"));
+		ingredient = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 
 	public ItemStackInput wildCopy()
 	{
-		return new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.stackSize, OreDictionary.WILDCARD_VALUE));
+		return new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.getCount(), OreDictionary.WILDCARD_VALUE));
 	}
 
 	public boolean useItemStackFromInventory(ItemStack[] inventory, int index, boolean deplete)

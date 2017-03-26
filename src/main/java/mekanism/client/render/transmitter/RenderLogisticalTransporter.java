@@ -63,7 +63,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 		entityItem.hoverStart = 0;
 
 		entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
-		entityItem.worldObj = transporter.getWorld();
+		entityItem.world = transporter.getWorld();
 
 		for(TransporterStack stack : transporter.getTransmitter().transit.clone())
 		{
@@ -97,8 +97,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 
 		if(transporter instanceof PartDiversionTransporter)
 		{
-			EntityPlayer player = mc.thePlayer;
-			World world = mc.thePlayer.worldObj;
+			EntityPlayer player = mc.player;
+			World world = mc.player.world;
 			ItemStack itemStack = player.inventory.getCurrentItem();
 			RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 

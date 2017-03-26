@@ -52,7 +52,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(1, this);
 

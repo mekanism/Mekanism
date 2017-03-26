@@ -38,7 +38,7 @@ public class ItemMekanismHoe extends ItemMekanism
 	{
 		super();
 		toolMaterial = enumtoolmaterial;
-		maxStackSize = 1;
+		setMaxStackSize(1);
 		setMaxDamage(enumtoolmaterial.getMaxUses());
 		setCreativeTab(CreativeTabs.TOOLS);
 		speed = enumtoolmaterial.getDamageVsEntity() + 1.0F;
@@ -52,8 +52,10 @@ public class ItemMekanismHoe extends ItemMekanism
 
 	@Override
 	@SuppressWarnings("incomplete-switch")
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
+		ItemStack stack = playerIn.getHeldItem(hand);
+		
         if(!playerIn.canPlayerEdit(pos.offset(facing), facing, stack))
         {
             return EnumActionResult.FAIL;
@@ -109,8 +111,8 @@ public class ItemMekanismHoe extends ItemMekanism
 
         if(equipmentSlot == EntityEquipmentSlot.MAINHAND)
         {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", 0.0D, 0));
-            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double)(this.speed - 4.0F), 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", 0.0D, 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double)(this.speed - 4.0F), 0));
         }
 
         return multimap;

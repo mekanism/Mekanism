@@ -35,7 +35,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.yCoord-1)
 			{
@@ -43,7 +43,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 				{
 					for(EnumFacing side : EnumFacing.values())
 					{
-						TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+						TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
 						
 						if(tile != null && !(tile instanceof TileEntityBoilerValve) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 						{
@@ -68,7 +68,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			if(structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.yCoord-1)
 			{
@@ -124,7 +124,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.yCoord-1;
 		}
@@ -135,7 +135,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			return structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.yCoord-1;
 		}
@@ -146,7 +146,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			{
@@ -160,7 +160,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			{

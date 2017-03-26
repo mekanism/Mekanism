@@ -55,18 +55,18 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote && updateDelay > 0)
+		if(world.isRemote && updateDelay > 0)
 		{
 			updateDelay--;
 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -92,9 +92,9 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 					
 					if(burnTime > 0)
 					{
-						inventory[0].stackSize--;
+						inventory[0].shrink(1);
 						
-						if(inventory[0].stackSize == 0)
+						if(inventory[0].getCount() == 0)
 						{
 							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
 						}
@@ -160,7 +160,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -272,7 +272,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	@Override
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 		
 		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{

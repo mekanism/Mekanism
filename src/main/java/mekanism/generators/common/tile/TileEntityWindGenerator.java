@@ -35,7 +35,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(0, this);
 			
@@ -62,7 +62,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	{
 		super.handlePacketData(dataStream);
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			currentMultiplier = dataStream.readFloat();
 		}
@@ -81,7 +81,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
-		if(worldObj.canSeeSky(getPos().add(0, 4, 0))) 
+		if(world.canSeeSky(getPos().add(0, 4, 0))) 
 		{
 			final float minY = (float)generators.windGenerationMinY;
 			final float maxY = (float)generators.windGenerationMaxY;
@@ -146,21 +146,21 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	public void onPlace()
 	{
 		Coord4D current = Coord4D.get(this);
-		MekanismUtils.makeBoundingBlock(worldObj, getPos().offset(EnumFacing.UP, 1), current);
-		MekanismUtils.makeBoundingBlock(worldObj, getPos().offset(EnumFacing.UP, 2), current);
-		MekanismUtils.makeBoundingBlock(worldObj, getPos().offset(EnumFacing.UP, 3), current);
-		MekanismUtils.makeBoundingBlock(worldObj, getPos().offset(EnumFacing.UP, 4), current);
+		MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 1), current);
+		MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 2), current);
+		MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 3), current);
+		MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 4), current);
 	}
 
 	@Override
 	public void onBreak()
 	{
-		worldObj.setBlockToAir(getPos().add(0, 1, 0));
-		worldObj.setBlockToAir(getPos().add(0, 2, 0));
-		worldObj.setBlockToAir(getPos().add(0, 3, 0));
-		worldObj.setBlockToAir(getPos().add(0, 4, 0));
+		world.setBlockToAir(getPos().add(0, 1, 0));
+		world.setBlockToAir(getPos().add(0, 2, 0));
+		world.setBlockToAir(getPos().add(0, 3, 0));
+		world.setBlockToAir(getPos().add(0, 4, 0));
 
-		worldObj.setBlockToAir(getPos());
+		world.setBlockToAir(getPos());
 	}
 
 	@Override

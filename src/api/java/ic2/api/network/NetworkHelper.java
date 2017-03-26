@@ -20,6 +20,10 @@ import net.minecraftforge.fml.relauncher.Side;
  * which is needed by the clients outside the GUI, such as rendering the block, playing sounds or
  * producing effects. Anything which is only visible inside the GUI should be synchronized through
  * the Container class associated to the GUI in Container.updateProgressBar().
+ *
+ * All methods in this class use the current effective side to determine the Network Manager to use.
+ * If you do not want it to use the effective side, use {@link #getNetworkManager(Side)} to get the
+ * Network Manager for a specific side.
  */
 public final class NetworkHelper {
 	// server -> client
@@ -91,6 +95,15 @@ public final class NetworkHelper {
 	 */
 	public static void initiateItemEvent(EntityPlayer player, ItemStack stack, int event, boolean limitRange) {
 		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).initiateItemEvent(player, stack, event, limitRange);
+	}
+
+	/**
+	 * Send initial TileEntity data to the clients. Requires the te to implement
+	 * {@link INetworkDataProvider}.
+	 * @param te The te to send the initial data for.
+	 */
+	public static void sendInitialData(TileEntity te) {
+		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).sendInitialData(te);
 	}
 
 

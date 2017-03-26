@@ -146,7 +146,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
 			
-			if(tileEntity.frequency != null && tileEntity.owner != null && tileEntity.owner.equals(mc.thePlayer.getName()))
+			if(tileEntity.frequency != null && tileEntity.owner != null && tileEntity.owner.equals(mc.player.getName()))
 			{
 				if(xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79)
 				{
@@ -309,7 +309,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		if(tileEntity.frequency != null && tileEntity.owner != null && mc.thePlayer.getName().equals(tileEntity.owner))
+		if(tileEntity.frequency != null && tileEntity.owner != null && mc.player.getName().equals(tileEntity.owner))
 		{
 			drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
 			

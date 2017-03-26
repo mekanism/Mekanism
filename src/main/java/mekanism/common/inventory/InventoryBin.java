@@ -4,6 +4,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.Tier.BinTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,7 +23,7 @@ public class InventoryBin
 		if(getItemCount() > 0 && getItemType() != null)
 		{
 			ItemStack ret = getItemType().copy();
-			ret.stackSize = Math.min(getItemType().getMaxStackSize(), getItemCount());
+			ret.setCount(Math.min(getItemType().getMaxStackSize(), getItemCount()));
 
 			return ret;
 		}
@@ -41,7 +42,7 @@ public class InventoryBin
 
 		if(getTier() != BinTier.CREATIVE)
 		{
-			setItemCount(getItemCount() - stack.stackSize);
+			setItemCount(getItemCount() - stack.getCount());
 		}
 		
 		return stack.copy();
@@ -58,14 +59,14 @@ public class InventoryBin
 
 			if(getTier() != BinTier.CREATIVE)
 			{
-				if(getItemCount() + stack.stackSize <= getMaxStorage())
+				if(getItemCount() + stack.getCount() <= getMaxStorage())
 				{
-					setItemCount(getItemCount() + stack.stackSize);
+					setItemCount(getItemCount() + stack.getCount());
 					return null;
 				}
 				else {
 					ItemStack rejects = getItemType().copy();
-					rejects.stackSize = (getItemCount()+stack.stackSize) - getMaxStorage();
+					rejects.setCount((getItemCount()+stack.getCount()) - getMaxStorage());
 	
 					setItemCount(getMaxStorage());
 	
@@ -82,7 +83,7 @@ public class InventoryBin
 
 	public boolean isValid(ItemStack stack)
 	{
-		if(stack == null || stack.stackSize <= 0)
+		if(stack == null || stack.getCount() <= 0)
 		{
 			return false;
 		}
@@ -137,7 +138,7 @@ public class InventoryBin
 			return null;
 		}
 
-		return ItemStack.loadItemStackFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
+		return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
 	}
 
 	public void setItemType(ItemStack stack)

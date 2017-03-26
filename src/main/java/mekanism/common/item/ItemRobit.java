@@ -39,9 +39,10 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, BlockPos pos, EnumHand hand, EnumFacing side, float posX, float posY, float posZ)
+	public EnumActionResult onItemUse(EntityPlayer entityplayer, World world, BlockPos pos, EnumHand hand, EnumFacing side, float posX, float posY, float posZ)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
 
 		if(tileEntity instanceof TileEntityChargepad)
 		{
@@ -59,7 +60,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 					robit.setInventory(getInventory(itemstack));
 					robit.setCustomNameTag(getName(itemstack));
 
-					world.spawnEntityInWorld(robit);
+					world.spawnEntity(robit);
 				}
 
 				entityplayer.setHeldItem(hand, null);

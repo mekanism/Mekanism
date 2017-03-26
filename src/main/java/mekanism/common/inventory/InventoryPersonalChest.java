@@ -1,6 +1,7 @@
 package mekanism.common.inventory;
 
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -98,7 +99,7 @@ public class InventoryPersonalChest extends InventoryBasic
 
 				if(slotID >= 0 && slotID < getSizeInventory())
 				{
-					setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
+					setInventorySlotContents(slotID, InventoryUtils.loadFromNBT(tagCompound));
 				}
 			}
 		}

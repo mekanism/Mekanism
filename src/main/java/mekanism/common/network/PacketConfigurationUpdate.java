@@ -37,7 +37,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			@Override
 			public void run()
 			{
-				TileEntity tile = message.coord4D.getTileEntity(player.worldObj);
+				TileEntity tile = message.coord4D.getTileEntity(player.world);
 				ITileNetwork network = CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
 				
 				if(tile instanceof ISideConfiguration)

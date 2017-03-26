@@ -212,7 +212,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
-import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -289,7 +289,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand)
 	{
-		TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)entityplayer.worldObj.getTileEntity(pos);
+		TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)entityplayer.world.getTileEntity(pos);
 
 		if(id == 0)
 		{
@@ -856,7 +856,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void addHitEffects(Coord4D coord, RayTraceResult mop)
 	{
-		if(Minecraft.getMinecraft().theWorld != null)
+		if(Minecraft.getMinecraft().world != null)
 		{
 			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord.getPos(), mop);
 		}
@@ -1007,7 +1007,7 @@ public class ClientProxy extends CommonProxy
 		});
 		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new IRenderFactory<EntityBabySkeleton>() {
 			@Override
-			public Render<EntitySkeleton> createRenderFor(RenderManager manager)
+			public Render<AbstractSkeleton> createRenderFor(RenderManager manager)
 			{
 				return new RenderSkeleton(manager);
 			}
@@ -1114,20 +1114,20 @@ public class ClientProxy extends CommonProxy
 			return context.getServerHandler().playerEntity;
 		}
 		else {
-			return Minecraft.getMinecraft().thePlayer;
+			return Minecraft.getMinecraft().player;
 		}
 	}
 	
 	@Override
 	public void handlePacket(Runnable runnable, EntityPlayer player)
 	{
-		if(player == null || player.worldObj.isRemote)
+		if(player == null || player.world.isRemote)
 		{
 			Minecraft.getMinecraft().addScheduledTask(runnable);
 		}
-		else if(player != null && !player.worldObj.isRemote)
+		else if(player != null && !player.world.isRemote)
 		{
-			((WorldServer)player.worldObj).addScheduledTask(runnable); //singleplayer
+			((WorldServer)player.world).addScheduledTask(runnable); //singleplayer
 		}
 	}
 

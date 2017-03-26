@@ -72,7 +72,7 @@ public class GuiSecurityTab extends GuiElement
 		
 		int renderX = 26 + (18*mode.ordinal());
 
-		if(getOwner() != null && getOwner().equals(mc.thePlayer.getName()) &&
+		if(getOwner() != null && getOwner().equals(mc.player.getName()) &&
 				(data == null || !data.override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
@@ -99,7 +99,7 @@ public class GuiSecurityTab extends GuiElement
 		{
 			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
 			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
-			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getName(), getOwner());
+			String ownerText = SecurityUtils.getOwnerDisplay(mc.player.getName(), getOwner());
 			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 			
 			if(isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT))
@@ -120,7 +120,7 @@ public class GuiSecurityTab extends GuiElement
 		{
 			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
 			{
-				mc.thePlayer.closeScreen();
+				mc.player.closeScreen();
 				return null;
 			}
 			
@@ -140,7 +140,7 @@ public class GuiSecurityTab extends GuiElement
 		{
 			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
 			{
-				mc.thePlayer.closeScreen();
+				mc.player.closeScreen();
 				return SecurityMode.PUBLIC;
 			}
 			
@@ -157,7 +157,7 @@ public class GuiSecurityTab extends GuiElement
 		{
 			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
 			{
-				mc.thePlayer.closeScreen();
+				mc.player.closeScreen();
 				return null;
 			}
 			
@@ -170,7 +170,7 @@ public class GuiSecurityTab extends GuiElement
 	
 	private ItemStack getItem()
 	{
-		return mc.thePlayer.getHeldItem(currentHand);
+		return mc.player.getHeldItem(currentHand);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(button == 0 && general.allowProtection)
 		{
-			if(getOwner() != null && mc.thePlayer.getName().equals(getOwner()))
+			if(getOwner() != null && mc.player.getName().equals(getOwner()))
 			{
 				if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 				{

@@ -30,6 +30,17 @@ import cofh.api.energy.IEnergyReceiver;
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData
 {
 	@Override
+	public boolean isEmpty()
+	{
+		if(getInv() == null)
+		{
+			return true;
+		}
+		
+		return getInv().isEmpty();
+	}
+	
+	@Override
 	public int getSizeInventory()
 	{
 		if(getInv() == null)
@@ -124,14 +135,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(EntityPlayer entityplayer)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
 
-		return getInv().isUseableByPlayer(entityplayer);
+		return getInv().isUsableByPlayer(entityplayer);
 	}
 
 	@Override
@@ -381,15 +392,15 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 		
-		TileEntity tile = new Coord4D(mainPos, worldObj).getTileEntity(worldObj);
+		TileEntity tile = new Coord4D(mainPos, world).getTileEntity(world);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
-			worldObj.setBlockToAir(mainPos);
+			world.setBlockToAir(mainPos);
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainPos, worldObj).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)new Coord4D(mainPos, world).getTileEntity(world);
 	}
 
 	@Override

@@ -330,7 +330,7 @@ public class FusionReactor implements IFusionReactor
 		
 		for(Entity entity : entitiesToDie)
 		{
-			entity.attackEntityFrom(DamageSource.magic, 50000F);
+			entity.attackEntityFrom(DamageSource.MAGIC, 50000F);
 		}
 	}
 

@@ -10,6 +10,7 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.ITooltipCallback;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -56,7 +57,7 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof ThermalEvaporationRecipeWrapper)
 		{
@@ -68,11 +69,10 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 		fluidStacks.init(0, true, 7-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlay);
 		fluidStacks.init(1, false, 153-xOffset, 14-yOffset, 16, 58, tempRecipe.getOutput().output.amount, false, fluidOverlay);
 		
-		fluidStacks.set(0, recipeWrapper.getFluidInputs());
-		fluidStacks.set(1, recipeWrapper.getFluidOutputs());
+		fluidStacks.set(0, tempRecipe.recipeInput.ingredient);
+		fluidStacks.set(1, tempRecipe.recipeOutput.output);
 		
 		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-
 			@Override
 			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip) 
 			{

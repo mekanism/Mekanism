@@ -34,7 +34,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 					try {
 						if(message.isBlock)
 						{
-							TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)message.coord4D.getTileEntity(player.worldObj);
+							TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)message.coord4D.getTileEntity(player.world);
 							MekanismUtils.openPersonalChestGui((EntityPlayerMP)player, tileEntity, null, true);
 						}
 						else {

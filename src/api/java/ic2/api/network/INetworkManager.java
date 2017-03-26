@@ -25,4 +25,6 @@ public interface INetworkManager {
 
 	void initiateClientItemEvent(ItemStack stack, int event);
 
+	void sendInitialData(TileEntity te);
+
 }

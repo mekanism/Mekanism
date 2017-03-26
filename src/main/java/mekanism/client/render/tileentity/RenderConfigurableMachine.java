@@ -44,7 +44,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 	{
 		GlStateManager.pushMatrix();
 
-		EntityPlayer player = mc.thePlayer;
+		EntityPlayer player = mc.player;
 		ItemStack itemStack = player.inventory.getCurrentItem();
 		RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 

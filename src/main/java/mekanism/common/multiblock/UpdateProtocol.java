@@ -37,7 +37,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	public void loopThrough(Coord4D coord)
 	{
-		World worldObj = pointer.getWorld();
+		World world = pointer.getWorld();
 
 		int origX = coord.xCoord, origY = coord.yCoord, origZ = coord.zCoord;
 
@@ -323,7 +323,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	{
 		TileEntity tile = new Coord4D(pos, pointer.getWorld()).getTileEntity(pointer.getWorld());
 		
-		if(tile == null || !tile.hasWorldObj() || tile.isInvalid())
+		if(tile == null || !tile.hasWorld() || tile.isInvalid())
 		{
 			return false;
 		}

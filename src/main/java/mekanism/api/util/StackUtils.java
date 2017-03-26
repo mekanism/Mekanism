@@ -11,21 +11,21 @@ public final class StackUtils
 {
 	public static List<ItemStack> split(ItemStack stack)
 	{
-		if(stack == null || stack.stackSize == 0)
+		if(stack == null || stack.getCount() == 0)
 		{
 			return null;
 		}
 
 		List<ItemStack> ret = new ArrayList<ItemStack>();
 
-		if(stack.stackSize == 1)
+		if(stack.getCount() == 1)
 		{
 			ret.add(stack);
 			return ret;
 		}
 
-		int remain = stack.stackSize % 2;
-		int split = (int)((float)(stack.stackSize)/2F);
+		int remain = stack.getCount() % 2;
+		int split = (int)((float)(stack.getCount())/2F);
 
 		ret.add(size(stack, split+remain));
 		ret.add(size(stack, split));
@@ -145,7 +145,7 @@ public final class StackUtils
 		}
 
 		ItemStack ret = stack.copy();
-		ret.stackSize = size;
+		ret.setCount(size);
 		
 		return ret;
 	}
@@ -162,7 +162,7 @@ public final class StackUtils
 
 	public static int getSize(ItemStack stack)
 	{
-		return stack != null ? stack.stackSize : 0;
+		return stack != null ? stack.getCount() : 0;
 	}
 	
 	public static List<ItemStack> getMergeRejects(ItemStack[] orig, ItemStack[] toAdd)
@@ -213,7 +213,7 @@ public final class StackUtils
 			return orig;
 		}
 		
-		return StackUtils.size(orig, Math.min(orig.getMaxStackSize(), orig.stackSize+toAdd.stackSize));
+		return StackUtils.size(orig, Math.min(orig.getMaxStackSize(), orig.getCount()+toAdd.getCount()));
 	}
 	
 	public static ItemStack getMergeReject(ItemStack orig, ItemStack toAdd)
@@ -233,7 +233,7 @@ public final class StackUtils
 			return orig;
 		}
 		
-		int newSize = orig.stackSize+toAdd.stackSize;
+		int newSize = orig.getCount()+toAdd.getCount();
 		
 		if(newSize > orig.getMaxStackSize())
 		{

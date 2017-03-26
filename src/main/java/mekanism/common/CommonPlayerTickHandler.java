@@ -53,7 +53,7 @@ public class CommonPlayerTickHandler
 		
 		if(isFlamethrowerOn(player))
 		{
-			player.worldObj.spawnEntityInWorld(new EntityFlame(player));
+			player.world.spawnEntity(new EntityFlame(player));
 			
 			if(!player.capabilities.isCreativeMode)
 			{
@@ -144,13 +144,13 @@ public class CommonPlayerTickHandler
 	
 	public static boolean isOnGround(EntityPlayer player)
 	{
-		int x = MathHelper.floor_double(player.posX);
+		int x = MathHelper.floor(player.posX);
 		int y = (int)Math.round(player.posY - 1);
-		int z = MathHelper.floor_double(player.posZ);
+		int z = MathHelper.floor(player.posZ);
 
 		BlockPos pos = new BlockPos(x, y, z);
-		IBlockState s = player.worldObj.getBlockState(pos);
-		AxisAlignedBB box = s.getCollisionBoundingBox(player.worldObj, pos);
+		IBlockState s = player.world.getBlockState(pos);
+		AxisAlignedBB box = s.getCollisionBoundingBox(player.world, pos);
 		AxisAlignedBB playerBox = player.getCollisionBoundingBox();
 		
 		return box != null && playerBox != null && playerBox.offset(0, -0.01, 0).intersectsWith(box);
@@ -158,7 +158,7 @@ public class CommonPlayerTickHandler
 
 	public boolean isJetpackOn(EntityPlayer player)
 	{
-		ItemStack stack = player.inventory.armorInventory[2];
+		ItemStack stack = player.inventory.armorInventory.get(2);
 
 		if(stack != null && !player.capabilities.isCreativeMode)
 		{
@@ -194,8 +194,8 @@ public class CommonPlayerTickHandler
 
 	public static boolean isGasMaskOn(EntityPlayer player)
 	{
-		ItemStack tank = player.inventory.armorInventory[2];
-		ItemStack mask = player.inventory.armorInventory[3];
+		ItemStack tank = player.inventory.armorInventory.get(2);
+		ItemStack mask = player.inventory.armorInventory.get(3);
 
 		if(tank != null && mask != null)
 		{

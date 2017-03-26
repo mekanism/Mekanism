@@ -65,7 +65,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
@@ -88,7 +88,7 @@ public class BlockCardboardBox extends BlockContainer
 
 				if(data.block != null)
 				{
-					IBlockState newstate = data.block.onBlockPlaced(world, pos, side, hitX, hitY, hitZ, data.meta, entityplayer);
+					IBlockState newstate = data.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, entityplayer, hand);
 					data.meta = newstate.getBlock().getMetaFromState(newstate);
 				}
 
@@ -112,7 +112,7 @@ public class BlockCardboardBox extends BlockContainer
 
 				EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-				world.spawnEntityInWorld(entityItem);
+				world.spawnEntity(entityItem);
 			}
 		}
 
@@ -146,7 +146,7 @@ public class BlockCardboardBox extends BlockContainer
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;
@@ -182,7 +182,7 @@ public class BlockCardboardBox extends BlockContainer
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return world.setBlockToAir(pos);

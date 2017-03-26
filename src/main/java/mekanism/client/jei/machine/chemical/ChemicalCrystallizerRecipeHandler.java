@@ -22,13 +22,6 @@ public class ChemicalCrystallizerRecipeHandler implements IRecipeHandler<Chemica
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() 
-	{
-		return category.getUid();
-	}
-
-	@Nonnull
-	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull ChemicalCrystallizerRecipeWrapper recipe)
 	{
 		return recipe;

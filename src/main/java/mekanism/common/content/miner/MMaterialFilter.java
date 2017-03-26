@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.common.content.transporter.Finder.MaterialFinder;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -49,7 +50,7 @@ public class MMaterialFilter extends MinerFilter
 	{
 		super.read(nbtTags);
 		
-		materialItem = ItemStack.loadItemStackFromNBT(nbtTags);
+		materialItem = InventoryUtils.loadFromNBT(nbtTags);
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class MMaterialFilter extends MinerFilter
 		super.write(data);
 
 		data.add(MekanismUtils.getID(materialItem));
-		data.add(materialItem.stackSize);
+		data.add(materialItem.getCount());
 		data.add(materialItem.getItemDamage());
 	}
 
@@ -77,7 +78,7 @@ public class MMaterialFilter extends MinerFilter
 	{
 		int code = 1;
 		code = 31 * code + MekanismUtils.getID(materialItem);
-		code = 31 * code + materialItem.stackSize;
+		code = 31 * code + materialItem.getCount();
 		code = 31 * code + materialItem.getItemDamage();
 		return code;
 	}

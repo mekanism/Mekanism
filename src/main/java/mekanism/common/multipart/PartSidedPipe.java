@@ -784,7 +784,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 					sendDesc = true;
 
 					onModeChange(EnumFacing.getFront(hitSide.ordinal()));
-					player.addChatMessage(new TextComponentString("Connection type changed to " + connectionTypes[hitSide.ordinal()].toString()));
+					player.sendMessage(new TextComponentString("Connection type changed to " + connectionTypes[hitSide.ordinal()].toString()));
 
 					return EnumActionResult.SUCCESS;
 				}
@@ -848,7 +848,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 			refreshConnections();
 			notifyTileChange();
 
-			player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
+			player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
 		}
 		
 		return EnumActionResult.SUCCESS;

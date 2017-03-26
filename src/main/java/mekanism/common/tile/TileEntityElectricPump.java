@@ -97,7 +97,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(2, this);
 	
@@ -110,7 +110,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
@@ -149,9 +149,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		super.onUpdate();
 
-		if(!worldObj.isRemote && fluidTank.getFluid() != null)
+		if(!world.isRemote && fluidTank.getFluid() != null)
 		{
-			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
 
 			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN))
 			{
@@ -176,7 +176,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
 			Coord4D wrapper = Coord4D.get(this).offset(orientation);
-			FluidStack fluid = MekanismUtils.getFluid(worldObj, wrapper, hasFilter());
+			FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
 
 			if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 			{
@@ -188,7 +188,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					
 					if(shouldTake(fluid, wrapper))
 					{
-						worldObj.setBlockToAir(wrapper.getPos());
+						world.setBlockToAir(wrapper.getPos());
 					}
 				}
 
@@ -200,7 +200,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		//and then add the adjacent block to the recurring list
 		for(Coord4D wrapper : tempPumpList)
 		{
-			FluidStack fluid = MekanismUtils.getFluid(worldObj, wrapper, hasFilter());
+			FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
 
 			if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 			{
@@ -211,7 +211,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 					if(shouldTake(fluid, wrapper))
 					{
-						worldObj.setBlockToAir(wrapper.getPos());
+						world.setBlockToAir(wrapper.getPos());
 					}
 				}
 
@@ -225,7 +225,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 				if(Coord4D.get(this).distanceTo(side) <= general.maxPumpRange)
 				{
-					fluid = MekanismUtils.getFluid(worldObj, side, hasFilter());
+					fluid = MekanismUtils.getFluid(world, side, hasFilter());
 					
 					if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 					{
@@ -237,7 +237,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 							
 							if(shouldTake(fluid, side))
 							{
-								worldObj.setBlockToAir(side.getPos());
+								world.setBlockToAir(side.getPos());
 							}
 						}
 
@@ -514,7 +514,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		reset();
 
-		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
+		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
 
 		return EnumActionResult.SUCCESS;
 	}

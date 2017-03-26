@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ public abstract class MinerFilter
 		
 		if(nbtTags.hasKey("replaceStack"))
 		{
-			replaceStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("replaceStack"));
+			replaceStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("replaceStack"));
 		}
 	}
 

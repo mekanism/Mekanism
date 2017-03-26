@@ -41,7 +41,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(owner != null && frequency != null)
 			{
@@ -280,7 +280,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	{
 		super.invalidate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(frequency != null)
 			{
@@ -297,14 +297,14 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, getPos().up(), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(world, getPos().up(), Coord4D.get(this));
 	}
 
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlockToAir(getPos().up());
-		worldObj.setBlockToAir(getPos());
+		world.setBlockToAir(getPos().up());
+		world.setBlockToAir(getPos());
 	}
 	
 	@Override

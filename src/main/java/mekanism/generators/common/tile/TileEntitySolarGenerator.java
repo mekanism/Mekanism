@@ -60,11 +60,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(0, this);
 			
-			if(worldObj.isDaytime() && ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.getHasNoSky() && worldObj.canSeeSky(getPos().add(0, 4, 0)))
+			if(world.isDaytime() && ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.hasNoSky() && world.canSeeSky(getPos().add(0, 4, 0)))
 			{
 				seesSun = true;
 			}
@@ -85,7 +85,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeForCoords(getPos()).getBiomeClass() == BiomeDesert.class;
+		return world.provider.getBiomeForCoords(getPos()).getBiomeClass() == BiomeDesert.class;
 	}
 
 	@Override
@@ -124,9 +124,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			ret = GENERATION_RATE;
 
-			if(MekanismUtils.existsAndInstance(worldObj.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel"))
+			if(MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel"))
 			{
-				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
+				ret *= ((ISolarLevel)world.provider).getSolarEnergyMultiplier();
 			}
 
 			if(isDesert())

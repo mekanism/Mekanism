@@ -13,6 +13,7 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -142,7 +143,7 @@ public class TransporterStack
 		}
 
 		pathType = Path.values()[nbtTags.getInteger("pathType")];
-		itemStack = ItemStack.loadItemStackFromNBT(nbtTags);
+		itemStack = InventoryUtils.loadFromNBT(nbtTags);
 	}
 
 	public static TransporterStack readFromNBT(NBTTagCompound nbtTags)

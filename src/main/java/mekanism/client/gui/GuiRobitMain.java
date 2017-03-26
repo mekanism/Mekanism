@@ -95,7 +95,7 @@ public class GuiRobitMain extends GuiMekanism
 			}
 			else if(i == Keyboard.KEY_ESCAPE)
 			{
-				mc.thePlayer.closeScreen();
+				mc.player.closeScreen();
 			}
 
 			nameChangeField.textboxKeyTyped(c, i);
@@ -275,25 +275,25 @@ public class GuiRobitMain extends GuiMekanism
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 1, robit.getEntityId(), null));
-				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.getEntityId(), 0, 0);
+				mc.player.openGui(Mekanism.instance, 22, mc.world, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 2, robit.getEntityId(), null));
-				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.getEntityId(), 0, 0);
+				mc.player.openGui(Mekanism.instance, 23, mc.world, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 3, robit.getEntityId(), null));
-				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.getEntityId(), 0, 0);
+				mc.player.openGui(Mekanism.instance, 24, mc.world, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 4, robit.getEntityId(), null));
-				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.getEntityId(), 0, 0);
+				mc.player.openGui(Mekanism.instance, 25, mc.world, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 			{

@@ -43,7 +43,7 @@ public class ContainerNull extends Container
 	{
 		if(tileEntity != null)
 		{
-			return tileEntity.isUseableByPlayer(entityplayer);
+			return tileEntity.isUsableByPlayer(entityplayer);
 		}
 		
 		return true;

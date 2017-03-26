@@ -178,9 +178,9 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 			{
 				if(!player.capabilities.isCreativeMode)
 				{
-					stack.stackSize--;
+					stack.shrink(1);
 					
-					if(stack.stackSize == 0)
+					if(stack.getCount() == 0)
 					{
 						player.setHeldItem(hand, null);
 					}

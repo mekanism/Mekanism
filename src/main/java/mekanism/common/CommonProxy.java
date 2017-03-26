@@ -632,7 +632,7 @@ public class CommonProxy implements IGuiProvider
 			dummyPlayer = createNewPlayer(world);
 		} 
 		else {
-			dummyPlayer.get().worldObj = world;
+			dummyPlayer.get().world = world;
 		}
 
 		return dummyPlayer;
@@ -645,7 +645,7 @@ public class CommonProxy implements IGuiProvider
 			dummyPlayer = createNewPlayer(world, x, y, z);
 		} 
 		else {
-			dummyPlayer.get().worldObj = world;
+			dummyPlayer.get().world = world;
 			dummyPlayer.get().posX = x;
 			dummyPlayer.get().posY = y;
 			dummyPlayer.get().posZ = z;
@@ -663,7 +663,7 @@ public class CommonProxy implements IGuiProvider
 	{
 		if(player instanceof EntityPlayerMP)
 		{
-			((WorldServer)player.worldObj).addScheduledTask(runnable);
+			((WorldServer)player.world).addScheduledTask(runnable);
 		}
 	}
 	

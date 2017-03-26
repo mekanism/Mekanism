@@ -31,7 +31,7 @@ public class EntityBabySkeleton extends EntitySkeleton
     {
         dataManager.set(IS_CHILD, child);
 
-        if(worldObj != null && !worldObj.isRemote)
+        if(world != null && !world.isRemote)
         {
             IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
             iattributeinstance.removeModifier(babySpeedBoostModifier);

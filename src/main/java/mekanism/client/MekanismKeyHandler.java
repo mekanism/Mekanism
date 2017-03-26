@@ -75,7 +75,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 	{
 		if(kb == modeSwitchKey)
 		{
-			EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
+			EntityPlayer player = FMLClientHandler.instance().getClient().player;
 			ItemStack toolStack = player.inventory.getCurrentItem();
 
 			Item item = StackUtils.getItem(toolStack);
@@ -87,7 +87,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				int toSet = configurator.getState(toolStack).ordinal() < ConfiguratorMode.values().length-1 ? configurator.getState(toolStack).ordinal() + 1 : 0;
 				configurator.setState(toolStack, ConfiguratorMode.values()[toSet]);
 				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(EnumHand.MAIN_HAND, configurator.getState(toolStack)));
-				player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configureState") + ": " + configurator.getColor(configurator.getState(toolStack)) + configurator.getStateDisplay(configurator.getState(toolStack))));
+				player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configureState") + ": " + configurator.getColor(configurator.getState(toolStack)) + configurator.getStateDisplay(configurator.getState(toolStack))));
 			}
 			else if(player.isSneaking() && item instanceof ItemElectricBow)
 			{
@@ -95,7 +95,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 
 				bow.setFireState(toolStack, !bow.getFireState(toolStack));
 				Mekanism.packetHandler.sendToServer(new ElectricBowStateMessage(EnumHand.MAIN_HAND, bow.getFireState(toolStack)));
-				player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.fireMode") + ": " + (bow.getFireState(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(bow.getFireState(toolStack))));
+				player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.fireMode") + ": " + (bow.getFireState(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(bow.getFireState(toolStack))));
 			}
 			else if(player.isSneaking() && item instanceof ItemBlockMachine)
 			{
@@ -105,7 +105,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				{
 					machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
 					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(EnumHand.MAIN_HAND, machine.getBucketMode(toolStack)));
-					player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + (machine.getBucketMode(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(machine.getBucketMode(toolStack))));
+					player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + (machine.getBucketMode(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(machine.getBucketMode(toolStack))));
 				}
 			}
 			else if(player.isSneaking() && item instanceof ItemWalkieTalkie)
@@ -126,12 +126,12 @@ public class MekanismKeyHandler extends MekKeyHandler
 
                 flamethrower.incrementMode(toolStack);
                 Mekanism.packetHandler.sendToServer(new PacketFlamethrowerData.FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.MODE, EnumHand.MAIN_HAND, null, false));
-                player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.flamethrower.modeBump") + ": " + flamethrower.getMode(toolStack).getName()));
+                player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.flamethrower.modeBump") + ": " + flamethrower.getMode(toolStack).getName()));
             }
 		}
 		else if(kb == armorModeSwitchKey)
 		{
-			EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
+			EntityPlayer player = FMLClientHandler.instance().getClient().player;
 			ItemStack chestStack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 			Item chestItem = StackUtils.getItem(chestStack);
 

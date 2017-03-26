@@ -31,13 +31,13 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			boolean outputting = checkMode();
 			
 			if(outputting != prevOutputting)
 			{
-				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 			}
 			
 			prevOutputting = outputting;
@@ -52,7 +52,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	
 	public boolean checkMode()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			return prevOutputting;
 		}

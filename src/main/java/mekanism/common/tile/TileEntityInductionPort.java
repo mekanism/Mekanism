@@ -68,7 +68,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			register();
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null && mode)
 			{
@@ -114,9 +114,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public void register()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
 			if(registered != this)
 			{
@@ -136,9 +136,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public void deregister()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
@@ -170,7 +170,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			
 			if(prevMode != mode)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -455,11 +455,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			mode = !mode;
 			String modeText = " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
-			player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
+			player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
 			
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 			markDirty();

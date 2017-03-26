@@ -119,18 +119,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	{
 		super.onUpdate();
 
-		if(worldObj.isRemote && updateDelay > 0)
+		if(world.isRemote && updateDelay > 0)
 		{
 			updateDelay--;
 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -156,9 +156,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 						{
 							infuseStored.amount += infuse.stored;
 							infuseStored.type = infuse.type;
-							inventory[1].stackSize--;
+							inventory[1].shrink(1);
 
-							if(inventory[1].stackSize <= 0)
+							if(inventory[1].getCount() <= 0)
 							{
 								inventory[1] = null;
 							}
@@ -213,10 +213,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			return false;
 		}
 		
-		worldObj.setBlockToAir(getPos());
-		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
+		world.setBlockToAir(getPos());
+		world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 		
-		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
+		TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
 		RecipeType type = RecipeType.INFUSING;
 		
 		//Basic
@@ -419,7 +419,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}

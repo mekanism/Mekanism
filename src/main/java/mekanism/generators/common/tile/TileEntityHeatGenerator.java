@@ -65,7 +65,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(1, this);
 
@@ -91,10 +91,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
 							}
 							else {
-								inventory[0].stackSize--;
+								inventory[0].shrink(1);
 							}
 
-							if(inventory[0].stackSize == 0)
+							if(inventory[0].getCount() == 0)
 							{
 								inventory[0] = null;
 							}
@@ -203,7 +203,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			}
 		}
 
-		if(worldObj.provider.getDimension() == -1)
+		if(world.provider.getDimension() == -1)
 		{
 			netherBoost = generators.heatGenerationNether;
 		}
@@ -213,7 +213,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	
 	private boolean isLava(BlockPos pos)
 	{
-		return worldObj.getBlockState(pos).getBlock() == Blocks.LAVA;
+		return world.getBlockState(pos).getBlock() == Blocks.LAVA;
 	}
 
 	public int getFuel(ItemStack itemstack)
@@ -432,7 +432,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(canConnectHeat(side))
 		{
-			TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+			TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 			
 			if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 			{

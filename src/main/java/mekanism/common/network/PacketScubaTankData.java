@@ -29,9 +29,9 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 				Mekanism.gasmaskOn.remove(message.username);
 			}
 
-			if(!player.worldObj.isRemote)
+			if(!player.world.isRemote)
 			{
-				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimension());
+				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.world.provider.getDimension());
 			}
 		}
 		else if(message.packetType == ScubaTankPacket.MODE)

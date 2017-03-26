@@ -105,7 +105,7 @@ public final class TransporterUtils
 		entityItem.motionY = 0;
 		entityItem.motionZ = 0;
 
-		tileEntity.world().spawnEntityInWorld(entityItem);
+		tileEntity.world().spawnEntity(entityItem);
 	}
 
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)

@@ -45,7 +45,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null && isRendering)
 			{
@@ -67,7 +67,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		if(!player.isSneaking() && structure != null)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-			player.openGui(Mekanism.instance, 49, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
+			player.openGui(Mekanism.instance, 49, world, getPos().getX(), getPos().getY(), getPos().getZ());
 			
 			return true;
 		}
@@ -82,7 +82,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		
 		if(structure != null)
 		{
-			data.add(structure.getEnergy(worldObj));
+			data.add(structure.getEnergy(world));
 			data.add(structure.storageCap);
 			data.add(structure.transferCap);
 			data.add(structure.lastInput);
@@ -162,9 +162,9 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	@Override
 	public double getEnergy()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			return structure != null ? structure.getEnergy(worldObj) : 0;
+			return structure != null ? structure.getEnergy(world) : 0;
 		}
 		else {
 			return structure != null ? structure.clientEnergy : 0;
@@ -176,7 +176,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		if(structure != null)
 		{
-			structure.setEnergy(worldObj, Math.max(Math.min(energy, getMaxEnergy()), 0));
+			structure.setEnergy(world, Math.max(Math.min(energy, getMaxEnergy()), 0));
 			MekanismUtils.saveChunk(this);
 		}
 	}

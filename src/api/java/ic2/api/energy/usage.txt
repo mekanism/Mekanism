@@ -89,6 +89,10 @@ An energy conductor has to post the following events:
 
 Additionally the interface IEnergyConductor has to be implemented.
 
+-- general ---
+Optionally, you can implement the interface IColoredEnergyTile, which allows for some basic color-based
+connectivity. This can be used for IEnergyConductors, but is not limited to them.
+
 
 ------------------------------
 -- Energy Network Delegates --

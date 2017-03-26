@@ -97,7 +97,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(1, this);
 			
@@ -188,11 +188,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		
 		if(item.getInventory(inventory[2]) != null && !item.isInvalid(inventory[2]))
 		{
-			RecipeFormula itemFormula = new RecipeFormula(worldObj, item.getInventory(inventory[2]));
+			RecipeFormula itemFormula = new RecipeFormula(world, item.getInventory(inventory[2]));
 			
-			if(itemFormula.isValidFormula(worldObj))
+			if(itemFormula.isValidFormula(world))
 			{
-				if(formula != null && !formula.isFormulaEqual(worldObj, itemFormula))
+				if(formula != null && !formula.isFormulaEqual(world, itemFormula))
 				{
 					formula = itemFormula;
 					operatingTicks = 0;
@@ -217,7 +217,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	{
 		super.markDirty();
 		
-		if(worldObj != null && !worldObj.isRemote)
+		if(world != null && !world.isRemote)
 		{
 			if(formula == null)
 			{
@@ -226,11 +226,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 					dummyInv.setInventorySlotContents(i, inventory[27+i]);
 				}
 				
-				lastOutputStack = MekanismUtils.findMatchingRecipe(dummyInv, worldObj);
+				lastOutputStack = MekanismUtils.findMatchingRecipe(dummyInv, world);
 				isRecipe = lastOutputStack != null;
 			}
 			else {
-				isRecipe = formula.matches(worldObj, inventory, 27);
+				isRecipe = formula.matches(world, inventory, 27);
 				lastOutputStack = isRecipe ? formula.recipe.getRecipeOutput() : null;
 			}
 		}
@@ -255,14 +255,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				{
 					ItemStack stack = inventory[i];
 					
-					inventory[i].stackSize--;
+					inventory[i].shrink(1);
 					
-					if(inventory[i].stackSize == 0)
+					if(inventory[i].getCount() == 0)
 					{
 						inventory[i] = null;
 					}
 					
-					if(stack.stackSize == 0 && stack.getItem().hasContainerItem(stack))
+					if(stack.getCount() == 0 && stack.getItem().hasContainerItem(stack))
 					{
 						ItemStack container = stack.getItem().getContainerItem(stack);
 
@@ -305,7 +305,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		{
 			boolean canOperate = true;
 			
-			if(!formula.matches(worldObj, inventory, 27))
+			if(!formula.matches(world, inventory, 27))
 			{
 				canOperate = moveItemsToGrid();
 			}
@@ -328,7 +328,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		
 		for(int i = 27; i <= 35; i++)
 		{
-			if(formula.isIngredientInPos(worldObj, inventory[i], i-27))
+			if(formula.isIngredientInPos(world, inventory[i], i-27))
 			{
 				continue;
 			}
@@ -348,12 +348,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				
 				for(int j = 3; j <= 20; j++)
 				{
-					if(inventory[j] != null && formula.isIngredientInPos(worldObj, inventory[j], i-27))
+					if(inventory[j] != null && formula.isIngredientInPos(world, inventory[j], i-27))
 					{
 						inventory[i] = StackUtils.size(inventory[j], 1);
-						inventory[j].stackSize--;
+						inventory[j].shrink(1);
 						
-						if(inventory[j].stackSize == 0)
+						if(inventory[j].getCount() == 0)
 						{
 							inventory[j] = null;
 						}
@@ -384,7 +384,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	{
 		for(int i = 27; i <= 35; i++)
 		{
-			if(inventory[i] != null && (forcePush || (formula != null && !formula.isIngredientInPos(worldObj, inventory[i], i-27))))
+			if(inventory[i] != null && (forcePush || (formula != null && !formula.isIngredientInPos(world, inventory[i], i-27))))
 			{
 				inventory[i] = tryMoveToInput(inventory[i]);
 			}
@@ -421,14 +421,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				
 				return null;
 			}
-			else if(InventoryUtils.areItemsStackable(stack, inventory[i]) && inventory[i].stackSize < inventory[i].getMaxStackSize())
+			else if(InventoryUtils.areItemsStackable(stack, inventory[i]) && inventory[i].getCount() < inventory[i].getMaxStackSize())
 			{
-				int toUse = Math.min(stack.stackSize, inventory[i].getMaxStackSize()-inventory[i].stackSize);
+				int toUse = Math.min(stack.getCount(), inventory[i].getMaxStackSize()-inventory[i].getCount());
 				
-				inventory[i].stackSize += toUse;
-				stack.stackSize -= toUse;
+				inventory[i].grow(toUse);
+				stack.shrink(toUse);
 				
-				if(stack.stackSize == 0)
+				if(stack.getCount() == 0)
 				{
 					return null;
 				}
@@ -453,18 +453,18 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				
 				return true;
 			}
-			else if(InventoryUtils.areItemsStackable(stack, inventory[i]) && inventory[i].stackSize < inventory[i].getMaxStackSize())
+			else if(InventoryUtils.areItemsStackable(stack, inventory[i]) && inventory[i].getCount() < inventory[i].getMaxStackSize())
 			{
-				int toUse = Math.min(stack.stackSize, inventory[i].getMaxStackSize()-inventory[i].stackSize);
+				int toUse = Math.min(stack.getCount(), inventory[i].getMaxStackSize()-inventory[i].getCount());
 				
 				if(doMove)
 				{
-					inventory[i].stackSize += toUse;
+					inventory[i].grow(toUse);
 				}
 				
-				stack.stackSize -= toUse;
+				stack.shrink(toUse);
 				
-				if(stack.stackSize == 0)
+				if(stack.getCount() == 0)
 				{
 					return true;
 				}
@@ -482,9 +482,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			
 			if(item.getInventory(inventory[2]) == null)
 			{
-				RecipeFormula formula = new RecipeFormula(worldObj, inventory, 27);
+				RecipeFormula formula = new RecipeFormula(world, inventory, 27);
 				
-				if(formula.isValidFormula(worldObj))
+				if(formula.isValidFormula(world))
 				{
 					item.setInventory(inventory[2], formula.input);
 				}
@@ -529,7 +529,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				return true;
 			}
 			else {
-				return formula.isIngredient(worldObj, itemstack);
+				return formula.isIngredient(world, itemstack);
 			}
 		}
 		else if(slotID == 1)
@@ -624,7 +624,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 						}
 					}
 					
-					formula = new RecipeFormula(worldObj, inv);
+					formula = new RecipeFormula(world, inv);
 				}
 				else {
 					formula = null;

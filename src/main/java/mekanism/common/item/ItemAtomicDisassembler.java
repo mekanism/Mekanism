@@ -114,9 +114,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		super.onBlockStartBreak(itemstack, pos, player);
 
-		if(!player.worldObj.isRemote)
+		if(!player.world.isRemote)
 		{
-			IBlockState state = player.worldObj.getBlockState(pos);
+			IBlockState state = player.world.getBlockState(pos);
 			Block block = state.getBlock();
 			int meta = block.getMetaFromState(state);
 
@@ -126,7 +126,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			}
 
 			ItemStack stack = new ItemStack(block, 1, meta);
-			Coord4D orig = new Coord4D(pos, player.worldObj);
+			Coord4D orig = new Coord4D(pos, player.world);
 
 			List<String> names = MekanismUtils.getOreDictName(stack);
 
@@ -142,7 +142,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			if(getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode)
 			{
-				Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(pos, player.worldObj)).calc();
+				Set<Coord4D> found = new Finder(player.world, stack, new Coord4D(pos, player.world)).calc();
 
 				for(Coord4D coord : found)
 				{
@@ -151,13 +151,13 @@ public class ItemAtomicDisassembler extends ItemEnergized
 						continue;
 					}
 
-					Block block2 = coord.getBlock(player.worldObj);
+					Block block2 = coord.getBlock(player.world);
 
-					block2.onBlockDestroyedByPlayer(player.worldObj, coord.getPos(), state);
-					player.worldObj.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
-					player.worldObj.setBlockToAir(coord.getPos());
-					block2.breakBlock(player.worldObj, coord.getPos(), state);
-					block2.dropBlockAsItem(player.worldObj, coord.getPos(), state, 0);
+					block2.onBlockDestroyedByPlayer(player.world, coord.getPos(), state);
+					player.world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
+					player.world.setBlockToAir(coord.getPos());
+					block2.breakBlock(player.world, coord.getPos(), state);
+					block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
 
 					setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
 				}
@@ -174,20 +174,24 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
+		
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			toggleMode(itemstack);
-			entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
 		}
 
 		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(!player.isSneaking())
 		{
 			if(useHoe(stack, player, world, pos, side) == EnumActionResult.FAIL)
@@ -342,7 +346,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
         if(equipmentSlot == EntityEquipmentSlot.MAINHAND)
         {
-            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
         }
 
         return multimap;

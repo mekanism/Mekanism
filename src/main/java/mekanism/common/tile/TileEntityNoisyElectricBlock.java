@@ -113,7 +113,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	{
 		super.validate();
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			try {
 				soundURL = HolidayManager.filterSound(new ResourceLocation("mekanism", "tile." + soundPath));
@@ -133,7 +133,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			updateSound();
 		}

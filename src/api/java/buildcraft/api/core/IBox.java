@@ -14,6 +14,4 @@ public interface IBox extends IZone {
     BlockPos min();
 
     BlockPos max();
-
-    void createLaserData();
 }

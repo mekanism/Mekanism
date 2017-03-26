@@ -89,7 +89,7 @@ public class ContainerPersonalChest extends Container
 	{
 		if(isBlock)
 		{
-			return tileEntity.isUseableByPlayer(entityplayer);
+			return tileEntity.isUsableByPlayer(entityplayer);
 		}
 
 		return true;
@@ -118,7 +118,7 @@ public class ContainerPersonalChest extends Container
 				return null;
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
 				currentSlot.putStack((ItemStack)null);
 			}
@@ -126,12 +126,12 @@ public class ContainerPersonalChest extends Container
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
 				return null;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;

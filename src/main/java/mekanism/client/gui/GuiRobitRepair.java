@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
-import java.util.List;
 
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -24,6 +23,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -86,7 +86,7 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 			boolean flag = true;
 			String s = I18n.translateToLocalFormatted("container.repair.cost", repairContainer.maximumCost);
 
-			if(repairContainer.maximumCost >= 40 && !mc.thePlayer.capabilities.isCreativeMode)
+			if(repairContainer.maximumCost >= 40 && !mc.player.capabilities.isCreativeMode)
 			{
 				s = LangUtils.localize("container.repair.expensive");
 				k = 16736352;
@@ -132,7 +132,7 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 		if(itemNameField.textboxKeyTyped(c, i))
 		{
 			repairContainer.updateItemName(itemNameField.getText());
-			mc.thePlayer.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
+			mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
 		}
 		else {
 			super.keyTyped(c, i);
@@ -155,25 +155,25 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 0, robit.getEntityId(), null));
-				mc.thePlayer.openGui(Mekanism.instance, 21, mc.theWorld, robit.getEntityId(), 0, 0);
+				mc.player.openGui(Mekanism.instance, 21, mc.world, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 1, robit.getEntityId(), null));
-				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.getEntityId(), 0, 0);
+				mc.player.openGui(Mekanism.instance, 22, mc.world, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 2, robit.getEntityId(), null));
-				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.getEntityId(), 0, 0);
+				mc.player.openGui(Mekanism.instance, 23, mc.world, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 3, robit.getEntityId(), null));
-				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.getEntityId(), 0, 0);
+				mc.player.openGui(Mekanism.instance, 24, mc.world, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
@@ -254,7 +254,7 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 	}
 
 	@Override
-	public void updateCraftingInventory(Container container, List list)
+	public void updateCraftingInventory(Container container, NonNullList<ItemStack> list)
 	{
 		sendSlotContents(container, 0, container.getSlot(0).getStack());
 	}
@@ -270,7 +270,7 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 			if(itemstack != null)
 			{
 				repairContainer.updateItemName(itemNameField.getText());
-				mc.thePlayer.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
+				mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
 			}
 		}
 	}

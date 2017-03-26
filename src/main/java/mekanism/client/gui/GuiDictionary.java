@@ -121,7 +121,7 @@ public class GuiDictionary extends GuiMekanism
 					if(stack != null)
 					{
 						itemType = stack.copy();
-						itemType.stackSize = 1;
+						itemType.setCount(1);
 
 						scrollList.setText(MekanismUtils.getOreDictName(itemType));
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -133,12 +133,12 @@ public class GuiDictionary extends GuiMekanism
 
 			if(xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					itemType = stack.copy();
-					itemType.stackSize = 1;
+					itemType.setCount(1);
 
 					scrollList.setText(MekanismUtils.getOreDictName(itemType));
 				}

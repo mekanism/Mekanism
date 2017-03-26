@@ -21,7 +21,7 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
 			@Override
 			public void run()
 			{
-				Entity entity = player.worldObj.getEntityByID(message.entityId);
+				Entity entity = player.world.getEntityByID(message.entityId);
 				
 				if(entity != null)
 				{

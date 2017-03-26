@@ -206,11 +206,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					
 					if(slot.getStack() == null || !slot.getStack().isItemEqual(stack))
 					{
-						drawGradientRect(guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition, guiWidth + slot.xDisplayPosition + 16, guiHeight + slot.yDisplayPosition + 16, -2137456640, -2137456640);
+						drawGradientRect(guiWidth + slot.xPos, guiHeight + slot.yPos, guiWidth + slot.xPos + 16, guiHeight + slot.yPos + 16, -2137456640, -2137456640);
 					}
 					
 					RenderHelper.enableGUIStandardItemLighting();
-					itemRender.renderItemAndEffectIntoGUI(stack, guiWidth + slot.xDisplayPosition, guiHeight + slot.yDisplayPosition);
+					itemRender.renderItemAndEffectIntoGUI(stack, guiWidth + slot.xPos, guiHeight + slot.yPos);
 					MekanismRenderer.resetColor();
 					GlStateManager.popMatrix();
 				}

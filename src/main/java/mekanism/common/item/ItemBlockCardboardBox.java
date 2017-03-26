@@ -72,8 +72,10 @@ public class ItemBlockCardboardBox extends ItemBlock
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(!player.isSneaking() && !world.isAirBlock(pos) && stack.getItemDamage() == 0)
 		{
 			IBlockState state = world.getBlockState(pos);
@@ -99,7 +101,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				if(!player.capabilities.isCreativeMode)
 				{
-					stack.stackSize--;
+					stack.shrink(1);
 				}
 
 				world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1), 3);

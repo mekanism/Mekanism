@@ -54,7 +54,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(structure != null && clientHasStructure && isRendering)
 			{
@@ -70,7 +70,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			{
 				for(ValveData data : valveViewing)
 				{
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(world);
 
 					if(tileEntity != null)
 					{
@@ -82,7 +82,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null)
 			{
@@ -144,7 +144,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			if(!BlockBasic.manageInventory(player, this, hand, stack))
 			{
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				player.openGui(Mekanism.instance, 18, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
+				player.openGui(Mekanism.instance, 18, world, getPos().getX(), getPos().getY(), getPos().getZ());
 			}
 			else {
 				player.inventory.markDirty();
@@ -260,7 +260,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 						
 						valveViewing.add(data);
 	
-						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(world);
 	
 						if(tileEntity != null)
 						{

@@ -241,7 +241,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
@@ -250,7 +250,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							filter.materialItem = stack.copy();
-							filter.materialItem.stackSize = 1;
+							filter.materialItem.setCount(1);
 						}
 					}
 				}

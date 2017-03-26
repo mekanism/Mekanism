@@ -68,7 +68,7 @@ public class LaserManager
 			
 			if(energy > 256)
 			{
-				e.attackEntityFrom(DamageSource.generic, (float)energy/1000F);
+				e.attackEntityFrom(DamageSource.GENERIC, (float)energy/1000F);
 			}
 		}
 		

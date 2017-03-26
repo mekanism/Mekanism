@@ -7,45 +7,53 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import mekanism.common.recipe.ShapedMekanismRecipe;
+import mezz.jei.api.IJeiHelpers;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IStackHelper;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
+import mezz.jei.util.BrokenCraftingRecipeException;
+import mezz.jei.util.ErrorUtil;
 import net.minecraft.item.ItemStack;
 
 public class ShapedMekanismRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper
 {
-	@Nonnull
+	private final IJeiHelpers jeiHelpers;
 	private final ShapedMekanismRecipe recipe;
 	
-	public ShapedMekanismRecipeWrapper(@Nonnull ShapedMekanismRecipe r) 
+	public ShapedMekanismRecipeWrapper(IJeiHelpers helpers, ShapedMekanismRecipe r) 
 	{
+		jeiHelpers = helpers;
 		recipe = r;
 		
-		for(Object input : this.recipe.getInput()) 
+		for(Object input : recipe.getInput()) 
 		{
 			if(input instanceof ItemStack) 
 			{
 				ItemStack itemStack = (ItemStack)input;
 				
-				if(itemStack.stackSize != 1) 
+				if(itemStack.getCount() != 1) 
 				{
-					itemStack.stackSize = 1;
+					itemStack.setCount(1);
 				}
 			}
 		}
 	}
-
-	@Nonnull
+	
 	@Override
-	public List getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return Arrays.asList(recipe.getInput());
-	}
+		IStackHelper stackHelper = jeiHelpers.getStackHelper();
+		ItemStack recipeOutput = recipe.getRecipeOutput();
 
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs() 
-	{
-		return Collections.singletonList(recipe.getRecipeOutput());
+		try {
+			List<List<ItemStack>> inputs = stackHelper.expandRecipeItemStackInputs(Arrays.asList(recipe.getInput()));
+			ingredients.setInputLists(ItemStack.class, inputs);
+			ingredients.setOutput(ItemStack.class, recipeOutput);
+		} catch (RuntimeException e) {
+			String info = ErrorUtil.getInfoFromBrokenCraftingRecipe(recipe, Arrays.asList(recipe.getInput()), recipeOutput);
+			throw new BrokenCraftingRecipeException(info, e);
+		}
 	}
 
 	@Override

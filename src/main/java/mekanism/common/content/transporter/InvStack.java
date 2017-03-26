@@ -33,13 +33,13 @@ public final class InvStack
 
 		for(ItemStack stack : itemStacks)
 		{
-			size += stack.stackSize;
+			size += stack.getCount();
 		}
 
 		if(!itemStacks.isEmpty())
 		{
 			ItemStack ret = itemStacks.get(0).copy();
-			ret.stackSize = size;
+			ret.setCount(size);
 
 			return ret;
 		}
@@ -59,16 +59,16 @@ public final class InvStack
 		{
 			ItemStack stack = itemStacks.get(i);
 
-			if(inventory.getStackInSlot(slotIDs.get(i)).stackSize == stack.stackSize && stack.stackSize <= amount)
+			if(inventory.getStackInSlot(slotIDs.get(i)).getCount() == stack.getCount() && stack.getCount() <= amount)
 			{
 				inventory.setInventorySlotContents(slotIDs.get(i), null);
-				amount -= stack.stackSize;
+				amount -= stack.getCount();
 			}
 			else {
 				ItemStack ret = stack.copy();
-				ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - Math.min(stack.stackSize, amount);
+				ret.setCount(inventory.getStackInSlot(slotIDs.get(i)).getCount() - Math.min(stack.getCount(), amount));
 				inventory.setInventorySlotContents(slotIDs.get(i), ret);
-				amount -= ret.stackSize;
+				amount -= ret.getCount();
 			}
 
 			if(amount == 0)
@@ -80,6 +80,6 @@ public final class InvStack
 
 	public void use()
 	{
-		use(getStack().stackSize);
+		use(getStack().getCount());
 	}
 }

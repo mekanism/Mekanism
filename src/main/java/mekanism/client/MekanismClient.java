@@ -30,10 +30,10 @@ public class MekanismClient extends Mekanism
 	{
 		boolean down = Minecraft.getMinecraft().currentScreen == null && key.isPressed();
 
-		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, type))
+		if(down != keyMap.has(Minecraft.getMinecraft().player, type))
 		{
 			Mekanism.packetHandler.sendToServer(new KeyMessage(type, down));
-			keyMap.update(Minecraft.getMinecraft().thePlayer, type, down);
+			keyMap.update(Minecraft.getMinecraft().player, type, down);
 		}
 	}
 

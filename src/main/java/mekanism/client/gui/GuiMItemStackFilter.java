@@ -275,7 +275,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
@@ -284,7 +284,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							filter.itemType = stack.copy();
-							filter.itemType.stackSize = 1;
+							filter.itemType.setCount(1);
 						}
 					}
 				}
@@ -299,7 +299,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 			{
 				boolean doNull = false;
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 				ItemStack toUse = null;
 
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
@@ -309,7 +309,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							toUse = stack.copy();
-							toUse.stackSize = 1;
+							toUse.setCount(1);
 						}
 					}
 				}

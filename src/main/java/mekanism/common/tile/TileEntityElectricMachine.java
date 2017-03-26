@@ -66,10 +66,10 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 			return false;
 		}
 		
-		worldObj.setBlockToAir(getPos());
-		worldObj.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
+		world.setBlockToAir(getPos());
+		world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 		
-		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(getPos());
+		TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
 		RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
 		
 		//Basic
@@ -128,7 +128,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(1, this);
 

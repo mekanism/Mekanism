@@ -45,7 +45,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 			@Override
 			public void run()
 			{
-				if(!player.worldObj.isRemote)
+				if(!player.world.isRemote)
 				{
 					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		
@@ -55,16 +55,16 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 					}
 				}
 				else {
-					if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityDigitalMiner)
+					if(message.coord4D.getTileEntity(player.world) instanceof TileEntityDigitalMiner)
 					{
 						try {
 							if(message.packetType == MinerGuiPacket.CLIENT)
 							{
-								FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+								FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), -1));
 							}
 							else if(message.packetType == MinerGuiPacket.CLIENT_INDEX)
 							{
-								FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+								FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), message.index));
 							}
 		
 							player.openContainer.windowId = message.windowId;

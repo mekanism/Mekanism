@@ -1,6 +1,7 @@
 package mekanism.common.content.matrix;
 
 import mekanism.common.multiblock.MultiblockCache;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -35,7 +36,7 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
 
 			if(slotID >= 0 && slotID < 2)
 			{
-				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+				inventory[slotID] = InventoryUtils.loadFromNBT(tagCompound);
 			}
 		}
 	}

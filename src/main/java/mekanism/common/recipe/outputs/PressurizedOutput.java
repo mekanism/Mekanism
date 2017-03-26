@@ -2,6 +2,7 @@ package mekanism.common.recipe.outputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -21,7 +22,7 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		itemOutput = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("itemOutput"));
+		itemOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemOutput"));
 		gasOutput = GasStack.readFromNBT(nbtTags.getCompoundTag("gasOutput"));
 	}
 
@@ -32,7 +33,7 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 
 	public boolean canAddProducts(ItemStack[] inventory, int index)
 	{
-		return inventory[index] == null || (inventory[index].isItemEqual(itemOutput) && inventory[index].stackSize + itemOutput.stackSize <= inventory[index].getMaxStackSize());
+		return inventory[index] == null || (inventory[index].isItemEqual(itemOutput) && inventory[index].getCount() + itemOutput.getCount() <= inventory[index].getMaxStackSize());
 	}
 
 	public void fillTank(GasTank tank)
@@ -48,7 +49,7 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 		}
 		else if(inventory[index].isItemEqual(itemOutput))
 		{
-			inventory[index].stackSize += itemOutput.stackSize;
+			inventory[index].grow(itemOutput.getCount());
 		}
 	}
 
