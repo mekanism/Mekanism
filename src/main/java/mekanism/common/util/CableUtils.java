@@ -1,8 +1,6 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
@@ -176,7 +174,7 @@ public final class CableUtils
 
 			if(energyToSend > 0)
 			{
-				List<EnumFacing> outputtingSides = new ArrayList<EnumFacing>();
+				List<EnumFacing> outputtingSides = new LinkedList<>();
 				boolean[] connectable = getConnections((TileEntity)emitter, emitter.getOutputtingSides());
 
 				for(EnumFacing side : emitter.getOutputtingSides())
@@ -187,7 +185,7 @@ public final class CableUtils
 					}
 				}
 
-				if(outputtingSides.size() > 0)
+				if(!outputtingSides.isEmpty())
 				{
 					double sent = 0;
 					boolean tryAgain = false;
@@ -214,10 +212,10 @@ public final class CableUtils
 		double splitSend = (totalToSend-remains)/outputtingSides.size();
 		double sent = 0;
 
-		List<EnumFacing> toRemove = new ArrayList<EnumFacing>();
-
-		for(EnumFacing side : outputtingSides)
+		for(Iterator<EnumFacing> it = outputtingSides.iterator(); it.hasNext();)
 		{
+			EnumFacing side = it.next();
+
 			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).offset(side).getTileEntity(((TileEntity)emitter).getWorld());
 			double toSend = splitSend+remains;
 			remains = 0;
@@ -227,13 +225,8 @@ public final class CableUtils
 
 			if(sent-prev == 0)
 			{
-				toRemove.add(side);
+				it.remove();
 			}
-		}
-
-		for(EnumFacing side : toRemove)
-		{
-			outputtingSides.remove(side);
 		}
 
 		return sent;

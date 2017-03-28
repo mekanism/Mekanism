@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -22,7 +23,7 @@ public final class MinerUtils
 
 		if(block == null || block.isAir(state, world, obj.getPos()))
 		{
-			return new ArrayList<ItemStack>();
+			return new LinkedList<>();
 		}
 
 		if(!silk)
@@ -30,7 +31,7 @@ public final class MinerUtils
 			return block.getDrops(world, obj.getPos(), state, 0);
 		}
 		else {
-			List<ItemStack> ret = new ArrayList<ItemStack>();
+			List<ItemStack> ret = new LinkedList<>();
 			ret.add(new ItemStack(block, 1, block.getMetaFromState(state)));
 
 			if(specialSilkIDs.contains(block) || (block.getDrops(world, obj.getPos(), state, 0) != null && block.getDrops(world, obj.getPos(), state, 0).size() > 0))
@@ -39,6 +40,6 @@ public final class MinerUtils
 			}
 		}
 
-		return new ArrayList<ItemStack>();
+		return new LinkedList<>();
 	}
 }

@@ -167,11 +167,7 @@ public final class MekanismUtils
 	public static void updateDonators()
 	{
 		Mekanism.donators.clear();
-
-		for(String s : getHTML("https://dl.dropbox.com/u/90411166/Donators/Mekanism.txt"))
-		{
-			Mekanism.donators.add(s);
-		}
+		Mekanism.donators.addAll(getHTML("https://dl.dropbox.com/u/90411166/Donators/Mekanism.txt"));
 	}
 
 	/**
