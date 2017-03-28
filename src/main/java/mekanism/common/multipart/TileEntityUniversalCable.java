@@ -3,7 +3,9 @@ package mekanism.common.multipart;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
+import io.netty.buffer.ByteBuf;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,15 +21,14 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -38,7 +39,7 @@ import cofh.api.energy.IEnergyReceiver;
 @InterfaceList({
 	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla")
 })
-public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, ITeslaConsumer
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, ITeslaConsumer
 {
 	public Tier.CableTier tier;
 
@@ -46,11 +47,17 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	public double lastWrite = 0;
 
 	public EnergyStack buffer = new EnergyStack(0);
-
-	public PartUniversalCable(Tier.CableTier cableTier)
+	
+	@Override
+	public BaseTier getBaseTier()
 	{
-		super();
-		tier = cableTier;
+		return tier.getBaseTier();
+	}
+	
+	@Override
+	public void setBaseTier(BaseTier baseTier)
+	{
+		tier = Tier.CableTier.get(baseTier);
 	}
 
 	@Override
@@ -173,7 +180,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public TransmitterType getTransmitterType()
 	{
-		return tier.type;
+		return TransmitterType.UNIVERSAL_CABLE;
 	}
 
 	@Override
@@ -196,12 +203,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		nbtTags.setInteger("tier", tier.ordinal());
 		
 		return nbtTags;
-	}
-
-	@Override
-	public ResourceLocation getType()
-	{
-		return new ResourceLocation("mekanism:universal_cable_" + tier.name().toLowerCase());
 	}
 
 	@Override
@@ -384,19 +385,21 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 	
 	@Override
-	public void readUpdatePacket(PacketBuffer packet)
+	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
-		tier = CableTier.values()[packet.readInt()];
+		tier = CableTier.values()[dataStream.readInt()];
 		
-		super.readUpdatePacket(packet);
+		super.handlePacketData(dataStream);
 	}
 
 	@Override
-	public void writeUpdatePacket(PacketBuffer packet)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		packet.writeInt(tier.ordinal());
+		data.add(tier.ordinal());
 		
-		super.writeUpdatePacket(packet);
+		super.getNetworkedData(data);
+		
+		return data;
 	}
 
 	@Override

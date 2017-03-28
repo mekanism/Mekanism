@@ -60,6 +60,13 @@ import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.multipart.TileEntityDiversionTransporter;
+import mekanism.common.multipart.TileEntityLogisticalTransporter;
+import mekanism.common.multipart.TileEntityMechanicalPipe;
+import mekanism.common.multipart.TileEntityPressurizedTube;
+import mekanism.common.multipart.TileEntityRestrictiveTransporter;
+import mekanism.common.multipart.TileEntityThermodynamicConductor;
+import mekanism.common.multipart.TileEntityUniversalCable;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -183,6 +190,15 @@ public class CommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk");
 		GameRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter");
 		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
+		
+		//transmitters
+		GameRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe");
+		GameRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable");
+		GameRegistry.registerTileEntity(TileEntityThermodynamicConductor.class, "ThermodynamicConductor");
+		GameRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter");
+		GameRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube");
+		GameRegistry.registerTileEntity(TileEntityDiversionTransporter.class, "DiversionTransporter");
+		GameRegistry.registerTileEntity(TileEntityRestrictiveTransporter.class, "RestrictiveTransporter");
 	}
 	
 	public void handleTeleporterUpdate(PortableTeleporterMessage message) {}

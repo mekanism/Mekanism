@@ -1,5 +1,8 @@
 package mekanism.common.multipart;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.transmitters.TransmissionType;
@@ -11,12 +14,11 @@ import mekanism.common.Tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -25,7 +27,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
 {
 	public Tier.PipeTier tier;
 	
@@ -35,13 +37,25 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 
 	public FluidStack lastWrite;
 
-	public PartMechanicalPipe(Tier.PipeTier pipeTier)
+	public TileEntityMechanicalPipe(Tier.PipeTier pipeTier)
 	{
 		super();
 		tier = pipeTier;
 		buffer.setCapacity(getCapacity());
 	}
+	
+	@Override
+	public BaseTier getBaseTier()
+	{
+		return tier.getBaseTier();
+	}
 
+	@Override
+	public void setBaseTier(BaseTier baseTier)
+	{
+		tier = Tier.PipeTier.get(baseTier);
+	}
+	
 	@Override
 	public void update()
 	{
@@ -107,7 +121,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public void onUnloaded()
+	public void onChunkUnload()
 	{
 		if(!getWorld().isRemote && getTransmitter().hasTransmitterNetwork())
 		{
@@ -122,7 +136,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 			}
 		}
 
-		super.onUnloaded();
+		super.onChunkUnload();
 	}
 
 	@Override
@@ -161,12 +175,6 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 
 	@Override
-	public ResourceLocation getType()
-	{
-		return new ResourceLocation("mekanism:mechanical_pipe_" + tier.name().toLowerCase());
-	}
-
-	@Override
 	public TransmissionType getTransmissionType()
 	{
 		return TransmissionType.FLUID;
@@ -175,7 +183,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@Override
 	public TransmitterType getTransmitterType()
 	{ 
-		return tier.type; 
+		return TransmitterType.MECHANICAL_PIPE; 
 	}
 
 	@Override
@@ -310,19 +318,21 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	}
 	
 	@Override
-	public void readUpdatePacket(PacketBuffer packet)
+	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
-		tier = PipeTier.values()[packet.readInt()];
+		tier = PipeTier.values()[dataStream.readInt()];
 		
-		super.readUpdatePacket(packet);
+		super.handlePacketData(dataStream);
 	}
 
 	@Override
-	public void writeUpdatePacket(PacketBuffer packet)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		packet.writeInt(tier.ordinal());
+		data.add(tier.ordinal());
 		
-		super.writeUpdatePacket(packet);
+		super.getNetworkedData(data);
+		
+		return data;
 	}
 	
 	@Override

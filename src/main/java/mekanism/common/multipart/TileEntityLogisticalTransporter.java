@@ -8,7 +8,6 @@ import java.util.Collection;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
-import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.InventoryNetwork;
@@ -22,9 +21,11 @@ import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,39 +37,38 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork>
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInventory, InventoryNetwork>
 {
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
 
 	public int pullDelay = 0;
-
-	public PartLogisticalTransporter(TransporterTier transporterTier)
+	
+	public TileEntityLogisticalTransporter()
 	{
-		this();
-		tier = transporterTier;
+		transmitterDelegate = new TransporterImpl(this);
 	}
-
-	public PartLogisticalTransporter()
-	{
-		transmitterDelegate = new MultipartTransporter(this);
-	}
-
+	
 	@Override
-	public ResourceLocation getType()
+	public BaseTier getBaseTier()
 	{
-		return new ResourceLocation("mekanism:logistical_transporter_" + tier.name().toLowerCase());
+		return tier.getBaseTier();
+	}
+	
+	@Override
+	public void setBaseTier(BaseTier baseTier)
+	{
+		tier = Tier.TransporterTier.get(baseTier);
 	}
 
 	@Override
 	public TransmitterType getTransmitterType()
 	{
-		return tier.type;
+		return TransmitterType.LOGISTICAL_TRANSPORTER;
 	}
 
 	@Override
@@ -188,6 +188,8 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
+		tier = TransporterTier.values()[dataStream.readInt()];
+		
 		super.handlePacketData(dataStream);
 		
 		if(getWorld().isRemote)
@@ -210,7 +212,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	
 				if(prev != getTransmitter().getColor())
 				{
-					markRenderUpdate();
+					MekanismUtils.updateBlock(world, pos);
 				}
 	
 				getTransmitter().transit.clear();
@@ -248,6 +250,8 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
+		data.add(tier.ordinal());
+		
 		super.getNetworkedData(data);
 		
 		data.add(0);
@@ -344,7 +348,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side)
 	{
 		TransporterUtils.incrementColor(getTransmitter());
-		onPartChanged(this);
+		onPartChanged(null);
 		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld())));
 		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
@@ -374,9 +378,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public void onRemoved()
+	public void onChunkUnload()
 	{
-		super.onRemoved();
+		super.onChunkUnload();
 
 		if(!getWorld().isRemote)
 		{
@@ -406,9 +410,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
     public void updateShare() {}
 
 	@Override
-	public MultipartTransporter getTransmitter()
+	public TransporterImpl getTransmitter()
 	{
-		return (MultipartTransporter)transmitterDelegate;
+		return (TransporterImpl)transmitterDelegate;
 	}
 
 	public double getCost()
@@ -436,22 +440,6 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	public IBlockState getExtendedState(IBlockState state)
 	{
 		return ((IExtendedBlockState)super.getExtendedState(state)).withProperty(ColorProperty.INSTANCE, new ColorProperty(getRenderColor()));
-	}
-	
-	@Override
-	public void readUpdatePacket(PacketBuffer packet)
-	{
-		tier = TransporterTier.values()[packet.readInt()];
-		
-		super.readUpdatePacket(packet);
-	}
-
-	@Override
-	public void writeUpdatePacket(PacketBuffer packet)
-	{
-		packet.writeInt(tier.ordinal());
-		
-		super.writeUpdatePacket(packet);
 	}
 
 	@Override

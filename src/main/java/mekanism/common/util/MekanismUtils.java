@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import mcmultipart.multipart.Multipart;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -53,6 +52,8 @@ import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
+import mekanism.common.multipart.ItemBlockTransmitter;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -91,7 +92,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
 
 /**
@@ -348,6 +348,15 @@ public final class MekanismUtils
 		ItemStack stack = new ItemStack(MekanismBlocks.MachineBlock2, 1, 11);
 		ItemBlockMachine itemMachine = (ItemBlockMachine)stack.getItem();
 		itemMachine.setBaseTier(stack, tier.getBaseTier());
+		
+		return stack;
+	}
+	
+	public static ItemStack getTransmitter(TransmitterType type, BaseTier tier, int amount)
+	{
+		ItemStack stack = new ItemStack(MekanismBlocks.Transmitter, amount, type.ordinal());
+		ItemBlockTransmitter itemTransmitter = (ItemBlockTransmitter)stack.getItem();
+		itemTransmitter.setBaseTier(stack, tier);
 		
 		return stack;
 	}
@@ -786,7 +795,7 @@ public final class MekanismUtils
 	{
 		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).renderUpdate())
 		{
-			world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
+			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
 
 		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).lightUpdate() && client.machineEffects)
@@ -988,16 +997,6 @@ public final class MekanismUtils
 		}
 
 		tileEntity.getWorld().markChunkDirty(tileEntity.getPos(), tileEntity);
-	}
-	
-	public static void saveChunk(Multipart multipart)
-	{
-		if(multipart == null || multipart.getWorld() == null)
-		{
-			return;
-		}
-
-		multipart.getWorld().markChunkDirty(multipart.getPos(), null);
 	}
 
 	/**

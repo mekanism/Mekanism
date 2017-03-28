@@ -10,8 +10,8 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.multipart.PartDiversionTransporter;
-import mekanism.common.multipart.PartLogisticalTransporter;
+import mekanism.common.multipart.TileEntityDiversionTransporter;
+import mekanism.common.multipart.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogisticalTransporter>
+public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter>
 {
 	private ModelTransporterBox modelBox = new ModelTransporterBox();
 	
@@ -50,7 +50,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 	}
 	
 	@Override
-	public void renderMultipartAt(PartLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage)
+	public void renderTileEntityAt(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(client.opaqueTransmitters)
 		{
@@ -95,7 +95,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 			}
 		}
 
-		if(transporter instanceof PartDiversionTransporter)
+		if(transporter instanceof TileEntityDiversionTransporter)
 		{
 			EntityPlayer player = mc.player;
 			World world = mc.player.world;
@@ -108,7 +108,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 
 				if(obj.equals(new Coord4D(transporter.getPos(), transporter.getWorld())))
 				{
-					int mode = ((PartDiversionTransporter)transporter).modes[pos.sideHit.ordinal()];
+					int mode = ((TileEntityDiversionTransporter)transporter).modes[pos.sideHit.ordinal()];
 
 					pushTransporter();
 

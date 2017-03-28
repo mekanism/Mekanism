@@ -1,5 +1,8 @@
 package mekanism.common.multipart;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.gas.Gas;
@@ -14,14 +17,13 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
+public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {
 	public Tier.TubeTier tier = Tier.TubeTier.BASIC;
 	
@@ -31,11 +33,23 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 
 	public GasStack lastWrite;
 	
-	public PartPressurizedTube(Tier.TubeTier tubeTier)
+	public TileEntityPressurizedTube(Tier.TubeTier tubeTier)
 	{
 		super();
 		tier = tubeTier;
 		buffer.setMaxGas(getCapacity());
+	}
+	
+	@Override
+	public BaseTier getBaseTier()
+	{
+		return tier.getBaseTier();
+	}
+	
+	@Override
+	public void setBaseTier(BaseTier baseTier)
+	{
+		tier = Tier.TubeTier.get(baseTier);
 	}
 
 	@Override
@@ -112,7 +126,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	}
 
 	@Override
-	public void onUnloaded()
+	public void onChunkUnload()
 	{
 		if(!getWorld().isRemote && getTransmitter().hasTransmitterNetwork())
 		{
@@ -127,7 +141,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 			}
 		}
 
-		super.onUnloaded();
+		super.onChunkUnload();
 	}
 
 	@Override
@@ -163,12 +177,6 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
         nbtTags.setInteger("tier", tier.ordinal());
         
         return nbtTags;
-	}
-
-	@Override
-	public ResourceLocation getType()
-	{
-		return new ResourceLocation("mekanism:pressurized_tube_" + tier.name().toLowerCase());
 	}
 
 	@Override
@@ -293,19 +301,21 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	}
 	
 	@Override
-	public void readUpdatePacket(PacketBuffer packet)
+	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
-		tier = TubeTier.values()[packet.readInt()];
+		tier = TubeTier.values()[dataStream.readInt()];
 		
-		super.readUpdatePacket(packet);
+		super.handlePacketData(dataStream);
 	}
 
 	@Override
-	public void writeUpdatePacket(PacketBuffer packet)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		packet.writeInt(tier.ordinal());
+		data.add(tier.ordinal());
 		
-		super.writeUpdatePacket(packet);
+		super.getNetworkedData(data);
+		
+		return data;
 	}
 	
 	@Override

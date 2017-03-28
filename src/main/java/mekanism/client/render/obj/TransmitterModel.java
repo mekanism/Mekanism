@@ -14,8 +14,8 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.common.multipart.ColorProperty;
 import mekanism.common.multipart.ConnectionProperty;
-import mekanism.common.multipart.PartSidedPipe;
-import mekanism.common.multipart.PartSidedPipe.ConnectionType;
+import mekanism.common.multipart.TileEntitySidedPipe;
+import mekanism.common.multipart.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -237,7 +237,7 @@ public class TransmitterModel extends OBJBakedModelBase
 	
 	public byte getIconStatus(EnumFacing side, ConnectionProperty connection)
 	{
-		ConnectionType type = PartSidedPipe.getConnectionType(side, connection.connectionByte, connection.transmitterConnections, connection.connectionTypes);
+		ConnectionType type = TileEntitySidedPipe.getConnectionType(side, connection.connectionByte, connection.transmitterConnections, connection.connectionTypes);
 
 		if(type == ConnectionType.NONE)
 		{

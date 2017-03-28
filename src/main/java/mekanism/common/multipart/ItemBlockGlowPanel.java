@@ -1,14 +1,20 @@
 package mekanism.common.multipart;
 
-import mcmultipart.item.ItemMultiPart;
-import mcmultipart.multipart.IMultipart;
+import java.util.ArrayList;
+
+import mcmultipart.api.multipart.IMultipart;
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IMetaItem;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -17,31 +23,50 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
-public class ItemGlowPanel extends ItemMultiPart implements IMetaItem
+public class ItemBlockGlowPanel extends ItemBlock
 {
-	public ItemGlowPanel()
+	public Block metaBlock;
+	
+	public ItemBlockGlowPanel(Block block)
 	{
-		super();
+		super(block);
+		metaBlock = block;
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
+	
 	@Override
-	public IMultipart createPart(World world, BlockPos pos, EnumFacing orientation, Vec3d vHit, ItemStack item, EntityPlayer player)
+	public int getMetadata(int i)
 	{
-		EnumColor col = EnumColor.DYES[item.getItemDamage()];
+		return i;
+	}
+	
+	@Override
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	{
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
 
-		if(pos != null && orientation != null)
+		if(place)
 		{
-			BlockPos pos1 = pos.offset(orientation);
+			TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+			EnumColor col = EnumColor.DYES[stack.getItemDamage()];
 			
-			if(world.isSideSolid(pos1, orientation.getOpposite()))
+			BlockPos pos1 = pos.offset(side);
+			
+			if(world.isSideSolid(pos1, side.getOpposite()))
 			{
-				return new PartGlowPanel(col, orientation);
+				tileEntity.setOrientation(side);
+			}
+			
+			tileEntity.setColour(col);
+			
+			if(!world.isRemote)
+			{
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
 			}
 		}
 
-		return null;
+		return place;
 	}
 
 	@Override
@@ -79,17 +104,5 @@ public class ItemGlowPanel extends ItemMultiPart implements IMetaItem
 	public boolean shouldRotateAroundWhenRendering()
 	{
 		return true;
-	}
-
-	@Override
-	public String getTexture(int meta)
-	{
-		return "glow_panel";
-	}
-
-	@Override
-	public int getVariants()
-	{
-		return EnumColor.DYES.length;
 	}
 }

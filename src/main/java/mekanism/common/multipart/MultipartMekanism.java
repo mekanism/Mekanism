@@ -2,166 +2,110 @@ package mekanism.common.multipart;
 
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
-import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.IPartFactory;
-import mcmultipart.multipart.Multipart;
-import mcmultipart.multipart.MultipartRegistry;
+
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import mcmultipart.api.addon.IMCMPAddon;
+import mcmultipart.api.addon.MCMPAddon;
+import mcmultipart.api.capability.MCMPCapabilities;
+import mcmultipart.api.multipart.IMultipartRegistry;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class MultipartMekanism implements IPartFactory
+import org.apache.commons.lang3.tuple.Pair;
+
+@MCMPAddon
+public class MultipartMekanism implements IMCMPAddon
 {
 	public MultipartMekanism()
 	{
-		init();
+		MinecraftForge.EVENT_BUS.register(this);
 	}
+	
+	@SubscribeEvent
+	public void onAttachTile(AttachCapabilitiesEvent<TileEntity> event)
+	{
+		TileEntity tile = event.getObject();
+		
+		if(tile instanceof TileEntitySidedPipe)
+		{
+			register(event, "sided_pipe");
+		}
+		else if(tile instanceof TileEntityGlowPanel)
+		{
+			register(event, "glow_panel");
+		}
+	}
+	
+	@Override
+	public void registerParts(IMultipartRegistry registry) 
+	{
+		registry.registerPartWrapper(MekanismBlocks.Transmitter, new MultipartTransmitter());
+		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.Transmitter), s -> true, MekanismBlocks.Transmitter);
+		registry.registerPartWrapper(MekanismBlocks.GlowPanel, new MultipartGlowPanel());
+		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);
+    }
+	
+	private void register(AttachCapabilitiesEvent<TileEntity> e, String id)
+	{
+        e.addCapability(new ResourceLocation("mekanism:" + id), new ICapabilityProvider() {
+            private MultipartTile tile;
+
+            @Override
+            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) 
+            {
+                return capability == MCMPCapabilities.MULTIPART_TILE;
+            }
+
+            @Nullable
+            @Override
+            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) 
+            {
+                if(capability == MCMPCapabilities.MULTIPART_TILE)
+                {
+                    if(tile == null)
+                    {
+                        tile = new MultipartTile(e.getObject());
+                    }
+
+                    return MCMPCapabilities.MULTIPART_TILE.cast(tile);
+                }
+
+                return null;
+            }
+        });
+    }
 
 	public void init()
 	{
-		MultipartRegistry.registerPartFactory(this, "mekanism:universal_cable_basic",
-				"mekanism:universal_cable_advanced", "mekanism:universal_cable_elite",
-				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
-				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
-				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
-				"mekanism:pressurized_tube_basic", "mekanism:pressurized_tube_advanced",
-				"mekanism:pressurized_tube_elite", "mekanism:pressurized_tube_ultimate",
-				"mekanism:logistical_transporter_basic", "mekanism:logistical_transporter_advanced", 
-				"mekanism:logistical_transporter_elite", "mekanism:logistical_transporter_ultimate", 
-				"mekanism:restrictive_transporter", "mekanism:diversion_transporter", 
-				"mekanism:thermodynamic_conductor_basic", "mekanism:thermodynamic_conductor_advanced",
-				"mekanism:thermodynamic_conductor_elite", "mekanism:thermodynamic_conductor_ultimate",
-				"mekanism:glow_panel");
-
 		registerMicroMaterials();
-	}
-
-	@Override
-	public IMultipart createPart(ResourceLocation resource, boolean client)
-	{
-		String name = resource.toString();
-		
-		if(name.equals("mekanism:universal_cable"))
-		{
-			return new PartUniversalCable(Tier.CableTier.BASIC);
-		}
-		else if(name.equals("mekanism:universal_cable_basic"))
-		{
-			return new PartUniversalCable(Tier.CableTier.BASIC);
-		}
-		else if(name.equals("mekanism:universal_cable_advanced"))
-		{
-			return new PartUniversalCable(Tier.CableTier.ADVANCED);
-		}
-		else if(name.equals("mekanism:universal_cable_elite"))
-		{
-			return new PartUniversalCable(Tier.CableTier.ELITE);
-		}
-		else if(name.equals("mekanism:universal_cable_ultimate"))
-		{
-			return new PartUniversalCable(Tier.CableTier.ULTIMATE);
-		}
-		else if(name.equals("mekanism:mechanical_pipe"))
-		{
-			return new PartMechanicalPipe(Tier.PipeTier.BASIC);
-		}
-		else if(name.equals("mekanism:mechanical_pipe_basic"))
-		{
-			return new PartMechanicalPipe(Tier.PipeTier.BASIC);
-		}
-		else if(name.equals("mekanism:mechanical_pipe_advanced"))
-		{
-			return new PartMechanicalPipe(Tier.PipeTier.ADVANCED);
-		}
-		else if(name.equals("mekanism:mechanical_pipe_elite"))
-		{
-			return new PartMechanicalPipe(Tier.PipeTier.ELITE);
-		}
-		else if(name.equals("mekanism:mechanical_pipe_ultimate"))
-		{
-			return new PartMechanicalPipe(Tier.PipeTier.ULTIMATE);
-		}
-		else if(name.equals("mekanism:pressurized_tube_basic") || name.equals("mekanism:pressurized_tube"))
-		{
-			return new PartPressurizedTube(Tier.TubeTier.BASIC);
-		}
-		else if(name.equals("mekanism:pressurized_tube_advanced"))
-		{
-			return new PartPressurizedTube(Tier.TubeTier.ADVANCED);
-		}
-		else if(name.equals("mekanism:pressurized_tube_elite"))
-		{
-			return new PartPressurizedTube(Tier.TubeTier.ELITE);
-		}
-		else if(name.equals("mekanism:pressurized_tube_ultimate"))
-		{
-			return new PartPressurizedTube(Tier.TubeTier.ULTIMATE);
-		}
-		else if(name.equals("mekanism:logistical_transporter_basic") || name.equals("mekanism:logistical_transporter"))
-		{
-			return new PartLogisticalTransporter(Tier.TransporterTier.BASIC);
-		}
-		else if(name.equals("mekanism:logistical_transporter_advanced"))
-		{
-			return new PartLogisticalTransporter(Tier.TransporterTier.ADVANCED);
-		}
-		else if(name.equals("mekanism:logistical_transporter_elite"))
-		{
-			return new PartLogisticalTransporter(Tier.TransporterTier.ELITE);
-		}
-		else if(name.equals("mekanism:logistical_transporter_ultimate"))
-		{
-			return new PartLogisticalTransporter(Tier.TransporterTier.ULTIMATE);
-		}
-		else if(name.equals("mekanism:restrictive_transporter"))
-		{
-			return new PartRestrictiveTransporter();
-		}
-		else if(name.equals("mekanism:diversion_transporter"))
-		{
-			return new PartDiversionTransporter();
-		}
-		else if(name.equals("mekanism:thermodynamic_conductor_basic"))
-		{
-			return new PartThermodynamicConductor(Tier.ConductorTier.BASIC);
-		}
-		else if(name.equals("mekanism:thermodynamic_conductor_advanced"))
-		{
-			return new PartThermodynamicConductor(Tier.ConductorTier.ADVANCED);
-		}
-		else if(name.equals("mekanism:thermodynamic_conductor_elite"))
-		{
-			return new PartThermodynamicConductor(Tier.ConductorTier.ELITE);
-		}
-		else if(name.equals("mekanism:thermodynamic_conductor_ultimate"))
-		{
-			return new PartThermodynamicConductor(Tier.ConductorTier.ULTIMATE);
-		}
-		else if(name.equals("mekanism:glow_panel"))
-		{
-			return new PartGlowPanel();
-		}
-
-		return null;
 	}
 
 	public void registerMicroMaterials()
 	{
 		for(int i = 0; i < 16; i++)
 		{
-//			MicroblockRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.PlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.PlasticBlock, i));
-//			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.GlowPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.GlowPlasticBlock, i));
-//			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.SlickPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.SlickPlasticBlock, i));
-//			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.ReinforcedPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.ReinforcedPlasticBlock, i));
-//			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.RoadPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.RoadPlasticBlock, i));
-
 			FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock, 1, i));
 			
 			if(!MachineType.get(MACHINE_BLOCK_1, i).hasModel)
@@ -177,24 +121,6 @@ public class MultipartMekanism implements IPartFactory
 		
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock2, 1, 0));
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.CardboardBox));
-	}
-	
-	public static void dropItem(ItemStack stack, Multipart multipart)
-	{
-		EntityItem item = new EntityItem(multipart.getWorld(), multipart.getPos().getX()+0.5, multipart.getPos().getY()+0.5, multipart.getPos().getZ()+0.5, stack);
-        item.motionX = multipart.getWorld().rand.nextGaussian() * 0.05;
-        item.motionY = multipart.getWorld().rand.nextGaussian() * 0.05 + 0.2;
-        item.motionZ = multipart.getWorld().rand.nextGaussian() * 0.05;
-        item.setDefaultPickupDelay();
-        multipart.getWorld().spawnEntity(item);
-	}
-	
-	public static void dropItems(Multipart multipart)
-	{
-		for(ItemStack stack : multipart.getDrops())
-		{
-			dropItem(stack, multipart);
-		}
 	}
 	
 	public static AxisAlignedBB rotate(AxisAlignedBB aabb, EnumFacing side) 
@@ -224,5 +150,101 @@ public class MultipartMekanism implements IPartFactory
         }
         
         return null;
+    }
+    
+    /* taken from MCMP */
+    public static Pair<Vec3d, Vec3d> getRayTraceVectors(EntityPlayer player) 
+    {
+        float pitch = player.rotationPitch;
+        float yaw = player.rotationYaw;
+        Vec3d start = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+        float f1 = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
+        float f2 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
+        float f3 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f4 = MathHelper.sin(-pitch * 0.017453292F);
+        float f5 = f2 * f3;
+        float f6 = f1 * f3;
+        double d3 = 5.0D;
+        
+        if(player instanceof EntityPlayerMP) 
+        {
+            d3 = ((EntityPlayerMP)player).interactionManager.getBlockReachDistance();
+        }
+        
+        Vec3d end = start.addVector(f5 * d3, f4 * d3, f6 * d3);
+        return Pair.of(start, end);
+    }
+    
+    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, Collection<AxisAlignedBB> boxes)
+    {
+        double minDistance = Double.POSITIVE_INFINITY;
+        AdvancedRayTraceResult hit = null;
+        int i = -1;
+
+        for(AxisAlignedBB aabb : boxes) 
+        {
+            AdvancedRayTraceResult result = aabb == null ? null : collisionRayTrace(pos, start, end, aabb, i, null);
+
+            if(result != null)
+            {
+                double d = result.squareDistanceTo(start);
+                
+                if(d < minDistance) 
+                {
+                    minDistance = d;
+                    hit = result;
+                }
+            }
+
+            i++;
+        }
+
+        return hit;
+    }
+    
+    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB bounds, int subHit, Object hitInfo)
+    {
+        RayTraceResult result = bounds.offset(pos).calculateIntercept(start, end);
+
+        if(result == null) 
+        {
+            return null;
+        }
+
+        result = new RayTraceResult(RayTraceResult.Type.BLOCK, result.hitVec, result.sideHit, pos);
+        result.subHit = subHit;
+        result.hitInfo = hitInfo;
+
+        return new AdvancedRayTraceResult(result, bounds);
+    }
+    
+    private static class AdvancedRayTraceResultBase<T extends RayTraceResult> 
+    {
+        public final AxisAlignedBB bounds;
+        public final T hit;
+
+        public AdvancedRayTraceResultBase(T mop, AxisAlignedBB aabb)
+        {
+            hit = mop;
+            bounds = aabb;
+        }
+
+        public boolean valid()
+        {
+            return hit != null && bounds != null;
+        }
+
+        public double squareDistanceTo(Vec3d vec) 
+        {
+            return hit.hitVec.squareDistanceTo(vec);
+        }
+    }
+
+    public static class AdvancedRayTraceResult extends AdvancedRayTraceResultBase<RayTraceResult> 
+    {
+        public AdvancedRayTraceResult(RayTraceResult mop, AxisAlignedBB bounds) 
+        {
+            super(mop, bounds);
+        }
     }
 }

@@ -9,6 +9,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -16,18 +17,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 
-public class PartDiversionTransporter extends PartLogisticalTransporter
+public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter
 {
 	public int[] modes = {0, 0, 0, 0, 0, 0};
-
-	@Override
-	public ResourceLocation getType()
-	{
-		return new ResourceLocation("mekanism:diversion_transporter");
-	}
 
 	@Override
 	public TransmitterType getTransmitterType()
@@ -127,7 +121,6 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		}
 
 		refreshConnections();
-		notifyPartUpdate();
 		notifyTileChange();
 		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
 		Coord4D coord = new Coord4D(getPos(), getWorld());

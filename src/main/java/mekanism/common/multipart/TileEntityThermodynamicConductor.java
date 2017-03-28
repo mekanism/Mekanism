@@ -17,27 +17,32 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.HeatUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, HeatNetwork> implements IHeatTransfer
+public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork> implements IHeatTransfer
 {
-	public Tier.ConductorTier tier;
+	public Tier.ConductorTier tier = Tier.ConductorTier.BASIC;
 	
 	public double temperature = 0;
 	public double clientTemperature = 0;
 	public double heatToAbsorb = 0;
-
-	public PartThermodynamicConductor(Tier.ConductorTier conductorTier)
+	
+	@Override
+	public BaseTier getBaseTier()
 	{
-		super();
-		tier = conductorTier;
+		return tier.getBaseTier();
+	}
+	
+	@Override
+	public void setBaseTier(BaseTier baseTier)
+	{
+		tier = Tier.ConductorTier.get(baseTier);
 	}
 
 	@Override
@@ -73,7 +78,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	@Override
 	public TransmitterType getTransmitterType()
 	{
-		return tier.type;
+		return TransmitterType.THERMODYNAMIC_CONDUCTOR;
 	}
 
 	@Override
@@ -92,12 +97,6 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	public TransmissionType getTransmissionType()
 	{
 		return TransmissionType.HEAT;
-	}
-
-	@Override
-	public ResourceLocation getType()
-	{
-		return new ResourceLocation("mekanism:thermodynamic_conductor_" + tier.name().toLowerCase());
 	}
 
 	@Override
@@ -138,33 +137,25 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	}
 	
 	@Override
-	public void handlePacketData(ByteBuf dataStream) throws Exception 
+	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
+		tier = ConductorTier.values()[dataStream.readInt()];
+		
+		super.handlePacketData(dataStream);
+		
 		temperature = dataStream.readDouble();
 	}
 
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
+		data.add(tier.ordinal());
+		
+		super.getNetworkedData(data);
+		
 		data.add(temperature);
 		
 		return data;
-	}
-
-	@Override
-	public void writeUpdatePacket(PacketBuffer packet)
-	{
-		packet.writeInt(tier.ordinal());
-		
-		super.writeUpdatePacket(packet);
-	}
-
-	@Override
-	public void readUpdatePacket(PacketBuffer packet)
-	{
-		tier = ConductorTier.values()[packet.readInt()];
-		
-		super.readUpdatePacket(packet);
 	}
 
 	public ColourRGBA getBaseColour()

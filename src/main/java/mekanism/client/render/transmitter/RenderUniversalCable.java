@@ -3,14 +3,14 @@ package mekanism.client.render.transmitter;
 import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
-import mekanism.common.multipart.PartUniversalCable;
+import mekanism.common.multipart.TileEntityUniversalCable;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCable>
+public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable>
 {
 	public RenderUniversalCable()
 	{
@@ -18,7 +18,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCab
 	}
 	
 	@Override
-	public void renderMultipartAt(PartUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage)
+	public void renderTileEntityAt(TileEntityUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(client.opaqueTransmitters || cable.currentPower == 0)
 		{
@@ -43,7 +43,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<PartUniversalCab
 		pop();
 	}
 	
-	public void renderEnergySide(VertexBuffer renderer, EnumFacing side, PartUniversalCable cable)
+	public void renderEnergySide(VertexBuffer renderer, EnumFacing side, TileEntityUniversalCable cable)
 	{
 		bindTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));

@@ -8,8 +8,8 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColourRGBA;
-import mekanism.common.multipart.PartMechanicalPipe;
-import mekanism.common.multipart.PartSidedPipe.ConnectionType;
+import mekanism.common.multipart.TileEntityMechanicalPipe;
+import mekanism.common.multipart.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPipe>
+public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe>
 {
 	private static HashMap<Integer, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<Integer, HashMap<Fluid, DisplayInteger[]>>();
 	
@@ -33,7 +33,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 	}
 	
 	@Override
-	public void renderMultipartAt(PartMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage)
+	public void renderTileEntityAt(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(client.opaqueTransmitters)
 		{
@@ -264,7 +264,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<PartMechanicalPi
 		return displays;
 	}
 	
-	public boolean renderFluidInOut(VertexBuffer renderer, EnumFacing side, PartMechanicalPipe pipe)
+	public boolean renderFluidInOut(VertexBuffer renderer, EnumFacing side, TileEntityMechanicalPipe pipe)
 	{
 		if(pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null)
 		{

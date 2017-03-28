@@ -20,20 +20,20 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 
-public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements IAlloyInteraction
+public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> extends TileEntitySidedPipe implements IAlloyInteraction
 {
-	public MultipartTransmitter<A, N> transmitterDelegate;
+	public TransmitterImpl<A, N> transmitterDelegate;
 
 	public boolean unloaded = true;
 	
 	public boolean dataRequest = false;
 
-	public PartTransmitter()
+	public TileEntityTransmitter()
 	{
-		transmitterDelegate = new MultipartTransmitter<>(this);
+		transmitterDelegate = new TransmitterImpl<>(this);
 	}
 
-	public MultipartTransmitter<A, N> getTransmitter()
+	public TransmitterImpl<A, N> getTransmitter()
 	{
 		return transmitterDelegate;
 	}
@@ -69,14 +69,14 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	}
 	
 	@Override
-	public void onUnloaded()
+	public void onChunkUnload()
 	{
 		if(!getWorld().isRemote)
 		{
 			getTransmitter().takeShare();
 		}
 		
-		super.onUnloaded();
+		super.onChunkUnload();
 	}
 	
 	@Override
@@ -158,9 +158,9 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 			
 			for(Object iter : array)
 			{
-				if(iter instanceof MultipartTransmitter)
+				if(iter instanceof TransmitterImpl)
 				{
-					PartTransmitter t = ((MultipartTransmitter)iter).containingPart;
+					TileEntityTransmitter t = ((TransmitterImpl)iter).containingTile;
 					
 					if(t.upgrade(tierOrdinal))
 					{

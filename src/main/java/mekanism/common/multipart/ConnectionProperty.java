@@ -2,7 +2,7 @@ package mekanism.common.multipart;
 
 import java.util.Arrays;
 
-import mekanism.common.multipart.PartSidedPipe.ConnectionType;
+import mekanism.common.multipart.TileEntitySidedPipe.ConnectionType;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class ConnectionProperty implements IUnlistedProperty<ConnectionProperty>

@@ -3,14 +3,14 @@ package mekanism.client.render.transmitter;
 import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
-import mekanism.common.multipart.PartPressurizedTube;
+import mekanism.common.multipart.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurizedTube>
+public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPressurizedTube>
 {
 	public RenderPressurizedTube()
 	{
@@ -18,7 +18,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurized
 	}
 	
 	@Override
-	public void renderMultipartAt(PartPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage)
+	public void renderTileEntityAt(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(client.opaqueTransmitters || !tube.getTransmitter().hasTransmitterNetwork() || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
 		{
@@ -44,7 +44,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<PartPressurized
 		pop();
 	}
 	
-	public void renderGasSide(VertexBuffer renderer, EnumFacing side, PartPressurizedTube tube)
+	public void renderGasSide(VertexBuffer renderer, EnumFacing side, TileEntityPressurizedTube tube)
 	{
 		bindTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(renderer, tube.getTransmitter().getTransmitterNetwork().refGas.getSprite(), getModelForSide(tube, side), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));

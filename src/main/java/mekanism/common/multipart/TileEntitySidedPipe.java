@@ -3,65 +3,51 @@ package mekanism.common.multipart;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import mcmultipart.MCMultiPartMod;
-import mcmultipart.block.TileMultipartContainer;
-import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.INormallyOccludingPart;
-import mcmultipart.multipart.Multipart;
-import mcmultipart.multipart.OcclusionHelper;
-import mcmultipart.raytrace.PartMOP;
-import mcmultipart.raytrace.RayTraceUtils;
-import mcmultipart.raytrace.RayTraceUtils.AdvancedRayTraceResultPart;
+import mcmultipart.api.multipart.IMultipart;
+import mcmultipart.api.multipart.OcclusionHelper;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.Range4D;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
-import mekanism.common.MekanismItems;
-import mekanism.common.Tier;
+import mekanism.common.Mekanism;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.multipart.TransmitterType.Size;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType.Size;
+import mekanism.common.multipart.MultipartMekanism.AdvancedRayTraceResult;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public abstract class PartSidedPipe extends Multipart implements INormallyOccludingPart, /*ISlotOccludingPart, ISidedHollowConnect, JIconHitEffects, INeighborTileChange,*/ ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
+import org.apache.commons.lang3.tuple.Pair;
+
+public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
-	public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
-	public static AxisAlignedBB[] largeSides = new AxisAlignedBB[7];
-
 	public int delayTicks;
 
 	public EnumFacing testingSide = null;
@@ -80,78 +66,6 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 	public TileEntity[] cachedAcceptors = new TileEntity[6];
-
-	static
-	{
-		smallSides[0] = new AxisAlignedBB(0.3, 0.0, 0.3, 0.7, 0.3, 0.7);
-		smallSides[1] = new AxisAlignedBB(0.3, 0.7, 0.3, 0.7, 1.0, 0.7);
-		smallSides[2] = new AxisAlignedBB(0.3, 0.3, 0.0, 0.7, 0.7, 0.3);
-		smallSides[3] = new AxisAlignedBB(0.3, 0.3, 0.7, 0.7, 0.7, 1.0);
-		smallSides[4] = new AxisAlignedBB(0.0, 0.3, 0.3, 0.3, 0.7, 0.7);
-		smallSides[5] = new AxisAlignedBB(0.7, 0.3, 0.3, 1.0, 0.7, 0.7);
-		smallSides[6] = new AxisAlignedBB(0.3, 0.3, 0.3, 0.7, 0.7, 0.7);
-
-		largeSides[0] = new AxisAlignedBB(0.25, 0.0, 0.25, 0.75, 0.25, 0.75);
-		largeSides[1] = new AxisAlignedBB(0.25, 0.75, 0.25, 0.75, 1.0, 0.75);
-		largeSides[2] = new AxisAlignedBB(0.25, 0.25, 0.0, 0.75, 0.75, 0.25);
-		largeSides[3] = new AxisAlignedBB(0.25, 0.25, 0.75, 0.75, 0.75, 1.0);
-		largeSides[4] = new AxisAlignedBB(0.0, 0.25, 0.25, 0.25, 0.75, 0.75);
-		largeSides[5] = new AxisAlignedBB(0.75, 0.25, 0.25, 1.0, 0.75, 0.75);
-		largeSides[6] = new AxisAlignedBB(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
-	}
-
-	public static IMultipart getPartType(TransmitterType type)
-	{
-		switch(type)
-		{
-			case UNIVERSAL_CABLE_BASIC:
-				return new PartUniversalCable(Tier.CableTier.BASIC);
-			case UNIVERSAL_CABLE_ADVANCED:
-				return new PartUniversalCable(Tier.CableTier.ADVANCED);
-			case UNIVERSAL_CABLE_ELITE:
-				return new PartUniversalCable(Tier.CableTier.ELITE);
-			case UNIVERSAL_CABLE_ULTIMATE:
-				return new PartUniversalCable(Tier.CableTier.ULTIMATE);
-			case MECHANICAL_PIPE_BASIC:
-				return new PartMechanicalPipe(Tier.PipeTier.BASIC);
-			case MECHANICAL_PIPE_ADVANCED:
-				return new PartMechanicalPipe(Tier.PipeTier.ADVANCED);
-			case MECHANICAL_PIPE_ELITE:
-				return new PartMechanicalPipe(Tier.PipeTier.ELITE);
-			case MECHANICAL_PIPE_ULTIMATE:
-				return new PartMechanicalPipe(Tier.PipeTier.ULTIMATE);
-			case PRESSURIZED_TUBE_BASIC:
-				return new PartPressurizedTube(Tier.TubeTier.BASIC);
-			case PRESSURIZED_TUBE_ADVANCED:
-				return new PartPressurizedTube(Tier.TubeTier.ADVANCED);
-			case PRESSURIZED_TUBE_ELITE:
-				return new PartPressurizedTube(Tier.TubeTier.ELITE);
-			case PRESSURIZED_TUBE_ULTIMATE:
-				return new PartPressurizedTube(Tier.TubeTier.ULTIMATE);
-			case LOGISTICAL_TRANSPORTER_BASIC:
-				return new PartLogisticalTransporter(Tier.TransporterTier.BASIC);
-			case LOGISTICAL_TRANSPORTER_ADVANCED:
-				return new PartLogisticalTransporter(Tier.TransporterTier.ADVANCED);
-			case LOGISTICAL_TRANSPORTER_ELITE:
-				return new PartLogisticalTransporter(Tier.TransporterTier.ELITE);
-			case LOGISTICAL_TRANSPORTER_ULTIMATE:
-				return new PartLogisticalTransporter(Tier.TransporterTier.ULTIMATE);
-			case RESTRICTIVE_TRANSPORTER:
-				return new PartRestrictiveTransporter();
-			case DIVERSION_TRANSPORTER:
-				return new PartDiversionTransporter();
-			case THERMODYNAMIC_CONDUCTOR_BASIC:
-				return new PartThermodynamicConductor(Tier.ConductorTier.BASIC);
-			case THERMODYNAMIC_CONDUCTOR_ADVANCED:
-				return new PartThermodynamicConductor(Tier.ConductorTier.ADVANCED);
-			case THERMODYNAMIC_CONDUCTOR_ELITE:
-				return new PartThermodynamicConductor(Tier.ConductorTier.ELITE);
-			case THERMODYNAMIC_CONDUCTOR_ULTIMATE:
-				return new PartThermodynamicConductor(Tier.ConductorTier.ULTIMATE);
-			default:
-				return null;
-		}
-	}
 
 	public static boolean connectionMapContainsSide(byte connections, EnumFacing side)
 	{
@@ -190,11 +104,18 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 			
 			if(sendDesc)
 			{
-				sendUpdatePacket();
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				sendDesc = false;
 			}
 		}
 	}
+	
+	public BaseTier getBaseTier()
+	{
+		return BaseTier.BASIC;
+	}
+	
+	public void setBaseTier(BaseTier baseTier) {}
 	
 	public boolean handlesRedstone()
 	{
@@ -348,12 +269,6 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		return true;
 	}
 	
-	@Override
-	public float getHardness(PartMOP partHit)
-	{
-		return 3.5F;
-	}
-
 /*
 	@Override
 	public boolean occlusionTest(IMultipart other)
@@ -361,101 +276,48 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		return NormalOcclusionTest.apply(this, other);
 	}
 */
-
-	@Override
-	public void addSelectionBoxes(List<AxisAlignedBB> list)
+	
+	public List<AxisAlignedBB> getCollisionBoxes()
 	{
-		if(getContainer() != null)
+		List<AxisAlignedBB> list = new ArrayList<>();
+		for(EnumFacing side : EnumFacing.values())
 		{
-			for(EnumFacing side : EnumFacing.values())
-			{
-				int ord = side.ordinal();
-				byte connections = getAllCurrentConnections();
+			int ord = side.ordinal();
+			byte connections = getAllCurrentConnections();
 
-				if(connectionMapContainsSide(connections, side) || side == testingSide)
-				{
-					list.add(getTransmitterType().getSize() == Size.SMALL ? smallSides[ord] : largeSides[ord]);
-				}
+			if(connectionMapContainsSide(connections, side) || side == testingSide)
+			{
+				list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord]);
 			}
 		}
 
-		list.add(getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6]);
+		list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6] : BlockTransmitter.largeSides[6]);
+		return list;
 	}
 
 	public abstract TransmitterType getTransmitterType();
 
-	@Override
-	public void addCollisionBoxes(AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity)
+	public List<AxisAlignedBB> getCollisionBoxes(AxisAlignedBB mask)
 	{
-		if(getContainer() != null)
+		List<AxisAlignedBB> list = new ArrayList<>();
+		
+		for(EnumFacing side : EnumFacing.values())
 		{
-			for(EnumFacing side : EnumFacing.values())
-			{
-				int ord = side.ordinal();
-				byte connections = getAllCurrentConnections();
+			int ord = side.ordinal();
+			byte connections = getAllCurrentConnections();
 
-				if(connectionMapContainsSide(connections, side) || side == testingSide)
-				{
-					AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? smallSides[ord] : largeSides[ord];
-					if(box.intersectsWith(mask)) list.add(box);
-				}
+			if(connectionMapContainsSide(connections, side) || side == testingSide)
+			{
+				AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord];
+				if(box.intersectsWith(mask)) list.add(box);
 			}
 		}
 
-		AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6];
+		AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6] : BlockTransmitter.largeSides[6];
 		if(box.intersectsWith(mask)) list.add(box);
+		return list;
 	}
-
-	@Override
-	public void addOcclusionBoxes(List<AxisAlignedBB> list)
-	{
-		addSelectionBoxes(list);
-	}
-/*
-	@Override
-	public EnumSet<PartSlot> getSlotMask()
-	{
-		return EnumSet.of(PartSlot.CENTER);
-	}
-
-	@Override
-	public EnumSet<PartSlot> getOccludedSlots()
-	{
-		return EnumSet.of(PartSlot.CENTER); //TODO implement properly
-	}
-
-	@Override
-	public TextureAtlasSprite getBreakingIcon(Object subPart, EnumFacing side)
-	{
-		return getCenterIcon(true);
-	}
-
-	@Override
-	public TextureAtlasSprite getBrokenIcon(EnumFacing side)
-	{
-		return getCenterIcon(true);
-	}
-
-	@Override
-	public Cuboid6 getBounds()
-	{
-		return getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6];
-	}
-
-	@Override
-	public int getHollowSize(EnumFacing side)
-	{
-		EnumFacing direction = EnumFacing.getOrientation(side);
-
-		if(connectionMapContainsSide(getAllCurrentConnections(), direction) || direction == testingSide)
-		{
-			return getTransmitterType().getSize().centerSize+1;
-		}
-		
-		return 0;
-	}
-*/
-
+	
 	public abstract boolean isValidAcceptor(TileEntity tile, EnumFacing side);
 
 	@Override
@@ -494,39 +356,45 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 			return false;
 		}
 
-		testingSide = side;
+		/*testingSide = side; TODO occlusion
 		IMultipart testPart = new OcclusionHelper.NormallyOccludingPart(getTransmitterType().getSize() == Size.SMALL ? smallSides[side.ordinal()] : largeSides[side.ordinal()]);
-		boolean unblocked = OcclusionHelper.occlusionTest(testPart, (part) -> part==this, getContainer().getParts());//getContainer().canReplacePart(this, this);
+		boolean unblocked = OcclusionHelper.occlusionTest(testPart, (part) -> part == this, getContainer().getParts());//getContainer().canReplacePart(this, this);
 		testingSide = null;
 		
-		return unblocked;
+		return unblocked;*/
+		return true;
+	}
+	
+	@Override
+	public void handlePacketData(ByteBuf dataStream) throws Exception 
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			currentTransmitterConnections = dataStream.readByte();
+			currentAcceptorConnections = dataStream.readByte();
+			
+			for(int i = 0; i < 6; i++)
+			{
+				connectionTypes[i] = ConnectionType.values()[dataStream.readInt()];
+			}
+			
+			markDirty();
+			MekanismUtils.updateBlock(world, pos);
+		}
 	}
 
 	@Override
-	public void readUpdatePacket(PacketBuffer packet)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		currentTransmitterConnections = packet.readByte();
-		currentAcceptorConnections = packet.readByte();
-
+		data.add(currentTransmitterConnections);
+		data.add(currentAcceptorConnections);
+		
 		for(int i = 0; i < 6; i++)
 		{
-			connectionTypes[i] = ConnectionType.values()[packet.readInt()];
+			data.add(connectionTypes[i].ordinal());
 		}
-
-		notifyPartUpdate();
-		markRenderUpdate();
-	}
-
-	@Override
-	public void writeUpdatePacket(PacketBuffer packet)
-	{
-		packet.writeByte(currentTransmitterConnections);
-		packet.writeByte(currentAcceptorConnections);
-
-		for(int i = 0; i < 6; i++)
-		{
-			packet.writeInt(connectionTypes[i].ordinal());
-		}
+		
+		return data;
 	}
 
 	@Override
@@ -555,40 +423,6 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		}
 		
 		return nbtTags;
-	}
-
-	@Override
-	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack stack, PartMOP hit)
-	{
-		if(stack == null)
-		{
-			return false;
-		}
-
-		if(MekanismUtils.hasUsableWrench(player, getPos()) && player.isSneaking())
-		{
-			if(!getWorld().isRemote)
-			{
-				MultipartMekanism.dropItems(this);
-				getContainer().removePart(this);
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public List<ItemStack> getDrops()
-	{
-		return Collections.singletonList(getPickBlock(null, null));
-	}
-
-	@Override
-	public ItemStack getPickBlock(EntityPlayer player, PartMOP hit)
-	{
-		return new ItemStack(MekanismItems.PartTransmitter, 1, getTransmitterType().ordinal());
 	}
 	
 	protected void onRefresh() {}
@@ -654,43 +488,38 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	public abstract void onWorldSeparate();
 	
 	@Override
-	public void onRemoved()
+	public void invalidate()
 	{
 		onWorldSeparate();
-		super.onRemoved();
+		super.invalidate();
 	}
 	
 	@Override
-	public void onUnloaded()
+	public void onChunkUnload()
 	{
 		onWorldSeparate();
-		super.onRemoved();
+		super.onChunkUnload();
 	}
 
-	@Override
 	public void onAdded()
 	{
 		onWorldJoin();
-		super.onAdded();
-		
 		refreshConnections();
 	}
 
 	@Override
-	public void onLoaded()
+	public void onLoad()
 	{
 		onWorldJoin();
-		super.onLoaded();
+		super.onLoad();
 	}
 	
-	@Override
 	public void onNeighborTileChange(EnumFacing side) 
 	{
 		refreshConnections(side);
 	}
 
-	@Override
-	public void onNeighborBlockChange(Block block)
+	public void onNeighborBlockChange(EnumFacing side)
 	{
 		if(handlesRedstone())
 		{
@@ -707,11 +536,8 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		}
 	}
 
-	@Override
 	public void onPartChanged(IMultipart part)
 	{
-		super.onPartChanged(part);
-		
 		byte transmittersBefore = currentTransmitterConnections;
 		refreshConnections();
 		
@@ -719,15 +545,6 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		{
 			markDirtyTransmitters();
 		}
-	}
-
-	@Override
-	public void handlePacketData(ByteBuf dataStream) throws Exception {}
-
-	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
-	{
-		return data;
 	}
 
 	public ConnectionType getConnectionType(EnumFacing side)
@@ -769,7 +586,7 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	{
 		if(!getWorld().isRemote)
 		{
-			PartMOP hit = reTrace(getWorld(), getPos(), player);
+			RayTraceResult hit = reTrace(getWorld(), getPos(), player);
 	
 			if(hit == null)
 			{
@@ -797,11 +614,10 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		return EnumActionResult.SUCCESS;
 	}
 
-	private PartMOP reTrace(World world, BlockPos pos, EntityPlayer player) 
+	private RayTraceResult reTrace(World world, BlockPos pos, EntityPlayer player) 
 	{
-		Vec3d start = RayTraceUtils.getStart(player);
-		Vec3d end = RayTraceUtils.getEnd(player);
-		AdvancedRayTraceResultPart result = ((TileMultipartContainer)world.getTileEntity(pos)).getPartContainer().collisionRayTrace(start, end);
+		Pair<Vec3d, Vec3d> vecs = MultipartMekanism.getRayTraceVectors(player);
+		AdvancedRayTraceResult result = MultipartMekanism.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
 		
 		return result == null ? null : result.hit;
 	}
@@ -810,21 +626,21 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 	{
 		List<EnumFacing> list = new ArrayList<>();
 		
-		if(getContainer() != null)
+		for(EnumFacing side : EnumFacing.values())
 		{
-			for(EnumFacing side : EnumFacing.values())
-			{
-				int ord = side.ordinal();
-				byte connections = getAllCurrentConnections();
+			int ord = side.ordinal();
+			byte connections = getAllCurrentConnections();
 
-				if(connectionMapContainsSide(connections, side))
-				{
-					list.add(side);
-				}
+			if(connectionMapContainsSide(connections, side))
+			{
+				list.add(side);
 			}
 		}
 		
-		if(boxIndex < list.size()) return list.get(boxIndex);
+		if(boxIndex < list.size()) 
+		{
+			return list.get(boxIndex);
+		}
 		
 		return null;
 	}
@@ -854,18 +670,6 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		return EnumActionResult.SUCCESS;
 	}
 
-	@Override
-	public ResourceLocation getModelPath()
-	{
-		return getType();
-	}
-
-	@Override
-	public BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[] {OBJProperty.INSTANCE, ColorProperty.INSTANCE, ConnectionProperty.INSTANCE});
-	}
-
 	public List<String> getVisibleGroups()
 	{
 		List<String> visible = new ArrayList<>();
@@ -877,19 +681,12 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		
 		return visible;
 	}
-
-	@Override
+	
 	public IBlockState getExtendedState(IBlockState state)
 	{
 		ConnectionProperty connectionProp = new ConnectionProperty(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
 		
 		return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true)).withProperty(ConnectionProperty.INSTANCE, connectionProp);
-	}
-
-	@Override
-	public boolean canRenderInLayer(BlockRenderLayer layer) 
-	{
-		return layer == BlockRenderLayer.CUTOUT || (transparencyRender() && layer == BlockRenderLayer.TRANSLUCENT);
 	}
 
 	public void notifyTileChange()
@@ -938,10 +735,5 @@ public abstract class PartSidedPipe extends Multipart implements INormallyOcclud
 		{
 			return name().toLowerCase();
 		}
-	}
-
-	@Override
-	public boolean shouldBreakingUseExtendedState() {
-		return true;
 	}
 }

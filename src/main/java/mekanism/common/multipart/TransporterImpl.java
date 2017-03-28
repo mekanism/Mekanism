@@ -15,7 +15,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
-import mekanism.common.multipart.PartSidedPipe.ConnectionType;
+import mekanism.common.multipart.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.InventoryUtils;
@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
-public class MultipartTransporter extends MultipartTransmitter<IInventory, InventoryNetwork> implements ILogisticalTransporter
+public class TransporterImpl extends TransmitterImpl<IInventory, InventoryNetwork> implements ILogisticalTransporter
 {
 	public HashList<TransporterStack> transit = new HashList<>();
 
@@ -34,7 +34,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 
 	public Set<TransporterStack> needsSync = new HashSet<>();
 
-	public MultipartTransporter(PartLogisticalTransporter multiPart)
+	public TransporterImpl(TileEntityLogisticalTransporter multiPart)
 	{
 		super(multiPart);
 	}
@@ -47,7 +47,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			{
 				if(stack != null)
 				{
-					stack.progress = Math.min(100, stack.progress+getPart().tier.speed);
+					stack.progress = Math.min(100, stack.progress+getTileEntity().tier.speed);
 				}
 			}
 		}
@@ -59,7 +59,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			
 			Set<TransporterStack> remove = new HashSet<TransporterStack>();
 
-			getPart().pullItems();
+			getTileEntity().pullItems();
 
 			for(TransporterStack stack : transit)
 			{
@@ -72,7 +72,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 					}
 				}
 
-				stack.progress += getPart().tier.speed;
+				stack.progress += getTileEntity().tier.speed;
 
 				if(stack.progress > 100)
 				{
@@ -202,16 +202,16 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 
 			for(TransporterStack stack : remove)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, true)), new Range4D(coord()));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getTileEntity().getSyncPacket(stack, true)), new Range4D(coord()));
 				transit.remove(stack);
-				MekanismUtils.saveChunk(getPart());
+				MekanismUtils.saveChunk(getTileEntity());
 			}
 
 			for(TransporterStack stack : needsSync)
 			{
 				if(transit.contains(stack))
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getTileEntity().getSyncPacket(stack, false)), new Range4D(coord()));
 				}
 			}
 
@@ -223,7 +223,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	{
 		EnumFacing side = stack.getSide(this);
 
-		return getPart().getConnectionType(side) == ConnectionType.NORMAL || getPart().getConnectionType(side) == ConnectionType.PUSH;
+		return getTileEntity().getConnectionType(side) == ConnectionType.NORMAL || getTileEntity().getConnectionType(side) == ConnectionType.PUSH;
 	}
 
 	private boolean recalculate(TransporterStack stack, Coord4D from)
@@ -287,8 +287,8 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			if(doEmit)
 			{
 				transit.add(stack);
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-				MekanismUtils.saveChunk(getPart());
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getTileEntity().getSyncPacket(stack, false)), new Range4D(coord()));
+				MekanismUtils.saveChunk(getTileEntity());
 			}
 
 			return rejected;
@@ -322,8 +322,8 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			if(doEmit)
 			{
 				transit.add(stack);
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-				MekanismUtils.saveChunk(getPart());
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getTileEntity().getSyncPacket(stack, false)), new Range4D(coord()));
+				MekanismUtils.saveChunk(getTileEntity());
 			}
 
 			return rejected;
@@ -337,8 +337,8 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	{
 		stack.progress = progress;
 		transit.add(stack);
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
-		MekanismUtils.saveChunk(getPart());
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getTileEntity().getSyncPacket(stack, false)), new Range4D(coord()));
+		MekanismUtils.saveChunk(getTileEntity());
 	}
 
 	@Override
@@ -356,46 +356,46 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	@Override
 	public boolean canEmitTo(TileEntity tileEntity, EnumFacing side)
 	{
-		if(!getPart().canConnect(side))
+		if(!getTileEntity().canConnect(side))
 		{
 			return false;
 		}
 
-		return getPart().getConnectionType(side) == ConnectionType.NORMAL || getPart().getConnectionType(side) == ConnectionType.PUSH;
+		return getTileEntity().getConnectionType(side) == ConnectionType.NORMAL || getTileEntity().getConnectionType(side) == ConnectionType.PUSH;
 	}
 
 	@Override
 	public boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side)
 	{
-		if(!getPart().canConnect(side))
+		if(!getTileEntity().canConnect(side))
 		{
 			return false;
 		}
 
-		return getPart().getConnectionType(side) == ConnectionType.NORMAL;
+		return getTileEntity().getConnectionType(side) == ConnectionType.NORMAL;
 	}
 
 	@Override
 	public double getCost()
 	{
-		return getPart().getCost();
+		return getTileEntity().getCost();
 	}
 
 	@Override
 	public boolean canConnectMutual(EnumFacing side)
 	{
-		return getPart().canConnectMutual(side);
+		return getTileEntity().canConnectMutual(side);
 	}
 
 	@Override
 	public boolean canConnect(EnumFacing side)
 	{
-		return getPart().canConnect(side);
+		return getTileEntity().canConnect(side);
 	}
 
 	@Override
-	public PartLogisticalTransporter getPart()
+	public TileEntityLogisticalTransporter getTileEntity()
 	{
-		return (PartLogisticalTransporter)containingPart;
+		return (TileEntityLogisticalTransporter)containingTile;
 	}
 }

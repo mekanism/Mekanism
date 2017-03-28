@@ -1,51 +1,70 @@
 package mekanism.common.multipart;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import mcmultipart.item.ItemMultiPart;
-import mcmultipart.multipart.IMultipart;
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.base.IMetaItem;
+import mekanism.common.base.ITierItem;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
+public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 {
-	public ItemPartTransmitter()
+	public Block metaBlock;
+	
+	public ItemBlockTransmitter(Block block)
 	{
-		super();
+		super(block);
+		metaBlock = block;
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 	
 	@Override
-	public IMultipart createPart(World world, BlockPos pos, EnumFacing dir, Vec3d hit, ItemStack stack, EntityPlayer player)
+	public int getMetadata(int i)
 	{
-		return PartTransmitter.getPartType(TransmitterType.values()[getDamage(stack)]);
+		return i;
 	}
-
+	
 	@Override
-	public int getMetadata(int damage)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
-		return damage;
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
+
+		if(place)
+		{
+			TileEntitySidedPipe tileEntity = (TileEntitySidedPipe)world.getTileEntity(pos);
+			tileEntity.setBaseTier(getBaseTier(stack));
+			
+			if(!world.isRemote)
+			{
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+			}
+		}
+
+		return place;
 	}
 
 	@Override
@@ -55,7 +74,7 @@ public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
 			TransmissionType transmission = TransmitterType.values()[itemstack.getItemDamage()].getTransmission();
-			BaseTier tier = TransmitterType.values()[itemstack.getItemDamage()].getTier();
+			BaseTier tier = getBaseTier(itemstack);
 			
 			if(transmission == TransmissionType.ENERGY)
 			{
@@ -136,30 +155,39 @@ public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> listToAddTo)
-	{
-		for(TransmitterType type : TransmitterType.values())
-		{
-			listToAddTo.add(new ItemStack(item, 1, type.ordinal()));
-		}
-	}
-
-	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
-		return getUnlocalizedName() + "." + TransmitterType.values()[stack.getItemDamage()].getName();
+		TransmitterType type = TransmitterType.get(stack.getItemDamage());
+		String name = type.getName();
+		
+		if(type.hasTiers())
+		{
+			BaseTier tier = getBaseTier(stack);
+			name = tier.getSimpleName() + name;
+		}
+		
+		return getUnlocalizedName() + "." + name;
+	}
+	
+	@Override
+	public BaseTier getBaseTier(ItemStack itemstack)
+	{
+		if(!itemstack.hasTagCompound())
+		{
+			return BaseTier.BASIC;
+		}
+
+		return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
 	}
 
 	@Override
-	public String getTexture(int meta) 
+	public void setBaseTier(ItemStack itemstack, BaseTier tier)
 	{
-		return TransmitterType.values()[meta].name().toLowerCase();
-	}
+		if(!itemstack.hasTagCompound())
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
 
-	@Override
-	public int getVariants() 
-	{
-		return TransmitterType.values().length;
+		itemstack.getTagCompound().setInteger("tier", tier.ordinal());
 	}
 }

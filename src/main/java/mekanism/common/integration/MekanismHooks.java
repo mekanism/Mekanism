@@ -10,9 +10,10 @@ import java.util.List;
 import li.cil.oc.api.Driver;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
-import mekanism.common.multipart.TransmitterType;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
@@ -163,19 +164,19 @@ public final class MekanismHooks
 		{
 			if(type.getTransmission().equals(TransmissionType.ITEM))
 			{
-				FMLInterModComms.sendMessage("appliedenergistics2","add-p2p-attunement-item",new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
+				FMLInterModComms.sendMessage("appliedenergistics2", "add-p2p-attunement-item", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
 				continue;
 			}
 			
 			if(type.getTransmission().equals(TransmissionType.FLUID))
 			{
-				FMLInterModComms.sendMessage("appliedenergistics2","add-p2p-attunement-fluid",new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
+				FMLInterModComms.sendMessage("appliedenergistics2", "add-p2p-attunement-fluid", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
 				continue;
 			}
 			
 			if(type.getTransmission().equals(TransmissionType.ENERGY))
 			{
-				FMLInterModComms.sendMessage("appliedenergistics2",energyP2P,new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
+				FMLInterModComms.sendMessage("appliedenergistics2", energyP2P, new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
 				continue;
 			}
 

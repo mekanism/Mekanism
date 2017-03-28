@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import mcmultipart.MCMultiPartMod;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
@@ -63,6 +62,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.OreDictManager;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketSimpleGui;
@@ -680,71 +680,71 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new BinRecipe());
 		
         //Transmitters
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 0),
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.BASIC, 8),
 			"SRS", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), "dustRedstone"
 		));
-        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 1),
-            "TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 0)
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.ADVANCED, 8),
+            "TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.BASIC, 1)
         ));
-        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 2),
-            "TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 1)
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.ELITE, 8),
+            "TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.ADVANCED, 1)
         ));
-        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 3),
-            "TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 2)
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.ULTIMATE, 8),
+            "TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.ELITE, 1)
         ));
-        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 4),
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.MECHANICAL_PIPE, BaseTier.BASIC, 8),
             "SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Items.BUCKET
         ));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 5),
-			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 4)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.MECHANICAL_PIPE, BaseTier.ADVANCED, 8),
+			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.MECHANICAL_PIPE, BaseTier.BASIC, 1)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 6),
-			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 5)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.MECHANICAL_PIPE, BaseTier.ELITE, 8),
+			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.MECHANICAL_PIPE, BaseTier.ADVANCED, 1)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 7),
-			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 6)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.MECHANICAL_PIPE, BaseTier.ULTIMATE, 8),
+			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.MECHANICAL_PIPE, BaseTier.ELITE, 1)
 		));
-        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 8),
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.PRESSURIZED_TUBE, BaseTier.BASIC, 8),
             "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "blockGlass"
         ));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 9),
-			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 8)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.PRESSURIZED_TUBE, BaseTier.ADVANCED, 8),
+			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.PRESSURIZED_TUBE, BaseTier.BASIC, 1)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 10),
-			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 9)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.PRESSURIZED_TUBE, BaseTier.ELITE, 8),
+			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.PRESSURIZED_TUBE, BaseTier.ADVANCED, 1)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 11),
-			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 10)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.PRESSURIZED_TUBE, BaseTier.ULTIMATE, 8),
+			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.PRESSURIZED_TUBE, BaseTier.ELITE, 1)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 12),
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.LOGISTICAL_TRANSPORTER, BaseTier.BASIC, 8),
 			"SCS", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 13),
-			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 12)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.LOGISTICAL_TRANSPORTER, BaseTier.ADVANCED, 8),
+			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.LOGISTICAL_TRANSPORTER, BaseTier.BASIC, 1)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 14),
-			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 13)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.LOGISTICAL_TRANSPORTER, BaseTier.ELITE, 8),
+			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.LOGISTICAL_TRANSPORTER, BaseTier.ADVANCED, 1)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 15),
-			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 14)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.LOGISTICAL_TRANSPORTER, BaseTier.ULTIMATE, 8),
+			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.LOGISTICAL_TRANSPORTER, BaseTier.ELITE, 1)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 2, 16),
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.RESTRICTIVE_TRANSPORTER, BaseTier.BASIC, 2),
 			"SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Blocks.IRON_BARS
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 2, 17),
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.DIVERSION_TRANSPORTER, BaseTier.BASIC, 2),
 			"RRR", "SBS", "RRR", Character.valueOf('R'), "dustRedstone", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Blocks.IRON_BARS
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 18),
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.THERMODYNAMIC_CONDUCTOR, BaseTier.BASIC, 8),
 			"SCS", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), "ingotCopper"
 		));
-        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 19),
-            "TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 18)
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.THERMODYNAMIC_CONDUCTOR, BaseTier.ADVANCED, 8),
+            "TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.THERMODYNAMIC_CONDUCTOR, BaseTier.BASIC, 1)
         ));
-        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 20),
-            "TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 19)
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.THERMODYNAMIC_CONDUCTOR, BaseTier.ELITE, 8),
+            "TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.THERMODYNAMIC_CONDUCTOR, BaseTier.ADVANCED, 1)
         ));
-        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 21),
-            "TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 20)
+        CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(MekanismUtils.getTransmitter(TransmitterType.THERMODYNAMIC_CONDUCTOR, BaseTier.ULTIMATE, 8),
+            "TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismUtils.getTransmitter(TransmitterType.THERMODYNAMIC_CONDUCTOR, BaseTier.ELITE, 1)
         ));
 
 		//Plastic stuff
@@ -760,7 +760,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, 15),
 			"SSS", "S S", "SSS", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2)
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.GlowPanel, 2, 15),
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPanel, 2, 15),
 			"PSP", "S S", "GSG", Character.valueOf('P'), "paneGlass", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2), Character.valueOf('G'), "dustGlowstone"
 		));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticFence, 3, 15),
@@ -772,7 +772,7 @@ public class Mekanism
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i),
 				"SSS", "SDS", "SSS", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 			));
-			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.GlowPanel, 2, i),
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPanel, 2, i),
 				"PSP", "SDS", "GSG", Character.valueOf('P'), "paneGlass", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName, Character.valueOf('G'), "dustGlowstone"
 			));
 		}
@@ -801,8 +801,8 @@ public class Mekanism
 				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i),
 					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				));
-				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.GlowPanel, 4, i),
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismItems.GlowPanel, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
+				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPanel, 4, i),
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.GlowPanel, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				));
 			}
 
@@ -1050,7 +1050,7 @@ public class Mekanism
 	public void registerOreDict()
 	{
 		//Add specific items to ore dictionary for recipe usage in other mods.
-		OreDictionary.registerOre("universalCable", new ItemStack(MekanismItems.PartTransmitter, 8, 0));
+		OreDictionary.registerOre("universalCable", MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.BASIC, 1));
 		OreDictionary.registerOre("battery", MekanismItems.EnergyTablet.getUnchargedItem());
 		OreDictionary.registerOre("pulpWood", MekanismItems.Sawdust);
 		OreDictionary.registerOre("dustWood", MekanismItems.Sawdust);
@@ -1497,7 +1497,6 @@ public class Mekanism
 		MekanismAPI.addBoxBlacklist(Blocks.ACACIA_DOOR, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.DARK_OAK_DOOR, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.IRON_DOOR, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(MCMultiPartMod.multipart, OreDictionary.WILDCARD_VALUE);
 		
 		BoxBlacklistParser.load();
 	}

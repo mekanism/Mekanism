@@ -257,7 +257,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			if(height >= 65)
 			{
 				change = 1;
-			} else if(height <= -65)
+			} 
+			else if(height <= -65)
 			{
 				change = 0;
 			}

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mcmultipart.client.multipart.MultipartRegistryClient;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
@@ -139,13 +138,16 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.multipart.PartDiversionTransporter;
-import mekanism.common.multipart.PartLogisticalTransporter;
-import mekanism.common.multipart.PartMechanicalPipe;
-import mekanism.common.multipart.PartPressurizedTube;
-import mekanism.common.multipart.PartRestrictiveTransporter;
-import mekanism.common.multipart.PartThermodynamicConductor;
-import mekanism.common.multipart.PartUniversalCable;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterStateMapper;
+import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
+import mekanism.common.multipart.ItemBlockTransmitter;
+import mekanism.common.multipart.TileEntityDiversionTransporter;
+import mekanism.common.multipart.TileEntityLogisticalTransporter;
+import mekanism.common.multipart.TileEntityMechanicalPipe;
+import mekanism.common.multipart.TileEntityPressurizedTube;
+import mekanism.common.multipart.TileEntityRestrictiveTransporter;
+import mekanism.common.multipart.TileEntityThermodynamicConductor;
+import mekanism.common.multipart.TileEntityUniversalCable;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -251,6 +253,7 @@ public class ClientProxy extends CommonProxy
 {
 	public static Map<String, ModelResourceLocation> machineResources = new HashMap<String, ModelResourceLocation>();
 	public static Map<String, ModelResourceLocation> basicResources = new HashMap<String, ModelResourceLocation>();
+	public static Map<String, ModelResourceLocation> transmitterResources = new HashMap<String, ModelResourceLocation>();
 	
 	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
 		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
@@ -262,6 +265,7 @@ public class ClientProxy extends CommonProxy
 	private static final IStateMapper plasticMapper = new PlasticBlockStateMapper();
 	private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
 	private static final IStateMapper boxMapper = new CardboardBoxStateMapper();
+	private static final IStateMapper transmitterMapper = new TransmitterStateMapper();
 	
 	@Override
 	public void loadConfiguration()
@@ -350,19 +354,18 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter", new RenderQuantumEntangloporter());
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 		
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartMechanicalPipe.class, new RenderMechanicalPipe());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartUniversalCable.class, new RenderUniversalCable());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartThermodynamicConductor.class, new RenderThermodynamicConductor());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartLogisticalTransporter.class, new RenderLogisticalTransporter());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartDiversionTransporter.class, new RenderLogisticalTransporter());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartRestrictiveTransporter.class, new RenderLogisticalTransporter());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartPressurizedTube.class, new RenderPressurizedTube());
+		ClientRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe", new RenderMechanicalPipe());
+		ClientRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable", new RenderUniversalCable());
+		ClientRegistry.registerTileEntity(TileEntityThermodynamicConductor.class, "ThermodynamicConductor", new RenderThermodynamicConductor());
+		ClientRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter", new RenderLogisticalTransporter());
+		ClientRegistry.registerTileEntity(TileEntityDiversionTransporter.class, "DiversionTransporter", new RenderLogisticalTransporter());
+		ClientRegistry.registerTileEntity(TileEntityRestrictiveTransporter.class, "RestrictiveTransporter", new RenderLogisticalTransporter());
+		ClientRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube", new RenderPressurizedTube());
 	}
 
 	@Override
 	public void registerItemRenders()
 	{
-    	registerItemRender(MekanismItems.PartTransmitter);
 		registerItemRender(MekanismItems.ElectricBow);
 		registerItemRender(MekanismItems.Dust);
 		registerItemRender(MekanismItems.Ingot);
@@ -412,7 +415,6 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.GaugeDropper);
 		registerItemRender(MekanismItems.TierInstaller);
 		registerItemRender(MekanismItems.OtherDust);
-		registerItemRender(MekanismItems.GlowPanel);
 		
 		ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF_MODEL);
 		
@@ -440,12 +442,18 @@ public class ClientProxy extends CommonProxy
 		ModelLoader.setCustomStateMapper(MekanismBlocks.RoadPlasticBlock, plasticMapper);
 		ModelLoader.setCustomStateMapper(MekanismBlocks.PlasticFence, fenceMapper);
 		ModelLoader.setCustomStateMapper(MekanismBlocks.CardboardBox, boxMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.Transmitter, transmitterMapper);
 		
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1, new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.EnergyCube), 0, new ModelResourceLocation("mekanism:EnergyCube", "inventory"));
+		
+		for(int i = 0; i < EnumColor.DYES.length; i++)
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPanel), i, new ModelResourceLocation("mekanism:glow_panel", "inventory"));
+		}
 
 		for(MachineType type : MachineType.values())
 		{
@@ -591,6 +599,50 @@ public class ClientProxy extends CommonProxy
 			
 			ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[] {}));
 		}
+		
+		for(TransmitterType type : TransmitterType.values())
+		{
+			List<ModelResourceLocation> modelsToAdd = new ArrayList<ModelResourceLocation>();
+			String resource = "mekanism:" + type.getName();
+			BaseTier tierPointer = null;
+			
+			if(type.hasTiers())
+			{
+				tierPointer = BaseTier.values()[0];
+				resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+			}
+			
+			while(true)
+			{
+				if(transmitterResources.get(resource) == null)
+				{
+					String properties = "inventory";
+					ModelResourceLocation model = new ModelResourceLocation(resource, properties);
+					
+					transmitterResources.put(resource, model);
+					modelsToAdd.add(model);
+					
+					if(type.hasTiers())
+					{
+						if(tierPointer.ordinal() < BaseTier.values().length-1)
+						{
+							tierPointer = BaseTier.values()[tierPointer.ordinal()+1];
+							
+							if(tierPointer.isObtainable())
+							{
+								resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+								
+								continue;
+							}
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(MekanismBlocks.Transmitter), modelsToAdd.toArray(new ModelResourceLocation[] {}));
+		}
 
 		for(EnumColor color : EnumColor.DYES)
 		{
@@ -670,6 +722,31 @@ public class ClientProxy extends CommonProxy
 		
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
+		
+		ItemMeshDefinition transmitterMesher = new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				TransmitterType type = TransmitterType.get(stack.getItemDamage());
+				
+				if(type != null)
+				{
+					String resource = "mekanism:" + type.getName();
+					
+					if(type.hasTiers())
+					{
+						BaseTier tier = ((ItemBlockTransmitter)stack.getItem()).getBaseTier(stack);
+						resource = "mekanism:" + type.getName() + "_" + tier.getName();
+					}
+					
+					return transmitterResources.get(resource);
+				}
+				
+				return null;
+			}
+		};
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.Transmitter), transmitterMesher);
 		
 		OBJLoader.INSTANCE.addDomain("mekanism");
 	}
