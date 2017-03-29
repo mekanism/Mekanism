@@ -9,6 +9,7 @@ import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGlowPanel;
 import mekanism.common.integration.multipart.MultipartMekanism;
+import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -52,6 +53,8 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	{
         super(Material.PISTON);
         setCreativeTab(Mekanism.tabMekanism);
+        setHardness(1F);
+        setResistance(10F);
     }
 	
 	@Override
@@ -146,12 +149,6 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	}
 	
 	@Override
-	public float getBlockHardness(IBlockState state, World world, BlockPos pos)
-	{
-		return 3.5F;
-	}
-	
-	@Override
 	public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
     {
 		return world.isSideSolid(pos.offset(side.getOpposite()), side);
@@ -170,9 +167,9 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     }
 	
 	@Override
-	public int damageDropped(IBlockState state)
+	public int quantityDropped(Random random)
     {
-		return ((IExtendedBlockState)state).getValue(PropertyColor.INSTANCE).color.getMetaValue();
+		return 0;
     }
 	
 	@Override
@@ -182,6 +179,24 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 		return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
 	}
 
+	@Override
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	{
+		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
+		{
+			float motion = 0.7F;
+			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
+
+			world.spawnEntity(entityItem);
+		}
+
+		return super.removedByPlayer(state, world, pos, player, willHarvest);
+	}
+	
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta)
 	{

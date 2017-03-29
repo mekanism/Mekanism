@@ -684,6 +684,12 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 	{
 		MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), new Coord4D(getPos(), getWorld()));
 	}
+	
+    @Override
+    public boolean canRenderBreaking()
+    {
+    	return false;
+    }
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)

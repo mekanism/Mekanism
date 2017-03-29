@@ -28,6 +28,7 @@ import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.crafting.ShapedMekanismRecipeHandler;
 import mekanism.client.jei.crafting.ShapelessMekanismRecipeHandler;
+import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
 import mekanism.client.jei.machine.AdvancedMachineRecipeHandler;
 import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
@@ -111,12 +112,9 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
-import mezz.jei.api.ingredients.IIngredientRenderer;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -162,26 +160,7 @@ public class MekanismJEI extends BlankModPlugin
 	public void registerIngredients(IModIngredientRegistration registry)
 	{
 		List<GasStack> list = GasRegistry.getRegisteredGasses().stream().filter(g -> g.isVisible()).map(g -> new GasStack(g, Fluid.BUCKET_VOLUME)).collect(Collectors.toList());
-		registry.register(GasStack.class, list, new GasStackHelper(), new IIngredientRenderer() {
-			@Override
-			public void render(Minecraft minecraft, int xPosition, int yPosition, Object ingredient) 
-			{
-				
-			}
-
-			@Override
-			public List getTooltip(Minecraft minecraft, Object ingredient) 
-			{
-				List<String> tooltip = new ArrayList<String>();
-				return tooltip;
-			}
-
-			@Override
-			public FontRenderer getFontRenderer(Minecraft minecraft, Object ingredient)
-			{
-				return minecraft.fontRendererObj;
-			}
-		});
+		registry.register(GasStack.class, list, new GasStackHelper(), new GasStackRenderer());
 	}
 	
 	@Override

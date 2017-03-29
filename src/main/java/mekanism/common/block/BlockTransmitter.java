@@ -88,6 +88,8 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	{
         super(Material.PISTON);
         setCreativeTab(Mekanism.tabMekanism);
+        setHardness(1F);
+        setResistance(10F);
     }
 	
 	@Override
@@ -115,12 +117,6 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	{
 		TransmitterType type = state.getValue(BlockStateTransmitter.typeProperty);
 		return type.ordinal();
-	}
-	
-	@Override
-	public float getBlockHardness(IBlockState state, World world, BlockPos pos)
-	{
-		return 3.5F;
 	}
 	
 	@Override
@@ -231,7 +227,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntitySidedPipe tileEntity = (TileEntitySidedPipe)world.getTileEntity(pos);
-		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
+		ItemStack itemStack = new ItemStack(MekanismBlocks.Transmitter, 1, tileEntity.getTransmitterType().ordinal());
 		
 		if(!itemStack.hasTagCompound())
 		{
@@ -358,13 +354,25 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	{
 		return 0;
 	}
-
-	@Override
-	public Item getItemDropped(IBlockState state, Random random, int fortune)
-	{
-		return null;
-	}
     
+    @Override
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	{
+		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
+		{
+			float motion = 0.7F;
+			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
+
+			world.spawnEntity(entityItem);
+		}
+
+		return super.removedByPlayer(state, world, pos, player, willHarvest);
+	}
+
     private static AxisAlignedBB getDefaultForTile(TileEntitySidedPipe tile)
     {
     	if(tile == null || tile.getTransmitterType().getSize() == Size.SMALL)

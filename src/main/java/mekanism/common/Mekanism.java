@@ -89,6 +89,7 @@ import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
+import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
@@ -1223,6 +1224,7 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
+		GameRegistry.registerTileEntity(TileEntityGlowPanel.class, "GlowPanel");
 
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
