@@ -61,7 +61,7 @@ public final class InvStack
 
 			if(inventory.getStackInSlot(slotIDs.get(i)).getCount() == stack.getCount() && stack.getCount() <= amount)
 			{
-				inventory.setInventorySlotContents(slotIDs.get(i), null);
+				inventory.setInventorySlotContents(slotIDs.get(i), ItemStack.EMPTY);
 				amount -= stack.getCount();
 			}
 			else {

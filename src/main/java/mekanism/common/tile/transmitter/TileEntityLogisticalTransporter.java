@@ -17,7 +17,6 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.property.PropertyColor;
-import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.InvStack;
@@ -43,6 +42,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInventory, InventoryNetwork>
 {
@@ -194,7 +194,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 		
 		super.handlePacketData(dataStream);
 		
-		if(getWorld().isRemote)
+		if(FMLCommonHandler.instance().getSide().isClient())
 		{
 			int type = dataStream.readInt();
 	

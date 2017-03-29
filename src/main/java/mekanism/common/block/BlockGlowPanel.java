@@ -154,7 +154,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
     {
-		return world.isSideSolid(pos.offset(side), side.getOpposite());
+		return world.isSideSolid(pos.offset(side.getOpposite()), side);
     }
 	
 	public static boolean canStay(TileEntityGlowPanel tileEntity)

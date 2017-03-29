@@ -66,7 +66,7 @@ public class TransporterImpl extends TransmitterImpl<IInventory, InventoryNetwor
 			{
 				if(!stack.initiatedPath)
 				{
-					if(stack.itemStack == null || !recalculate(stack, null))
+					if(stack.itemStack == null || stack.itemStack == ItemStack.EMPTY || !recalculate(stack, null))
 					{
 						remove.add(stack);
 						continue;
@@ -326,7 +326,7 @@ public class TransporterImpl extends TransmitterImpl<IInventory, InventoryNetwor
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getTileEntity().getSyncPacket(stack, false)), new Range4D(coord()));
 				MekanismUtils.saveChunk(getTileEntity());
 			}
-
+			
 			return rejected;
 		}
 

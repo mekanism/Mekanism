@@ -52,11 +52,11 @@ public class ItemBlockGlowPanel extends ItemBlock
 			TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
 			EnumColor col = EnumColor.DYES[stack.getItemDamage()];
 			
-			BlockPos pos1 = pos.offset(side);
+			BlockPos pos1 = pos.offset(side.getOpposite());
 			
-			if(world.isSideSolid(pos1, side.getOpposite()))
+			if(world.isSideSolid(pos1, side))
 			{
-				tileEntity.setOrientation(side);
+				tileEntity.setOrientation(side.getOpposite());
 			}
 			
 			tileEntity.setColour(col);

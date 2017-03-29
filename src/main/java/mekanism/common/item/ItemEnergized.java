@@ -59,7 +59,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	@Override
 	public int getRGBDurabilityForDisplay(ItemStack stack)
     {
-        return MathHelper.hsvToRGB(Math.max(0.0F, (float)getDurabilityForDisplay(stack)) / 3.0F, 1.0F, 1.0F);
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }
 
 	@Override

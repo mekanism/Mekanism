@@ -151,7 +151,7 @@ public class TransporterManager
 
 				ItemStack inSlot = copy.inventory[i];
 
-				if(inSlot == null)
+				if(inSlot == null || inSlot.isEmpty())
 				{
 					if(toInsert.getCount() <= inv.getInventoryStackLimit())
 					{
@@ -240,7 +240,7 @@ public class TransporterManager
 	
 						ItemStack inSlot = copy.inventory[slotID];
 	
-						if(inSlot == null)
+						if(inSlot == null || inSlot.isEmpty())
 						{
 							if(toInsert.getCount() <= inv.getInventoryStackLimit())
 							{
@@ -295,12 +295,12 @@ public class TransporterManager
 
 	public static boolean didEmit(ItemStack stack, ItemStack returned)
 	{
-		return returned == null || returned.getCount() < stack.getCount();
+		return returned == null || returned.isEmpty() || returned.getCount() < stack.getCount();
 	}
 
 	public static ItemStack getToUse(ItemStack stack, ItemStack returned)
 	{
-		if(returned == null || returned.getCount() == 0)
+		if(returned == null || returned.isEmpty() || returned.getCount() == 0)
 		{
 			return stack;
 		}
@@ -360,11 +360,11 @@ public class TransporterManager
 
 				ItemStack inSlot = copy.inventory[i];
 
-				if(toInsert == null)
+				if(toInsert == null || toInsert.isEmpty())
 				{
 					return null;
 				}
-				else if(inSlot == null)
+				else if(inSlot == null || inSlot.isEmpty())
 				{
 					if(toInsert.getCount() <= inventory.getInventoryStackLimit())
 					{
@@ -435,11 +435,11 @@ public class TransporterManager
 	
 						ItemStack inSlot = copy.inventory[slotID];
 						
-						if(toInsert == null)
+						if(toInsert == null || toInsert.isEmpty())
 						{
 							return null;
 						}
-						else if(inSlot == null)
+						else if(inSlot == null || inSlot.isEmpty())
 						{
 							if(toInsert.getCount() <= inventory.getInventoryStackLimit())
 							{

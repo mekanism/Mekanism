@@ -42,6 +42,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -310,8 +311,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return getEnergy(stack)/getMaxEnergy(stack);
+		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
 	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
 
 	@Override
 	@Method(modid = "IC2")
