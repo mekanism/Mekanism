@@ -150,7 +150,11 @@ public class PacketHandler
 		try {
 			for(Object data : dataValues)
 			{
-				if(data instanceof Integer)
+				if(data instanceof Byte)
+				{
+					output.writeByte((Byte)data);
+				}
+				else if(data instanceof Integer)
 				{
 					output.writeInt((Integer)data);
 				}
@@ -177,10 +181,6 @@ public class PacketHandler
 				else if(data instanceof String)
 				{
 					writeString(output, (String)data);
-				}
-				else if(data instanceof Byte)
-				{
-					output.writeByte((Byte)data);
 				}
 				else if(data instanceof EnumFacing)
 				{

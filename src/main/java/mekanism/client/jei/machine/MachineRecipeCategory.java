@@ -90,16 +90,4 @@ public class MachineRecipeCategory extends BaseRecipeCategory
 
 		itemStacks.set(ingredients);
 	}
-
-	@Override
-	public IDrawable getIcon() 
-	{
-		return null;
-	}
-
-	@Override
-	public List getTooltipStrings(int mouseX, int mouseY) 
-	{
-		return null;
-	}
 }

@@ -104,16 +104,4 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 			itemStacks.set(2, output.secondaryOutput);
 		}
 	}
-
-	@Override
-	public IDrawable getIcon() 
-	{
-		return null;
-	}
-
-	@Override
-	public List getTooltipStrings(int mouseX, int mouseY) 
-	{
-		return null;
-	}
 }

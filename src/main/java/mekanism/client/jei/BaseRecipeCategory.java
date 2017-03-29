@@ -1,5 +1,6 @@
 package mekanism.client.jei;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -180,6 +181,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	@Override
 	public List getTooltipStrings(int mouseX, int mouseY) 
 	{
-		return null;
+		return Collections.emptyList();
 	}
 }

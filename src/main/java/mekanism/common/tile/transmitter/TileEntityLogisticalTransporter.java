@@ -190,16 +190,16 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
-		tier = TransporterTier.values()[dataStream.readInt()];
-		
-		super.handlePacketData(dataStream);
-		
 		if(FMLCommonHandler.instance().getSide().isClient())
 		{
 			int type = dataStream.readInt();
-	
+			
 			if(type == 0)
 			{
+				super.handlePacketData(dataStream);
+				
+				tier = TransporterTier.values()[dataStream.readInt()];
+		
 				int c = dataStream.readInt();
 	
 				EnumColor prev = getTransmitter().getColor();
@@ -252,11 +252,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier.ordinal());
+		data.add(0);
 		
 		super.getNetworkedData(data);
 		
-		data.add(0);
+		data.add(tier.ordinal());
 
 		if(getTransmitter().getColor() != null)
 		{

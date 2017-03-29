@@ -114,16 +114,4 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 		itemStacks.set(1, ((ItemStackOutput)tempRecipe.recipeOutput).output);
 		itemStacks.set(2, ((AdvancedMachineRecipeWrapper)recipeWrapper).getFuelStacks(input.gasType));
 	}
-
-	@Override
-	public IDrawable getIcon()
-	{
-		return null;
-	}
-
-	@Override
-	public List getTooltipStrings(int mouseX, int mouseY) 
-	{
-		return null;
-	}
 }
