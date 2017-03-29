@@ -2,6 +2,8 @@ package mekanism.common.tile;
 
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ItemHandlerWrapper;
+import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +17,9 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory, ITickable
 {
@@ -261,5 +265,24 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	public ITextComponent getDisplayName()
 	{
 		return new TextComponentString(getName());
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+	}
+	
+	private CapabilityWrapperManager itemManager = new CapabilityWrapperManager(TileEntityContainerBlock.class, ItemHandlerWrapper.class);
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			return (T)itemManager.getWrapper(this, facing);
+		}
+		
+		return super.getCapability(capability, facing);
 	}
 }
