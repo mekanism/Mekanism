@@ -14,6 +14,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.item.ItemConfigurator;
@@ -22,6 +23,7 @@ import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
+import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -51,6 +53,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import cofh.api.energy.IEnergyContainerItem;
@@ -179,37 +183,53 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			{
 				goHome();
 			}
+			
+			ItemStack stack = inventory.get(27);
 
-			if(!inventory.get(27).isEmpty() && getEnergy() < MAX_ELECTRICITY)
+			if(!stack.isEmpty() && getEnergy() < MAX_ELECTRICITY)
 			{
-				if(inventory.get(27).getItem() instanceof IEnergizedItem)
+				if(stack.getItem() instanceof IEnergizedItem)
 				{
-					setEnergy(getEnergy() + EnergizedItemManager.discharge(inventory.get(27), MAX_ELECTRICITY - getEnergy()));
+					setEnergy(getEnergy() + EnergizedItemManager.discharge(stack, MAX_ELECTRICITY - getEnergy()));
 				}
-				else if(MekanismUtils.useIC2() && inventory.get(27).getItem() instanceof IElectricItem)
+				else if(MekanismUtils.useTesla() && stack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null))
 				{
-					IElectricItem item = (IElectricItem)inventory.get(27).getItem();
-
-					if(item.canProvideEnergy(inventory.get(27)))
+					ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
+					
+					long needed = (long)Math.round((MAX_ELECTRICITY-getEnergy())*general.TO_TESLA);
+					setEnergy(getEnergy() + producer.takePower(needed, false)*general.FROM_TESLA);
+				}
+				else if(MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null))
+				{
+					IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
+					
+					if(storage.canExtract())
 					{
-						double gain = ElectricItem.manager.discharge(inventory.get(27), (MAX_ELECTRICITY - getEnergy())* general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
+						int needed = (int)Math.round(Math.min(Integer.MAX_VALUE, (MAX_ELECTRICITY-getEnergy())*general.TO_FORGE));
+						setEnergy(getEnergy() + storage.extractEnergy(needed, false)*general.FROM_FORGE);
+					}
+				}
+				else if(MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem)
+				{
+					IEnergyContainerItem item = (IEnergyContainerItem)stack.getItem();
+
+					int needed = (int)Math.round(Math.min(Integer.MAX_VALUE, (MAX_ELECTRICITY - getEnergy())*general.TO_RF));
+					setEnergy(getEnergy() + (item.extractEnergy(stack, needed, false)*general.FROM_RF));
+				}
+				else if(MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem)
+				{
+					IElectricItem item = (IElectricItem)stack.getItem();
+
+					if(item.canProvideEnergy(stack))
+					{
+						double gain = ElectricItem.manager.discharge(stack, (MAX_ELECTRICITY - getEnergy())*general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
 						setEnergy(getEnergy() + gain);
 					}
 				}
-				else if(MekanismUtils.useRF() && inventory.get(27).getItem() instanceof IEnergyContainerItem)
-				{
-					ItemStack itemStack = inventory.get(27);
-					IEnergyContainerItem item = (IEnergyContainerItem)inventory.get(27).getItem();
-
-					int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
-					int toTransfer = (int)Math.round(Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*general.TO_RF)));
-
-					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_RF));
-				}
-				else if(inventory.get(27).getItem() == Items.REDSTONE && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
+				else if(stack.getItem() == Items.REDSTONE && getEnergy()+general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
 					setEnergy(getEnergy() + general.ENERGY_PER_REDSTONE);
-					inventory.get(27).shrink(1);
+					stack.shrink(1);
 				}
 			}
 

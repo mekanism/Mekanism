@@ -22,24 +22,21 @@ import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
+import mekanism.common.integration.tesla.TeslaCableIntegration;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
-import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.energy.CapabilityEnergy;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
-@InterfaceList({
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla")
-})
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, ITeslaConsumer
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver
 {
 	public Tier.CableTier tier = CableTier.BASIC;
 
@@ -252,12 +249,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 	}
 
 	@Override
-	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
-	{
-		return 0;
-	}
-
-	@Override
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return canConnect(from);
@@ -336,13 +327,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 			buffer.amount = energy;
 		}
 	}
-	
-	@Override
-	@Method(modid = "tesla")
-	public long givePower(long power, boolean simulated) 
-	{
-		return power - (long)Math.round(takeEnergy(power*general.FROM_TESLA, !simulated)*general.TO_TESLA);
-	}
 
 	public double takeEnergy(double energy, boolean doEmit)
 	{
@@ -401,23 +385,36 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 		
 		return data;
 	}
-
+	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
 				|| capability == Capabilities.TESLA_CONSUMER_CAPABILITY
+				|| capability == CapabilityEnergy.ENERGY
 				|| super.hasCapability(capability, facing);
 	}
+	
+	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(getClass(), TeslaCableIntegration.class);
+	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(getClass(), ForgeEnergyCableIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
-				capability == Capabilities.TESLA_CONSUMER_CAPABILITY)
+		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
 		{
 			return (T)this;
+		}
+		
+		if(capability == Capabilities.TESLA_CONSUMER_CAPABILITY)
+		{
+			return (T)teslaManager.getWrapper(this, facing);
+		}
+		
+		if(capability == CapabilityEnergy.ENERGY)
+		{
+			return (T)forgeEnergyManager.getWrapper(this, facing);
 		}
 		
 		return super.getCapability(capability, facing);

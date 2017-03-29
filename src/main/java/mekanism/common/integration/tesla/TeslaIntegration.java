@@ -1,4 +1,4 @@
-package mekanism.common.integration;
+package mekanism.common.integration.tesla;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IEnergyWrapper;
@@ -45,13 +45,23 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
 	@Method(modid = "tesla")
 	public long takePower(long power, boolean simulated) 
 	{
-		return (long)(tileEntity.extractEnergy(side, (int)(power*general.FROM_TESLA*general.TO_RF), simulated)*general.FROM_RF*general.TO_TESLA);
+		return rfToTesla(tileEntity.extractEnergy(side, teslaToRF(power), simulated));
 	}
 	
 	@Override
 	@Method(modid = "tesla")
 	public long givePower(long power, boolean simulated) 
 	{
-		return (long)(tileEntity.receiveEnergy(side, (int)(power*general.FROM_TESLA*general.TO_RF), simulated)*general.FROM_RF*general.TO_TESLA);
+		return rfToTesla(tileEntity.receiveEnergy(side, teslaToRF(power), simulated));
+	}
+	
+	public long rfToTesla(int rf)
+	{
+		return (long)Math.round(rf*general.FROM_RF*general.TO_TESLA);
+	}
+	
+	public int teslaToRF(long tesla)
+	{
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, tesla*general.FROM_TESLA*general.TO_RF));
 	}
 }

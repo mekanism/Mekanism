@@ -23,7 +23,8 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.integration.TeslaIntegration;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
@@ -36,6 +37,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -508,10 +510,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				|| capability == Capabilities.CONFIGURABLE_CAPABILITY
 				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
 				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
+				|| capability == CapabilityEnergy.ENERGY
 				|| super.hasCapability(capability, facing);
 	}
 	
 	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(TileEntityElectricBlock.class, TeslaIntegration.class);
+	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(TileEntityElectricBlock.class, ForgeEnergyIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
@@ -527,6 +531,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
 		{
 			return (T)teslaManager.getWrapper(this, facing);
+		}
+		
+		if(capability == CapabilityEnergy.ENERGY)
+		{
+			return (T)forgeEnergyManager.getWrapper(this, facing);
 		}
 		
 		return super.getCapability(capability, facing);

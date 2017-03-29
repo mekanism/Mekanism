@@ -1190,6 +1190,15 @@ public final class MekanismUtils
 	{
 		return Mekanism.hooks.TeslaLoaded && !general.blacklistTesla;
 	}
+	
+	/**
+	 * Whether or not Forge power should be used.
+	 * @return if Forge power should be used
+	 */
+	public static boolean useForge()
+	{
+		return !general.blacklistForge;
+	}
 
 	/**
 	 * Gets a clean view of a coordinate value without the dimension ID.

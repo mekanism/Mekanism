@@ -161,15 +161,15 @@ import com.mojang.authlib.GameProfile;
  *
  */
 @Mod(modid = "mekanism", name = "Mekanism", version = "9.3.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
-		dependencies = 	"required-after:mcmultipart;" +
-						"after:JEI;" +
-						"after:BuildCraft;" +
-						"after:BuildCraftAPI;" +
-						"after:IC2;" +
-						"after:CoFHCore;" +
-						"after:ComputerCraft;" +
-						"after:Galacticraft API;" +
-						"after:MetallurgyCore")
+		dependencies = 	"after:mcmultipart;" +
+						"after:jei;" +
+						"after:buildcraft;" +
+						"after:buildcraftapi;" +
+						"after:ic2;" +
+						"after:cofhcore;" +
+						"after:computercraft;" +
+						"after:galacticraft api;" +
+						"after:metallurgycore")
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */

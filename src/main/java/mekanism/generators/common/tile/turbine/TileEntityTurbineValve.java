@@ -17,7 +17,8 @@ import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.integration.TeslaIntegration;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
@@ -27,6 +28,7 @@ import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -424,7 +426,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 					|| capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 					|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
 					|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
-					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
+					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
+					|| capability == CapabilityEnergy.ENERGY)
 			{
 				return true;
 			}
@@ -434,6 +437,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 	
 	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(IEnergyWrapper.class, TeslaIntegration.class);
+	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
@@ -454,6 +458,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
 			{
 				return (T)teslaManager.getWrapper(this, facing);
+			}
+			
+			if(capability == CapabilityEnergy.ENERGY)
+			{
+				return (T)forgeEnergyManager.getWrapper(this, facing);
 			}
 		}
 		

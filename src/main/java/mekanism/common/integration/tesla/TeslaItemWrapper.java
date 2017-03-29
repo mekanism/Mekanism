@@ -1,4 +1,4 @@
-package mekanism.common.integration;
+package mekanism.common.integration.tesla;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;

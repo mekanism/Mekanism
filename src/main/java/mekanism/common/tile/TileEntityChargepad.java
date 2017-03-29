@@ -16,9 +16,11 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
+import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -29,6 +31,8 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -132,19 +136,34 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 			{
 				setEnergy(getEnergy() - EnergizedItemManager.charge(itemstack, getEnergy()));
 			}
-			else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem)
+			else if(MekanismUtils.useTesla() && itemstack.hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null))
 			{
-				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*general.TO_IC2), 4, true, false)*general.FROM_IC2;
-				setEnergy(getEnergy() - sent);
+				ITeslaConsumer consumer = itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null);
+				
+				long stored = (long)Math.round(getEnergy()*general.TO_TESLA);
+				setEnergy(getEnergy() - consumer.givePower(stored, false)*general.FROM_TESLA);
+			}
+			else if(MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null))
+			{
+				IEnergyStorage storage = itemstack.getCapability(CapabilityEnergy.ENERGY, null);
+				
+				if(storage.canReceive())
+				{
+					int stored = (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_FORGE));
+					setEnergy(getEnergy() - storage.receiveEnergy(stored, false)*general.FROM_FORGE);
+				}
 			}
 			else if(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem)
 			{
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 
-				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*general.TO_RF)));
-
+				int toTransfer = (int)Math.round(getEnergy()*general.TO_RF);
 				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_RF));
+			}
+			else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem)
+			{
+				double sent = ElectricItem.manager.charge(itemstack, getEnergy()*general.TO_IC2, 4, true, false)*general.FROM_IC2;
+				setEnergy(getEnergy() - sent);
 			}
 		}
 	}
