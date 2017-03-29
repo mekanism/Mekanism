@@ -24,7 +24,7 @@ public class InventoryFrequency extends Frequency
 	public double storedEnergy;
 	public FluidTank storedFluid;
 	public GasTank storedGas;
-	public ItemStack storedItem;
+	public ItemStack storedItem = ItemStack.EMPTY;
 	public double temperature;
 	
 	public InventoryFrequency(String n, String o)
@@ -62,7 +62,7 @@ public class InventoryFrequency extends Frequency
 			nbtTags.setTag("storedGas", storedGas.write(new NBTTagCompound()));
 		}
 		
-		if(storedItem != null)
+		if(!storedItem.isEmpty())
 		{
 			nbtTags.setTag("storedItem", storedItem.writeToNBT(new NBTTagCompound()));
 		}
