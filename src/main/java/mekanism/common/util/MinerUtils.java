@@ -8,6 +8,7 @@ import mekanism.api.util.ListUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -31,7 +32,9 @@ public final class MinerUtils
 		}
 		else {
 			List<ItemStack> ret = new ArrayList<ItemStack>();
-			ret.add(new ItemStack(block, 1, block.getMetaFromState(state)));
+			Item item = Item.getItemFromBlock(block);
+			int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
+			ret.add(new ItemStack(item, 1, meta));
 
 			if(specialSilkIDs.contains(block) || (block.getDrops(world, obj.getPos(), state, 0) != null && block.getDrops(world, obj.getPos(), state, 0).size() > 0))
 			{
