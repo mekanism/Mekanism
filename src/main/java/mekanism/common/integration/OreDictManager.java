@@ -349,7 +349,7 @@ public final class OreDictManager
 
 		for(int i = 1; i < 9; i++)
 		{
-			tempCrafting.setInventorySlotContents(i, null);
+			tempCrafting.setInventorySlotContents(i, ItemStack.EMPTY);
 		}
 
 		List<ItemStack> registeredOres = OreDictionary.getOres("logWood");

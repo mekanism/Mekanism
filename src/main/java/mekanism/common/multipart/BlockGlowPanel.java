@@ -50,6 +50,12 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     }
 	
 	@Override
+	public int getMetaFromState(IBlockState state)
+    {
+		return 0;
+    }
+	
+	@Override
 	public BlockStateContainer createBlockState()
 	{
 		return new GlowPanelBlockState(this);
@@ -151,7 +157,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public int damageDropped(IBlockState state)
     {
-		return getMetaFromState(state);
+		return ((IExtendedBlockState)state).getValue(ColorProperty.INSTANCE).color.getMetaValue();
     }
 	
 	@Override
