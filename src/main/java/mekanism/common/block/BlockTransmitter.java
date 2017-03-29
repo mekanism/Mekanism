@@ -1,5 +1,6 @@
-package mekanism.common.multipart;
+package mekanism.common.block;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -9,9 +10,21 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITierItem;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType.Size;
-import mekanism.common.multipart.MultipartMekanism.AdvancedRayTraceResult;
+import mekanism.common.block.property.PropertyConnection;
+import mekanism.common.block.states.BlockStateTransmitter;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
+import mekanism.common.integration.multipart.MultipartMekanism;
+import mekanism.common.integration.multipart.MultipartMekanism.AdvancedRayTraceResult;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -38,6 +51,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
+import net.minecraftforge.client.model.obj.OBJModel.OBJState;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -118,7 +134,18 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     public IBlockState getExtendedState(IBlockState state, IBlockAccess w, BlockPos pos) 
 	{
 		TileEntitySidedPipe tile = (TileEntitySidedPipe)w.getTileEntity(pos);
-		return tile.getExtendedState(state);
+		
+		if(tile != null)
+		{
+			return tile.getExtendedState(state);
+		}
+		else {
+			ConnectionType[] typeArray = new ConnectionType[] {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, 
+															   ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
+			PropertyConnection connectionProp = new PropertyConnection((byte)0, (byte)0, typeArray, true);
+			
+			return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(Arrays.asList(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
+		}
 	}
 	
 	@Override
@@ -126,7 +153,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	{
 		TileEntitySidedPipe pipe = (TileEntitySidedPipe)world.getTileEntity(pos);
 		
-		if(pipe.getTransmitterType().getSize() == Size.SMALL)
+		if(pipe != null && pipe.getTransmitterType().getSize() == Size.SMALL)
 		{
 			return smallSides[6];
 		}
@@ -138,11 +165,15 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b) 
 	{
 		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
-		List<AxisAlignedBB> boxes = tile.getCollisionBoxes(entityBox.offset(-pos.getX(), -pos.getY(), -pos.getZ()));
 		
-		for(AxisAlignedBB box : boxes)
+		if(tile != null)
 		{
-			collidingBoxes.add(box.offset(pos));
+			List<AxisAlignedBB> boxes = tile.getCollisionBoxes(entityBox.offset(-pos.getX(), -pos.getY(), -pos.getZ()));
+			
+			for(AxisAlignedBB box : boxes)
+			{
+				collidingBoxes.add(box.offset(pos));
+			}
 		}
 	}
 	
@@ -156,6 +187,12 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) 
 	{
 		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
+		
+		if(tile == null)
+		{
+			return null;
+		}
+		
 		List<AxisAlignedBB> boxes = tile.getCollisionBoxes();
 		AdvancedRayTraceResult result = MultipartMekanism.collisionRayTrace(pos, start, end, boxes);
 		
@@ -276,7 +313,14 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
 	{
-		return true;
+		TransmitterType type = state.getValue(BlockStateTransmitter.typeProperty);
+		
+		if(layer == BlockRenderLayer.TRANSLUCENT && (type == TransmitterType.LOGISTICAL_TRANSPORTER || type == TransmitterType.DIVERSION_TRANSPORTER))
+		{
+			return true;
+		}
+		
+		return layer == BlockRenderLayer.CUTOUT;
 	}
 	
 	@Override
@@ -323,7 +367,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     
     private static AxisAlignedBB getDefaultForTile(TileEntitySidedPipe tile)
     {
-    	if(tile.getTransmitterType().getSize() == Size.SMALL)
+    	if(tile == null || tile.getTransmitterType().getSize() == Size.SMALL)
     	{
     		return smallDefault;
     	}
@@ -333,6 +377,11 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     
     private static void setDefaultForTile(TileEntitySidedPipe tile, AxisAlignedBB box)
     {
+    	if(tile == null)
+    	{
+    		return;
+    	}
+    	
     	if(tile.getTransmitterType().getSize() == Size.SMALL)
     	{
     		smallDefault = box;
@@ -345,6 +394,26 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) 
 	{
+		TransmitterType type = TransmitterType.get(meta);
+		
+		switch(type)
+		{
+			case UNIVERSAL_CABLE:
+				return new TileEntityUniversalCable();
+			case MECHANICAL_PIPE:
+				return new TileEntityMechanicalPipe();
+			case PRESSURIZED_TUBE:
+				return new TileEntityPressurizedTube();
+			case LOGISTICAL_TRANSPORTER:
+				return new TileEntityLogisticalTransporter();
+			case DIVERSION_TRANSPORTER:
+				return new TileEntityDiversionTransporter();
+			case RESTRICTIVE_TRANSPORTER:
+				return new TileEntityRestrictiveTransporter();
+			case THERMODYNAMIC_CONDUCTOR:
+				return new TileEntityThermodynamicConductor();
+		}
+		
 		return null;
 	}
 }

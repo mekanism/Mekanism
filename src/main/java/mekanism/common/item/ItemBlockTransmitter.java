@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITierItem;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.BlockStateTransmitter;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;

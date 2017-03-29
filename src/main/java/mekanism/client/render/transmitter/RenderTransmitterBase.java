@@ -5,7 +5,7 @@ import java.util.Map;
 
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
-import mekanism.common.multipart.TileEntityTransmitter;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;

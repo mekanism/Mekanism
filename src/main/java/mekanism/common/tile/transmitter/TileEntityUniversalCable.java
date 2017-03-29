@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.tile.transmitter;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
@@ -20,8 +20,8 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
@@ -41,7 +41,7 @@ import cofh.api.energy.IEnergyReceiver;
 })
 public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, ITeslaConsumer
 {
-	public Tier.CableTier tier;
+	public Tier.CableTier tier = CableTier.BASIC;
 
 	public double currentPower = 0;
 	public double lastWrite = 0;

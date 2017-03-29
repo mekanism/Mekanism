@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -70,7 +71,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	public static int hash(IExtendedBlockState state)
 	{
 		int hash = 1;
-		hash = 31 * hash + state.getValue(ColorProperty.INSTANCE).color.ordinal();
+		hash = 31 * hash + state.getValue(PropertyColor.INSTANCE).color.ordinal();
 		hash = 31 * hash + state.getValue(BlockStateFacing.facingProperty).ordinal();
 		
 		return hash;

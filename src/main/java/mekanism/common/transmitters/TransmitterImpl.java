@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.transmitters;
 
 import java.util.Collection;
 
@@ -8,7 +8,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.transmitters.Transmitter;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;

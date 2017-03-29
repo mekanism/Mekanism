@@ -13,7 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;

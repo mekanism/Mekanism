@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
@@ -16,8 +16,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
+import mekanism.common.block.states.BlockStateTransmitter;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.HeatUtils;
 import net.minecraft.nbt.NBTTagCompound;

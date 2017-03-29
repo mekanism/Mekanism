@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.tile.transmitter;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,6 +12,7 @@ import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.transmitters.TransmitterImpl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

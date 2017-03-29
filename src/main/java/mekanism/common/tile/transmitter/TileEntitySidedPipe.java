@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
@@ -18,10 +18,14 @@ import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.block.BlockTransmitter;
+import mekanism.common.block.property.PropertyConnection;
+import mekanism.common.block.states.BlockStateTransmitter;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType.Size;
-import mekanism.common.multipart.MultipartMekanism.AdvancedRayTraceResult;
+import mekanism.common.integration.multipart.MultipartMekanism;
+import mekanism.common.integration.multipart.MultipartMekanism.AdvancedRayTraceResult;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
@@ -123,11 +127,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 	}
 	
 	public boolean renderCenter()
-	{
-		return false;
-	}
-	
-	public boolean transparencyRender()
 	{
 		return false;
 	}
@@ -264,18 +263,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		return (byte)(currentTransmitterConnections | currentAcceptorConnections);
 	}
 	
-	protected boolean isValidTransmitter(TileEntity tileEntity)
+	public boolean isValidTransmitter(TileEntity tileEntity)
 	{
 		return true;
 	}
-	
-/*
-	@Override
-	public boolean occlusionTest(IMultipart other)
-	{
-		return NormalOcclusionTest.apply(this, other);
-	}
-*/
 	
 	public List<AxisAlignedBB> getCollisionBoxes()
 	{
@@ -684,9 +675,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 	
 	public IBlockState getExtendedState(IBlockState state)
 	{
-		ConnectionProperty connectionProp = new ConnectionProperty(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
+		PropertyConnection connectionProp = new PropertyConnection(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
 		
-		return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true)).withProperty(ConnectionProperty.INSTANCE, connectionProp);
+		return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
 	}
 
 	public void notifyTileChange()

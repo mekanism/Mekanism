@@ -1,11 +1,15 @@
-package mekanism.common.multipart;
+package mekanism.common.block;
 
 import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateGlowPanel;
+import mekanism.common.integration.multipart.MultipartMekanism;
+import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -59,14 +63,14 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public BlockStateContainer createBlockState()
 	{
-		return new GlowPanelBlockState(this);
+		return new BlockStateGlowPanel(this);
 	}
 	
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
-		return state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
+		return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -74,11 +78,15 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) 
 	{
 		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
-		state = state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
 		
-		if(state instanceof IExtendedBlockState)
+		if(tileEntity != null)
 		{
-			return ((IExtendedBlockState)state).withProperty(ColorProperty.INSTANCE, new ColorProperty(tileEntity.colour));
+			state = state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
+			
+			if(state instanceof IExtendedBlockState)
+			{
+				return ((IExtendedBlockState)state).withProperty(PropertyColor.INSTANCE, new PropertyColor(tileEntity.colour));
+			}
 		}
 		
 		return state;
@@ -128,7 +136,13 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		TileEntityGlowPanel tile = (TileEntityGlowPanel)world.getTileEntity(pos);
-		return bounds[tile.side.ordinal()];
+		
+		if(tile != null)
+		{
+			return bounds[tile.side.ordinal()];
+		}
+		
+		return super.getBoundingBox(state, world, pos);
 	}
 	
 	@Override
@@ -158,7 +172,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public int damageDropped(IBlockState state)
     {
-		return ((IExtendedBlockState)state).getValue(ColorProperty.INSTANCE).color.getMetaValue();
+		return ((IExtendedBlockState)state).getValue(PropertyColor.INSTANCE).color.getMetaValue();
     }
 	
 	@Override

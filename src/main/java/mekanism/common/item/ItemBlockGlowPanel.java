@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.item;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

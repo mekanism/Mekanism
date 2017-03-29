@@ -1,7 +1,10 @@
-package mekanism.common.multipart;
+package mekanism.common.block.states;
 
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.block.BlockTransmitter;
+import mekanism.common.block.property.PropertyColor;
+import mekanism.common.block.property.PropertyConnection;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -20,7 +23,7 @@ public class BlockStateTransmitter extends ExtendedBlockState
 	
 	public BlockStateTransmitter(BlockTransmitter block)
 	{
-		super(block, new IProperty[] {typeProperty, tierProperty}, new IUnlistedProperty[] {OBJProperty.INSTANCE, ColorProperty.INSTANCE, ConnectionProperty.INSTANCE});
+		super(block, new IProperty[] {typeProperty, tierProperty}, new IUnlistedProperty[] {OBJProperty.INSTANCE, PropertyColor.INSTANCE, PropertyConnection.INSTANCE});
 	}
 	
 	public enum TransmitterType implements IStringSerializable

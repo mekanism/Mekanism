@@ -1,22 +1,22 @@
-package mekanism.common.multipart;
+package mekanism.common.block.property;
 
 import java.util.Arrays;
 
-import mekanism.common.multipart.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class ConnectionProperty implements IUnlistedProperty<ConnectionProperty>
+public class PropertyConnection implements IUnlistedProperty<PropertyConnection>
 {
-	public static ConnectionProperty INSTANCE = new ConnectionProperty();
+	public static PropertyConnection INSTANCE = new PropertyConnection();
 	
 	public byte connectionByte;
 	public byte transmitterConnections;
 	public ConnectionType[] connectionTypes;
 	public boolean renderCenter;
 	
-	public ConnectionProperty() {}
+	public PropertyConnection() {}
 	
-	public ConnectionProperty(byte b, byte b1, ConnectionType[] types, boolean center)
+	public PropertyConnection(byte b, byte b1, ConnectionType[] types, boolean center)
 	{
 		connectionByte = b;
 		transmitterConnections = b1;
@@ -31,7 +31,7 @@ public class ConnectionProperty implements IUnlistedProperty<ConnectionProperty>
 	}
 
 	@Override
-	public boolean isValid(ConnectionProperty value) 
+	public boolean isValid(PropertyConnection value) 
 	{
 		return true;
 	}
@@ -43,7 +43,7 @@ public class ConnectionProperty implements IUnlistedProperty<ConnectionProperty>
 	}
 
 	@Override
-	public String valueToString(ConnectionProperty value) 
+	public String valueToString(PropertyConnection value) 
 	{
 		return Byte.toString(value.connectionByte) + "_" + Byte.toString(value.transmitterConnections) + "_" 
 				+ Arrays.toString(value.connectionTypes) + "_" + value.renderCenter;

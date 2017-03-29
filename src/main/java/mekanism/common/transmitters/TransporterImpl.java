@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.transmitters;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,9 +15,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
-import mekanism.common.multipart.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;

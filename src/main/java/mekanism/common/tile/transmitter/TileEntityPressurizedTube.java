@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
@@ -16,8 +16,9 @@ import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
+import mekanism.common.block.states.BlockStateTransmitter;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -33,13 +34,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
 	public GasStack lastWrite;
 	
-	public TileEntityPressurizedTube(Tier.TubeTier tubeTier)
-	{
-		super();
-		tier = tubeTier;
-		buffer.setMaxGas(getCapacity());
-	}
-	
 	@Override
 	public BaseTier getBaseTier()
 	{
@@ -50,6 +44,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 	public void setBaseTier(BaseTier baseTier)
 	{
 		tier = Tier.TubeTier.get(baseTier);
+		buffer.setMaxGas(getCapacity());
 	}
 
 	@Override

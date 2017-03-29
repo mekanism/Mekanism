@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
@@ -13,8 +13,9 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.block.states.BlockStateTransmitter;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -36,13 +37,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	public FluidTank buffer = new FluidTank(Fluid.BUCKET_VOLUME);
 
 	public FluidStack lastWrite;
-
-	public TileEntityMechanicalPipe(Tier.PipeTier pipeTier)
-	{
-		super();
-		tier = pipeTier;
-		buffer.setCapacity(getCapacity());
-	}
 	
 	@Override
 	public BaseTier getBaseTier()
@@ -54,6 +48,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	public void setBaseTier(BaseTier baseTier)
 	{
 		tier = Tier.PipeTier.get(baseTier);
+		buffer.setCapacity(getCapacity());
 	}
 	
 	@Override

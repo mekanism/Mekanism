@@ -9,7 +9,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.multipart.TransmitterImpl;
+import mekanism.common.transmitters.TransmitterImpl;
 //import mekanism.common.multipart.MultipartTransmitter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fml.common.FMLCommonHandler;

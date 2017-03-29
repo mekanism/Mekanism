@@ -1,17 +1,17 @@
-package mekanism.common.multipart;
+package mekanism.common.block.property;
 
 import mekanism.api.EnumColor;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class ColorProperty implements IUnlistedProperty<ColorProperty>
+public class PropertyColor implements IUnlistedProperty<PropertyColor>
 {
-	public static ColorProperty INSTANCE = new ColorProperty();
+	public static PropertyColor INSTANCE = new PropertyColor();
 	
 	public EnumColor color;
 	
-	public ColorProperty() {}
+	public PropertyColor() {}
 	
-	public ColorProperty(EnumColor c)
+	public PropertyColor(EnumColor c)
 	{
 		color = c;
 	}
@@ -23,7 +23,7 @@ public class ColorProperty implements IUnlistedProperty<ColorProperty>
 	}
 
 	@Override
-	public boolean isValid(ColorProperty value) 
+	public boolean isValid(PropertyColor value) 
 	{
 		return true;
 	}
@@ -35,7 +35,7 @@ public class ColorProperty implements IUnlistedProperty<ColorProperty>
 	}
 
 	@Override
-	public String valueToString(ColorProperty value) 
+	public String valueToString(PropertyColor value) 
 	{
 		return color.getName();
 	}

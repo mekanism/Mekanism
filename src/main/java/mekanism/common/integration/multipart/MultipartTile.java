@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.integration.multipart;
 
 import mcmultipart.api.multipart.IMultipartTile;
 import net.minecraft.tileentity.TileEntity;

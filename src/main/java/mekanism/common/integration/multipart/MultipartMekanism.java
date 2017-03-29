@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.integration.multipart;
 
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
@@ -48,23 +48,23 @@ public class MultipartMekanism implements IMCMPAddon
 	{
 		TileEntity tile = event.getObject();
 		
-		if(tile instanceof TileEntitySidedPipe)
+		/*if(tile instanceof TileEntitySidedPipe)
 		{
 			register(event, "sided_pipe");
 		}
 		else if(tile instanceof TileEntityGlowPanel)
 		{
 			register(event, "glow_panel");
-		}
+		}*/
 	}
 	
 	@Override
 	public void registerParts(IMultipartRegistry registry) 
 	{
-		registry.registerPartWrapper(MekanismBlocks.Transmitter, new MultipartTransmitter());
+		/*registry.registerPartWrapper(MekanismBlocks.Transmitter, new MultipartTransmitter());
 		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.Transmitter), s -> true, MekanismBlocks.Transmitter);
 		registry.registerPartWrapper(MekanismBlocks.GlowPanel, new MultipartGlowPanel());
-		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);
+		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);*/
     }
 	
 	private void register(AttachCapabilitiesEvent<TileEntity> e, String id)

@@ -12,10 +12,10 @@ import javax.vecmath.Matrix4f;
 
 import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.ctm.CTMModelFactory;
-import mekanism.common.multipart.ColorProperty;
-import mekanism.common.multipart.ConnectionProperty;
-import mekanism.common.multipart.TileEntitySidedPipe;
-import mekanism.common.multipart.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.block.property.PropertyColor;
+import mekanism.common.block.property.PropertyConnection;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -117,12 +117,12 @@ public class TransmitterModel extends OBJBakedModelBase
     	{
 			IExtendedBlockState extended = (IExtendedBlockState)state;
 			BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-			ColorProperty colorProp = extended.getValue(ColorProperty.INSTANCE);
+			PropertyColor colorProp = extended.getValue(PropertyColor.INSTANCE);
 			int color = -1;
 			
 			if(colorProp != null && colorProp.color != null)
 			{
-				color = extended.getValue(ColorProperty.INSTANCE).color.ordinal();
+				color = extended.getValue(PropertyColor.INSTANCE).color.ordinal();
 			}
 			
 			OBJState obj = extended.getValue(OBJProperty.INSTANCE);
@@ -132,7 +132,7 @@ public class TransmitterModel extends OBJBakedModelBase
 				color = -1;
 			}
 			
-			int hash = Objects.hash(layer.ordinal(), color, ConnectionProperty.INSTANCE.valueToString(extended.getValue(ConnectionProperty.INSTANCE)));
+			int hash = Objects.hash(layer.ordinal(), color, PropertyConnection.INSTANCE.valueToString(extended.getValue(PropertyConnection.INSTANCE)));
 			
 			if(obj.getVisibilityMap().containsKey(Group.ALL) || obj.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
 	        {
@@ -157,7 +157,7 @@ public class TransmitterModel extends OBJBakedModelBase
 	{
 		if(tempState != null)
 		{
-			ColorProperty prop = ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE);
+			PropertyColor prop = ((IExtendedBlockState)tempState).getValue(PropertyColor.INSTANCE);
 			
 			if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT && prop != null && prop.color != null)
 			{
@@ -174,8 +174,8 @@ public class TransmitterModel extends OBJBakedModelBase
 		if(tempState != null)
 		{
 			EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
-			ColorProperty prop = ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE);
-			ConnectionProperty connection = ((IExtendedBlockState)tempState).getValue(ConnectionProperty.INSTANCE);
+			PropertyColor prop = ((IExtendedBlockState)tempState).getValue(PropertyColor.INSTANCE);
+			PropertyConnection connection = ((IExtendedBlockState)tempState).getValue(PropertyConnection.INSTANCE);
 			boolean sideIconOverride = getIconStatus(side, connection) > 0;
 			
 			if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT)
@@ -224,7 +224,7 @@ public class TransmitterModel extends OBJBakedModelBase
 		if(tempState != null)
 		{
 			EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
-			ConnectionProperty connection = ((IExtendedBlockState)tempState).getValue(ConnectionProperty.INSTANCE);
+			PropertyConnection connection = ((IExtendedBlockState)tempState).getValue(PropertyConnection.INSTANCE);
 			
 			if(groupName.endsWith("NONE") && getIconStatus(side, connection) == 2)
 			{
@@ -235,7 +235,7 @@ public class TransmitterModel extends OBJBakedModelBase
 		return false;
 	}
 	
-	public byte getIconStatus(EnumFacing side, ConnectionProperty connection)
+	public byte getIconStatus(EnumFacing side, PropertyConnection connection)
 	{
 		ConnectionType type = TileEntitySidedPipe.getConnectionType(side, connection.connectionByte, connection.transmitterConnections, connection.connectionTypes);
 

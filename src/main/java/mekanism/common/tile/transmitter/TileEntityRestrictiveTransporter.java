@@ -1,6 +1,7 @@
-package mekanism.common.multipart;
+package mekanism.common.tile.transmitter;
 
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.BlockStateTransmitter;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -17,12 +18,6 @@ public class TileEntityRestrictiveTransporter extends TileEntityLogisticalTransp
 	public double getCost()
 	{
 		return 1000;
-	}
-	
-	@Override
-	public boolean transparencyRender()
-	{
-		return false;
 	}
 	
 	@Override

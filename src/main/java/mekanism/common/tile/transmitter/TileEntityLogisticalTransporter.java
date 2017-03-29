@@ -1,4 +1,4 @@
-package mekanism.common.multipart;
+package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
@@ -16,13 +16,16 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.block.property.PropertyColor;
+import mekanism.common.block.states.BlockStateTransmitter;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -33,7 +36,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -95,7 +97,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 	}
 
 	@Override
-	protected boolean isValidTransmitter(TileEntity tileEntity)
+	public boolean isValidTransmitter(TileEntity tileEntity)
 	{
 		ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 	
@@ -127,7 +129,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 		getTransmitter().update();
 	}
 
-	protected void pullItems()
+	public void pullItems()
 	{
 		if(pullDelay == 0)
 		{
@@ -372,12 +374,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 	}
 
 	@Override
-	public boolean transparencyRender()
-	{
-		return true;
-	}
-
-	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
@@ -439,7 +435,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 	@Override
 	public IBlockState getExtendedState(IBlockState state)
 	{
-		return ((IExtendedBlockState)super.getExtendedState(state)).withProperty(ColorProperty.INSTANCE, new ColorProperty(getRenderColor()));
+		return ((IExtendedBlockState)super.getExtendedState(state)).withProperty(PropertyColor.INSTANCE, new PropertyColor(getRenderColor()));
 	}
 
 	@Override

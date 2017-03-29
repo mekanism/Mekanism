@@ -1,9 +1,10 @@
-package mekanism.common.multipart;
+package mekanism.common.integration.multipart;
 
 import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.slot.EnumCenterSlot;
 import mcmultipart.api.slot.IPartSlot;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;

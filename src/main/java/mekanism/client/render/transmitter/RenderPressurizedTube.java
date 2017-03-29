@@ -3,7 +3,7 @@ package mekanism.client.render.transmitter;
 import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
-import mekanism.common.multipart.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;

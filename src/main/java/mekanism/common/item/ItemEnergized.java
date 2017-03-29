@@ -21,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -52,8 +53,14 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return getEnergy(stack)/getMaxEnergy(stack);
+		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
 	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)getDurabilityForDisplay(stack)) / 3.0F, 1.0F, 1.0F);
+    }
 
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
