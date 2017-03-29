@@ -30,8 +30,9 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.integration.IC2ItemManager;
-import mekanism.common.integration.TeslaItemWrapper;
+import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.integration.ic2.IC2ItemManager;
+import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
@@ -925,7 +926,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
     {
-        return new ItemCapabilityWrapper(stack, new FluidItemWrapper(), new TeslaItemWrapper()) {
+        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper(), new FluidItemWrapper()) {
         	@Override
         	public boolean hasCapability(Capability<?> capability, EnumFacing facing) 
         	{

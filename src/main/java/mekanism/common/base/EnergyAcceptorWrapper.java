@@ -12,6 +12,8 @@ import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 
 public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
@@ -34,6 +36,10 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side))
 		{
 			wrapper = new TeslaAcceptor(CapabilityUtils.getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side));
+		}
+		else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side))
+		{
+			wrapper = new ForgeAcceptor(CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side));
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{
@@ -269,6 +275,59 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public double fromTesla(double tesla)
 		{
 			return tesla*general.FROM_TESLA;
+		}
+	}
+	
+	public static class ForgeAcceptor extends EnergyAcceptorWrapper
+	{
+		private IEnergyStorage acceptor;
+		
+		public ForgeAcceptor(IEnergyStorage forgeConsumer)
+		{
+			acceptor = forgeConsumer;
+		}
+		
+		@Override
+		public double transferEnergyToAcceptor(EnumFacing side, double amount)
+		{
+			return fromForge(acceptor.receiveEnergy(Math.min(Integer.MAX_VALUE, toForge(amount)), false));
+		}
+
+		@Override
+		public boolean canReceiveEnergy(EnumFacing side) 
+		{
+			return acceptor.canReceive();
+		}
+
+		@Override
+		public double getEnergy() 
+		{
+			return 0;
+		}
+
+		@Override
+		public void setEnergy(double energy) {}
+
+		@Override
+		public double getMaxEnergy() 
+		{
+			return 0;
+		}
+
+		@Override
+		public boolean needsEnergy(EnumFacing side) 
+		{
+			return acceptor.canReceive();
+		}
+		
+		public int toForge(double joules)
+		{
+			return (int)Math.round(joules*general.TO_FORGE);
+		}
+		
+		public double fromForge(double forge)
+		{
+			return forge*general.FROM_FORGE;
 		}
 	}
 }

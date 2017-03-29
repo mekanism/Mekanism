@@ -17,13 +17,15 @@ import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.integration.TeslaIntegration;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
@@ -263,13 +265,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy()*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));
 	}
 
 	@Override
@@ -434,10 +436,12 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 				|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
 				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
 				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
+				|| capability == CapabilityEnergy.ENERGY
 				|| super.hasCapability(capability, facing);
 	}
 	
 	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(IEnergyWrapper.class, TeslaIntegration.class);
+	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
@@ -453,6 +457,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
 		{
 			return (T)teslaManager.getWrapper(this, facing);
+		}
+		
+		if(capability == CapabilityEnergy.ENERGY)
+		{
+			return (T)forgeEnergyManager.getWrapper(this, facing);
 		}
 		
 		return super.getCapability(capability, facing);

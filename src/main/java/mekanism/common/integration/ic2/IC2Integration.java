@@ -1,4 +1,4 @@
-package mekanism.common.integration;
+package mekanism.common.integration.ic2;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;

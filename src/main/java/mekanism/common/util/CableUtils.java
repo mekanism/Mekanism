@@ -12,12 +12,14 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IC2Integration;
+import mekanism.common.integration.ic2.IC2Integration;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -122,6 +124,11 @@ public final class CableUtils
 			return true;
 		}
 		
+		if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite()))
+		{
+			return CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite()).canExtract();
+		}
+		
 		if(MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()))
 		{
 			return true;
@@ -149,9 +156,13 @@ public final class CableUtils
 				return true;
 			}
 		}
-		else if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))
+		else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))
 		{
 			return true;
+		}
+		else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite()))
+		{
+			return CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite()).canReceive();
 		}
 		else if(MekanismUtils.useIC2() && IC2Integration.isAcceptor(orig, tileEntity, side))
 		{
@@ -252,10 +263,15 @@ public final class CableUtils
 				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), currentSending);
 			}
 		}
-		else if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))
+		else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))
 		{
 			ITeslaConsumer consumer = CapabilityUtils.getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite());
 			sent += consumer.givePower((long)Math.round(currentSending*general.TO_TESLA), false)*general.FROM_TESLA;
+		}
+		else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite()))
+		{
+			IEnergyStorage storage = CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite());
+			sent += storage.receiveEnergy((int)Math.round(Math.min(Integer.MAX_VALUE, currentSending*general.TO_FORGE)), false)*general.FROM_FORGE;
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{
