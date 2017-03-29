@@ -211,7 +211,7 @@ item.Transmitter.EliteThermodynamicConductor.name=Elite Thermodynamic Conductor
 item.Transmitter.UltimateThermodynamicConductor.name=Ultimate Thermodynamic Conductor
 
 //Glow Panel
-item.GlowPanel.name=Glow Panel
+tile.GlowPanel.name=Glow Panel
 
 //Energy Cubes
 tile.EnergyCubeBasic.name=Basic Energy Cube

@@ -52,7 +52,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
+		return getEnergy(stack)/getMaxEnergy(stack);
 	}
 
 	@Override

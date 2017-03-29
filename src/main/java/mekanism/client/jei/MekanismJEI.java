@@ -2,9 +2,11 @@ package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -109,10 +111,15 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.ingredients.IIngredientRenderer;
+import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 
 @JEIPlugin
 public class MekanismJEI extends BlankModPlugin
@@ -149,6 +156,32 @@ public class MekanismJEI extends BlankModPlugin
 		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.GasTank), NBT_INTERPRETER);
 		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.CardboardBox), NBT_INTERPRETER);
 		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.Transmitter), NBT_INTERPRETER);
+	}
+	
+	@Override
+	public void registerIngredients(IModIngredientRegistration registry)
+	{
+		List<GasStack> list = GasRegistry.getRegisteredGasses().stream().filter(g -> g.isVisible()).map(g -> new GasStack(g, Fluid.BUCKET_VOLUME)).collect(Collectors.toList());
+		registry.register(GasStack.class, list, new GasStackHelper(), new IIngredientRenderer() {
+			@Override
+			public void render(Minecraft minecraft, int xPosition, int yPosition, Object ingredient) 
+			{
+				
+			}
+
+			@Override
+			public List getTooltip(Minecraft minecraft, Object ingredient) 
+			{
+				List<String> tooltip = new ArrayList<String>();
+				return tooltip;
+			}
+
+			@Override
+			public FontRenderer getFontRenderer(Minecraft minecraft, Object ingredient)
+			{
+				return minecraft.fontRendererObj;
+			}
+		});
 	}
 	
 	@Override

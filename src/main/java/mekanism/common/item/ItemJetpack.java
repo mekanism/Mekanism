@@ -51,7 +51,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
+		return (getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack);
 	}
 
 	@Override

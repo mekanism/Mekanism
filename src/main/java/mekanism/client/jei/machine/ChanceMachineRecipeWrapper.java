@@ -1,15 +1,12 @@
 package mekanism.client.jei.machine;
 
 import java.util.Arrays;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -32,7 +29,7 @@ public class ChanceMachineRecipeWrapper extends BlankRecipeWrapper
 	public void getIngredients(IIngredients ingredients) 
 	{
 		ChanceOutput output = (ChanceOutput)recipe.getOutput();
-		ingredients.setInput(ItemStack.class, ((AdvancedMachineInput)recipe.getInput()).itemStack);
+		ingredients.setInput(ItemStack.class, ((ItemStackInput)recipe.getInput()).ingredient);
 		ingredients.setOutputs(ItemStack.class, Arrays.asList(output.primaryOutput, output.secondaryOutput));
 	}
 	

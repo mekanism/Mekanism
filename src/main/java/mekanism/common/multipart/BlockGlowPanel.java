@@ -3,9 +3,9 @@ package mekanism.common.multipart;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.multipart.BlockStateTransmitter.TransmitterType.Size;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -47,6 +47,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	public BlockGlowPanel() 
 	{
         super(Material.PISTON);
+        setCreativeTab(Mekanism.tabMekanism);
     }
 	
 	@Override

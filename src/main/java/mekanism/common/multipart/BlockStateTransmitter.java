@@ -53,6 +53,11 @@ public class BlockStateTransmitter extends ExtendedBlockState
 		{
 			return name().toLowerCase();
 		}
+		
+		public String getUnlocalizedName()
+		{
+			return unlocalizedName;
+		}
 
 		public Size getSize()
 		{

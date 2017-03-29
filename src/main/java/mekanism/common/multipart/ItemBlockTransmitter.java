@@ -158,7 +158,7 @@ public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 	public String getUnlocalizedName(ItemStack stack)
 	{
 		TransmitterType type = TransmitterType.get(stack.getItemDamage());
-		String name = type.getName();
+		String name = type.getUnlocalizedName();
 		
 		if(type.hasTiers())
 		{

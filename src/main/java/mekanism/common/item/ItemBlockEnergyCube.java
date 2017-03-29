@@ -310,7 +310,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
+		return getEnergy(stack)/getMaxEnergy(stack);
 	}
 
 	@Override

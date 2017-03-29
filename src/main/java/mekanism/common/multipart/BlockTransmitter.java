@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITierItem;
@@ -69,7 +70,8 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	
 	public BlockTransmitter() 
 	{
-        super(Material.WOOD);
+        super(Material.PISTON);
+        setCreativeTab(Mekanism.tabMekanism);
     }
 	
 	@Override

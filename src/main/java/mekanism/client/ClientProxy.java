@@ -452,7 +452,7 @@ public class ClientProxy extends CommonProxy
 		
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPanel), i, new ModelResourceLocation("mekanism:glow_panel", "inventory"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPanel), i, new ModelResourceLocation("mekanism:glowpanel", "inventory"));
 		}
 
 		for(MachineType type : MachineType.values())
