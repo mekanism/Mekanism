@@ -22,9 +22,9 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -151,9 +151,9 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntitySidedPipe pipe = (TileEntitySidedPipe)world.getTileEntity(pos);
+		TileEntity tile = world.getTileEntity(pos);
 		
-		if(pipe != null && pipe.getTransmitterType().getSize() == Size.SMALL)
+		if(tile instanceof TileEntitySidedPipe && ((TileEntitySidedPipe)tile).getTransmitterType().getSize() == Size.SMALL)
 		{
 			return smallSides[6];
 		}

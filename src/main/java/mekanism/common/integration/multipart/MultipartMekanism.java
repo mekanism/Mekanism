@@ -14,6 +14,8 @@ import mcmultipart.api.capability.MCMPCapabilities;
 import mcmultipart.api.multipart.IMultipartRegistry;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.tile.TileEntityGlowPanel;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -38,33 +40,30 @@ import org.apache.commons.lang3.tuple.Pair;
 @MCMPAddon
 public class MultipartMekanism implements IMCMPAddon
 {
-	public MultipartMekanism()
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-	
 	@SubscribeEvent
 	public void onAttachTile(AttachCapabilitiesEvent<TileEntity> event)
 	{
 		TileEntity tile = event.getObject();
 		
-		/*if(tile instanceof TileEntitySidedPipe)
+		if(tile instanceof TileEntityTransmitter)
 		{
-			register(event, "sided_pipe");
+			register(event, "transmitter");
 		}
 		else if(tile instanceof TileEntityGlowPanel)
 		{
 			register(event, "glow_panel");
-		}*/
+		}
 	}
 	
 	@Override
 	public void registerParts(IMultipartRegistry registry) 
 	{
-		/*registry.registerPartWrapper(MekanismBlocks.Transmitter, new MultipartTransmitter());
+		MinecraftForge.EVENT_BUS.register(this);
+		
+		registry.registerPartWrapper(MekanismBlocks.Transmitter, new MultipartTransmitter());
 		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.Transmitter), s -> true, MekanismBlocks.Transmitter);
 		registry.registerPartWrapper(MekanismBlocks.GlowPanel, new MultipartGlowPanel());
-		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);*/
+		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);
     }
 	
 	private void register(AttachCapabilitiesEvent<TileEntity> e, String id)

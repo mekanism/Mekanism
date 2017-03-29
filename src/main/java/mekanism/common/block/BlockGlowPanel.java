@@ -135,11 +135,11 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntityGlowPanel tile = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntity tile = world.getTileEntity(pos);
 		
-		if(tile != null)
+		if(tile != null && tile instanceof TileEntityGlowPanel)
 		{
-			return bounds[tile.side.ordinal()];
+			return bounds[((TileEntityGlowPanel)tile).side.ordinal()];
 		}
 		
 		return super.getBoundingBox(state, world, pos);
