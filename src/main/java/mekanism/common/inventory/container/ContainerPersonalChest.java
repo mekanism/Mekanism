@@ -98,7 +98,7 @@ public class ContainerPersonalChest extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -110,17 +110,17 @@ public class ContainerPersonalChest extends Container
 			{
 				if(!mergeItemStack(slotStack, 54, inventorySlots.size(), true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(!mergeItemStack(slotStack, 0, 54, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
@@ -128,7 +128,7 @@ public class ContainerPersonalChest extends Container
 
 			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			currentSlot.onTake(player, slotStack);
@@ -146,7 +146,7 @@ public class ContainerPersonalChest extends Container
 			
 			if(itemStack != null && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 

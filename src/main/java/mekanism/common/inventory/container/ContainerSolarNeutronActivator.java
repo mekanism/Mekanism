@@ -56,7 +56,7 @@ public class ContainerSolarNeutronActivator extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -72,21 +72,21 @@ public class ContainerSolarNeutronActivator extends Container
 					{
 						if(!mergeItemStack(slotStack, 0, 1, false))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 					else if(((IGasItem)slotStack.getItem()).canReceiveGas(slotStack, tileEntity.outputTank.getGas() != null ? tileEntity.outputTank.getGas().getGas() : null))
 					{
 						if(!mergeItemStack(slotStack, 1, 2, false))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -95,27 +95,27 @@ public class ContainerSolarNeutronActivator extends Container
 				{
 					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID > 28)
 				{
 					if(!mergeItemStack(slotStack, 2, 28, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 
 			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
@@ -123,7 +123,7 @@ public class ContainerSolarNeutronActivator extends Container
 
 			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			currentSlot.onTake(player, slotStack);

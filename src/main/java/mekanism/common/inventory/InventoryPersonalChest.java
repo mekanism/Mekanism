@@ -64,7 +64,7 @@ public class InventoryPersonalChest extends InventoryBasic
 
 		for(int slotCount = 0; slotCount < getSizeInventory(); slotCount++)
 		{
-			if(getStackInSlot(slotCount) != null)
+			if(!getStackInSlot(slotCount).isEmpty())
 			{
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setByte("Slot", (byte)slotCount);
@@ -73,7 +73,7 @@ public class InventoryPersonalChest extends InventoryBasic
 			}
 		}
 
-		if(getStack() != null)
+		if(!getStack().isEmpty())
 		{
 			((ISustainedInventory)getStack().getItem()).setInventory(tagList, getStack());
 		}
@@ -109,6 +109,6 @@ public class InventoryPersonalChest extends InventoryBasic
 
 	public ItemStack getStack()
 	{
-		return itemStack != null ? itemStack : entityPlayer.getHeldItem(currentHand);
+		return !itemStack.isEmpty() ? itemStack : entityPlayer.getHeldItem(currentHand);
 	}
 }

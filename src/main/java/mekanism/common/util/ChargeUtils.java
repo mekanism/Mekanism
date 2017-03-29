@@ -25,7 +25,7 @@ public final class ChargeUtils
 	{
 		IInventory inv = (TileEntityContainerBlock)storer;
 		
-		if(inv.getStackInSlot(slotID) != null && storer.getEnergy() < storer.getMaxEnergy())
+		if(!inv.getStackInSlot(slotID).isEmpty() && storer.getEnergy() < storer.getMaxEnergy())
 		{
 			if(inv.getStackInSlot(slotID).getItem() instanceof IEnergizedItem)
 			{
@@ -73,7 +73,7 @@ public final class ChargeUtils
 	{
 		IInventory inv = (TileEntityContainerBlock)storer;
 		
-		if(inv.getStackInSlot(slotID) != null && storer.getEnergy() > 0)
+		if(!inv.getStackInSlot(slotID).isEmpty() && storer.getEnergy() > 0)
 		{
 			if(inv.getStackInSlot(slotID).getItem() instanceof IEnergizedItem)
 			{

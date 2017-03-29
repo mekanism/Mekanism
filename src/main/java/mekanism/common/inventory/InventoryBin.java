@@ -20,7 +20,7 @@ public class InventoryBin
 
 	public ItemStack getStack()
 	{
-		if(getItemCount() > 0 && getItemType() != null)
+		if(getItemCount() > 0 && !getItemType().isEmpty())
 		{
 			ItemStack ret = getItemType().copy();
 			ret.setCount(Math.min(getItemType().getMaxStackSize(), getItemCount()));
@@ -28,16 +28,16 @@ public class InventoryBin
 			return ret;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public ItemStack removeStack()
 	{
 		ItemStack stack = getStack();
 
-		if(stack == null)
+		if(stack.isEmpty())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		if(getTier() != BinTier.CREATIVE)
@@ -52,7 +52,7 @@ public class InventoryBin
 	{
 		if(isValid(stack) && (getTier() == BinTier.CREATIVE || getItemCount() != getMaxStorage()))
 		{
-			if(getItemType() == null)
+			if(getItemType().isEmpty())
 			{
 				setItemType(stack);
 			}
@@ -62,7 +62,7 @@ public class InventoryBin
 				if(getItemCount() + stack.getCount() <= getMaxStorage())
 				{
 					setItemCount(getItemCount() + stack.getCount());
-					return null;
+					return ItemStack.EMPTY;
 				}
 				else {
 					ItemStack rejects = getItemType().copy();
@@ -83,7 +83,7 @@ public class InventoryBin
 
 	public boolean isValid(ItemStack stack)
 	{
-		if(stack == null || stack.getCount() <= 0)
+		if(stack.isEmpty() || stack.getCount() <= 0)
 		{
 			return false;
 		}
@@ -93,7 +93,7 @@ public class InventoryBin
 			return false;
 		}
 
-		if(getItemType() == null)
+		if(getItemType().isEmpty())
 		{
 			return true;
 		}
@@ -127,7 +127,7 @@ public class InventoryBin
 
 		if(getItemCount() == 0)
 		{
-			setItemType(null);
+			setItemType(ItemStack.EMPTY);
 		}
 	}
 
@@ -135,7 +135,7 @@ public class InventoryBin
 	{
 		if(getItemCount() == 0)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
@@ -143,7 +143,7 @@ public class InventoryBin
 
 	public void setItemType(ItemStack stack)
 	{
-		if(stack == null)
+		if(stack.isEmpty())
 		{
 			ItemDataUtils.removeData(bin, "storedItem");
 			return;

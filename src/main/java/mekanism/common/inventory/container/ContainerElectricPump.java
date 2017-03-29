@@ -60,7 +60,7 @@ public class ContainerElectricPump extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -133,7 +133,7 @@ public class ContainerElectricPump extends Container
 
 			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();

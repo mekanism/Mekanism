@@ -32,6 +32,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,6 +45,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -60,7 +62,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public Coord4D homeLocation;
 
-	public ItemStack[] inventory = new ItemStack[31];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(31, ItemStack.EMPTY);
 
 	public int furnaceBurnTime = 0;
 	public int currentItemBurnTime = 0;
@@ -178,41 +180,36 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				goHome();
 			}
 
-			if(inventory[27] != null && getEnergy() < MAX_ELECTRICITY)
+			if(!inventory.get(27).isEmpty() && getEnergy() < MAX_ELECTRICITY)
 			{
-				if(inventory[27].getItem() instanceof IEnergizedItem)
+				if(inventory.get(27).getItem() instanceof IEnergizedItem)
 				{
-					setEnergy(getEnergy() + EnergizedItemManager.discharge(inventory[27], MAX_ELECTRICITY - getEnergy()));
+					setEnergy(getEnergy() + EnergizedItemManager.discharge(inventory.get(27), MAX_ELECTRICITY - getEnergy()));
 				}
-				else if(MekanismUtils.useIC2() && inventory[27].getItem() instanceof IElectricItem)
+				else if(MekanismUtils.useIC2() && inventory.get(27).getItem() instanceof IElectricItem)
 				{
-					IElectricItem item = (IElectricItem)inventory[27].getItem();
+					IElectricItem item = (IElectricItem)inventory.get(27).getItem();
 
-					if(item.canProvideEnergy(inventory[27]))
+					if(item.canProvideEnergy(inventory.get(27)))
 					{
-						double gain = ElectricItem.manager.discharge(inventory[27], (MAX_ELECTRICITY - getEnergy())* general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
+						double gain = ElectricItem.manager.discharge(inventory.get(27), (MAX_ELECTRICITY - getEnergy())* general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
 						setEnergy(getEnergy() + gain);
 					}
 				}
-				else if(MekanismUtils.useRF() && inventory[27].getItem() instanceof IEnergyContainerItem)
+				else if(MekanismUtils.useRF() && inventory.get(27).getItem() instanceof IEnergyContainerItem)
 				{
-					ItemStack itemStack = inventory[27];
-					IEnergyContainerItem item = (IEnergyContainerItem)inventory[27].getItem();
+					ItemStack itemStack = inventory.get(27);
+					IEnergyContainerItem item = (IEnergyContainerItem)inventory.get(27).getItem();
 
 					int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
 					int toTransfer = (int)Math.round(Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*general.TO_RF)));
 
 					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_RF));
 				}
-				else if(inventory[27].getItem() == Items.REDSTONE && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
+				else if(inventory.get(27).getItem() == Items.REDSTONE && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
 					setEnergy(getEnergy() + general.ENERGY_PER_REDSTONE);
-					inventory[27].shrink(1);
-
-					if(inventory[27].getCount() <= 0)
-					{
-						inventory[27] = null;
-					}
+					inventory.get(27).shrink(1);
 				}
 			}
 
@@ -225,17 +222,17 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			{
 				if(furnaceBurnTime == 0 && canSmelt())
 				{
-					currentItemBurnTime = furnaceBurnTime = TileEntityFurnace.getItemBurnTime(inventory[29]);
+					currentItemBurnTime = furnaceBurnTime = TileEntityFurnace.getItemBurnTime(inventory.get(29));
 
 					if(furnaceBurnTime > 0)
 					{
-						if(inventory[29] != null)
+						if(!inventory.get(29).isEmpty())
 						{
-							inventory[29].shrink(1);
+							inventory.get(29).shrink(1);
 
-							if(inventory[29].getCount() == 0)
+							if(inventory.get(29).getCount() == 0)
 							{
-								inventory[29] = inventory[29].getItem().getContainerItem(inventory[29]);
+								inventory.set(29, inventory.get(29).getItem().getContainerItem(inventory.get(29)));
 							}
 						}
 					}
@@ -273,11 +270,11 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 				for(int i = 0; i < 27; i++)
 				{
-					ItemStack itemStack = inventory[i];
+					ItemStack itemStack = inventory.get(i);
 
-					if(itemStack == null)
+					if(itemStack.isEmpty())
 					{
-						inventory[i] = item.getEntityItem();
+						inventory.set(i, item.getEntityItem());
 						onItemPickup(item, item.getEntityItem().getCount());
 						item.setDead();
 
@@ -327,16 +324,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	private boolean canSmelt()
 	{
-		if(inventory[28] == null)
+		if(inventory.get(28).isEmpty())
 		{
 			return false;
 		}
 		else {
-			ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory[28]);
-			if(itemstack == null) return false;
-			if(inventory[30] == null) return true;
-			if(!inventory[30].isItemEqual(itemstack)) return false;
-			int result = inventory[30].getCount() + itemstack.getCount();
+			ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory.get(28));
+			if(itemstack.isEmpty()) return false;
+			if(inventory.get(30).isEmpty()) return true;
+			if(!inventory.get(30).isItemEqual(itemstack)) return false;
+			int result = inventory.get(30).getCount() + itemstack.getCount();
 			return (result <= getInventoryStackLimit() && result <= itemstack.getMaxStackSize());
 		}
 	}
@@ -345,23 +342,18 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		if(canSmelt())
 		{
-			ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory[28]);
+			ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory.get(28));
 
-			if(inventory[30] == null)
+			if(inventory.get(30).isEmpty())
 			{
-				inventory[30] = itemstack.copy();
+				inventory.set(30, itemstack.copy());
 			}
-			else if(inventory[30].isItemEqual(itemstack))
+			else if(inventory.get(30).isItemEqual(itemstack))
 			{
-				inventory[30].grow(itemstack.getCount());
+				inventory.get(30).grow(itemstack.getCount());
 			}
 
-			inventory[28].shrink(1);
-
-			if(inventory[28].getCount() <= 0)
-			{
-				inventory[28] = null;
-			}
+			inventory.get(28).shrink(1);
 		}
 	}
 
@@ -384,7 +376,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		
 		if(entityplayer.isSneaking())
 		{
-			if(stack != null && stack.getItem() instanceof ItemConfigurator)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator)
 			{
 				if(!world.isRemote)
 				{
@@ -447,13 +439,13 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		NBTTagList tagList = new NBTTagList();
 
-		for(int slotCount = 0; slotCount < inventory.length; slotCount++)
+		for(int slotCount = 0; slotCount < inventory.size(); slotCount++)
 		{
-			if(inventory[slotCount] != null)
+			if(!inventory.get(slotCount).isEmpty())
 			{
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setByte("Slot", (byte)slotCount);
-				inventory[slotCount].writeToNBT(tagCompound);
+				inventory.get(slotCount).writeToNBT(tagCompound);
 				tagList.appendTag(tagCompound);
 			}
 		}
@@ -482,16 +474,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		homeLocation = Coord4D.read(nbtTags);
 
 		NBTTagList tagList = nbtTags.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-		inventory = new ItemStack[getSizeInventory()];
+		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
 			NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
 			byte slotID = tagCompound.getByte("Slot");
 
-			if(slotID >= 0 && slotID < inventory.length)
+			if(slotID >= 0 && slotID < inventory.size())
 			{
-				inventory[slotID] = InventoryUtils.loadFromNBT(tagCompound);
+				inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
 			}
 		}
 	}
@@ -576,64 +568,33 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	@Override
 	public int getSizeInventory()
 	{
-		return inventory.length;
+		return inventory.size();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
-		return inventory[slotID];
+		return inventory.get(slotID);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
-		if(getStackInSlot(slotID) != null)
-		{
-			ItemStack tempStack;
-
-			if(getStackInSlot(slotID).getCount() <= amount)
-			{
-				tempStack = getStackInSlot(slotID);
-				setInventorySlotContents(slotID, null);
-				return tempStack;
-			}
-			else {
-				tempStack = getStackInSlot(slotID).splitStack(amount);
-
-				if(getStackInSlot(slotID).getCount() == 0)
-				{
-					setInventorySlotContents(slotID, null);
-				}
-
-				return tempStack;
-			}
-		}
-		else {
-			return null;
-		}
+		return ItemStackHelper.getAndSplit(inventory, slotID, amount);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int slotID)
 	{
-		if(getStackInSlot(slotID) != null)
-		{
-			ItemStack tempStack = getStackInSlot(slotID);
-			setInventorySlotContents(slotID, null);
-			return tempStack;
-		}
-		else {
-			return null;
-		}
+		return ItemStackHelper.getAndRemove(inventory, slotID);
 	}
 
 	@Override
 	public void setInventorySlotContents(int slotID, ItemStack itemstack)
 	{
-		inventory[slotID] = itemstack;
+		inventory.set(slotID, itemstack);
 
-		if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
+		if(!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit())
 		{
 			itemstack.setCount(getInventoryStackLimit());
 		}
@@ -692,16 +653,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			return;
 		}
 
-		inventory = new ItemStack[getSizeInventory()];
+		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 
 		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
 		{
 			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.getCompoundTagAt(slots);
 			byte slotID = tagCompound.getByte("Slot");
 
-			if(slotID >= 0 && slotID < inventory.length)
+			if(slotID >= 0 && slotID < inventory.size())
 			{
-				inventory[slotID] = InventoryUtils.loadFromNBT(tagCompound);
+				inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
 			}
 		}
 	}
@@ -711,13 +672,13 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		NBTTagList tagList = new NBTTagList();
 
-		for(int slots = 0; slots < inventory.length; slots++)
+		for(int slots = 0; slots < inventory.size(); slots++)
 		{
-			if(inventory[slots] != null)
+			if(!inventory.get(slots).isEmpty())
 			{
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setByte("Slot", (byte)slots);
-				inventory[slots].writeToNBT(tagCompound);
+				inventory.get(slots).writeToNBT(tagCompound);
 				tagList.appendTag(tagCompound);
 			}
 		}
@@ -730,7 +691,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		for(ItemStack stack : inventory)
 		{
-			if(stack != null)
+			if(!stack.isEmpty())
 			{
 				return false;
 			}

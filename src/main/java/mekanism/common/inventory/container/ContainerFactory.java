@@ -114,7 +114,7 @@ public class ContainerFactory extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 		
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -126,21 +126,21 @@ public class ContainerFactory extends Container
 			{
 				if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(slotID != 1 && slotID != 2 && isProperMachine(slotStack) && !slotStack.isItemEqual(tileEntity.getMachineStack()))
 			{
 				if(!mergeItemStack(slotStack, 1, 2, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(slotID == 2)
 			{
 				if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(tileEntity.recipeType.getAnyRecipe(slotStack, tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null)
@@ -149,13 +149,13 @@ public class ContainerFactory extends Container
 				{
 					if(!mergeItemStack(slotStack, 4, 4+tileEntity.tier.processes, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -165,14 +165,14 @@ public class ContainerFactory extends Container
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID == 0)
 				{
 					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -182,13 +182,13 @@ public class ContainerFactory extends Container
 				{
 					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -198,13 +198,13 @@ public class ContainerFactory extends Container
 				{
 					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -215,27 +215,27 @@ public class ContainerFactory extends Container
 				{
 					if(!mergeItemStack(slotStack, (slotEnd+27), inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID > (slotEnd+26))
 				{
 					if(!mergeItemStack(slotStack, slotEnd, (slotEnd+26), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, slotEnd, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 
 			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
@@ -243,7 +243,7 @@ public class ContainerFactory extends Container
 
 			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			currentSlot.onTake(player, slotStack);

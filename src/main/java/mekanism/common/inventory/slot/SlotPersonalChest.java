@@ -15,7 +15,7 @@ public class SlotPersonalChest extends Slot
 	@Override
 	public boolean canTakeStack(EntityPlayer player)
 	{
-		if(inventory.getStackInSlot(getSlotIndex()) == null)
+		if(inventory.getStackInSlot(getSlotIndex()).isEmpty())
 		{
 			return false;
 		}
