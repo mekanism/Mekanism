@@ -450,7 +450,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		int metadata = state.getBlock().getMetaFromState(state);
 		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(stack != null)
+		if(!stack.isEmpty())
 		{
 			Item tool = stack.getItem();
 
@@ -528,7 +528,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					{
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
-							if(stack != null && FluidContainerUtils.isFluidContainer(stack))
+							if(!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack))
 							{
 								if(manageInventory(entityplayer, (TileEntityFluidTank)tileEntity, hand, stack))
 								{
@@ -767,7 +767,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				
 				if(copyStack.getCount() == 0)
 				{
-					copyStack = null;
+					copyStack = ItemStack.EMPTY;
 				}
 				
 				if(drained != null)
@@ -777,7 +777,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 						filled = true;
 					}
 					else {
-						if(copyStack != null)
+						if(!copyStack.isEmpty())
 						{
 							if(itemStack.getCount() == 1)
 							{
@@ -798,7 +798,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	
 							if(itemStack.getCount() == 0)
 							{
-								player.setHeldItem(hand, null);
+								player.setHeldItem(hand, ItemStack.EMPTY);
 							}
 	
 							filled = true;

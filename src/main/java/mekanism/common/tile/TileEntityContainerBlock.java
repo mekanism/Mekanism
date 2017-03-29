@@ -116,12 +116,22 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
+		if(inventory == null)
+		{
+			return ItemStack.EMPTY;
+		}
+		
 		return ItemStackHelper.getAndSplit(inventory, slotID, amount);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int slotID)
 	{
+		if(inventory == null)
+		{
+			return ItemStack.EMPTY;
+		}
+		
 		return ItemStackHelper.getAndRemove(inventory, slotID);
 	}
 

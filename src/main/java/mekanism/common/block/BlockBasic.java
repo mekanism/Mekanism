@@ -475,7 +475,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		{
 			TileEntityBin bin = (TileEntityBin)tile;
 
-			if(stack != null && MekanismUtils.hasUsableWrench(entityplayer, pos))
+			if(!stack.isEmpty() && MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
 				if(!world.isRemote)
 				{
@@ -505,9 +505,9 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			{
 				if(bin.getItemCount() < bin.tier.storage)
 				{
-					if(bin.addTicks == 0 && stack != null)
+					if(bin.addTicks == 0)
 					{
-						if(stack != null)
+						if(!stack.isEmpty())
 						{
 							ItemStack remain = bin.add(stack);
 							entityplayer.setHeldItem(hand, remain);
@@ -525,7 +525,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 								break;
 							}
 	
-							if(inv.get(i) != null)
+							if(!inv.get(i).isEmpty())
 							{
 								ItemStack remain = bin.add(inv.get(i));
 								inv.set(i, remain);
@@ -635,7 +635,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 				
 				if(copyStack.getCount() == 0)
 				{
-					copyStack = null;
+					copyStack = ItemStack.EMPTY;
 				}
 				
 				if(drained != null)
@@ -645,7 +645,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 						filled = true;
 					}
 					else {
-						if(copyStack != null)
+						if(!copyStack.isEmpty())
 						{
 							if(itemStack.getCount() == 1)
 							{
@@ -666,7 +666,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	
 							if(itemStack.getCount() == 0)
 							{
-								player.setHeldItem(hand, null);
+								player.setHeldItem(hand, ItemStack.EMPTY);
 							}
 	
 							filled = true;

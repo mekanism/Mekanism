@@ -16,6 +16,7 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -285,11 +286,33 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			getSynchronizedData().getInventory().set(slotID, itemstack);
 
-			if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
+			if(!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit())
 			{
 				itemstack.setCount(getInventoryStackLimit());
 			}
 		}
+	}
+	
+	@Override
+	public ItemStack decrStackSize(int slotID, int amount)
+	{
+		if(structure == null || getSynchronizedData().getInventory() == null)
+		{
+			return ItemStack.EMPTY;
+		}
+		
+		return ItemStackHelper.getAndSplit(getSynchronizedData().getInventory(), slotID, amount);
+	}
+
+	@Override
+	public ItemStack removeStackFromSlot(int slotID)
+	{
+		if(structure == null || getSynchronizedData().getInventory() == null)
+		{
+			return ItemStack.EMPTY;
+		}
+		
+		return ItemStackHelper.getAndRemove(getSynchronizedData().getInventory(), slotID);
 	}
 	
 	@Override

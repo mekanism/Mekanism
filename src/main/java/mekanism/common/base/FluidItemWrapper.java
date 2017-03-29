@@ -66,6 +66,6 @@ public class FluidItemWrapper extends ItemCapability implements IFluidHandler
 	@Override
 	public boolean canProcess(Capability cap)
 	{
-		return cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+		return cap == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
 	}
 }

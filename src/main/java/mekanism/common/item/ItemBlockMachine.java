@@ -932,7 +932,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         	@Override
         	public boolean hasCapability(Capability<?> capability, EnumFacing facing) 
         	{
-        		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        		if(capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
         		{
         			return MachineType.get(itemStack) == MachineType.FLUID_TANK;
         		}

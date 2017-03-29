@@ -120,7 +120,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		{
 			if(basicType == BasicBlockType.BIN)
 			{
-				GlStateManager.pushMatrix();
+				/*GlStateManager.pushMatrix();
 				ItemBlockBasic itemBasic = (ItemBlockBasic)stack.getItem();
 				InventoryBin inv = new InventoryBin(stack);
 				binRenderer.render(EnumFacing.NORTH, inv.getItemType(), inv.getItemCount(), false, -0.5, -0.5, -0.5);
@@ -131,7 +131,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		        GlStateManager.enableBlend();
 		        GlStateManager.blendFunc(770, 771);
 		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-				GlStateManager.popMatrix();
+				GlStateManager.popMatrix(); TODO get this working*/
 			}
 			else if(basicType == BasicBlockType.SECURITY_DESK)
 			{

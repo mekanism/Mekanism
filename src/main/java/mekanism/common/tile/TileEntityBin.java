@@ -155,7 +155,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		if(isValid(stack) && (tier == BinTier.CREATIVE || getItemCount() != tier.storage))
 		{
-			if(itemType == null && !simulate)
+			if(itemType.isEmpty() && !simulate)
 			{
 				setItemType(stack);
 			}

@@ -1476,7 +1476,7 @@ public final class MekanismUtils
 	{
 		ItemStack tool = player.inventory.getCurrentItem();
 		
-		if(tool == null)
+		if(tool.isEmpty())
 		{
 			return false;
 		}

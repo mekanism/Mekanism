@@ -11,13 +11,14 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class FluidContainerUtils 
 {
 	public static boolean isFluidContainer(ItemStack stack)
 	{
-		return !stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		return !stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 	}
 	
 	public static FluidStack extractFluid(FluidTank tileTank, ItemStack container)
@@ -32,7 +33,7 @@ public final class FluidContainerUtils
 	
 	public static FluidStack extractFluid(int needed, ItemStack container, FluidChecker checker)
 	{
-		IFluidHandler handler = FluidUtil.getFluidHandler(container);
+		IFluidHandlerItem handler = FluidUtil.getFluidHandler(container);
 		
 		if(handler == null || FluidUtil.getFluidContained(container) == null)
 		{
@@ -76,6 +77,7 @@ public final class FluidContainerUtils
 			ItemStack inputCopy = StackUtils.size(inventory.get(inSlot).copy(), 1);
 			
 			int drained = insertFluid(stack, inputCopy);
+			inputCopy = FluidUtil.getFluidHandler(inputCopy).getContainer();
 			
 			if(!inventory.get(outSlot).isEmpty() && (!ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy) || inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize()))
 			{
@@ -124,7 +126,7 @@ public final class FluidContainerUtils
 			}
 		});
 		
-		ItemStack inputCopy = input.copy();
+		ItemStack inputCopy = FluidUtil.getFluidHandler(input).getContainer();
 		
 		if(FluidUtil.getFluidContained(inputCopy) == null && !inputCopy.isEmpty())
 		{
