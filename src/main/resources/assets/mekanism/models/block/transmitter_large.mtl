@@ -1,0 +1,26 @@
+# Blender MTL File: 'transmitter_large.blend'
+# Material Count: 4
+
+newmtl None
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #side
+
+newmtl None_Center
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center
+
+newmtl None_Opaque
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #side_opaque
+
+newmtl None_Center_Opaque
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_opaque

@@ -1,0 +1,22 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanismgenerators:blocks/ctm/reactor_frame",
+      "front": "mekanismgenerators:blocks/ctm/reactor_frame",
+      "top": "mekanismgenerators:blocks/ctm/reactor_controller"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "inventory": [{}]
+  }
+}
+

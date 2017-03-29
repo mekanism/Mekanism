@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryRight",
+      "front": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryFront",
+      "south": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryBack",
+      "west": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryRight",
+      "east": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryLeft",
+      "up": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryTop",
+      "down": "mekanism:blocks/factory/basic/BasicFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryFrontOn",
+          "south": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryBackOn",
+          "west": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryRightOn",
+          "east": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryLeftOn",
+          "up": "mekanism:blocks/factory/basic/crushing/BasicCrushingFactoryTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

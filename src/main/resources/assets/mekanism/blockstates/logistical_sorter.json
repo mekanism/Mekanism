@@ -1,0 +1,23 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:logistical_sorter"
+  },
+  "variants": {
+    "normal": [{}],
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90},
+      "up":    {"x": -90},
+      "down":  {"x": 90}
+    },
+    "active": {
+      "true": {"textures": {"all": "mekanism:blocks/models/logistical_sorter_on"}},
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

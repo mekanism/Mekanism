@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryRight",
+      "front": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryFront",
+      "south": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryBack",
+      "west": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryRight",
+      "east": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryLeft",
+      "up": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryTop",
+      "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryFrontOn",
+          "south": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryBackOn",
+          "west": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryRightOn",
+          "east": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryLeftOn",
+          "up": "mekanism:blocks/factory/advanced/combining/AdvancedCombiningFactoryTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

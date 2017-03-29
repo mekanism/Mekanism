@@ -1,0 +1,38 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterRight",
+      "front": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterFront",
+      "west": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterRight",
+      "east": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterLeft",
+      "south": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterBack",
+      "up": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterTop",
+      "down": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterFrontOn",
+          "west": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterRightOn",
+          "east": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterLeftOn",
+          "south": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterBackOn",
+          "up": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterTopOn",
+          "down": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterBottomOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

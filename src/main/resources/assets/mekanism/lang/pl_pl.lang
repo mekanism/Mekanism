@@ -1,0 +1,534 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=Obsydianowe TNT
+item.EnrichedAlloy.name=Wzbogacony stop
+item.EnergyTablet.name=Akumulator
+item.SpeedUpgrade.name=Ulepszenie prędkości przetwarzania
+item.EnergyUpgrade.name=Ulepszenie pojemności energii
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Rozszczepiacz atomowy
+item.AtomicCore.name=Atomowe jądro
+item.ElectricBow.name=Elektryczny łuk
+item.ControlCircuit.name=Procesor
+item.EnrichedIron.name=Wzbogacone żelazo
+item.CompressedCarbon.name=Skompresowany węgiel
+item.PortableTeleporter.name=Przenośny teleport
+item.TeleportationCore.name=Jądro teleportu
+item.Configurator.name=Konfigurator 
+item.NetworkReader.name=Czytnik sieci
+item.WalkieTalkie.name=Walkie-talkie
+item.Jetpack.name=Plecak odrzutowy
+item.ScubaTank.name=Butla tlenowa
+item.GasMask.name=Maska gazowa
+item.Dictionary.name=Słownik
+item.ElectrolyticCore.name=Jądro elektrolityczne
+item.CompressedRedstone.name=Skompresowany czerwony kamień
+item.Sawdust.name=Trociny
+item.Salt.name=Sól
+item.BrineBucket.name=Wiaderko solanki
+item.FreeRunners.name=Elektryczne buty
+item.ArmoredJetpack.name=Opancerzony plecak odrzutowy
+
+//Gas Tank
+tile.GasTank.name=Zbiornik na gaz
+
+//Cardboard Box
+tile.CardboardBox.name=Pudełko tekturowe
+
+//Bounding Block
+tile.BoundingBlock.name=Blok graniczny
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Blok osmu
+tile.BasicBlock.BronzeBlock.name=Blok brązu
+tile.BasicBlock.RefinedObsidian.name=Rafinowany obsydian
+tile.BasicBlock.CharcoalBlock.name=Blok węgla drzewnego
+tile.BasicBlock.RefinedGlowstone.name=Rafinowany jasnogłaz
+tile.BasicBlock.SteelBlock.name=Blok stali
+tile.BasicBlock.Bin.name=Pojemnik
+tile.BasicBlock.TeleporterFrame.name=Rama teleportu
+tile.BasicBlock.SteelCasing.name=Stalowa obudowa
+tile.BasicBlock.DynamicTank.name=Obudowa zbiornika
+tile.BasicBlock.DynamicGlass.name=Szyba zbiornika
+tile.BasicBlock.DynamicValve.name=Zawór zbiornika
+tile.BasicBlock.CopperBlock.name=Blok miedzi
+tile.BasicBlock.TinBlock.name=Blok cyny
+tile.BasicBlock.SalinationController.name=Regulator zbiornika zasalania
+tile.BasicBlock.SalinationValve.name=Zawór zbiornika zasalania
+
+//Basic Block 2 (second ID iteration)
+tile.BasicBlock2.SalinationBlock.name=Zbiornik zasalania
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Komora wzbogacania
+tile.MachineBlock.OsmiumCompressor.name=Osmowy kompresor
+tile.MachineBlock.Combiner.name=Sumator
+tile.MachineBlock.Crusher.name=Rozdrabniarka
+tile.MachineBlock.BasicFactory.name=Zwykła fabryka
+tile.MachineBlock.AdvancedFactory.name=Zaawansowana fabryka
+tile.MachineBlock.EliteFactory.name=Elitarna fabryka
+tile.MachineBlock.MetallurgicInfuser.name=Nasycacz metali
+tile.MachineBlock.PurificationChamber.name=Komora oczyszczająca
+tile.MachineBlock.EnergizedSmelter.name=Energetyzowana huta
+tile.MachineBlock.Teleporter.name=Teleport
+tile.MachineBlock.ElectricPump.name=Elektryczna pompa
+tile.MachineBlock.ElectricChest.name=Elektryczna skrzynia
+tile.MachineBlock.Chargepad.name=Ładowarka
+tile.MachineBlock.LogisticalSorter.name=Inteligentny sortownik
+tile.MachineBlock.DigitalMiner.name=Kombajn górniczy
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Koncentrator obrotowy
+tile.MachineBlock2.ChemicalOxidizer.name=Utleniacz chemiczny
+tile.MachineBlock2.ChemicalInfuser.name=Nasycacz chemiczny
+tile.MachineBlock2.ChemicalCombiner.name=Sumator chemiczny
+tile.MachineBlock2.ChemicalInjectionChamber.name=Komora wtrysku chemicznego
+tile.MachineBlock2.ElectrolyticSeparator.name=Separator elektrolityczny
+tile.MachineBlock2.PrecisionSawmill.name=Pilarka ramowa
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Komora rozpadu chemicznego
+tile.MachineBlock2.ChemicalWasher.name=Pralka chemiczna
+tile.MachineBlock2.ChemicalCrystallizer.name=Krystalizator chemiczny
+
+//Infuse types
+infuse.carbon=Węglik
+infuse.tin=Cyna
+infuse.diamond=Diament
+infuse.redstone=Czerwony kamień
+infuse.fungi=Grzyby
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Ruda osmu
+tile.OreBlock.CopperOre.name=Ruda miedzi
+tile.OreBlock.TinOre.name=Ruda cyny
+
+item.MultipartTransmitter.PressurizedTube.name=Rura gazowa
+item.MultipartTransmitter.BasicUniversalCable.name=Zwykły kabel uniwersalny
+item.MultipartTransmitter.AdvancedUniversalCable.name=Zaawansowany kabel uniwersalny
+item.MultipartTransmitter.EliteUniversalCable.name=Elitarny kabel uniwersalny
+item.MultipartTransmitter.UltimateUniversalCable.name=Najlepszy kabel uniwersalny
+item.MultipartTransmitter.MechanicalPipe.name=Rura mechaniczna
+item.MultipartTransmitter.LogisticalTransporter.name=Inteligentny transporter
+item.MultipartTransmitter.RestrictiveTransporter.name=Warunkowy transporter
+item.MultipartTransmitter.DiversionTransporter.name=Kierunkowy transporter
+
+//Energy Cubes
+tile.EnergyCube.Basic.name=Zwykła kostka energetyczna
+tile.EnergyCube.Advanced.name=Zaawansowana kostka energetyczna
+tile.EnergyCube.Elite.name=Elitarna kostka energetyczna
+tile.EnergyCube.Ultimate.name=Najlepsza kostka energetyczna
+
+//Dust
+item.ironDust.name=Pył żelaza
+item.goldDust.name=Pył złota
+item.osmiumDust.name=Pył osmu
+item.obsidianDust.name=Pył rafinowanego obsydianu
+item.diamondDust.name=Pył diamentu
+item.steelDust.name=Pył stali
+item.copperDust.name=Pył miedzi
+item.tinDust.name=Pył cyny
+item.silverDust.name=Pył srebra
+item.leadDust.name=Pył ołowiu
+item.sulfurDust.name=Pył siarki
+
+//Clumps
+item.ironClump.name=Bryłka żelaza
+item.goldClump.name=Bryłka złota
+item.osmiumClump.name=Bryłka osmu
+item.copperClump.name=Bryłka miedzi
+item.tinClump.name=Bryłka cyny
+item.silverClump.name=Bryłka srebra
+item.obsidianClump.name=Bryłka obsydianu
+item.leadClump.name=Bryłka ołowiu
+
+//Shards
+item.ironShard.name=Odłamek żelaza
+item.goldShard.name=Odłamek złota
+item.osmiumShard.name=Odłamek osmu
+item.copperShard.name=Odłamek miedzi
+item.tinShard.name=Odłamek cyny
+item.silverShard.name=Odłamek srebra
+item.obsidianShard.name=Odłamek obsydianu
+item.leadShard.name=Odłamek ołowiu
+
+//Crystals
+item.ironCrystal.name=Kryształ żelaza
+item.goldCrystal.name=Kryształ złota
+item.osmiumCrystal.name=Kryształ osmu
+item.copperCrystal.name=Kryształ miedzi
+item.tinCrystal.name=Kryształ cyny
+item.silverCrystal.name=Kryształ srebra
+item.obsidianCrystal.name=Kryształ obsydianu
+item.leadCrystal.name=Kryształ ołowiu
+
+//Dirty Dust
+item.dirtyIronDust.name=Zanieczyszczony pył żelaza
+item.dirtyGoldDust.name=Zanieczyszczony pył złota
+item.dirtyOsmiumDust.name=Zanieczyszczony pył osmu
+item.dirtyCopperDust.name=Zanieczyszczony pył miedzi
+item.dirtyTinDust.name=Zanieczyszczony pył cyny
+item.dirtySilverDust.name=Zanieczyszczony pył srebra
+item.dirtyObsidianDust.name=Zanieczyszczony pył obsydianu
+item.dirtyLeadDust.name=Zanieczyszczony pył ołowiu
+
+//Ingots
+item.obsidianIngot.name=Sztabka obsydianu
+item.osmiumIngot.name=Sztabka osmu
+item.bronzeIngot.name=Sztabka brązu
+item.glowstoneIngot.name=Sztabka jasnogłazu
+item.steelIngot.name=Sztabka stali
+item.copperIngot.name=Sztabka miedzi
+item.tinIngot.name=Sztabka cyny
+
+//Gasses
+gas.hydrogen=Wodór
+gas.oxygen=Tlen
+gas.water=Para
+gas.chlorine=Chlor
+gas.sulfurDioxideGas=Dwutlenek siarki
+gas.sulfurTrioxideGas=Trójtlenek siarki
+gas.sulfuricAcid=Kwas siarkowy
+gas.hydrogenChloride=Chlorowodór
+gas.liquidOsmium=Płynny osm
+gas.liquidStone=Płynny kamień
+
+gas.iron=Zawiesina żelaza
+gas.gold=Zawiesina złota
+gas.osmium=Zawiesina osmu
+gas.copper=Zawiesina miedzi
+gas.tin=Zawiesina cyny
+gas.silver=Zawiesina srebra
+gas.obsidian=Zawiesina obsydianu
+gas.lead=Zawiesina ołowiu
+
+gas.cleanIron=Oczyszczona zawiesina żelaza
+gas.cleanGold=Oczyszczona zawiesina złota
+gas.cleanOsmium=Oczyszczona zawiesina osmu
+gas.cleanCopper=Oczyszczona zawiesina miedzi
+gas.cleanTin=Oczyszczona zawiesina cyny
+gas.cleanSilver=Oczyszczona zawiesina srebra
+gas.cleanObsidian=Oczyszczona zawiesina obsydianu
+gas.cleanLead=Oczyszczona zawiesina ołowiu
+
+//Fluids
+fluid.hydrogen=Płynny wodór
+fluid.oxygen=Płynny tlen
+fluid.chlorine=Płynny chlor
+fluid.sulfurDioxideGas=Płynny dwutlenek siarki
+fluid.sulfurTrioxideGas=Płynny trójtlenek siarki
+fluid.sulfuricAcid=Płynny kwas siarkowy
+fluid.hydrogenChloride=Płynny chlorowodór
+fluid.brine=Solanka
+
+//OreGas names
+oregas.iron=Ruda żelaza
+oregas.gold=Ruda złota
+oregas.osmium=Ruda osmu
+oregas.copper=Ruda miedzi
+oregas.tin=Ruda cyny
+oregas.silver=Ruda srebra
+oregas.obsidian=Ruda obsydianu
+oregas.lead=Ruda ołowiu
+
+//Gui text
+gui.removeSpeedUpgrade=Usuń ulepszenie prędkości przetwarzania
+gui.removeEnergyUpgrade=Usuń ulepszenie pojemności energii
+gui.condensentrating=Koncentrowanie
+gui.decondensentrating=Dekoncentrowanie
+gui.power=Energia
+gui.confirm=Zatwierdź
+gui.open=Otwórz
+gui.allOK=Wszystko zgodne
+gui.none=Nic
+gui.new=Nowy
+gui.edit=Edytuj
+gui.save=Zapisz
+gui.output=Wyjście
+gui.delete=Usuń
+gui.status=Status
+gui.autoEject=Automatycznego wyjmowanie
+gui.itemstack=Przedmiot
+gui.oredict=Słownik
+gui.out=Wyjście
+gui.noFluid=Brak cieczy
+gui.empty=Pusty
+gui.volume=Objętość
+gui.start=Rozpocznij
+gui.stop=Zatrzymaj
+gui.config=Ustawienia
+gui.teleport=Teleport
+gui.eject=Wyjmij
+gui.input=Wejście
+gui.slots=Miejsca
+gui.state=Stan
+gui.on=Włączony
+gui.off=Wyłączony
+gui.filters=Filtry
+gui.idle=Bezczynny
+
+gui.chemicalInfuser.short=Nasycacz chemiczny
+gui.chemicalDissolutionChamber.short=Komora rozpadu chemicznego
+
+gui.dictionary.noKey=Brak klucza
+gui.dictionary.key=Klucz
+
+gui.configuration=Konfuguracja
+gui.configuration.strictInput=Wejście stałe
+
+gui.rotaryCondensentrator.toggleOperation=Przełącz operację
+
+gui.factory.secondaryEnergy=Dodatkowy surowiec
+gui.factory.smelting=Przetapianie
+gui.factory.enriching=Wzbogacanie
+gui.factory.crushing=Rozdrabnianie
+gui.factory.compressing=Kompresowanie
+gui.factory.combining=Łączenie
+gui.factory.purifying=Oczyszczanie
+gui.factory.injecting=Wtryskiwanie
+gui.factory.autoSort=Sortowanie
+
+gui.oredictFilter=Filtr słownika
+gui.oredictFilter.noKey=Nie wprowadzono klucza
+gui.oredictFilter.sameKey=Identyczny klucz
+
+gui.itemFilter=Filtr przedmiotu
+gui.itemFilter.noItem=Brak przedmiotu
+gui.itemFilter.details=Szczegóły przedmiotów
+gui.itemFilter.min=Minimum
+gui.itemFilter.max=Maksimum
+
+gui.portableTeleporter=Przenośny teleport
+
+gui.teleporter.notReady=Nie gotowy
+gui.teleporter.ready=Gotowy
+gui.teleporter.needsEnergy=Potrzeba energii
+gui.teleporter.linksCapacity=Połączenie > 2
+gui.teleporter.noLink=Brak połączenia
+
+gui.robit=Robit
+entity.Robit.name=Robit
+gui.robit.smelting=Robit: Piec
+gui.robit.inventory=Robit: Inwentarz
+gui.robit.crafting=Robit: Stół rzemieślniczy
+gui.robit.greeting=Yo, jestem
+gui.robit.toggleFollow=Przełącz tryb podążania
+gui.robit.rename=Zmień nazwę Robita
+gui.robit.teleport=Przeteleportuj do domu
+gui.robit.togglePickup=Przełącz podnoszenie przedmiotów
+
+gui.password.setPassword=Ustaw hasło
+gui.password.enterPassword=Wprowadź hasło
+gui.password.fieldsEmpty=Puste pole(a)
+gui.password.notMatching=Niepoprawne hasło
+gui.password.identical=Identyczne
+gui.password.invalid=Błędne
+gui.password=Hasło
+
+gui.logisticalSorter.default=Domyślnie
+gui.logisticalSorter.auto=Automatycznie
+gui.logisticalSorter.roundRobin=Okrężnie
+
+gui.electricChest.editPassword=Edytuj hasło
+
+gui.digitalMinerConfig=Ustawienia kombajnu górniczego
+
+gui.digitalMiner.autoPull=Automatycznie wyciągaj
+gui.digitalMiner.replaceBlock=Zamień blok
+gui.digitalMiner.reset=Zresetuj
+gui.digitalMiner.silkTouch=Jedwabny dotyk
+gui.digitalMiner.pull=Wyciąganie
+gui.digitalMiner.silk=Jedwabny
+gui.digitalMiner.toMine=Do wydobycia
+gui.digitalMiner.running=Wydobywanie
+gui.digitalMiner.inverse=Odwróć kopanie
+
+//Item and block tooltip text
+tooltip.configurator.modify=Modyfikuj
+tooltip.configurator.empty=Zwykły
+tooltip.configurator.wrench=Klucz
+tooltip.configurator.link=Połącz
+tooltip.configurator.pumpReset=Zresetuj obliczenia elektrycznej pompy
+tooltip.configurator.toggleDiverter=Ustawienia zmienione na
+tooltip.configurator.toggleColor=Kolor zmieniony na
+tooltip.configurator.viewColor=Kolor
+tooltip.configurator.unauth=Skrzynia jest zablokowana
+tooltip.configurator.noLink=Brak połączenia
+tooltip.configurator.linkMsg=Przypisany do
+tooltip.configurator.dim=wymiar
+
+tooltip.balloon=Balon
+
+tooltip.jetpack.regular=Normalny
+tooltip.jetpack.hover=Unoszenie
+tooltip.jetpack.disabled=Wyłączony
+
+tooltip.EnrichmentChamber=Maszyna pozwalająca na przetworzenie !nrud na dwa pyły, jest również używana !ndo innych czynności.
+tooltip.OsmiumCompressor=Maszyna służąca do kompresowania !nosmu z różnymi metalami.
+tooltip.Combiner=Maszyna służąca do formowania rud !nz odpowiednich pyłów i bruku.
+tooltip.Crusher=Maszyna służąca do kruszenia sztabek metali w pyły, !njest również używana do innych czynności.
+tooltip.DigitalMiner=Maszyna do wydobywania z filtrem wydobywania !no łącznym zasięgu 64 bloków.
+tooltip.BasicFactory=Najniższego poziomu maszyna z serii fabryk potrafiąca !nwykonywać do trzech operacji jednocześnie.
+tooltip.AdvancedFactory=Średniego poziomu maszyna z serii fabryk potrafiąca !nwykonywać do pięciu operacji jednocześnie.
+tooltip.EliteFactory=Najwyższego poziomu maszyna z serii fabryk potrafiąca !nwykonywać do siedmiu operacji jednocześnie.
+tooltip.MetallurgicInfuser=Maszyna używana głównie do nasycania !nmetali, aby tworzyć stopy.
+tooltip.PurificationChamber=Maszyna służąca do przetwarzania rud na trzy !nbryłki metali wykorzystywane w początkowej !nfazie potrójnego otrzymywaniu metali.
+tooltip.EnergizedSmelter=Maszyna służąca za piec, wykorzystująca !nenergię do pracy.
+tooltip.Teleporter=Maszyna służąca do teleportacji graczy !nmiędzy innymi teleportami.
+tooltip.ElectricPump=Zaawansowana pompa potrafiąca szybko !nwypompować duże jeziora lawy.
+tooltip.ElectricChest=Przenośna skrzynia z 54 miejscami używająca energii !ndo zabezpieczenia hasłem przed niechcianymi oczami.
+tooltip.Chargepad=Uniwersalna ładowarka potrafiąca naładować każdy !nprzedmiot z różnych modów wymagających energii.
+tooltip.LogisticalSorter=Inteligentny sorter z filtrem sortowania potrafiący !nautomatycznie wyjmować przedmioty ze skrzyń i kierować !nje do odpowiedniego miejsca poprzez transportery.
+tooltip.RotaryCondensentrator=Maszyna zmieniająca stan skupienia !ngazów w ciecze i na odwrót.
+tooltip.ChemicalInjectionChamber=Maszyna zdolna przetworzyć rudy na cztery !nodłamki metali wykorzystywane w początkowej !nfazie czterokrotnego otrzymywaniu metali.
+tooltip.ElectrolyticSeparator=Maszyna służąca do rozdzielania !ngazów i cieczy na dwa różne gazy !nza pomocą elektrolizy.
+tooltip.PrecisionSawmill=Maszyna służąca do przetwarzania drewna !ni drewnopodobnych produktów jak również !ndo otrzymywania trocin.
+tooltip.ChemicalDissolutionChamber=Maszyna służąca do chemicznego rozkładu wszystkich !nzanieczyszczeń w rudach pozostawiając tylko zawiesinę rudy !nwykorzystywaną fazie pięciokrotnego otrzymywania metali.
+tooltip.ChemicalWasher=Maszyna służąca do oczyszczania nieprzetworzonej !nzawiesiny przygotowując ją do krystalizacji.
+tooltip.ChemicalCrystalizer=Maszyna służąca do krystalizacji !noczyszczonej zawiesiny w kryształy rud.
+
+tooltip.OsmiumOre=Wytrzymały materiał znajdywany na każdej !nwysokości. Ma wiele zastosowań w budowie !nmaszyn.
+tooltip.CopperOre=Pospolity materiał z wysoką przewodnością !nprądu wykorzystywaną do tworzenia kabli. !nWysoka temperatura topnienia daje miedzi !nwiele zastosowań również w budowie maszyn.
+tooltip.TinOre=Lekki i wytrzymały materiał z wysoką !nprzewodnością występujący trochę !nrzadziej niż miedź.
+
+//Redstone control
+control.disabled=Wyłączony
+control.high=Wysoki
+control.low=Niski
+control.disabled.desc=Zawsze włączony
+control.high.desc=Włączony z sygnałem
+control.low.desc=Włączony bez sygnału
+
+//Colors
+color.black=Czarny
+color.darkBlue=Ciemnoniebieski
+color.darkGreen=Ciemnozielony
+color.darkAqua=Ciemnoturkusowy
+color.darkRed=Ciemnoczerwony
+color.purple=Fioletowy
+color.orange=Pomarańczowy
+color.grey=Szary
+color.darkGrey=Ciemnoszary
+color.indigo=Indygo
+color.brightGreen=Jasnozielony
+color.aqua=Turkusowy
+color.red=Czerwony
+color.pink=Różowy
+color.yellow=Żółty
+color.white=Biały
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//NEI stuff
+nei.chemicalInjectionChamber=Komora wtrysku chemicznego
+nei.rotaryCondensentrator=Koncentrator obrotowy
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.BioFuel.name=Biopaliwo
+item.SolarPanel.name=Panel słoneczny
+
+//Infuse types
+infuse.bio=Biomasa
+
+//Generators
+tile.Generator.HeatGenerator.name=Generator cieplny
+tile.Generator.SolarGenerator.name=Generator słoneczny
+tile.Generator.HydrogenGenerator.name=Generator wodorowy
+tile.Generator.BioGenerator.name=Biogenerator
+tile.Generator.AdvancedSolarGenerator.name=Zaawansowany generator słoneczny
+tile.Generator.WindTurbine.name=Turbina wiatrowa
+
+//Gui text
+gui.heatGenerator.fuel=Paliwo
+gui.solarGenerator.sun=Słońce
+gui.bioGenerator.bioFuel=Biopaliwo
+gui.electrolyticSeparator.dump=Wywal
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Drewniany paxel
+item.StonePaxel.name=Kamienny paxel
+item.IronPaxel.name=Żelazny paxel
+item.DiamondPaxel.name=Diamentowy paxel
+item.GoldPaxel.name=Złoty paxel
+
+//Obsidian
+item.ObsidianHelmet.name=Obsydianowy hełm
+item.ObsidianChestplate.name=Obsydianowy napierśnik
+item.ObsidianLeggings.name=Obsydianowe nogawice
+item.ObsidianBoots.name=Obsydianowe buty
+item.ObsidianPaxel.name=Obsydianowy paxel
+item.ObsidianPickaxe.name=Obsydianowy kilof
+item.ObsidianAxe.name=Obsydianowa siekiera
+item.ObsidianShovel.name=Obsydianowa łopata
+item.ObsidianHoe.name=Obsydianowa motyka
+item.ObsidianSword.name=Obsydianowy miecz
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Lazurytowy hełm
+item.LazuliChestplate.name=Lazurytowy napierśnik
+item.LazuliLeggings.name=Lazurytowe nogawice
+item.LazuliBoots.name=Lazurytowe buty
+item.LazuliPaxel.name=Lazurytowy paxel
+item.LazuliPickaxe.name=Lazurytowy kilof
+item.LazuliAxe.name=Lazurytowa siekiera
+item.LazuliShovel.name=Lazurytowa łopata
+item.LazuliHoe.name=Lazurytowa motyka
+item.LazuliSword.name=Lazurytowy miecz
+
+//Osmium
+item.OsmiumHelmet.name=Osmowy hełm
+item.OsmiumChestplate.name=Osmowy napierśnik
+item.OsmiumLeggings.name=Osmowe nogawice
+item.OsmiumBoots.name=Osmowe buty
+item.OsmiumPaxel.name=Osmowy paxel
+item.OsmiumPickaxe.name=Osmowy kilof
+item.OsmiumAxe.name=Osmowa siekiera
+item.OsmiumShovel.name=Osmowa łopata
+item.OsmiumHoe.name=Osmowa motyka
+item.OsmiumSword.name=Osmowy miecz
+
+//Bronze
+item.BronzeHelmet.name=Hełm z brązu
+item.BronzeChestplate.name=Napierśnik z brązu
+item.BronzeLeggings.name=Nogawice z brązu
+item.BronzeBoots.name=Buty z brązu
+item.BronzePaxel.name=Paxel z brązu
+item.BronzePickaxe.name=Kilof z brązu
+item.BronzeAxe.name=Siekiera z brązu
+item.BronzeShovel.name=Łopata z brązu
+item.BronzeHoe.name=Motyka z brązu
+item.BronzeSword.name=Miecz z brązu
+
+//Glow
+item.GlowstonePaxel.name=Jasnogłazowy paxel
+item.GlowstonePickaxe.name=Jasnogłazowy kilof
+item.GlowstoneAxe.name=Jasnogłazowa siekiera
+item.GlowstoneShovel.name=Jasnogłazowa łopata
+item.GlowstoneHoe.name=Jasnogłazowa motyka
+item.GlowstoneSword.name=Jasnogłazowy miecz
+item.GlowstoneHelmet.name=Jasnogłazowy hełm
+item.GlowstoneChestplate.name=Jasnogłazowy napierśnik
+item.GlowstoneLeggings.name=Jasnogłazowe nogawice
+item.GlowstoneBoots.name=Jasnogłazowe buty
+
+//Steel
+item.SteelPaxel.name=Stalowy paxel
+item.SteelPickaxe.name=Stalowy kilof
+item.SteelAxe.name=Stalowa siekiera
+item.SteelShovel.name=Stalowa łopata
+item.SteelHoe.name=Stalowa motyka
+item.SteelSword.name=Stalowy miecz
+item.SteelHelmet.name=Stalowy hełm
+item.SteelChestplate.name=Stalowy napierśnik
+item.SteelLeggings.name=Stalowe nogawice
+item.SteelBoots.name=Stalowe buty

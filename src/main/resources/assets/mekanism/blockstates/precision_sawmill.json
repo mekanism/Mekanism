@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/precision_sawmill/PrecisionSawmillRight",
+      "front": "mekanism:blocks/precision_sawmill/PrecisionSawmillFront",
+      "west": "mekanism:blocks/precision_sawmill/PrecisionSawmillRight",
+      "east": "mekanism:blocks/precision_sawmill/PrecisionSawmillLeft",
+      "south": "mekanism:blocks/precision_sawmill/PrecisionSawmillBack",
+      "up": "mekanism:blocks/precision_sawmill/PrecisionSawmillTop",
+      "down": "mekanism:blocks/precision_sawmill/PrecisionSawmillBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/precision_sawmill/PrecisionSawmillFrontOn",
+          "west": "mekanism:blocks/precision_sawmill/PrecisionSawmillRightOn",
+          "east": "mekanism:blocks/precision_sawmill/PrecisionSawmillLeftOn",
+          "south": "mekanism:blocks/precision_sawmill/PrecisionSawmillBackOn",
+          "up": "mekanism:blocks/precision_sawmill/PrecisionSawmillTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

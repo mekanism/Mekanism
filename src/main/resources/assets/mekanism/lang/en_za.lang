@@ -1,0 +1,28 @@
+//Machine Block
+tile.MachineBlock.EnergizedSmelter.name=Energised Smelter
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidiser
+tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystalliser
+tile.MachineBlock2.PressurizedReactionChamber.name=Pressurised Reaction Chamber
+
+item.MultipartTransmitter.PressurizedTube.name=Pressurised Tube
+
+//Gasses
+gas.water=Water Vapour
+
+//BC Fuel Gases
+gas.fuel=Vaporised Fuel
+gas.oil=Vaporised Oil
+
+//Item and block tooltip text
+tooltip.configurator.toggleDiverter=Diverter mode changed to
+tooltip.configurator.toggleColor=Colour bumped to
+tooltip.configurator.viewColor=Current colour
+
+tooltip.Chargepad=A universal chargepad that can charge !nany energised item from any mod.
+tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallisation.
+tooltip.ChemicalCrystallizer=An ultimate machine used to crystallise !npurified ore slurry into ore crystals.
+
+//Config Gui
+mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armour sets
