@@ -48,6 +48,7 @@ import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -88,7 +89,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	public TileEntityTeleporter()
 	{
 		super("Teleporter", BlockStateMachine.MachineType.TELEPORTER.baseEnergy);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		
 		securityComponent = new TileComponentSecurity(this);
 		chunkLoaderComponent = new TileComponentChunkLoader(this);

@@ -6,6 +6,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 public class ChanceOutput extends MachineOutput<ChanceOutput>
 {
@@ -54,22 +55,22 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 		return secondaryOutput != null;
 	}
 
-	public boolean applyOutputs(ItemStack[] inventory, int primaryIndex, int secondaryIndex, boolean doEmit)
+	public boolean applyOutputs(NonNullList<ItemStack> inventory, int primaryIndex, int secondaryIndex, boolean doEmit)
 	{
 		if(hasPrimary())
 		{
-			if(inventory[primaryIndex] == null)
+			if(inventory.get(primaryIndex) == null)
 			{
 				if(doEmit)
 				{
-					inventory[primaryIndex] = primaryOutput.copy();
+					inventory.set(primaryIndex, primaryOutput.copy());
 				}
 			} 
-			else if(inventory[primaryIndex].isItemEqual(primaryOutput) && inventory[primaryIndex].getCount() + primaryOutput.getCount() <= inventory[primaryIndex].getMaxStackSize())
+			else if(inventory.get(primaryIndex).isItemEqual(primaryOutput) && inventory.get(primaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(primaryIndex).getMaxStackSize())
 			{
 				if(doEmit)
 				{
-					inventory[primaryIndex].grow(primaryOutput.getCount());
+					inventory.get(primaryIndex).grow(primaryOutput.getCount());
 				}
 			}
 			else {
@@ -79,20 +80,20 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 		
 		if(hasSecondary() && (!doEmit || checkSecondary()))
 		{
-			if(inventory[secondaryIndex] == null)
+			if(inventory.get(secondaryIndex).isEmpty())
 			{
 				if(doEmit)
 				{
-					inventory[secondaryIndex] = secondaryOutput.copy();
+					inventory.set(secondaryIndex, secondaryOutput.copy());
 				}
 				
 				return true;
 			} 
-			else if(inventory[secondaryIndex].isItemEqual(secondaryOutput) && inventory[secondaryIndex].getCount() + primaryOutput.getCount() <= inventory[secondaryIndex].getMaxStackSize())
+			else if(inventory.get(secondaryIndex).isItemEqual(secondaryOutput) && inventory.get(secondaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(secondaryIndex).getMaxStackSize())
 			{
 				if(doEmit)
 				{
-					inventory[secondaryIndex].grow(secondaryOutput.getCount());
+					inventory.get(secondaryIndex).grow(secondaryOutput.getCount());
 				}
 				
 				return true;

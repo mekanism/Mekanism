@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -85,7 +86,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		super("ThermalEvaporationController");
 		
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -232,7 +233,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		if(outputTank.getFluid() != null)
 		{
-			if(FluidContainerUtils.isFluidContainer(inventory[2]))
+			if(FluidContainerUtils.isFluidContainer(inventory.get(2)))
 			{
 				FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
 			}
@@ -240,7 +241,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		
 		if(structured)
 		{
-			if(FluidContainerUtils.isFluidContainer(inventory[0]))
+			if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 			{
 				FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
 					@Override

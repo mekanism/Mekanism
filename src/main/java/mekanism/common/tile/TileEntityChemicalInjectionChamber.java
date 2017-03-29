@@ -76,13 +76,13 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public void handleSecondaryFuel()
 	{
-		if(inventory[1] != null && gasTank.getNeeded() > 0 && inventory[1].getItem() instanceof IGasItem)
+		if(!inventory.get(1).isEmpty() && gasTank.getNeeded() > 0 && inventory.get(1).getItem() instanceof IGasItem)
 		{
-			GasStack gas = ((IGasItem)inventory[1].getItem()).getGas(inventory[1]);
+			GasStack gas = ((IGasItem)inventory.get(1).getItem()).getGas(inventory.get(1));
 
 			if(gas != null && isValidGas(gas.getGas()))
 			{
-				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded());
+				GasStack removed = GasTransmission.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded());
 				gasTank.receive(removed, true);
 			}
 

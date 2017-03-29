@@ -41,6 +41,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -81,7 +82,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		super("machine.cheminfuser", "ChemicalInfuser", BlockStateMachine.MachineType.CHEMICAL_INFUSER.baseEnergy);
 		
-		inventory = new ItemStack[5];
+		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
@@ -115,19 +116,19 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 			ChargeUtils.discharge(3, this);
 
-			if(inventory[0] != null && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
+			if(!inventory.get(0).isEmpty() && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
 			{
-				leftTank.receive(GasTransmission.removeGas(inventory[0], leftTank.getGasType(), leftTank.getNeeded()), true);
+				leftTank.receive(GasTransmission.removeGas(inventory.get(0), leftTank.getGasType(), leftTank.getNeeded()), true);
 			}
 
-			if(inventory[1] != null && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
+			if(!inventory.get(1).isEmpty() && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
 			{
-				rightTank.receive(GasTransmission.removeGas(inventory[1], rightTank.getGasType(), rightTank.getNeeded()), true);
+				rightTank.receive(GasTransmission.removeGas(inventory.get(1), rightTank.getGasType(), rightTank.getNeeded()), true);
 			}
 
-			if(inventory[2] != null && centerTank.getGas() != null)
+			if(!inventory.get(2).isEmpty() && centerTank.getGas() != null)
 			{
-				centerTank.draw(GasTransmission.addGas(inventory[2], centerTank.getGas()), true);
+				centerTank.draw(GasTransmission.addGas(inventory.get(2), centerTank.getGas()), true);
 			}
 			
 			ChemicalInfuserRecipe recipe = getRecipe();

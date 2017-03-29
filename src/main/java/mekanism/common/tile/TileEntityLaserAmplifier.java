@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
@@ -58,7 +59,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public TileEntityLaserAmplifier()
 	{
 		super("LaserAmplifier");
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	@Override

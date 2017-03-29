@@ -10,6 +10,7 @@ import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 
 public abstract class TileEntityReactorBlock extends TileEntityElectricBlock implements IReactorBlock
 {
@@ -22,7 +23,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	public TileEntityReactorBlock()
 	{
 		super("ReactorBlock", 0);
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	public TileEntityReactorBlock(String name, double maxEnergy)

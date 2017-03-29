@@ -22,6 +22,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,7 +46,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		super("SeismicVibrator", BlockStateMachine.MachineType.SEISMIC_VIBRATOR.baseEnergy);
 		
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 	
 	@Override

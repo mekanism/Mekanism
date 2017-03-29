@@ -37,6 +37,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -84,7 +85,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		configComponent.setEjecting(TransmissionType.GAS, true);
 		
 		gasTank = new GasTank(tier.storage);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		dumping = GasMode.IDLE;
 		controlType = RedstoneControl.DISABLED;
 		
@@ -98,14 +99,14 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	{
 		if(!world.isRemote)
 		{
-			if(inventory[0] != null && gasTank.getGas() != null)
+			if(!inventory.get(0).isEmpty() && gasTank.getGas() != null)
 			{
-				gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), tier != GasTankTier.CREATIVE);
+				gasTank.draw(GasTransmission.addGas(inventory.get(0), gasTank.getGas()), tier != GasTankTier.CREATIVE);
 			}
 
-			if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
+			if(!inventory.get(1).isEmpty() && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
 			{
-				gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
+				gasTank.receive(GasTransmission.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded()), true);
 				
 				if(tier == GasTankTier.CREATIVE && gasTank.getGas() != null)
 				{

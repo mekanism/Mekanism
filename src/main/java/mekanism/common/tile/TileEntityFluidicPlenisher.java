@@ -36,6 +36,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -81,7 +82,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	public TileEntityFluidicPlenisher()
 	{
 		super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.baseEnergy);
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -91,7 +92,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			ChargeUtils.discharge(2, this);
 			
-			if(FluidContainerUtils.isFluidContainer(inventory[0]))
+			if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 			{
 				FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
 					@Override

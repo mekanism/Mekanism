@@ -51,6 +51,7 @@ import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -493,8 +494,10 @@ public final class RecipeHandler
 			for(RECIPE recipe : recipes.values())
 			{
 				ItemStackInput required = recipe.getInput();
+				NonNullList<ItemStack> list = NonNullList.create();
+				list.add(itemstack);
 
-				if(required.useItemStackFromInventory(new ItemStack[]{itemstack}, 0, false))
+				if(required.useItemStackFromInventory(list, 0, false))
 				{
 					return true;
 				}

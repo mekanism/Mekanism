@@ -6,6 +6,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 {
@@ -40,13 +41,13 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 		return itemStack != null && gasType != null;
 	}
 
-	public boolean useItem(ItemStack[] inventory, int index, boolean deplete)
+	public boolean useItem(NonNullList<ItemStack> inventory, int index, boolean deplete)
 	{
-		if(inputContains(inventory[index], itemStack))
+		if(inputContains(inventory.get(index), itemStack))
 		{
 			if(deplete)
 			{
-				inventory[index] = StackUtils.subtract(inventory[index], itemStack);
+				inventory.set(index, StackUtils.subtract(inventory.get(index), itemStack));
 			}
 			
 			return true;

@@ -60,9 +60,9 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		if(!tileEntity.getWorld().isRemote)
 		{
-			if(tileEntity.inventory[upgradeSlot] != null && tileEntity.inventory[upgradeSlot].getItem() instanceof IUpgradeItem)
+			if(!tileEntity.inventory.get(upgradeSlot).isEmpty() && tileEntity.inventory.get(upgradeSlot).getItem() instanceof IUpgradeItem)
 			{
-				Upgrade type = ((IUpgradeItem)tileEntity.inventory[upgradeSlot].getItem()).getUpgradeType(tileEntity.inventory[upgradeSlot]);
+				Upgrade type = ((IUpgradeItem)tileEntity.inventory.get(upgradeSlot).getItem()).getUpgradeType(tileEntity.inventory.get(upgradeSlot));
 				
 				if(supports(type) && getUpgrades(type) < type.getMax())
 				{
@@ -75,12 +75,7 @@ public class TileComponentUpgrade implements ITileComponent
 						upgradeTicks = 0;
 						addUpgrade(type);
 
-						tileEntity.inventory[upgradeSlot].shrink(1);
-
-						if(tileEntity.inventory[upgradeSlot].getCount() == 0)
-						{
-							tileEntity.inventory[upgradeSlot] = null;
-						}
+						tileEntity.inventory.get(upgradeSlot).shrink(1);
 
 						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
 						tileEntity.markDirty();

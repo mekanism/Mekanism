@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -57,7 +58,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public TileEntityHeatGenerator()
 	{
 		super("heat", "HeatGenerator", 160000, generators.heatGeneration*2);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -69,14 +70,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		{
 			ChargeUtils.charge(1, this);
 
-			if(inventory[0] != null)
+			if(!inventory.get(0).isEmpty())
 			{
-				if(FluidContainerUtils.isFluidContainer(inventory[0]))
+				if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 				{
-					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory[0], FluidChecker.check(FluidRegistry.LAVA)), true);
+					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory.get(0), FluidChecker.check(FluidRegistry.LAVA)), true);
 				}
 				else {
-					int fuel = getFuel(inventory[0]);
+					int fuel = getFuel(inventory.get(0));
 
 					if(fuel > 0)
 					{
@@ -86,17 +87,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 						{
 							lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
 
-							if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
+							if(inventory.get(0).getItem().getContainerItem(inventory.get(0)) != null)
 							{
-								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+								inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 							}
 							else {
-								inventory[0].shrink(1);
-							}
-
-							if(inventory[0].getCount() == 0)
-							{
-								inventory[0] = null;
+								inventory.get(0).shrink(1);
 							}
 						}
 					}

@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -92,9 +93,9 @@ public class FusionReactor implements IFusionReactor
 	{
 		if(controller != null)
 		{
-			ItemStack hohlraum = controller.inventory[0];
+			ItemStack hohlraum = controller.inventory.get(0);
 			
-			if(hohlraum != null && hohlraum.getItem() instanceof ItemHohlraum)
+			if(!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum)
 			{
 				GasStack gasStack = ((ItemHohlraum)hohlraum.getItem()).getGas(hohlraum);
 				return gasStack != null && gasStack.getGas() == GasRegistry.getGas("fusionFuelDT") && gasStack.amount == ItemHohlraum.MAX_GAS;
@@ -163,10 +164,10 @@ public class FusionReactor implements IFusionReactor
 
 	public void vaporiseHohlraum()
 	{
-		getFuelTank().receive(((ItemHohlraum)controller.inventory[0].getItem()).getGas(controller.inventory[0]), true);
+		getFuelTank().receive(((ItemHohlraum)controller.inventory.get(0).getItem()).getGas(controller.inventory.get(0)), true);
 		lastPlasmaTemperature = plasmaTemperature;
 
-		controller.inventory[0] = null;
+		controller.inventory.set(0, ItemStack.EMPTY);
 
 		burning = true;
 	}
@@ -627,7 +628,7 @@ public class FusionReactor implements IFusionReactor
 	}
 	
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return isFormed() ? controller.inventory : null;
 	}

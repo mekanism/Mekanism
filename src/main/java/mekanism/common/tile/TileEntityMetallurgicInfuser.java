@@ -45,6 +45,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -103,7 +104,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 0, 0, 3, 1, 2});
 
-		inventory = new ItemStack[5];
+		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 		
 		upgradeComponent = new TileComponentUpgrade(this, 0);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
@@ -144,11 +145,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 			ChargeUtils.discharge(4, this);
 
-			if(inventory[1] != null)
+			if(!inventory.get(1).isEmpty())
 			{
-				if(InfuseRegistry.getObject(inventory[1]) != null)
+				if(InfuseRegistry.getObject(inventory.get(1)) != null)
 				{
-					InfuseObject infuse = InfuseRegistry.getObject(inventory[1]);
+					InfuseObject infuse = InfuseRegistry.getObject(inventory.get(1));
 
 					if(infuseStored.type == null || infuseStored.type == infuse.type)
 					{
@@ -156,12 +157,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 						{
 							infuseStored.amount += infuse.stored;
 							infuseStored.type = infuse.type;
-							inventory[1].shrink(1);
-
-							if(inventory[1].getCount() <= 0)
-							{
-								inventory[1] = null;
-							}
+							inventory.get(1).shrink(1);
 						}
 					}
 				}
@@ -257,11 +253,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		//Infuser
 		factory.infuseStored = infuseStored;
 
-		factory.inventory[5] = inventory[2];
-		factory.inventory[1] = inventory[4];
-		factory.inventory[5+3] = inventory[3];
-		factory.inventory[0] = inventory[0];
-		factory.inventory[4] = inventory[1];
+		factory.inventory.set(5, inventory.get(2));
+		factory.inventory.set(1, inventory.get(4));
+		factory.inventory.set(5+3, inventory.get(3));
+		factory.inventory.set(0, inventory.get(0));
+		factory.inventory.set(4, inventory.get(1));
 		
 		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
 		{
@@ -335,7 +331,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 	public InfusionInput getInput()
 	{
-		return new InfusionInput(infuseStored, inventory[2]);
+		return new InfusionInput(infuseStored, inventory.get(2));
 	}
 
 	public void operate(MetallurgicInfuserRecipe recipe)

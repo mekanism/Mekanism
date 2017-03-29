@@ -39,6 +39,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -80,7 +81,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
@@ -180,7 +181,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public PressurizedInput getInput()
 	{
-		return new PressurizedInput(inventory[0], inputFluidTank.getFluid(), inputGasTank.getGas());
+		return new PressurizedInput(inventory.get(0), inputFluidTank.getFluid(), inputGasTank.getGas());
 	}
 
 	@Override

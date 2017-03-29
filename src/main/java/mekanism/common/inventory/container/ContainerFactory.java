@@ -124,7 +124,7 @@ public class ContainerFactory extends Container
 
 			if(isOutputSlot(slotID))
 			{
-				if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 				{
 					return null;
 				}
@@ -138,7 +138,7 @@ public class ContainerFactory extends Container
 			}
 			else if(slotID == 2)
 			{
-				if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 				{
 					return null;
 				}
@@ -153,7 +153,7 @@ public class ContainerFactory extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -170,7 +170,7 @@ public class ContainerFactory extends Container
 				}
 				else if(slotID == 0)
 				{
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -178,7 +178,7 @@ public class ContainerFactory extends Container
 			}
 			else if(tileEntity.recipeType.getItemGas(slotStack) != null)
 			{
-				if(slotID >= tileEntity.inventory.length-1)
+				if(slotID >= tileEntity.inventory.size()-1)
 				{
 					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
@@ -186,7 +186,7 @@ public class ContainerFactory extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -194,7 +194,7 @@ public class ContainerFactory extends Container
 			}
 			else if(tileEntity.recipeType == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
 			{
-				if(slotID >= tileEntity.inventory.length-1)
+				if(slotID >= tileEntity.inventory.size()-1)
 				{
 					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
@@ -202,14 +202,14 @@ public class ContainerFactory extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
 						return null;
 					}
 				}
 			}
 			else {
-				int slotEnd = tileEntity.inventory.length-1;
+				int slotEnd = tileEntity.inventory.size()-1;
 
 				if(slotID >= slotEnd && slotID <= (slotEnd+26))
 				{

@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -36,7 +37,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 	public TileEntityLaser()
 	{
 		super("machine.laser", "Laser", 2*usage.laserUsage);
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	@Override

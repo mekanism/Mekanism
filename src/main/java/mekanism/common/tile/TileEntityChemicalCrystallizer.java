@@ -45,6 +45,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -101,7 +102,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 		
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 		
 		upgradeComponent = new TileComponentUpgrade(this, 3);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
@@ -142,9 +143,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 			ChargeUtils.discharge(2, this);
 
-			if(inventory[0] != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
+			if(!inventory.get(0).isEmpty() && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
 			{
-				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
+				inputTank.receive(GasTransmission.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 			
 			CrystallizerRecipe recipe = getRecipe();

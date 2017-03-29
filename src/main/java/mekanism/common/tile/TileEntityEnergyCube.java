@@ -30,6 +30,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -68,7 +69,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		configComponent.setIOConfig(TransmissionType.ENERGY);
 		configComponent.setEjecting(TransmissionType.ENERGY, true);
 
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		controlType = RedstoneControl.DISABLED;
 		
 		ejectorComponent = new TileComponentEjector(this);

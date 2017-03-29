@@ -7,6 +7,7 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -23,7 +24,7 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
 	public TileEntityPersonalChest()
 	{
 		super("PersonalChest");
-		inventory = new ItemStack[54];
+		inventory = NonNullList.withSize(54, ItemStack.EMPTY);
 		
 		securityComponent = new TileComponentSecurity(this);
 	}

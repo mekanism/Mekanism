@@ -6,6 +6,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -44,18 +45,20 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 		return theSolid != null && theFluid != null && theGas != null;
 	}
 
-	public boolean use(ItemStack[] inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete)
+	public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete)
 	{
-		if(meets(new PressurizedInput(inventory[index], fluidTank.getFluid(), gasTank.getGas())))
+		if(meets(new PressurizedInput(inventory.get(index), fluidTank.getFluid(), gasTank.getGas())))
 		{
 			if(deplete)
 			{
-				inventory[index] = StackUtils.subtract(inventory[index], theSolid);
+				inventory.set(index, StackUtils.subtract(inventory.get(index), theSolid));
 				fluidTank.drain(theFluid.amount, true);
 				gasTank.draw(theGas.amount, true);
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 

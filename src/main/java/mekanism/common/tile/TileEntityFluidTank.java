@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
@@ -81,7 +82,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		super("FluidTank");
 		
 		fluidTank = new FluidTank(tier.storage);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -160,7 +161,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			prevAmount = fluidTank.getFluidAmount();
 			
-			if(inventory[0] != null)
+			if(!inventory.get(0).isEmpty())
 			{
 				manageInventory();
 			}
@@ -210,7 +211,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	
 	private void manageInventory()
 	{
-		if(FluidContainerUtils.isFluidContainer(inventory[0]))
+		if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 		{
 			FluidStack ret = FluidContainerUtils.handleContainerItem(this, inventory, editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 			

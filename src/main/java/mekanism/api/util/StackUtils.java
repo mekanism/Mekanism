@@ -5,13 +5,14 @@ import java.util.List;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class StackUtils
 {
 	public static List<ItemStack> split(ItemStack stack)
 	{
-		if(stack == null || stack.getCount() == 0)
+		if(stack.isEmpty() || stack.getCount() == 0)
 		{
 			return null;
 		}
@@ -35,7 +36,7 @@ public final class StackUtils
 
 	public static Item getItem(ItemStack stack)
 	{
-		if(stack == null)
+		if(stack.isEmpty())
 		{
 			return null;
 		}
@@ -45,7 +46,7 @@ public final class StackUtils
 
 	public static boolean diffIgnoreNull(ItemStack stack1, ItemStack stack2)
 	{
-		if(stack1 == null || stack2 == null)
+		if(stack1.isEmpty() || stack2.isEmpty())
 		{
 			return false;
 		}
@@ -55,7 +56,7 @@ public final class StackUtils
 
 	public static boolean equalsWildcard(ItemStack wild, ItemStack check)
 	{
-		if(wild == null || check == null)
+		if(wild.isEmpty() || check.isEmpty())
 		{
 			return check == wild;
 		}
@@ -67,7 +68,7 @@ public final class StackUtils
 	{
 		boolean wildcard = equalsWildcard(wild, check);
 		
-		if(wild == null || check == null)
+		if(wild.isEmpty() || check.isEmpty())
 		{
 			return wildcard;
 		}
@@ -127,7 +128,7 @@ public final class StackUtils
 	{
 		if(stack1 == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		else if(stack2 == null)
 		{
@@ -139,9 +140,9 @@ public final class StackUtils
 
 	public static ItemStack size(ItemStack stack, int size)
 	{
-		if(size <= 0 || stack == null)
+		if(size <= 0 || stack.isEmpty())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		ItemStack ret = stack.copy();
@@ -152,9 +153,9 @@ public final class StackUtils
 
 	public static ItemStack copy(ItemStack stack)
 	{
-		if(stack == null)
+		if(stack.isEmpty())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		return stack.copy();
@@ -162,18 +163,18 @@ public final class StackUtils
 
 	public static int getSize(ItemStack stack)
 	{
-		return stack != null ? stack.getCount() : 0;
+		return !stack.isEmpty() ? stack.getCount() : 0;
 	}
 	
-	public static List<ItemStack> getMergeRejects(ItemStack[] orig, ItemStack[] toAdd)
+	public static List<ItemStack> getMergeRejects(NonNullList<ItemStack> orig, NonNullList<ItemStack> toAdd)
 	{
 		List<ItemStack> ret = new ArrayList<ItemStack>();
 		
-		for(int i = 0; i < toAdd.length; i++)
+		for(int i = 0; i < toAdd.size(); i++)
 		{
-			if(toAdd[i] != null)
+			if(!toAdd.get(i).isEmpty())
 			{
-				ItemStack reject = getMergeReject(orig[i], toAdd[i]);
+				ItemStack reject = getMergeReject(orig.get(i), toAdd.get(i));
 				
 				if(reject != null)
 				{
@@ -185,25 +186,25 @@ public final class StackUtils
 		return ret;
 	}
 	
-	public static void merge(ItemStack[] orig, ItemStack[] toAdd)
+	public static void merge(NonNullList<ItemStack> orig, NonNullList<ItemStack> toAdd)
 	{
-		for(int i = 0; i < toAdd.length; i++)
+		for(int i = 0; i < toAdd.size(); i++)
 		{
-			if(toAdd[i] != null)
+			if(!toAdd.get(i).isEmpty())
 			{
-				orig[i] = merge(orig[i], toAdd[i]);
+				orig.set(i, merge(orig.get(i), toAdd.get(i)));
 			}
 		}
 	}
 	
 	public static ItemStack merge(ItemStack orig, ItemStack toAdd)
 	{
-		if(orig == null)
+		if(orig.isEmpty())
 		{
 			return toAdd;
 		}
 		
-		if(toAdd == null)
+		if(toAdd.isEmpty())
 		{
 			return orig;
 		}
@@ -218,12 +219,12 @@ public final class StackUtils
 	
 	public static ItemStack getMergeReject(ItemStack orig, ItemStack toAdd)
 	{
-		if(orig == null)
+		if(orig.isEmpty())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
-		if(toAdd == null)
+		if(toAdd.isEmpty())
 		{
 			return orig;
 		}
@@ -246,7 +247,7 @@ public final class StackUtils
 
 	public static int hashItemStack(ItemStack stack)
 	{
-		if(stack == null || stack.getItem() == null)
+		if(stack.isEmpty() || stack.getItem() == null)
 		{
 			return -1;
 		}

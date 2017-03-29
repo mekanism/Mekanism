@@ -23,6 +23,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -43,7 +44,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public TileEntityGasGenerator()
 	{
 		super("gas", "GasGenerator", general.FROM_H2*100, general.FROM_H2*2);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		fuelTank = new GasTank(MAX_GAS);
 	}
 
@@ -56,7 +57,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		{
 			ChargeUtils.charge(1, this);
 
-			if(inventory[0] != null && fuelTank.getStored() < MAX_GAS)
+			if(!inventory.get(0).isEmpty() && fuelTank.getStored() < MAX_GAS)
 			{
 				Gas gasType = null;
 				
@@ -64,17 +65,17 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				{
 					gasType = fuelTank.getGas().getGas();
 				}
-				else if(inventory[0] != null && inventory[0].getItem() instanceof IGasItem)
+				else if(!inventory.get(0).isEmpty() && inventory.get(0).getItem() instanceof IGasItem)
 				{
-					if(((IGasItem)inventory[0].getItem()).getGas(inventory[0]) != null)
+					if(((IGasItem)inventory.get(0).getItem()).getGas(inventory.get(0)) != null)
 					{
-						gasType = ((IGasItem)inventory[0].getItem()).getGas(inventory[0]).getGas();
+						gasType = ((IGasItem)inventory.get(0).getItem()).getGas(inventory.get(0)).getGas();
 					}
 				}
 				
 				if(gasType != null && FuelHandler.getFuel(gasType) != null)
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[0], gasType, fuelTank.getNeeded());
+					GasStack removed = GasTransmission.removeGas(inventory.get(0), gasType, fuelTank.getNeeded());
 					boolean isTankEmpty = (fuelTank.getGas() == null);
 					
 					int fuelReceived = fuelTank.receive(removed, true);

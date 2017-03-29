@@ -11,6 +11,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,7 +28,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	public TileEntityWindGenerator()
 	{
 		super("wind", "WindGenerator", 200000, (generators.windGenerationMax)*2);
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 
 	@Override

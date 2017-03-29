@@ -4,6 +4,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemStackInput extends MachineInput<ItemStackInput>
@@ -40,13 +41,13 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 		return new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.getCount(), OreDictionary.WILDCARD_VALUE));
 	}
 
-	public boolean useItemStackFromInventory(ItemStack[] inventory, int index, boolean deplete)
+	public boolean useItemStackFromInventory(NonNullList<ItemStack> inventory, int index, boolean deplete)
 	{
-		if(inputContains(inventory[index], ingredient))
+		if(inputContains(inventory.get(index), ingredient))
 		{
 			if(deplete)
 			{
-				inventory[index] = StackUtils.subtract(inventory[index], ingredient);
+				inventory.set(index, StackUtils.subtract(inventory.get(index), ingredient));
 			}
 			
 			return true;

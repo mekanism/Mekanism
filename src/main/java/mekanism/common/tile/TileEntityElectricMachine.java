@@ -22,6 +22,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 
 public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ItemStackOutput, RECIPE> implements ITierUpgradeable
 {
@@ -49,7 +50,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {3, 1, 0, 0, 0, 2});
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
@@ -107,10 +108,10 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
 		}
 
-		factory.inventory[5] = inventory[0];
-		factory.inventory[1] = inventory[1];
-		factory.inventory[5+3] = inventory[2];
-		factory.inventory[0] = inventory[3];
+		factory.inventory.set(5, inventory.get(0));
+		factory.inventory.set(1, inventory.get(1));
+		factory.inventory.set(5+3, inventory.get(2));
+		factory.inventory.set(0, inventory.get(3));
 		
 		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
 		{
@@ -192,7 +193,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	@Override
 	public ItemStackInput getInput()
 	{
-		return new ItemStackInput(inventory[0]);
+		return new ItemStackInput(inventory.get(0));
 	}
 
 	@Override

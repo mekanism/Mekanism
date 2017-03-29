@@ -43,6 +43,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -89,7 +90,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public TileEntityRotaryCondensentrator()
 	{
 		super("RotaryCondensentrator", BlockStateMachine.MachineType.ROTARY_CONDENSENTRATOR.baseEnergy);
-		inventory = new ItemStack[6];
+		inventory = NonNullList.withSize(6, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -127,12 +128,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 			if(mode == 0)
 			{
-				if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
+				if(!inventory.get(1).isEmpty() && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
 				{
-					gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
+					gasTank.receive(GasTransmission.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded()), true);
 				}
 
-				if(FluidContainerUtils.isFluidContainer(inventory[2]))
+				if(FluidContainerUtils.isFluidContainer(inventory.get(2)))
 				{
 					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
 				}
@@ -157,9 +158,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			}
 			else if(mode == 1)
 			{
-				if(inventory[0] != null && gasTank.getGas() != null)
+				if(!inventory.get(0).isEmpty() && gasTank.getGas() != null)
 				{
-					gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
+					gasTank.draw(GasTransmission.addGas(inventory.get(0), gasTank.getGas()), true);
 				}
 
 				if(gasTank.getGas() != null)
@@ -168,7 +169,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					gasTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
 				}
 
-				if(FluidContainerUtils.isFluidContainer(inventory[2]))
+				if(FluidContainerUtils.isFluidContainer(inventory.get(2)))
 				{
 					FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
 				}

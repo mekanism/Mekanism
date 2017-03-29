@@ -921,7 +921,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			energizedItem.setEnergy(itemStack, ((IStrictEnergyStorage)tileEntity).getEnergy());
 		}
 
-		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).inventory.length > 0)
+		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).inventory.size() > 0)
 		{
 			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
 			inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);

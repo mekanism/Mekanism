@@ -40,6 +40,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -82,7 +83,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			}
 		}
 
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 		
 		configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[] {0};
 		configComponent.getOutputs(TransmissionType.FLUID).get(2).availableSlots = new int[] {0};

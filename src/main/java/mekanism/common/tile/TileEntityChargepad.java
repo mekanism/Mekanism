@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -43,7 +44,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	public TileEntityChargepad()
 	{
 		super("machine.chargepad", "Chargepad", BlockStateMachine.MachineType.CHARGEPAD.baseEnergy);
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	@Override

@@ -60,6 +60,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -134,7 +135,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public TileEntityDigitalMiner()
 	{
 		super("DigitalMiner", BlockStateMachine.MachineType.DIGITAL_MINER.baseEnergy);
-		inventory = new ItemStack[29];
+		inventory = NonNullList.withSize(29, ItemStack.EMPTY);
 		radius = 10;
 		
 		upgradeComponent.setSupported(Upgrade.ANCHOR);
@@ -423,14 +424,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		for(int i = 0; i < 27; i++)
 		{
-			if(inventory[i] != null && inventory[i].isItemEqual(filter.replaceStack))
+			if(!inventory.get(i).isEmpty() && inventory.get(i).isItemEqual(filter.replaceStack))
 			{
-				inventory[i].shrink(1);
-
-				if(inventory[i].getCount() == 0)
-				{
-					inventory[i] = null;
-				}
+				inventory.get(i).shrink(1);
 
 				return MekanismUtils.size(filter.replaceStack, 1);
 			}
@@ -450,13 +446,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return null;
 	}
 
-	public ItemStack[] copy(ItemStack[] stacks)
+	public NonNullList<ItemStack> copy(NonNullList<ItemStack> stacks)
 	{
-		ItemStack[] toReturn = new ItemStack[stacks.length];
+		NonNullList<ItemStack> toReturn = NonNullList.withSize(stacks.size(), ItemStack.EMPTY);
 
-		for(int i = 0; i < stacks.length; i++)
+		for(int i = 0; i < stacks.size(); i++)
 		{
-			toReturn[i] = stacks[i] != null ? stacks[i].copy() : null;
+			toReturn.set(i, !stacks.get(i).isEmpty() ? stacks.get(i).copy() : ItemStack.EMPTY);
 		}
 
 		return toReturn;
@@ -466,9 +462,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		for(int i = 27-1; i >= 0; i--)
 		{
-			ItemStack stack = inventory[i];
+			ItemStack stack = inventory.get(i);
 
-			if(stack != null)
+			if(!stack.isEmpty())
 			{
 				if(isReplaceStack(stack))
 				{
@@ -477,7 +473,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 				if(remove)
 				{
-					inventory[i] = reject;
+					inventory.set(i, reject);
 				}
 
 				return stack;
@@ -494,7 +490,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			return true;
 		}
 
-		ItemStack[] testInv = copy(inventory);
+		NonNullList<ItemStack> testInv = copy(inventory);
 
 		int added = 0;
 
@@ -508,21 +504,21 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			for(int i = 0; i < 27; i++)
 			{
-				if(testInv[i] != null && testInv[i].getItem() == null)
+				if(!testInv.get(i).isEmpty() && testInv.get(i).getItem() == null)
 				{
-					testInv[i] = null;
+					testInv.set(i, ItemStack.EMPTY);
 				}
 				
-				if(testInv[i] == null)
+				if(testInv.get(i).isEmpty())
 				{
-					testInv[i] = stack;
+					testInv.set(i, stack);
 					added++;
 
 					continue stacks;
 				}
-				else if(testInv[i].isItemEqual(stack) && testInv[i].getCount()+stack.getCount() <= stack.getMaxStackSize())
+				else if(testInv.get(i).isItemEqual(stack) && testInv.get(i).getCount()+stack.getCount() <= stack.getMaxStackSize())
 				{
-					testInv[i].grow(stack.getCount());
+					testInv.get(i).grow(stack.getCount());
 					added++;
 
 					continue stacks;
@@ -562,15 +558,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			for(int i = 0; i < 27; i++)
 			{
-				if(inventory[i] == null)
+				if(inventory.get(i).isEmpty())
 				{
-					inventory[i] = stack;
+					inventory.set(i, stack);
 
 					continue stacks;
 				}
-				else if(inventory[i].isItemEqual(stack) && inventory[i].getCount()+stack.getCount() <= stack.getMaxStackSize())
+				else if(inventory.get(i).isItemEqual(stack) && inventory.get(i).getCount()+stack.getCount() <= stack.getMaxStackSize())
 				{
-					inventory[i].grow(stack.getCount());
+					inventory.get(i).grow(stack.getCount());
 
 					continue stacks;
 				}

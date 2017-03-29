@@ -4,6 +4,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -16,7 +17,7 @@ public final class FluidContainerUtils
 {
 	public static boolean isFluidContainer(ItemStack stack)
 	{
-		return stack != null && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		return !stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 	}
 	
 	public static FluidStack extractFluid(FluidTank tileTank, ItemStack container)
@@ -68,41 +69,31 @@ public final class FluidContainerUtils
 		tank.setFluid(handleContainerItemFill(tileEntity, tileEntity.inventory, tank.getFluid(), inSlot, outSlot));
 	}
 	
-	public static FluidStack handleContainerItemFill(TileEntity tileEntity, ItemStack[] inventory, FluidStack stack, int inSlot, int outSlot)
+	public static FluidStack handleContainerItemFill(TileEntity tileEntity, NonNullList<ItemStack> inventory, FluidStack stack, int inSlot, int outSlot)
 	{
 		if(stack != null)
 		{
-			ItemStack inputCopy = StackUtils.size(inventory[inSlot].copy(), 1);
+			ItemStack inputCopy = StackUtils.size(inventory.get(inSlot).copy(), 1);
 			
 			int drained = insertFluid(stack, inputCopy);
 			
-			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].getCount() == inventory[outSlot].getMaxStackSize()))
+			if(!inventory.get(outSlot).isEmpty() && (!ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy) || inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize()))
 			{
 				return stack;
 			}
 			
 			stack.amount -= drained;
 			
-			if(inventory[outSlot] == null)
+			if(inventory.get(outSlot).isEmpty())
 			{
-				inventory[outSlot] = inputCopy;
+				inventory.set(outSlot, inputCopy);
 			}
-			else if(ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy))
+			else if(ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy))
 			{
-				inventory[outSlot].grow(1);
-			}
-			
-			inventory[inSlot].shrink(1);
-			
-			if(inventory[inSlot].getCount() == 0)
-			{
-				inventory[inSlot] = null;
+				inventory.get(outSlot).grow(1);
 			}
 			
-			if(stack.amount == 0)
-			{
-				stack = null;
-			}
+			inventory.get(inSlot).shrink(1);
 			
 			tileEntity.markDirty();
 		}
@@ -120,10 +111,10 @@ public final class FluidContainerUtils
 		tank.setFluid(handleContainerItemEmpty(tileEntity, tileEntity.inventory, tank.getFluid(), tank.getCapacity()-tank.getFluidAmount(), inSlot, outSlot, checker));
 	}
 	
-	public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, ItemStack[] inventory, FluidStack stored, int needed, int inSlot, int outSlot, final FluidChecker checker)
+	public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, NonNullList<ItemStack> inventory, FluidStack stored, int needed, int inSlot, int outSlot, final FluidChecker checker)
 	{
 		final Fluid storedFinal = stored != null ? stored.getFluid() : null;
-		final ItemStack input = StackUtils.size(inventory[inSlot].copy(), 1);
+		final ItemStack input = StackUtils.size(inventory.get(inSlot).copy(), 1);
 		
 		FluidStack ret = extractFluid(needed, input, new FluidChecker() {
 			@Override
@@ -135,14 +126,9 @@ public final class FluidContainerUtils
 		
 		ItemStack inputCopy = input.copy();
 		
-		if(inputCopy.getCount() == 0)
+		if(FluidUtil.getFluidContained(inputCopy) == null && !inputCopy.isEmpty())
 		{
-			inputCopy = null;
-		}
-		
-		if(FluidUtil.getFluidContained(inputCopy) == null && inputCopy != null)
-		{
-			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].getCount() == inventory[outSlot].getMaxStackSize()))
+			if(!inventory.get(outSlot).isEmpty() && (!ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy) || inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize()))
 			{
 				return stored;
 			}
@@ -165,29 +151,24 @@ public final class FluidContainerUtils
 		
 		if(FluidUtil.getFluidContained(inputCopy) == null || needed == 0)
 		{
-			if(inputCopy != null)
+			if(!inputCopy.isEmpty())
 			{
-				if(inventory[outSlot] == null)
+				if(inventory.get(outSlot).isEmpty())
 				{
-					inventory[outSlot] = inputCopy;
+					inventory.set(outSlot, inputCopy);
 				}
-				else if(ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy))
+				else if(ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy))
 				{
-					inventory[outSlot].grow(1);
+					inventory.get(outSlot).grow(1);
 				}
 			}
 			
-			inventory[inSlot].shrink(1);
-			
-			if(inventory[inSlot].getCount() == 0)
-			{
-				inventory[inSlot] = null;
-			}
+			inventory.get(inSlot).shrink(1);
 			
 			tileEntity.markDirty();
 		}
 		else {
-			inventory[inSlot] = inputCopy;
+			inventory.set(inSlot, inputCopy);
 		}
 		
 		return stored;
@@ -203,9 +184,9 @@ public final class FluidContainerUtils
 		tank.setFluid(handleContainerItem(tileEntity, tileEntity.inventory, editMode, tank.getFluid(), tank.getCapacity()-tank.getFluidAmount(), inSlot, outSlot, checker));
 	}
 	
-	public static FluidStack handleContainerItem(TileEntity tileEntity, ItemStack[] inventory, ContainerEditMode editMode, FluidStack stack, int needed, int inSlot, int outSlot, final FluidChecker checker)
+	public static FluidStack handleContainerItem(TileEntity tileEntity, NonNullList<ItemStack> inventory, ContainerEditMode editMode, FluidStack stack, int needed, int inSlot, int outSlot, final FluidChecker checker)
 	{
-		FluidStack fluidStack = FluidUtil.getFluidContained(inventory[inSlot]);
+		FluidStack fluidStack = FluidUtil.getFluidContained(inventory.get(inSlot));
 		
 		if(editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH && fluidStack == null))
 		{

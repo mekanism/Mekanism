@@ -41,6 +41,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -75,7 +76,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public TileEntityLogisticalSorter()
 	{
 		super("LogisticalSorter", BlockStateMachine.MachineType.LOGISTICAL_SORTER.baseEnergy);
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 		doAutoSync = false;
 	}
 

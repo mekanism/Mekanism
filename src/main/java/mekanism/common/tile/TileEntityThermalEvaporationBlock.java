@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 
 public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock implements IComputerIntegration
 {
@@ -20,14 +21,14 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 	{
 		super("ThermalEvaporationBlock");
 
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	public TileEntityThermalEvaporationBlock(String fullName)
 	{
 		super(fullName);
 
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class TModIDFilter extends TransporterFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return false;
 		}

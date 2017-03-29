@@ -40,6 +40,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -89,7 +90,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public TileEntityElectricPump()
 	{
 		super("ElectricPump", 10000);
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 		
 		upgradeComponent.setSupported(Upgrade.FILTER);
 	}
@@ -103,7 +104,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 			if(fluidTank.getFluid() != null)
 			{
-				if(FluidContainerUtils.isFluidContainer(inventory[0]))
+				if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 				{
 					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
 				}

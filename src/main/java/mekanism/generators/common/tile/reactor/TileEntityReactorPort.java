@@ -35,6 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -54,7 +55,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		super("name", 1);
 		
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -380,7 +381,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
-		return getReactor() != null && getReactor().isFormed() ? getReactor().getInventory()[slotID] : null;
+		return getReactor() != null && getReactor().isFormed() ? getReactor().getInventory().get(slotID) : ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -394,7 +395,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(getReactor() != null && getReactor().isFormed())
 		{
-			getReactor().getInventory()[slotID] = itemstack;
+			getReactor().getInventory().set(slotID, itemstack);
 
 			if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
 			{

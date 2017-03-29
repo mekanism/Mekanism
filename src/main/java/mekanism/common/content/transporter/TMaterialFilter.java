@@ -26,7 +26,7 @@ public class TMaterialFilter extends TransporterFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		if(itemStack == null || !(itemStack.getItem() instanceof ItemBlock))
+		if(itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock))
 		{
 			return false;
 		}

@@ -275,7 +275,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
-		return structure != null && getSynchronizedData().getInventory() != null ? getSynchronizedData().getInventory()[slotID] : null;
+		return structure != null && getSynchronizedData().getInventory() != null ? getSynchronizedData().getInventory().get(slotID) : ItemStack.EMPTY;
 	}
 
 	@Override
@@ -283,7 +283,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	{
 		if(structure != null && getSynchronizedData().getInventory() != null)
 		{
-			getSynchronizedData().getInventory()[slotID] = itemstack;
+			getSynchronizedData().getInventory().set(slotID, itemstack);
 
 			if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
 			{

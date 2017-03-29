@@ -3,6 +3,7 @@ package mekanism.api.reactor;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.GasTank;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidTank;
 
 public interface IFusionReactor extends IHeatTransfer
@@ -61,5 +62,5 @@ public interface IFusionReactor extends IHeatTransfer
 
 	public void updateTemperatures();
 	
-	public ItemStack[] getInventory();
+	public NonNullList<ItemStack> getInventory();
 }

@@ -39,6 +39,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.biome.BiomeDesert;
 import net.minecraftforge.common.capabilities.Capability;
@@ -73,7 +74,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		super("SolarNeutronActivator");
 		upgradeComponent.setSupported(Upgrade.ENERGY, false);
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -102,14 +103,14 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 				}
 			}
 			
-			if(inventory[0] != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
+			if(inventory.get(0) != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
 			{
-				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
+				inputTank.receive(GasTransmission.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 			
-			if(inventory[1] != null && outputTank.getGas() != null)
+			if(inventory.get(1) != null && outputTank.getGas() != null)
 			{
-				outputTank.draw(GasTransmission.addGas(inventory[1], outputTank.getGas()), true);
+				outputTank.draw(GasTransmission.addGas(inventory.get(1), outputTank.getGas()), true);
 			}
 			
 			SolarNeutronRecipe recipe = getRecipe();

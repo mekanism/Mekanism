@@ -19,6 +19,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE>
@@ -37,7 +38,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 
-		inventory = new ItemStack[5];
+		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
@@ -111,7 +112,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	@Override
 	public ItemStackInput getInput()
 	{
-		return new ItemStackInput(inventory[0]);
+		return new ItemStackInput(inventory.get(0));
 	}
 
 	@Override

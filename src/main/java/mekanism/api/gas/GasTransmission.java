@@ -87,7 +87,7 @@ public final class GasTransmission
 	 */
 	public static GasStack removeGas(ItemStack itemStack, Gas type, int amount)
 	{
-		if(itemStack != null && itemStack.getItem() instanceof IGasItem)
+		if(!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem)
 		{
 			IGasItem item = (IGasItem)itemStack.getItem();
 
@@ -110,7 +110,7 @@ public final class GasTransmission
 	 */
 	public static int addGas(ItemStack itemStack, GasStack stack)
 	{
-		if(itemStack != null && itemStack.getItem() instanceof IGasItem && ((IGasItem)itemStack.getItem()).canReceiveGas(itemStack, stack.getGas()))
+		if(!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem)itemStack.getItem()).canReceiveGas(itemStack, stack.getGas()))
 		{
 			return ((IGasItem)itemStack.getItem()).addGas(itemStack, stack.copy());
 		}

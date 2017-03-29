@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -46,7 +47,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	public TileEntityDynamicTank(String name)
 	{
 		super(name);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -128,7 +129,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		int needed = (structure.volume*TankUpdateProtocol.FLUID_PER_TANK)-(structure.fluidStored != null ? structure.fluidStored.amount : 0);
 
-		if(FluidContainerUtils.isFluidContainer(structure.inventory[0]))
+		if(FluidContainerUtils.isFluidContainer(structure.inventory.get(0)))
 		{
 			structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.inventory, structure.editMode, structure.fluidStored, needed, 0, 1, null);
 			

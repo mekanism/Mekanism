@@ -232,6 +232,11 @@ public final class InventoryUtils
 
 	public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) 
 	{
+		if(toInsert.isEmpty() || inSlot.isEmpty())
+		{
+			return true;
+		}
+		
     	return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
   	}
 

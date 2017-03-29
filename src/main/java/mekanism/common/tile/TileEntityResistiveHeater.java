@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -55,7 +56,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	public TileEntityResistiveHeater()
 	{
 		super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.baseEnergy);
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 	
 	@Override

@@ -4,24 +4,23 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory, ITickable
 {
 	/** The inventory slot itemstacks used by this block. */
-	public ItemStack[] inventory;
+	public NonNullList<ItemStack> inventory;
 
 	/** The full name of this machine. */
 	public String fullName;
@@ -57,7 +56,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		if(handleInventory())
 		{
 			NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
-			inventory = new ItemStack[getSizeInventory()];
+			inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 
 			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 			{
@@ -101,62 +100,31 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public int getSizeInventory()
 	{
-		return inventory != null ? inventory.length : 0;
+		return inventory != null ? inventory.size() : 0;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
-		return inventory != null ? inventory[slotID] : null;
+		return inventory != null ? inventory.get(slotID) : null;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
-		if(getStackInSlot(slotID) != null)
-		{
-			ItemStack tempStack;
-
-			if(getStackInSlot(slotID).getCount() <= amount)
-			{
-				tempStack = getStackInSlot(slotID);
-				setInventorySlotContents(slotID, null);
-				return tempStack;
-			}
-			else {
-				tempStack = getStackInSlot(slotID).splitStack(amount);
-
-				if(getStackInSlot(slotID).getCount() == 0)
-				{
-					setInventorySlotContents(slotID, null);
-				}
-
-				return tempStack;
-			}
-		}
-		else {
-			return null;
-		}
+		return ItemStackHelper.getAndSplit(inventory, slotID, amount);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int slotID)
 	{
-		if(getStackInSlot(slotID) != null)
-		{
-			ItemStack tempStack = getStackInSlot(slotID);
-			setInventorySlotContents(slotID, null);
-			return tempStack;
-		}
-		else {
-			return null;
-		}
+		return ItemStackHelper.getAndRemove(inventory, slotID);
 	}
 
 	@Override
 	public void setInventorySlotContents(int slotID, ItemStack itemstack)
 	{
-		inventory[slotID] = itemstack;
+		inventory.set(slotID, itemstack);
 
 		if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
 		{
@@ -228,16 +196,16 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 			return;
 		}
 
-		inventory = new ItemStack[getSizeInventory()];
-
+		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+		
 		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
 		{
 			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.getCompoundTagAt(slots);
 			byte slotID = tagCompound.getByte("Slot");
 
-			if(slotID >= 0 && slotID < inventory.length)
+			if(slotID >= 0 && slotID < inventory.size())
 			{
-				inventory[slotID] = InventoryUtils.loadFromNBT(tagCompound);
+				inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
 			}
 		}
 	}
@@ -249,13 +217,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 		if(handleInventory())
 		{
-			for(int slots = 0; slots < inventory.length; slots++)
+			for(int slots = 0; slots < inventory.size(); slots++)
 			{
-				if(inventory[slots] != null)
+				if(!inventory.get(slots).isEmpty())
 				{
 					NBTTagCompound tagCompound = new NBTTagCompound();
 					tagCompound.setByte("Slot", (byte)slots);
-					inventory[slots].writeToNBT(tagCompound);
+					inventory.get(slots).writeToNBT(tagCompound);
 					tagList.appendTag(tagCompound);
 				}
 			}

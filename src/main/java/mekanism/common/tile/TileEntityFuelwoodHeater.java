@@ -22,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -49,7 +50,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	public TileEntityFuelwoodHeater() 
 	{
 		super("FuelwoodHeater");
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -86,17 +87,17 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 				burning = true;
 			}
 			else {
-				if(inventory[0] != null)
+				if(!inventory.get(0).isEmpty())
 				{
-					maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[0])/2;
+					maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory.get(0))/2;
 					
 					if(burnTime > 0)
 					{
-						inventory[0].shrink(1);
+						inventory.get(0).shrink(1);
 						
-						if(inventory[0].getCount() == 0)
+						if(inventory.get(0).getCount() == 0)
 						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+							inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 						}
 						
 						burning = true;

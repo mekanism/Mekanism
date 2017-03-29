@@ -47,6 +47,7 @@ import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -97,7 +98,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	{
 		super("machine.washer", "ChemicalWasher", BlockStateMachine.MachineType.CHEMICAL_WASHER.baseEnergy);
 		
-		inventory = new ItemStack[5];
+		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
@@ -132,9 +133,9 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			ChargeUtils.discharge(3, this);
 			manageBuckets();
 
-			if(inventory[2] != null && outputTank.getGas() != null)
+			if(!inventory.get(2).isEmpty() && outputTank.getGas() != null)
 			{
-				outputTank.draw(GasTransmission.addGas(inventory[2], outputTank.getGas()), true);
+				outputTank.draw(GasTransmission.addGas(inventory.get(2), outputTank.getGas()), true);
 			}
 			
 			WasherRecipe recipe = getRecipe();
@@ -199,7 +200,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 	private void manageBuckets()
 	{
-		if(FluidContainerUtils.isFluidContainer(inventory[0]))
+		if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 		{
 			FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, FluidChecker.check(FluidRegistry.WATER));
 		}

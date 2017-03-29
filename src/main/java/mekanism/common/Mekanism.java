@@ -549,7 +549,7 @@ public class Mekanism
 		));
 		MachineType.RESISTIVE_HEATER.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock3, 1, 4), new Object[] {
 			"CRC", "RHR", "CEC", Character.valueOf('C'), "ingotTin", Character.valueOf('R'), "dustRedstone", Character.valueOf('H'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 5), Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
-		}));;
+		}));
 		MachineType.QUANTUM_ENTANGLOPORTER.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock3, 1, 0), new Object[] {
 			"OCO", "ATA", "OCO", Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismItems.TeleportationCore
 		}));

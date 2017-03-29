@@ -22,7 +22,7 @@ public abstract class MinerFilter
 	{
 		nbtTags.setBoolean("requireStack", requireStack);
 
-		if(replaceStack != null)
+		if(!replaceStack.isEmpty())
 		{
 			nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
 		}
@@ -44,7 +44,7 @@ public abstract class MinerFilter
 	{
 		data.add(requireStack);
 		
-		if(replaceStack != null)
+		if(!replaceStack.isEmpty())
 		{
 			data.add(true);
 			data.add(MekanismUtils.getID(replaceStack));
@@ -64,7 +64,7 @@ public abstract class MinerFilter
 			replaceStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
 		}
 		else {
-			replaceStack = null;
+			replaceStack = ItemStack.EMPTY;
 		}
 	}
 

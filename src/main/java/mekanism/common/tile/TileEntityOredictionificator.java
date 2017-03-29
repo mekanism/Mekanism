@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -52,7 +53,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	{
 		super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.machineName);
 		
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		doAutoSync = false;
 	}
 
@@ -71,34 +72,34 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			
 			didProcess = false;
 			
-			if(MekanismUtils.canFunction(this) && inventory[0] != null && getValidName(inventory[0]) != null)
+			if(MekanismUtils.canFunction(this) && !inventory.get(0).isEmpty() && getValidName(inventory.get(0)) != null)
 			{
-				ItemStack result = getResult(inventory[0]);
+				ItemStack result = getResult(inventory.get(0));
 				
 				if(result != null)
 				{
-					if(inventory[1] == null)
+					if(inventory.get(1) == null)
 					{
-						inventory[0].shrink(1);
+						inventory.get(0).shrink(1);
 						
-						if(inventory[0].getCount() <= 0)
+						if(inventory.get(0).getCount() <= 0)
 						{
-							inventory[0] = null;
+							inventory.set(0, null);
 						}
 						
-						inventory[1] = result;
+						inventory.set(1, result);
 						didProcess = true;
 					}
-					else if(inventory[1].isItemEqual(result) && inventory[1].getCount() < inventory[1].getMaxStackSize())
+					else if(inventory.get(1).isItemEqual(result) && inventory.get(1).getCount() < inventory.get(1).getMaxStackSize())
 					{
-						inventory[0].shrink(1);
+						inventory.get(0).shrink(1);
 						
-						if(inventory[0].getCount() <= 0)
+						if(inventory.get(0).getCount() <= 0)
 						{
-							inventory[0] = null;
+							inventory.set(0, null);
 						}
 						
-						inventory[1].grow(1);
+						inventory.get(1).grow(1);
 						didProcess = true;
 					}
 					

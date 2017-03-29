@@ -48,6 +48,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -107,7 +108,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public TileEntityElectrolyticSeparator()
 	{
 		super("ElectrolyticSeparator", BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
-		inventory = new ItemStack[5];
+		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -140,26 +141,26 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 			ChargeUtils.discharge(3, this);
 			
-			if(inventory[0] != null)
+			if(!inventory.get(0).isEmpty())
 			{
-				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory[0]))
+				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory.get(0)))
 				{
-					if(FluidContainerUtils.isFluidContainer(inventory[0]))
+					if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 					{
-						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
+						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory.get(0)), true);
 					}
 				}
 			}
 
-			if(inventory[1] != null && leftTank.getStored() > 0)
+			if(!inventory.get(1).isEmpty() && leftTank.getStored() > 0)
 			{
-				leftTank.draw(GasTransmission.addGas(inventory[1], leftTank.getGas()), true);
+				leftTank.draw(GasTransmission.addGas(inventory.get(1), leftTank.getGas()), true);
 				MekanismUtils.saveChunk(this);
 			}
 
-			if(inventory[2] != null && rightTank.getStored() > 0)
+			if(!inventory.get(2).isEmpty() && rightTank.getStored() > 0)
 			{
-				rightTank.draw(GasTransmission.addGas(inventory[2], rightTank.getGas()), true);
+				rightTank.draw(GasTransmission.addGas(inventory.get(2), rightTank.getGas()), true);
 				MekanismUtils.saveChunk(this);
 			}
 			

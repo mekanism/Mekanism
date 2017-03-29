@@ -41,6 +41,7 @@ import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -88,7 +89,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		super("machine.dissolution", "ChemicalDissolutionChamber", BlockStateMachine.MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
 		
-		inventory = new ItemStack[5];
+		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
@@ -120,14 +121,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 			ChargeUtils.discharge(3, this);
 
-			if(inventory[0] != null && injectTank.getNeeded() > 0)
+			if(!inventory.get(0).isEmpty() && injectTank.getNeeded() > 0)
 			{
-				injectTank.receive(GasTransmission.removeGas(inventory[0], GasRegistry.getGas("sulfuricAcid"), injectTank.getNeeded()), true);
+				injectTank.receive(GasTransmission.removeGas(inventory.get(0), GasRegistry.getGas("sulfuricAcid"), injectTank.getNeeded()), true);
 			}
 
-			if(inventory[2] != null && outputTank.getGas() != null)
+			if(!inventory.get(2).isEmpty() && outputTank.getGas() != null)
 			{
-				outputTank.draw(GasTransmission.addGas(inventory[2], outputTank.getGas()), true);
+				outputTank.draw(GasTransmission.addGas(inventory.get(2), outputTank.getGas()), true);
 			}
 
 			boolean changed = false;
@@ -238,7 +239,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public ItemStackInput getInput()
 	{
-		return new ItemStackInput(inventory[1]);
+		return new ItemStackInput(inventory.get(1));
 	}
 
 	public boolean canOperate(DissolutionRecipe recipe)

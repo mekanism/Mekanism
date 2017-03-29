@@ -60,9 +60,9 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	@Override
 	public void handleSecondaryFuel()
 	{
-		if(inventory[1] != null && gasTank.getNeeded() > 0 && inventory[1].getItem() instanceof IGasItem)
+		if(!inventory.get(1).isEmpty() && gasTank.getNeeded() > 0 && inventory.get(1).getItem() instanceof IGasItem)
 		{
-			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("oxygen"), gasTank.getNeeded());
+			GasStack removed = GasTransmission.removeGas(inventory.get(1), GasRegistry.getGas("oxygen"), gasTank.getNeeded());
 			gasTank.receive(removed, true);
 			return;
 		}

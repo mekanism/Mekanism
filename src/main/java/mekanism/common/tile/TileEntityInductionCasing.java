@@ -21,6 +21,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -37,7 +38,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	public TileEntityInductionCasing(String name)
 	{
 		super(name);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 	
 	@Override

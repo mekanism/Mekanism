@@ -5,6 +5,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 {
@@ -31,9 +32,9 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 		return tank.canReceive(gasOutput.getGas()) && tank.getNeeded() >= gasOutput.amount;
 	}
 
-	public boolean canAddProducts(ItemStack[] inventory, int index)
+	public boolean canAddProducts(NonNullList<ItemStack> inventory, int index)
 	{
-		return inventory[index] == null || (inventory[index].isItemEqual(itemOutput) && inventory[index].getCount() + itemOutput.getCount() <= inventory[index].getMaxStackSize());
+		return inventory.get(index).isEmpty() || (inventory.get(index).isItemEqual(itemOutput) && inventory.get(index).getCount() + itemOutput.getCount() <= inventory.get(index).getMaxStackSize());
 	}
 
 	public void fillTank(GasTank tank)
@@ -41,19 +42,19 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 		tank.receive(gasOutput, true);
 	}
 
-	public void addProducts(ItemStack[] inventory, int index)
+	public void addProducts(NonNullList<ItemStack> inventory, int index)
 	{
-		if(inventory[index] == null)
+		if(inventory.get(index).isEmpty())
 		{
-			inventory[index] = itemOutput.copy();
+			inventory.set(index, itemOutput.copy());
 		}
-		else if(inventory[index].isItemEqual(itemOutput))
+		else if(inventory.get(index).isItemEqual(itemOutput))
 		{
-			inventory[index].grow(itemOutput.getCount());
+			inventory.get(index).grow(itemOutput.getCount());
 		}
 	}
 
-	public boolean applyOutputs(ItemStack[] inventory, int index, GasTank tank, boolean doEmit)
+	public boolean applyOutputs(NonNullList<ItemStack> inventory, int index, GasTank tank, boolean doEmit)
 	{
 		if(canFillTank(tank) && canAddProducts(inventory, index))
 		{

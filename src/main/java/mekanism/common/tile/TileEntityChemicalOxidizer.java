@@ -37,6 +37,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -78,7 +79,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy);
 		
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
@@ -112,9 +113,9 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 			ChargeUtils.discharge(1, this);
 
-			if(inventory[2] != null && gasTank.getGas() != null)
+			if(!inventory.get(2).isEmpty() && gasTank.getGas() != null)
 			{
-				gasTank.draw(GasTransmission.addGas(inventory[2], gasTank.getGas()), true);
+				gasTank.draw(GasTransmission.addGas(inventory.get(2), gasTank.getGas()), true);
 			}
 			
 			OxidationRecipe recipe = getRecipe();
@@ -216,7 +217,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 	public ItemStackInput getInput()
 	{
-		return new ItemStackInput(inventory[0]);
+		return new ItemStackInput(inventory.get(0));
 	}
 
 	public boolean canOperate(OxidationRecipe recipe)

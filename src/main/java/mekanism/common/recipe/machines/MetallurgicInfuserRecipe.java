@@ -4,6 +4,7 @@ import mekanism.common.InfuseStorage;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public class MetallurgicInfuserRecipe extends MachineRecipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe>
 {
@@ -17,7 +18,7 @@ public class MetallurgicInfuserRecipe extends MachineRecipe<InfusionInput, ItemS
 		this(input, new ItemStackOutput(output));
 	}
 
-	public boolean canOperate(ItemStack[] inventory, int inputIndex, int outputIndex, InfuseStorage infuse)
+	public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, InfuseStorage infuse)
 	{
 		return getInput().use(inventory, inputIndex, infuse, false) && getOutput().applyOutputs(inventory, outputIndex, false);
 	}
@@ -28,7 +29,7 @@ public class MetallurgicInfuserRecipe extends MachineRecipe<InfusionInput, ItemS
 		return new MetallurgicInfuserRecipe(getInput(), getOutput());
 	}
 
-	public void output(ItemStack[] inventory, int inputIndex, int outputIndex, InfuseStorage infuseStored)
+	public void output(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, InfuseStorage infuseStored)
 	{
 		if(getInput().use(inventory, inputIndex, infuseStored, true))
 		{

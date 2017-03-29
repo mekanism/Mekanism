@@ -20,6 +20,7 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,7 +36,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	{
 		super("SecurityDesk");
 		
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -45,40 +46,40 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		{
 			if(owner != null && frequency != null)
 			{
-				if(inventory[0] != null && inventory[0].getItem() instanceof IOwnerItem)
+				if(!inventory.get(0).isEmpty() && inventory.get(0).getItem() instanceof IOwnerItem)
 				{
-					IOwnerItem item = (IOwnerItem)inventory[0].getItem();
+					IOwnerItem item = (IOwnerItem)inventory.get(0).getItem();
 					
-					if(item.hasOwner(inventory[0]) && item.getOwner(inventory[0]) != null)
+					if(item.hasOwner(inventory.get(0)) && item.getOwner(inventory.get(0)) != null)
 					{
-						if(item.getOwner(inventory[0]).equals(owner))
+						if(item.getOwner(inventory.get(0)).equals(owner))
 						{
-							item.setOwner(inventory[0], null);
+							item.setOwner(inventory.get(0), null);
 							
-							if(item instanceof ISecurityItem && ((ISecurityItem)item).hasSecurity(inventory[0]))
+							if(item instanceof ISecurityItem && ((ISecurityItem)item).hasSecurity(inventory.get(0)))
 							{
-								((ISecurityItem)item).setSecurity(inventory[0], SecurityMode.PUBLIC);
+								((ISecurityItem)item).setSecurity(inventory.get(0), SecurityMode.PUBLIC);
 							}
 						}
 					}
 				}
 				
-				if(inventory[1] != null && inventory[1].getItem() instanceof IOwnerItem)
+				if(!inventory.get(1).isEmpty() && inventory.get(1).getItem() instanceof IOwnerItem)
 				{
-					IOwnerItem item = (IOwnerItem)inventory[1].getItem();
+					IOwnerItem item = (IOwnerItem)inventory.get(1).getItem();
 					
-					if(item.hasOwner(inventory[1]))
+					if(item.hasOwner(inventory.get(1)))
 					{
-						if(item.getOwner(inventory[1]) == null)
+						if(item.getOwner(inventory.get(1)) == null)
 						{
-							item.setOwner(inventory[1], owner);
+							item.setOwner(inventory.get(1), owner);
 						}
 						
-						if(item.getOwner(inventory[1]).equals(owner))
+						if(item.getOwner(inventory.get(1)).equals(owner))
 						{
-							if(item instanceof ISecurityItem && ((ISecurityItem)item).hasSecurity(inventory[1]))
+							if(item instanceof ISecurityItem && ((ISecurityItem)item).hasSecurity(inventory.get(1)))
 							{
-								((ISecurityItem)item).setSecurity(inventory[1], frequency.securityMode);
+								((ISecurityItem)item).setSecurity(inventory.get(1), frequency.securityMode);
 							}
 						}
 					}

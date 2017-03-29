@@ -11,6 +11,7 @@ import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.biome.BiomeDesert;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,7 +34,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	public TileEntitySolarGenerator(String name, double maxEnergy, double output)
 	{
 		super("solar", name, maxEnergy, output);
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 
 	@Override

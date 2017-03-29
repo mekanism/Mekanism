@@ -6,26 +6,27 @@ import mekanism.common.util.RecipeUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class RecipeFormula 
 {
 	private InventoryCrafting dummy = MekanismUtils.getDummyCraftingInv();
 	
-	public ItemStack[] input = new ItemStack[9];
+	public NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
 	
 	public IRecipe recipe = null;
 	
-	public RecipeFormula(World world, ItemStack[] inv)
+	public RecipeFormula(World world, NonNullList<ItemStack> inv)
 	{
 		this(world, inv, 0);
 	}
 	
-	public RecipeFormula(World world, ItemStack[] inv, int start)
+	public RecipeFormula(World world, NonNullList<ItemStack> inv, int start)
 	{
 		for(int i = 0; i < 9; i++)
 		{
-			input[i] = StackUtils.size(inv[start+i], 1);
+			input.set(i, StackUtils.size(inv.get(start+i), 1));
 		}
 		
 		resetToRecipe();
@@ -37,15 +38,15 @@ public class RecipeFormula
 	{
 		for(int i = 0; i < 9; i++)
 		{
-			dummy.setInventorySlotContents(i, input[i]);
+			dummy.setInventorySlotContents(i, input.get(i));
 		}
 	}
 	
-	public boolean matches(World world, ItemStack[] newInput, int start)
+	public boolean matches(World world, NonNullList<ItemStack> newInput, int start)
 	{
 		for(int i = 0; i < 9; i++)
 		{
-			dummy.setInventorySlotContents(i, newInput[start+i]);
+			dummy.setInventorySlotContents(i, newInput.get(start+i));
 		}
 		
 		return recipe.matches(dummy, world);
@@ -70,7 +71,7 @@ public class RecipeFormula
 				return true;
 			}
 			
-			dummy.setInventorySlotContents(i, input[i]);
+			dummy.setInventorySlotContents(i, input.get(i));
 		}
 		
 		return false;

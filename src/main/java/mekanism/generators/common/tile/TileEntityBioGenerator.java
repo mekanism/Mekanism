@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -34,7 +35,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	public TileEntityBioGenerator()
 	{
 		super("bio", "BioGenerator", 160000, generators.bioGeneration*2);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -42,33 +43,28 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	{
 		super.onUpdate();
 
-		if(inventory[0] != null)
+		if(!inventory.get(0).isEmpty())
 		{
 			ChargeUtils.charge(1, this);
 			
-			FluidStack fluid = FluidUtil.getFluidContained(inventory[0]);
+			FluidStack fluid = FluidUtil.getFluidContained(inventory.get(0));
 
 			if(fluid != null && FluidRegistry.isFluidRegistered("bioethanol"))
 			{
 				if(fluid.getFluid() == FluidRegistry.getFluid("bioethanol"))
 				{
-					IFluidHandler handler = FluidUtil.getFluidHandler(inventory[0]);
+					IFluidHandler handler = FluidUtil.getFluidHandler(inventory.get(0));
 					FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID-bioFuelSlot.fluidStored, true);
 					
 					if(drained != null)
 					{
 						bioFuelSlot.fluidStored += drained.amount;
-						
-						if(inventory[0].getCount() == 0)
-						{
-							inventory[0] = null;
-						}
 					}
 				}
 			}
 			else {
-				int fuel = getFuel(inventory[0]);
-				ItemStack prevStack = inventory[0].copy();
+				int fuel = getFuel(inventory.get(0));
+				ItemStack prevStack = inventory.get(0).copy();
 
 				if(fuel > 0)
 				{
@@ -78,17 +74,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					{
 						bioFuelSlot.fluidStored += fuel;
 
-						if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
+						if(inventory.get(0).getItem().getContainerItem(inventory.get(0)) != null)
 						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+							inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 						}
 						else {
-							inventory[0].shrink(1);
-						}
-
-						if(inventory[0].getCount() == 0)
-						{
-							inventory[0] = null;
+							inventory.get(0).shrink(1);
 						}
 					}
 				}

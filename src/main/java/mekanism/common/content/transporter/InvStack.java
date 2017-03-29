@@ -44,7 +44,7 @@ public final class InvStack
 			return ret;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public void appendStack(int id, ItemStack stack)

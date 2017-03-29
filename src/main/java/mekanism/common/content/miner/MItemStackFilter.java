@@ -25,7 +25,7 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return false;
 		}

@@ -64,6 +64,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -175,7 +176,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		super("null", machine.machineName, machine.baseEnergy);
 
 		tier = type;
-		inventory = new ItemStack[5+type.processes*2];
+		inventory = NonNullList.withSize(5+type.processes*2, ItemStack.EMPTY);
 		progress = new int[type.processes];
 		isActive = false;
 
@@ -236,18 +237,18 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		
 		for(int i = 0; i < tier.processes+5; i++)
 		{
-			factory.inventory[i] = inventory[i];
+			factory.inventory.set(i, inventory.get(i));
 		}
 		
 		for(int i = 0; i < tier.processes; i++)
 		{
 			int output = getOutputSlot(i);
 			
-			if(inventory[output] != null)
+			if(!inventory.get(output).isEmpty())
 			{
 				int newOutput = 5+factory.tier.processes+i;
 				
-				factory.inventory[newOutput] = inventory[output];
+				factory.inventory.set(newOutput, inventory.get(output));
 			}
 		}
 		
@@ -302,13 +303,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			handleSecondaryFuel();
 			sortInventory();
 
-			if(inventory[2] != null && inventory[3] == null)
+			if(!inventory.get(2).isEmpty() && inventory.get(3).isEmpty())
 			{
 				RecipeType toSet = null;
 
 				for(RecipeType type : RecipeType.values())
 				{
-					if(inventory[2].isItemEqual(type.getStack()))
+					if(inventory.get(2).isItemEqual(type.getStack()))
 					{
 						toSet = type;
 						break;
@@ -328,10 +329,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						
 						upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
 						upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-						upgradeComponent.read(ItemDataUtils.getDataMap(inventory[2]));
+						upgradeComponent.read(ItemDataUtils.getDataMap(inventory.get(2)));
 
-						inventory[2] = null;
-						inventory[3] = returnStack;
+						inventory.set(2, ItemStack.EMPTY);
+						inventory.set(3, returnStack);
 
 						recipeType = toSet;
 						gasTank.setGas(null);
@@ -377,7 +378,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 				if(!canOperate(getInputSlot(process), getOutputSlot(process)))
 				{
-					if(!(recipeType.usesFuel() && recipeType.hasRecipe(inventory[getInputSlot(process)])))
+					if(!(recipeType.usesFuel() && recipeType.hasRecipe(inventory.get(getInputSlot(process)))))
 					{
 						progress[process] = 0;
 					}
@@ -457,9 +458,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				{
 					if(invID1.ID == invID2.ID || StackUtils.diffIgnoreNull(invID1.stack, invID2.stack) || Math.abs(invID1.size()-invID2.size()) < 2) continue;
 
-					List<ItemStack> evened = StackUtils.even(inventory[invID1.ID], inventory[invID2.ID]);
-					inventory[invID1.ID] = evened.get(0);
-					inventory[invID2.ID] = evened.get(1);
+					List<ItemStack> evened = StackUtils.even(inventory.get(invID1.ID), inventory.get(invID2.ID));
+					inventory.set(invID1.ID, evened.get(0));
+					inventory.set(invID2.ID, evened.get(1));
 
 					didOp = true;
 					break;
@@ -487,17 +488,17 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		public int size()
 		{
-			return stack != null ? stack.getCount() : 0;
+			return !stack.isEmpty() ? stack.getCount() : 0;
 		}
 
 		public Item item()
 		{
-			return stack != null ? stack.getItem() : null;
+			return !stack.isEmpty() ? stack.getItem() : null;
 		}
 
-		public static InvID get(int id, ItemStack[] inv)
+		public static InvID get(int id, NonNullList<ItemStack> inv)
 		{
-			return new InvID(inv[id], id);
+			return new InvID(inv.get(id), id);
 		}
 	}
 
@@ -508,43 +509,38 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public void handleSecondaryFuel()
 	{
-		if(inventory[4] != null)
+		if(!inventory.get(4).isEmpty())
 		{
 			if(recipeType.usesFuel() && gasTank.getNeeded() > 0)
 			{
-				if(inventory[4].getItem() instanceof IGasItem)
+				if(inventory.get(4).getItem() instanceof IGasItem)
 				{
-					GasStack gas = ((IGasItem)inventory[4].getItem()).getGas(inventory[4]);
+					GasStack gas = ((IGasItem)inventory.get(4).getItem()).getGas(inventory.get(4));
 	
 					if(gas != null && recipeType.isValidGas(gas.getGas()))
 					{
-						GasStack removed = GasTransmission.removeGas(inventory[4], gasTank.getGasType(), gasTank.getNeeded());
+						GasStack removed = GasTransmission.removeGas(inventory.get(4), gasTank.getGasType(), gasTank.getNeeded());
 						gasTank.receive(removed, true);
 					}
 	
 					return;
 				}
 	
-				GasStack stack = recipeType.getItemGas(inventory[4]);
+				GasStack stack = recipeType.getItemGas(inventory.get(4));
 				int gasNeeded = gasTank.getNeeded();
 	
 				if(stack != null && stack.amount <= gasNeeded)
 				{
 					gasTank.receive(stack, true);
 	
-					inventory[4].shrink(1);
-	
-					if(inventory[4].getCount() == 0)
-					{
-						inventory[4] = null;
-					}
+					inventory.get(4).shrink(1);
 				}
 			}
 			else if(recipeType == RecipeType.INFUSING)
 			{
-				if(InfuseRegistry.getObject(inventory[4]) != null)
+				if(InfuseRegistry.getObject(inventory.get(4)) != null)
 				{
-					InfuseObject infuse = InfuseRegistry.getObject(inventory[4]);
+					InfuseObject infuse = InfuseRegistry.getObject(inventory.get(4));
 
 					if(infuseStored.type == null || infuseStored.type == infuse.type)
 					{
@@ -552,12 +548,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						{
 							infuseStored.amount += infuse.stored;
 							infuseStored.type = infuse.type;
-							inventory[4].shrink(1);
-
-							if(inventory[4].getCount() <= 0)
-							{
-								inventory[4] = null;
-							}
+							inventory.get(4).shrink(1);
 						}
 					}
 				}
@@ -675,14 +666,14 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public boolean canOperate(int inputSlot, int outputSlot)
 	{
-		if(inventory[inputSlot] == null)
+		if(inventory.get(inputSlot).isEmpty())
 		{
 			return false;
 		}
 
 		if(recipeType.usesFuel())
 		{
-			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
+			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), gasTank.getGasType());
 
 			return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 
@@ -690,7 +681,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		
 		if(recipeType == RecipeType.INFUSING)
 		{
-			InfusionInput input = new InfusionInput(infuseStored, inventory[inputSlot]);
+			InfusionInput input = new InfusionInput(infuseStored, inventory.get(inputSlot));
 			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
 			
 			if(recipe == null)
@@ -701,7 +692,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			return recipe.canOperate(inventory, inputSlot, outputSlot, infuseStored);
 		}
 
-		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
+		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot));
 
 		return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot);
 
@@ -716,19 +707,19 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		if(recipeType.usesFuel())
 		{
-			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
+			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), gasTank.getGasType());
 
 			recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 		}
 		else if(recipeType == RecipeType.INFUSING)
 		{
-			InfusionInput input = new InfusionInput(infuseStored, inventory[inputSlot]);
+			InfusionInput input = new InfusionInput(infuseStored, inventory.get(inputSlot));
 			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
 			
 			recipe.output(inventory, inputSlot, outputSlot, infuseStored);
 		}
 		else {
-			BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
+			BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot));
 
 			recipe.operate(inventory, inputSlot, outputSlot);
 		}

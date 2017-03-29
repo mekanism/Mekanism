@@ -39,7 +39,7 @@ public class StackSearcher
 		{
 			for(i = i - 1; i >= 0; i--)
 			{
-				if(theInventory.getStackInSlot(i) != null && id.modifies(theInventory.getStackInSlot(i)))
+				if(!theInventory.getStackInSlot(i).isEmpty() && id.modifies(theInventory.getStackInSlot(i)))
 				{
 					ItemStack toSend = theInventory.getStackInSlot(i).copy();
 					return new InvStack(theInventory, i, toSend);
@@ -53,7 +53,7 @@ public class StackSearcher
 				{
 					int slotID = slots[i];
 
-					if(theInventory.getStackInSlot(slotID) != null && id.modifies(theInventory.getStackInSlot(slotID)))
+					if(!theInventory.getStackInSlot(slotID).isEmpty() && id.modifies(theInventory.getStackInSlot(slotID)))
 					{
 						ItemStack toSend = theInventory.getStackInSlot(slotID);
 
@@ -77,10 +77,10 @@ public class StackSearcher
 		{
 			for(i = i - 1; i >= 0; i--)
 			{
-				if(theInventory.getStackInSlot(i) != null && StackUtils.equalsWildcard(theInventory.getStackInSlot(i), type))
+				if(!theInventory.getStackInSlot(i).isEmpty() && StackUtils.equalsWildcard(theInventory.getStackInSlot(i), type))
 				{
 					ItemStack stack = theInventory.getStackInSlot(i);
-					int current = ret.getStack() != null ? ret.getStack().getCount() : 0;
+					int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
 
 					if(current+stack.getCount() <= max)
 					{
@@ -92,7 +92,7 @@ public class StackSearcher
 						ret.appendStack(i, copy);
 					}
 
-					if(ret.getStack() != null && ret.getStack().getCount() == max)
+					if(!ret.getStack().isEmpty() && ret.getStack().getCount() == max)
 					{
 						return ret;
 					}
@@ -109,10 +109,10 @@ public class StackSearcher
 				{
 					int slotID = slots[i];
 
-					if(sidedInventory.getStackInSlot(slotID) != null && StackUtils.equalsWildcard(theInventory.getStackInSlot(slotID), type))
+					if(!sidedInventory.getStackInSlot(slotID).isEmpty() && StackUtils.equalsWildcard(theInventory.getStackInSlot(slotID), type))
 					{
 						ItemStack stack = sidedInventory.getStackInSlot(slotID);
-						int current = ret.getStack() != null ? ret.getStack().getCount() : 0;
+						int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
 
 						if(current+stack.getCount() <= max)
 						{
@@ -133,7 +133,7 @@ public class StackSearcher
 							}
 						}
 
-						if(ret.getStack() != null && ret.getStack().getCount() == max)
+						if(!ret.getStack().isEmpty() && ret.getStack().getCount() == max)
 						{
 							return ret;
 						}
@@ -142,7 +142,7 @@ public class StackSearcher
 			}
 		}
 
-		if(ret != null && ret.getStack() != null && ret.getStack().getCount() >= min)
+		if(ret != null && !ret.getStack().isEmpty() && ret.getStack().getCount() >= min)
 		{
 			return ret;
 		}

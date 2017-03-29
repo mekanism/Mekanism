@@ -22,6 +22,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -44,7 +45,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	public TileEntityLaserTractorBeam()
 	{
 		super("LaserTractorBeam");
-		inventory = new ItemStack[27];
+		inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -160,15 +161,15 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 		outer:
 		for(ItemStack drop : drops)
 		{
-			for(int i = 0; i < inventory.length; i++)
+			for(int i = 0; i < inventory.size(); i++)
 			{
-				if(inventory[i] == null)
+				if(inventory.get(i).isEmpty())
 				{
-					inventory[i] = drop;
+					inventory.set(i, drop);
 					continue outer;
 				}
 				
-				ItemStack slot = inventory[i];
+				ItemStack slot = inventory.get(i);
 				
 				if(StackUtils.equalsWildcardWithNBT(slot, drop))
 				{

@@ -3,6 +3,7 @@ package mekanism.common.recipe.outputs;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 public class ItemStackOutput extends MachineOutput<ItemStackOutput>
 {
@@ -21,26 +22,27 @@ public class ItemStackOutput extends MachineOutput<ItemStackOutput>
 		output = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("output"));
 	}
 
-	public boolean applyOutputs(ItemStack[] inventory, int index, boolean doEmit)
+	public boolean applyOutputs(NonNullList<ItemStack> inventory, int index, boolean doEmit)
 	{
-		if(inventory[index] == null)
+		if(inventory.get(index).isEmpty())
 		{
 			if(doEmit)
 			{
-				inventory[index] = output.copy();
+				inventory.set(index, output.copy());
 			}
 			
 			return true;
 		} 
-		else if(inventory[index].isItemEqual(output) && inventory[index].getCount() + output.getCount() <= inventory[index].getMaxStackSize())
+		else if(inventory.get(index).isItemEqual(output) && inventory.get(index).getCount() + output.getCount() <= inventory.get(index).getMaxStackSize())
 		{
 			if(doEmit)
 			{
-				inventory[index].grow(output.getCount());
+				inventory.get(index).grow(output.getCount());
 			}
 			
 			return true;
 		}
+		
 		return false;
 	}
 

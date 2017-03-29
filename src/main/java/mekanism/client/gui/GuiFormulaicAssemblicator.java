@@ -197,7 +197,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 		{
 			for(int i = 0; i < 9; i++)
 			{
-				ItemStack stack = tileEntity.formula.input[i];
+				ItemStack stack = tileEntity.formula.input.get(i);
 				
 				if(stack != null)
 				{
@@ -222,8 +222,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 	
 	private boolean canEncode()
 	{
-		return tileEntity.formula == null && tileEntity.inventory[2] != null && tileEntity.inventory[2].getItem() instanceof ItemCraftingFormula &&
-				((ItemCraftingFormula)tileEntity.inventory[2].getItem()).getInventory(tileEntity.inventory[2]) == null;
+		return tileEntity.formula == null && !tileEntity.inventory.get(2).isEmpty() && tileEntity.inventory.get(2).getItem() instanceof ItemCraftingFormula &&
+				((ItemCraftingFormula)tileEntity.inventory.get(2).getItem()).getInventory(tileEntity.inventory.get(2)) == null;
 	}
 	
 	@Override
