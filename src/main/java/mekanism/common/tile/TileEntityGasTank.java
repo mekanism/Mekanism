@@ -24,6 +24,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -41,7 +42,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable, IComputerIntegration
 {
 	public enum GasMode
 	{
@@ -67,6 +68,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
 	public TileComponentSecurity securityComponent;
+	private static final String[] methods = new String[] {"getMaxGas", "getStoredGas", "getGas"};
 
 	public TileEntityGasTank()
 	{
@@ -420,5 +422,27 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public TileComponentSecurity getSecurity()
 	{
 		return securityComponent;
+	}
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
+	{
+		switch(method)
+		{
+			case 0:
+				return new Object[] {gasTank.getMaxGas()};
+			case 1:
+				return new Object[] {gasTank.getStored()};
+			case 2:
+				return new Object[] {gasTank.getGas()};
+			default:
+				throw new NoSuchMethodException();
+		}
 	}
 }
