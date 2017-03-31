@@ -32,10 +32,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
-public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver
+public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver
 {
 	public Tier.CableTier tier;
 
@@ -70,7 +71,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			if(!sides.isEmpty())
 			{
 				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
-				double canDraw = tier.cableCapacity/10F;
+				double canDraw = tier.cableCapacity;
 
 				for(EnumFacing side : sides)
 				{
@@ -78,7 +79,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 					{
 						TileEntity outputter = connectedOutputters[side.ordinal()];
 
-						if(CapabilityUtils.hasCapability(outputter, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
+						if(CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite()) && CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
 						{
 							IStrictEnergyStorage storage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
 							double received = Math.min(storage.getEnergy(), canDraw);
@@ -94,27 +95,38 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 						else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite()))
 						{
 							ITeslaProducer producer = CapabilityUtils.getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
-							double received = producer.takePower((long)(canDraw*general.TO_TESLA), true)*general.FROM_TESLA;
-							double toDraw = received;
+							double toDraw = producer.takePower((long)Math.round(Math.min(Integer.MAX_VALUE, canDraw*general.TO_TESLA)), true)*general.FROM_TESLA;
 							
-							if(received > 0)
+							if(toDraw > 0)
 							{
-								toDraw -= takeEnergy(received, true);
+								toDraw -= takeEnergy(toDraw, true);
 							}
 							
-							producer.takePower((long)(toDraw*general.TO_TESLA), false);
+							producer.takePower((long)Math.round(toDraw*general.TO_TESLA), false);
+						}
+						
+						else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite()))
+						{
+							IEnergyStorage storage = CapabilityUtils.getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite());
+							double toDraw = storage.extractEnergy((int)Math.round(canDraw*general.TO_FORGE), true)*general.FROM_FORGE;
+							
+							if(toDraw > 0)
+							{
+								toDraw -= takeEnergy(toDraw, true);
+							}
+							
+							storage.extractEnergy((int)Math.round(toDraw*general.TO_TESLA), false);
 						}
 						else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
 						{
-							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(canDraw*general.TO_RF), true)*general.FROM_RF;
-							double toDraw = received;
+							double toDraw = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)Math.round(Math.min(Integer.MAX_VALUE, canDraw*general.TO_RF)), true)*general.FROM_RF;
 
-							if(received > 0)
+							if(toDraw > 0)
 							{
-								toDraw -= takeEnergy(received, true);
+								toDraw -= takeEnergy(toDraw, true);
 							}
 
-							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(toDraw*general.TO_RF), false);
+							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)Math.round(toDraw*general.TO_RF), false);
 						}
 						else if(MekanismUtils.useIC2())
 						{
@@ -272,7 +284,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!canReceiveEnergy(side))
 		{
@@ -280,7 +292,11 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		}
 
 		double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
-		setEnergy(getEnergy() + toUse);
+		
+		if(!simulate)
+		{
+			setEnergy(getEnergy() + toUse);
+		}
 
 		return toUse;
 	}

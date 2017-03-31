@@ -6,7 +6,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.energy.ICableOutputter;
+import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
@@ -109,11 +109,11 @@ public final class CableUtils
 			return false;
 		}
 		
-		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()))
+		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite()))
 		{
-			ICableOutputter outputter = CapabilityUtils.getCapability(tileEntity, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite());
+			IStrictEnergyOutputter outputter = CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite());
 			
-			if(outputter != null && outputter.canOutputTo(side.getOpposite()))
+			if(outputter != null && outputter.canOutputEnergy(side.getOpposite()))
 			{
 				return true;
 			}
@@ -260,7 +260,7 @@ public final class CableUtils
 
 			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{
-				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), currentSending);
+				sent += acceptor.acceptEnergy(side.getOpposite(), currentSending, false);
 			}
 		}
 		else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))

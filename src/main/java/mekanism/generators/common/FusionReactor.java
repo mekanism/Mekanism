@@ -561,7 +561,7 @@ public class FusionReactor
 		return null;
 	}
 	
-	@Override
+	//@Override
 	public ItemStack[] getInventory()
 	{
 		return isFormed() ? controller.inventory : null;

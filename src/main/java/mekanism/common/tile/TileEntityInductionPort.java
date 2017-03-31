@@ -329,11 +329,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public boolean isTeleporterCompatible(EnumFacing side)
 	{
-		return canOutputTo(side);
+		return canOutputEnergy(side);
 	}
 
 	@Override
-	public boolean canOutputTo(EnumFacing side)
+	public boolean canOutputEnergy(EnumFacing side)
 	{
 		return getOutputtingSides().contains(side);
 	}
@@ -410,7 +410,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			return amount;
 		}
 
-		return amount-transferEnergyToAcceptor(direction, amount*general.FROM_IC2)*general.TO_IC2;
+		return amount-acceptEnergy(direction, amount*general.FROM_IC2, false)*general.TO_IC2;
 	}
 
 	@Override
@@ -426,7 +426,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!getConsumingSides().contains(side))
 		{
@@ -434,14 +434,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		}
 
 		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount);
-		setEnergy(getEnergy() + toUse);
-		structure.remainingInput -= toUse;
+		
+		if(!simulate)
+		{
+			setEnergy(getEnergy() + toUse);
+			structure.remainingInput -= toUse;
+		}
 
 		return toUse;
 	}
 	
 	@Override
-	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!getOutputtingSides().contains(side))
 		{
@@ -505,7 +509,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+				|| capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
 				|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
 				|| capability == Capabilities.CONFIGURABLE_CAPABILITY
 				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
@@ -521,7 +525,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
-				capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY)
+				capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY)
 		{
 			return (T)this;
 		}

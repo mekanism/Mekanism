@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.energy.ICableOutputter;
+import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
@@ -30,7 +30,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage, IComputerIntegration, ISecurityTile
+public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration, ISecurityTile
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
@@ -189,6 +189,19 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			}
 		}
 	}
+	
+	@Override
+	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
+	{
+		double toGive = Math.min(getEnergy(), amount);
+		
+		if(!simulate)
+		{
+			setEnergy(getEnergy() - toGive);
+		}
+		
+		return toGive;
+	}
 
 	@Override
 	public void setEnergy(double energy)
@@ -332,7 +345,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public boolean canOutputTo(EnumFacing side)
+	public boolean canOutputEnergy(EnumFacing side)
 	{
 		return true;
 	}
@@ -375,7 +388,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+				|| capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
 				|| capability == Capabilities.LASER_RECEPTOR_CAPABILITY
 				|| super.hasCapability(capability, facing);
 	}
@@ -385,7 +398,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
 			return (T)this;
-		if(capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
+		if(capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY)
 			return (T)this;
 		if(capability == Capabilities.LASER_RECEPTOR_CAPABILITY)
 			return (T)this;

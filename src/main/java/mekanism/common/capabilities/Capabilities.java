@@ -6,7 +6,7 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.energy.ICableOutputter;
+import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.IGasHandler;
@@ -33,8 +33,8 @@ public class Capabilities
     @CapabilityInject(IStrictEnergyAcceptor.class)
     public static Capability<IStrictEnergyAcceptor> ENERGY_ACCEPTOR_CAPABILITY = null;
 
-    @CapabilityInject(ICableOutputter.class)
-    public static Capability<ICableOutputter> CABLE_OUTPUTTER_CAPABILITY = null;
+    @CapabilityInject(IStrictEnergyOutputter.class)
+    public static Capability<IStrictEnergyOutputter> ENERGY_OUTPUTTER_CAPABILITY = null;
 
     @CapabilityInject(IConfigurable.class)
     public static Capability<IConfigurable> CONFIGURABLE_CAPABILITY = null;

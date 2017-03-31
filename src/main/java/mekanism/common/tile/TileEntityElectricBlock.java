@@ -223,37 +223,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		if(getConsumingSides().contains(from))
-		{
-			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*general.FROM_RF);
-
-			if(!simulate)
-			{
-				setEnergy(getEnergy() + toAdd);
-			}
-
-			return (int)Math.round(toAdd*general.TO_RF);
-		}
-
-		return 0;
+		return (int)Math.round(acceptEnergy(from, maxReceive*general.FROM_RF, simulate)*general.TO_RF);
 	}
 
 	@Override
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
-		if(getOutputtingSides().contains(from))
-		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_RF));
-
-			if(!simulate)
-			{
-				setEnergy(getEnergy() - toSend);
-			}
-
-			return (int)Math.round(toSend*general.TO_RF);
-		}
-
-		return 0;
+		return (int)Math.round(pullEnergy(from, maxExtract*general.FROM_RF, simulate)*general.TO_RF);
 	}
 
 	@Override
@@ -311,7 +287,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public boolean canOutputTo(EnumFacing side)
+	public boolean canOutputEnergy(EnumFacing side)
 	{
 		return getOutputtingSides().contains(side);
 	}
@@ -389,7 +365,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			return amount;
 		}
 
-		return amount-transferEnergyToAcceptor(direction, amount*general.FROM_IC2)*general.TO_IC2;
+		return amount-acceptEnergy(direction, amount*general.FROM_IC2, false)*general.TO_IC2;
 	}
 
 	@Override
@@ -400,7 +376,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!(getConsumingSides().contains(side) || side == null))
 		{
@@ -408,13 +384,17 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 
 		double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
-		setEnergy(getEnergy() + toUse);
+		
+		if(!simulate)
+		{
+			setEnergy(getEnergy() + toUse);
+		}
 
 		return toUse;
 	}
 	
 	@Override
-	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!(getOutputtingSides().contains(side) || side == null))
 		{
@@ -422,7 +402,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 		
 		double toGive = Math.min(getEnergy(), amount);
-		setEnergy(getEnergy() - toGive);
+		
+		if(!simulate)
+		{
+			setEnergy(getEnergy() - toGive);
+		}
 		
 		return toGive;
 	}
@@ -432,7 +416,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+				|| capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
 				|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
 				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
 				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
@@ -447,7 +431,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
-				capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
+				capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY)
 		{
 			return (T)this;
 		}
