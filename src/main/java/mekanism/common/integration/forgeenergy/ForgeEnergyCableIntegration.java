@@ -20,7 +20,7 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) 
 	{
-		return rfToForge(tileEntity.receiveEnergy(side, forgeToRF(maxReceive), simulate));
+		return (int)Math.round(tileEntity.acceptEnergy(side, maxReceive*general.FROM_FORGE, simulate)*general.TO_FORGE);
 	}
 
 	@Override
@@ -51,15 +51,5 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage
 	public boolean canReceive() 
 	{
 		return tileEntity.canReceiveEnergy(side);
-	}
-	
-	public static int rfToForge(int rf)
-	{
-		return (int)Math.round(rf*general.FROM_RF*general.TO_FORGE);
-	}
-	
-	public static int forgeToRF(int forge)
-	{
-		return (int)Math.round(forge*general.FROM_FORGE*general.TO_RF);
 	}
 }

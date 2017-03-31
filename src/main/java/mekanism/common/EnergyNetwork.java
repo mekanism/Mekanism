@@ -179,7 +179,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 				{
 					double prev = sent;
 
-					sent += acceptor.transferEnergyToAcceptor(side, currentSending);
+					sent += acceptor.acceptEnergy(side, currentSending, false);
 
 					if(sent > prev)
 					{

@@ -295,47 +295,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public double getEnergy()
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getEnergy();
-	}
-
-	@Override
-	public void setEnergy(double energy)
-	{
-		if(getInv() == null)
-		{
-			return;
-		}
-
-		getInv().setEnergy(energy);
-	}
-
-	@Override
-	public double getMaxEnergy()
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getMaxEnergy();
-	}
-
-	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(getInv() == null || !canReceiveEnergy(side))
 		{
 			return 0;
 		}
 
-		return getInv().transferEnergyToAcceptor(side, amount);
+		return getInv().acceptEnergy(side, amount, simulate);
 	}
 
 	@Override

@@ -24,16 +24,6 @@ public class TeslaCableIntegration implements ITeslaConsumer
 	@Method(modid = "tesla")
 	public long givePower(long power, boolean simulated) 
 	{
-		return rfToTesla(tileEntity.receiveEnergy(side, teslaToRF(power), simulated));
-	}
-	
-	public long rfToTesla(int rf)
-	{
-		return (long)Math.round(rf*general.FROM_RF*general.TO_TESLA);
-	}
-	
-	public int teslaToRF(long tesla)
-	{
-		return (int)Math.round(Math.min(Integer.MAX_VALUE, tesla*general.FROM_TESLA*general.TO_RF));
+		return (long)Math.round(tileEntity.acceptEnergy(side, power*general.FROM_TESLA, simulated)*general.TO_TESLA);
 	}
 }

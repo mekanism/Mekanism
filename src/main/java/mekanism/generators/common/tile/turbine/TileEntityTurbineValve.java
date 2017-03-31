@@ -244,11 +244,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Method(modid = "IC2")
 	public boolean isTeleporterCompatible(EnumFacing side)
 	{
-		return canOutputTo(side);
+		return canOutputEnergy(side);
 	}
 
 	@Override
-	public boolean canOutputTo(EnumFacing side)
+	public boolean canOutputEnergy(EnumFacing side)
 	{
 		return getOutputtingSides().contains(side);
 	}
@@ -334,13 +334,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		return 0;
 	}
 	
 	@Override
-	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!getOutputtingSides().contains(side))
 		{
@@ -348,7 +348,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		}
 		
 		double toGive = Math.min(getEnergy(), amount);
-		setEnergy(getEnergy() - toGive);
+		
+		if(!simulate)
+		{
+			setEnergy(getEnergy() - toGive);
+		}
 		
 		return toGive;
 	}
@@ -424,7 +428,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		{
 			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
 					|| capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-					|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+					|| capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
 					|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
 					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
 					|| capability == CapabilityEnergy.ENERGY)
@@ -444,7 +448,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
-			if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY)
+			if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY)
 			{
 				return (T)this;
 			}
