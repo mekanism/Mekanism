@@ -3,6 +3,7 @@ package mekanism.common.content.entangloporter;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -26,7 +27,7 @@ public class InventoryFrequency extends Frequency
 	public ItemStack storedItem;
 	public double temperature;
 	
-	public InventoryFrequency(String n, String o)
+	public InventoryFrequency(String n, UUID o)
 	{
 		super(n, o);
 		

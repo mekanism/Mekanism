@@ -15,6 +15,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import java.util.UUID;
+
 public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, IMessage> 
 {
 	@Override
@@ -32,9 +34,9 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 					
 					if(tileEntity instanceof ISecurityTile)
 					{
-						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
+						UUID owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
 						
-						if(owner != null && player.getName().equals(owner))
+						if(owner != null && player.getUniqueID().equals(owner))
 						{
 							((ISecurityTile)tileEntity).getSecurity().setMode(message.value);
 						}

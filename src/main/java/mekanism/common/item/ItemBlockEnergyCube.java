@@ -82,7 +82,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 		else {
 			if(hasSecurity(itemstack))
 			{
-				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
+				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getUniqueID(), getOwner(itemstack)));
 				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 				
 				if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
@@ -137,7 +137,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 				
 				if(getOwner(stack) == null)
 				{
-					security.getSecurity().setOwner(player.getName());
+					security.getSecurity().setOwner(player.getUniqueID());
 				}
 			}
 			
@@ -318,29 +318,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
-	}
-	
-	@Override
-	public String getOwner(ItemStack stack) 
-	{
-		if(ItemDataUtils.hasData(stack, "owner"))
-		{
-			return ItemDataUtils.getString(stack, "owner");
-		}
-		
-		return null;
-	}
-
-	@Override
-	public void setOwner(ItemStack stack, String owner) 
-	{
-		if(owner == null || owner.isEmpty())
-		{
-			ItemDataUtils.removeData(stack, "owner");
-			return;
-		}
-		
-		ItemDataUtils.setString(stack, "owner", owner);
 	}
 
 	@Override

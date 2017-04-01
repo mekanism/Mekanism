@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -105,9 +106,9 @@ public class GuiSecurityDesk extends GuiMekanism
 		
 		if(tileEntity.frequency != null)
 		{
-			for(String s : tileEntity.frequency.trusted)
+			for(UUID s : tileEntity.frequency.trusted)
 			{
-				text.add(s);
+				text.add(s.toString());
 			}
 		}
 		
@@ -255,7 +256,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		String ownerText = EnumColor.RED + tileEntity.owner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.owner) : LangUtils.localize("gui.noOwner");
+		String ownerText = EnumColor.RED + (tileEntity.owner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.owner) : LangUtils.localize("gui.noOwner"));
 		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
 		fontRendererObj.drawString(ownerText, (xSize - 7) - fontRendererObj.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);

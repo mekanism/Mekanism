@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,7 +33,7 @@ public class FrequencyManager
 	
 	private FrequencyDataHandler dataHandler;
 	
-	private String owner;
+	private UUID owner;
 	
 	private String name;
 	
@@ -46,11 +47,11 @@ public class FrequencyManager
 		managers.add(this);
 	}
 	
-	public FrequencyManager(Class c, String n, String s)
+	public FrequencyManager(Class c, String n, UUID owner)
 	{
 		this(c, n);
 		
-		owner = s;
+		this.owner = owner;
 	}
 	
 	public static void load(World world)
@@ -63,7 +64,7 @@ public class FrequencyManager
 		}
 	}
 	
-	public Frequency update(String user, Coord4D coord, Frequency freq)
+	public Frequency update(UUID user, Coord4D coord, Frequency freq)
 	{
 		for(Frequency iterFreq : frequencies)
 		{
@@ -81,7 +82,7 @@ public class FrequencyManager
 		return null;
 	}
 	
-	public void remove(String name, String owner)
+	public void remove(String name, UUID owner)
 	{
 		for(Iterator<Frequency> iter = getFrequencies().iterator(); iter.hasNext();)
 		{
@@ -137,7 +138,7 @@ public class FrequencyManager
 		}
 	}
 	
-	public Frequency validateFrequency(String user, Coord4D coord, Frequency freq)
+	public Frequency validateFrequency(UUID user, Coord4D coord, Frequency freq)
 	{
 		for(Frequency iterFreq : frequencies)
 		{
@@ -184,7 +185,7 @@ public class FrequencyManager
 		}
 	}
 	
-	public static FrequencyManager loadOnly(World world, String owner, Class<? extends Frequency> freqClass, String n)
+	public static FrequencyManager loadOnly(World world, UUID owner, Class<? extends Frequency> freqClass, String n)
 	{
 		FrequencyManager manager = new FrequencyManager(freqClass, n);
 		String name = manager.getName();
@@ -325,7 +326,7 @@ public class FrequencyManager
 		public FrequencyManager manager;
 		
 		public Set<Frequency> loadedFrequencies;
-		public String loadedOwner;
+		public UUID loadedOwner;
 		
 		public FrequencyDataHandler(String tagName)
 		{
@@ -351,11 +352,16 @@ public class FrequencyManager
 		{
 			try {
 				String frequencyClass = nbtTags.getString("frequencyClass");
-				
-				if(nbtTags.hasKey("owner"))
+
+				if(nbtTags.hasUniqueId("ownerUUID"))
 				{
-					loadedOwner = nbtTags.getString("owner");
+					loadedOwner = nbtTags.getUniqueId("ownerUUID");
 				}
+				//TODO Fallback to owner username
+//				if(nbtTags.hasKey("owner"))
+//				{
+//					loadedOwner = nbtTags.getString("owner");
+//				}
 				
 				NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
 				
@@ -382,7 +388,7 @@ public class FrequencyManager
 			
 			if(manager.owner != null)
 			{
-				nbtTags.setString("owner", manager.owner);
+				nbtTags.setUniqueId("ownerUUID", manager.owner);
 			}
 			
 			NBTTagList list = new NBTTagList();

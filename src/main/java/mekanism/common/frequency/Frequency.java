@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
@@ -15,7 +16,7 @@ public class Frequency
 	public static final String TELEPORTER = "Teleporter";
 	
 	public String name;
-	public String owner;
+	public UUID owner;
 	
 	public boolean valid = true;
 	
@@ -23,7 +24,7 @@ public class Frequency
 	
 	public Set<Coord4D> activeCoords = new HashSet<Coord4D>();
 	
-	public Frequency(String n, String o)
+	public Frequency(String n, UUID o)
 	{
 		name = n;
 		owner = o;
@@ -100,28 +101,28 @@ public class Frequency
 	public void write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setString("name", name);
-		nbtTags.setString("owner", owner);
+		nbtTags.setUniqueId("owner", owner);
 		nbtTags.setBoolean("publicFreq", publicFreq);
 	}
 
 	protected void read(NBTTagCompound nbtTags)
 	{
 		name = nbtTags.getString("name");
-		owner = nbtTags.getString("owner");
+		owner = nbtTags.getUniqueId("owner");
 		publicFreq = nbtTags.getBoolean("publicFreq");
 	}
 
 	public void write(ArrayList<Object> data)
 	{
 		data.add(name);
-		data.add(owner);
+		data.add(owner.toString());
 		data.add(publicFreq);
 	}
 
 	protected void read(ByteBuf dataStream)
 	{
 		name = PacketHandler.readString(dataStream);
-		owner = PacketHandler.readString(dataStream);
+		owner = UUID.fromString(PacketHandler.readString(dataStream));
 		publicFreq = dataStream.readBoolean();
 	}
 	
