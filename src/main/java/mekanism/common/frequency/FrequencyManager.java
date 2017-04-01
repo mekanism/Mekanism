@@ -1,5 +1,6 @@
 package mekanism.common.frequency;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.buffer.ByteBuf;
 
 import java.lang.reflect.Constructor;
@@ -12,12 +13,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
+import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class FrequencyManager
 {
@@ -357,11 +360,17 @@ public class FrequencyManager
 				{
 					loadedOwner = nbtTags.getUniqueId("ownerUUID");
 				}
-				//TODO Fallback to owner username
-//				if(nbtTags.hasKey("owner"))
-//				{
-//					loadedOwner = nbtTags.getString("owner");
-//				}
+
+				//TODO Remove in next version, currently needed for transition to UUIDs
+				if(nbtTags.hasKey("owner"))
+				{
+					String owner = nbtTags.getString("owner");
+					GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(owner);
+					if (gameProfile != null)
+					{
+						loadedOwner = gameProfile.getId();
+					}
+				}
 				
 				NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
 				

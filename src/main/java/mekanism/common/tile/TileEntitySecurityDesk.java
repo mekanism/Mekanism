@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
@@ -222,11 +223,17 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		{
 			owner = nbtTags.getUniqueId("ownerUUID");
 		}
-		//TODO Fallback to string username
-//		if(nbtTags.hasKey("owner"))
-//		{
-//			owner = nbtTags.getString("owner");
-//		}
+
+		//TODO Remove in next version, currently needed for transition to UUIDs
+		if(nbtTags.hasKey("owner"))
+		{
+			String oldOwner = nbtTags.getString("owner");
+			GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(oldOwner);
+			if (gameProfile != null)
+			{
+				owner = gameProfile.getId();
+			}
+		}
 		
 		if(nbtTags.hasKey("frequency"))
 		{

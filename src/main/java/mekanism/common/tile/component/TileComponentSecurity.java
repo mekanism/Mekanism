@@ -1,5 +1,6 @@
 package mekanism.common.tile.component;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileComponentSecurity implements ITileComponent
 {
@@ -145,11 +147,17 @@ public class TileComponentSecurity implements ITileComponent
 		if(nbtTags.hasUniqueId("ownerUUID")) {
 			owner = nbtTags.getUniqueId("ownerUUID");
 		}
-		//TODO Fallback to string username
-//		if(nbtTags.hasKey("owner"))
-//		{
-//			owner = nbtTags.getString("owner");
-//		}
+
+		//TODO Remove in next version, currently needed for transition to UUIDs
+		if(nbtTags.hasKey("owner"))
+		{
+			String oldOwner = nbtTags.getString("owner");
+			GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(oldOwner);
+			if (gameProfile != null)
+			{
+				owner = gameProfile.getId();
+			}
+		}
 		
 		if(nbtTags.hasKey("securityFreq"))
 		{
