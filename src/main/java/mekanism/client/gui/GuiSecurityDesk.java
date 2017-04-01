@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiScrollList;
@@ -24,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -87,10 +89,19 @@ public class GuiSecurityDesk extends GuiMekanism
 		{
 			return;
 		}
-		
-		ArrayList<Object> data = new ArrayList<Object>();
+
+		GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(trusted);
+		String trustedUUID;
+		if (gameProfile != null)
+		{
+			 trustedUUID = gameProfile.getId().toString();
+		} else {
+			return;
+		}
+
+		ArrayList<Object> data = new ArrayList<>();
 		data.add(0);
-		data.add(trusted);
+		data.add(trustedUUID);
 		
 		Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 	}
@@ -147,7 +158,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
 			
-			if(tileEntity.frequency != null && tileEntity.owner != null && tileEntity.owner.equals(mc.thePlayer.getName()))
+			if(tileEntity.frequency != null && tileEntity.owner != null && tileEntity.owner.equals(mc.thePlayer.getUniqueID()))
 			{
 				if(xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79)
 				{
@@ -310,7 +321,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		if(tileEntity.frequency != null && tileEntity.owner != null && mc.thePlayer.getName().equals(tileEntity.owner))
+		if(tileEntity.frequency != null && tileEntity.owner != null && mc.thePlayer.getUniqueID().equals(tileEntity.owner))
 		{
 			drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
 			
