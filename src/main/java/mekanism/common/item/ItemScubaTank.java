@@ -5,12 +5,12 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
@@ -127,7 +127,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 			return 0;
 		}
 
-		if(stack.getGas() != GasRegistry.getGas("oxygen"))
+		if(stack.getGas() != MekanismFluids.Oxygen)
 		{
 			return 0;
 		}
@@ -174,7 +174,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return type == GasRegistry.getGas("oxygen");
+		return type == MekanismFluids.Oxygen;
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(GasRegistry.getGas("oxygen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
+		setGas(filled, new GasStack(MekanismFluids.Oxygen, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 }

@@ -4,11 +4,11 @@ import java.util.HashMap;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.gas.GasRegistry;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismFluids;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -80,7 +80,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.STONE;
-		toReturn.setTexture(GasRegistry.getGas("oxygen").getSprite());
+		toReturn.setTexture(MekanismFluids.Oxygen.getSprite());
 
 		DisplayInteger display = DisplayInteger.createAndStart();
 

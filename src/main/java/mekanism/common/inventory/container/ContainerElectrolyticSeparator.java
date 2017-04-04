@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container;
 
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismFluids;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.recipe.RecipeHandler;
@@ -83,14 +83,14 @@ public class ContainerElectrolyticSeparator extends Container
 				{
 					if(((IGasItem)slotStack.getItem()).getGas(slotStack) != null)
 					{
-						if(((IGasItem)slotStack.getItem()).getGas(slotStack).getGas() == GasRegistry.getGas("hydrogen"))
+						if(((IGasItem)slotStack.getItem()).getGas(slotStack).getGas() == MekanismFluids.Hydrogen)
 						{
 							if(!mergeItemStack(slotStack, 1, 2, false))
 							{
 								return null;
 							}
 						}
-						else if(((IGasItem)slotStack.getItem()).getGas(slotStack).getGas() == GasRegistry.getGas("oxygen"))
+						else if(((IGasItem)slotStack.getItem()).getGas(slotStack).getGas() == MekanismFluids.Oxygen)
 						{
 							if(!mergeItemStack(slotStack, 2, 3, false))
 							{

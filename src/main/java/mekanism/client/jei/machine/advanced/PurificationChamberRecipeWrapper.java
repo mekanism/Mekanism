@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.util.ListUtils;
 import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
 import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
-import mekanism.api.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
