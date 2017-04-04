@@ -18,6 +18,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.util.ListUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -318,11 +319,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(slotID == 1)
 		{
-			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("hydrogen"));
+			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Hydrogen);
 		}
 		else if(slotID == 2)
 		{
-			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen"));
+			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Oxygen);
 		}
 		else if(slotID == 3)
 		{

@@ -5,12 +5,12 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -137,7 +137,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 			return 0;
 		}
 
-		if(stack.getGas() != GasRegistry.getGas("hydrogen"))
+		if(stack.getGas() != MekanismFluids.Hydrogen)
 		{
 			return 0;
 		}
@@ -162,7 +162,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return type == GasRegistry.getGas("hydrogen");
+		return type == MekanismFluids.Hydrogen;
 	}
 
 	@Override
@@ -217,7 +217,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(GasRegistry.getGas("hydrogen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
+		setGas(filled, new GasStack(MekanismFluids.Hydrogen, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 
