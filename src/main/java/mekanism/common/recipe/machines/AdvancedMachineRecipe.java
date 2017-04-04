@@ -15,11 +15,6 @@ public abstract class AdvancedMachineRecipe<RECIPE extends AdvancedMachineRecipe
 		super(input, output);
 	}
 
-	public AdvancedMachineRecipe(ItemStack input, String gasName, ItemStack output)
-	{
-		this(new AdvancedMachineInput(input, GasRegistry.getGas(gasName)), new ItemStackOutput(output));
-	}
-
 	public AdvancedMachineRecipe(ItemStack input, Gas gas, ItemStack output)
 	{
 		this(new AdvancedMachineInput(input, gas), new ItemStackOutput(output));

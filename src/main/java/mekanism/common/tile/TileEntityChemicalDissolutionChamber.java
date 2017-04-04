@@ -18,6 +18,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.util.ListUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
@@ -123,7 +124,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 			if(!inventory.get(0).isEmpty() && injectTank.getNeeded() > 0)
 			{
-				injectTank.receive(GasTransmission.removeGas(inventory.get(0), GasRegistry.getGas("sulfuricAcid"), injectTank.getNeeded()), true);
+				injectTank.receive(GasTransmission.removeGas(inventory.get(0), MekanismFluids.SulfuricAcid, injectTank.getNeeded()), true);
 			}
 
 			if(!inventory.get(2).isEmpty() && outputTank.getGas() != null)
@@ -436,7 +437,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return side == MekanismUtils.getLeft(facing) && type == GasRegistry.getGas("sulfuricAcid");
+		return side == MekanismUtils.getLeft(facing) && type == MekanismFluids.SulfuricAcid;
 	}
 
 	@Override

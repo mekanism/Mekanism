@@ -4,8 +4,8 @@ import java.util.Map;
 
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.common.MekanismFluids;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CombinerRecipe;
@@ -32,7 +32,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<Combin
 	{
 		if(itemstack.getItem() instanceof ItemBlock && Block.getBlockFromItem(itemstack.getItem()) == Blocks.COBBLESTONE)
 		{
-			return new GasStack(GasRegistry.getGas("liquidStone"), 200);
+			return new GasStack(MekanismFluids.LiquidStone, 200);
 		}
 
 		return null;

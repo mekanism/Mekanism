@@ -11,6 +11,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismFluids;
 import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -43,10 +44,10 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
-		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 2);
-		if(MekanismUtils.getOreDictName(itemstack).contains("dustSalt")) return new GasStack(GasRegistry.getGas("hydrogenChloride"), 2);
+		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return new GasStack(MekanismFluids.SulfuricAcid, 2);
+		if(MekanismUtils.getOreDictName(itemstack).contains("dustSalt")) return new GasStack(MekanismFluids.HydrogenChloride, 2);
 		if(Block.getBlockFromItem(itemstack.getItem()) == MekanismBlocks.GasTank && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
-				isValidGas(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas())) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
+				isValidGas(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas())) return new GasStack(MekanismFluids.SulfuricAcid, 1);
 
 		return null;
 	}
@@ -101,7 +102,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean isValidGas(Gas gas)
 	{
-		return gas == GasRegistry.getGas("sulfuricAcid") || gas == GasRegistry.getGas("water") || gas == GasRegistry.getGas("hydrogenChloride");
+		return gas == MekanismFluids.SulfuricAcid || gas == MekanismFluids.Water || gas == MekanismFluids.HydrogenChloride;
 	}
 
 	@Override

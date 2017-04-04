@@ -1,5 +1,6 @@
 package mekanism.common.recipe.machines;
 
+import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,7 @@ public class CombinerRecipe extends AdvancedMachineRecipe<CombinerRecipe>
 
 	public CombinerRecipe(ItemStack input, ItemStack output)
 	{
-		super(input, "liquidStone", output);
+		super(input, MekanismFluids.LiquidStone, output);
 	}
 
 	@Override

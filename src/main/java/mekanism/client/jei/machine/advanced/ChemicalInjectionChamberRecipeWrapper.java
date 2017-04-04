@@ -8,6 +8,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.util.ListUtils;
 import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
 import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.util.MekanismUtils;
@@ -24,23 +25,23 @@ public class ChemicalInjectionChamberRecipeWrapper extends AdvancedMachineRecipe
 	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
-		if(gasType == GasRegistry.getGas("sulfuricAcid"))
+		if(gasType == MekanismFluids.SulfuricAcid)
 		{
 			List<ItemStack> fuels = new ArrayList<ItemStack>();
 			fuels.addAll(OreDictionary.getOres("dustSulfur"));
-			fuels.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, GasRegistry.getGas("sulfuricAcid")));
+			fuels.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, MekanismFluids.SulfuricAcid));
 			
 			return fuels;
 		}
-		else if(gasType == GasRegistry.getGas("water"))
+		else if(gasType == MekanismFluids.Water)
 		{
-			return ListUtils.asList(MekanismUtils.getFullGasTank(GasTankTier.BASIC, GasRegistry.getGas("water")));
+			return ListUtils.asList(MekanismUtils.getFullGasTank(GasTankTier.BASIC, MekanismFluids.Water));
 		}
-		else if(gasType == GasRegistry.getGas("hydrogenChloride"))
+		else if(gasType == MekanismFluids.HydrogenChloride)
 		{
 			List<ItemStack> fuels = new ArrayList<ItemStack>();
 			fuels.addAll(OreDictionary.getOres("dustSalt"));
-			fuels.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, GasRegistry.getGas("hydrogenChloride")));
+			fuels.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, MekanismFluids.HydrogenChloride));
 			
 			return fuels;
 		}

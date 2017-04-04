@@ -1,5 +1,6 @@
 package mekanism.common.recipe.machines;
 
+import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,7 @@ public class PurificationRecipe extends AdvancedMachineRecipe<PurificationRecipe
 
 	public PurificationRecipe(ItemStack input, ItemStack output)
 	{
-		super(input, "oxygen", output);
+		super(input, MekanismFluids.Oxygen, output);
 	}
 
 	@Override

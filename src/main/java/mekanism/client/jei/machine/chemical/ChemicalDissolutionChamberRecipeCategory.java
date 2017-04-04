@@ -1,8 +1,8 @@
 package mekanism.client.jei.machine.chemical;
 
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -48,7 +48,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 		float f = (float)timer.getValue() / 20F;
 		drawTexturedRect(64-xOffset, 40-yOffset, 176, 63, (int)(48*f), 8);
 
-		displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, null, new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
+		displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, null, new GasStack(MekanismFluids.SulfuricAcid, 1));
 
 		if(gas != null)
 		{

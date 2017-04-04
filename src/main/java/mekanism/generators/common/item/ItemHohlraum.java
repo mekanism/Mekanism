@@ -4,9 +4,9 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismFluids;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -72,7 +72,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 			return 0;
 		}
 
-		if(stack.getGas() != GasRegistry.getGas("fusionFuelDT"))
+		if(stack.getGas() != MekanismFluids.FusionFuel)
 		{
 			return 0;
 		}
@@ -97,7 +97,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return type == GasRegistry.getGas("fusionFuelDT");
+		return type == MekanismFluids.FusionFuel;
 	}
 
 	@Override
@@ -161,7 +161,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(GasRegistry.getGas("fusionFuelDT"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
+		setGas(filled, new GasStack(MekanismFluids.FusionFuel, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 }

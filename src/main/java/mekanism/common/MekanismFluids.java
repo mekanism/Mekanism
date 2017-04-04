@@ -9,29 +9,49 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 public class MekanismFluids
 {
+	public static final Gas Hydrogen = new Gas("hydrogen", "mekanism:blocks/liquid/LiquidHydrogen");
+	public static final Gas Oxygen = new Gas("oxygen", "mekanism:blocks/liquid/LiquidOxygen");
+	public static final Gas Water = new Gas("water", "mekanism:blocks/liquid/LiquidSteam");
+	public static final Gas Chlorine = new Gas("chlorine", "mekanism:blocks/liquid/LiquidChlorine");
+	public static final Gas SulfurDioxide = new Gas("sulfurdioxide", "mekanism:blocks/liquid/LiquidSulfurDioxide");
+	public static final Gas SulfurTrioxide = new Gas("sulfurtrioxide", "mekanism:blocks/liquid/LiquidSulfurTrioxide");
+	public static final Gas SulfuricAcid = new Gas("sulfuricacid", "mekanism:blocks/liquid/LiquidSulfuricAcid");
+	public static final Gas HydrogenChloride = new Gas("hydrogenchloride", "mekanism:blocks/liquid/LiquidHydrogenChloride");
+	
+	
+	//Internal gases
+	public static final Gas LiquidOsmium = new Gas("liquidosmium", "mekanism:blocks/liquid/LiquidOsmium");
+	public static final Gas LiquidStone = new Gas("liquidstone", "mekanism:blocks/liquid/LiquidStone");
+	public static final Gas Ethene = new Gas("ethene", "mekanism:blocks/liquid/LiquidEthene");
+	public static final Gas Sodium = new Gas("sodium", "mekanism:blocks/liquid/LiquidSodium");
+	public static final Gas Brine = new Gas("brine", "mekanism:blocks/liquid/LiquidBrine");
+	public static final Gas Deuterium = new Gas("deuterium", "mekanism:blocks/liquid/LiquidDeuterium");
+	public static final Gas Tritium = new Gas("tritium", "mekanism:blocks/liquid/LiquidTritium");
+	public static final Gas FusionFuel = new Gas("fusionfuel", "mekanism:blocks/liquid/LiquidDT");
+	public static final Gas Lithium = new Gas("lithium", "mekanism:blocks/liquid/LiquidLithium");
+	
 	public static void register()
 	{
-		GasRegistry.register(new Gas("hydrogen", "mekanism:blocks/liquid/LiquidHydrogen")).registerFluid();
-		GasRegistry.register(new Gas("oxygen", "mekanism:blocks/liquid/LiquidOxygen")).registerFluid();
-		GasRegistry.register(new Gas("water", "mekanism:blocks/liquid/LiquidSteam")).registerFluid();
-		GasRegistry.register(new Gas("chlorine", "mekanism:blocks/liquid/LiquidChlorine")).registerFluid();
-		GasRegistry.register(new Gas("sulfurDioxideGas", "mekanism:blocks/liquid/LiquidSulfurDioxide")).registerFluid();
-		GasRegistry.register(new Gas("sulfurTrioxideGas", "mekanism:blocks/liquid/LiquidSulfurTrioxide")).registerFluid();
-		GasRegistry.register(new Gas("sulfuricAcid", "mekanism:blocks/liquid/LiquidSulfuricAcid")).registerFluid();
-		GasRegistry.register(new Gas("hydrogenChloride", "mekanism:blocks/liquid/LiquidHydrogenChloride")).registerFluid();
-		GasRegistry.register(new Gas("liquidOsmium", "mekanism:blocks/liquid/LiquidOsmium").setVisible(false));
-		GasRegistry.register(new Gas("liquidStone", "mekanism:blocks/liquid/LiquidStone").setVisible(false));
-		GasRegistry.register(new Gas("ethene", "mekanism:blocks/liquid/LiquidEthene").registerFluid());
-		GasRegistry.register(new Gas("sodium", "mekanism:blocks/liquid/LiquidSodium").registerFluid());
-		GasRegistry.register(new Gas("brine", "mekanism:blocks/liquid/LiquidBrine").registerFluid());
-		GasRegistry.register(new Gas("deuterium", "mekanism:blocks/liquid/LiquidDeuterium")).registerFluid();
-		GasRegistry.register(new Gas("tritium", "mekanism:blocks/liquid/LiquidTritium")).registerFluid();
-		GasRegistry.register(new Gas("fusionFuelDT", "mekanism:blocks/liquid/LiquidDT")).registerFluid();
-		GasRegistry.register(new Gas("lithium", "mekanism:blocks/liquid/LiquidLithium")).registerFluid();
+		GasRegistry.register(Hydrogen).registerFluid("liquidhydrogen");
+		GasRegistry.register(Oxygen).registerFluid("liquidoxygen");
+		GasRegistry.register(Water).registerFluid();
+		GasRegistry.register(Chlorine).registerFluid("liquidchlorine");
+		GasRegistry.register(SulfurDioxide).registerFluid("liquidsulfurdioxide");
+		GasRegistry.register(SulfurTrioxide).registerFluid("liquidsulfurtrioxide");
+		GasRegistry.register(SulfuricAcid).registerFluid();
+		GasRegistry.register(HydrogenChloride).registerFluid("liquidhydrogenchloride");
+		GasRegistry.register(Ethene).registerFluid("liquidethene");
+		GasRegistry.register(Sodium).registerFluid("liquidsodium");
+		GasRegistry.register(Brine).registerFluid();
+		GasRegistry.register(Deuterium).registerFluid("liquiddeuterium");
+		GasRegistry.register(Tritium).registerFluid("liquidtritium");
+		GasRegistry.register(FusionFuel).registerFluid("liquidfusionfuel");
+		GasRegistry.register(Lithium).registerFluid("liquidlithium");
 		
-		FluidRegistry.getFluid("brine").setGaseous(false);
+		GasRegistry.register(LiquidOsmium).setVisible(false);
+		GasRegistry.register(LiquidStone).setVisible(false);
 		
-		FluidRegistry.registerFluid(new Fluid("heavyWater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater")));
+		FluidRegistry.registerFluid(new Fluid("heavywater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater")));
 		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true));
 		
 		for(Resource resource : Resource.values())

@@ -11,7 +11,6 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.reactor.IFusionReactor;
@@ -20,6 +19,7 @@ import mekanism.api.reactor.IReactorBlock;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -98,7 +98,7 @@ public class FusionReactor implements IFusionReactor
 			if(!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum)
 			{
 				GasStack gasStack = ((ItemHohlraum)hohlraum.getItem()).getGas(hohlraum);
-				return gasStack != null && gasStack.getGas() == GasRegistry.getGas("fusionFuelDT") && gasStack.amount == ItemHohlraum.MAX_GAS;
+				return gasStack != null && gasStack.getGas() == MekanismFluids.FusionFuel && gasStack.amount == ItemHohlraum.MAX_GAS;
 			}
 		}
 
@@ -182,7 +182,7 @@ public class FusionReactor implements IFusionReactor
 		
 		getDeuteriumTank().draw(amountToInject / 2, true);
 		getTritiumTank().draw(amountToInject / 2, true);
-		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), amountToInject), true);
+		getFuelTank().receive(new GasStack(MekanismFluids.FusionFuel, amountToInject), true);
 	}
 
 	public int burnFuel()
