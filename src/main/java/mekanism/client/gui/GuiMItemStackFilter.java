@@ -88,7 +88,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			if(filter.itemType != null)
+			if(!filter.itemType.isEmpty())
 			{
 				if(isNew)
 				{
@@ -122,13 +122,9 @@ public class GuiMItemStackFilter extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		fontRendererObj.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
 
-		if(filter.itemType != null)
+		if(!filter.itemType.isEmpty())
 		{
 			renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 107);
-		}
-
-		if(filter.itemType != null)
-		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
@@ -136,7 +132,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 			GlStateManager.popMatrix();
 		}
 		
-		if(filter.replaceStack != null)
+		if(!filter.replaceStack.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
@@ -277,7 +273,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 			{
 				ItemStack stack = mc.player.inventory.getItemStack();
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
@@ -288,9 +284,9 @@ public class GuiMItemStackFilter extends GuiMekanism
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					filter.itemType = null;
+					filter.itemType = ItemStack.EMPTY;
 				}
 
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -300,9 +296,9 @@ public class GuiMItemStackFilter extends GuiMekanism
 			{
 				boolean doNull = false;
 				ItemStack stack = mc.player.inventory.getItemStack();
-				ItemStack toUse = null;
+				ItemStack toUse = ItemStack.EMPTY;
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
@@ -313,12 +309,12 @@ public class GuiMItemStackFilter extends GuiMekanism
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					doNull = true;
 				}
 
-				if(toUse != null || doNull)
+				if(!toUse.isEmpty() || doNull)
 				{
 					filter.replaceStack = toUse;
 				}

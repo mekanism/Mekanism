@@ -254,7 +254,7 @@ public class ContainerFactory extends Container
 
 	public boolean isProperMachine(ItemStack itemStack)
 	{
-		if(itemStack != null && itemStack.getItem() instanceof ItemBlockMachine)
+		if(!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockMachine)
 		{
 			for(RecipeType type : RecipeType.values())
 			{

@@ -397,7 +397,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			getReactor().getInventory().set(slotID, itemstack);
 
-			if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
+			if(!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit())
 			{
 				itemstack.setCount(getInventoryStackLimit());
 			}

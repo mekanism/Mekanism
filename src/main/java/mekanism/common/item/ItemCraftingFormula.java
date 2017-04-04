@@ -50,7 +50,7 @@ public class ItemCraftingFormula extends ItemMekanism
 		
 		for(ItemStack stack : inv)
 		{
-			if(stack != null)
+			if(!stack.isEmpty())
 			{
 				boolean found = false;
 				

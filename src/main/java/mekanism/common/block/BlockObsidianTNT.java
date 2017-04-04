@@ -81,7 +81,7 @@ public class BlockObsidianTNT extends Block
 	{
 		ItemStack stack = entityplayer.getHeldItem(hand);
 		
-		if(stack != null && stack.getItem() == Items.FLINT_AND_STEEL)
+		if(!stack.isEmpty() && stack.getItem() == Items.FLINT_AND_STEEL)
 		{
 			explode(world, pos);
 			world.setBlockToAir(pos);

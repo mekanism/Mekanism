@@ -411,7 +411,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		if(slotID == 0)
 		{
-			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
+			return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
                     RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.containsRecipe(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas());
 		}
 		else if(slotID == 2)
@@ -427,7 +427,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		if(slotID == 0)
 		{
-			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) == null;
+			return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) == null;
 		}
 		else if(slotID == 1)
 		{

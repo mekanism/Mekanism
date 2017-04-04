@@ -42,7 +42,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 		        {
 		            ItemStack stack = player.getHeldItem(message.currentHand);
 		
-		            if(stack != null && stack.getItem() instanceof ItemFlamethrower)
+		            if(!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower)
 		            {
 		                ((ItemFlamethrower)stack.getItem()).incrementMode(stack);
 		            }

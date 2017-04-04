@@ -102,7 +102,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 			ItemStack itemStack = player.inventory.getCurrentItem();
 			RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 
-			if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator)
+			if(pos != null && !itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator)
 			{
 				Coord4D obj = new Coord4D(pos.getBlockPos(), transporter.getWorld());
 

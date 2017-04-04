@@ -51,12 +51,12 @@ public class ItemElectricBow extends ItemEnergized
 			ItemStack ammo = findAmmo(player);
 			
 			int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
-            maxItemUse = ForgeEventFactory.onArrowLoose(itemstack, world, player, maxItemUse, itemstack != null || flag);
+            maxItemUse = ForgeEventFactory.onArrowLoose(itemstack, world, player, maxItemUse, !itemstack.isEmpty() || flag);
 			if(maxItemUse < 0) return;
 
-			if(flag || ammo != null)
+			if(flag || !ammo.isEmpty())
 			{
-				if(ammo == null)
+				if(ammo.isEmpty())
 				{
 					ammo = new ItemStack(Items.ARROW);
 				}
@@ -152,20 +152,20 @@ public class ItemElectricBow extends ItemEnergized
                 }
             }
 
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
     protected boolean isArrow(@Nullable ItemStack stack)
     {
-        return stack != null && stack.getItem() instanceof ItemArrow;
+        return !stack.isEmpty() && stack.getItem() instanceof ItemArrow;
     }
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
 	{
 		ItemStack itemStackIn = playerIn.getHeldItem(hand);
-		boolean flag = findAmmo(playerIn) != null;
+		boolean flag = !findAmmo(playerIn).isEmpty();
 
 		ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(itemStackIn, worldIn, playerIn, hand, flag);
 		if(ret != null) return ret;

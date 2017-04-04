@@ -205,7 +205,7 @@ public class ClientTickHandler
 			
 			ItemStack bootStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-			if(bootStack != null && bootStack.getItem() instanceof ItemFreeRunners)
+			if(!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners)
 			{
 				mc.player.stepHeight = 1.002F;
 			}
@@ -303,7 +303,7 @@ public class ClientTickHandler
 
 			ItemStack chestStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 			
-			if(chestStack != null && chestStack.getItem() instanceof ItemJetpack)
+			if(!chestStack.isEmpty() && chestStack.getItem() instanceof ItemJetpack)
 			{
 				MekanismClient.updateKey(mc.gameSettings.keyBindJump, KeySync.ASCEND);
 				MekanismClient.updateKey(mc.gameSettings.keyBindSneak, KeySync.DESCEND);
@@ -430,7 +430,7 @@ public class ClientTickHandler
 
 		ItemStack stack = player.inventory.armorInventory.get(2);
 
-		if(stack != null && !player.capabilities.isCreativeMode)
+		if(!stack.isEmpty() && !player.capabilities.isCreativeMode)
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
@@ -472,7 +472,7 @@ public class ClientTickHandler
 		ItemStack tank = player.inventory.armorInventory.get(2);
 		ItemStack mask = player.inventory.armorInventory.get(3);
 
-		if(tank != null && mask != null)
+		if(!tank.isEmpty() && !mask.isEmpty())
 		{
 			if(tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask)
 			{
@@ -511,7 +511,7 @@ public class ClientTickHandler
 	
 	public static boolean hasFlamethrower(EntityPlayer player)
 	{
-		if(player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
+		if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 		{
 			ItemFlamethrower flamethrower = (ItemFlamethrower)player.inventory.getCurrentItem().getItem();
 			

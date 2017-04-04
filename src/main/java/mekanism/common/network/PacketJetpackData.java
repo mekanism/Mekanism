@@ -43,7 +43,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 				{
 					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 		
-					if(stack != null && stack.getItem() instanceof ItemJetpack)
+					if(!stack.isEmpty() && stack.getItem() instanceof ItemJetpack)
 					{
 						if(!message.value)
 						{

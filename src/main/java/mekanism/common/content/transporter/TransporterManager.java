@@ -22,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.items.IItemHandler;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 public class TransporterManager
@@ -75,12 +76,24 @@ public class TransporterManager
 
 		return ret;
 	}
+	
+	public static InventoryCopy copyInv(IItemHandler handler)
+	{
+		NonNullList<ItemStack> ret = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
+		
+		for(int i = 0; i < handler.getSlots(); i++)
+		{
+			ret.set(i, handler.getStackInSlot(i));
+		}
+		
+		return new InventoryCopy(ret);
+	}
 
 	public static InventoryCopy copyInvFromSide(IInventory inv, EnumFacing side)
 	{
 		inv = InventoryUtils.checkChestInv(inv);
-
-		NonNullList<ItemStack>ret = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+		
+		NonNullList<ItemStack> ret = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 
 		if(!(inv instanceof ISidedInventory))
 		{

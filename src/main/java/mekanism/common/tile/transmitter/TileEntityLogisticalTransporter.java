@@ -144,7 +144,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 					IInventory inv = (IInventory)tile;
 					InvStack stack = InventoryUtils.takeTopItem(inv, side, tier.pullAmount);
 
-					if(stack != null && stack.getStack() != null)
+					if(stack != null && !stack.getStack().isEmpty())
 					{
 						ItemStack rejects = TransporterUtils.insert(tile, getTransmitter(), stack.getStack(), getTransmitter().getColor(), true, 0);
 

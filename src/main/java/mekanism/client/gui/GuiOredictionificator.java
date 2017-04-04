@@ -132,7 +132,7 @@ public class GuiOredictionificator extends GuiMekanism
 				
 				ItemStack stack = renderStacks.get(filter);
 				
-				if(stack != null)
+				if(!stack.isEmpty())
 				{
 					GlStateManager.pushMatrix();
 					RenderHelper.enableGUIStandardItemLighting();
@@ -258,7 +258,7 @@ public class GuiOredictionificator extends GuiMekanism
 		{
 			if(filter.filter == null || filter.filter.isEmpty())
 			{
-				renderStacks.put(filter, null);
+				renderStacks.put(filter, ItemStack.EMPTY);
 				continue;
 			}
 			
@@ -266,7 +266,7 @@ public class GuiOredictionificator extends GuiMekanism
 			
 			if(stacks.isEmpty())
 			{
-				renderStacks.put(filter, null);
+				renderStacks.put(filter, ItemStack.EMPTY);
 				continue;
 			}
 			
@@ -275,7 +275,7 @@ public class GuiOredictionificator extends GuiMekanism
 				renderStacks.put(filter, stacks.get(filter.index).copy());
 			}
 			else {
-				renderStacks.put(filter, null);
+				renderStacks.put(filter, ItemStack.EMPTY);
 			}
 		}
 	}

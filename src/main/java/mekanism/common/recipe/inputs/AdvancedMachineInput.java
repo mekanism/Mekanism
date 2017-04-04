@@ -38,7 +38,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 	@Override
 	public boolean isValid()
 	{
-		return itemStack != null && gasType != null;
+		return !itemStack.isEmpty() && gasType != null;
 	}
 
 	public boolean useItem(NonNullList<ItemStack> inventory, int index, boolean deplete)

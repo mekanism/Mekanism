@@ -199,12 +199,12 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 			{
 				ItemStack stack = tileEntity.formula.input.get(i);
 				
-				if(stack != null)
+				if(!stack.isEmpty())
 				{
 					Slot slot = (Slot)inventorySlots.inventorySlots.get(i+20);
 					GlStateManager.pushMatrix();
 					
-					if(slot.getStack() == null || !slot.getStack().isItemEqual(stack))
+					if(slot.getStack().isEmpty() || !slot.getStack().isItemEqual(stack))
 					{
 						drawGradientRect(guiWidth + slot.xPos, guiHeight + slot.yPos, guiWidth + slot.xPos + 16, guiHeight + slot.yPos + 16, -2137456640, -2137456640);
 					}
@@ -223,7 +223,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 	private boolean canEncode()
 	{
 		return tileEntity.formula == null && !tileEntity.inventory.get(2).isEmpty() && tileEntity.inventory.get(2).getItem() instanceof ItemCraftingFormula &&
-				((ItemCraftingFormula)tileEntity.inventory.get(2).getItem()).getInventory(tileEntity.inventory.get(2)) == null;
+				((ItemCraftingFormula)tileEntity.inventory.get(2).getItem()).getInventory(tileEntity.inventory.get(2)).isEmpty();
 	}
 	
 	@Override

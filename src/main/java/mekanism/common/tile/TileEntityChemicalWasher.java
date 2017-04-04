@@ -465,7 +465,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	{
 		if(slotID == 1)
 		{
-			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
+			return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
 		}
 		else if(slotID == 2)
 		{

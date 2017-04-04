@@ -66,7 +66,7 @@ public class TransporterImpl extends TransmitterImpl<IInventory, InventoryNetwor
 			{
 				if(!stack.initiatedPath)
 				{
-					if(stack.itemStack == null || stack.itemStack == ItemStack.EMPTY || !recalculate(stack, null))
+					if(stack.itemStack.isEmpty() || !recalculate(stack, null))
 					{
 						remove.add(stack);
 						continue;

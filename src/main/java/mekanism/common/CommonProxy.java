@@ -454,7 +454,7 @@ public class CommonProxy implements IGuiProvider
 			case 14:
 				ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
 
-				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
+				if(!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{
 					return new ContainerNull();
 				}

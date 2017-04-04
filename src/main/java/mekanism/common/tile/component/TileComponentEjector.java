@@ -180,7 +180,7 @@ public class TileComponentEjector implements ITileComponent
 		{
 			int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];
 
-			if(tileEntity.getStackInSlot(slotID) == null)
+			if(tileEntity.getStackInSlot(slotID).isEmpty())
 			{
 				continue;
 			}
@@ -207,12 +207,12 @@ public class TileComponentEjector implements ITileComponent
 					}
 				}
 
-				if(stack == null || prev.getCount() != stack.getCount())
+				if(stack.isEmpty() || prev.getCount() != stack.getCount())
 				{
 					trackers.get(TransmissionType.ITEM)[index] = side.ordinal();
 				}
 
-				if(stack == null)
+				if(stack.isEmpty())
 				{
 					break;
 				}

@@ -92,7 +92,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && itemstack.getItem() instanceof IEnergizedItem)
+				if(!itemstack.isEmpty() && itemstack.getItem() instanceof IEnergizedItem)
 				{
 					energyFound += ((IEnergizedItem)itemstack.getItem()).getEnergy(itemstack);
 				}
@@ -109,7 +109,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && itemstack.getItem() instanceof IGasItem)
+				if(!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem)
 				{
 					GasStack stored = ((IGasItem)itemstack.getItem()).getGas(itemstack);
 					
@@ -149,7 +149,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 				
-				if(itemstack != null && itemstack.getItem() instanceof ISecurityItem)
+				if(!itemstack.isEmpty() && itemstack.getItem() instanceof ISecurityItem)
 				{
 					((ISecurityItem)toReturn.getItem()).setOwner(toReturn, ((ISecurityItem)itemstack.getItem()).getOwner(itemstack));
 					((ISecurityItem)toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem)itemstack.getItem()).getSecurity(itemstack));
@@ -209,7 +209,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && BasicBlockType.get(itemstack) == BasicBlockType.BIN)
+				if(!itemstack.isEmpty() && BasicBlockType.get(itemstack) == BasicBlockType.BIN)
 				{
 					InventoryBin binInv = new InventoryBin(itemstack);
 					
@@ -234,7 +234,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && BlockStateMachine.MachineType.get(itemstack) != null && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades)
+				if(!itemstack.isEmpty() && BlockStateMachine.MachineType.get(itemstack) != null && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades)
 				{
 					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
 					
@@ -294,7 +294,7 @@ public class RecipeUtils
 			}
 		}
 		
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	public static boolean removeRecipes(ItemStack stack)

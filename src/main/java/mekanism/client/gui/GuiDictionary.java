@@ -43,7 +43,7 @@ public class GuiDictionary extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
-		if(itemType != null)
+		if(!itemType.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
@@ -118,7 +118,7 @@ public class GuiDictionary extends GuiMekanism
 				{
 					ItemStack stack = hovering.getStack();
 
-					if(stack != null)
+					if(!stack.isEmpty())
 					{
 						itemType = stack.copy();
 						itemType.setCount(1);
@@ -135,16 +135,16 @@ public class GuiDictionary extends GuiMekanism
 			{
 				ItemStack stack = mc.player.inventory.getItemStack();
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					itemType = stack.copy();
 					itemType.setCount(1);
 
 					scrollList.setText(MekanismUtils.getOreDictName(itemType));
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					itemType = null;
+					itemType = ItemStack.EMPTY;
 					
 					scrollList.setText(null);
 				}

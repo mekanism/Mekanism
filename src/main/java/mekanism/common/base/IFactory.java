@@ -175,7 +175,7 @@ public interface IFactory
 
 		public boolean hasRecipe(ItemStack itemStack)
 		{
-			if(itemStack == null)
+			if(itemStack.isEmpty())
 			{
 				return false;
 			}

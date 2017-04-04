@@ -63,7 +63,7 @@ public class IMCHandler
 					{
 						ItemStack stack = RecipeUtils.loadRecipeItemStack(msg.getNBTValue());
 						
-						if(stack != null)
+						if(!stack.isEmpty())
 						{
 							RecipeUtils.removeRecipes(stack);
 							Mekanism.logger.info("[Mekanism] " + msg.getSender() + " removed a Mekanism recipe from the recipe list.");

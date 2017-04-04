@@ -205,7 +205,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		
-		if(stack == null)
+		if(stack.isEmpty())
 		{
 			return false;
 		}

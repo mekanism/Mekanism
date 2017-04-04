@@ -794,7 +794,7 @@ public class ClientProxy extends CommonProxy
 			case 14:
 				ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
 
-				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
+				if(!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{
 					return new GuiTeleporter(player, EnumHand.values()[pos.getX()], itemStack);
 				}
@@ -863,7 +863,7 @@ public class ClientProxy extends CommonProxy
 			case 38:
 				ItemStack itemStack1 = player.getHeldItem(EnumHand.values()[pos.getX()]);
 
-				if(itemStack1 != null && itemStack1.getItem() instanceof ItemSeismicReader)
+				if(!itemStack1.isEmpty() && itemStack1.getItem() instanceof ItemSeismicReader)
 				{
 					return new GuiSeismicReader(world, new Coord4D(player), itemStack1.copy());
 				}
@@ -917,7 +917,7 @@ public class ClientProxy extends CommonProxy
 	{
 		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
 		
-		if(screen instanceof GuiTeleporter && ((GuiTeleporter)screen).itemStack != null)
+		if(screen instanceof GuiTeleporter && !((GuiTeleporter)screen).itemStack.isEmpty())
 		{
 			GuiTeleporter teleporter = (GuiTeleporter)screen;
 			
@@ -1102,7 +1102,7 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) 
 			{
-				if(stack != null && stack.getItem() instanceof ItemWalkieTalkie)
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemWalkieTalkie)
 				{
 					ItemWalkieTalkie item = (ItemWalkieTalkie)stack.getItem();
 					
@@ -1121,7 +1121,7 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) 
 			{
-				if(stack != null && stack.getItem() instanceof ItemCraftingFormula)
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula)
 				{
 					ItemCraftingFormula item = (ItemCraftingFormula)stack.getItem();
 					

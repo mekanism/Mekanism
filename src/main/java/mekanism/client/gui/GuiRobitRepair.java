@@ -264,10 +264,10 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 	{
 		if(slotID == 0)
 		{
-			itemNameField.setText(itemstack == null ? "" : itemstack.getDisplayName());
-			itemNameField.setEnabled(itemstack != null);
+			itemNameField.setText(itemstack.isEmpty() ? "" : itemstack.getDisplayName());
+			itemNameField.setEnabled(!itemstack.isEmpty());
 
-			if(itemstack != null)
+			if(!itemstack.isEmpty())
 			{
 				repairContainer.updateItemName(itemNameField.getText());
 				mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));

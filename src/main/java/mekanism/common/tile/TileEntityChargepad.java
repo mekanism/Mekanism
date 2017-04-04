@@ -130,7 +130,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 	public void chargeItemStack(ItemStack itemstack)
 	{
-		if(itemstack != null)
+		if(!itemstack.isEmpty())
 		{
 			if(itemstack.getItem() instanceof IEnergizedItem)
 			{

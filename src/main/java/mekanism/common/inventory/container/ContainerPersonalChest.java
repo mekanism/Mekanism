@@ -144,7 +144,7 @@ public class ContainerPersonalChest extends Container
 		{
 			ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
 			
-			if(itemStack != null && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
+			if(!itemStack.isEmpty() && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
 			{
 				return ItemStack.EMPTY;
 			}

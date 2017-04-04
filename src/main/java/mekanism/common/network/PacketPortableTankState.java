@@ -17,7 +17,7 @@ public class PacketPortableTankState implements IMessageHandler<PortableTankStat
 	{
 		ItemStack itemstack = PacketHandler.getPlayer(context).getHeldItem(message.currentHand);
 		
-		if(itemstack != null && itemstack.getItem() instanceof ItemBlockMachine)
+		if(!itemstack.isEmpty() && itemstack.getItem() instanceof ItemBlockMachine)
 		{
 			((ItemBlockMachine)itemstack.getItem()).setBucketMode(itemstack, message.bucketMode);
 		}

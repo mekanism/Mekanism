@@ -178,7 +178,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 		int metadata = state.getBlock().getMetaFromState(state);
 		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(stack != null)
+		if(!stack.isEmpty())
 		{
 			if(MekanismUtils.isBCWrench(stack.getItem()) && !stack.getUnlocalizedName().contains("omniwrench"))
 			{

@@ -98,7 +98,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public boolean doEject = false;
 	public boolean doPull = false;
 	
-	public ItemStack missingStack = null;
+	public ItemStack missingStack = ItemStack.EMPTY;
 	
 	public int BASE_DELAY = 80;
 
@@ -278,7 +278,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 								world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
 	
-								missingStack = null;
+								missingStack = ItemStack.EMPTY;
 							}
 	
 							break;
@@ -305,7 +305,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 			}
 
-			if(doEject && delayTicks == 0 && getTopEject(false, null) != null && getEjectInv() != null && getEjectTile() != null)
+			if(doEject && delayTicks == 0 && !getTopEject(false, null).isEmpty() && getEjectInv() != null && getEjectTile() != null)
 			{
 				if(getEjectInv() instanceof IInventory)
 				{
@@ -381,7 +381,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			ItemStack stack = getReplace(index);
 			 
-			if(stack != null)
+			if(!stack.isEmpty())
 			{
 				world.setBlockState(obj.getPos(), Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
 
@@ -417,9 +417,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		MinerFilter filter = replaceMap.get(index);
 		
-		if(filter == null || filter.replaceStack == null)
+		if(filter == null || filter.replaceStack.isEmpty())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		for(int i = 0; i < 27; i++)
@@ -480,7 +480,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public boolean canInsert(List<ItemStack> stacks)
@@ -497,7 +497,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		stacks:
 		for(ItemStack stack : stacks)
 		{
-			if(stack == null || stack.getItem() == null)
+			if(stack.isEmpty() || stack.getItem() == null)
 			{
 				continue;
 			}
@@ -609,7 +609,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		running = false;
 		oresToMine.clear();
 		replaceMap.clear();
-		missingStack = null;
+		missingStack = ItemStack.EMPTY;
 
 		MekanismUtils.saveChunk(this);
 	}
@@ -618,7 +618,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		for(MinerFilter filter : filters)
 		{
-			if(filter.replaceStack != null && filter.replaceStack.isItemEqual(stack))
+			if(!filter.replaceStack.isEmpty() && filter.replaceStack.isItemEqual(stack))
 			{
 				return true;
 			}
@@ -823,7 +823,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
 				}
 				else {
-					missingStack = null;
+					missingStack = ItemStack.EMPTY;
 				}
 	
 				filters.clear();
@@ -856,7 +856,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
 				}
 				else {
-					missingStack = null;
+					missingStack = ItemStack.EMPTY;
 				}
 			}
 			else if(type == 2)
@@ -881,7 +881,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
 				}
 				else {
-					missingStack = null;
+					missingStack = ItemStack.EMPTY;
 				}
 			}
 			
@@ -922,7 +922,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(controlType.ordinal());
 		data.add(inverse);
 		
-		if(missingStack != null)
+		if(!missingStack.isEmpty())
 		{
 			data.add(true);
 			data.add(MekanismUtils.getID(missingStack));
@@ -959,7 +959,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(getSize());
 		}
 		
-		if(missingStack != null)
+		if(!missingStack.isEmpty())
 		{
 			data.add(true);
 			data.add(MekanismUtils.getID(missingStack));
@@ -1000,7 +1000,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(controlType.ordinal());
 		data.add(inverse);
 		
-		if(missingStack != null)
+		if(!missingStack.isEmpty())
 		{
 			data.add(true);
 			data.add(MekanismUtils.getID(missingStack));
@@ -1220,7 +1220,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 		else if(location.equals(pull))
 		{
-			if(itemstack != null && isReplaceStack(itemstack))
+			if(!itemstack.isEmpty() && isReplaceStack(itemstack))
 			{
 				return true;
 			}
@@ -1239,7 +1239,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(location.equals(eject))
 		{
-			if(itemstack != null && isReplaceStack(itemstack))
+			if(!itemstack.isEmpty() && isReplaceStack(itemstack))
 			{
 				return false;
 			}

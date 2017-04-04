@@ -38,7 +38,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 		{
 			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-			if(stack != null && stack.getItem() instanceof ItemScubaTank)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank)
 			{
 				((ItemScubaTank)stack.getItem()).toggleFlowing(stack);
 			}

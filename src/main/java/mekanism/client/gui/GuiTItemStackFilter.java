@@ -101,7 +101,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			if(filter.itemType != null && !minField.getText().isEmpty() && !maxField.getText().isEmpty())
+			if(!filter.itemType.isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty())
 			{
 				int min = Integer.parseInt(minField.getText());
 				int max = Integer.parseInt(maxField.getText());
@@ -132,7 +132,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 					ticker = 20;
 				}
 			}
-			else if(filter.itemType == null)
+			else if(filter.itemType.isEmpty())
 			{
 				status = EnumColor.DARK_RED + "No item";
 				ticker = 20;
@@ -179,13 +179,9 @@ public class GuiTItemStackFilter extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
 
-		if(filter.itemType != null)
+		if(!filter.itemType.isEmpty())
 		{
 			renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 89);
-		}
-
-		if(filter.itemType != null)
-		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
@@ -312,14 +308,14 @@ public class GuiTItemStackFilter extends GuiMekanism
 			{
 				ItemStack stack = mc.player.inventory.getItemStack();
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					filter.itemType = stack.copy();
 					filter.itemType.setCount(1);
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					filter.itemType = null;
+					filter.itemType = ItemStack.EMPTY;
 				}
 
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

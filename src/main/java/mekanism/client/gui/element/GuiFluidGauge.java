@@ -65,7 +65,7 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 		{
 			ItemStack stack = mc.player.inventory.getItemStack();
 			
-			if(guiObj instanceof GuiMekanism && stack != null && stack.getItem() instanceof ItemGaugeDropper)
+			if(guiObj instanceof GuiMekanism && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper)
 			{
 				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				

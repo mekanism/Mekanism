@@ -167,7 +167,7 @@ public class GuiMModIDFilter extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		renderScaledText(LangUtils.localize("gui.id") + ": " + filter.modID, 35, 32, 0x00CD00, 107);
 
-		if(renderStack != null)
+		if(!renderStack.isEmpty())
 		{
 			try {
 				GlStateManager.pushMatrix();
@@ -178,7 +178,7 @@ public class GuiMModIDFilter extends GuiMekanism
 			} catch(Exception e) {}
 		}
 		
-		if(filter.replaceStack != null)
+		if(!filter.replaceStack.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
@@ -290,7 +290,7 @@ public class GuiMModIDFilter extends GuiMekanism
 		}
 		else if(iterStacks != null && iterStacks.size() == 0)
 		{
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 		}
 	}
 
@@ -328,9 +328,9 @@ public class GuiMModIDFilter extends GuiMekanism
 			{
 				boolean doNull = false;
 				ItemStack stack = mc.player.inventory.getItemStack();
-				ItemStack toUse = null;
+				ItemStack toUse = ItemStack.EMPTY;
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
@@ -341,12 +341,12 @@ public class GuiMModIDFilter extends GuiMekanism
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					doNull = true;
 				}
 
-				if(toUse != null || doNull)
+				if(!toUse.isEmpty() || doNull)
 				{
 					filter.replaceStack = toUse;
 				}

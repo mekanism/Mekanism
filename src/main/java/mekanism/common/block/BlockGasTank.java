@@ -147,7 +147,7 @@ public class BlockGasTank extends BlockContainer
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(stack != null)
+		if(!stack.isEmpty())
 		{
 			Item tool = stack.getItem();
 

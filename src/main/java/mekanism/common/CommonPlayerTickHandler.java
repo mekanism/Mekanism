@@ -160,7 +160,7 @@ public class CommonPlayerTickHandler
 	{
 		ItemStack stack = player.inventory.armorInventory.get(2);
 
-		if(stack != null && !player.capabilities.isCreativeMode)
+		if(!stack.isEmpty() && !player.capabilities.isCreativeMode)
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
@@ -197,7 +197,7 @@ public class CommonPlayerTickHandler
 		ItemStack tank = player.inventory.armorInventory.get(2);
 		ItemStack mask = player.inventory.armorInventory.get(3);
 
-		if(tank != null && mask != null)
+		if(!tank.isEmpty() && !mask.isEmpty())
 		{
 			if(tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask)
 			{
@@ -220,7 +220,7 @@ public class CommonPlayerTickHandler
 	{
 		if(Mekanism.flamethrowerActive.contains(player.getName()))
 		{
-			if(player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
+			if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 			{
 				return true;
 			}

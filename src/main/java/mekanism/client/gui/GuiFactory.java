@@ -170,7 +170,7 @@ public class GuiFactory extends GuiMekanism
 			{
 				ItemStack stack = mc.player.inventory.getItemStack();
 				
-				if(stack != null && stack.getItem() instanceof ItemGaugeDropper)
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper)
 				{
 					ArrayList data = new ArrayList();
 					data.add(1);

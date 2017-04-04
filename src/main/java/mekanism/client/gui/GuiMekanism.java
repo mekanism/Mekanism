@@ -118,7 +118,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 			ItemStack stack = mc.player.inventory.getItemStack();
 
-			if(stack != null && stack.getItem() instanceof ItemConfigurator && hovering != null)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && hovering != null)
 			{
 				SideData data = getFromSlot(hovering);
 

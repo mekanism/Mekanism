@@ -413,7 +413,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		int metadata = state.getBlock().getMetaFromState(state);
 		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(stack != null)
+		if(!stack.isEmpty())
 		{
 			Item tool = stack.getItem();
 
@@ -457,7 +457,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			
 			if(!entityplayer.isSneaking())
 			{
-				if(stack != null && stack.getItem() == GeneratorsItems.TurbineBlade)
+				if(!stack.isEmpty() && stack.getItem() == GeneratorsItems.TurbineBlade)
 				{
 					if(!world.isRemote && rod.editBlade(true))
 					{
@@ -467,7 +467,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 							
 							if(stack.getCount() == 0)
 							{
-								entityplayer.setHeldItem(hand, null);
+								entityplayer.setHeldItem(hand, ItemStack.EMPTY);
 							}
 						}
 					}
@@ -478,7 +478,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			else {
 				if(!world.isRemote)
 				{
-					if(stack == null)
+					if(stack.isEmpty())
 					{
 						if(rod.editBlade(false))
 						{

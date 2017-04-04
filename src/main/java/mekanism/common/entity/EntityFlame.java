@@ -233,14 +233,14 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	{
 		ItemStack stack = block.getStack(world);
 		
-		if(stack == null)
+		if(stack.isEmpty())
 		{
 			return false;
 		}
 		
 		ItemStack result = FurnaceRecipes.instance().getSmeltingResult(block.getStack(world));
 		
-		if(result != null && result.getItem() != null)
+		if(!result.isEmpty() && result.getItem() != null)
 		{
 			if(!world.isRemote)
 			{

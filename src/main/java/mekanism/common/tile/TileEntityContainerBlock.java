@@ -140,7 +140,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	{
 		inventory.set(slotID, itemstack);
 
-		if(itemstack != null && itemstack.getCount() > getInventoryStackLimit())
+		if(!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit())
 		{
 			itemstack.setCount(getInventoryStackLimit());
 		}

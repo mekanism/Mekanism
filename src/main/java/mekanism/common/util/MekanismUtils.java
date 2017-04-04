@@ -1218,7 +1218,7 @@ public final class MekanismUtils
 		try {
 			FontRenderer renderer = (FontRenderer)Mekanism.proxy.getFontRenderer();
 			
-			if(stack != null && stack.getItem().getFontRenderer(stack) != null)
+			if(!stack.isEmpty() && stack.getItem().getFontRenderer(stack) != null)
 			{
 				renderer = stack.getItem().getFontRenderer(stack);
 			}
@@ -1404,7 +1404,7 @@ public final class MekanismUtils
 	 */
 	public static int getID(ItemStack itemStack)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return -1;
 		}

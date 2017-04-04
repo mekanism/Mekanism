@@ -92,7 +92,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			if(filter.materialItem != null)
+			if(!filter.materialItem.isEmpty())
 			{
 				if(isNew)
 				{
@@ -104,7 +104,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
-			else if(filter.materialItem == null)
+			else if(filter.materialItem.isEmpty())
 			{
 				status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
 				ticker = 20;
@@ -127,13 +127,9 @@ public class GuiTMaterialFilter extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		fontRendererObj.drawString(LangUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
 
-		if(filter.materialItem != null)
+		if(!filter.materialItem.isEmpty())
 		{
 			renderScaledText(filter.materialItem.getDisplayName(), 35, 41, 0x00CD00, 107);
-		}
-
-		if(filter.materialItem != null)
-		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(filter.materialItem, 12, 19);
@@ -243,7 +239,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 			{
 				ItemStack stack = mc.player.inventory.getItemStack();
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
@@ -254,9 +250,9 @@ public class GuiTMaterialFilter extends GuiMekanism
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					filter.materialItem = null;
+					filter.materialItem = ItemStack.EMPTY;
 				}
 
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

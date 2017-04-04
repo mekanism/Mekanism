@@ -69,7 +69,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	 */
 	public boolean containsType(ItemStack stack)
 	{
-		if(stack == null || stack.getCount() == 0)
+		if(stack.isEmpty() || stack.getCount() == 0)
 		{
 			return false;
 		}

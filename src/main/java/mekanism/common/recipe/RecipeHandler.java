@@ -489,7 +489,7 @@ public final class RecipeHandler
 	 */
 	public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> boolean isInRecipe(ItemStack itemstack, Map<ItemStackInput, RECIPE> recipes)
 	{
-		if(itemstack != null)
+		if(!itemstack.isEmpty())
 		{
 			for(RECIPE recipe : recipes.values())
 			{
@@ -509,7 +509,7 @@ public final class RecipeHandler
 
 	public static boolean isInPressurizedRecipe(ItemStack stack)
 	{
-		if(stack != null)
+		if(!stack.isEmpty())
 		{
 			for(PressurizedInput key : (Set<PressurizedInput>)Recipe.PRESSURIZED_REACTION_CHAMBER.get().keySet())
 			{

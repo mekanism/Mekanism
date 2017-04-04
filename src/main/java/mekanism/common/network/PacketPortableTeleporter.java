@@ -44,7 +44,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 				ItemStack itemstack = player.getHeldItem(message.currentHand);
 				World world = player.world;
 				
-				if(itemstack != null && itemstack.getItem() instanceof ItemPortableTeleporter)
+				if(!itemstack.isEmpty() && itemstack.getItem() instanceof ItemPortableTeleporter)
 				{
 					ItemPortableTeleporter item = (ItemPortableTeleporter)itemstack.getItem();
 					

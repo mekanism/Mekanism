@@ -27,7 +27,7 @@ public final class SecurityUtils
 			return owner == null || owner.equals(player.getName());
 		}
 		
-		if(stack == null || !(stack.getItem() instanceof ISecurityItem))
+		if(stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem))
 		{
 			return true;
 		}

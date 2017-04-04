@@ -18,7 +18,7 @@ public class PacketConfiguratorState implements IMessageHandler<ConfiguratorStat
 	{
 		ItemStack itemstack = PacketHandler.getPlayer(context).getHeldItem(message.currentHand);
 		
-		if(itemstack != null && itemstack.getItem() instanceof ItemConfigurator)
+		if(!itemstack.isEmpty() && itemstack.getItem() instanceof ItemConfigurator)
 		{
 			((ItemConfigurator)itemstack.getItem()).setState(itemstack, message.state);
 		}
