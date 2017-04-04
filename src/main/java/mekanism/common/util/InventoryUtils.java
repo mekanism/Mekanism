@@ -90,14 +90,14 @@ public final class InventoryUtils
 
 				ItemStack inSlot = inventory.getStackInSlot(i);
 
-				if(inSlot == null || inSlot.isEmpty())
+				if(inSlot.isEmpty())
 				{
 					if(toInsert.getCount() <= inventory.getInventoryStackLimit())
 					{
 						inventory.setInventorySlotContents(i, toInsert);
 						inventory.markDirty();
 						
-						return null;
+						return ItemStack.EMPTY;
 					}
 					else {
 						int rejects = toInsert.getCount() - inventory.getInventoryStackLimit();
@@ -126,7 +126,7 @@ public final class InventoryUtils
 						inventory.setInventorySlotContents(i, toSet);
 						inventory.markDirty();
 						
-						return null;
+						return ItemStack.EMPTY;
 					}
 					else {
 						int rejects = (inSlot.getCount() + toInsert.getCount()) - max;
@@ -170,14 +170,14 @@ public final class InventoryUtils
 
 					ItemStack inSlot = inventory.getStackInSlot(slotID);
 
-					if(inSlot == null || inSlot.isEmpty())
+					if(inSlot.isEmpty())
 					{
 						if(toInsert.getCount() <= inventory.getInventoryStackLimit())
 						{
 							inventory.setInventorySlotContents(slotID, toInsert);
 							inventory.markDirty();
 							
-							return null;
+							return ItemStack.EMPTY;
 						}
 						else {
 							int rejects = toInsert.getCount() - inventory.getInventoryStackLimit();
@@ -206,7 +206,7 @@ public final class InventoryUtils
 							inventory.setInventorySlotContents(slotID, toSet);
 							inventory.markDirty();
 							
-							return null;
+							return ItemStack.EMPTY;
 						}
 						else {
 							int rejects = (inSlot.getCount() + toInsert.getCount()) - max;
@@ -248,7 +248,7 @@ public final class InventoryUtils
 		{
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
 			{
-				if(inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).getCount() > 0)
+				if(!inventory.getStackInSlot(i).isEmpty() && inventory.getStackInSlot(i).getCount() > 0)
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					toSend.setCount(Math.min(amount, toSend.getCount()));
@@ -267,7 +267,7 @@ public final class InventoryUtils
 				{
 					int slotID = slots[get];
 
-					if(sidedInventory.getStackInSlot(slotID) != null && sidedInventory.getStackInSlot(slotID).getCount() > 0)
+					if(!sidedInventory.getStackInSlot(slotID).isEmpty() && sidedInventory.getStackInSlot(slotID).getCount() > 0)
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
 						toSend.setCount(Math.min(amount, toSend.getCount()));
@@ -294,10 +294,10 @@ public final class InventoryUtils
 		{
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
 			{
-				if(inventory.getStackInSlot(i) != null && StackUtils.equalsWildcard(inventory.getStackInSlot(i), type))
+				if(!inventory.getStackInSlot(i).isEmpty() && StackUtils.equalsWildcard(inventory.getStackInSlot(i), type))
 				{
 					ItemStack stack = inventory.getStackInSlot(i);
-					int current = ret.getStack() != null ? ret.getStack().getCount() : 0;
+					int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
 
 					if(current+stack.getCount() <= max)
 					{
@@ -309,7 +309,7 @@ public final class InventoryUtils
 						ret.appendStack(i, copy);
 					}
 
-					if(ret.getStack() != null && ret.getStack().getCount() == max)
+					if(!ret.getStack().isEmpty() && ret.getStack().getCount() == max)
 					{
 						return ret;
 					}
@@ -326,10 +326,10 @@ public final class InventoryUtils
 				{
 					int slotID = slots[get];
 
-					if(sidedInventory.getStackInSlot(slotID) != null && StackUtils.equalsWildcard(inventory.getStackInSlot(slotID), type))
+					if(!sidedInventory.getStackInSlot(slotID).isEmpty() && StackUtils.equalsWildcard(inventory.getStackInSlot(slotID), type))
 					{
 						ItemStack stack = sidedInventory.getStackInSlot(slotID);
-						int current = ret.getStack() != null ? ret.getStack().getCount() : 0;
+						int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
 
 						if(current+stack.getCount() <= max)
 						{
@@ -350,7 +350,7 @@ public final class InventoryUtils
 							}
 						}
 
-						if(ret.getStack() != null && ret.getStack().getCount() == max)
+						if(!ret.getStack().isEmpty() && ret.getStack().getCount() == max)
 						{
 							return ret;
 						}
@@ -359,7 +359,7 @@ public final class InventoryUtils
 			}
 		}
 
-		if(ret != null && ret.getStack() != null && ret.getStack().getCount() >= min)
+		if(ret != null && !ret.getStack().isEmpty() && ret.getStack().getCount() >= min)
 		{
 			return ret;
 		}
@@ -375,7 +375,7 @@ public final class InventoryUtils
 		{
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
 			{
-				if(inventory.getStackInSlot(i) != null && id.modifies(inventory.getStackInSlot(i)))
+				if(!inventory.getStackInSlot(i).isEmpty() && id.modifies(inventory.getStackInSlot(i)))
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					return new InvStack(inventory, i, toSend);
@@ -392,7 +392,7 @@ public final class InventoryUtils
 				{
 					int slotID = slots[get];
 
-					if(sidedInventory.getStackInSlot(slotID) != null && id.modifies(sidedInventory.getStackInSlot(slotID)))
+					if(!sidedInventory.getStackInSlot(slotID).isEmpty() && id.modifies(sidedInventory.getStackInSlot(slotID)))
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
 
@@ -448,7 +448,7 @@ public final class InventoryUtils
 
 				ItemStack inSlot = inventory.getStackInSlot(i);
 
-				if(inSlot == null || inSlot.isEmpty())
+				if(inSlot.isEmpty())
 				{
 					if(itemStack.getCount() <= inventory.getInventoryStackLimit())
 					{
@@ -507,7 +507,7 @@ public final class InventoryUtils
 
 					ItemStack inSlot = inventory.getStackInSlot(slotID);
 
-					if(inSlot == null || inSlot.isEmpty())
+					if(inSlot.isEmpty())
 					{
 						if(itemStack.getCount() <= inventory.getInventoryStackLimit())
 						{
@@ -554,8 +554,7 @@ public final class InventoryUtils
 
 	/*TODO From CCLib -- go back to that version when we're using dependencies again*/
 	public static boolean canStack(ItemStack stack1, ItemStack stack2) {
-		return stack1 == null || stack2 == null ||
-				stack1.isEmpty() || stack2.isEmpty() ||
+		return stack1.isEmpty() || stack2.isEmpty() ||
 				(stack1.getItem() == stack2.getItem() &&
 						(!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage()) &&
 						ItemStack.areItemStackTagsEqual(stack2, stack1)) &&

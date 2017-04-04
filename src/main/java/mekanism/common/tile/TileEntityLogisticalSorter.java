@@ -114,7 +114,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 						{
 							InvStack invStack = filter.getStackFromInventory(search);
 
-							if(invStack == null || invStack.getStack() == null)
+							if(invStack == null || invStack.getStack().isEmpty())
 							{
 								break inner;
 							}
@@ -150,11 +150,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					{
 						InvStack invStack = InventoryUtils.takeTopStack(inventory, facing.getOpposite(), new FirstFinder());
 						
-						if(invStack != null && invStack.getStack() != null)
+						if(invStack != null && !invStack.getStack().isEmpty())
 						{
 							ItemStack used = emitItemToTransporter(front, invStack, color, 0);
 							
-							if(used != null)
+							if(!used.isEmpty())
 							{
 								invStack.use(used.getCount());
 								inventory.markDirty();
@@ -182,7 +182,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	 */
 	public ItemStack emitItemToTransporter(TileEntity front, InvStack inInventory, EnumColor filterColor, int min)
 	{
-		ItemStack used = null;
+		ItemStack used = ItemStack.EMPTY;
 
 		if(CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 		{
