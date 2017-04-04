@@ -4,8 +4,8 @@ import java.util.Map;
 
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.common.MekanismFluids;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
@@ -34,7 +34,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 		{
 			if(ore.isItemEqual(itemstack))
 			{
-				return new GasStack(GasRegistry.getGas("liquidOsmium"), 200);
+				return new GasStack(MekanismFluids.LiquidOsmium, 200);
 			}
 		}
 
@@ -42,7 +42,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 		{
 			if(ore.isItemEqual(itemstack))
 			{
-				return new GasStack(GasRegistry.getGas("liquidOsmium"), 1800);
+				return new GasStack(MekanismFluids.LiquidOsmium, 1800);
 			}
 		}
 

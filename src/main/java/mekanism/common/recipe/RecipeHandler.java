@@ -159,9 +159,9 @@ public final class RecipeHandler
 	 * @param input - input ItemStack
 	 * @param output - output ItemStack
 	 */
-	public static void addChemicalInjectionChamberRecipe(ItemStack input, String gasName, ItemStack output)
+	public static void addChemicalInjectionChamberRecipe(ItemStack input, Gas gas, ItemStack output)
 	{
-		addRecipe(Recipe.CHEMICAL_INJECTION_CHAMBER, new InjectionRecipe(input, gasName, output));
+		addRecipe(Recipe.CHEMICAL_INJECTION_CHAMBER, new InjectionRecipe(input, gas, output));
 	}
 
 	/**

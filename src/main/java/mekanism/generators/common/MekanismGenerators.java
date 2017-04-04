@@ -12,6 +12,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.GasTankTier;
@@ -181,7 +182,7 @@ public class MekanismGenerators implements IModule
 			" R ", "RFR", " R ", Character.valueOf('R'), "dustRedstone", Character.valueOf('F'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1)
 		}));
 
-		FuelHandler.addGas(GasRegistry.getGas("ethene"), general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+		FuelHandler.addGas(MekanismFluids.Ethene, general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
 	}
 
 	@Override
