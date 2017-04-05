@@ -8,9 +8,8 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGlowPanel;
-import mekanism.common.integration.multipart.MultipartMekanism;
-import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGlowPanel;
+import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -45,7 +44,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			bounds[side.ordinal()] = MultipartMekanism.rotate(cuboid.offset(fromOrigin.xCoord, fromOrigin.yCoord, fromOrigin.zCoord), side).offset(-fromOrigin.xCoord, -fromOrigin.zCoord, -fromOrigin.zCoord);
+			bounds[side.ordinal()] = MultipartUtils.rotate(cuboid.offset(fromOrigin.xCoord, fromOrigin.yCoord, fromOrigin.zCoord), side).offset(-fromOrigin.xCoord, -fromOrigin.zCoord, -fromOrigin.zCoord);
 		}
 	}
 	

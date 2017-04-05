@@ -14,8 +14,6 @@ import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
-import mekanism.common.integration.multipart.MultipartMekanism;
-import mekanism.common.integration.multipart.MultipartMekanism.AdvancedRayTraceResult;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -26,6 +24,8 @@ import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -190,7 +190,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		}
 		
 		List<AxisAlignedBB> boxes = tile.getCollisionBoxes();
-		AdvancedRayTraceResult result = MultipartMekanism.collisionRayTrace(pos, start, end, boxes);
+		AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(pos, start, end, boxes);
 		
 		if(result != null)
 		{

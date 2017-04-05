@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mcmultipart.api.multipart.IMultipart;
-import mcmultipart.api.multipart.OcclusionHelper;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -20,14 +19,13 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.property.PropertyConnection;
-import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.multipart.MultipartMekanism;
-import mekanism.common.integration.multipart.MultipartMekanism.AdvancedRayTraceResult;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -607,8 +605,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
 	private RayTraceResult reTrace(World world, BlockPos pos, EntityPlayer player) 
 	{
-		Pair<Vec3d, Vec3d> vecs = MultipartMekanism.getRayTraceVectors(player);
-		AdvancedRayTraceResult result = MultipartMekanism.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
+		Pair<Vec3d, Vec3d> vecs = MultipartUtils.getRayTraceVectors(player);
+		AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
 		
 		return result == null ? null : result.hit;
 	}
