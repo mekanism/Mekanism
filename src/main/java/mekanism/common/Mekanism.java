@@ -1305,8 +1305,12 @@ public class Mekanism
 		MekanismItems.register();
 		MekanismBlocks.register();
 
-		//Set up multiparts
-		new MultipartMekanism();
+		try {
+			//Set up multiparts
+			new MultipartMekanism();
+		} catch(Exception e) {
+			logger.info("Didn't detect MCMP, ignoring compatibility package");
+		}
 
 		Mekanism.proxy.preInit();
 
