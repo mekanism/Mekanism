@@ -11,9 +11,9 @@ import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
@@ -51,7 +51,7 @@ public class GuiTeleporter extends GuiMekanism
 	public ResourceLocation resource;
 	
 	public TileEntityTeleporter tileEntity;
-	public ItemStack itemStack;
+	public ItemStack itemStack = ItemStack.EMPTY;
 	
 	public EntityPlayer entityPlayer;
 	
