@@ -849,7 +849,7 @@ public final class MekanismUtils
 				return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
 			}
 			else {
-				return new FluidStack(FluidRegistry.getFluid("heavywater"), 10);
+				return new FluidStack(MekanismFluids.HeavyWater, 10);
 			}
 		}
 		else if((block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) && state.getValue(BlockLiquid.LEVEL) == 0)

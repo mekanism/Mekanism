@@ -18,6 +18,8 @@ public class MekanismFluids
 	public static final Gas SulfuricAcid = new Gas("sulfuricacid", "mekanism:blocks/liquid/LiquidSulfuricAcid");
 	public static final Gas HydrogenChloride = new Gas("hydrogenchloride", "mekanism:blocks/liquid/LiquidHydrogenChloride");
 	
+	public static final Fluid HeavyWater = new Fluid("heavywater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
+	public static final Fluid Steam = new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true);
 	
 	//Internal gases
 	public static final Gas LiquidOsmium = new Gas("liquidosmium", "mekanism:blocks/liquid/LiquidOsmium");
@@ -51,8 +53,8 @@ public class MekanismFluids
 		GasRegistry.register(LiquidOsmium).setVisible(false);
 		GasRegistry.register(LiquidStone).setVisible(false);
 		
-		FluidRegistry.registerFluid(new Fluid("heavywater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater")));
-		FluidRegistry.registerFluid(new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true));
+		FluidRegistry.registerFluid(HeavyWater);
+		FluidRegistry.registerFluid(Steam);
 		
 		for(Resource resource : Resource.values())
 		{
@@ -64,8 +66,8 @@ public class MekanismFluids
 		
 		FluidRegistry.enableUniversalBucket();
 		
-		FluidRegistry.addBucketForFluid(FluidRegistry.getFluid("heavywater"));
-		FluidRegistry.addBucketForFluid(FluidRegistry.getFluid("brine"));
-		FluidRegistry.addBucketForFluid(FluidRegistry.getFluid("lithium"));
+		FluidRegistry.addBucketForFluid(HeavyWater);
+		FluidRegistry.addBucketForFluid(Brine.getFluid());
+		FluidRegistry.addBucketForFluid(Lithium.getFluid());
 	}
 }

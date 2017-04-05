@@ -16,6 +16,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.util.CapabilityUtils;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -261,7 +262,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	private boolean shouldTake(FluidStack fluid, Coord4D coord)
 	{
-		if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == FluidRegistry.getFluid("heavywater"))
+		if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == MekanismFluids.HeavyWater)
 		{
 			return general.pumpWaterSources;
 		}
