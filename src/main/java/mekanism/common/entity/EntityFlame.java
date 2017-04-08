@@ -215,7 +215,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	{
 		ItemStack result = FurnaceRecipes.instance().getSmeltingResult(item.getEntityItem());
 		
-		if(result != null)
+		if(result != ItemStack.EMPTY)
 		{
 			item.setEntityItemStack(StackUtils.size(result, item.getEntityItem().getCount()));
 			item.ticksExisted = 0;

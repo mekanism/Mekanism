@@ -54,11 +54,11 @@ public class ItemGasMask extends ItemArmor
 		ItemStack headStack = base.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 		ItemStack chestStack = base.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-		if(headStack != null && headStack.getItem() instanceof ItemGasMask)
+		if(headStack != ItemStack.EMPTY && headStack.getItem() instanceof ItemGasMask)
 		{
 			ItemGasMask mask = (ItemGasMask)headStack.getItem();
 
-			if(chestStack != null && chestStack.getItem() instanceof ItemScubaTank)
+			if(chestStack != ItemStack.EMPTY && chestStack.getItem() instanceof ItemScubaTank)
 			{
 				ItemScubaTank tank = (ItemScubaTank)chestStack.getItem();
 

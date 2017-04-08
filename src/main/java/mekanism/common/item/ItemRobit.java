@@ -63,7 +63,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 					world.spawnEntity(robit);
 				}
 
-				entityplayer.setHeldItem(hand, null);
+				entityplayer.setHeldItem(hand, ItemStack.EMPTY);
 
 				return EnumActionResult.SUCCESS;
 			}

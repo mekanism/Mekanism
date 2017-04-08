@@ -118,7 +118,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(isItem)
 		{
-			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			if(getItem() == ItemStack.EMPTY || !(getItem().getItem() instanceof ISecurityItem))
 			{
 				mc.player.closeScreen();
 				return null;
@@ -138,7 +138,7 @@ public class GuiSecurityTab extends GuiElement
 		}
 		if(isItem)
 		{
-			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			if(getItem() == ItemStack.EMPTY || !(getItem().getItem() instanceof ISecurityItem))
 			{
 				mc.player.closeScreen();
 				return SecurityMode.PUBLIC;
@@ -155,7 +155,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(isItem)
 		{
-			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			if(getItem() == ItemStack.EMPTY || !(getItem().getItem() instanceof ISecurityItem))
 			{
 				mc.player.closeScreen();
 				return null;

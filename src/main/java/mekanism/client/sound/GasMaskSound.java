@@ -3,6 +3,7 @@ package mekanism.client.sound;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemGasMask;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,6 +33,6 @@ public class GasMaskSound extends PlayerSound
 
 	private boolean hasGasMask(EntityPlayer player)
 	{
-		return player.inventory.armorInventory.get(3) != null && player.inventory.armorInventory.get(3).getItem() instanceof ItemGasMask;
+		return player.inventory.armorInventory.get(3) != ItemStack.EMPTY && player.inventory.armorInventory.get(3).getItem() instanceof ItemGasMask;
 	}
 }
