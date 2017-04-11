@@ -1305,10 +1305,10 @@ public class Mekanism
 		MekanismItems.register();
 		MekanismBlocks.register();
 
-		try {
+		if(Loader.isModLoaded("mcmultipart")) {
 			//Set up multiparts
 			new MultipartMekanism();
-		} catch(Exception e) {
+		} else {
 			logger.info("Didn't detect MCMP, ignoring compatibility package");
 		}
 
