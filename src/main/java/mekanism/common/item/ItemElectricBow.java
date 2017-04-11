@@ -156,7 +156,7 @@ public class ItemElectricBow extends ItemEnergized
         }
     }
 
-    protected boolean isArrow(@Nullable ItemStack stack)
+    protected boolean isArrow(ItemStack stack)
     {
         return !stack.isEmpty() && stack.getItem() instanceof ItemArrow;
     }

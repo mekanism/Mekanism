@@ -150,7 +150,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 						{
 							ItemStack slotStack = inv.getStackInSlot(i);
 
-							if(slotStack != null)
+							if(slotStack != ItemStack.EMPTY)
 							{
 								if(getEnergy(stack) < ENERGY_PER_ITEM_DUMP)
 								{
@@ -184,7 +184,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									item.motionZ = random.nextGaussian() * k;
 									world.spawnEntity(item);
 
-									inv.setInventorySlotContents(i, null);
+									inv.setInventorySlotContents(i, ItemStack.EMPTY);
 									setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
 								}
 							}

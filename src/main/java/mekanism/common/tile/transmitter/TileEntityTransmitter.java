@@ -183,7 +183,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
 					
 					if(stack.getCount() == 0)
 					{
-						player.setHeldItem(hand, null);
+						player.setHeldItem(hand, ItemStack.EMPTY);
 					}
 				}
 			}

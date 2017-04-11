@@ -3,6 +3,7 @@ package mekanism.client.sound;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemJetpack;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,6 +33,6 @@ public class JetpackSound extends PlayerSound
 
 	private boolean hasJetpack(EntityPlayer player)
 	{
-		return player.inventory.armorInventory.get(2) != null && player.inventory.armorInventory.get(2).getItem() instanceof ItemJetpack;
+		return player.inventory.armorInventory.get(2) != ItemStack.EMPTY && player.inventory.armorInventory.get(2).getItem() instanceof ItemJetpack;
 	}
 }

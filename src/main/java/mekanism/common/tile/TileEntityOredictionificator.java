@@ -78,7 +78,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 				
 				if(result != null)
 				{
-					if(inventory.get(1) == null)
+					if(inventory.get(1) == ItemStack.EMPTY)
 					{
 						inventory.get(0).shrink(1);
 						
@@ -96,7 +96,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 						
 						if(inventory.get(0).getCount() <= 0)
 						{
-							inventory.set(0, null);
+							inventory.set(0, ItemStack.EMPTY);
 						}
 						
 						inventory.get(1).grow(1);

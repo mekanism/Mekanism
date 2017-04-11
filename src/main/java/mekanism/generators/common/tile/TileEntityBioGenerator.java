@@ -64,7 +64,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			}
 			else {
 				int fuel = getFuel(inventory.get(0));
-				ItemStack prevStack = inventory.get(0).copy();
 
 				if(fuel > 0)
 				{
@@ -74,7 +73,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					{
 						bioFuelSlot.fluidStored += fuel;
 
-						if(inventory.get(0).getItem().getContainerItem(inventory.get(0)) != null)
+						if(inventory.get(0).getItem().getContainerItem(inventory.get(0)) != ItemStack.EMPTY)
 						{
 							inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 						}

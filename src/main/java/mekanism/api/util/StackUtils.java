@@ -112,11 +112,11 @@ public final class StackUtils
 
 	public static ItemStack add(ItemStack stack1, ItemStack stack2)
 	{
-		if(stack1 == null)
+		if(stack1 == ItemStack.EMPTY)
 		{
 			return stack2;
 		}
-		else if(stack2 == null)
+		else if(stack2 == ItemStack.EMPTY)
 		{
 			return stack1;
 		}
@@ -126,11 +126,11 @@ public final class StackUtils
 
 	public static ItemStack subtract(ItemStack stack1, ItemStack stack2)
 	{
-		if(stack1 == null)
+		if(stack1 == ItemStack.EMPTY)
 		{
 			return ItemStack.EMPTY;
 		}
-		else if(stack2 == null)
+		else if(stack2 == ItemStack.EMPTY)
 		{
 			return stack1;
 		}
@@ -176,7 +176,7 @@ public final class StackUtils
 			{
 				ItemStack reject = getMergeReject(orig.get(i), toAdd.get(i));
 				
-				if(reject != null)
+				if(reject != ItemStack.EMPTY)
 				{
 					ret.add(reject);
 				}
