@@ -32,6 +32,6 @@ public class GasMaskSound extends PlayerSound
 
 	private boolean hasGasMask(EntityPlayer player)
 	{
-		return player.inventory.armorInventory.get(3) != null && player.inventory.armorInventory.get(3).getItem() instanceof ItemGasMask;
+		return !player.inventory.armorInventory.get(3).isEmpty() && player.inventory.armorInventory.get(3).getItem() instanceof ItemGasMask;
 	}
 }

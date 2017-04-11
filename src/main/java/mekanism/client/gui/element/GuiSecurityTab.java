@@ -72,8 +72,7 @@ public class GuiSecurityTab extends GuiElement
 		
 		int renderX = 26 + (18*mode.ordinal());
 
-		if(getOwner() != null && getOwner().equals(mc.player.getName()) &&
-				(data == null || !data.override))
+		if(getOwner() != null && getOwner().equals(mc.player.getName()) && (data == null || !data.override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 			{
@@ -118,7 +117,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(isItem)
 		{
-			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			if(getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem))
 			{
 				mc.player.closeScreen();
 				return null;
@@ -133,12 +132,14 @@ public class GuiSecurityTab extends GuiElement
 	
 	private SecurityMode getSecurity()
 	{
-		if(!general.allowProtection) {
+		if(!general.allowProtection) 
+		{
 			return SecurityMode.PUBLIC;
 		}
+		
 		if(isItem)
 		{
-			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			if(getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem))
 			{
 				mc.player.closeScreen();
 				return SecurityMode.PUBLIC;
@@ -155,7 +156,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(isItem)
 		{
-			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			if(getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem))
 			{
 				mc.player.closeScreen();
 				return null;

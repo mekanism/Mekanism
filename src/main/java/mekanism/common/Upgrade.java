@@ -78,7 +78,7 @@ public enum Upgrade
 				return new ItemStack(MekanismItems.AnchorUpgrade);
 		}
 		
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	public List<String> getInfo(TileEntity tile)

@@ -2,8 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import mekanism.api.EnumColor;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -156,7 +154,7 @@ public class ItemElectricBow extends ItemEnergized
         }
     }
 
-    protected boolean isArrow(@Nullable ItemStack stack)
+    protected boolean isArrow(ItemStack stack)
     {
         return !stack.isEmpty() && stack.getItem() instanceof ItemArrow;
     }

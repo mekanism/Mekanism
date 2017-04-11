@@ -70,7 +70,7 @@ public class ContainerOredictionificator extends Container
 					return ItemStack.EMPTY;
 				}
 			}
-			else if(tileEntity.getResult(slotStack) != null)
+			else if(!tileEntity.getResult(slotStack).isEmpty())
 			{
 				if(slotID != 0 && slotID != 1)
 				{

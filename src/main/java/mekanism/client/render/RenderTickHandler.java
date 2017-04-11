@@ -79,7 +79,7 @@ public class RenderTickHandler
 					}
 				}
 	
-				if(player != null && mc.currentScreen == null && player.getItemStackFromSlot(EntityEquipmentSlot.CHEST) != null)
+				if(player != null && mc.currentScreen == null && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty())
 				{
 					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 	
@@ -179,7 +179,7 @@ public class RenderTickHandler
 				{
 					for(EntityPlayer p : world.playerEntities)
 					{
-						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && p.inventory.getCurrentItem() != null && p.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
+						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && !p.inventory.getCurrentItem().isEmpty() && p.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 						{
 							if(((ItemFlamethrower)p.inventory.getCurrentItem().getItem()).getGas(p.inventory.getCurrentItem()) != null)
 							{

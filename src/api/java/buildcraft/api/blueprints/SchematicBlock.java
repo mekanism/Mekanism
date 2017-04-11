@@ -166,7 +166,7 @@ public class SchematicBlock extends SchematicBlockBase {
             NBTTagList rq = new NBTTagList();
 
             for (ItemStack stack : storedRequirements) {
-                if (stack == null || stack.getItem() == null) throw new IllegalStateException("Found a null requirement! " + getClass());
+                if (stack.isEmpty() || stack.getItem() == null) throw new IllegalStateException("Found a null requirement! " + getClass());
                 NBTTagCompound sub = new NBTTagCompound();
                 stack.writeToNBT(sub);
                 rq.appendTag(sub);

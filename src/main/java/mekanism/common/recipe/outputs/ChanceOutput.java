@@ -59,7 +59,7 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 	{
 		if(hasPrimary())
 		{
-			if(inventory.get(primaryIndex) == null)
+			if(inventory.get(primaryIndex).isEmpty())
 			{
 				if(doEmit)
 				{

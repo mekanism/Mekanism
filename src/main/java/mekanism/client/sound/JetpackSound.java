@@ -32,6 +32,6 @@ public class JetpackSound extends PlayerSound
 
 	private boolean hasJetpack(EntityPlayer player)
 	{
-		return player.inventory.armorInventory.get(2) != null && player.inventory.armorInventory.get(2).getItem() instanceof ItemJetpack;
+		return !player.inventory.armorInventory.get(2).isEmpty() && player.inventory.armorInventory.get(2).getItem() instanceof ItemJetpack;
 	}
 }

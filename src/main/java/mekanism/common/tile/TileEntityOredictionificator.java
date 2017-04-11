@@ -76,15 +76,15 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			{
 				ItemStack result = getResult(inventory.get(0));
 				
-				if(result != null)
+				if(!result.isEmpty())
 				{
-					if(inventory.get(1) == null)
+					if(inventory.get(1).isEmpty())
 					{
 						inventory.get(0).shrink(1);
 						
 						if(inventory.get(0).getCount() <= 0)
 						{
-							inventory.set(0, null);
+							inventory.set(0, ItemStack.EMPTY);
 						}
 						
 						inventory.set(1, result);
@@ -96,7 +96,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 						
 						if(inventory.get(0).getCount() <= 0)
 						{
-							inventory.set(0, null);
+							inventory.set(0, ItemStack.EMPTY);
 						}
 						
 						inventory.get(1).grow(1);
@@ -133,7 +133,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		
 		if(s == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		List<ItemStack> ores = OreDictionary.getOres(s);
@@ -147,12 +147,12 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 					return MekanismUtils.size(ores.get(filter.index), 1);
 				}
 				else {
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 		}
 		
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -180,7 +180,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		return slotID == 0 && getResult(itemstack) != null;
+		return slotID == 0 && !getResult(itemstack).isEmpty();
 
 	}
 	

@@ -128,7 +128,7 @@ public class ContainerRobitSmelting extends Container
 			}
 			else if(slotID != 1 && slotID != 0)
 			{
-				if(FurnaceRecipes.instance().getSmeltingResult(slotStack) != null)
+				if(!FurnaceRecipes.instance().getSmeltingResult(slotStack).isEmpty())
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
@@ -161,7 +161,7 @@ public class ContainerRobitSmelting extends Container
 
 			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack(null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();

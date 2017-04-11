@@ -518,8 +518,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				|| super.hasCapability(capability, facing);
 	}
 	
-	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(TileEntityElectricBlock.class, TeslaIntegration.class);
-	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(TileEntityElectricBlock.class, ForgeEnergyIntegration.class);
+	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(IEnergyWrapper.class, TeslaIntegration.class);
+	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)

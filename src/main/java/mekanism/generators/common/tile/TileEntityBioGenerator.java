@@ -13,6 +13,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -64,7 +65,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			}
 			else {
 				int fuel = getFuel(inventory.get(0));
-				ItemStack prevStack = inventory.get(0).copy();
 
 				if(fuel > 0)
 				{
@@ -74,7 +74,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					{
 						bioFuelSlot.fluidStored += fuel;
 
-						if(inventory.get(0).getItem().getContainerItem(inventory.get(0)) != null)
+						if(!inventory.get(0).getItem().getContainerItem(inventory.get(0)).isEmpty())
 						{
 							inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 						}
@@ -294,7 +294,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		return null;
+		return PipeUtils.EMPTY;
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class CommonPlayerTickHandler
 	{
 		ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 		
-		if(feetStack != null && feetStack.getItem() instanceof ItemFreeRunners)
+		if(!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners)
 		{
 			player.stepHeight = 1.002F;
 		}

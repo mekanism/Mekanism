@@ -103,12 +103,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 				}
 			}
 			
-			if(inventory.get(0) != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
+			if(!inventory.get(0).isEmpty() && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
 			{
 				inputTank.receive(GasTransmission.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 			
-			if(inventory.get(1) != null && outputTank.getGas() != null)
+			if(!inventory.get(1).isEmpty() && outputTank.getGas() != null)
 			{
 				outputTank.draw(GasTransmission.addGas(inventory.get(1), outputTank.getGas()), true);
 			}
