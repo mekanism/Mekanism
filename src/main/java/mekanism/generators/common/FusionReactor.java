@@ -4,7 +4,6 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,15 +12,13 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.reactor.IFusionReactor;
-import mekanism.api.reactor.INeutronCapture;
-import mekanism.api.reactor.IReactorBlock;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.item.ItemHohlraum;
+import mekanism.generators.common.tile.reactor.TileEntityReactorBlock;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -35,11 +32,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public class FusionReactor implements IFusionReactor
+public class FusionReactor
 {
 	public TileEntityReactorController controller;
-	public Set<IReactorBlock> reactorBlocks = new HashSet<IReactorBlock>();
-	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
+	public Set<TileEntityReactorBlock> reactorBlocks = new HashSet<TileEntityReactorBlock>();
 	public Set<IHeatTransfer> heatTransfers = new HashSet<IHeatTransfer>();
 
 	//Current stores of temperature - internally uses ambient-relative kelvin units
@@ -82,7 +78,6 @@ public class FusionReactor implements IFusionReactor
 		controller = c;
 	}
 
-	@Override
 	public void addTemperatureFromEnergyInput(double energyAdded)
 	{
 		plasmaTemperature += energyAdded / plasmaHeatCapacity * (isBurning() ? 1 : 10);
@@ -104,7 +99,6 @@ public class FusionReactor implements IFusionReactor
 		return false;
 	}
 
-	@Override
 	public void simulate()
 	{
 		if(controller.getWorld().isRemote)
@@ -131,7 +125,6 @@ public class FusionReactor implements IFusionReactor
 			{
 				injectFuel();
 				int fuelBurned = burnFuel();
-				neutronFlux(fuelBurned);
 				
 				if(fuelBurned == 0)
 				{
@@ -154,7 +147,6 @@ public class FusionReactor implements IFusionReactor
 		updateTemperatures();
 	}
 
-	@Override
 	public void updateTemperatures()
 	{
 		lastPlasmaTemperature = plasmaTemperature < 1E-1 ? 0 : plasmaTemperature;
@@ -192,25 +184,6 @@ public class FusionReactor implements IFusionReactor
 		plasmaTemperature += energyPerFuel * fuelBurned / plasmaHeatCapacity;
 		
 		return fuelBurned;
-	}
-
-	public void neutronFlux(int fuelBurned)
-	{
-		int neutronsRemaining = fuelBurned;
-		List<INeutronCapture> list = new ArrayList<INeutronCapture>(neutronCaptors);
-		Collections.shuffle(list);
-		
-		for(INeutronCapture captor: neutronCaptors)
-		{
-			if(neutronsRemaining <= 0)
-			{
-				break;
-			}
-
-			neutronsRemaining = captor.absorbNeutrons(neutronsRemaining);
-		}
-		
-		controller.radiateNeutrons(neutronsRemaining);
 	}
 
 	public void transferHeat()
@@ -251,73 +224,61 @@ public class FusionReactor implements IFusionReactor
 		setBufferedEnergy(getBufferedEnergy() + caseAirHeat * thermocoupleEfficiency);
 	}
 
-	@Override
 	public FluidTank getWaterTank()
 	{
 		return controller != null ? controller.waterTank : null;
 	}
 
-	@Override
 	public FluidTank getSteamTank()
 	{
 		return controller.steamTank;
 	}
 
-	@Override
 	public GasTank getDeuteriumTank()
 	{
 		return controller.deuteriumTank;
 	}
 
-	@Override
 	public GasTank getTritiumTank()
 	{
 		return controller.tritiumTank;
 	}
 
-	@Override
 	public GasTank getFuelTank()
 	{
 		return controller.fuelTank;
 	}
 
-	@Override
 	public double getBufferedEnergy()
 	{
 		return controller.getEnergy();
 	}
 
-	@Override
 	public void setBufferedEnergy(double energy)
 	{
 		controller.setEnergy(energy);
 	}
 
-	@Override
 	public double getPlasmaTemp()
 	{
 		return lastPlasmaTemperature;
 	}
 
-	@Override
 	public void setPlasmaTemp(double temp)
 	{
 		plasmaTemperature = temp;
 	}
 
-	@Override
 	public double getCaseTemp()
 	{
 		return lastCaseTemperature;
 	}
 
-	@Override
 	public void setCaseTemp(double temp)
 	{
 		caseTemperature = temp;
 	}
 
-	@Override
 	public double getBufferSize()
 	{
 		return controller.getMaxEnergy();
@@ -336,7 +297,7 @@ public class FusionReactor implements IFusionReactor
 
 	public void unformMultiblock(boolean keepBurning)
 	{
-		for(IReactorBlock block : reactorBlocks)
+		for(TileEntityReactorBlock block : reactorBlocks)
 		{
 			block.setReactor(null);
 		}
@@ -344,7 +305,6 @@ public class FusionReactor implements IFusionReactor
 		//Don't remove from controller
 		controller.setReactor(this);
 		reactorBlocks.clear();
-		neutronCaptors.clear();
 		formed = false;
 		burning = burning && keepBurning;
 		
@@ -354,7 +314,6 @@ public class FusionReactor implements IFusionReactor
 		}
 	}
 
-	@Override
 	public void formMultiblock(boolean keepBurning)
 	{
 		updatedThisTick = true;
@@ -406,10 +365,10 @@ public class FusionReactor implements IFusionReactor
 		{
 			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
 
-			if(tile instanceof IReactorBlock && ((IReactorBlock)tile).isFrame())
+			if(tile instanceof TileEntityReactorBlock && ((TileEntityReactorBlock)tile).isFrame())
 			{
-				reactorBlocks.add((IReactorBlock)tile);
-				((IReactorBlock)tile).setReactor(this);
+				reactorBlocks.add((TileEntityReactorBlock)tile);
+				((TileEntityReactorBlock)tile).setReactor(this);
 			}
 			else {
 				return false;
@@ -439,15 +398,10 @@ public class FusionReactor implements IFusionReactor
 				return false;
 			}
 
-			if(tile instanceof IReactorBlock)
+			if(tile instanceof TileEntityReactorBlock)
 			{
-				reactorBlocks.add((IReactorBlock)tile);
-				((IReactorBlock)tile).setReactor(this);
-				
-				if(tile instanceof INeutronCapture)
-				{
-					neutronCaptors.add((INeutronCapture)tile);
-				}
+				reactorBlocks.add((TileEntityReactorBlock)tile);
+				((TileEntityReactorBlock)tile).setReactor(this);
 				
 				if(tile instanceof IHeatTransfer)
 				{
@@ -485,13 +439,11 @@ public class FusionReactor implements IFusionReactor
 		return true;
 	}
 
-	@Override
 	public boolean isFormed()
 	{
 		return formed;
 	}
 
-	@Override
 	public void setInjectionRate(int rate)
 	{
 		injectionRate = rate;
@@ -512,25 +464,21 @@ public class FusionReactor implements IFusionReactor
 		}
 	}
 
-	@Override
 	public int getInjectionRate()
 	{
 		return injectionRate;
 	}
 
-	@Override
 	public boolean isBurning()
 	{
 		return burning;
 	}
 
-	@Override
 	public void setBurning(boolean burn)
 	{
 		burning = burn;
 	}
 
-	@Override
 	public int getMinInjectionRate(boolean active)
 	{
 		double k = active ? caseWaterConductivity : 0;
@@ -538,28 +486,24 @@ public class FusionReactor implements IFusionReactor
 		return (int)(2 * Math.ceil(aMin/2D));
 	}
 
-	@Override
 	public double getMaxPlasmaTemperature(boolean active)
 	{
 		double k = active ? caseWaterConductivity : 0;
 		return injectionRate * energyPerFuel/plasmaCaseConductivity * (plasmaCaseConductivity+k+caseAirConductivity) / (k+caseAirConductivity);
 	}
 
-	@Override
 	public double getMaxCasingTemperature(boolean active)
 	{
 		double k = active ? caseWaterConductivity : 0;
 		return injectionRate * energyPerFuel / (k+caseAirConductivity);
 	}
 
-	@Override
 	public double getIgnitionTemperature(boolean active)
 	{
 		double k = active ? caseWaterConductivity : 0;
 		return burnTemperature * energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) / (energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
 	}
 
-	@Override
 	public double getPassiveGeneration(boolean active, boolean current)
 	{
 		double temperature = current ? caseTemperature : getMaxCasingTemperature(active);
@@ -567,7 +511,6 @@ public class FusionReactor implements IFusionReactor
 		return thermocoupleEfficiency * caseAirConductivity * temperature;
 	}
 
-	@Override
 	public int getSteamPerTick(boolean current)
 	{
 		double temperature = current ? caseTemperature : getMaxCasingTemperature(true);
@@ -575,37 +518,31 @@ public class FusionReactor implements IFusionReactor
 		return (int)(steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization);
 	}
 
-	@Override
 	public double getTemp()
 	{
 		return lastCaseTemperature;
 	}
 
-	@Override
 	public double getInverseConductionCoefficient()
 	{
 		return 1 / caseAirConductivity;
 	}
 
-	@Override
 	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return 100000;
 	}
 
-	@Override
 	public void transferHeatTo(double heat)
 	{
 		heatToAbsorb += heat;
 	}
 
-	@Override
 	public double[] simulateHeat()
 	{
 		return null;
 	}
 
-	@Override
 	public double applyTemperatureChange()
 	{
 		caseTemperature += heatToAbsorb / caseHeatCapacity;
@@ -614,13 +551,11 @@ public class FusionReactor implements IFusionReactor
 		return caseTemperature;
 	}
 
-	@Override
 	public boolean canConnectHeat(EnumFacing side)
 	{
 		return false;
 	}
 
-	@Override
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		return null;

@@ -6,12 +6,10 @@ import mekanism.common.base.IGuiProvider;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.generators.common.block.states.BlockStateGenerator;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
-import mekanism.generators.common.inventory.container.ContainerNeutronCapture;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.inventory.container.ContainerWindGenerator;
@@ -26,7 +24,6 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
-import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
@@ -57,7 +54,6 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		GameRegistry.registerTileEntity(TileEntityReactorFrame.class, "ReactorFrame");
 		GameRegistry.registerTileEntity(TileEntityReactorGlass.class, "ReactorGlass");
 		GameRegistry.registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "ReactorLaserFocus");
-		GameRegistry.registerTileEntity(TileEntityReactorNeutronCapture.class, "ReactorNeutronCapture");
 		GameRegistry.registerTileEntity(TileEntityReactorPort.class, "ReactorPort");
 		GameRegistry.registerTileEntity(TileEntityReactorLogicAdapter.class, "ReactorLogicAdapter");
 		GameRegistry.registerTileEntity(TileEntityRotationalComplex.class, "RotationalComplex");
@@ -171,8 +167,6 @@ public class GeneratorsCommonProxy implements IGuiProvider
 			case 12:
 			case 13:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
-			case 14:
-				return new ContainerNeutronCapture(player.inventory, (TileEntityReactorNeutronCapture)tileEntity);
 			case 15:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}

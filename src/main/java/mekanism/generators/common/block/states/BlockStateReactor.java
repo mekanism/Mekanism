@@ -11,7 +11,6 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
-import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -81,7 +80,7 @@ public class BlockStateReactor extends ExtendedBlockState
 		@Override
 		public boolean apply(ReactorBlockType input)
 		{
-			return input.blockType == basicBlock && input.isValidReactorBlock();
+			return input.blockType == basicBlock;
 		}
 	}
 	
@@ -89,9 +88,8 @@ public class BlockStateReactor extends ExtendedBlockState
 	{
 		REACTOR_CONTROLLER(ReactorBlock.REACTOR_BLOCK, 0, "ReactorController", 10, TileEntityReactorController.class, false),
 		REACTOR_FRAME(ReactorBlock.REACTOR_BLOCK, 1, "ReactorFrame", -1, TileEntityReactorFrame.class, false),
-		NEUTRON_CAPTURE(ReactorBlock.REACTOR_BLOCK, 2, "ReactorNeutronCapturePlate", 14, TileEntityReactorNeutronCapture.class, false),
-		REACTOR_PORT(ReactorBlock.REACTOR_BLOCK, 3, "ReactorPort", -1, TileEntityReactorPort.class, false),
-		REACTOR_LOGIC_ADAPTER(ReactorBlock.REACTOR_BLOCK, 4, "ReactorLogicAdapter", 15, TileEntityReactorLogicAdapter.class, false),
+		REACTOR_PORT(ReactorBlock.REACTOR_BLOCK, 2, "ReactorPort", -1, TileEntityReactorPort.class, false),
+		REACTOR_LOGIC_ADAPTER(ReactorBlock.REACTOR_BLOCK, 3, "ReactorLogicAdapter", 15, TileEntityReactorLogicAdapter.class, false),
 		REACTOR_GLASS(ReactorBlock.REACTOR_GLASS, 0, "ReactorGlass", -1, TileEntityReactorGlass.class, false),
 		LASER_FOCUS_MATRIX(ReactorBlock.REACTOR_GLASS, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class, true);
 	
@@ -110,11 +108,6 @@ public class BlockStateReactor extends ExtendedBlockState
 			guiId = j;
 			tileEntityClass = tileClass;
 			activable = activeState;
-		}
-	
-		public boolean isValidReactorBlock()
-		{
-			return this != NEUTRON_CAPTURE;
 		}
 		
 		public static ReactorBlockType get(Block block, int meta)
@@ -167,9 +160,9 @@ public class BlockStateReactor extends ExtendedBlockState
 			return LangUtils.localize("tooltip." + name);
 		}
 	
-		public ItemStack getStack()
+		public ItemStack getStack(int amount)
 		{
-			return new ItemStack(blockType.getBlock(), 1, meta);
+			return new ItemStack(blockType.getBlock(), amount, meta);
 		}
 	}
 	

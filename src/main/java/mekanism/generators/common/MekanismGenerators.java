@@ -3,7 +3,6 @@ package mekanism.generators.common;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.generators;
@@ -25,8 +24,8 @@ import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.block.states.BlockStateGenerator;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
+import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -169,23 +168,23 @@ public class MekanismGenerators implements IModule
 		}));
 		
 		//Reactor Recipes
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 4, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_FRAME.getStack(4), new Object[] {
 			" C ", "CAC", " C ", Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('A'), "alloyUltimate"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 2, 3), new Object[] {
-			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_PORT.getStack(2), new Object[] {
+			" I ", "ICI", " I ", Character.valueOf('I'), ReactorBlockType.REACTOR_FRAME.getStack(1), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 4, 0), new Object[] {
-			" I ", "IGI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('G'), "blockGlass"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_GLASS.getStack(4), new Object[] {
+			" I ", "IGI", " I ", Character.valueOf('I'), ReactorBlockType.REACTOR_FRAME.getStack(1), Character.valueOf('G'), "blockGlass"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 0), new Object[] {
-			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank(GasTankTier.BASIC)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_CONTROLLER.getStack(1), new Object[] {
+			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), ReactorBlockType.REACTOR_FRAME.getStack(1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank(GasTankTier.BASIC)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 2, 1), new Object[] {
-			" I ", "ILI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.ReactorGlass, 1, 0), Character.valueOf('L'), "blockRedstone"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.LASER_FOCUS_MATRIX.getStack(2), new Object[] {
+			" I ", "ILI", " I ", Character.valueOf('I'), ReactorBlockType.REACTOR_GLASS.getStack(1), Character.valueOf('L'), "blockRedstone"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 4), new Object[] {
-			" R ", "RFR", " R ", Character.valueOf('R'), "dustRedstone", Character.valueOf('F'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_LOGIC_ADAPTER.getStack(1), new Object[] {
+			" R ", "RFR", " R ", Character.valueOf('R'), "dustRedstone", Character.valueOf('F'), ReactorBlockType.REACTOR_FRAME.getStack(1)
 		}));
 
 		FuelHandler.addGas(MekanismFluids.Ethene, general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus

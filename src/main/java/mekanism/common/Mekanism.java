@@ -60,6 +60,7 @@ import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.OreDictManager;
 import mekanism.common.multiblock.MultiblockManager;

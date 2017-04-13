@@ -64,7 +64,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		inventory = new ItemStack[1];
 	}
 
-	@Override
 	public boolean isFrame()
 	{
 		return false;

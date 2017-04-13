@@ -1,7 +1,8 @@
-package mekanism.common;
+package mekanism.common.integration;
 
 import java.util.List;
 
+import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.ShapedMekanismRecipe;
