@@ -54,7 +54,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 		if(data != null)
 		{
 			try {
-				list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, data.meta).getDisplayName());
+				list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, 1, data.meta).getDisplayName());
 				list.add(LangUtils.localize("tooltip.meta") + ": " + data.meta);
 	
 				if(data.tileTag != null)
