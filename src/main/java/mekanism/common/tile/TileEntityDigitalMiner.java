@@ -610,6 +610,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		oresToMine.clear();
 		replaceMap.clear();
 		missingStack = ItemStack.EMPTY;
+		setActive(false);
 
 		MekanismUtils.saveChunk(this);
 	}
