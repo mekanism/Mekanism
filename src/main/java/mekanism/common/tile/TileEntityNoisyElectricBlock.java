@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import mekanism.api.MekanismConfig.client;
 import mekanism.client.HolidayManager;
 import mekanism.client.sound.ISoundSource;
 import mekanism.common.Upgrade;
@@ -8,6 +7,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.SoundWrapper;
+import mekanism.common.config.MekanismConfig.client;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;

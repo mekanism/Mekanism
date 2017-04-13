@@ -3,9 +3,9 @@ package mekanism.tools.item;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

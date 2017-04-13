@@ -7,7 +7,7 @@ import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
 import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
 import mekanism.common.MekanismItems;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
-import mekanism.api.util.ListUtils;
+import mekanism.common.util.ListUtils;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 

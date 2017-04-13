@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,7 +1,7 @@
 package mekanism.common.recipe.inputs;
 
-import mekanism.api.util.StackUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

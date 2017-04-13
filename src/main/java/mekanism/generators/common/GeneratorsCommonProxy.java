@@ -1,8 +1,8 @@
 package mekanism.generators.common;
 
-import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;

@@ -1,6 +1,7 @@
 package mekanism.common.recipe.inputs;
 
-import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;

@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.gas.GasTank;
-import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiBucketIO;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -25,6 +24,7 @@ import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerChemicalWasher;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;

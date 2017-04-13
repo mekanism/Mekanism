@@ -1,15 +1,15 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.usage;
-import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.base.IModule;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
+import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;

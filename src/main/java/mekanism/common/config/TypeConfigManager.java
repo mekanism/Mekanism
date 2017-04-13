@@ -1,9 +1,10 @@
-package mekanism.common.base;
+package mekanism.common.config;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mekanism.common.base.IBlockType;
 import net.minecraft.item.crafting.CraftingManager;
 
 public class TypeConfigManager 

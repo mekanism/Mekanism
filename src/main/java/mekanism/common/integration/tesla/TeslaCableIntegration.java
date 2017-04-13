@@ -1,7 +1,7 @@
 package mekanism.common.integration.tesla;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.common.multipart.PartUniversalCable;
+import mekanism.common.config.MekanismConfig.general;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Interface;

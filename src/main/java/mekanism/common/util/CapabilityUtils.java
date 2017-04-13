@@ -1,4 +1,4 @@
-package mekanism.api.util;
+package mekanism.common.util;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

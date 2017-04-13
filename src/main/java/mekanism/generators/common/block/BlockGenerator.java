@@ -3,7 +3,6 @@ package mekanism.generators.common.block;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.MekanismConfig.client;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
@@ -16,6 +15,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;

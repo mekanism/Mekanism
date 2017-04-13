@@ -10,7 +10,7 @@ import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
-import mekanism.api.util.ListUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;

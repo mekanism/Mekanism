@@ -2,7 +2,8 @@ package mekanism.common.recipe.outputs;
 
 import java.util.Random;
 
-import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

@@ -3,9 +3,9 @@ package mekanism.client.sound;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.ObfuscatedNames;
-import mekanism.api.util.ReflectionUtils;
+import mekanism.common.ObfuscatedNames;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;

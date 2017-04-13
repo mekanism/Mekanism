@@ -6,8 +6,8 @@ import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig.general;
 
 public class VoiceServerManager
 {
