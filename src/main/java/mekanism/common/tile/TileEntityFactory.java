@@ -173,7 +173,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
-		super("null", machine.machineName, machine.baseEnergy);
+		super("null", machine.blockName, machine.baseEnergy);
 
 		tier = type;
 		inventory = NonNullList.withSize(5+type.processes*2, ItemStack.EMPTY);

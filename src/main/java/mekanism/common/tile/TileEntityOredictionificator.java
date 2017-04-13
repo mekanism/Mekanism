@@ -51,7 +51,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	
 	public TileEntityOredictionificator()
 	{
-		super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.machineName);
+		super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.blockName);
 		
 		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		doAutoSync = false;

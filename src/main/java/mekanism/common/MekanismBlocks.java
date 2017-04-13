@@ -33,7 +33,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
-@ObjectHolder("Mekanism")
+@ObjectHolder("mekanism")
 public class MekanismBlocks
 {
 	public static Block BasicBlock = BlockBasic.getBlockBasic(BASIC_BLOCK_1);

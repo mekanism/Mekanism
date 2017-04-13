@@ -20,6 +20,8 @@ import mekanism.common.tile.TileEntityNoisyElectricBlock;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.block.states.BlockStateGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -86,6 +88,18 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 				{
 					clientActive = isActive;
 					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				}
+			}
+			
+			if(!world.isRemote && general.destroyDisabledBlocks)
+			{
+				GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
+				
+				if(type != null && !type.isEnabled())
+				{
+					Mekanism.logger.info("[Mekanism] Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this) + " as according to config.");
+					world.setBlockToAir(getPos());
+					return;
 				}
 			}
 

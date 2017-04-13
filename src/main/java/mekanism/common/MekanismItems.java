@@ -38,7 +38,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
-@ObjectHolder("Mekanism")
+@ObjectHolder("mekanism")
 public class MekanismItems
 {
 	public static final Item EnrichedAlloy = new ItemAlloy();

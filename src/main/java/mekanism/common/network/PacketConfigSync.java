@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.Mekanism;
@@ -84,7 +83,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
-				dataStream.writeBoolean(machines.isEnabled(type.machineName));
+				dataStream.writeBoolean(general.machinesManager.isEnabled(type.blockName));
 			}
 	
 			dataStream.writeDouble(usage.enrichmentChamberUsage);
@@ -180,7 +179,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
-				machines.setEntry(type.machineName, dataStream.readBoolean());
+				general.machinesManager.setEntry(type.blockName, dataStream.readBoolean());
 			}
 	
 			usage.enrichmentChamberUsage = dataStream.readDouble();
