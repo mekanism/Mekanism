@@ -5,16 +5,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.reactor.IFusionReactor;
-import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.generators.common.FusionReactor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 
-public abstract class TileEntityReactorBlock extends TileEntityElectricBlock implements IReactorBlock
+public abstract class TileEntityReactorBlock extends TileEntityElectricBlock
 {
-	public IFusionReactor fusionReactor;
+	public FusionReactor fusionReactor;
 	
 	public boolean attempted;
 	
@@ -25,14 +24,15 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		super("ReactorBlock", 0);
 		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
+	
+	public abstract boolean isFrame();
 
 	public TileEntityReactorBlock(String name, double maxEnergy)
 	{
 		super(name, maxEnergy);
 	}
 
-	@Override
-	public void setReactor(IFusionReactor reactor)
+	public void setReactor(FusionReactor reactor)
 	{
 		if(reactor != fusionReactor)
 		{
@@ -42,8 +42,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		fusionReactor = reactor;
 	}
 
-	@Override
-	public IFusionReactor getReactor()
+	public FusionReactor getReactor()
 	{
 		return fusionReactor;
 	}

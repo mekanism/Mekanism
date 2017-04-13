@@ -401,7 +401,7 @@ entity.Mekanism.Robit.name=Robit
 entity.Mekanism.BabySkeleton.name=Baby Skeleton
 
 //Config Gui
-mekanism.configgui.ctgy.general=Mekanism General Settings
+mekanism.configgui.ctgy.general=General Settings
 mekanism.configgui.ctgy.machines=Machine Settings
 mekanism.configgui.ctgy.tier=Tier Settings
 mekanism.configgui.ctgy.usage=Usage Settings
@@ -1004,6 +1004,16 @@ gui.maxCasing=Max. Casing Temp
 gui.passiveGeneration=Passive Generation
 gui.steamProduction=Steam Production
 
+//Config Gui
+mekanism.configgui.ctgy.generators.general=General Settings
+mekanism.configgui.ctgy.generators.generators=Generator Settings
+mekanism.configgui.ctgy.generators.generation=Generation Settings
+
+//Config Tooltips
+mekanism.configgui.ctgy.generators.general.tooltip=Settings regarding MekanismGenerators' general configuration
+mekanism.configgui.ctgy.generators.generators.tooltip=Settings regarding enabling and disabling of specific generators
+mekanism.configgui.ctgy.generators.generation.tooltip=Settings regarding the energy usage of generators
+
 //*****//
 //TOOLS//
 //*****//
@@ -1100,7 +1110,7 @@ item.LapisLazuliHoe.name=Lapis Lazuli Hoe
 item.LapisLazuliSword.name=Lapis Lazuli Sword
 
 //Config Gui
-mekanism.configgui.ctgy.tools.general=General
+mekanism.configgui.ctgy.tools.general=General Settings
 mekanism.configgui.ctgy.tools.armor=Armor Balance
 mekanism.configgui.ctgy.tools.tools=Tools Balance
 

@@ -15,7 +15,6 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.reactor.IReactorBlock;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
@@ -370,7 +369,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		
 		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			if(!(adj instanceof IReactorBlock))
+			if(!(adj instanceof TileEntityReactorBlock))
 			{
 				return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			}

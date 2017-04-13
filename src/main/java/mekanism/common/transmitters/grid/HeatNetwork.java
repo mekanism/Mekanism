@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.transmitters.grid;
 
 import java.util.Collection;
 import java.util.Set;
