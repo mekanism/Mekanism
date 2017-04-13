@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class MinerFilter
 {
-	public ItemStack replaceStack;
+	public ItemStack replaceStack = ItemStack.EMPTY;
 	
 	public boolean requireStack;
 	
