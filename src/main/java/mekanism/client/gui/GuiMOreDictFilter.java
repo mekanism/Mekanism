@@ -48,7 +48,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 	private GuiTextField oreDictText;
 
-	public ItemStack renderStack;
+	public ItemStack renderStack = ItemStack.EMPTY;
 
 	public int ticker = 0;
 

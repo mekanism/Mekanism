@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MMaterialFilter extends MinerFilter
 {
-	public ItemStack materialItem;
+	public ItemStack materialItem = ItemStack.EMPTY;
 	
 	public Material getMaterial()
 	{

@@ -49,7 +49,7 @@ public class GuiTModIDFilter extends GuiMekanism
 
 	private GuiTextField modIDText;
 
-	public ItemStack renderStack;
+	public ItemStack renderStack = ItemStack.EMPTY;
 
 	public int ticker = 0;
 

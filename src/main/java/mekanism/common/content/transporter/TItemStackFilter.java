@@ -18,7 +18,7 @@ public class TItemStackFilter extends TransporterFilter
 	public int min;
 	public int max;
 
-	public ItemStack itemType;
+	public ItemStack itemType = ItemStack.EMPTY;
 
 	@Override
 	public boolean canFilter(ItemStack itemStack)

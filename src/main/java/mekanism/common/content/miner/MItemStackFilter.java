@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MItemStackFilter extends MinerFilter
 {
-	public ItemStack itemType;
+	public ItemStack itemType = ItemStack.EMPTY;
 	public boolean fuzzy;
 
 	public MItemStackFilter(ItemStack item)
