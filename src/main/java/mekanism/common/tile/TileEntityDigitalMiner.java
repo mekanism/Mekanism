@@ -598,6 +598,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		oresToMine.clear();
 		replaceMap.clear();
 		missingStack = null;
+		setActive(false);
 
 		MekanismUtils.saveChunk(this);
 	}
@@ -1253,7 +1254,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		numPowering--;
 	}
 
-	public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};
+	public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
 	@Override
 	public String[] getMethods()
@@ -1352,18 +1353,22 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						}
 					}
 				}
-				else if(method == 7)
-				{
-					reset();
-				}
-				else if(method == 8)
-				{
-					start();
-				}
-				else if(method == 9)
-				{
-					stop();
-				}
+			}
+			else if(method == 7)
+			{
+				reset();
+			}
+			else if(method == 8)
+			{
+				start();
+			}
+			else if(method == 9)
+			{
+				stop();
+			}
+			else if(method == 10)
+			{
+				return new Object[] {searcher != null ? searcher.found : 0};
 			}
 		}
 
