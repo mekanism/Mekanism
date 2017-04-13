@@ -239,7 +239,7 @@ public final class RecipeHandler
 	 * @param ticks - amount of ticks it takes for this recipe to complete
 	 */
 	public static void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks)
-	{ShapedMekanismRecipe
+	{
 		addRecipe(Recipe.PRESSURIZED_REACTION_CHAMBER, new PressurizedRecipe(inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks));
 	}
 	
