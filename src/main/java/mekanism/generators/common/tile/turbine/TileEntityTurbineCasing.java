@@ -5,12 +5,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.generators;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;

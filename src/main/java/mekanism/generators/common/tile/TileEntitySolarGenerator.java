@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;

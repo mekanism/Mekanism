@@ -1,4 +1,4 @@
-package mekanism.api.util;
+package mekanism.common.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

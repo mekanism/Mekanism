@@ -1,8 +1,6 @@
 package mekanism.common;
 
-import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.GasStack;
-import mekanism.api.util.ReflectionUtils;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
@@ -10,6 +8,7 @@ import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.util.ReflectionUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

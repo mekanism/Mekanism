@@ -5,8 +5,8 @@ import java.util.Random;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.common.MekanismSounds;
+import mekanism.common.config.MekanismConfig.general;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;

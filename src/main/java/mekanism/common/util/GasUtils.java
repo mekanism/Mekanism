@@ -11,7 +11,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

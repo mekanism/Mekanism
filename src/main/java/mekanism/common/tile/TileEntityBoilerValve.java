@@ -1,12 +1,12 @@
 package mekanism.common.tile;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

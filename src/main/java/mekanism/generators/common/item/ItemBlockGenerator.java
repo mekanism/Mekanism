@@ -6,7 +6,6 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -14,6 +13,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;

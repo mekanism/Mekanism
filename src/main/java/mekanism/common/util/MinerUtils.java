@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.ListUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;

@@ -5,8 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;

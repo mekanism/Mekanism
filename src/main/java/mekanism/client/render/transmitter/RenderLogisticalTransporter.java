@@ -3,11 +3,11 @@ package mekanism.client.render.transmitter;
 import java.util.HashMap;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.client;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;

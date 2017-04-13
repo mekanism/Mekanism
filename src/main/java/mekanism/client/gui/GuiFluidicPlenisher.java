@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
@@ -18,6 +17,7 @@ import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerFluidicPlenisher;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;

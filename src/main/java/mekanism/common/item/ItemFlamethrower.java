@@ -3,11 +3,11 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.creativetab.CreativeTabs;

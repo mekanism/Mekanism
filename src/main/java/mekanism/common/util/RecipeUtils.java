@@ -9,7 +9,6 @@ import java.util.Map;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.ITierItem;

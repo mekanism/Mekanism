@@ -5,12 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;

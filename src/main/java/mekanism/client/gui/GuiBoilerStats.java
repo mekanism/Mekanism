@@ -2,22 +2,22 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.ListUtils;
-import mekanism.api.util.UnitDisplayUtils;
-import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.client.gui.element.GuiBoilerTab;
 import mekanism.client.gui.element.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiGraph;
 import mekanism.client.gui.element.GuiGraph.GraphDataHandler;
 import mekanism.client.gui.element.GuiHeatInfo;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

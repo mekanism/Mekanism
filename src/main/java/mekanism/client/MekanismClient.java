@@ -5,12 +5,12 @@ import java.util.Map;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
-import mekanism.api.MekanismConfig.general;
 import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey.KeyMessage;
 import mekanism.common.security.SecurityData;

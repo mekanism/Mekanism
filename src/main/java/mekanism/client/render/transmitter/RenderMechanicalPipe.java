@@ -2,12 +2,12 @@ package mekanism.client.render.transmitter;
 
 import java.util.HashMap;
 
-import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColourRGBA;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.client.renderer.Tessellator;

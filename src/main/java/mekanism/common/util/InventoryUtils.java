@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import mekanism.api.EnumColor;
-import mekanism.api.util.StackUtils;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;

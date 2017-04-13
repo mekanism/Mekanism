@@ -7,12 +7,12 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;

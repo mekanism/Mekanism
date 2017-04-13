@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
@@ -16,6 +15,7 @@ import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.transmitters.grid.FluidNetwork;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

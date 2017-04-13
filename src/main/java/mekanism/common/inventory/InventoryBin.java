@@ -1,11 +1,11 @@
 package mekanism.common.inventory;
 
-import mekanism.api.util.StackUtils;
 import mekanism.common.Tier.BinTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

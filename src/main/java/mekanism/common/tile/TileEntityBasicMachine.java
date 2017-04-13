@@ -7,7 +7,6 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -17,6 +16,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.inputs.MachineInput;

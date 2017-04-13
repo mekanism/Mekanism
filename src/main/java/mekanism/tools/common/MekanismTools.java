@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.MekanismConfig.tools;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
+import mekanism.common.config.MekanismConfig.tools;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;

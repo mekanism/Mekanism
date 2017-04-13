@@ -2,8 +2,8 @@ package mekanism.common;
 
 import java.util.HashMap;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.ModAPIManager;

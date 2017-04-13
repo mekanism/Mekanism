@@ -10,10 +10,10 @@ import com.google.common.collect.Multimap;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.ListUtils;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;

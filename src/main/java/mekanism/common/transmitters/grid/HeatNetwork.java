@@ -7,11 +7,11 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
 //import mekanism.common.multipart.MultipartTransmitter;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.tuple.Pair;

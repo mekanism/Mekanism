@@ -9,12 +9,12 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.util.StackUtils;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;

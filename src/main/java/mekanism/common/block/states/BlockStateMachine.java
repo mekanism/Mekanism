@@ -5,14 +5,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;

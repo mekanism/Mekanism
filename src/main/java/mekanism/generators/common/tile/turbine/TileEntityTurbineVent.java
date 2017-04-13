@@ -1,9 +1,9 @@
 package mekanism.generators.common.tile.turbine;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

@@ -1,6 +1,6 @@
 package mekanism.common.entity;
 
-import mekanism.api.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.general;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,8 +1,8 @@
 package mekanism.common.integration.forgeenergy;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.config.MekanismConfig.general;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;

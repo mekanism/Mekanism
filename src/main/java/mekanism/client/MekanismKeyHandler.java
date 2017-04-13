@@ -1,7 +1,6 @@
 package mekanism.client;
 
 import mekanism.api.EnumColor;
-import mekanism.api.util.StackUtils;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
@@ -25,6 +24,7 @@ import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;

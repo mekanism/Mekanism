@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.gas.GasStack;
-import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -22,6 +21,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fml.relauncher.Side;

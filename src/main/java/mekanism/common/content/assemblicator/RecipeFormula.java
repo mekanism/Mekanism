@@ -1,8 +1,8 @@
 package mekanism.common.content.assemblicator;
 
-import mekanism.api.util.StackUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RecipeUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;

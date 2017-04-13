@@ -1,4 +1,4 @@
-package mekanism.api.util;
+package mekanism.common.util;
 
 /**
  * Code taken from UE and modified to fit Mekanism.

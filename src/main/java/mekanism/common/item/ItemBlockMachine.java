@@ -9,7 +9,6 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
@@ -31,6 +30,7 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;

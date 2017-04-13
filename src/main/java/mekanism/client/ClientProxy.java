@@ -12,8 +12,6 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
@@ -126,6 +124,8 @@ import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;

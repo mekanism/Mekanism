@@ -5,11 +5,11 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
-import mekanism.api.util.StackUtils;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;

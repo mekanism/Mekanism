@@ -8,13 +8,13 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.item.ItemConfigurator;

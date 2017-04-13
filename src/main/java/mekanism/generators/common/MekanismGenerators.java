@@ -4,8 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.generators;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseRegistry;
@@ -18,7 +16,9 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
-import mekanism.common.base.TypeConfigManager;
+import mekanism.common.config.TypeConfigManager;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;

@@ -4,9 +4,9 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
