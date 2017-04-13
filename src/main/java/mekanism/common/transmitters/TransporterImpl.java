@@ -118,7 +118,7 @@ public class TransporterImpl extends TransmitterImpl<IInventory, InventoryNetwor
 									{
 										ItemStack rejected = InventoryUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this), stack.pathType == Path.HOME);
 
-										if(rejected == null)
+										if(rejected.isEmpty())
 										{
 											TransporterManager.remove(stack);
 											remove.add(stack);
