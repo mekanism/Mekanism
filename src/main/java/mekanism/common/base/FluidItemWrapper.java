@@ -1,13 +1,14 @@
 package mekanism.common.base;
 
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-public class FluidItemWrapper extends ItemCapability implements IFluidHandler
+public class FluidItemWrapper extends ItemCapability implements IFluidHandlerItem
 {
 	@Override
     public FluidTankProperties[] getTankProperties()
@@ -56,6 +57,12 @@ public class FluidItemWrapper extends ItemCapability implements IFluidHandler
         }
         
         return getItem().drain(getStack(), maxDrain, doDrain);
+    }
+    
+    @Override
+    public ItemStack getContainer()
+    {
+    	return getStack();
     }
     
     public IFluidItemWrapper getItem()
