@@ -5,6 +5,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -26,6 +27,14 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
 
 		extraEnergy = energy;
 		ticks = duration;
+	}
+	
+	public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedOutput pressurizedProducts, NBTTagCompound extraNBT)
+	{
+		super(pressurizedInput, pressurizedProducts);
+
+		extraEnergy = extraNBT.getDouble("extraEnergy");
+		ticks = extraNBT.getInteger("duration");
 	}
 
 	@Override

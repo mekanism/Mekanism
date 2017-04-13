@@ -613,8 +613,13 @@ public final class RecipeHandler
 				MachineOutput output = outputClass.newInstance();
 				output.load(nbtTags);
 				
-				Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
-				return (RECIPE)construct.newInstance(input, output);
+				try {
+					Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
+					return (RECIPE)construct.newInstance(input, output);
+				} catch(Exception e) {
+					Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass, NBTTagCompound.class);
+					return (RECIPE)construct.newInstance(input, output, nbtTags);
+				}
 			} catch(Exception e) {
 				return null;
 			}
