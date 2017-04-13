@@ -11,7 +11,6 @@ import mekanism.api.Range4D;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
-import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
@@ -23,6 +22,7 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
@@ -95,7 +95,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	protected boolean isValidTransmitter(TileEntity tileEntity)
+	public boolean isValidTransmitter(TileEntity tileEntity)
 	{
 		ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 	
@@ -127,7 +127,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		getTransmitter().update();
 	}
 
-	protected void pullItems()
+	public void pullItems()
 	{
 		if(pullDelay == 0)
 		{

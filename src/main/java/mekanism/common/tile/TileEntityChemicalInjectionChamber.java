@@ -7,7 +7,6 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
@@ -16,6 +15,7 @@ import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -83,7 +83,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 
 			if(gas != null && isValidGas(gas.getGas()))
 			{
-				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded());
+				GasStack removed = GasUtils.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded());
 				gasTank.receive(removed, true);
 			}
 

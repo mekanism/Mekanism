@@ -4,13 +4,13 @@ import java.util.Collection;
 
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
-import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;

@@ -12,7 +12,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -43,6 +42,7 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -154,13 +154,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 			if(inventory[1] != null && leftTank.getStored() > 0)
 			{
-				leftTank.draw(GasTransmission.addGas(inventory[1], leftTank.getGas()), true);
+				leftTank.draw(GasUtils.addGas(inventory[1], leftTank.getGas()), true);
 				MekanismUtils.saveChunk(this);
 			}
 
 			if(inventory[2] != null && rightTank.getStored() > 0)
 			{
-				rightTank.draw(GasTransmission.addGas(inventory[2], rightTank.getGas()), true);
+				rightTank.draw(GasUtils.addGas(inventory[2], rightTank.getGas()), true);
 				MekanismUtils.saveChunk(this);
 			}
 			
@@ -199,7 +199,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				if(dumpLeft != GasMode.DUMPING)
 				{
 					GasStack toSend = new GasStack(leftTank.getGas().getGas(), Math.min(leftTank.getStored(), output));
-					leftTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
+					leftTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
 				}
 				else {
 					leftTank.draw(dumpAmount, true);
@@ -216,7 +216,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				if(dumpRight != GasMode.DUMPING)
 				{
 					GasStack toSend = new GasStack(rightTank.getGas().getGas(), Math.min(rightTank.getStored(), output));
-					rightTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
+					rightTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
 				}
 				else {
 					rightTank.draw(dumpAmount, true);

@@ -9,7 +9,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -18,6 +17,7 @@ import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -74,7 +74,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				
 				if(gasType != null && FuelHandler.getFuel(gasType) != null)
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[0], gasType, fuelTank.getNeeded());
+					GasStack removed = GasUtils.removeGas(inventory[0], gasType, fuelTank.getNeeded());
 					boolean isTankEmpty = (fuelTank.getGas() == null);
 					
 					int fuelReceived = fuelTank.receive(removed, true);

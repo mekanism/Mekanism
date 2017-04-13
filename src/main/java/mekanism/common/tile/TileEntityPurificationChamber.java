@@ -5,13 +5,13 @@ import java.util.Map;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
+import mekanism.common.util.GasUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -62,7 +62,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		if(inventory[1] != null && gasTank.getNeeded() > 0 && inventory[1].getItem() instanceof IGasItem)
 		{
-			GasStack removed = GasTransmission.removeGas(inventory[1], MekanismFluids.Oxygen, gasTank.getNeeded());
+			GasStack removed = GasUtils.removeGas(inventory[1], MekanismFluids.Oxygen, gasTank.getNeeded());
 			gasTank.receive(removed, true);
 			return;
 		}

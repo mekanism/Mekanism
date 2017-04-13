@@ -11,7 +11,6 @@ import mekanism.api.Range4D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.util.ListUtils;
@@ -31,6 +30,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -114,7 +114,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 			if(inventory[2] != null && gasTank.getGas() != null)
 			{
-				gasTank.draw(GasTransmission.addGas(inventory[2], gasTank.getGas()), true);
+				gasTank.draw(GasUtils.addGas(inventory[2], gasTank.getGas()), true);
 			}
 			
 			OxidationRecipe recipe = getRecipe();
@@ -147,7 +147,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			if(gasTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
-				gasTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
+				gasTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
 			}
 		}
 	}

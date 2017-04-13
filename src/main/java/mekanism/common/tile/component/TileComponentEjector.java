@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.SideData;
@@ -21,6 +20,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -122,7 +122,7 @@ public class TileComponentEjector implements ITileComponent
 					if(tank.getStored() > 0)
 					{
 						GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
-						int emit = GasTransmission.emit(toEmit, tileEntity, outputSides);
+						int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
 						tank.draw(emit, true);
 					}
 				}

@@ -13,7 +13,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.util.ListUtils;
@@ -35,6 +34,7 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -129,7 +129,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			{
 				if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
 				{
-					gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
+					gasTank.receive(GasUtils.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
 				}
 
 				if(FluidContainerUtils.isFluidContainer(inventory[2]))
@@ -159,13 +159,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			{
 				if(inventory[0] != null && gasTank.getGas() != null)
 				{
-					gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
+					gasTank.draw(GasUtils.addGas(inventory[0], gasTank.getGas()), true);
 				}
 
 				if(gasTank.getGas() != null)
 				{
 					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getGas().amount, gasOutput));
-					gasTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
+					gasTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
 				}
 
 				if(FluidContainerUtils.isFluidContainer(inventory[2]))

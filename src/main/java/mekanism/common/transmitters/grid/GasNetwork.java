@@ -1,4 +1,4 @@
-package mekanism.api.gas;
+package mekanism.common.transmitters.grid;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.util.CapabilityUtils;

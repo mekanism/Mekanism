@@ -1,4 +1,4 @@
-package mekanism.api.gas;
+package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,6 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.api.util.CapabilityUtils;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.item.ItemStack;
@@ -19,7 +24,7 @@ import net.minecraft.world.World;
  * @author AidanBrady
  *
  */
-public final class GasTransmission
+public final class GasUtils
 {
 	public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity, Collection<EnumFacing> sides)
 	{
