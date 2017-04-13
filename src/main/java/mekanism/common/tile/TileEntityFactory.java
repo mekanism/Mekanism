@@ -15,7 +15,6 @@ import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -55,6 +54,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -519,7 +519,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	
 					if(gas != null && recipeType.isValidGas(gas.getGas()))
 					{
-						GasStack removed = GasTransmission.removeGas(inventory.get(4), gasTank.getGasType(), gasTank.getNeeded());
+						GasStack removed = GasUtils.removeGas(inventory.get(4), gasTank.getGasType(), gasTank.getNeeded());
 						gasTank.receive(removed, true);
 					}
 	

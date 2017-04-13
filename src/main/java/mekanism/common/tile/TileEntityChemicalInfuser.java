@@ -13,7 +13,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -35,6 +34,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -118,17 +118,17 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 			if(!inventory.get(0).isEmpty() && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
 			{
-				leftTank.receive(GasTransmission.removeGas(inventory.get(0), leftTank.getGasType(), leftTank.getNeeded()), true);
+				leftTank.receive(GasUtils.removeGas(inventory.get(0), leftTank.getGasType(), leftTank.getNeeded()), true);
 			}
 
 			if(!inventory.get(1).isEmpty() && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
 			{
-				rightTank.receive(GasTransmission.removeGas(inventory.get(1), rightTank.getGasType(), rightTank.getNeeded()), true);
+				rightTank.receive(GasUtils.removeGas(inventory.get(1), rightTank.getGasType(), rightTank.getNeeded()), true);
 			}
 
 			if(!inventory.get(2).isEmpty() && centerTank.getGas() != null)
 			{
-				centerTank.draw(GasTransmission.addGas(inventory.get(2), centerTank.getGas()), true);
+				centerTank.draw(GasUtils.addGas(inventory.get(2), centerTank.getGas()), true);
 			}
 			
 			ChemicalInfuserRecipe recipe = getRecipe();
@@ -153,7 +153,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			if(centerTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
-				centerTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(facing)), true);
+				centerTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(facing)), true);
 			}
 
 			prevEnergy = getEnergy();

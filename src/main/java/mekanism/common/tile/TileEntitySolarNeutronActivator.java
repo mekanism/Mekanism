@@ -12,7 +12,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.util.ListUtils;
@@ -33,6 +32,7 @@ import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -105,12 +105,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			
 			if(!inventory.get(0).isEmpty() && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
 			{
-				inputTank.receive(GasTransmission.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()), true);
+				inputTank.receive(GasUtils.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 			
 			if(!inventory.get(1).isEmpty() && outputTank.getGas() != null)
 			{
-				outputTank.draw(GasTransmission.addGas(inventory.get(1), outputTank.getGas()), true);
+				outputTank.draw(GasUtils.addGas(inventory.get(1), outputTank.getGas()), true);
 			}
 			
 			SolarNeutronRecipe recipe = getRecipe();
@@ -130,7 +130,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			if(outputTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
-				outputTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(facing)), true);
+				outputTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(facing)), true);
 			}
 		}
 	}

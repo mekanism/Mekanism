@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.CapabilityUtils;
@@ -19,6 +17,8 @@ import mekanism.common.Tier.TubeTier;
 import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.transmitters.grid.GasNetwork;
+import mekanism.common.util.GasUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -54,7 +54,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         {
             updateShare();
 
-			IGasHandler[] connectedAcceptors = GasTransmission.getConnectedAcceptors(getPos(), getWorld());
+			IGasHandler[] connectedAcceptors = GasUtils.getConnectedAcceptors(getPos(), getWorld());
 
 			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
@@ -189,7 +189,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
-		return GasTransmission.isValidAcceptorOnSide(tile, side);
+		return GasUtils.isValidAcceptorOnSide(tile, side);
 	}
 
 	@Override

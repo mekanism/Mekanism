@@ -12,7 +12,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -35,6 +34,7 @@ import mekanism.common.tile.component.TileComponentAdvancedUpgrade;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -124,12 +124,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 			if(!inventory.get(0).isEmpty() && injectTank.getNeeded() > 0)
 			{
-				injectTank.receive(GasTransmission.removeGas(inventory.get(0), MekanismFluids.SulfuricAcid, injectTank.getNeeded()), true);
+				injectTank.receive(GasUtils.removeGas(inventory.get(0), MekanismFluids.SulfuricAcid, injectTank.getNeeded()), true);
 			}
 
 			if(!inventory.get(2).isEmpty() && outputTank.getGas() != null)
 			{
-				outputTank.draw(GasTransmission.addGas(inventory.get(2), outputTank.getGas()), true);
+				outputTank.draw(GasUtils.addGas(inventory.get(2), outputTank.getGas()), true);
 			}
 
 			boolean changed = false;
@@ -171,7 +171,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			if(outputTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
-				outputTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
+				outputTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
 			}
 		}
 	}
