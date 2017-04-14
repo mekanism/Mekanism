@@ -1,7 +1,10 @@
 package mekanism.common.recipe;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,7 +72,22 @@ public final class RecipeHandler
 
 	public static void removeRecipe(Recipe recipeMap, MachineRecipe recipe)
 	{
-		recipeMap.remove(recipe);
+		List<MachineInput> toRemove = new ArrayList<>();
+		
+		for(Iterator iter = recipeMap.get().keySet().iterator(); iter.hasNext();)
+		{
+			MachineInput iterInput = (MachineInput)iter.next();
+			
+			if(iterInput.testEquality(recipe.getInput()))
+			{
+				toRemove.add(iterInput);
+			}
+		}
+		
+		for(MachineInput iterInput : toRemove)
+		{
+			recipeMap.get().remove(iterInput);
+		}
 	}
 
 	/**
