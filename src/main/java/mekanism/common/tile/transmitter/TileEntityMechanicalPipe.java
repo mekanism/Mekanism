@@ -264,7 +264,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 			return new FluidTankInfo[] {buffer.getInfo()};
 		}
 
-		return new FluidTankInfo[0];
+		return PipeUtils.EMPTY;
 	}
 
 	public int getPullAmount()
