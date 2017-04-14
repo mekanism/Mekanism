@@ -261,7 +261,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 			return new FluidTankInfo[] {buffer.getInfo()};
 		}
 
-		return new FluidTankInfo[0];
+		return PipeUtils.EMPTY;
 	}
 
 	public int getPullAmount()
