@@ -372,8 +372,6 @@ public final class Tier
 		
 		public int tubePullAmount;
 		private int basePull;
-		
-		public TransmitterType type;
 
 		private TubeTier(int capacity, int pullAmount)
 		{

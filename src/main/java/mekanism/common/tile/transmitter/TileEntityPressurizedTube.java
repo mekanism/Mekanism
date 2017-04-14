@@ -183,7 +183,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 	@Override
 	public TransmitterType getTransmitterType()
 	{
-		return tier.type;
+		return TransmitterType.PRESSURIZED_TUBE;
 	}
 
 	@Override
