@@ -305,19 +305,19 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 			}
 
-			if(doEject && delayTicks == 0 && !getTopEject(false, null).isEmpty() && getEjectInv() != null && getEjectTile() != null)
+			if(doEject && delayTicks == 0 && !getTopEject(false, ItemStack.EMPTY).isEmpty() && getEjectInv() != null && getEjectTile() != null)
 			{
 				if(getEjectInv() instanceof IInventory)
 				{
-					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), facing.getOpposite(), false);
+					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, ItemStack.EMPTY), facing.getOpposite(), false);
 
 					getTopEject(true, remains);
 				}
 				else if(CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, null), null, true, 0);
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, ItemStack.EMPTY), null, true, 0);
 
-					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
+					if(TransporterManager.didEmit(getTopEject(false, ItemStack.EMPTY), rejected))
 					{
 						getTopEject(true, rejected);
 					}
@@ -396,8 +396,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 			else {
 				MinerFilter filter = replaceMap.get(index);
-				
-				if(filter == null || (filter.replaceStack == null || !filter.requireStack))
+
+				if(filter == null || (filter.replaceStack.isEmpty() || !filter.requireStack))
 				{
 					world.setBlockToAir(obj.getPos());
 					
@@ -443,7 +443,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public NonNullList<ItemStack> copy(NonNullList<ItemStack> stacks)

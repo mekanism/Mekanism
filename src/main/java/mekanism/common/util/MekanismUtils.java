@@ -76,6 +76,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -1317,37 +1318,37 @@ public final class MekanismUtils
 	 */
 	public static ItemStack findMatchingRecipe(InventoryCrafting inv, World world)
 	{
-		ItemStack[] dmgItems = new ItemStack[2];
+		NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
 
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			if(inv.getStackInSlot(i) != null)
+			if(!inv.getStackInSlot(i).isEmpty())
 			{
-				if(dmgItems[0] == null)
+				if(dmgItems.get(0).isEmpty())
 				{
-					dmgItems[0] = inv.getStackInSlot(i);
+					dmgItems.set(0, inv.getStackInSlot(i));
 				}
 				else {
-					dmgItems[1] = inv.getStackInSlot(i);
+					dmgItems.set(1, inv.getStackInSlot(i));
 					break;
 				}
 			}
 		}
 
-		if((dmgItems[0] == null) || (dmgItems[0].getItem() == null))
+		if((dmgItems.get(0).isEmpty()) || (dmgItems.get(0).getItem() == null))
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		if((dmgItems[1] != null) && (dmgItems[0].getItem() == dmgItems[1].getItem()) && (dmgItems[0].getCount() == 1) && (dmgItems[1].getCount() == 1) && dmgItems[0].getItem().isRepairable())
+		if((!dmgItems.get(1).isEmpty()) && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) && (dmgItems.get(0).getCount() == 1) && (dmgItems.get(1).getCount() == 1) && dmgItems.get(0).getItem().isRepairable())
 		{
-			Item theItem = dmgItems[0].getItem();
-			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamage();
-			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamage();
+			Item theItem = dmgItems.get(0).getItem();
+			int dmgDiff0 = theItem.getMaxDamage() - dmgItems.get(0).getItemDamage();
+			int dmgDiff1 = theItem.getMaxDamage() - dmgItems.get(1).getItemDamage();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
 			
-			return new ItemStack(dmgItems[0].getItem(), 1, solve);
+			return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
 		}
 
 		List<IRecipe> list = (List<IRecipe>)((ArrayList<IRecipe>)CraftingManager.getInstance().getRecipeList()).clone();
@@ -1360,7 +1361,7 @@ public final class MekanismUtils
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	/**
@@ -1383,7 +1384,7 @@ public final class MekanismUtils
 	
 	/**
 	 * Whether or not a given EntityPlayer is considered an Op.
-	 * @param player - player to check
+	 * @param p - player to check
 	 * @return if the player has operator privileges
 	 */
 	public static boolean isOp(EntityPlayer p)
