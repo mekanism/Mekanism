@@ -84,7 +84,7 @@ public class IMCHandler
 
 					for(Recipe type : Recipe.values())
 					{
-						if(msg.key.equalsIgnoreCase(type.getRecipeName() + "Recipe"))
+						if(message.equalsIgnoreCase(type.getRecipeName() + "Recipe"))
 						{
 							MachineInput input = type.createInput(msg.getNBTValue());
 							
