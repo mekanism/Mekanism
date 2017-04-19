@@ -35,11 +35,11 @@ public class RecipeUtils
 {
 	public static boolean areItemsEqualForCrafting(ItemStack target, ItemStack input)
 	{
-		if(target == null && input != null || target != null && input == null)
+		if(target.isEmpty() && !input.isEmpty() || !target.isEmpty() && input.isEmpty())
 		{
 			return false;
 		}
-		else if(target == null && input == null)
+		else if(target.isEmpty() && input.isEmpty())
 		{
 			return true;
 		}
@@ -202,7 +202,7 @@ public class RecipeUtils
 		if(BasicBlockType.get(toReturn) == BasicBlockType.BIN)
 		{
 			int foundCount = 0;
-			ItemStack foundType = null;
+			ItemStack foundType = ItemStack.EMPTY;
 			
 			for(int i = 0; i < 9; i++)
 			{
@@ -217,7 +217,7 @@ public class RecipeUtils
 				}
 			}
 			
-			if(foundCount > 0 && foundType != null)
+			if(foundCount > 0 && !foundType.isEmpty())
 			{
 				InventoryBin binInv = new InventoryBin(toReturn);
 				binInv.setItemCount(foundCount);
