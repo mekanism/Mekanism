@@ -7,9 +7,9 @@ import javax.annotation.Nullable;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.common.util.LangUtils;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
-import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -211,12 +211,12 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 
 		if(tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) 
 		{
-			String amount = Translator.translateToLocalFormatted("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb);
+			String amount = LangUtils.localizeWithFormat("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb);
 			tooltip.add(TextFormatting.GRAY + amount);
 		} 
 		else if (tooltipMode == TooltipMode.SHOW_AMOUNT)
 		{
-			String amount = Translator.translateToLocalFormatted("jei.tooltip.liquid.amount", gasStack.amount);
+			String amount = LangUtils.localizeWithFormat("jei.tooltip.liquid.amount", gasStack.amount);
 			tooltip.add(TextFormatting.GRAY + amount);
 		}
 
