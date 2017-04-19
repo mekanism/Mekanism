@@ -11,7 +11,6 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.transmitters.grid.FluidNetwork;
@@ -30,7 +29,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
 {
-	public Tier.PipeTier tier;
+	public Tier.PipeTier tier = Tier.PipeTier.BASIC;
 	
 	public float currentScale;
 
