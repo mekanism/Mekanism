@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiDictionary extends GuiMekanism
 {
-	public ItemStack itemType;
+	public ItemStack itemType = ItemStack.EMPTY;
 	
 	public GuiScrollList scrollList;
 

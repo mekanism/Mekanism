@@ -22,7 +22,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class ShapelessMekanismRecipe implements IRecipe
 {
-    private ItemStack output = null;
+    private ItemStack output = ItemStack.EMPTY;
     private ArrayList<Object> input = new ArrayList<Object>();
 
     public ShapelessMekanismRecipe(Block result, Object... recipe){ this(new ItemStack(result), recipe); }
@@ -98,7 +98,7 @@ public class ShapelessMekanismRecipe implements IRecipe
         {
             ItemStack slot = inv.getStackInSlot(x);
 
-            if(slot != null)
+            if(!slot.isEmpty())
             {
                 boolean inRecipe = false;
                 Iterator<Object> req = required.iterator();
@@ -158,7 +158,7 @@ public class ShapelessMekanismRecipe implements IRecipe
     	ItemStack result = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("result"));
     	NBTTagList list = nbtTags.getTagList("input", NBT.TAG_COMPOUND);
     	
-    	if(result == null || list.tagCount() == 0)
+    	if(result.isEmpty() || list.tagCount() == 0)
     	{
     		Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid result stack or input data list.");
     		return null;
