@@ -11,7 +11,6 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -224,11 +223,5 @@ public class CommandMekanism extends CommandBase
 				sender.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Unknown command. Type '" + EnumColor.INDIGO + "/mk help" + EnumColor.GREY + "' for help."));
 			}
 		}
-	}
-
-	@Override
-	public int compareTo(ICommand obj)
-	{
-		return 0;
 	}
 }
