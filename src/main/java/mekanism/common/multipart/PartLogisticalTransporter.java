@@ -42,7 +42,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork>
+public class PartLogisticalTransporter extends PartTransmitter<TileEntity, InventoryNetwork>
 {
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
 
@@ -89,9 +89,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 	
 	@Override
-	public IInventory getCachedAcceptor(EnumFacing side)
+	public TileEntity getCachedAcceptor(EnumFacing side)
 	{
-		return (IInventory)getCachedTile(side);
+		return getCachedTile(side);
 	}
 
 	@Override
@@ -136,21 +136,16 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
 				TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
+				InvStack stack = InventoryUtils.takeTopItem(tile, side, tier.pullAmount);
 
-				if(tile instanceof IInventory)
+				if(stack != null && stack.getStack() != null)
 				{
-					IInventory inv = (IInventory)tile;
-					InvStack stack = InventoryUtils.takeTopItem(inv, side, tier.pullAmount);
+					ItemStack rejects = TransporterUtils.insert(tile, getTransmitter(), stack.getStack(), getTransmitter().getColor(), true, 0);
 
-					if(stack != null && stack.getStack() != null)
+					if(TransporterManager.didEmit(stack.getStack(), rejects))
 					{
-						ItemStack rejects = TransporterUtils.insert(tile, getTransmitter(), stack.getStack(), getTransmitter().getColor(), true, 0);
-
-						if(TransporterManager.didEmit(stack.getStack(), rejects))
-						{
-							did = true;
-							stack.use(TransporterManager.getToUse(stack.getStack(), rejects).stackSize);
-						}
+						did = true;
+						stack.use(TransporterManager.getToUse(stack.getStack(), rejects).stackSize);
 					}
 				}
 			}

@@ -193,11 +193,7 @@ public class TileComponentEjector implements ITileComponent
 				TileEntity tile = Coord4D.get(tileEntity).offset(side).getTileEntity(tileEntity.getWorld());
 				ItemStack prev = stack.copy();
 
-				if(tile instanceof IInventory && !(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite())))
-				{
-					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side, false);
-				}
-				else if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
+				if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
 				{
 					ItemStack rejects = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), stack, outputColor, true, 0);
 
@@ -205,6 +201,9 @@ public class TileComponentEjector implements ITileComponent
 					{
 						stack = rejects;
 					}
+				}
+				else {
+					stack = InventoryUtils.putStackInInventory(tile, stack, side, false);
 				}
 
 				if(stack == null || prev.stackSize != stack.stackSize)
