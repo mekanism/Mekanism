@@ -99,72 +99,67 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
 				TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(world);
 
-				if(back instanceof IInventory && (front != null && CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()) || front instanceof IInventory))
+				boolean sentItems = false;
+				int min = 0;
+
+				outer:
+				for(TransporterFilter filter : filters)
 				{
-					IInventory inventory = InventoryUtils.checkChestInv((IInventory)back);
-
-					boolean sentItems = false;
-					int min = 0;
-
-					outer:
-					for(TransporterFilter filter : filters)
+					inner:
+					for(StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.i >= 0;)
 					{
-						inner:
-						for(StackSearcher search = new StackSearcher(inventory, facing.getOpposite()); search.i >= 0;)
+						InvStack invStack = filter.getStackFromInventory(search);
+
+						if(invStack == null || invStack.getStack().isEmpty())
 						{
-							InvStack invStack = filter.getStackFromInventory(search);
-
-							if(invStack == null || invStack.getStack().isEmpty())
-							{
-								break inner;
-							}
-
-							if(filter.canFilter(invStack.getStack()))
-							{
-								if(filter instanceof TItemStackFilter)
-								{
-									TItemStackFilter itemFilter = (TItemStackFilter)filter;
-
-									if(itemFilter.sizeMode)
-									{
-										min = itemFilter.min;
-									}
-								}
-
-								ItemStack used = emitItemToTransporter(front, invStack, filter.color, min);
-
-								if(used != null)
-								{
-									invStack.use(used.getCount());
-									inventory.markDirty();
-									setActive(true);
-									sentItems = true;
-
-									break outer;
-								}
-							}
+							break inner;
 						}
-					}
 
-					if(!sentItems && autoEject)
-					{
-						InvStack invStack = InventoryUtils.takeTopStack(inventory, facing.getOpposite(), new FirstFinder());
-						
-						if(invStack != null && !invStack.getStack().isEmpty())
+						if(filter.canFilter(invStack.getStack()))
 						{
-							ItemStack used = emitItemToTransporter(front, invStack, color, 0);
-							
-							if(!used.isEmpty())
+							if(filter instanceof TItemStackFilter)
+							{
+								TItemStackFilter itemFilter = (TItemStackFilter)filter;
+
+								if(itemFilter.sizeMode)
+								{
+									min = itemFilter.min;
+								}
+							}
+
+							ItemStack used = emitItemToTransporter(front, invStack, filter.color, min);
+
+							if(used != null)
 							{
 								invStack.use(used.getCount());
-								inventory.markDirty();
+								back.markDirty();
 								setActive(true);
+								sentItems = true;
+
+								break outer;
 							}
 						}
 					}
-
-					delayTicks = 10;
 				}
+
+				if(!sentItems && autoEject)
+				{
+					InvStack invStack = InventoryUtils.takeTopStack(back, facing.getOpposite(), new FirstFinder());
+					
+					if(invStack != null && !invStack.getStack().isEmpty())
+					{
+						ItemStack used = emitItemToTransporter(front, invStack, color, 0);
+						
+						if(!used.isEmpty())
+						{
+							invStack.use(used.getCount());
+							back.markDirty();
+							setActive(true);
+						}
+					}
+				}
+				
+				delayTicks = 10;
 			}
 
 			if(playersUsing.size() > 0)
@@ -206,9 +201,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				}
 			}
 		}
-		else if(front instanceof IInventory)
-		{
-			ItemStack rejects = InventoryUtils.putStackInInventory((IInventory)front, inInventory.getStack(), facing, false);
+		else {
+			ItemStack rejects = InventoryUtils.putStackInInventory(front, inInventory.getStack(), facing, false);
 
 			if(TransporterManager.didEmit(inInventory.getStack(), rejects))
 			{
@@ -470,30 +464,19 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public boolean canSendHome(ItemStack stack)
 	{
 		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
-
-		if(back instanceof IInventory)
-		{
-			return InventoryUtils.canInsert(back, null, stack, facing.getOpposite(), true);
-		}
-
-		return false;
+		return InventoryUtils.canInsert(back, null, stack, facing.getOpposite(), true);
 	}
 
 	public boolean hasInventory()
 	{
-		return Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world) instanceof IInventory;
+		TileEntity tile = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
+		return TransporterUtils.isValidAcceptorOnSide(tile, facing.getOpposite());
 	}
 
 	public ItemStack sendHome(ItemStack stack)
 	{
 		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
-
-		if(back instanceof IInventory)
-		{
-			return InventoryUtils.putStackInInventory((IInventory)back, stack, facing.getOpposite(), true);
-		}
-
-		return stack;
+		return InventoryUtils.putStackInInventory(back, stack, facing.getOpposite(), true);
 	}
 	
 	@Override

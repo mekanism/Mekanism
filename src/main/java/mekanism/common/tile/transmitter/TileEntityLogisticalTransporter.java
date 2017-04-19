@@ -44,7 +44,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInventory, InventoryNetwork>
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork>
 {
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
 
@@ -91,9 +91,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 	}
 	
 	@Override
-	public IInventory getCachedAcceptor(EnumFacing side)
+	public TileEntity getCachedAcceptor(EnumFacing side)
 	{
-		return (IInventory)getCachedTile(side);
+		return getCachedTile(side);
 	}
 
 	@Override
@@ -138,21 +138,16 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<IInve
 			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
 				TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
+				InvStack stack = InventoryUtils.takeTopItem(tile, side, tier.pullAmount);
 
-				if(tile instanceof IInventory)
+				if(stack != null && !stack.getStack().isEmpty())
 				{
-					IInventory inv = (IInventory)tile;
-					InvStack stack = InventoryUtils.takeTopItem(inv, side, tier.pullAmount);
+					ItemStack rejects = TransporterUtils.insert(tile, getTransmitter(), stack.getStack(), getTransmitter().getColor(), true, 0);
 
-					if(stack != null && !stack.getStack().isEmpty())
+					if(TransporterManager.didEmit(stack.getStack(), rejects))
 					{
-						ItemStack rejects = TransporterUtils.insert(tile, getTransmitter(), stack.getStack(), getTransmitter().getColor(), true, 0);
-
-						if(TransporterManager.didEmit(stack.getStack(), rejects))
-						{
-							did = true;
-							stack.use(TransporterManager.getToUse(stack.getStack(), rejects).getCount());
-						}
+						did = true;
+						stack.use(TransporterManager.getToUse(stack.getStack(), rejects).getCount());
 					}
 				}
 			}

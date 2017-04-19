@@ -304,22 +304,26 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					setActive(false);
 				}
 			}
+			
+			ItemStack topEject = getTopEject(false, ItemStack.EMPTY);
 
-			if(doEject && delayTicks == 0 && !getTopEject(false, ItemStack.EMPTY).isEmpty() && getEjectInv() != null && getEjectTile() != null)
+			if(doEject && delayTicks == 0 && !topEject.isEmpty() && getEjectInv() != null && getEjectTile() != null)
 			{
-				if(getEjectInv() instanceof IInventory)
+				if(CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 				{
-					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, ItemStack.EMPTY), facing.getOpposite(), false);
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), topEject, null, true, 0);
 
-					getTopEject(true, remains);
-				}
-				else if(CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
-				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, ItemStack.EMPTY), null, true, 0);
-
-					if(TransporterManager.didEmit(getTopEject(false, ItemStack.EMPTY), rejected))
+					if(TransporterManager.didEmit(topEject, rejected))
 					{
 						getTopEject(true, rejected);
+					}
+				}
+				else {
+					ItemStack remains = InventoryUtils.putStackInInventory(getEjectInv(), topEject, facing.getOpposite(), false);
+
+					if(TransporterManager.didEmit(topEject, remains))
+					{
+						getTopEject(true, remains);
 					}
 				}
 
@@ -432,9 +436,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 		}
 
-		if(doPull && getPullInv() instanceof IInventory)
+		if(doPull && getPullInv() != null)
 		{
-			InvStack stack = InventoryUtils.takeDefinedItem((IInventory)getPullInv(), EnumFacing.UP, filter.replaceStack.copy(), 1, 1);
+			InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), EnumFacing.UP, filter.replaceStack.copy(), 1, 1);
 
 			if(stack != null)
 			{

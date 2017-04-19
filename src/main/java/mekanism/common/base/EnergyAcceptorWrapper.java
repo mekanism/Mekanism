@@ -29,7 +29,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		
 		EnergyAcceptorWrapper wrapper = null;
 		
-		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null))
+		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side))
 		{
 			wrapper = new MekanismAcceptor(CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side));
 		}

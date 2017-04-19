@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwork>
+public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork>
 {
 	public InventoryNetwork() {}
 
@@ -110,15 +110,15 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	}
 
 	@Override
-	public void absorbBuffer(IGridTransmitter<IInventory, InventoryNetwork> transmitter) {}
+	public void absorbBuffer(IGridTransmitter<TileEntity, InventoryNetwork> transmitter) {}
 
 	@Override
 	public void clampBuffer() {}
 
 	@Override
-	public Set<Pair<Coord4D, IInventory>> getAcceptors(Object data)
+	public Set<Pair<Coord4D, TileEntity>> getAcceptors(Object data)
 	{
-		Set<Pair<Coord4D, IInventory>> toReturn = new HashSet<>();
+		Set<Pair<Coord4D, TileEntity>> toReturn = new HashSet<>();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{

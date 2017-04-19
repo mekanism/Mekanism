@@ -270,9 +270,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 							setInventorySlotContents(0, rejects);
 						}
 					}
-					else if(tile instanceof IInventory)
-					{
-						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, EnumFacing.DOWN, false));
+					else {
+						setInventorySlotContents(0, InventoryUtils.putStackInInventory(tile, bottomStack, EnumFacing.DOWN, false));
 					}
 
 					delayTicks = 10;

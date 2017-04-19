@@ -28,18 +28,25 @@ public final class TransporterUtils
 			return false;
 		}
 
-		IInventory inventory = (IInventory)tile;
-
-		if(inventory.getSizeInventory() > 0)
+		if(InventoryUtils.isItemHandler(tile, side.getOpposite()))
 		{
-			if(!(inventory instanceof ISidedInventory))
+			return true;
+		}
+		else if(tile instanceof IInventory)
+		{
+			IInventory inventory = (IInventory)tile;
+	
+			if(inventory.getSizeInventory() > 0)
 			{
-				return true;
+				if(!(inventory instanceof ISidedInventory))
+				{
+					return true;
+				}
+	
+				int[] slots = ((ISidedInventory)inventory).getSlotsForFace(side.getOpposite());
+	
+				return (slots != null && slots.length > 0);
 			}
-
-			int[] slots = ((ISidedInventory)inventory).getSlotsForFace(side.getOpposite());
-
-			return (slots != null && slots.length > 0);
 		}
 		
 		return false;

@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
-public class TransporterImpl extends TransmitterImpl<IInventory, InventoryNetwork> implements ILogisticalTransporter
+public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwork> implements ILogisticalTransporter
 {
 	public HashList<TransporterStack> transit = new HashList<>();
 
@@ -109,27 +109,24 @@ public class TransporterImpl extends TransmitterImpl<IInventory, InventoryNetwor
 						else {
 							if(stack.pathType != Path.NONE)
 							{
-								if(next != null && next.getTileEntity(world()) instanceof IInventory)
+								TileEntity tile = next.getTileEntity(world());
+								
+								if(next != null && tile != null)
 								{
 									needsSync.add(stack);
-									IInventory inventory = (IInventory)next.getTileEntity(world());
+									ItemStack rejected = InventoryUtils.putStackInInventory(tile, stack.itemStack, stack.getSide(this), stack.pathType == Path.HOME);
 
-									if(inventory != null)
+									if(rejected.isEmpty())
 									{
-										ItemStack rejected = InventoryUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this), stack.pathType == Path.HOME);
+										TransporterManager.remove(stack);
+										remove.add(stack);
+										continue;
+									}
+									else {
+										needsSync.add(stack);
+										stack.itemStack = rejected;
 
-										if(rejected.isEmpty())
-										{
-											TransporterManager.remove(stack);
-											remove.add(stack);
-											continue;
-										}
-										else {
-											needsSync.add(stack);
-											stack.itemStack = rejected;
-
-											prevSet = next;
-										}
+										prevSet = next;
 									}
 								}
 							}
