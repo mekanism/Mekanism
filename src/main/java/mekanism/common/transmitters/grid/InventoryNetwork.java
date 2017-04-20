@@ -50,7 +50,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 			}
 			
 			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
-			IInventory acceptor = (IInventory)coord.getTileEntity(getWorld());
+			TileEntity acceptor = coord.getTileEntity(getWorld());
 			
 			if(sides == null || sides.isEmpty())
 			{
@@ -61,7 +61,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 			
 			for(EnumFacing side : sides)
 			{
-				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.getOpposite());
+				ItemStack returned = TransporterManager.getPredictedInsert(acceptor, color, stack, side.getOpposite());
 				
 				if(TransporterManager.didEmit(stack, returned))
 				{
