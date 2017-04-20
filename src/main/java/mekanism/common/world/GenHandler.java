@@ -42,8 +42,8 @@ public class GenHandler implements IWorldGenerator
 			
 			for(int i = 0; i < general.saltPerChunk; i++)
 			{
-				int randPosX = (chunkX*16) + random.nextInt(16);
-				int randPosZ = (chunkZ*16) + random.nextInt(16);
+				int randPosX = (chunkX*16) + random.nextInt(16) + 8;
+				int randPosZ = (chunkZ*16) + random.nextInt(16) + 8;
 				BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 60, randPosZ));
 				new WorldGenSalt(6).generate(world, random, pos);
 			}
