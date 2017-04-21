@@ -69,8 +69,9 @@ public final class InvStack
 			for(int i = 0; i < slotIDs.size(); i++)
 			{
 				ItemStack stack = itemStacks[i];
-				handler.extractItem(slotIDs[i], stack.stackSize, false);
-				amount -= stack.stackSize;
+				int toUse = Math.min(amount, stack.stackSize);
+				handler.extractItem(slotIDs[i], toUse, false);
+				amount -= toUse;
 				
 				if(amount == 0)
 				{
