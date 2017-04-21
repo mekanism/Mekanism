@@ -304,7 +304,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 			}
 			
-			ItemStack topEject = getTopEject(false, ItemStack.EMPTY);
+			ItemStack topEject = getTopEject(false, null);
 
 			if(doEject && delayTicks == 0 && topEject != null && getEjectInv() != null && getEjectTile() != null)
 			{

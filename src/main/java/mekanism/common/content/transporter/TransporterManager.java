@@ -313,7 +313,9 @@ public class TransporterManager
 			{
 				if(stack.pathType != Path.HOME)
 				{
-					if(inv.insertItem(i, toInsert, true) == null)
+					ItemStack rejectStack = inv.insertItem(i, toInsert, true);
+					
+					if(!TransporterManager.didEmit(toInsert, rejectStack))
 					{
 						continue;
 					}
@@ -323,16 +325,16 @@ public class TransporterManager
 
 				if(inSlot == null)
 				{
-					if(toInsert.stackSize <= inv.getSlotLimit(i))
+					if(toInsert.stackSize <= toInsert.getMaxStackSize())
 					{
 						copy.inventory[i] = toInsert;
 						return;
 					}
 					else {
-						int rejects = toInsert.stackSize - inv.getSlotLimit(i);
+						int rejects = toInsert.stackSize - toInsert.getMaxStackSize();
 						
 						ItemStack toSet = toInsert.copy();
-						toSet.stackSize = inv.getSlotLimit(i);
+						toSet.stackSize = toInsert.getMaxStackSize();
 
 						ItemStack remains = toInsert.copy();
 						remains.stackSize = rejects;
@@ -342,9 +344,9 @@ public class TransporterManager
 						toInsert = remains;
 					}
 				}
-				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < Math.min(inSlot.getMaxStackSize(), inv.getSlotLimit(i)))
+				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 				{
-					int max = Math.min(inSlot.getMaxStackSize(), inv.getSlotLimit(i));
+					int max = inSlot.getMaxStackSize();
 					
 					if(inSlot.stackSize + toInsert.stackSize <= max)
 					{
@@ -564,12 +566,20 @@ public class TransporterManager
 			
 			for(int i = 0; i <= inventory.getSlots() - 1; i++)
 			{
-				if(inventory.insertItem(i, toInsert, true) == null)
+				ItemStack rejectStack = inventory.insertItem(i, toInsert, true);
+				
+				if(!TransporterManager.didEmit(toInsert, rejectStack))
 				{
 					continue;
 				}
 
-				ItemStack inSlot = copy.inventory[i];
+				if (rejectStack == null)
+				{
+					return null;
+				}
+				toInsert = rejectStack;
+
+				/*ItemStack inSlot = copy.inventory[i];
 
 				if(toInsert == null)
 				{
@@ -606,7 +616,7 @@ public class TransporterManager
 							toInsert = StackUtils.size(toInsert, rejects);
 						}
 					}
-				}
+				}*/
 			}
 		}
 

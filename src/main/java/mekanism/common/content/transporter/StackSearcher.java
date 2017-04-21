@@ -180,7 +180,7 @@ public class StackSearcher
 				if(inventory.getStackInSlot(i) != null && StackUtils.equalsWildcard(inventory.getStackInSlot(i), type))
 				{
 					ItemStack stack = inventory.getStackInSlot(i);
-					int current = ret.getStack() != null ? ret.getStack().getCount() : 0;
+					int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
 
 					if(current+stack.stackSize <= max)
 					{

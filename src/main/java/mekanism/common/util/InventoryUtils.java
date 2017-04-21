@@ -11,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
@@ -303,7 +304,7 @@ public final class InventoryUtils
 			
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
 			{
-				if(inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).getCount() > 0)
+				if(inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).stackSize > 0)
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					toSend.stackSize = Math.min(amount, toSend.stackSize);
@@ -403,7 +404,7 @@ public final class InventoryUtils
 					ItemStack stack = inventory.getStackInSlot(i);
 					int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
 
-					if(current+stack.getCount() <= max)
+					if(current+stack.stackSize <= max)
 					{
 						ret.appendStack(i, stack.copy());
 					}
@@ -474,7 +475,7 @@ public final class InventoryUtils
 			
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
 			{
-				if(!inventory.getStackInSlot(i).isEmpty() && id.modifies(inventory.getStackInSlot(i)))
+				if(inventory.getStackInSlot(i) != null && id.modifies(inventory.getStackInSlot(i)))
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					return new InvStack(tile, i, toSend, side.getOpposite());
@@ -610,7 +611,7 @@ public final class InventoryUtils
 						}
 					}
 				}
-				else if(areItemsStackable(itemStack, inSlot) && inSlot.getCount() < Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit()))
+				else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit()))
 				{
 					int max = Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit());
 					
@@ -635,7 +636,7 @@ public final class InventoryUtils
 	
 	public static ItemStack loadFromNBT(NBTTagCompound nbtTags)
 	{
-		ItemStack ret = new ItemStack(nbtTags);
+		ItemStack ret = ItemStack.loadItemStackFromNBT(nbtTags);
 		return ret;
 	}
 	
