@@ -314,7 +314,9 @@ public class TransporterManager
 			{
 				if(stack.pathType != Path.HOME)
 				{
-					if(inv.insertItem(i, toInsert, true).isEmpty())
+					ItemStack rejectStack = inv.insertItem(i, toInsert, true);
+					
+					if(!TransporterManager.didEmit(toInsert, rejectStack))
 					{
 						continue;
 					}
@@ -565,7 +567,9 @@ public class TransporterManager
 			
 			for(int i = 0; i <= inventory.getSlots() - 1; i++)
 			{
-				if(inventory.insertItem(i, toInsert, true).isEmpty())
+				ItemStack rejectStack = inventory.insertItem(i, itemStack, true);
+				
+				if(!TransporterManager.didEmit(itemStack, rejectStack))
 				{
 					continue;
 				}
