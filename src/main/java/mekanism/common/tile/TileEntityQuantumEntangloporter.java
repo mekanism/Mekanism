@@ -509,29 +509,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public int getSizeInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
-		return 1;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slotID)
-	{
-		return hasFrequency() && slotID == 0 ? frequency.storedItem : ItemStack.EMPTY;
-	}
-	
-	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
-	{
-		if(hasFrequency() && slotID == 0)
-		{
-			frequency.storedItem = itemstack;
-	
-			if(!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit())
-			{
-				itemstack.setCount(getInventoryStackLimit());
-			}
-		}
+		return hasFrequency() ? frequency.inventory : null;
 	}
 
 	@Override

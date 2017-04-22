@@ -28,14 +28,10 @@ public final class TransporterUtils
 			return false;
 		}
 
-		if(InventoryUtils.isItemHandler(tile, side.getOpposite()))
-		{
-			return true;
-		}
-		else if(tile instanceof IInventory)
+		if(tile instanceof IInventory)
 		{
 			IInventory inventory = (IInventory)tile;
-	
+			
 			if(inventory.getSizeInventory() > 0)
 			{
 				if(!(inventory instanceof ISidedInventory))
@@ -47,6 +43,10 @@ public final class TransporterUtils
 	
 				return (slots != null && slots.length > 0);
 			}
+		}
+		else if(InventoryUtils.isItemHandler(tile, side.getOpposite()))
+		{
+			return true;
 		}
 		
 		return false;

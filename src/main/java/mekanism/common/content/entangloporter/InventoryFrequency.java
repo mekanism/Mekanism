@@ -11,6 +11,9 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -24,7 +27,7 @@ public class InventoryFrequency extends Frequency
 	public double storedEnergy;
 	public FluidTank storedFluid;
 	public GasTank storedGas;
-	public ItemStack storedItem = ItemStack.EMPTY;
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	public double temperature;
 	
 	public InventoryFrequency(String n, String o)
@@ -62,10 +65,20 @@ public class InventoryFrequency extends Frequency
 			nbtTags.setTag("storedGas", storedGas.write(new NBTTagCompound()));
 		}
 		
-		if(!storedItem.isEmpty())
+		NBTTagList tagList = new NBTTagList();
+
+		for(int slotCount = 0; slotCount < 1; slotCount++)
 		{
-			nbtTags.setTag("storedItem", storedItem.writeToNBT(new NBTTagCompound()));
+			if(!inventory.get(slotCount).isEmpty())
+			{
+				NBTTagCompound tagCompound = new NBTTagCompound();
+				tagCompound.setByte("Slot", (byte)slotCount);
+				inventory.get(slotCount).writeToNBT(tagCompound);
+				tagList.appendTag(tagCompound);
+			}
 		}
+
+		nbtTags.setTag("Items", tagList);
 		
 		nbtTags.setDouble("temperature", temperature);
 	}
@@ -90,9 +103,18 @@ public class InventoryFrequency extends Frequency
 			storedGas.read(nbtTags.getCompoundTag("storedGas"));
 		}
 		
-		if(nbtTags.hasKey("storedItem"))
+		NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+
+		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
-			storedItem = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("storedItem"));
+			NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
+			byte slotID = tagCompound.getByte("Slot");
+
+			if(slotID >= 0 && slotID < 1)
+			{
+				inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+			}
 		}
 		
 		temperature = nbtTags.getDouble("temperature");

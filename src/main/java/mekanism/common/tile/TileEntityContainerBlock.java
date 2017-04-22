@@ -41,7 +41,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public boolean isEmpty()
 	{
-		for(ItemStack stack : inventory)
+		for(ItemStack stack : getInventory())
 		{
 			if(!stack.isEmpty())
 			{
@@ -100,45 +100,50 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		
 		return nbtTags;
 	}
+	
+	protected NonNullList<ItemStack> getInventory()
+	{
+		return inventory;
+	}
 
 	@Override
 	public int getSizeInventory()
 	{
-		return inventory != null ? inventory.size() : 0;
+		return getInventory() != null ? getInventory().size() : 0;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
-		return inventory != null ? inventory.get(slotID) : null;
+		return getInventory() != null ? getInventory().get(slotID) : ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
-		if(inventory == null)
+		if(getInventory() == null)
 		{
 			return ItemStack.EMPTY;
 		}
 		
-		return ItemStackHelper.getAndSplit(inventory, slotID, amount);
+		return ItemStackHelper.getAndSplit(getInventory(), slotID, amount);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int slotID)
 	{
-		if(inventory == null)
+		if(getInventory() == null)
 		{
 			return ItemStack.EMPTY;
 		}
 		
-		return ItemStackHelper.getAndRemove(inventory, slotID);
+		return ItemStackHelper.getAndRemove(getInventory(), slotID);
 	}
 
 	@Override
 	public void setInventorySlotContents(int slotID, ItemStack itemstack)
 	{
-		inventory.set(slotID, itemstack);
+		getInventory().set(slotID, itemstack);
 
 		if(!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit())
 		{

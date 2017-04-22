@@ -143,6 +143,11 @@ public class TileComponentConfig implements ITileComponent
 	
 	public SideData getOutput(TransmissionType type, EnumFacing side)
 	{
+		if(side == null)
+		{
+			return EMPTY;
+		}
+		
 		int index = getConfig(type)[side.ordinal()];
 		
 		if(index == -1)
