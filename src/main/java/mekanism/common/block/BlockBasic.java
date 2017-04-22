@@ -69,7 +69,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -586,13 +586,14 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		
 		if(FluidContainerUtils.isFluidContainer(itemStack))
 		{
-			IFluidHandler handler = FluidUtil.getFluidHandler(copyStack);
+			IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
 			
 			if(FluidUtil.getFluidContained(copyStack) == null)
 			{
 				if(tileEntity.structure.fluidStored != null)
 				{
 					int filled = handler.fill(tileEntity.structure.fluidStored, !player.capabilities.isCreativeMode);
+					copyStack = handler.getContainer();
 					
 					if(filled > 0)
 					{
@@ -632,6 +633,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 				
 				boolean filled = false;
 				FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
+				copyStack = handler.getContainer();
 				
 				if(copyStack.getCount() == 0)
 				{
