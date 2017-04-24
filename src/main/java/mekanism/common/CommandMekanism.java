@@ -6,9 +6,6 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.frequency.Frequency;
-import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -103,96 +100,6 @@ public class CommandMekanism extends CommandBase
 			else if(params[0].equalsIgnoreCase("latest"))
 			{
 				sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " The latest version for this mod is " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber + EnumColor.GREY + "."));
-			}
-			else if(params[0].equalsIgnoreCase("teleporter"))
-			{
-				if(params.length == 2)
-				{
-					sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Invalid parameters."));
-				}
-				else if(params[1].equalsIgnoreCase("freq") || params[1].equalsIgnoreCase("frequencies"))
-				{
-					if(params[2].equalsIgnoreCase("list"))
-					{
-						sender.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-						
-						if(params.length == 3)
-						{
-							for(Frequency freq : Mekanism.publicTeleporters.getFrequencies())
-							{
-								sender.addChatMessage(new TextComponentString(EnumColor.INDIGO + " - " + freq.name + EnumColor.GREY + " (" + freq.ownerUUID + ")"));
-							}
-						}
-						else {
-							FrequencyManager manager = TileEntityTeleporter.loadManager(params[3].trim(), sender.getEntityWorld());
-							
-							if(manager != null)
-							{
-								for(Frequency freq : manager.getFrequencies())
-								{
-									sender.addChatMessage(new TextComponentString(EnumColor.INDIGO + " - " + freq.name + EnumColor.GREY + " (" + freq.ownerUUID + ")"));
-								}
-							}
-							else {
-								sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " User profile doesn't exist."));
-							}
-						}
-						
-						sender.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-					}
-					else if(params[2].equalsIgnoreCase("delete"))
-					{
-						if(params.length == 4)
-						{
-							if(Mekanism.publicTeleporters.containsFrequency(params[3].trim()))
-							{
-								Mekanism.publicTeleporters.remove(params[3].trim());
-								sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Successfully removed frequency."));
-							}
-							else {
-								sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " No such frequency found."));
-							}
-						}
-						else if(params.length == 5)
-						{
-							FrequencyManager manager = TileEntityTeleporter.loadManager(params[3].trim(), sender.getEntityWorld());
-							
-							if(manager != null)
-							{
-								if(manager.containsFrequency(params[4].trim()))
-								{
-									manager.remove(params[4].trim());
-									sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Successfully removed frequency."));
-								}
-								else {
-									sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " No such frequency found."));
-								}
-							}
-							else {
-								sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " User profile doesn't exist."));
-							}
-						}
-					}
-					else if(params[2].equalsIgnoreCase("deleteAll"))
-					{
-						if(params.length == 4)
-						{
-							String owner = params[3].trim();
-							FrequencyManager manager = TileEntityTeleporter.loadManager(owner, sender.getEntityWorld());
-							
-							if(manager != null)
-							{
-								int amount = Mekanism.publicTeleporters.removeAll(owner);
-								amount += manager.removeAll(owner);
-								
-								sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Successfully removed " + amount + " frequencies."));
-							}
-							else {
-								sender.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " User profile doesn't exist."));
-							}
-						}
-					}
-				}
 			}
 			else if(params[0].equalsIgnoreCase("debug"))
 			{
