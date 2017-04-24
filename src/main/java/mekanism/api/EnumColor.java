@@ -116,4 +116,17 @@ public enum EnumColor implements IStringSerializable
 	{
 		return code;
 	}
+	
+	public static EnumColor getFromDyeName(String s)
+	{
+		for(EnumColor c : values())
+		{
+			if(c.dyeName.equalsIgnoreCase(s))
+			{
+				return c;
+			}
+		}
+		
+		return null;
+	}
 }
