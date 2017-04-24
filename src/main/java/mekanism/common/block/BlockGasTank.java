@@ -369,17 +369,20 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean isFullBlock(IBlockState state) {
+	public boolean isFullBlock(IBlockState state) 
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state) {
+	public boolean isFullCube(IBlockState state) 
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
+	{
 		return false;
 	}
 }
