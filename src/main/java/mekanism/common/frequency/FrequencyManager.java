@@ -185,25 +185,6 @@ public class FrequencyManager
 		}
 	}
 	
-	public static FrequencyManager loadOnly(World world, String owner, Class<? extends Frequency> freqClass, String n)
-	{
-		FrequencyManager manager = new FrequencyManager(freqClass, n);
-		String name = manager.getName();
-		
-		FrequencyDataHandler handler = (FrequencyDataHandler)world.getPerWorldStorage().getOrLoadData(FrequencyDataHandler.class, name);
-		
-		if(handler == null)
-		{
-			return null;
-		}
-		else {
-			manager.dataHandler = handler;
-			manager.dataHandler.syncManager();
-			
-			return manager;
-		}
-	}
-	
 	public Set<Frequency> getFrequencies()
 	{
 		return frequencies;

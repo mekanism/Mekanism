@@ -223,16 +223,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		}
 	}
 	
-	public static FrequencyManager loadManager(String owner, World world)
-	{
-		if(Mekanism.privateTeleporters.containsKey(owner))
-		{
-			return Mekanism.privateTeleporters.get(owner);
-		}
-		
-		return FrequencyManager.loadOnly(world, owner, Frequency.class, "Teleporter");
-	}
-	
 	@Override
 	public void onChunkUnload()
 	{
