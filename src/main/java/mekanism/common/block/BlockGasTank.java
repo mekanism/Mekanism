@@ -42,7 +42,7 @@ import buildcraft.api.tools.IToolWrench;
 
 public class BlockGasTank extends BlockContainer
 {
-	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.2F, 0.0F, 0.2F, 0.8F, 1.0F, 0.8F);
+	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
 	public BlockGasTank()
 	{
@@ -365,6 +365,21 @@ public class BlockGasTank extends BlockContainer
 			}
 		}
 		
+		return false;
+	}
+
+	@Override
+	public boolean isFullBlock(IBlockState state) {
+		return false;
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState state) {
+		return false;
+	}
+
+	@Override
+	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
 		return false;
 	}
 }
