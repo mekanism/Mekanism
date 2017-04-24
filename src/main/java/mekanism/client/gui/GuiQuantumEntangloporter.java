@@ -121,7 +121,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 	
 	public void updateButtons()
 	{
-		if(tileEntity.getSecurity().getOwner() == null)
+		if(tileEntity.getSecurity().getClientOwner() == null)
 		{
 			return;
 		}
@@ -138,7 +138,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		else {
 			for(Frequency freq : tileEntity.publicCache)
 			{
-				text.add(freq.name + " (" + freq.owner + ")");
+				text.add(freq.name + " (" + freq.clientOwner + ")");
 			}
 		}
 		
@@ -166,7 +166,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 				setButton.enabled = false;
 			}
 			
-			if(tileEntity.getSecurity().getOwner().equals(freq.owner))
+			if(tileEntity.getSecurity().getOwnerUUID().equals(freq.ownerUUID))
 			{
 				deleteButton.enabled = true;
 			}
@@ -290,7 +290,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		int yAxis = (mouseY-(height-ySize)/2);
 
 		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (tileEntity.getSecurity().getOwner() != null ? tileEntity.getSecurity().getOwner() : LangUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (tileEntity.getSecurity().getClientOwner() != null ? tileEntity.getSecurity().getClientOwner() : LangUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
 
 		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);

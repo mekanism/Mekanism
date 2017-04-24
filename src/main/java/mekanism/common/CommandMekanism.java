@@ -120,7 +120,7 @@ public class CommandMekanism extends CommandBase
 						{
 							for(Frequency freq : Mekanism.publicTeleporters.getFrequencies())
 							{
-								sender.addChatMessage(new TextComponentString(EnumColor.INDIGO + " - " + freq.name + EnumColor.GREY + " (" + freq.owner + ")"));
+								sender.addChatMessage(new TextComponentString(EnumColor.INDIGO + " - " + freq.name + EnumColor.GREY + " (" + freq.ownerUUID + ")"));
 							}
 						}
 						else {
@@ -130,7 +130,7 @@ public class CommandMekanism extends CommandBase
 							{
 								for(Frequency freq : manager.getFrequencies())
 								{
-									sender.addChatMessage(new TextComponentString(EnumColor.INDIGO + " - " + freq.name + EnumColor.GREY + " (" + freq.owner + ")"));
+									sender.addChatMessage(new TextComponentString(EnumColor.INDIGO + " - " + freq.name + EnumColor.GREY + " (" + freq.ownerUUID + ")"));
 								}
 							}
 							else {

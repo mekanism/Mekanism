@@ -150,7 +150,7 @@ public class RecipeUtils
 				
 				if(itemstack != null && itemstack.getItem() instanceof ISecurityItem)
 				{
-					((ISecurityItem)toReturn.getItem()).setOwner(toReturn, ((ISecurityItem)itemstack.getItem()).getOwner(itemstack));
+					((ISecurityItem)toReturn.getItem()).setOwnerUUID(toReturn, ((ISecurityItem)itemstack.getItem()).getOwnerUUID(itemstack));
 					((ISecurityItem)toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem)itemstack.getItem()).getSecurity(itemstack));
 					
 					break;

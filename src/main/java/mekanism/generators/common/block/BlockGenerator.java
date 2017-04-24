@@ -646,7 +646,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}
