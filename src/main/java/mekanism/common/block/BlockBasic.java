@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
 import java.util.Random;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
@@ -453,13 +454,13 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		}
 		else if(tile instanceof TileEntitySecurityDesk)
 		{
-			String owner = ((TileEntitySecurityDesk)tile).owner;
+			UUID ownerUUID = ((TileEntitySecurityDesk)tile).ownerUUID;
 			
 			if(!entityplayer.isSneaking())
 			{
 				if(!world.isRemote)
 				{
-					if(owner == null || entityplayer.getName().equals(owner))
+					if(ownerUUID == null || entityplayer.getUniqueID().equals(ownerUUID))
 					{
 						entityplayer.openGui(Mekanism.instance, 57, world, pos.getX(), pos.getY(), pos.getZ());
 					}
@@ -813,7 +814,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			
 			if(tileEntity instanceof TileEntitySecurityDesk)
 			{
-				((TileEntitySecurityDesk)tileEntity).owner = placer.getName();
+				((TileEntitySecurityDesk)tileEntity).ownerUUID = placer.getUniqueID();
 			}
 
 			if(tileEntity instanceof IBoundingBlock)

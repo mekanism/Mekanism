@@ -2,6 +2,7 @@ package mekanism.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
@@ -21,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class MekanismClient extends Mekanism
 {
 	public static Map<String, SecurityData> clientSecurityMap = new HashMap<String, SecurityData>();
+	public static Map<UUID, String> clientUUIDMap = new HashMap<UUID, String>();
 	
 	public static VoiceClient voiceClient;
 
@@ -40,6 +42,7 @@ public class MekanismClient extends Mekanism
 	public static void reset()
 	{
 		clientSecurityMap.clear();
+		clientUUIDMap.clear();
 		
 		if(general.voiceServerEnabled)
 		{

@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
 import java.util.Random;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
@@ -567,9 +568,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				case QUANTUM_ENTANGLOPORTER:
 					if(!entityplayer.isSneaking())
 					{
-						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
+						UUID owner = ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
 						
-						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getName().equals(owner))
+						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getUniqueID().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 						} 
@@ -888,7 +889,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}

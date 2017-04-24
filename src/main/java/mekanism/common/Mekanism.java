@@ -204,10 +204,10 @@ public class Mekanism
 	
 	/** FrequencyManagers for various networks */
 	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
-	public static Map<String, FrequencyManager> privateTeleporters = new HashMap<String, FrequencyManager>();
+	public static Map<UUID, FrequencyManager> privateTeleporters = new HashMap<UUID, FrequencyManager>();
 	
 	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
-	public static Map<String, FrequencyManager> privateEntangloporters = new HashMap<String, FrequencyManager>();
+	public static Map<UUID, FrequencyManager> privateEntangloporters = new HashMap<UUID, FrequencyManager>();
 	
 	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
 	

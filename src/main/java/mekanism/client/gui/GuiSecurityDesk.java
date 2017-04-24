@@ -96,7 +96,7 @@ public class GuiSecurityDesk extends GuiMekanism
 	
 	public void updateButtons()
 	{
-		if(tileEntity.owner == null)
+		if(tileEntity.clientOwner == null)
 		{
 			return;
 		}
@@ -146,7 +146,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
 			
-			if(tileEntity.frequency != null && tileEntity.owner != null && tileEntity.owner.equals(mc.player.getName()))
+			if(tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.clientOwner.equals(mc.player.getName()))
 			{
 				if(xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79)
 				{
@@ -255,7 +255,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		String ownerText = EnumColor.RED + tileEntity.owner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.owner) : LangUtils.localize("gui.noOwner");
+		String ownerText = EnumColor.RED + tileEntity.clientOwner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.clientOwner) : LangUtils.localize("gui.noOwner");
 		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
 		fontRendererObj.drawString(ownerText, (xSize - 7) - fontRendererObj.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
@@ -309,7 +309,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		if(tileEntity.frequency != null && tileEntity.owner != null && mc.player.getName().equals(tileEntity.owner))
+		if(tileEntity.frequency != null && tileEntity.clientOwner != null && mc.player.getName().equals(tileEntity.clientOwner))
 		{
 			drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
 			

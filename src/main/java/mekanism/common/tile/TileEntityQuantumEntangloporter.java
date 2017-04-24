@@ -122,13 +122,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			{
 				if(frequency != null && !frequency.valid)
 				{
-					frequency = (InventoryFrequency)manager.validateFrequency(getSecurity().getOwner(), Coord4D.get(this), frequency);
+					frequency = (InventoryFrequency)manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
 					markDirty();
 				}
 				
 				if(frequency != null)
 				{
-					frequency = (InventoryFrequency)manager.update(getSecurity().getOwner(), Coord4D.get(this), frequency);
+					frequency = (InventoryFrequency)manager.update(Coord4D.get(this), frequency);
 					
 					if(frequency == null)
 					{
@@ -184,7 +184,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	
 	public FrequencyManager getManager(Frequency freq)
 	{
-		if(getSecurity().getOwner() == null || freq == null)
+		if(getSecurity().getOwnerUUID() == null || freq == null)
 		{
 			return null;
 		}
@@ -194,14 +194,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			return Mekanism.publicEntangloporters;
 		}
 		else {
-			if(!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwner()))
+			if(!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwnerUUID()))
 			{
-				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwner());
-				Mekanism.privateEntangloporters.put(getSecurity().getOwner(), manager);
+				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwnerUUID());
+				Mekanism.privateEntangloporters.put(getSecurity().getOwnerUUID(), manager);
 				manager.createOrLoad(world);
 			}
 			
-			return Mekanism.privateEntangloporters.get(getSecurity().getOwner());
+			return Mekanism.privateEntangloporters.get(getSecurity().getOwnerUUID());
 		}
 	}
 	
@@ -223,7 +223,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			}
 		}
 		
-		Frequency freq = new InventoryFrequency(name, getSecurity().getOwner()).setPublic(publicFreq);
+		Frequency freq = new InventoryFrequency(name, getSecurity().getOwnerUUID()).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = (InventoryFrequency)freq;
@@ -282,7 +282,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 				
 				if(manager != null)
 				{
-					manager.remove(freq, getSecurity().getOwner());
+					manager.remove(freq, getSecurity().getOwnerUUID());
 				}
 			}
 			

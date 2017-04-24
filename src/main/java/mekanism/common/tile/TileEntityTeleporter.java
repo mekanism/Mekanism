@@ -116,12 +116,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			{
 				if(frequency != null && !frequency.valid)
 				{
-					frequency = manager.validateFrequency(getSecurity().getOwner(), Coord4D.get(this), frequency);
+					frequency = manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
 				}
 				
 				if(frequency != null)
 				{
-					frequency = manager.update(getSecurity().getOwner(), Coord4D.get(this), frequency);
+					frequency = manager.update(Coord4D.get(this), frequency);
 				}
 			}
 			else {
@@ -192,7 +192,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			}
 		}
 		
-		Frequency freq = new Frequency(name, getSecurity().getOwner()).setPublic(publicFreq);
+		Frequency freq = new Frequency(name, getSecurity().getOwnerUUID()).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = freq;
@@ -202,7 +202,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public FrequencyManager getManager(Frequency freq)
 	{
-		if(getSecurity().getOwner() == null || freq == null)
+		if(getSecurity().getOwnerUUID() == null || freq == null)
 		{
 			return null;
 		}
@@ -212,14 +212,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			return Mekanism.publicTeleporters;
 		}
 		else {
-			if(!Mekanism.privateTeleporters.containsKey(getSecurity().getOwner()))
+			if(!Mekanism.privateTeleporters.containsKey(getSecurity().getOwnerUUID()))
 			{
-				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwner());
-				Mekanism.privateTeleporters.put(getSecurity().getOwner(), manager);
+				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwnerUUID());
+				Mekanism.privateTeleporters.put(getSecurity().getOwnerUUID(), manager);
 				manager.createOrLoad(world);
 			}
 			
-			return Mekanism.privateTeleporters.get(getSecurity().getOwner());
+			return Mekanism.privateTeleporters.get(getSecurity().getOwnerUUID());
 		}
 	}
 	
@@ -614,7 +614,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 				
 				if(manager != null)
 				{
-					manager.remove(freq, getSecurity().getOwner());
+					manager.remove(freq, getSecurity().getOwnerUUID());
 				}
 			}
 			

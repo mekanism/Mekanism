@@ -1,5 +1,7 @@
 package mekanism.client.gui.element;
 
+import java.util.UUID;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
@@ -98,7 +100,7 @@ public class GuiSecurityTab extends GuiElement
 		{
 			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
 			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
-			String ownerText = SecurityUtils.getOwnerDisplay(mc.player.getName(), getOwner());
+			String ownerText = SecurityUtils.getOwnerDisplay(mc.player, getOwnerUsername());
 			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 			
 			if(isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT))
@@ -152,7 +154,7 @@ public class GuiSecurityTab extends GuiElement
 		}
 	}
 	
-	private String getOwner()
+	private UUID getOwner()
 	{
 		if(isItem)
 		{
@@ -162,10 +164,27 @@ public class GuiSecurityTab extends GuiElement
 				return null;
 			}
 			
-			return ((ISecurityItem)getItem().getItem()).getOwner(getItem());
+			return ((ISecurityItem)getItem().getItem()).getOwnerUUID(getItem());
 		}
 		else {
-			return ((ISecurityTile)tileEntity).getSecurity().getOwner();
+			return ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
+		}
+	}
+	
+	private String getOwnerUsername()
+	{
+		if(isItem)
+		{
+			if(getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem))
+			{
+				mc.player.closeScreen();
+				return null;
+			}
+			
+			return MekanismClient.clientUUIDMap.get(((ISecurityItem)getItem().getItem()).getOwnerUUID(getItem()));
+		}
+		else {
+			return ((ISecurityTile)tileEntity).getSecurity().getClientOwner();
 		}
 	}
 	
