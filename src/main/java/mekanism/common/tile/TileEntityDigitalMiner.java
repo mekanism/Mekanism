@@ -1326,6 +1326,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					}
 
 					filters.add(new MItemStackFilter(new ItemStack(Item.getItemById(num), 1, meta)));
+					
+					return new Object[] {"Added filter."};
 				}
 				else if(method == 4)
 				{
@@ -1340,9 +1342,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							if(MekanismUtils.getID(((MItemStackFilter)filter).itemType) == num)
 							{
 								iter.remove();
+								return new Object[] {"Removed filter."};
 							}
 						}
 					}
+					
+					return new Object[] {"Couldn't find filter."};
 				}
 				else if(method == 5)
 				{
@@ -1351,6 +1356,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					filter.oreDictName = ore;
 					filters.add(filter);
+					
+					return new Object[] {"Added filter."};
 				}
 				else if(method == 6)
 				{
@@ -1366,9 +1373,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							if(((MOreDictFilter)filter).oreDictName.equals(ore))
 							{
 								iter.remove();
+								return new Object[] {"Removed filter."};
 							}
 						}
 					}
+					
+					return new Object[] {"Couldn't find filter."};
 				}
 				else if(method == 7)
 				{
