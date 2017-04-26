@@ -17,6 +17,8 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
@@ -36,7 +38,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
-public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper
+public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration
 {
 	public boolean ic2Registered = false;
 	
@@ -419,6 +421,45 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	public String getName()
 	{
 		return LangUtils.localize("gui.industrialTurbine");
+	}
+	
+	private static final String[] methods = new String[] {"isFormed", "getSteam", "getFlowRate", "getMaxFlow", "getSteamInput"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
+	{
+		if(method == 0)
+		{
+			return new Object[] {structure != null};
+		}
+		else {
+			if(structure == null)
+			{
+				return new Object[] {"Unformed"};
+			}
+			
+			switch(method)
+			{
+				case 1:
+					return new Object[] {structure.fluidStored != null ? structure.fluidStored.amount : 0};
+				case 2:
+					return new Object[] {structure.clientFlow};
+				case 3:
+					double rate = structure.lowerVolume*(structure.clientDispersers*generators.turbineDisperserGasFlow);		
+					rate = Math.min(rate, structure.vents*generators.turbineVentGasFlow);
+					return new Object[] {rate};
+				case 4:
+					return new Object[] {structure.lastSteamInput};
+			}
+		}
+		
+		throw new NoSuchMethodException();
 	}
 	
 	@Override
