@@ -350,9 +350,9 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public UUID getOwnerUUID(ItemStack stack) 
 	{
-		if(ItemDataUtils.hasData(stack, "owner"))
+		if(ItemDataUtils.hasData(stack, "ownerUUID"))
 		{
-			return UUID.fromString(ItemDataUtils.getString(stack, "owner"));
+			return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
 		}
 		
 		return null;
@@ -363,11 +363,11 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	{
 		if(owner == null)
 		{
-			ItemDataUtils.removeData(stack, "owner");
+			ItemDataUtils.removeData(stack, "ownerUUID");
 			return;
 		}
 		
-		ItemDataUtils.setString(stack, "owner", owner.toString());
+		ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
 	}
 
 	@Override

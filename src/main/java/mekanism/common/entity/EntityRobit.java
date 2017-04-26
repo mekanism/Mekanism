@@ -6,6 +6,7 @@ import ic2.api.item.IElectricItem;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
@@ -49,6 +50,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -72,7 +74,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public boolean texTick;
 	
     private static final DataParameter<Float> ELECTRICITY = EntityDataManager.<Float>createKey(EntityRobit.class, DataSerializers.FLOAT);
-    private static final DataParameter<String> OWNER = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<String> OWNER_UUID = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> FOLLOW = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
 
@@ -131,7 +133,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		super.entityInit();
 
 		dataManager.register(ELECTRICITY, 0F);
-		dataManager.register(OWNER, "");
+		dataManager.register(OWNER_UUID, "");
 		dataManager.register(FOLLOW, false);
 		dataManager.register(DROP_PICKUP, false);
 	}
@@ -443,9 +445,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		nbtTags.setString("name", getName());
 
-		if(getOwnerName() != null)
+		if(getOwnerUUID() != null)
 		{
-			nbtTags.setString("owner", getOwnerName());
+			nbtTags.setString("ownerUUID", getOwnerUUID().toString());
 		}
 
 		nbtTags.setBoolean("follow", getFollowing());
@@ -482,9 +484,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		setCustomNameTag(nbtTags.getString("name"));
 
-		if(nbtTags.hasKey("owner"))
+		if(nbtTags.hasKey("ownerUUID"))
 		{
-			setOwner(nbtTags.getString("owner"));
+			setOwnerUUID(UUID.fromString(nbtTags.getString("ownerUUID")));
 		}
 
 		setFollowing(nbtTags.getBoolean("follow"));
@@ -552,17 +554,22 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public EntityPlayer getOwner()
 	{
-		return worldObj.getPlayerEntityByName(getOwnerName());
+		return worldObj.getPlayerEntityByUUID(getOwnerUUID());
 	}
 
 	public String getOwnerName()
 	{
-		return dataManager.get(OWNER);
+		return UsernameCache.getLastKnownUsername(getOwnerUUID());
 	}
 
-	public void setOwner(String username)
+	public UUID getOwnerUUID()
 	{
-		dataManager.set(OWNER, username);
+		return UUID.fromString(dataManager.get(OWNER_UUID));
+	}
+
+	public void setOwnerUUID(UUID uuid)
+	{
+		dataManager.set(OWNER_UUID, uuid.toString());
 	}
 
 	public boolean getFollowing()

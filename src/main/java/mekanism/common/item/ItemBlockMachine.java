@@ -869,9 +869,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public UUID getOwnerUUID(ItemStack stack) 
 	{
-		if(ItemDataUtils.hasData(stack, "owner"))
+		if(ItemDataUtils.hasData(stack, "ownerUUID"))
 		{
-			return UUID.fromString(ItemDataUtils.getString(stack, "owner"));
+			return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
 		}
 		
 		return null;
@@ -882,11 +882,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		if(owner == null)
 		{
-			ItemDataUtils.removeData(stack, "owner");
+			ItemDataUtils.removeData(stack, "ownerUUID");
 			return;
 		}
 		
-		ItemDataUtils.setString(stack, "owner", owner.toString());
+		ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
 	}
 
 	@Override
