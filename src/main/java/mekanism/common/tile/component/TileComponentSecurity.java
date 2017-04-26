@@ -151,7 +151,7 @@ public class TileComponentSecurity implements ITileComponent
 	{
 		securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
 		
-		if(nbtTags.hasKey("owner"))
+		if(nbtTags.hasKey("ownerUUID"))
 		{
 			ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
 		}
