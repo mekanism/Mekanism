@@ -6,6 +6,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
+import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -17,7 +18,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper
+public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration
 {
 	public BoilerTank waterTank;
 	public BoilerTank steamTank;
@@ -141,6 +142,45 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 		}
 		
 		return false;
+	}
+	
+	private static final String[] methods = new String[] {"isFormed", "getSteam", "getWater", "getBoilRate", "getMaxBoilRate", "getTemp"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
+	{
+		if(method == 0)
+		{
+			return new Object[] {structure != null};
+		}
+		else {
+			if(structure == null)
+			{
+				return new Object[] {"Unformed"};
+			}
+			
+			switch(method)
+			{
+				case 1:
+					return new Object[] {structure.steamStored != null ? structure.steamStored.amount : 0};
+				case 2:
+					return new Object[] {structure.waterStored != null ? structure.waterStored.amount : 0};
+				case 3:
+					return new Object[] {structure.lastBoilRate};
+				case 4:
+					return new Object[] {structure.lastMaxBoil};
+				case 5:
+					return new Object[] {structure.temperature};
+			}
+		}
+		
+		throw new NoSuchMethodException();
 	}
 	
 	@Override
