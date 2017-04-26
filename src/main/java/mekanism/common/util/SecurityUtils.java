@@ -199,7 +199,7 @@ public final class SecurityUtils
 			}
 			else if(side == Side.CLIENT)
 			{
-				SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getClientOwner());
+				SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getOwnerUUID());
 				
 				if(data != null && data.override)
 				{
@@ -249,7 +249,7 @@ public final class SecurityUtils
 			return freq != null && freq.override;
 		}
 		else {
-			SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getClientOwner());
+			SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getOwnerUUID());
 			
 			return data != null && data.override;
 		}
