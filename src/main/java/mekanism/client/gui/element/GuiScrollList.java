@@ -248,10 +248,12 @@ public class GuiScrollList extends GuiElement
 	@Override
 	public void mouseWheel(int x, int y, int delta)
 	{
-		if (x > xPosition && x < xPosition+xSize && y > yPosition && y < yPosition+size*10){
+		super.mouseWheel(x, y, delta);
+		
+		if(x > xPosition && x < xPosition+xSize && y > yPosition && y < yPosition+size*10)
+		{
 			scroll = Math.min(Math.max(scroll - (delta / 120F) * (1F / textEntries.size()), 0), 1); // 120 = DirectInput factor for one notch. Linux/OSX LWGL scale accordingly
 			drawScroll();
 		}
-		super.mouseWheel(x, y, delta);
 	}
 }
