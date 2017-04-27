@@ -138,7 +138,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 
     private static final String[] methods = new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing", "getIgnitionTemp", 
-    	"getEnergy", "getMaxEnergy", "getWater", "getSteam", "getFuel"};
+    	"getEnergy", "getMaxEnergy", "getWater", "getSteam", "getFuel", "getDeuterium", "getTritium"};
 	
 	@Override
 	public String[] getMethods()
@@ -196,6 +196,10 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             	return new Object[] {getReactor().getSteamTank().getFluidAmount()};
             case 15:
             	return new Object[] {getReactor().getFuelTank().getStored()};
+			case 16:
+				return new Object[] {getReactor().getDeuteriumTank().getStored()};
+			case 17:
+				return new Object[] {getReactor().getTritiumTank().getStored()};
 			default:
 				throw new NoSuchMethodException();
 		}
