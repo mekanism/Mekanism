@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Multimap;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.config.MekanismConfig.general;
@@ -35,6 +33,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+
+import com.google.common.collect.Multimap;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
@@ -182,9 +182,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		{
 			toggleMode(itemstack);
 			entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 		}
 
-		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult(EnumActionResult.PASS, itemstack);
 	}
 
 	@Override
@@ -192,14 +193,11 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		
-		if(!player.isSneaking())
+		if(!player.isSneaking() && world.getBlockState(pos).getBlock() == Blocks.FARMLAND)
 		{
 			if(useHoe(stack, player, world, pos, side) == EnumActionResult.FAIL)
 			{
-				if(world.getBlockState(pos).getBlock() != Blocks.FARMLAND)
-				{
-					return EnumActionResult.FAIL;
-				}
+				return EnumActionResult.FAIL;
 			}
 
 			switch(getEfficiency(stack))

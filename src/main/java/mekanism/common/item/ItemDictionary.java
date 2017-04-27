@@ -72,8 +72,9 @@ public class ItemDictionary extends ItemMekanism
 		if(entityplayer.isSneaking())
 		{
 			entityplayer.openGui(Mekanism.instance, 0, world, 0, 0, 0);
+			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 		}
 
-		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult(EnumActionResult.PASS, itemstack);
 	}
 }
