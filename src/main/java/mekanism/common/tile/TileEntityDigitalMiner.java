@@ -1189,13 +1189,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public int[] getBoundSlots(Coord4D location, EnumFacing side)
+	public int[] getBoundSlots(BlockPos location, EnumFacing side)
 	{
 		EnumFacing dir = facing.getOpposite();
 
 		BlockPos pull = getPos().up();
 		BlockPos eject = pull.offset(dir);
-
+		
 		if((location.equals(eject) && side == dir) || (location.equals(pull) && side == EnumFacing.UP))
 		{
 			if(EJECT_INV == null)
@@ -1215,7 +1215,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack)
+	public boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack)
 	{
 		EnumFacing side = facing.getOpposite();
 
@@ -1238,7 +1238,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, EnumFacing dir)
+	public boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing dir)
 	{
 		EnumFacing side = facing.getOpposite();
 
@@ -1551,16 +1551,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
-	public boolean canBoundReceiveEnergy(Coord4D coord, EnumFacing side)
+	public boolean canBoundReceiveEnergy(BlockPos coord, EnumFacing side)
 	{
 		EnumFacing left = MekanismUtils.getLeft(facing);
 		EnumFacing right = MekanismUtils.getRight(facing);
 		
-		if(coord.equals(Coord4D.get(this).offset(left)))
+		if(coord.equals(getPos().offset(left)))
 		{
 			return side == left;
 		}
-		else if(coord.equals(Coord4D.get(this).offset(right)))
+		else if(coord.equals(getPos().offset(right)))
 		{
 			return side == right;
 		}
