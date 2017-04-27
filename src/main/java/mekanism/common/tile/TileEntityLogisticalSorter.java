@@ -760,15 +760,15 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			}
 			else if(method == 3)
 			{
-				if(arguments.length != 6 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Integer) || 
+				if(arguments.length != 6 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double) || 
 						!(arguments[2] instanceof String) || !(arguments[3] instanceof Boolean) || 
-						!(arguments[4] instanceof Integer) || !(arguments[5] instanceof Integer))
+						!(arguments[4] instanceof Double) || !(arguments[5] instanceof Double))
 				{
 					return new Object[] {"Invalid parameters."};
 				}
 				
 				TItemStackFilter filter = new TItemStackFilter();
-				filter.itemType = new ItemStack(Item.getByNameOrId((String)arguments[0]), 1, (Integer)arguments[1]);
+				filter.itemType = new ItemStack(Item.getByNameOrId((String)arguments[0]), 1, ((Double)arguments[1]).intValue());
 				
 				if(filter.itemType.getItem() == null)
 				{
@@ -777,20 +777,20 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 				filter.color = EnumColor.getFromDyeName((String)arguments[2]);
 				filter.sizeMode = (Boolean)arguments[3];
-				filter.min = (Integer)arguments[4];
-				filter.max = (Integer)arguments[5];
+				filter.min = ((Double)arguments[4]).intValue();
+				filter.max = ((Double)arguments[5]).intValue();
 				filters.add(filter);
 				
 				return new Object[] {"Added filter."};
 			}
 			else if(method == 4)
 			{
-				if(arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Integer))
+				if(arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double))
 				{
 					return new Object[] {"Invalid parameters."};
 				}
 				
-				ItemStack stack = new ItemStack(Item.getByNameOrId((String)arguments[0]), 1, (Integer)arguments[1]);
+				ItemStack stack = new ItemStack(Item.getByNameOrId((String)arguments[0]), 1, ((Double)arguments[1]).intValue());
 				Iterator<TransporterFilter> iter = filters.iterator();
 
 				while(iter.hasNext())
