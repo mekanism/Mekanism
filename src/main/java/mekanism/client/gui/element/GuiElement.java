@@ -126,6 +126,8 @@ public abstract class GuiElement
 
 	public void mouseReleased(int x, int y, int type) {}
 	
+	public void mouseWheel(int x, int y, int delta) {}
+	
 	public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
 
 	public abstract void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight);

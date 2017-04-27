@@ -21,6 +21,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
@@ -256,6 +257,26 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	public void handleMouse(Slot slot, int slotIndex, int button, ClickType modifier)
 	{
 		handleMouseClick(slot, slotIndex, button, modifier);
+	}
+	
+	@Override
+	public void handleMouseInput() throws java.io.IOException
+	{
+		int xAxis = Mouse.getEventX() * this.width / this.mc.displayWidth - this.getXPos();
+		int yAxis = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1 - this.getYPos();
+		int delta = Mouse.getEventDWheel();
+		if (delta != 0) {
+			mouseWheel(xAxis, yAxis, delta);
+		}
+		super.handleMouseInput();
+	}
+	
+	public void mouseWheel(int xAxis, int yAxis, int delta)
+	{
+		for(GuiElement element : guiElements)
+		{
+			element.mouseWheel(xAxis, yAxis, delta);
+		}
 	}
 	
 	public int getXPos()
