@@ -262,13 +262,16 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	@Override
 	public void handleMouseInput() throws java.io.IOException
 	{
-		int xAxis = Mouse.getEventX() * this.width / this.mc.displayWidth - this.getXPos();
-		int yAxis = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1 - this.getYPos();
+		super.handleMouseInput();
+		
+		int xAxis = Mouse.getEventX() * width / mc.displayWidth - getXPos();
+		int yAxis = height - Mouse.getEventY() * height / mc.displayHeight - 1 - getYPos();
 		int delta = Mouse.getEventDWheel();
-		if (delta != 0) {
+		
+		if(delta != 0) 
+		{
 			mouseWheel(xAxis, yAxis, delta);
 		}
-		super.handleMouseInput();
 	}
 	
 	public void mouseWheel(int xAxis, int yAxis, int delta)
