@@ -164,6 +164,11 @@ public class BlockStateGenerator extends ExtendedBlockState
 		@Override
 		public boolean isEnabled()
 		{
+			if(meta > WIND_GENERATOR.meta)
+			{
+				return true;
+			}
+			
 			return generators.generatorsManager.isEnabled(blockName);
 		}
 
