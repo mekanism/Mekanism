@@ -75,6 +75,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	
     private static final DataParameter<Float> ELECTRICITY = EntityDataManager.<Float>createKey(EntityRobit.class, DataSerializers.FLOAT);
     private static final DataParameter<String> OWNER_UUID = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<String> OWNER_NAME = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> FOLLOW = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
 
@@ -559,7 +560,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public String getOwnerName()
 	{
-		return UsernameCache.getLastKnownUsername(getOwnerUUID());
+		return dataManager.get(OWNER_NAME);
 	}
 
 	public UUID getOwnerUUID()
@@ -570,6 +571,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void setOwnerUUID(UUID uuid)
 	{
 		dataManager.set(OWNER_UUID, uuid.toString());
+		dataManager.set(OWNER_NAME, UsernameCache.getLastKnownUsername(uuid));
 	}
 
 	public boolean getFollowing()
