@@ -175,7 +175,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canBoundInsert(Coord4D.get(this), i, itemstack);
+		return getInv().canBoundInsert(getPos(), i, itemstack);
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return InventoryUtils.EMPTY;
 		}
 
-		return getInv().getBoundSlots(Coord4D.get(this), side);
+		return getInv().getBoundSlots(getPos(), side);
 	}
 
 	@Override
@@ -224,7 +224,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canBoundExtract(Coord4D.get(this), i, itemstack, side);
+		return getInv().canBoundExtract(getPos(), i, itemstack, side);
 	}
 
 	@Override
@@ -313,7 +313,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canBoundReceiveEnergy(Coord4D.get(this), side);
+		return getInv().canBoundReceiveEnergy(getPos(), side);
 	}
 
 	@Override

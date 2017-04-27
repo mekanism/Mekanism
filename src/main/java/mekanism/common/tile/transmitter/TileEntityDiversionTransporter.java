@@ -41,7 +41,10 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 	{
 		super.readFromNBT(nbtTags);
 
-		modes = nbtTags.getIntArray("modes");
+		if(nbtTags.hasKey("modes"))
+		{
+			modes = nbtTags.getIntArray("modes");
+		}
 	}
 
 	@Override
