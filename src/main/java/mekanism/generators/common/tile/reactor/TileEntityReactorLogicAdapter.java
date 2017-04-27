@@ -10,7 +10,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import dan200.computercraft.api.lua.LuaException;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration
 {
@@ -148,7 +147,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 
 	@Override
-	public Object[] invoke(int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		if(getReactor() == null || !getReactor().isFormed())
 		{
@@ -202,7 +201,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			case 17:
 				return new Object[] {getReactor().getTritiumTank().getStored()};
 			default:
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 	

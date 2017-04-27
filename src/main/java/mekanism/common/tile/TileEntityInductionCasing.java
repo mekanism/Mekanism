@@ -216,7 +216,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 			case 4:
 				return new Object[] {structure.transferCap};
 			default:
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 

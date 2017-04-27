@@ -53,7 +53,6 @@ import net.minecraft.block.BlockBush;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -1275,7 +1274,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		numPowering--;
 	}
 
-	public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};
+	public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
 	@Override
 	public String[] getMethods()
@@ -1286,124 +1285,147 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		if(arguments.length > 0)
+		if(method == 0)
 		{
-			int num = 0;
-
-			if(arguments[0] instanceof Double)
+			if(arguments.length != 1 || !(arguments[0] instanceof Double))
 			{
-				num = ((Double)arguments[0]).intValue();
+				return new Object[] {"Invalid parameters."};
 			}
-			else if(arguments[0] instanceof String && (method != 5 && method != 6))
+			
+			radius = ((Double)arguments[0]).intValue();
+		}
+		else if(method == 1)
+		{
+			if(arguments.length != 1 || !(arguments[0] instanceof Double))
 			{
-				num = Integer.parseInt((String)arguments[0]);
+				return new Object[] {"Invalid parameters."};
 			}
-
-			if(num != 0)
+			
+			minY = ((Double)arguments[0]).intValue();
+		}
+		else if(method == 2)
+		{
+			if(arguments.length != 1 || !(arguments[0] instanceof Double))
 			{
-				if(method == 0)
-				{
-					radius = num;
-				}
-				else if(method == 1)
-				{
-					minY = num;
-				}
-				else if(method == 2)
-				{
-					maxY = num;
-				}
-				else if(method == 3)
-				{
-					int meta = 0;
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			maxY = ((Double)arguments[0]).intValue();
+		}
+		else if(method == 3)
+		{
+			if(arguments.length < 1 || !(arguments[0] instanceof Double))
+			{
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			int id = ((Double)arguments[0]).intValue();
+			int meta = 0;
 
-					if(arguments.length > 1)
-					{
-						if(arguments[1] instanceof Double)
-						{
-							meta = ((Double)arguments[1]).intValue();
-						}
-						else if(arguments[1] instanceof String)
-						{
-							meta = Integer.parseInt((String)arguments[1]);
-						}
-					}
-
-					filters.add(new MItemStackFilter(new ItemStack(Item.getItemById(num), 1, meta)));
-					
-					return new Object[] {"Added filter."};
-				}
-				else if(method == 4)
+			if(arguments.length > 1)
+			{
+				if(arguments[1] instanceof Double)
 				{
-					Iterator<MinerFilter> iter = filters.iterator();
-
-					while(iter.hasNext())
-					{
-						MinerFilter filter = iter.next();
-
-						if(filter instanceof MItemStackFilter)
-						{
-							if(MekanismUtils.getID(((MItemStackFilter)filter).itemType) == num)
-							{
-								iter.remove();
-								return new Object[] {"Removed filter."};
-							}
-						}
-					}
-					
-					return new Object[] {"Couldn't find filter."};
-				}
-				else if(method == 5)
-				{
-					String ore = (String)arguments[0];
-					MOreDictFilter filter = new MOreDictFilter();
-
-					filter.oreDictName = ore;
-					filters.add(filter);
-					
-					return new Object[] {"Added filter."};
-				}
-				else if(method == 6)
-				{
-					String ore = (String)arguments[0];
-					Iterator<MinerFilter> iter = filters.iterator();
-
-					while(iter.hasNext())
-					{
-						MinerFilter filter = iter.next();
-
-						if(filter instanceof MOreDictFilter)
-						{
-							if(((MOreDictFilter)filter).oreDictName.equals(ore))
-							{
-								iter.remove();
-								return new Object[] {"Removed filter."};
-							}
-						}
-					}
-					
-					return new Object[] {"Couldn't find filter."};
-				}
-				else if(method == 7)
-				{
-					reset();
-				}
-				else if(method == 8)
-				{
-					start();
-				}
-				else if(method == 9)
-				{
-					stop();
+					meta = ((Double)arguments[1]).intValue();
 				}
 			}
+
+			filters.add(new MItemStackFilter(new ItemStack(Item.getItemById(id), 1, meta)));
+			
+			return new Object[] {"Added filter."};
+		}
+		else if(method == 4)
+		{
+			if(arguments.length < 1 || !(arguments[0] instanceof Double))
+			{
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			int id = ((Double)arguments[0]).intValue();
+			Iterator<MinerFilter> iter = filters.iterator();
+
+			while(iter.hasNext())
+			{
+				MinerFilter filter = iter.next();
+
+				if(filter instanceof MItemStackFilter)
+				{
+					if(MekanismUtils.getID(((MItemStackFilter)filter).itemType) == id)
+					{
+						iter.remove();
+						return new Object[] {"Removed filter."};
+					}
+				}
+			}
+			
+			return new Object[] {"Couldn't find filter."};
+		}
+		else if(method == 5)
+		{
+			if(arguments.length < 1 || !(arguments[0] instanceof String))
+			{
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			String ore = (String)arguments[0];
+			MOreDictFilter filter = new MOreDictFilter();
+
+			filter.oreDictName = ore;
+			filters.add(filter);
+			
+			return new Object[] {"Added filter."};
+		}
+		else if(method == 6)
+		{
+			if(arguments.length < 1 || !(arguments[0] instanceof String))
+			{
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			String ore = (String)arguments[0];
+			Iterator<MinerFilter> iter = filters.iterator();
+
+			while(iter.hasNext())
+			{
+				MinerFilter filter = iter.next();
+
+				if(filter instanceof MOreDictFilter)
+				{
+					if(((MOreDictFilter)filter).oreDictName.equals(ore))
+					{
+						iter.remove();
+						return new Object[] {"Removed filter."};
+					}
+				}
+			}
+			
+			return new Object[] {"Couldn't find filter."};
+		}
+		else if(method == 7)
+		{
+			reset();
+			return new Object[] {"Reset miner."};
+		}
+		else if(method == 8)
+		{
+			start();
+			return new Object[] {"Started miner."};
+		}
+		else if(method == 9)
+		{
+			stop();
+			return new Object[] {"Stopped miner."};
+		}
+		else if(method == 10)
+		{
+			return new Object[] {searcher != null ? searcher.found : 0};
 		}
 
 		for(EntityPlayer player : playersUsing)
 		{
 			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<Object>())), (EntityPlayerMP)player);
 		}
-
+		
 		return null;
 	}
 
