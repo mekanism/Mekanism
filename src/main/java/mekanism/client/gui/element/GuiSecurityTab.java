@@ -74,7 +74,7 @@ public class GuiSecurityTab extends GuiElement
 		
 		int renderX = 26 + (18*mode.ordinal());
 
-		if(getOwner() != null && getOwner().equals(mc.player.getName()) && (data == null || !data.override))
+		if(getOwner() != null && getOwner().equals(mc.player.getUniqueID()) && (data == null || !data.override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 			{
@@ -201,7 +201,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(button == 0 && general.allowProtection)
 		{
-			if(getOwner() != null && mc.player.getName().equals(getOwner()))
+			if(getOwner() != null && mc.player.getUniqueID().equals(getOwner()))
 			{
 				if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 				{

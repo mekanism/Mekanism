@@ -334,9 +334,9 @@ public class FrequencyManager
 			try {
 				String frequencyClass = nbtTags.getString("frequencyClass");
 				
-				if(nbtTags.hasKey("owner"))
+				if(nbtTags.hasKey("ownerUUID"))
 				{
-					loadedOwner = UUID.fromString(nbtTags.getString("owner"));
+					loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
 				}
 				
 				NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
@@ -364,7 +364,7 @@ public class FrequencyManager
 			
 			if(manager.ownerUUID != null)
 			{
-				nbtTags.setString("owner", manager.ownerUUID.toString());
+				nbtTags.setString("ownerUUID", manager.ownerUUID.toString());
 			}
 			
 			NBTTagList list = new NBTTagList();

@@ -27,7 +27,7 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 		{
 			if(message.securityData != null)
 			{
-				MekanismClient.clientSecurityMap.put(message.playerUsername, message.securityData);
+				MekanismClient.clientSecurityMap.put(message.playerUUID, message.securityData);
 			}
 		}
 		
@@ -125,7 +125,7 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 				{
 					UUID uuid = UUID.fromString(PacketHandler.readString(dataStream));
 					String username = PacketHandler.readString(dataStream);
-					MekanismClient.clientSecurityMap.put(username, SecurityData.read(dataStream));
+					MekanismClient.clientSecurityMap.put(uuid, SecurityData.read(dataStream));
 					MekanismClient.clientUUIDMap.put(uuid, username);
 				}
 			}
