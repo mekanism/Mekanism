@@ -19,6 +19,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

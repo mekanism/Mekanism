@@ -31,6 +31,7 @@ import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;

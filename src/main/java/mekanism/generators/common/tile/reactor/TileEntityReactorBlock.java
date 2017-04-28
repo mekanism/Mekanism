@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.generators.common.FusionReactor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;

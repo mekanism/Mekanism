@@ -9,6 +9,7 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -16,7 +17,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 {
 	public TileEntityOsmiumCompressor()
 	{
-		super("compressor", "OsmiumCompressor", usage.osmiumCompressorUsage, 1, 200, BlockStateMachine.MachineType.OSMIUM_COMPRESSOR.baseEnergy);
+		super("compressor", "OsmiumCompressor", BlockStateMachine.MachineType.OSMIUM_COMPRESSOR.baseEnergy, usage.osmiumCompressorUsage, 200, 1);
 	}
 
 	@Override

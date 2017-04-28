@@ -13,6 +13,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;

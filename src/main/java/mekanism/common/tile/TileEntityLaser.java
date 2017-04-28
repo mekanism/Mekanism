@@ -15,6 +15,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;

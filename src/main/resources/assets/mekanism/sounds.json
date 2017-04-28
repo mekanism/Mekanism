@@ -38,6 +38,8 @@
 	"tile.machine.laser": {"category": "block", "sounds": [{"name": "mekanism:Laser", "stream": false}]},
 	"tile.machine.fusionreactor": {"category": "block", "sounds": [{"name": "mekanism:FusionReactor", "stream": false}]},
 	"tile.machine.resistiveheater": {"category": "block", "sounds": [{"name": "mekanism:ResistiveHeater", "stream": false}]},
+	"tile.machine.electrolyticseparator": {"category": "block", "sounds": [{"name": "mekanism:ElectrolyticSeparator", "stream": false}]},
+	"tile.machine.rotarycondensentrator": {"category": "block", "sounds": [{"name": "mekanism:RotaryCondensentrator", "stream": false}]},
 
 	"tile.christmas.1": {"category": "block", "sounds": [{"name": "mekanism:holiday/Nutcracker1", "stream": false}]},
 	"tile.christmas.2": {"category": "block", "sounds": [{"name": "mekanism:holiday/Nutcracker2", "stream": false}]},

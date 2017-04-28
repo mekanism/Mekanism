@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;

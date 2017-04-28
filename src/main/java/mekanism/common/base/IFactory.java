@@ -15,7 +15,7 @@ import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
-import mekanism.common.tile.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;

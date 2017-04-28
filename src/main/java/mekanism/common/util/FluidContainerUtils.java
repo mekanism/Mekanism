@@ -1,6 +1,6 @@
 package mekanism.common.util;
 
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;

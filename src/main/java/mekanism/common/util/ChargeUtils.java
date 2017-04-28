@@ -9,7 +9,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.init.Items;

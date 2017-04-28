@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 

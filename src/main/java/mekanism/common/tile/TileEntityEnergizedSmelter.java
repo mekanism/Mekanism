@@ -7,12 +7,13 @@ import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
+import mekanism.common.tile.prefab.TileEntityElectricMachine;
 
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<SmeltingRecipe>
 {
 	public TileEntityEnergizedSmelter()
 	{
-		super("smelter", "EnergizedSmelter", 200, BlockStateMachine.MachineType.ENERGIZED_SMELTER.baseEnergy, usage.energizedSmelterUsage);
+		super("smelter", "EnergizedSmelter", BlockStateMachine.MachineType.ENERGIZED_SMELTER.baseEnergy, usage.energizedSmelterUsage, 200);
 	}
 
 	@Override

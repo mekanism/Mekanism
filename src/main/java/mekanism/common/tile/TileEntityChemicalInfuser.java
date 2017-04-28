@@ -25,6 +25,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;

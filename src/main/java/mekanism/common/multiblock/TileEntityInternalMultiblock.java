@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.common.PacketHandler;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInternalMultiblock extends TileEntityBasicBlock

@@ -30,6 +30,7 @@ import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -39,28 +40,20 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityMetallurgicInfuser extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, ITierUpgradeable
+public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, ITierUpgradeable
 {
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
 
-	/** How many ticks it takes to run an operation. */
-	public int BASE_TICKS_REQUIRED = 200;
-
-	public int ticksRequired = BASE_TICKS_REQUIRED;
-
 	/** The amount of infuse this machine has stored. */
 	public InfuseStorage infuseStored = new InfuseStorage();
-
-	/** How many ticks this machine has been operating for. */
-	public int operatingTicks;
 
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
 
 	public TileEntityMetallurgicInfuser()
 	{
-		super("machine.metalinfuser", "MetallurgicInfuser", BlockStateMachine.MachineType.METALLURGIC_INFUSER.baseEnergy, usage.metallurgicInfuserUsage, 0);
+		super("machine.metalinfuser", "MetallurgicInfuser", BlockStateMachine.MachineType.METALLURGIC_INFUSER.baseEnergy, usage.metallurgicInfuserUsage, 0, 200);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 		
@@ -301,17 +294,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityMachine implements I
 		return infuseStored.amount * i / MAX_INFUSE;
 	}
 
-	public double getScaledProgress()
-	{
-		return ((double)operatingTicks) / ((double)ticksRequired);
-	}
-
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);
 
-		operatingTicks = nbtTags.getInteger("operatingTicks");
 		infuseStored.amount = nbtTags.getInteger("infuseStored");
 		infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
 	}
@@ -321,7 +308,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityMachine implements I
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setInteger("infuseStored", infuseStored.amount);
 
 		if(infuseStored.type != null)
@@ -350,7 +336,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityMachine implements I
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			operatingTicks = dataStream.readInt();
 			infuseStored.amount = dataStream.readInt();
 			infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
 		}
@@ -361,7 +346,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityMachine implements I
 	{
 		super.getNetworkedData(data);
 
-		data.add(operatingTicks);
 		data.add(infuseStored.amount);
 
 		if(infuseStored.type != null)
@@ -437,22 +421,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityMachine implements I
 	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
-	}
-
-	@Override
-	public void recalculateUpgradables(Upgrade upgrade)
-	{
-		super.recalculateUpgradables(upgrade);
-
-		switch(upgrade)
-		{
-			case SPEED:
-				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
-				break;
-			default:
-				break;
-		}
 	}
 	
 	@Override

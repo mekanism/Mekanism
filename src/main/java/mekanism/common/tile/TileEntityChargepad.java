@@ -19,6 +19,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.entity.EntityLivingBase;

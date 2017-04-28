@@ -14,7 +14,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import net.minecraft.block.state.IBlockState;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;

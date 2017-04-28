@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
 import mekanism.client.HolidayManager;
 import mekanism.client.sound.ISoundSource;

@@ -31,6 +31,7 @@ import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.ListUtils;

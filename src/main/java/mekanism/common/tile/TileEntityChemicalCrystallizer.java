@@ -15,7 +15,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.Upgrade;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
@@ -27,7 +26,7 @@ import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -39,17 +38,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalCrystallizer extends TileEntityMachine implements IGasHandler, ITubeConnection, ISideConfiguration, ISustainedData, ITankManager, IConfigCardAccess
+public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine implements IGasHandler, ITubeConnection, ISideConfiguration, ISustainedData, ITankManager, IConfigCardAccess
 {
 	public static final int MAX_GAS = 10000;
 	
 	public GasTank inputTank = new GasTank(MAX_GAS);
-
-	public int operatingTicks;
-
-	public int BASE_TICKS_REQUIRED = 200;
-
-	public int ticksRequired = 200;
 
 	public CrystallizerRecipe cachedRecipe;
 
@@ -58,7 +51,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityMachine implements
 	
 	public TileEntityChemicalCrystallizer()
 	{
-		super("machine.crystallizer", "ChemicalCrystallizer", BlockStateMachine.MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy, usage.chemicalCrystallizerUsage, 3);
+		super("machine.crystallizer", "ChemicalCrystallizer", BlockStateMachine.MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy, usage.chemicalCrystallizerUsage, 3, 200);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 		
@@ -79,8 +72,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityMachine implements
 
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
-		
-		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -167,8 +158,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityMachine implements
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			operatingTicks = dataStream.readInt();
-	
 			if(dataStream.readBoolean())
 			{
 				inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
@@ -183,8 +172,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityMachine implements
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
-
-		data.add(operatingTicks);
 
 		if(inputTank.getGas() != null)
 		{
@@ -204,7 +191,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityMachine implements
 	{
 		super.readFromNBT(nbtTags);
 
-		operatingTicks = nbtTags.getInteger("operatingTicks");
 		inputTank.read(nbtTags.getCompoundTag("rightTank"));
 	}
 
@@ -212,8 +198,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityMachine implements
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
-
-		nbtTags.setInteger("operatingTicks", operatingTicks);
 
 		nbtTags.setTag("rightTank", inputTank.write(new NBTTagCompound()));
 
@@ -226,11 +210,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityMachine implements
 	public boolean canSetFacing(int i)
 	{
 		return i != 0 && i != 1;
-	}
-
-	public double getScaledProgress()
-	{
-		return ((double)operatingTicks) / (double)ticksRequired;
 	}
 	
 	@Override
@@ -360,22 +339,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityMachine implements
 	public void readSustainedData(ItemStack itemStack) 
 	{
 		inputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
-	}
-
-	@Override
-	public void recalculateUpgradables(Upgrade upgrade)
-	{
-		super.recalculateUpgradables(upgrade);
-
-		switch(upgrade)
-		{
-			case SPEED:
-				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
-				break;
-			default:
-				break;
-		}
 	}
 	
 	@Override

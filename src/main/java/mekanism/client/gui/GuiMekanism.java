@@ -10,7 +10,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;

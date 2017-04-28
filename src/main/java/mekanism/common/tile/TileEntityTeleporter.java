@@ -32,6 +32,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ReflectionUtils;

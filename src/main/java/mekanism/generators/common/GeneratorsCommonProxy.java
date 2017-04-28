@@ -5,7 +5,7 @@ import mekanism.common.base.IGuiProvider;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;

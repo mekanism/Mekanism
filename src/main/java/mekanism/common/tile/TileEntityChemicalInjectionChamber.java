@@ -15,6 +15,7 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -26,7 +27,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 {
 	public TileEntityChemicalInjectionChamber()
 	{
-		super("injection", "ChemicalInjectionChamber", usage.chemicalInjectionChamberUsage, 1, 200, BlockStateMachine.MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
+		super("injection", "ChemicalInjectionChamber", BlockStateMachine.MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy, usage.chemicalInjectionChamberUsage, 200, 1);
 		
 		configComponent.addSupported(TransmissionType.GAS);
 		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));

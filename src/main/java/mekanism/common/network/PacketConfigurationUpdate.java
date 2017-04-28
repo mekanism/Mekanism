@@ -14,7 +14,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;

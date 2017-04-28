@@ -30,6 +30,7 @@ import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.recipe.outputs.PressurizedOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -57,7 +58,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 	public TileEntityPRC()
 	{
-		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, 100, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy, usage.pressurizedReactionBaseUsage, 3, new ResourceLocation("mekanism", "gui/GuiPRC.png"));
+		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy, usage.pressurizedReactionBaseUsage, 3, 100, new ResourceLocation("mekanism", "gui/GuiPRC.png"));
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 		
@@ -97,7 +98,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 			ChargeUtils.discharge(1, this);
 
-			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE + recipe.extraEnergy))
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy))
 			{
 				boolean update = BASE_TICKS_REQUIRED != recipe.ticks;
 				
@@ -113,14 +114,14 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE + recipe.extraEnergy);
+					electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy);
 				}
-				else if((operatingTicks+1) >= ticksRequired && getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE + recipe.extraEnergy))
+				else if((operatingTicks+1) >= ticksRequired && getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy))
 				{
 					operate(recipe);
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE + recipe.extraEnergy);
+					electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy);
 				}
 			}
 			else {

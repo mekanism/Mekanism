@@ -19,7 +19,7 @@ import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
-import mekanism.common.tile.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;

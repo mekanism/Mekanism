@@ -16,7 +16,7 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillR
 {
 	public TileEntityPrecisionSawmill()
 	{
-		super("sawmill", "PrecisionSawmill", 200, BlockStateMachine.MachineType.PRECISION_SAWMILL.baseEnergy, usage.precisionSawmillUsage, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
+		super("sawmill", "PrecisionSawmill", BlockStateMachine.MachineType.PRECISION_SAWMILL.baseEnergy, usage.precisionSawmillUsage, 200, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
 	}
 
 	@Override

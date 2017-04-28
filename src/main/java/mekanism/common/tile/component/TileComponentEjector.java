@@ -18,7 +18,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;

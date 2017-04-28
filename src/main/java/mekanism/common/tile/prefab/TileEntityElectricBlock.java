@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;

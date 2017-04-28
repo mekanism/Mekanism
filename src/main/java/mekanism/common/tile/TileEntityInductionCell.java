@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;

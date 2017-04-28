@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.init.SoundEvents;
