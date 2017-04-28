@@ -761,6 +761,9 @@ tooltip.itemAmount=Item amount
 tooltip.invalid=Invalid
 tooltip.encoded=Encoded
 tooltip.ingredients=Ingredients
+tooltip.conduction=Conduction
+tooltip.insulation=Insulation
+tooltip.heatCapacity=Heat Capacity
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
