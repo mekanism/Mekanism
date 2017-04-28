@@ -507,6 +507,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		stacks:
 		for(ItemStack stack : stacks)
 		{
+			stack = stack.copy();
+			
 			if(stack == null || stack.getItem() == null)
 			{
 				continue;
