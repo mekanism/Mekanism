@@ -176,10 +176,14 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
 	{
-		if(!world.isRemote && entityplayer.isSneaking())
+		if(entityplayer.isSneaking())
 		{
-			toggleMode(itemstack);
-			entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			if(!world.isRemote)
+			{
+				toggleMode(itemstack);
+				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			}
+			
 			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 		}
 
@@ -189,7 +193,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(!player.isSneaking() && world.getBlockState(pos).getBlock() == Blocks.FARMLAND)
+		Block block = world.getBlockState(pos).getBlock();
+		
+		if(!player.isSneaking() && (block == Blocks.DIRT || block == Blocks.GRASS || block == Blocks.GRASS_PATH))
 		{
 			if(useHoe(stack, player, world, pos, side) == EnumActionResult.FAIL)
 			{
