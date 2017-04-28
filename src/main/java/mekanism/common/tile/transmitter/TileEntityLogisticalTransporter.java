@@ -17,22 +17,19 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.PathfinderCache;
-import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -138,16 +135,16 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
 				TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-				InvStack stack = InventoryUtils.takeTopItem(tile, side, tier.pullAmount);
-
-				if(stack != null && !stack.getStack().isEmpty())
+				TransitRequest request = TransitRequest.getTopStacks(tile, side, tier.pullAmount);
+				
+				if(!request.isEmpty())
 				{
-					ItemStack rejects = TransporterUtils.insert(tile, getTransmitter(), stack.getStack(), getTransmitter().getColor(), true, 0);
-
-					if(TransporterManager.didEmit(stack.getStack(), rejects))
+					TransitResponse response = TransporterUtils.insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
+	
+					if(!response.isEmpty())
 					{
 						did = true;
-						stack.use(TransporterManager.getToUse(stack.getStack(), rejects).getCount());
+						response.getInvStack(tile, side.getOpposite()).use(response.stack.getCount());
 					}
 				}
 			}

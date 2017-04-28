@@ -6,13 +6,14 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -52,14 +53,14 @@ public final class TransporterUtils
 		return false;
 	}
 
-	public static ItemStack insert(TileEntity outputter, ILogisticalTransporter transporter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public static TransitResponse insert(TileEntity outputter, ILogisticalTransporter transporter, TransitRequest request, EnumColor color, boolean doEmit, int min)
 	{
-		return transporter.insert(Coord4D.get(outputter), itemStack.copy(), color, doEmit, min);
+		return transporter.insert(Coord4D.get(outputter), request, color, doEmit, min);
 	}
 
-	public static ItemStack insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public static TransitResponse insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, TransitRequest request, EnumColor color, boolean doEmit, int min)
 	{
-		return transporter.insertRR(outputter, itemStack.copy(), color, doEmit, min);
+		return transporter.insertRR(outputter, request, color, doEmit, min);
 	}
 
 	public static EnumColor increment(EnumColor color)

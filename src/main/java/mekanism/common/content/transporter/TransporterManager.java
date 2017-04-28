@@ -10,6 +10,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.InventoryUtils;
@@ -389,11 +390,16 @@ public class TransporterManager
 
 		return MekanismUtils.size(stack, stack.getCount()-returned.getCount());
 	}
+	
+	public static ItemStack getToUse(ItemStack stack, int rejected)
+	{
+		return MekanismUtils.size(stack, stack.getCount()-rejected);
+	}
 
 	/**
-	 * @return rejects
+	 * @return TransitResponse of expected items to use
 	 */
-	public static ItemStack getPredictedInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, EnumFacing side)
+	public static TransitResponse getPredictedInsert(TileEntity tileEntity, EnumColor color, TransitRequest request, EnumFacing side)
 	{
 		if(tileEntity instanceof ISideConfiguration)
 		{
@@ -403,7 +409,7 @@ public class TransporterManager
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)
 			{
-				return itemStack;
+				return TransitResponse.EMPTY;
 			}
 		}
 
@@ -420,7 +426,7 @@ public class TransporterManager
 
 		if(copy == null)
 		{
-			return itemStack;
+			return TransitResponse.EMPTY;
 		}
 
 		List<TransporterStack> insertQueue = getStacksToDest(Coord4D.get(tileEntity));
@@ -430,192 +436,213 @@ public class TransporterManager
 			testInsert(tileEntity, copy, side, tStack);
 		}
 
-		ItemStack toInsert = itemStack.copy();
-
-		if(tileEntity instanceof ISidedInventory)
+		for(Map.Entry<ItemStack, Integer> requestEntry : request.itemMap.entrySet())
 		{
-			ISidedInventory sidedInventory = (ISidedInventory)tileEntity;
-			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
-
-			if(slots != null && slots.length != 0)
-			{
-				if(tileEntity instanceof TileEntityBin)
-				{
-					int slot = slots[0];
-					
-					if(!sidedInventory.isItemValidForSlot(slot, toInsert) || !sidedInventory.canInsertItem(slot, toInsert, side.getOpposite()))
-					{
-						return toInsert;
-					}
-					
-					int amountRemaining = ((TileEntityBin)tileEntity).getMaxStoredCount()-copy.binAmount;
-					
-					if(toInsert.getCount() <= amountRemaining)
-					{
-						return ItemStack.EMPTY;
-					}
-					else {
-						return StackUtils.size(toInsert, toInsert.getCount()-amountRemaining);
-					}
-				}
-				else {
-					for(int get = 0; get <= slots.length - 1; get++)
-					{
-						int slotID = slots[get];
+			ItemStack toInsert = requestEntry.getKey().copy();
 	
-						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) || !sidedInventory.canInsertItem(slotID, toInsert, side.getOpposite()))
+			if(tileEntity instanceof ISidedInventory)
+			{
+				ISidedInventory sidedInventory = (ISidedInventory)tileEntity;
+				int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
+	
+				if(slots != null && slots.length != 0)
+				{
+					if(tileEntity instanceof TileEntityBin)
+					{
+						int slot = slots[0];
+						
+						if(!sidedInventory.isItemValidForSlot(slot, toInsert) || !sidedInventory.canInsertItem(slot, toInsert, side.getOpposite()))
 						{
 							continue;
 						}
-	
-						ItemStack inSlot = copy.inventory.get(slotID);
 						
-						if(toInsert.isEmpty())
+						int amountRemaining = ((TileEntityBin)tileEntity).getMaxStoredCount()-copy.binAmount;
+						ItemStack ret = null;
+						
+						if(toInsert.getCount() <= amountRemaining)
 						{
-							return ItemStack.EMPTY;
+							ret = toInsert;
 						}
-						else if(inSlot.isEmpty())
+						else {
+							ret = StackUtils.size(toInsert, amountRemaining);
+						}
+						
+						return new TransitResponse(requestEntry.getValue(), ret);
+					}
+					else {
+						for(int get = 0; get <= slots.length - 1; get++)
 						{
-							if(toInsert.getCount() <= sidedInventory.getInventoryStackLimit())
+							int slotID = slots[get];
+		
+							if(!sidedInventory.isItemValidForSlot(slotID, toInsert) || !sidedInventory.canInsertItem(slotID, toInsert, side.getOpposite()))
 							{
-								return ItemStack.EMPTY;
+								continue;
 							}
-							else {
-								int rejects = toInsert.getCount() - sidedInventory.getInventoryStackLimit();
-								
-								if(rejects < toInsert.getCount())
-								{
-									toInsert = StackUtils.size(toInsert, rejects);
-								}
-							}
-						}
-						else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.getCount() < Math.min(inSlot.getMaxStackSize(), sidedInventory.getInventoryStackLimit()))
-						{
-							int max = Math.min(inSlot.getMaxStackSize(), sidedInventory.getInventoryStackLimit());
+		
+							ItemStack inSlot = copy.inventory.get(slotID);
 							
-							if(inSlot.getCount() + toInsert.getCount() <= max)
+							if(toInsert.isEmpty())
 							{
-								return ItemStack.EMPTY;
+								return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
 							}
-							else {
-								int rejects = (inSlot.getCount() + toInsert.getCount()) - max;
-	
-								if(rejects < toInsert.getCount())
+							else if(inSlot.isEmpty())
+							{
+								if(toInsert.getCount() <= sidedInventory.getInventoryStackLimit())
 								{
-									toInsert = StackUtils.size(toInsert, rejects);
+									return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+								}
+								else {
+									int rejects = toInsert.getCount() - sidedInventory.getInventoryStackLimit();
+									
+									if(rejects < toInsert.getCount())
+									{
+										toInsert = StackUtils.size(toInsert, rejects);
+									}
+								}
+							}
+							else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.getCount() < Math.min(inSlot.getMaxStackSize(), sidedInventory.getInventoryStackLimit()))
+							{
+								int max = Math.min(inSlot.getMaxStackSize(), sidedInventory.getInventoryStackLimit());
+								
+								if(inSlot.getCount() + toInsert.getCount() <= max)
+								{
+									return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+								}
+								else {
+									int rejects = (inSlot.getCount() + toInsert.getCount()) - max;
+		
+									if(rejects < toInsert.getCount())
+									{
+										toInsert = StackUtils.size(toInsert, rejects);
+									}
 								}
 							}
 						}
-					}
-				}
-			}
-		}
-		else if(tileEntity instanceof IInventory)
-		{
-			IInventory inventory = InventoryUtils.checkChestInv((IInventory)tileEntity);
-			
-			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
-			{
-				if(!inventory.isItemValidForSlot(i, toInsert))
-				{
-					continue;
-				}
-
-				ItemStack inSlot = copy.inventory.get(i);
-
-				if(toInsert.isEmpty())
-				{
-					return ItemStack.EMPTY;
-				}
-				else if(inSlot.isEmpty())
-				{
-					if(toInsert.getCount() <= inventory.getInventoryStackLimit())
-					{
-						return ItemStack.EMPTY;
-					}
-					else {
-						int rejects = toInsert.getCount() - inventory.getInventoryStackLimit();
 						
-						if(rejects < toInsert.getCount())
+						if(TransporterManager.didEmit(requestEntry.getKey(), toInsert))
 						{
-							toInsert = StackUtils.size(toInsert, rejects);
-						}
-					}
-				}
-				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.getCount() < Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit()))
-				{
-					int max = Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit());
-					
-					if(inSlot.getCount() + toInsert.getCount() <= max)
-					{
-						return ItemStack.EMPTY;
-					}
-					else {
-						int rejects = (inSlot.getCount() + toInsert.getCount()) - max;
-
-						if(rejects < toInsert.getCount())
-						{
-							toInsert = StackUtils.size(toInsert, rejects);
+							return new TransitResponse(requestEntry.getValue(), getToUse(requestEntry.getKey(), toInsert));
 						}
 					}
 				}
 			}
-		}
-		else if(InventoryUtils.isItemHandler(tileEntity, side.getOpposite()))
-		{
-			IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
-			
-			for(int i = 0; i <= inventory.getSlots() - 1; i++)
+			else if(tileEntity instanceof IInventory)
 			{
-				ItemStack rejectStack = inventory.insertItem(i, itemStack, true);
+				IInventory inventory = InventoryUtils.checkChestInv((IInventory)tileEntity);
 				
-				if(!TransporterManager.didEmit(itemStack, rejectStack))
+				for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 				{
-					continue;
-				}
-
-				ItemStack inSlot = copy.inventory.get(i);
-
-				if(toInsert.isEmpty())
-				{
-					return ItemStack.EMPTY;
-				}
-				else if(inSlot.isEmpty())
-				{
-					if(toInsert.getCount() <= inventory.getSlotLimit(i))
+					if(!inventory.isItemValidForSlot(i, toInsert))
 					{
-						return ItemStack.EMPTY;
+						continue;
 					}
-					else {
-						int rejects = toInsert.getCount() - inventory.getSlotLimit(i);
+	
+					ItemStack inSlot = copy.inventory.get(i);
+	
+					if(toInsert.isEmpty())
+					{
+						return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+					}
+					else if(inSlot.isEmpty())
+					{
+						if(toInsert.getCount() <= inventory.getInventoryStackLimit())
+						{
+							return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+						}
+						else {
+							int rejects = toInsert.getCount() - inventory.getInventoryStackLimit();
+							
+							if(rejects < toInsert.getCount())
+							{
+								toInsert = StackUtils.size(toInsert, rejects);
+							}
+						}
+					}
+					else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.getCount() < Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit()))
+					{
+						int max = Math.min(inSlot.getMaxStackSize(), inventory.getInventoryStackLimit());
 						
-						if(rejects < toInsert.getCount())
+						if(inSlot.getCount() + toInsert.getCount() <= max)
 						{
-							toInsert = StackUtils.size(toInsert, rejects);
+							return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+						}
+						else {
+							int rejects = (inSlot.getCount() + toInsert.getCount()) - max;
+	
+							if(rejects < toInsert.getCount())
+							{
+								toInsert = StackUtils.size(toInsert, rejects);
+							}
 						}
 					}
 				}
-				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.getCount() < Math.min(inSlot.getMaxStackSize(), inventory.getSlotLimit(i)))
+				
+				if(TransporterManager.didEmit(requestEntry.getKey(), toInsert))
 				{
-					int max = Math.min(inSlot.getMaxStackSize(), inventory.getSlotLimit(i));
+					return new TransitResponse(requestEntry.getValue(), getToUse(requestEntry.getKey(), toInsert));
+				}
+			}
+			else if(InventoryUtils.isItemHandler(tileEntity, side.getOpposite()))
+			{
+				IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
+				
+				for(int i = 0; i <= inventory.getSlots() - 1; i++)
+				{
+					ItemStack rejectStack = inventory.insertItem(i, toInsert, true);
 					
-					if(inSlot.getCount() + toInsert.getCount() <= max)
+					if(!TransporterManager.didEmit(toInsert, rejectStack))
 					{
-						return ItemStack.EMPTY;
+						continue;
 					}
-					else {
-						int rejects = (inSlot.getCount() + toInsert.getCount()) - max;
-
-						if(rejects < toInsert.getCount())
+	
+					ItemStack inSlot = copy.inventory.get(i);
+	
+					if(toInsert.isEmpty())
+					{
+						return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+					}
+					else if(inSlot.isEmpty())
+					{
+						if(toInsert.getCount() <= inventory.getSlotLimit(i))
 						{
-							toInsert = StackUtils.size(toInsert, rejects);
+							return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+						}
+						else {
+							int rejects = toInsert.getCount() - inventory.getSlotLimit(i);
+							
+							if(rejects < toInsert.getCount())
+							{
+								toInsert = StackUtils.size(toInsert, rejects);
+							}
 						}
 					}
+					else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.getCount() < Math.min(inSlot.getMaxStackSize(), inventory.getSlotLimit(i)))
+					{
+						int max = Math.min(inSlot.getMaxStackSize(), inventory.getSlotLimit(i));
+						
+						if(inSlot.getCount() + toInsert.getCount() <= max)
+						{
+							return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+						}
+						else {
+							int rejects = (inSlot.getCount() + toInsert.getCount()) - max;
+	
+							if(rejects < toInsert.getCount())
+							{
+								toInsert = StackUtils.size(toInsert, rejects);
+							}
+						}
+					}
+				}
+				
+				if(TransporterManager.didEmit(requestEntry.getKey(), toInsert))
+				{
+					return new TransitResponse(requestEntry.getValue(), getToUse(requestEntry.getKey(), toInsert));
 				}
 			}
 		}
 
-		return toInsert;
+		return TransitResponse.EMPTY;
 	}
 	
 	public static class InventoryCopy

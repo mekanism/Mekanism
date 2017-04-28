@@ -80,7 +80,7 @@ public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 			
 			if(transmission == TransmissionType.ENERGY)
 			{
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.get(tier).cableCapacity) + "/t");
 			}
 			else if(transmission == TransmissionType.FLUID)
 			{
@@ -101,9 +101,11 @@ public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
 		}
 		else {
-			switch(itemstack.getItemDamage())
+			TransmitterType type = TransmitterType.values()[itemstack.getItemDamage()];
+			
+			switch(type)
 			{
-				case 0: case 1: case 2: case 3:
+				case UNIVERSAL_CABLE:
 				{
 					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
@@ -111,26 +113,26 @@ public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
 					break;
 				}
-				case 4: case 5: case 6: case 7:
+				case MECHANICAL_PIPE:
 				{
 					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.fluids") + " " + EnumColor.GREY + "(MinecraftForge)");
 					break;
 				}
-				case 8: case 9: case 10: case 11:
+				case PRESSURIZED_TUBE:
 				{
 					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.gasses") + " (Mekanism)");
 					break;
 				}
-				case 12: case 13: case 14: case 15:
+				case LOGISTICAL_TRANSPORTER:
 				{
 					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
 					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
 					break;
 				}
-				case 16:
+				case RESTRICTIVE_TRANSPORTER:
 				{
 					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
@@ -138,7 +140,7 @@ public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 					list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.restrictiveDesc"));
 					break;
 				}
-				case 17:
+				case DIVERSION_TRANSPORTER:
 				{
 					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
@@ -146,7 +148,7 @@ public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 					list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.diversionDesc"));
 					break;
 				}
-				case 18: case 19: case 20: case 21:
+				case THERMODYNAMIC_CONDUCTOR:
 				{
 					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.heat") + " (Mekanism)");

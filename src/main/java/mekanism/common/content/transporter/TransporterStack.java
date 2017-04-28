@@ -10,6 +10,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
@@ -189,36 +190,36 @@ public class TransporterStack
 		return pathToTarget;
 	}
 
-	public ItemStack recalculatePath(ILogisticalTransporter transporter, int min)
+	public TransitResponse recalculatePath(TransitRequest request, ILogisticalTransporter transporter, int min)
 	{
-		Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, min);
+		Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min);
 
 		if(newPath == null)
 		{
-			return itemStack;
+			return TransitResponse.EMPTY;
 		}
 
 		idleDir = null;
 		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
-		return newPath.rejected;
+		return newPath.response;
 	}
 
-	public ItemStack recalculateRRPath(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min)
+	public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min)
 	{
-		Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, outputter, min);
+		Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
 
 		if(newPath == null)
 		{
-			return itemStack;
+			return TransitResponse.EMPTY;
 		}
 
 		idleDir = null;
 		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
-		return newPath.rejected;
+		return newPath.response;
 	}
 
 	public boolean calculateIdle(ILogisticalTransporter transporter)
