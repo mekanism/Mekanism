@@ -559,6 +559,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 			default:
 				break;
 		}

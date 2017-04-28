@@ -419,6 +419,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 			default:
 				break;
 		}

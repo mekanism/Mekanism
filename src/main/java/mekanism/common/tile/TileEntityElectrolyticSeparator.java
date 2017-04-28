@@ -752,6 +752,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 				energyPerTick = BASE_ENERGY_USAGE; //Don't scale energy usage.
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 			default:
 				break;
 		}

@@ -500,6 +500,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 				break;
 			default:
 				break;
