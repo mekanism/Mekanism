@@ -124,7 +124,7 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			isActive = dataStream.readBoolean();
+			clientActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 	
 			if(updateDelay == 0 && clientActive != isActive)

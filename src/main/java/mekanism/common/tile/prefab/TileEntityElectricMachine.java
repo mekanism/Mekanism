@@ -36,7 +36,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
 	 */
-	public TileEntityElectricMachine(String soundPath, String name, double perTick, double maxEnergy, int ticksRequired)
+	public TileEntityElectricMachine(String soundPath, String name, double maxEnergy, double perTick, int ticksRequired)
 	{
 		super(soundPath, name, maxEnergy, perTick, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
 
