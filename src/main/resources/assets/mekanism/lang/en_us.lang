@@ -544,7 +544,7 @@ gui.heatTransfer=Heat Transfer
 gui.superheaters=Superheaters
 gui.boilCapacity=Boil Capacity
 gui.encodeFormula=Encode Formula
-gui.autoModeToggle=Turn Auto-Mode
+gui.autoModeToggle=Auto-Mode
 gui.craftSingle=Craft Single Item
 gui.craftAvailable=Craft Available Items
 gui.fillEmpty=Fill/Empty Grid
@@ -566,6 +566,7 @@ gui.entityDetection=Entity Detection
 gui.energyContents=Energy Contents
 gui.redstoneOutput=Redstone Output
 gui.maxWaterOutput=Max Water Output
+gui.stockControl=Stock Control
 
 gui.reactor.injectionRate=Injection Rate
 

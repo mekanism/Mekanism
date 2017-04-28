@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
@@ -54,6 +55,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	
 	public boolean isRecipe = false;
 	
+	public boolean stockControl = false;
+	public boolean needsOrganize = true; //organize on load
+	
 	public int pulseOperations;
 	
 	public RecipeFormula formula;
@@ -65,9 +69,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	public TileComponentConfig configComponent;
 	public TileComponentSecurity securityComponent;
 	
-	public ItemStack lastFormulaStack;
+	public ItemStack lastFormulaStack = ItemStack.EMPTY;
 	public boolean needsFormulaUpdate = false;
-	public ItemStack lastOutputStack;
+	public ItemStack lastOutputStack = ItemStack.EMPTY;
 	
 	public TileEntityFormulaicAssemblicator()
 	{
@@ -101,6 +105,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		
 		if(!world.isRemote)
 		{
+			if(formula != null && stockControl && needsOrganize)
+			{
+				needsOrganize = false;
+				organizeStock();
+			}
+			
 			ChargeUtils.discharge(1, this);
 			
 			if(controlType != RedstoneControl.PULSE)
@@ -229,12 +239,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				}
 				
 				lastOutputStack = MekanismUtils.findMatchingRecipe(dummyInv, world);
-				isRecipe = lastOutputStack != null;
+				isRecipe = !lastOutputStack.isEmpty();
 			}
 			else {
 				isRecipe = formula.matches(world, inventory, 27);
-				lastOutputStack = isRecipe ? formula.recipe.getRecipeOutput() : null;
+				lastOutputStack = isRecipe ? formula.recipe.getRecipeOutput() : ItemStack.EMPTY;
 			}
+			
+			needsOrganize = true;
 		}
 	}
 	
@@ -247,7 +259,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		
 		ItemStack output = lastOutputStack;
 		
-		if(output != null && tryMoveToOutput(output, false))
+		if(!output.isEmpty() && tryMoveToOutput(output, false))
 		{
 			tryMoveToOutput(output, true);
 			
@@ -263,12 +275,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 					{
 						ItemStack container = stack.getItem().getContainerItem(stack);
 
-	                    if(container != null && container.isItemStackDamageable() && container.getItemDamage() > container.getMaxDamage())
+	                    if(!container.isEmpty() && container.isItemStackDamageable() && container.getItemDamage() > container.getMaxDamage())
 	                    {
-	                    	container = null;
+	                    	container = ItemStack.EMPTY;
 	                    }
 
-	                    if(container != null)
+	                    if(!container.isEmpty())
 	                    {
                     		boolean move = tryMoveToOutput(container.copy(), false);
                     		
@@ -343,7 +355,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			else {
 				boolean found = false;
 				
-				for(int j = 3; j <= 20; j++)
+				for(int j = 20; j >= 3; j--)
 				{
 					if(!inventory.get(j).isEmpty() && formula.isIngredientInPos(world, inventory.get(j), i-27))
 					{
@@ -401,6 +413,50 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		markDirty();
 	}
 	
+	private void toggleStockControl()
+	{
+		if(!world.isRemote && formula != null)
+		{
+			stockControl = !stockControl;
+			
+			if(stockControl)
+			{
+				organizeStock();
+			}
+		}
+	}
+	
+	private void organizeStock()
+	{
+		for(int j = 3; j <= 20; j++)
+		{
+			for(int i = 20; i > j; i--)
+			{
+				if(!inventory.get(i).isEmpty())
+				{
+					if(inventory.get(j).isEmpty())
+					{
+						inventory.set(j, inventory.get(i));
+						inventory.set(i, ItemStack.EMPTY);
+						markDirty();
+						return;
+					}
+					else if(inventory.get(j).getCount() < inventory.get(j).getMaxStackSize())
+					{
+						if(InventoryUtils.areItemsStackable(inventory.get(i), inventory.get(j)))
+						{
+							int newCount = inventory.get(j).getCount() + inventory.get(i).getCount();
+							inventory.get(j).setCount(Math.min(inventory.get(j).getMaxStackSize(), newCount));
+							inventory.get(i).setCount(Math.max(0, newCount - inventory.get(j).getMaxStackSize()));
+							markDirty();
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	private ItemStack tryMoveToInput(ItemStack stack)
 	{
 		stack = stack.copy();
@@ -411,7 +467,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			{
 				inventory.set(i, stack);
 				
-				return null;
+				return ItemStack.EMPTY;
 			}
 			else if(InventoryUtils.areItemsStackable(stack, inventory.get(i)) && inventory.get(i).getCount() < inventory.get(i).getMaxStackSize())
 			{
@@ -422,7 +478,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				
 				if(stack.getCount() == 0)
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 		}
@@ -468,7 +524,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	
 	private void encodeFormula()
 	{
-		if(inventory.get(2).isEmpty() && inventory.get(2).getItem() instanceof ItemCraftingFormula)
+		if(!inventory.get(2).isEmpty() && inventory.get(2).getItem() instanceof ItemCraftingFormula)
 		{
 			ItemCraftingFormula item = (ItemCraftingFormula)inventory.get(2).getItem();
 			
@@ -479,6 +535,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				if(formula.isValidFormula(world))
 				{
 					item.setInventory(inventory.get(2), formula.input);
+					markDirty();
 				}
 			}
 		}
@@ -521,7 +578,31 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				return true;
 			}
 			else {
-				return formula.isIngredient(world, itemstack);
+				List<Integer> indices = formula.getIngredientIndices(world, itemstack);
+				
+				if(indices.size() > 0)
+				{
+					if(stockControl)
+					{
+						int filled = 0;
+						
+						for(int i = 3; i < 20; i++)
+						{
+							if(!inventory.get(i).isEmpty())
+							{
+								if(formula.isIngredientInPos(world, inventory.get(i), indices.get(0)))
+								{
+									filled++;
+								}
+							}
+						}
+						
+						return filled < indices.size()*2;
+					}
+					else {
+						return true;
+					}
+				}
 			}
 		}
 		else if(slotID == 1)
@@ -541,6 +622,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		pulseOperations = nbtTags.getInteger("pulseOperations");
+		stockControl = nbtTags.getBoolean("stockControl");
 	}
 
 	@Override
@@ -552,6 +634,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setInteger("pulseOperations", pulseOperations);
+		nbtTags.setBoolean("stockControl", stockControl);
 		
 		return nbtTags;
 	}
@@ -589,6 +672,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 					moveItemsToInput(true);
 				}
 			}
+			else if(type == 5)
+			{
+				toggleStockControl();
+			}
 			
 			return;
 		}
@@ -601,6 +688,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			operatingTicks = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			isRecipe = dataStream.readBoolean();
+			stockControl = dataStream.readBoolean();
 			
 			if(dataStream.readBoolean())
 			{
@@ -634,6 +722,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		data.add(operatingTicks);
 		data.add(controlType.ordinal());
 		data.add(isRecipe);
+		data.add(stockControl);
 		
 		if(needsFormulaUpdate)
 		{
@@ -726,10 +815,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		{
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				break;
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
+				break;
 			default:
 				break;
 		}

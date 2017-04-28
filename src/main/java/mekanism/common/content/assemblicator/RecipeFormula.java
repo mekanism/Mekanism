@@ -1,5 +1,8 @@
 package mekanism.common.content.assemblicator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RecipeUtils;
 import mekanism.common.util.StackUtils;
@@ -75,6 +78,25 @@ public class RecipeFormula
 		}
 		
 		return false;
+	}
+	
+	public List<Integer> getIngredientIndices(World world, ItemStack stack)
+	{
+		List<Integer> ret = new ArrayList<>();
+		
+		for(int i = 0; i < 9; i++)
+		{
+			dummy.setInventorySlotContents(i, stack);
+			
+			if(recipe.matches(dummy, world))
+			{
+				ret.add(i);
+			}
+			
+			dummy.setInventorySlotContents(i, input.get(i));
+		}
+		
+		return ret;
 	}
 	
 	public boolean isValidFormula(World world)
