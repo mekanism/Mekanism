@@ -82,14 +82,12 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			for(EntityPlayer player : playersUsing)
 			{
-				System.out.println(worldObj.isRemote + " " + clientHasStructure + " " + structure);
-				//player.closeScreen();
+				player.closeScreen();
 			}
 		}
 
 		if(!worldObj.isRemote)
 		{
-			//System.out.println(pos + " " + structure);
 			if(structure == null)
 			{
 				isRendering = false;
@@ -132,7 +130,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 			if(structure != null)
 			{
-				//System.out.println("Whee " + structure + " " + isInvalid());
 				getSynchronizedData().didTick = false;
 
 				if(getSynchronizedData().inventoryID != null)

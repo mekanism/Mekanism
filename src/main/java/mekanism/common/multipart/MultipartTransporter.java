@@ -278,7 +278,7 @@ public class MultipartTransporter extends MultipartTransmitter<TileEntity, Inven
 		}
 
 		TransitResponse response = stack.recalculatePath(request, this, min);
-
+		
 		if(!response.isEmpty())
 		{
 			stack.itemStack = response.stack;

@@ -14,7 +14,7 @@ public class TModIDFilter extends TransporterFilter
 	public String modID;
 
 	@Override
-	public boolean canFilter(ItemStack itemStack)
+	public boolean canFilter(ItemStack itemStack, boolean strict)
 	{
 		if(itemStack == null)
 		{
@@ -84,6 +84,7 @@ public class TModIDFilter extends TransporterFilter
 	public TModIDFilter clone()
 	{
 		TModIDFilter filter = new TModIDFilter();
+		filter.allowDefault = allowDefault;
 		filter.color = color;
 		filter.modID = modID;
 

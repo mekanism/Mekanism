@@ -20,19 +20,22 @@ public class TItemStackFilter extends TransporterFilter
 	public ItemStack itemType;
 
 	@Override
-	public boolean canFilter(ItemStack itemStack)
+	public boolean canFilter(ItemStack itemStack, boolean strict)
 	{
 		if(itemStack == null)
 		{
 			return false;
 		}
 
-		if(sizeMode && max == 0)
+		if(strict && sizeMode)
 		{
-			return false;
+			if(max == 0 || itemStack.stackSize < min)
+			{
+				return false;
+			}
 		}
 
-		return (itemType.getHasSubtypes() ? itemType.isItemEqual(itemStack) : itemType.getItem() == itemStack.getItem()) && (!sizeMode || itemStack.stackSize >= min);
+		return (itemType.getHasSubtypes() ? itemType.isItemEqual(itemStack) : itemType.getItem() == itemStack.getItem());
 	}
 
 	@Override
@@ -129,6 +132,7 @@ public class TItemStackFilter extends TransporterFilter
 	public TItemStackFilter clone()
 	{
 		TItemStackFilter filter = new TItemStackFilter();
+		filter.allowDefault = allowDefault;
 		filter.color = color;
 		filter.itemType = itemType.copy();
 		filter.sizeMode = sizeMode;

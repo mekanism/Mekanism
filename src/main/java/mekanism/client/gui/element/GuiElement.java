@@ -74,7 +74,6 @@ public abstract class GuiElement
 		{
 			try {
 				int left = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-				System.out.println(left + " " + guiLeft);
 				ReflectionUtils.setPrivateValue(guiObj, left + guiLeft, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 			} catch(Exception e) {
 				e.printStackTrace();
