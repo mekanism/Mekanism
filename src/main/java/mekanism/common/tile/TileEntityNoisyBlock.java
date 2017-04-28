@@ -14,7 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlock implements IHasSound, ISoundSource, IActiveState
+public abstract class TileEntityNoisyBlock extends TileEntityElectricBlock implements IHasSound, ISoundSource, IActiveState
 {
 	/** The ResourceLocation of the machine's sound */
 	public ResourceLocation soundURL;
@@ -33,7 +33,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	 * @param name      - full name of this block
 	 * @param maxEnergy - how much energy this block can store
 	 */
-	public TileEntityNoisyElectricBlock(String sound, String name, double maxEnergy)
+	public TileEntityNoisyBlock(String sound, String name, double maxEnergy)
 	{
 		super(name, maxEnergy);
 		

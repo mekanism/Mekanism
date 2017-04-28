@@ -4,15 +4,12 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.Range4D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
@@ -20,25 +17,19 @@ import mekanism.common.SideData;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.integration.IComputerIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -48,15 +39,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile, ITierUpgradeable
+public class TileEntityMetallurgicInfuser extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, ITierUpgradeable
 {
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
-
-	/** How much energy this machine consumes per-tick. */
-	public double BASE_ENERGY_PER_TICK = usage.metallurgicInfuserUsage;
-
-	public double energyPerTick = BASE_ENERGY_PER_TICK;
 
 	/** How many ticks it takes to run an operation. */
 	public int BASE_TICKS_REQUIRED = 200;
@@ -69,29 +55,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	/** How many ticks this machine has been operating for. */
 	public int operatingTicks;
 
-	/** Whether or not this machine is in it's active state. */
-	public boolean isActive;
-
-	/** The client's current active state. */
-	public boolean clientActive;
-
-	/** How many ticks must pass until this block's active state can sync with the client. */
-	public int updateDelay;
-
-	/** This machine's previous amount of energy. */
-	public double prevEnergy;
-
-	/** This machine's current RedstoneControl type. */
-	public RedstoneControl controlType = RedstoneControl.DISABLED;
-
-	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
-	public TileComponentSecurity securityComponent;
 
 	public TileEntityMetallurgicInfuser()
 	{
-		super("machine.metalinfuser", "MetallurgicInfuser", BlockStateMachine.MachineType.METALLURGIC_INFUSER.baseEnergy);
+		super("machine.metalinfuser", "MetallurgicInfuser", BlockStateMachine.MachineType.METALLURGIC_INFUSER.baseEnergy, usage.metallurgicInfuserUsage, 0);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 		
@@ -105,9 +74,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		inventory = new ItemStack[5];
 		
-		upgradeComponent = new TileComponentUpgrade(this, 0);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
-		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 		
@@ -118,30 +84,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public void onUpdate()
 	{
 		super.onUpdate();
-
-		if(worldObj.isRemote && updateDelay > 0)
-		{
-			updateDelay--;
-
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
-			}
-		}
-
+		
 		if(!worldObj.isRemote)
 		{
-			if(updateDelay > 0)
-			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-				}
-			}
-
 			ChargeUtils.discharge(4, this);
 
 			if(inventory[1] != null)
@@ -366,10 +311,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	{
 		super.readFromNBT(nbtTags);
 
-		clientActive = isActive = nbtTags.getBoolean("isActive");
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		infuseStored.amount = nbtTags.getInteger("infuseStored");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
 	}
 
@@ -378,10 +321,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setInteger("infuseStored", infuseStored.amount);
-		nbtTags.setInteger("controlType", controlType.ordinal());
 
 		if(infuseStored.type != null)
 		{
@@ -409,18 +350,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			clientActive = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();
 			infuseStored.amount = dataStream.readInt();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
 			infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
-	
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				updateDelay = general.UPDATE_DELAY;
-				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
-			}
 		}
 	}
 
@@ -429,10 +361,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	{
 		super.getNetworkedData(data);
 
-		data.add(isActive);
 		data.add(operatingTicks);
 		data.add(infuseStored.amount);
-		data.add(controlType.ordinal());
 
 		if(infuseStored.type != null)
 		{
@@ -492,26 +422,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
-
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-
-			updateDelay = 10;
-			clientActive = active;
-		}
-	}
-
-	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
-
-	@Override
 	public TileComponentConfig getConfig()
 	{
 		return configComponent;
@@ -524,52 +434,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public boolean renderUpdate()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
-	}
-
-	@Override
-	public RedstoneControl getControlType()
-	{
-		return controlType;
-	}
-
-	@Override
-	public void setControlType(RedstoneControl type)
-	{
-		controlType = type;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean canPulse()
-	{
-		return false;
-	}
-
-	@Override
-	public TileComponentUpgrade getComponent()
-	{
-		return upgradeComponent;
-	}
-
-	@Override
 	public TileComponentEjector getEjector()
 	{
 		return ejectorComponent;
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity()
-	{
-		return securityComponent;
 	}
 
 	@Override
@@ -581,10 +448,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		{
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-			case ENERGY:
-				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				break;
 			default:
 				break;
 		}

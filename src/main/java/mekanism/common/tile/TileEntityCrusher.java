@@ -13,7 +13,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe>
 {
 	public TileEntityCrusher()
 	{
-		super("crusher", "Crusher", usage.crusherUsage, 200, BlockStateMachine.MachineType.CRUSHER.baseEnergy);
+		super("crusher", "Crusher", 200, BlockStateMachine.MachineType.CRUSHER.baseEnergy, usage.crusherUsage);
 	}
 
 	@Override

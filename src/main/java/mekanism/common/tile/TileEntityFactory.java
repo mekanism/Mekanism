@@ -30,10 +30,8 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.SoundWrapper;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -47,7 +45,6 @@ import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -70,7 +67,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection, ISpecialConfigData, ISecurityTile, ITierUpgradeable
+public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler, ITubeConnection, ISpecialConfigData, ITierUpgradeable
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -88,12 +85,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	/** How many ticks it takes, with upgrades, to run an operation */
 	public int ticksRequired = 200;
 
-	/** How much energy each operation consumes per tick, without upgrades. */
-	public double BASE_ENERGY_PER_TICK = usage.factoryUsage;
-
-	/** How much energy each operation consumes per tick. */
-	public double energyPerTick = usage.factoryUsage;
-
 	/** How much secondary energy each operation consumes per tick */
 	public double secondaryEnergyPerTick = 0;
 
@@ -105,23 +96,11 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	/** How many recipe ticks have progressed. */
 	public int recipeTicks;
 
-	/** The client's current active state. */
-	public boolean clientActive;
-
-	/** This machine's active state. */
-	public boolean isActive;
-
-	/** How many ticks must pass until this block's active state can sync with the client. */
-	public int updateDelay;
-
 	/** This machine's recipe type. */
 	public RecipeType recipeType = RecipeType.SMELTING;
 	
 	/** The amount of infuse this machine has stored. */
 	public InfuseStorage infuseStored = new InfuseStorage();
-
-	/** This machine's previous amount of energy. */
-	public double prevEnergy;
 
 	public GasTank gasTank;
 
@@ -137,10 +116,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
-	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityFactory()
 	{
@@ -162,9 +139,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		configComponent.setCanEject(TransmissionType.GAS, false);
 		
 		configComponent.setInputConfig(TransmissionType.ENERGY);
-
-		upgradeComponent = new TileComponentUpgrade(this, 0);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
@@ -172,7 +146,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
-		super("null", machine.blockName, machine.baseEnergy);
+		super("null", machine.blockName, machine.baseEnergy, usage.factoryUsage, 0);
 
 		tier = type;
 		inventory = new ItemStack[5+type.processes*2];
@@ -269,32 +243,11 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote && updateDelay > 0)
-		{
-			updateDelay--;
-
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
-			}
-		}
-
 		if(!worldObj.isRemote)
 		{
 			if(ticker == 1)
 			{
 				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
-			}
-
-			if(updateDelay > 0)
-			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				}
 			}
 
 			ChargeUtils.discharge(1, this);
@@ -762,12 +715,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			clientActive = dataStream.readBoolean();
 			RecipeType oldRecipe = recipeType;
 			recipeType = RecipeType.values()[dataStream.readInt()];
 			upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());		
 			recipeTicks = dataStream.readInt();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
 			sorting = dataStream.readBoolean();
 			upgraded = dataStream.readBoolean();
 			lastUsage = dataStream.readDouble();
@@ -796,13 +747,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			else {
 				gasTank.setGas(null);
 			}
-	
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				updateDelay = general.UPDATE_DELAY;
-				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
-			}
 			
 			if(upgraded)
 			{
@@ -818,7 +762,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	{
 		super.readFromNBT(nbtTags);
 
-		clientActive = isActive = nbtTags.getBoolean("isActive");
 		RecipeType oldRecipe = recipeType;
 		recipeType = RecipeType.values()[nbtTags.getInteger("recipeType")];
 		upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
@@ -829,7 +772,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		}
 
 		recipeTicks = nbtTags.getInteger("recipeTicks");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		sorting = nbtTags.getBoolean("sorting");
 		infuseStored.amount = nbtTags.getInteger("infuseStored");
 		infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
@@ -847,10 +789,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("recipeType", recipeType.ordinal());
 		nbtTags.setInteger("recipeTicks", recipeTicks);
-		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setBoolean("sorting", sorting);
 		nbtTags.setInteger("infuseStored", infuseStored.amount);
 		
@@ -877,10 +817,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	{
 		super.getNetworkedData(data);
 
-		data.add(isActive);
 		data.add(recipeType.ordinal());
 		data.add(recipeTicks);
-		data.add(controlType.ordinal());
 		data.add(sorting);
 		data.add(upgraded);
 		data.add(lastUsage);
@@ -993,26 +931,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
-
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-
-			updateDelay = 10;
-			clientActive = active;
-		}
-	}
-
-	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
-
-	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
@@ -1053,43 +971,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			sounds[type.ordinal()] = new SoundWrapper(this, this, HolidayManager.filterSound(type.getSound()));
 		}
-	}
-
-	@Override
-	public boolean renderUpdate()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
-	}
-
-	@Override
-	public RedstoneControl getControlType()
-	{
-		return controlType;
-	}
-
-	@Override
-	public void setControlType(RedstoneControl type)
-	{
-		controlType = type;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean canPulse()
-	{
-		return false;
-	}
-
-	@Override
-	public TileComponentUpgrade getComponent()
-	{
-		return upgradeComponent;
 	}
 
 	@Override
@@ -1175,13 +1056,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				break;
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 				secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-				break;
-			case ENERGY:
-				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 				break;
 			default:
 				break;
@@ -1206,11 +1082,5 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public String getDataType() 
 	{
 		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getName();
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity() 
-	{
-		return securityComponent;
 	}
 }

@@ -13,7 +13,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<Enric
 {
 	public TileEntityEnrichmentChamber()
 	{
-		super("enrichment", "EnrichmentChamber", usage.enrichmentChamberUsage, 200, BlockStateMachine.MachineType.ENRICHMENT_CHAMBER.baseEnergy);
+		super("enrichment", "EnrichmentChamber", 200, BlockStateMachine.MachineType.ENRICHMENT_CHAMBER.baseEnergy, usage.enrichmentChamberUsage);
 	}
 
 	@Override
