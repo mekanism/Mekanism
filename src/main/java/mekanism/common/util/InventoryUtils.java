@@ -270,65 +270,6 @@ public final class InventoryUtils
     	return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
   	}
 
-  	public static InvStack takeTopItem(TileEntity tile, EnumFacing side, int amount)
-	{
-  		if(isItemHandler(tile, side.getOpposite()))
-  		{
-  			IItemHandler inventory = getItemHandler(tile, side.getOpposite());
-  			
-  			for(int i = inventory.getSlots() - 1; i >= 0; i--)
-			{
-				ItemStack stack = inventory.extractItem(i, amount, true);
-				
-				if(!stack.isEmpty())
-				{
-					return new InvStack(tile, i, stack, side.getOpposite());
-				}
-			}
-  		}
-  		else if(tile instanceof ISidedInventory)
-		{
-			ISidedInventory sidedInventory = (ISidedInventory)tile;
-			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
-
-			if(slots != null)
-			{
-				for(int get = slots.length - 1; get >= 0; get--)
-				{
-					int slotID = slots[get];
-
-					if(!sidedInventory.getStackInSlot(slotID).isEmpty() && sidedInventory.getStackInSlot(slotID).getCount() > 0)
-					{
-						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
-						toSend.setCount(Math.min(amount, toSend.getCount()));
-
-						if(sidedInventory.canExtractItem(slotID, toSend, side.getOpposite()))
-						{
-							return new InvStack(tile, slotID, toSend, side.getOpposite());
-						}
-					}
-				}
-			}
-		}
-		else if(tile instanceof IInventory)
-		{
-			IInventory inventory = checkChestInv((IInventory)tile);
-			
-			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
-			{
-				if(!inventory.getStackInSlot(i).isEmpty() && inventory.getStackInSlot(i).getCount() > 0)
-				{
-					ItemStack toSend = inventory.getStackInSlot(i).copy();
-					toSend.setCount(Math.min(amount, toSend.getCount()));
-
-					return new InvStack(tile, i, toSend, side.getOpposite());
-				}
-			}
-		}
-
-		return null;
-	}
-
 	public static InvStack takeDefinedItem(TileEntity tile, EnumFacing side, ItemStack type, int min, int max)
 	{
 		InvStack ret = new InvStack(tile, side.getOpposite());
@@ -437,62 +378,6 @@ public final class InventoryUtils
 		if(ret != null && !ret.getStack().isEmpty() && ret.getStack().getCount() >= min)
 		{
 			return ret;
-		}
-
-		return null;
-	}
-
-	public static InvStack takeTopStack(TileEntity tile, EnumFacing side, Finder id)
-	{
-		if(isItemHandler(tile, side.getOpposite()))
-		{
-			IItemHandler inventory = getItemHandler(tile, side.getOpposite());
-			
-			for(int i = inventory.getSlots() - 1; i >= 0; i--)
-			{
-				ItemStack stack = inventory.extractItem(i, 64, true);
-				
-				if(!stack.isEmpty() && id.modifies(stack))
-				{
-					return new InvStack(tile, i, stack, side.getOpposite());
-				}
-			}
-		}
-		else if(tile instanceof ISidedInventory)
-		{
-			ISidedInventory sidedInventory = (ISidedInventory)tile;
-			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
-
-			if(slots != null && slots.length != 0)
-			{
-				for(int get = slots.length - 1; get >= 0; get--)
-				{
-					int slotID = slots[get];
-
-					if(!sidedInventory.getStackInSlot(slotID).isEmpty() && id.modifies(sidedInventory.getStackInSlot(slotID)))
-					{
-						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
-
-						if(sidedInventory.canExtractItem(slotID, toSend, side.getOpposite()))
-						{
-							return new InvStack(tile, slotID, toSend, side.getOpposite());
-						}
-					}
-				}
-			}
-		}
-		else if(tile instanceof IInventory)
-		{
-			IInventory inventory = checkChestInv((IInventory)tile);
-			
-			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
-			{
-				if(!inventory.getStackInSlot(i).isEmpty() && id.modifies(inventory.getStackInSlot(i)))
-				{
-					ItemStack toSend = inventory.getStackInSlot(i).copy();
-					return new InvStack(tile, i, toSend, side.getOpposite());
-				}
-			}
 		}
 
 		return null;

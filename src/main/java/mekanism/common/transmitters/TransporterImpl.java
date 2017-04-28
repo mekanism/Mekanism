@@ -279,7 +279,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 		}
 
 		TransitResponse response = stack.recalculatePath(request, this, min);
-
+		
 		if(!response.isEmpty())
 		{
 			stack.itemStack = response.stack;

@@ -3,6 +3,7 @@ package mekanism.common.content.transporter;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.IInventory;
@@ -58,6 +59,11 @@ public class TransitRequest
 	
 	public static TransitRequest getTopStacks(TileEntity tile, EnumFacing side, int amount)
 	{
+		return getTopStacks(tile, side, amount, new FirstFinder());
+	}
+	
+	public static TransitRequest getTopStacks(TileEntity tile, EnumFacing side, int amount, Finder finder)
+	{
 		TransitRequest ret = new TransitRequest();
 		
 		if(InventoryUtils.isItemHandler(tile, side.getOpposite()))
@@ -68,7 +74,7 @@ public class TransitRequest
 			{
 				ItemStack stack = inventory.extractItem(i, amount, true);
 				
-				if(!stack.isEmpty() && !ret.hasType(stack))
+				if(!stack.isEmpty() && !ret.hasType(stack) && finder.modifies(stack))
 				{
 					ret.setItem(stack, i);
 				}
@@ -90,7 +96,7 @@ public class TransitRequest
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
 						toSend.setCount(Math.min(amount, toSend.getCount()));
 
-						if(!ret.hasType(toSend) && sidedInventory.canExtractItem(slotID, toSend, side.getOpposite()))
+						if(!ret.hasType(toSend) && sidedInventory.canExtractItem(slotID, toSend, side.getOpposite()) && finder.modifies(toSend))
 						{
 							ret.setItem(toSend, slotID);
 						}
@@ -109,7 +115,7 @@ public class TransitRequest
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					toSend.setCount(Math.min(amount, toSend.getCount()));
 
-					if(!ret.hasType(toSend))
+					if(!ret.hasType(toSend) && finder.modifies(toSend))
 					{
 						ret.setItem(toSend, i);
 					}
@@ -135,7 +141,7 @@ public class TransitRequest
 		
 		public boolean isEmpty()
 		{
-			return slotID == -1 || stack.isEmpty();
+			return stack.isEmpty();
 		}
 		
 		public ItemStack getRejected(ItemStack orig)

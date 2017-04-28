@@ -18,8 +18,10 @@ public abstract class TransporterFilter
 	public static final List<Character> SPECIAL_CHARS = Arrays.asList('*', '-', ' ', '|', '_', '\'');
 	
 	public EnumColor color;
+	
+	public boolean allowDefault;
 
-	public abstract boolean canFilter(ItemStack itemStack);
+	public abstract boolean canFilter(ItemStack itemStack, boolean strict);
 
 	public abstract Finder getFinder();
 
@@ -30,6 +32,8 @@ public abstract class TransporterFilter
 
 	public void write(NBTTagCompound nbtTags)
 	{
+		nbtTags.setBoolean("allowDefault", allowDefault);
+		
 		if(color != null)
 		{
 			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
@@ -38,6 +42,8 @@ public abstract class TransporterFilter
 
 	protected void read(NBTTagCompound nbtTags)
 	{
+		allowDefault = nbtTags.getBoolean("allowDefault");
+		
 		if(nbtTags.hasKey("color"))
 		{
 			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
@@ -46,6 +52,8 @@ public abstract class TransporterFilter
 
 	public void write(ArrayList<Object> data)
 	{
+		data.add(allowDefault);
+		
 		if(color != null)
 		{
 			data.add(TransporterUtils.colors.indexOf(color));
@@ -57,6 +65,8 @@ public abstract class TransporterFilter
 
 	protected void read(ByteBuf dataStream)
 	{
+		allowDefault = dataStream.readBoolean();
+		
 		int c = dataStream.readInt();
 
 		if(c != -1)

@@ -567,6 +567,8 @@ gui.energyContents=Energy Contents
 gui.redstoneOutput=Redstone Output
 gui.maxWaterOutput=Max Water Output
 gui.stockControl=Stock Control
+gui.allowDefault=Allow Default
+gui.sizeMode=Size Mode
 
 gui.reactor.injectionRate=Injection Rate
 

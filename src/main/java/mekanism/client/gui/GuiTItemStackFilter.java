@@ -77,8 +77,8 @@ public class GuiTItemStackFilter extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
-		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
+		buttonList.add(new GuiButton(0, guiWidth + 47, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
+		buttonList.add(new GuiButton(1, guiWidth + 109, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
 
 		if(isNew)
 		{
@@ -178,6 +178,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
 
 		if(!filter.itemType.isEmpty())
 		{
@@ -201,6 +202,16 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GlStateManager.popMatrix();
+		}
+		
+		if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
+		{
+			drawCreativeTabHoveringText(LangUtils.localize("gui.sizeMode"), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+		{
+			drawCreativeTabHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
@@ -260,6 +271,14 @@ public class GuiTItemStackFilter extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 128, guiHeight + 44, 187, 11, 11, 11);
+		}
+		
+		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+		{
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 11, 11, 11);
 		}
 
 		minField.drawTextBox();
@@ -325,6 +344,12 @@ public class GuiTItemStackFilter extends GuiMekanism
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				filter.sizeMode = !filter.sizeMode;
+			}
+			
+			if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+			{
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				filter.allowDefault = !filter.allowDefault;
 			}
 		}
 

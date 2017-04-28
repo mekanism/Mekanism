@@ -256,7 +256,7 @@ public class PacketHandler
 	{
 		if(general.logPackets)
 		{
-			System.out.println("[Mekanism] " + log);
+			Mekanism.logger.info(log);
 		}
 	}
 	

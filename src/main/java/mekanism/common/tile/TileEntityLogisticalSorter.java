@@ -20,7 +20,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.client;
-import mekanism.common.content.transporter.Finder.FirstFinder;
+import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
 import mekanism.common.content.transporter.TItemStackFilter;
@@ -28,7 +28,6 @@ import mekanism.common.content.transporter.TOreDictFilter;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -122,7 +121,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 							break inner;
 						}
 
-						if(filter.canFilter(invStack.getStack()))
+						if(filter.canFilter(invStack.getStack(), true))
 						{
 							if(filter instanceof TItemStackFilter)
 							{
@@ -133,10 +132,10 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 									min = itemFilter.min;
 								}
 							}
-
+							
 							TransitRequest request = TransitRequest.getFromStack(invStack.getStack());
 							TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
-
+							
 							if(!response.isEmpty())
 							{
 								invStack.use(response.stack.getCount());
@@ -152,19 +151,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 				if(!sentItems && autoEject)
 				{
-					InvStack invStack = InventoryUtils.takeTopStack(back, facing.getOpposite(), new FirstFinder());
+					TransitRequest request = TransitRequest.getTopStacks(back, facing.getOpposite(), 64, new StrictFilterFinder());
+					TransitResponse response = emitItemToTransporter(front, request, color, 0);
 					
-					if(invStack != null && !invStack.getStack().isEmpty())
+					if(!response.isEmpty())
 					{
-						TransitRequest request = TransitRequest.getTopStacks(back, facing.getOpposite(), 64);
-						TransitResponse response = emitItemToTransporter(front, request, color, 0);
-						
-						if(!response.isEmpty())
-						{
-							response.getInvStack(back, facing).use(response.stack.getCount());
-							back.markDirty();
-							setActive(true);
-						}
+						response.getInvStack(back, facing).use(response.stack.getCount());
+						back.markDirty();
+						setActive(true);
 					}
 				}
 				
@@ -858,5 +852,22 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 		
 		return super.getCapability(capability, side);
+	}
+	
+	private class StrictFilterFinder extends Finder
+	{
+		@Override
+		public boolean modifies(ItemStack stack)
+		{
+			for(TransporterFilter filter : filters)
+			{
+				if(filter.canFilter(stack, false) && !filter.allowDefault)
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
 	}
 }

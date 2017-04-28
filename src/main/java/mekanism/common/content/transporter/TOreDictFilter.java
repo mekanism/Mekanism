@@ -14,7 +14,7 @@ public class TOreDictFilter extends TransporterFilter
 	public String oreDictName;
 
 	@Override
-	public boolean canFilter(ItemStack itemStack)
+	public boolean canFilter(ItemStack itemStack, boolean strict)
 	{
 		if(itemStack.isEmpty())
 		{
@@ -84,6 +84,7 @@ public class TOreDictFilter extends TransporterFilter
 	public TOreDictFilter clone()
 	{
 		TOreDictFilter filter = new TOreDictFilter();
+		filter.allowDefault = allowDefault;
 		filter.color = color;
 		filter.oreDictName = oreDictName;
 

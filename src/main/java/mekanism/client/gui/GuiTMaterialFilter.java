@@ -76,8 +76,8 @@ public class GuiTMaterialFilter extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
-		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
+		buttonList.add(new GuiButton(0, guiWidth + 47, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
+		buttonList.add(new GuiButton(1, guiWidth + 109, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
 
 		if(isNew)
 		{
@@ -126,6 +126,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 		fontRendererObj.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.materialFilter"), 43, 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		fontRendererObj.drawString(LangUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
 
 		if(!filter.materialItem.isEmpty())
 		{
@@ -151,6 +152,11 @@ public class GuiTMaterialFilter extends GuiMekanism
 			GlStateManager.popMatrix();
 		}
 
+		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+		{
+			drawCreativeTabHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
+		}
+		
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
 			if(filter.color != null)
@@ -197,6 +203,14 @@ public class GuiTMaterialFilter extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
+		}
+		
+		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+		{
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 11, 11, 11);
 		}
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
@@ -256,6 +270,12 @@ public class GuiTMaterialFilter extends GuiMekanism
 				}
 
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+			}
+			
+			if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+			{
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				filter.allowDefault = !filter.allowDefault;
 			}
 		}
 		
