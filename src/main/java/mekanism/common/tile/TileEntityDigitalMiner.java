@@ -34,6 +34,8 @@ import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.transporter.InvStack;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
@@ -304,25 +306,25 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 			}
 			
-			ItemStack topEject = getTopEject(false, null);
+			TransitRequest ejectMap = getEjectItemMap();
 
-			if(doEject && delayTicks == 0 && topEject != null && getEjectInv() != null && getEjectTile() != null)
+			if(doEject && delayTicks == 0 && !ejectMap.isEmpty() && getEjectInv() != null && getEjectTile() != null)
 			{
 				if(CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), topEject, null, true, 0);
+					TransitResponse response = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), ejectMap, null, true, 0);
 
-					if(TransporterManager.didEmit(topEject, rejected))
+					if(!response.isEmpty())
 					{
-						getTopEject(true, rejected);
+						response.getInvStack(this, facing.getOpposite()).use();
 					}
 				}
 				else {
-					ItemStack remains = InventoryUtils.putStackInInventory(getEjectInv(), topEject, facing.getOpposite(), false);
+					TransitResponse response = InventoryUtils.putStackInInventory(getEjectInv(), ejectMap, facing.getOpposite(), false);
 
-					if(TransporterManager.didEmit(topEject, remains))
+					if(!response.isEmpty())
 					{
-						getTopEject(true, remains);
+						response.getInvStack(this, facing.getOpposite()).use();
 					}
 				}
 
@@ -466,8 +468,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return toReturn;
 	}
 
-	public ItemStack getTopEject(boolean remove, ItemStack reject)
+	public TransitRequest getEjectItemMap()
 	{
+		TransitRequest request = new TransitRequest();
+		
 		for(int i = 27-1; i >= 0; i--)
 		{
 			ItemStack stack = inventory[i];
@@ -479,16 +483,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					continue;
 				}
 
-				if(remove)
+				if(!request.hasType(stack))
 				{
-					inventory[i] = reject;
+					request.setItem(stack, i);
 				}
-
-				return stack;
 			}
 		}
 
-		return null;
+		return request;
 	}
 
 	public boolean canInsert(List<ItemStack> stacks)

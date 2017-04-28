@@ -11,8 +11,9 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -38,7 +39,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 		register();
 	}
 	
-	public List<AcceptorData> calculateAcceptors(ItemStack stack, EnumColor color)
+	public List<AcceptorData> calculateAcceptors(TransitRequest request, EnumColor color)
 	{
 		List<AcceptorData> toReturn = new ArrayList<AcceptorData>();
 		
@@ -61,13 +62,13 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 			
 			for(EnumFacing side : sides)
 			{
-				ItemStack returned = TransporterManager.getPredictedInsert(acceptor, color, stack, side.getOpposite());
+				TransitResponse response = TransporterManager.getPredictedInsert(acceptor, color, request, side.getOpposite());
 				
-				if(TransporterManager.didEmit(stack, returned))
+				if(!response.isEmpty())
 				{
 					if(data == null)
 					{
-						data = new AcceptorData(coord, returned, side.getOpposite());
+						data = new AcceptorData(coord, response, side.getOpposite());
 					}
 					else {
 						data.sides.add(side.getOpposite());
@@ -87,13 +88,13 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 	public static class AcceptorData
 	{
 		public Coord4D location;
-		public ItemStack rejected;
+		public TransitResponse response;
 		public EnumSet<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
 		
-		public AcceptorData(Coord4D coord, ItemStack stack, EnumFacing side)
+		public AcceptorData(Coord4D coord, TransitResponse ret, EnumFacing side)
 		{
 			location = coord;
-			rejected = stack;
+			response = ret;
 			sides.add(side);
 		}
 	}

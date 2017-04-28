@@ -17,7 +17,8 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
@@ -25,7 +26,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -195,15 +195,25 @@ public class TileComponentEjector implements ITileComponent
 
 				if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
 				{
-					ItemStack rejects = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), stack, outputColor, true, 0);
+					TransitResponse response = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), TransitRequest.getFromStack(stack), outputColor, true, 0);
 
-					if(TransporterManager.didEmit(stack, rejects))
+					if(!response.isEmpty())
 					{
-						stack = rejects;
+						stack.stackSize -= (response.stack.stackSize);
 					}
 				}
 				else {
-					stack = InventoryUtils.putStackInInventory(tile, stack, side, false);
+					TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(stack), side, false);
+					
+					if(!response.isEmpty())
+					{
+						stack.stackSize -= (response.stack.stackSize);
+					}
+				}
+
+				if (stack.stackSize == 0){//hacky hack hack
+					stack = null;
+					tileEntity.setInventorySlotContents(slotID, null);
 				}
 
 				if(stack == null || prev.stackSize != stack.stackSize)

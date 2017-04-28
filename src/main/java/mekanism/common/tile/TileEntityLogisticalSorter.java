@@ -25,6 +25,8 @@ import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TOreDictFilter;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.IComputerIntegration;
@@ -131,11 +133,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 								}
 							}
 
-							ItemStack used = emitItemToTransporter(front, invStack, filter.color, min);
+							TransitRequest request = TransitRequest.getFromStack(invStack.getStack());
+							TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
 
-							if(used != null)
+							if(!response.isEmpty())
 							{
-								invStack.use(used.stackSize);
+								invStack.use(response.stack.stackSize);
 								back.markDirty();
 								setActive(true);
 								sentItems = true;
@@ -152,11 +155,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(invStack != null && invStack.getStack() != null)
 					{
-						ItemStack used = emitItemToTransporter(front, invStack, color, 0);
+						TransitRequest request = TransitRequest.getTopStacks(back, facing.getOpposite(), 64);
+						TransitResponse response = emitItemToTransporter(front, request, color, 0);
 						
-						if(used != null)
+						if(response != null)
 						{
-							invStack.use(used.stackSize);
+							response.getInvStack(back, facing).use(response.stack.stackSize);
 							back.markDirty();
 							setActive(true);
 						}
@@ -176,45 +180,23 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 	}
 	
-	/*
-	 * Returns used
-	 */
-	public ItemStack emitItemToTransporter(TileEntity front, InvStack inInventory, EnumColor filterColor, int min)
+	public TransitResponse emitItemToTransporter(TileEntity front, TransitRequest request, EnumColor filterColor, int min)
 	{
-		ItemStack used = null;
-
 		if(CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 		{
 			ILogisticalTransporter transporter = CapabilityUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
 
 			if(!roundRobin)
 			{
-				ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, true, min);
-
-				if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-				{
-					used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-				}
+				return TransporterUtils.insert(this, transporter, request, filterColor, true, min);
 			}
 			else {
-				ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, true, min);
-
-				if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-				{
-					used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-				}
+				return TransporterUtils.insertRR(this, transporter, request, filterColor, true, min);
 			}
 		}
 		else {
-			ItemStack rejects = InventoryUtils.putStackInInventory(front, inInventory.getStack(), facing, false);
-
-			if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-			{
-				used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-			}
+			return InventoryUtils.putStackInInventory(front, request, facing, false);
 		}
-		
-		return used;
 	}
 
 	@Override
@@ -477,10 +459,10 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		return TransporterUtils.isValidAcceptorOnSide(tile, facing.getOpposite());
 	}
 
-	public ItemStack sendHome(ItemStack stack)
+	public TransitResponse sendHome(ItemStack stack)
 	{
 		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
-		return InventoryUtils.putStackInInventory(back, stack, facing.getOpposite(), true);
+		return InventoryUtils.putStackInInventory(back, TransitRequest.getFromStack(stack), facing.getOpposite(), true);
 	}
 	
 	@Override

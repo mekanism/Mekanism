@@ -58,7 +58,7 @@ public class ItemPartTransmitter extends ItemMultiPart implements IMetaItem
 			
 			if(transmission == TransmissionType.ENERGY)
 			{
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.get(tier).cableCapacity) + "/t");
 			}
 			else if(transmission == TransmissionType.FLUID)
 			{

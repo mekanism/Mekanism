@@ -15,7 +15,8 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -27,7 +28,6 @@ import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -261,16 +261,22 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 					if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
 					{
 						ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
+						TransitResponse response = TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0);
 
-						ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
-
-						if(TransporterManager.didEmit(bottomStack, rejects))
+						if(!response.isEmpty())
 						{
-							setInventorySlotContents(0, rejects);
+							bottomStack.stackSize -= (response.stack.stackSize);
+							setInventorySlotContents(0, bottomStack);
 						}
 					}
 					else {
-						setInventorySlotContents(0, InventoryUtils.putStackInInventory(tile, bottomStack, EnumFacing.DOWN, false));
+						TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), EnumFacing.DOWN, false);
+						
+						if(!response.isEmpty())
+						{
+							bottomStack.stackSize -= (response.stack.stackSize);
+							setInventorySlotContents(0, bottomStack);
+						}
 					}
 
 					delayTicks = 10;
