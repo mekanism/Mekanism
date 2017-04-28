@@ -15,7 +15,6 @@ import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,9 +35,9 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
 	 */
-	public TileEntityElectricMachine(String soundPath, String name, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityElectricMachine(String soundPath, String name, int ticksRequired, double perTick, double maxEnergy)
 	{
-		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, ticksRequired, maxEnergy, perTick, 3, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
@@ -51,9 +50,6 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
-
-		upgradeComponent = new TileComponentUpgrade(this, 3);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));

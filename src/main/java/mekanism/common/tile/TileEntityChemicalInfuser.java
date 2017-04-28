@@ -5,8 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -14,7 +12,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IRedstoneControl;
@@ -23,15 +20,11 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -41,12 +34,12 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
+public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
 {
 	public GasTank leftTank = new GasTank(MAX_GAS);
 	public GasTank rightTank = new GasTank(MAX_GAS);
@@ -54,36 +47,17 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 	public static final int MAX_GAS = 10000;
 
-	public int updateDelay;
-
 	public int gasOutput = 256;
-
-	public boolean isActive;
-
-	public boolean clientActive;
-
-	public double prevEnergy;
-
-	public final double BASE_ENERGY_USAGE = usage.chemicalInfuserUsage;
-	
-	public double energyPerTick = BASE_ENERGY_USAGE;
 
 	public ChemicalInfuserRecipe cachedRecipe;
 	
 	public double clientEnergyUsed;
-	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
-	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
-
-	/** This machine's current RedstoneControl type. */
-	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileEntityChemicalInfuser()
 	{
-		super("machine.cheminfuser", "ChemicalInfuser", BlockStateMachine.MachineType.CHEMICAL_INFUSER.baseEnergy);
+		super("machine.cheminfuser", "ChemicalInfuser", BlockStateMachine.MachineType.CHEMICAL_INFUSER.baseEnergy, usage.chemicalInfuserUsage, 4);
 		
 		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
 	@Override
@@ -91,29 +65,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		super.onUpdate();
 		
-		if(world.isRemote && updateDelay > 0)
-		{
-			updateDelay--;
-
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
-
 		if(!world.isRemote)
 		{
-			if(updateDelay > 0)
-			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				}
-			}
-
 			ChargeUtils.discharge(3, this);
 
 			if(!inventory.get(0).isEmpty() && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
@@ -207,7 +160,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		int operations = getUpgradedUsage(recipe);
 		
 		recipe.operate(leftTank, rightTank, centerTank, operations);
-
 		markDirty();
 		
 		return operations;
@@ -220,8 +172,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			isActive = dataStream.readBoolean();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
 			clientEnergyUsed = dataStream.readDouble();
 	
 			if(dataStream.readBoolean())
@@ -247,13 +197,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			else {
 				centerTank.setGas(null);
 			}
-	
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				updateDelay = general.UPDATE_DELAY;
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
 		}
 	}
 
@@ -262,8 +205,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		super.getNetworkedData(data);
 
-		data.add(isActive);
-		data.add(controlType.ordinal());
 		data.add(clientEnergyUsed);
 
 		if(leftTank.getGas() != null)
@@ -304,9 +245,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		super.readFromNBT(nbtTags);
 
-		isActive = nbtTags.getBoolean("isActive");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
 		leftTank.read(nbtTags.getCompoundTag("leftTank"));
 		rightTank.read(nbtTags.getCompoundTag("rightTank"));
 		centerTank.read(nbtTags.getCompoundTag("centerTank"));
@@ -316,9 +254,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
-
-		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("controlType", controlType.ordinal());
 
 		nbtTags.setTag("leftTank", leftTank.write(new NBTTagCompound()));
 		nbtTags.setTag("rightTank", rightTank.write(new NBTTagCompound()));
@@ -352,38 +287,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
-
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-
-			updateDelay = 10;
-			clientActive = active;
-		}
-	}
-
-	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
-
-	@Override
-	public boolean renderUpdate()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
-	}
-
-	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
 		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == facing;
@@ -393,25 +296,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return (getTank(side) != null && getTank(side) != centerTank) && getTank(side).canReceive(type);
-	}
-
-	@Override
-	public RedstoneControl getControlType()
-	{
-		return controlType;
-	}
-
-	@Override
-	public void setControlType(RedstoneControl type)
-	{
-		controlType = type;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean canPulse()
-	{
-		return false;
 	}
 
 	@Override
@@ -536,28 +420,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 	
 	@Override
-	public TileComponentUpgrade getComponent() 
-	{
-		return upgradeComponent;
-	}
-	
-	@Override
-	public void recalculateUpgradables(Upgrade upgrade)
-	{
-		super.recalculateUpgradables(upgrade);
-
-		switch(upgrade)
-		{
-			case ENERGY:
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_USAGE);
-				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-			default:
-				break;
-		}
-	}
-	
-	@Override
 	public List<String> getInfo(Upgrade upgrade) 
 	{
 		return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
@@ -567,11 +429,5 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public Object[] getTanks() 
 	{
 		return new Object[] {leftTank, rightTank, centerTank};
-	}
-
-	@Override
-	public TileComponentSecurity getSecurity() 
-	{
-		return securityComponent;
 	}
 }

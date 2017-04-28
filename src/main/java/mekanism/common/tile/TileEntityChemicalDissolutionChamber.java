@@ -4,8 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -13,24 +11,16 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
-import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.component.TileComponentAdvancedUpgrade;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
@@ -46,7 +36,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager, ISecurityTile
+public class TileEntityChemicalDissolutionChamber extends TileEntityMachine implements ITubeConnection, IGasHandler, ISustainedData, ITankManager
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -59,15 +49,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public int injectUsageThisTick;
 
-	public int updateDelay;
-
 	public int gasOutput = 256;
-
-	public boolean isActive;
-
-	public boolean clientActive;
-
-	public double prevEnergy;
 
 	public int operatingTicks = 0;
 
@@ -77,49 +59,20 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public final double BASE_ENERGY_USAGE = usage.chemicalDissolutionChamberUsage;
 
-	public double energyUsage = usage.chemicalDissolutionChamberUsage;
-
 	public DissolutionRecipe cachedRecipe;
-	
-	public TileComponentUpgrade upgradeComponent = new TileComponentAdvancedUpgrade(this, 4);
-	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
-
-	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileEntityChemicalDissolutionChamber()
 	{
-		super("machine.dissolution", "ChemicalDissolutionChamber", BlockStateMachine.MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
+		super("machine.dissolution", "ChemicalDissolutionChamber", BlockStateMachine.MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy, usage.chemicalDissolutionChamberUsage, 4);
 		
 		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(world.isRemote && updateDelay > 0)
-		{
-			updateDelay--;
-
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
-
 		if(!world.isRemote)
 		{
-			if(updateDelay > 0)
-			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-				}
-			}
-
 			ChargeUtils.discharge(3, this);
 
 			if(!inventory.get(0).isEmpty() && injectTank.getNeeded() > 0)
@@ -138,10 +91,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 			injectUsageThisTick = Math.max(1, StatUtils.inversePoisson(injectUsage));
 
-			if(canOperate(recipe) && getEnergy() >= energyUsage && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= energyPerTick && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - energyUsage);
+				setEnergy(getEnergy() - energyPerTick);
 				minorOperate();
 
 				if((operatingTicks+1) < ticksRequired)
@@ -267,8 +220,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			isActive = dataStream.readBoolean();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
 			operatingTicks = dataStream.readInt();
 	
 			if(dataStream.readBoolean())
@@ -286,13 +237,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			else {
 				outputTank.setGas(null);
 			}
-	
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				updateDelay = general.UPDATE_DELAY;
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
 		}
 	}
 
@@ -301,8 +245,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		super.getNetworkedData(data);
 
-		data.add(isActive);
-		data.add(controlType.ordinal());
 		data.add(operatingTicks);
 
 		if(injectTank.getGas() != null)
@@ -333,8 +275,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		super.readFromNBT(nbtTags);
 
-		isActive = nbtTags.getBoolean("isActive");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		injectTank.read(nbtTags.getCompoundTag("injectTank"));
 		outputTank.read(nbtTags.getCompoundTag("gasTank"));
@@ -345,8 +285,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setTag("injectTank", injectTank.write(new NBTTagCompound()));
 		nbtTags.setTag("gasTank", outputTank.write(new NBTTagCompound()));
@@ -359,62 +297,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		return i != 0 && i != 1;
 	}
-	
-	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
-
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-
-			updateDelay = 10;
-			clientActive = active;
-		}
-	}
-
-	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
-
-	@Override
-	public boolean renderUpdate()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
-	}
 
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
 		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
-	}
-
-	@Override
-	public RedstoneControl getControlType()
-	{
-		return controlType;
-	}
-
-	@Override
-	public void setControlType(RedstoneControl type)
-	{
-		controlType = type;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean canPulse()
-	{
-		return false;
 	}
 
 	@Override
@@ -503,13 +390,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 				break;
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 				injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
-				break;
-			case ENERGY:
-				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 				break;
 			default:
 				break;
@@ -520,11 +402,5 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	public Object[] getTanks() 
 	{
 		return new Object[] {injectTank, outputTank};
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity()
-	{
-		return securityComponent;
 	}
 }

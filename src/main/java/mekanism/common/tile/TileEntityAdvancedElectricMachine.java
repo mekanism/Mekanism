@@ -23,10 +23,8 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-import mekanism.common.tile.component.TileComponentAdvancedUpgrade;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -68,7 +66,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	 */
 	public TileEntityAdvancedElectricMachine(String soundPath, String name, double perTick, int secondaryPerTick, int ticksRequired, double maxEnergy)
 	{
-		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"), perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, ticksRequired, maxEnergy, perTick, 4, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
@@ -87,9 +85,11 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 		BASE_SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
 		secondaryEnergyPerTick = secondaryPerTick;
-
-		upgradeComponent = upgradeableSecondaryEfficiency() ? new TileComponentAdvancedUpgrade(this, 4) : new TileComponentUpgrade(this, 4);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		
+		if(upgradeableSecondaryEfficiency())
+		{
+			upgradeComponent.setSupported(Upgrade.GAS);
+		}
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));

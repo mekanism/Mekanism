@@ -25,7 +25,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IActiveState
+public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveState
 {
 	public Coord4D digging;
 	public double diggingProgress;

@@ -38,7 +38,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.api.energy.IEnergyContainerItem;
 
-public class TileEntityChargepad extends TileEntityNoisyElectricBlock
+public class TileEntityChargepad extends TileEntityNoisyBlock
 {
 	public boolean isActive;
 	public boolean clientActive;
