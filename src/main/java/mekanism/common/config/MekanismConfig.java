@@ -72,6 +72,7 @@ public class MekanismConfig
 		public static boolean allowTransmitterAlloyUpgrade;
 		public static boolean allowChunkloading;
 		public static boolean allowProtection = true;
+		public static int portableTeleporterDelay;
 	}
 
 	public static class client
