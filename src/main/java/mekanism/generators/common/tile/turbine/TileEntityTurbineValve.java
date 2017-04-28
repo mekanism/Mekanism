@@ -43,6 +43,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	public boolean ic2Registered = false;
 	
 	public TurbineFluidTank fluidTank;
+	
+	public Fluid STEAM = FluidRegistry.getFluid("steam");
 
 	public TileEntityTurbineValve()
 	{
@@ -368,7 +370,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(structure == null)
+		if(!canFill(from, resource != null ? resource.getFluid() : null))
 		{
 			return 0;
 		}
@@ -403,7 +405,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if(fluid == FluidRegistry.getFluid("steam"))
+		if(fluid == STEAM)
 		{
 			return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
 		}
