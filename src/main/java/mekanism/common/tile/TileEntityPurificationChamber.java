@@ -11,6 +11,7 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.GasUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
@@ -21,7 +22,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("purification", "PurificationChamber", usage.purificationChamberUsage, 1, 200, BlockStateMachine.MachineType.PURIFICATION_CHAMBER.baseEnergy);
+		super("purification", "PurificationChamber", BlockStateMachine.MachineType.PURIFICATION_CHAMBER.baseEnergy, usage.purificationChamberUsage, 200, 1);
 	}
 
 	@Override

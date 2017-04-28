@@ -6,7 +6,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.network.PacketRemoveUpgrade.RemoveUpgradeMessage;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

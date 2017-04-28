@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -13,6 +13,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.ChargeUtils;
@@ -35,9 +36,9 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
 	 */
-	public TileEntityElectricMachine(String soundPath, String name, int ticksRequired, double perTick, double maxEnergy)
+	public TileEntityElectricMachine(String soundPath, String name, double perTick, double maxEnergy, int ticksRequired)
 	{
-		super(soundPath, name, ticksRequired, maxEnergy, perTick, 3, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
+		super(soundPath, name, maxEnergy, perTick, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		

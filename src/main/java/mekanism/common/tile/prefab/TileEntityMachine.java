@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 
@@ -29,7 +29,7 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 	
 	public double prevEnergy;
 	
-	public final double BASE_ENERGY_USAGE;
+	public double BASE_ENERGY_PER_TICK;
 	
 	public double energyPerTick;
 	
@@ -43,8 +43,7 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 	{
 		super(sound, name, maxEnergy);
 		
-		BASE_ENERGY_USAGE = baseEnergyUsage;
-		energyPerTick = baseEnergyUsage;
+		energyPerTick = BASE_ENERGY_PER_TICK = baseEnergyUsage;
 		
 		upgradeComponent = new TileComponentUpgrade(this, upgradeSlot);
 		upgradeComponent.setSupported(Upgrade.MUFFLING);
@@ -78,6 +77,12 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean canSetFacing(int facing)
+	{
+		return facing != 0 && facing != 1;
 	}
 	
 	@Override
@@ -202,7 +207,7 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 		{
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_USAGE);
+				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 				break;
 			default:

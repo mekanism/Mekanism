@@ -9,6 +9,7 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CombinerRecipe;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
@@ -18,7 +19,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<Combin
 {
 	public TileEntityCombiner()
 	{
-		super("combiner", "Combiner", usage.combinerUsage, 1, 200, BlockStateMachine.MachineType.COMBINER.baseEnergy);
+		super("combiner", "Combiner", BlockStateMachine.MachineType.COMBINER.baseEnergy, usage.combinerUsage, 200, 1);
 	}
 
 	@Override

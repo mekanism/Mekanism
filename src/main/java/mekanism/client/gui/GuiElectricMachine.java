@@ -17,7 +17,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerElectricMachine;
-import mekanism.common.tile.TileEntityElectricMachine;
+import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;

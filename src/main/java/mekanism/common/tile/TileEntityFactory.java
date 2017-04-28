@@ -49,6 +49,8 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -1047,7 +1049,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 				break;
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 				break;
 			default:

@@ -8,7 +8,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;

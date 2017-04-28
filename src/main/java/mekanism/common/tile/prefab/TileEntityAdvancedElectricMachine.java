@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 
@@ -23,6 +23,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.ChargeUtils;
@@ -64,9 +65,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	 * @param ticksRequired - how many ticks it takes to smelt an item.
 	 * @param maxEnergy - maximum amount of energy this machine can hold.
 	 */
-	public TileEntityAdvancedElectricMachine(String soundPath, String name, double perTick, int secondaryPerTick, int ticksRequired, double maxEnergy)
+	public TileEntityAdvancedElectricMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage, int ticksRequired, int secondaryPerTick)
 	{
-		super(soundPath, name, ticksRequired, maxEnergy, perTick, 4, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
+		super(soundPath, name, maxEnergy, baseEnergyUsage, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		

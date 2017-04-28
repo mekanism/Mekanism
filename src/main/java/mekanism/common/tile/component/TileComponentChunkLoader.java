@@ -13,7 +13,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.ChunkPos;

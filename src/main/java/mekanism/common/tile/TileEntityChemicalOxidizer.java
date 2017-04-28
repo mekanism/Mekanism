@@ -9,7 +9,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine;
@@ -18,6 +17,7 @@ import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.OxidationRecipe;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -32,7 +32,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalOxidizer extends TileEntityMachine implements ITubeConnection, ISustainedData, ITankManager
+public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine implements ITubeConnection, ISustainedData, ITankManager
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 
@@ -40,17 +40,11 @@ public class TileEntityChemicalOxidizer extends TileEntityMachine implements ITu
 
 	public int gasOutput = 256;
 
-	public int operatingTicks = 0;
-
-	public int BASE_TICKS_REQUIRED = 100;
-
-	public int ticksRequired = BASE_TICKS_REQUIRED;
-
 	public OxidationRecipe cachedRecipe;
 
 	public TileEntityChemicalOxidizer()
 	{
-		super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy, usage.rotaryCondensentratorUsage, 3);
+		super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy, usage.rotaryCondensentratorUsage, 3, 100);
 		
 		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	}
@@ -149,11 +143,6 @@ public class TileEntityChemicalOxidizer extends TileEntityMachine implements ITu
 		return InventoryUtils.EMPTY;
 	}
 
-	public double getScaledProgress()
-	{
-		return ((double)operatingTicks) / ((double)ticksRequired);
-	}
-
 	public OxidationRecipe getRecipe()
 	{
 		ItemStackInput input = getInput();
@@ -190,8 +179,6 @@ public class TileEntityChemicalOxidizer extends TileEntityMachine implements ITu
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			operatingTicks = dataStream.readInt();
-	
 			if(dataStream.readBoolean())
 			{
 				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
@@ -206,8 +193,6 @@ public class TileEntityChemicalOxidizer extends TileEntityMachine implements ITu
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
-
-		data.add(operatingTicks);
 
 		if(gasTank.getGas() != null)
 		{
@@ -227,7 +212,6 @@ public class TileEntityChemicalOxidizer extends TileEntityMachine implements ITu
 	{
 		super.readFromNBT(nbtTags);
 
-		operatingTicks = nbtTags.getInteger("operatingTicks");
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
 	}
 
@@ -236,7 +220,6 @@ public class TileEntityChemicalOxidizer extends TileEntityMachine implements ITu
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 		
 		return nbtTags;
@@ -284,22 +267,6 @@ public class TileEntityChemicalOxidizer extends TileEntityMachine implements ITu
 	public void readSustainedData(ItemStack itemStack) 
 	{
 		gasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasTank")));
-	}
-
-	@Override
-	public void recalculateUpgradables(Upgrade upgrade)
-	{
-		super.recalculateUpgradables(upgrade);
-
-		switch(upgrade)
-		{
-			case SPEED:
-				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
-				break;
-			default:
-				break;
-		}
 	}
 	
 	@Override

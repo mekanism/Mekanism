@@ -18,6 +18,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;

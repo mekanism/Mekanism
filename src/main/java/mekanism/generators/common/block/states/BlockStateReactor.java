@@ -2,7 +2,7 @@ package mekanism.generators.common.block.states;
 
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.block.BlockReactor;

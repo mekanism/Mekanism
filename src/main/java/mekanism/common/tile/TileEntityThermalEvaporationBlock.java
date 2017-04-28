@@ -5,6 +5,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
