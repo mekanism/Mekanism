@@ -54,6 +54,7 @@ public class MekanismClient extends Mekanism
 		}
 
 		ClientTickHandler.tickingSet.clear();
+		ClientTickHandler.portableTeleports.clear();
 		
 		TransmitterModel.clearCache();
 

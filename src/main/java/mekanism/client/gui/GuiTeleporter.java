@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
@@ -406,7 +407,7 @@ public class GuiTeleporter extends GuiMekanism
 			if(clientFreq != null && clientStatus == 1)
 			{
 				mc.setIngameFocus();
-				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, currentHand, clientFreq));
+				ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
 			}
 		}
 		
