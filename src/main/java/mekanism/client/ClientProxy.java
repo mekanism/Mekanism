@@ -798,6 +798,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiTeleporter(player, EnumHand.values()[pos.getX()], itemStack);
 				}
+				
+				return null;
 			case 15:
 				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 16:
@@ -814,6 +816,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitMain(player.inventory, robit);
 				}
+				
+				return null;
 			case 22:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -821,6 +825,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitCrafting(player.inventory, robit);
 				}
+				
+				return null;
 			case 23:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 				
@@ -828,6 +834,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitInventory(player.inventory, robit);
 				}
+				
+				return null;
 			case 24:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -835,6 +843,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitSmelting(player.inventory, robit);
 				}
+				
+				return null;
 			case 25:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -842,6 +852,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitRepair(player.inventory, robit);
 				}
+				
+				return null;
 			case 29:
 				return new GuiChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer)tileEntity);
 			case 30:
@@ -867,6 +879,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiSeismicReader(world, new Coord4D(player), itemStack1.copy());
 				}
+				
+				return null;
 			case 39:
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 			case 40:
