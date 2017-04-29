@@ -443,6 +443,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerNull();
 				}
+				
+				return null;
 			case 15:
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 16:
@@ -458,6 +460,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitMain(player.inventory, robit);
 				}
+				
+				return null;
 			case 22:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -465,6 +469,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitCrafting(player.inventory, robit);
 				}
+				
+				return null;
 			case 23:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -472,6 +478,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitInventory(player.inventory, robit);
 				}
+				
+				return null;
 			case 24:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 				
@@ -479,6 +487,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitSmelting(player.inventory, robit);
 				}
+				
+				return null;
 			case 25:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -486,6 +496,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitRepair(player.inventory, robit);
 				}
+				
+				return null;
 			case 26:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 27:

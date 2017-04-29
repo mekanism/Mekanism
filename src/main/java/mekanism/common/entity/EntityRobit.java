@@ -136,6 +136,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		dataManager.register(ELECTRICITY, 0F);
 		dataManager.register(OWNER_UUID, "");
+		dataManager.register(OWNER_NAME, "");
 		dataManager.register(FOLLOW, false);
 		dataManager.register(DROP_PICKUP, false);
 	}
@@ -172,12 +173,18 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				return;
 			}
 
-			if(!(homeLocation.getTileEntity(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(homeLocation.dimensionId)) instanceof TileEntityChargepad))
+			if(ticksExisted % 20 == 0)
 			{
-				drop();
-				setDead();
-
-				return;
+				World serverWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(homeLocation.dimensionId);
+				
+				if(homeLocation.exists(serverWorld))
+				{
+					if(!(homeLocation.getTileEntity(serverWorld) instanceof TileEntityChargepad))
+					{
+						drop();
+						setDead();
+					}
+				}
 			}
 
 			if(getEnergy() == 0 && !isOnChargepad())
