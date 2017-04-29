@@ -106,7 +106,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 				{
 					if(FluidContainerUtils.isFluidContainer(inventory[0]))
 					{
-						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
+						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), true);
 					}
 				}
 			}
