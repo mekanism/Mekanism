@@ -74,7 +74,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			{
 				if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 				{
-					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory.get(0), FluidChecker.check(FluidRegistry.LAVA)), true);
+					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(FluidRegistry.LAVA)), true);
 				}
 				else {
 					int fuel = getFuel(inventory.get(0));
