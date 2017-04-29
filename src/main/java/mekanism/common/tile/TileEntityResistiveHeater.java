@@ -349,7 +349,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 				{
 					if(arguments[0] instanceof Double)
 					{
-						temperature = (Double)arguments[0];
+						energyUsage = (Double)arguments[0];
+						return new Object[] {"Set energy usage."};
 					}
 				}
 				
