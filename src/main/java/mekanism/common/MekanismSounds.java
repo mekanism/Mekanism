@@ -2,16 +2,37 @@ package mekanism.common;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public final class MekanismSounds 
+public final class MekanismSounds
 {
-	public static final SoundEvent BEEP = new SoundEvent(new ResourceLocation("mekanism:etc.Beep"));
-	public static final SoundEvent CLICK = new SoundEvent(new ResourceLocation("mekanism:etc.Click"));
-	public static final SoundEvent DING = new SoundEvent(new ResourceLocation("mekanism:etc.Ding"));
-	public static final SoundEvent ERROR = new SoundEvent(new ResourceLocation("mekanism:etc.Error"));
-	public static final SoundEvent GAS_MASK = new SoundEvent(new ResourceLocation("mekanism:etc.GasMask"));
-	public static final SoundEvent HYDRAULIC = new SoundEvent(new ResourceLocation("mekanism:etc.Hydraulic"));
-	public static final SoundEvent POP = new SoundEvent(new ResourceLocation("mekanism:etc.Pop"));
-	public static final SoundEvent SUCCESS = new SoundEvent(new ResourceLocation("mekanism:etc.Success"));
-	public static final SoundEvent CJ_EASTER_EGG = new SoundEvent(new ResourceLocation("mekanism:etc.cj"));
+	public static SoundEvent BEEP;
+	public static SoundEvent CLICK;
+	public static SoundEvent DING;
+	public static SoundEvent ERROR;
+	public static SoundEvent GAS_MASK;
+	public static SoundEvent HYDRAULIC;
+	public static SoundEvent POP;
+	public static SoundEvent SUCCESS;
+	public static SoundEvent CJ_EASTER_EGG;
+
+	public static void register()
+	{
+		BEEP = registerSound("etc.Beep");
+		CLICK = registerSound("etc.Click");
+		DING = registerSound("etc.Ding");
+		ERROR = registerSound("etc.Error");
+		GAS_MASK = registerSound("etc.GasMask");
+		HYDRAULIC = registerSound("etc.Hydraulic");
+		POP = registerSound("etc.Pop");
+		SUCCESS = registerSound("etc.Success");
+		CJ_EASTER_EGG = registerSound("etc.cj");
+	}
+
+	public static SoundEvent registerSound(String soundName)
+	{
+		ResourceLocation soundID = new ResourceLocation("mekanism", soundName);
+		SoundEvent event = new SoundEvent(soundID).setRegistryName(soundID);
+		return GameRegistry.register(event);
+	}
 }
