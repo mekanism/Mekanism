@@ -386,6 +386,8 @@ public class CommonProxy implements IGuiProvider
 	public void init() 
 	{
 		MinecraftForge.EVENT_BUS.register(Mekanism.worldTickHandler);
+
+		MekanismSounds.register();
 	}
 
 	/**
