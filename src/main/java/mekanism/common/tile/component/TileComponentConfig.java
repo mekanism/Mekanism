@@ -138,6 +138,11 @@ public class TileComponentConfig implements ITileComponent
 	
 	public SideData getOutput(TransmissionType type, EnumFacing side, EnumFacing facing)
 	{
+		if(side == null)
+		{
+			return EMPTY;
+		}
+		
 		return getOutput(type, MekanismUtils.getBaseOrientation(side, facing));
 	}
 	
