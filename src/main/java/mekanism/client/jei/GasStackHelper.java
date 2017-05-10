@@ -66,10 +66,10 @@ public class GasStackHelper implements IIngredientHelper<GasStack>
 		return Collections.emptyList();
 	}
 
-	@Override
+	//@Override
 	public ItemStack cheatIngredient(GasStack ingredient, boolean fullStack) 
 	{
-		return ItemStack.EMPTY;
+		return null;
 	}
 
 	@Override
