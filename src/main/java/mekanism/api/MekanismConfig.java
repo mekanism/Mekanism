@@ -1,15 +1,15 @@
 package mekanism.api;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.api.util.UnitDisplayUtils.TempType;
+import mekanism.common.base.TypeConfigManager;
 
 public class MekanismConfig
 {
 	public static class general
 	{
+		public static TypeConfigManager machinesManager = new TypeConfigManager();
+		
 		public static boolean updateNotifications = true;
 		public static boolean controlCircuitOreDict = true;
 		public static boolean logPackets = false;
@@ -89,21 +89,6 @@ public class MekanismConfig
 		public static int ambientLightingLevel;
 		public static boolean opaqueTransmitters = false;
 	}
-	
-	public static class machines
-	{
-		private static Map<String, Boolean> config = new HashMap<String, Boolean>();
-		
-		public static boolean isEnabled(String type)
-		{
-			return config.get(type) != null && config.get(type);
-		}
-		
-		public static void setEntry(String type, boolean enabled)
-		{
-			config.put(type, enabled);
-		}
-	}
 
 	public static class usage
 	{
@@ -136,6 +121,8 @@ public class MekanismConfig
 
 	public static class generators
 	{
+		public static TypeConfigManager generatorsManager = new TypeConfigManager();
+		
 		public static double advancedSolarGeneration;
 		public static double bioGeneration;
 		public static double heatGeneration;

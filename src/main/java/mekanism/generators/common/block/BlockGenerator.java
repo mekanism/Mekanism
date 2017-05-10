@@ -288,7 +288,10 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	{
 		for(GeneratorType type : GeneratorType.values())
 		{
-			list.add(new ItemStack(i, 1, type.meta));
+			if(type.isEnabled())
+			{
+				list.add(new ItemStack(i, 1, type.meta));
+			}
 		}
 	}
 

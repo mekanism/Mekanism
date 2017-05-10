@@ -58,7 +58,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 	public TileEntityPRC()
 	{
-		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.machineName, new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
+		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 		

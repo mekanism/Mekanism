@@ -6,7 +6,6 @@ import java.lang.ref.WeakReference;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Pos3D;
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
@@ -14,6 +13,7 @@ import mekanism.api.util.UnitDisplayUtils.TempType;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.TypeConfigManager;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
@@ -119,7 +119,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -324,11 +323,10 @@ public class CommonProxy implements IGuiProvider
 		general.laserRange = Mekanism.configuration.get("general", "LaserRange", 64).getInt();
 		general.laserEnergyNeededPerHardness = Mekanism.configuration.get("general", "LaserDiggingEnergy", 100000).getInt();
 		general.destroyDisabledBlocks = Mekanism.configuration.get("general", "DestroyDisabledBlocks", true).getBoolean();
-
 		
 		for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 		{
-			machines.setEntry(type.machineName, Mekanism.configuration.get("machines", type.machineName + "Enabled", true).getBoolean());
+			general.machinesManager.setEntry(type.blockName, Mekanism.configuration.get("machines", type.blockName + "Enabled", true).getBoolean());
 		}
 		
 		usage.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble();
@@ -576,21 +574,6 @@ public class CommonProxy implements IGuiProvider
 	{
 		return (File)FMLInjectionData.data()[6];
 	}
-	
-	public void updateConfigRecipes()
-	{
-		for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
-		{
-			if(machines.isEnabled(type.machineName))
-			{
-				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
-				CraftingManager.getInstance().getRecipeList().addAll(type.getRecipes());
-			}
-			else {
-				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
-			}
-		}
-	}
 
 	public void onConfigSync(boolean fromPacket)
 	{
@@ -604,7 +587,7 @@ public class CommonProxy implements IGuiProvider
 		
 		BlockStateMachine.MachineType.updateAllUsages();
 		
-		updateConfigRecipes();
+		TypeConfigManager.updateConfigRecipes(MachineType.getValidMachines(), general.machinesManager);
 
 		if(fromPacket)
 		{

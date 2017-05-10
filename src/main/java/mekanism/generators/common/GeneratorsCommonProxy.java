@@ -6,6 +6,8 @@ import mekanism.common.base.IGuiProvider;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.generators.common.block.states.BlockStateGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
@@ -111,6 +113,11 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
 		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
 		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
+		
+		for(GeneratorType type : GeneratorType.getGeneratorsForConfig())
+		{
+			generators.generatorsManager.setEntry(type.blockName, Mekanism.configuration.get("generators", type.blockName + "Enabled", true).getBoolean());
+		}
 
 		if(Mekanism.configuration.hasChanged())
 		{

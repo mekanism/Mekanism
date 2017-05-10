@@ -109,7 +109,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			return "KillMe!";
 		}
 
-		return getUnlocalizedName() + "." + GeneratorType.get(itemstack).name;
+		return getUnlocalizedName() + "." + GeneratorType.get(itemstack).blockName;
 	}
 
 	@Override

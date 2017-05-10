@@ -28,6 +28,7 @@ import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.Tier.BaseTier;
@@ -47,6 +48,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockBasic;
@@ -360,7 +362,7 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getFactory(FactoryTier tier, RecipeType type)
 	{
-		ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, 5+tier.ordinal());
+		ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, MachineType.BASIC_FACTORY.ordinal()+tier.ordinal());
 		((IFactory)itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
 		return itemstack;
 	}
@@ -1383,7 +1385,7 @@ public final class MekanismUtils
 	
 	/**
 	 * Whether or not a given EntityPlayer is considered an Op.
-	 * @param player - player to check
+	 * @param p - player to check
 	 * @return if the player has operator privileges
 	 */
 	public static boolean isOp(EntityPlayer p)

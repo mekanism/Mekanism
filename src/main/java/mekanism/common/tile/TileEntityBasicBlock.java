@@ -64,7 +64,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 			
 			if(type != null && !type.isEnabled())
 			{
-				Mekanism.logger.info("[Mekanism] Destroying machine of type '" + type.machineName + "' at coords " + Coord4D.get(this) + " as according to config.");
+				Mekanism.logger.info("[Mekanism] Destroying machine of type '" + type.blockName + "' at coords " + Coord4D.get(this) + " as according to config.");
 				worldObj.setBlockToAir(getPos());
 				return;
 			}
