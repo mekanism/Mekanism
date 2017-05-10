@@ -238,6 +238,15 @@ public class MekanismRenderer
 		}
 	}
 	
+	public static void saveRenderer(Tessellator tess)
+	{
+		if(MekanismRenderer.isDrawing(tess))
+		{
+			prevFormat = tess.getBuffer().getVertexFormat();
+			prevMode = tess.getBuffer().getDrawMode();
+		}
+	}
+	
 	public static void resumeRenderer(Tessellator tess)
 	{
     	if(prevFormat != null)

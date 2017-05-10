@@ -503,7 +503,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			{
 				if(bin.getItemCount() < bin.tier.storage)
 				{
-					if(bin.addTicks == 0 && stack != null)
+					if(bin.addTicks == 0)
 					{
 						if(stack != null)
 						{

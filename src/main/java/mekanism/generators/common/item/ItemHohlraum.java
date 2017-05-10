@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.MathHelper;
 
 public class ItemHohlraum extends ItemMekanism implements IGasItem
 {
@@ -115,6 +116,12 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	{
 		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
 	}
+	
+	//@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
 
 	@Override
 	public GasStack getGas(ItemStack itemstack)

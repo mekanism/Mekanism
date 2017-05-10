@@ -75,6 +75,7 @@ public final class FluidContainerUtils
 			ItemStack inputCopy = StackUtils.size(inventory[inSlot].copy(), 1);
 			
 			int drained = insertFluid(stack, inputCopy);
+			inputCopy = inputCopy.getItem().getContainerItem(inputCopy);
 			
 			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].stackSize == inventory[outSlot].getMaxStackSize()))
 			{
