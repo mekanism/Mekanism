@@ -1,7 +1,7 @@
 package mekanism.common.integration.tesla;
 
 import mekanism.api.MekanismConfig.general;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import mekanism.common.multipart.PartUniversalCable;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.Optional.Method;
 @Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla")
 public class TeslaCableIntegration implements ITeslaConsumer
 {
-	public TileEntityUniversalCable tileEntity;
+	public PartUniversalCable tileEntity;
 	
 	public EnumFacing side;
 	
-	public TeslaCableIntegration(TileEntityUniversalCable tile, EnumFacing facing)
+	public TeslaCableIntegration(PartUniversalCable tile, EnumFacing facing)
 	{
 		tileEntity = tile;
 		side = facing;

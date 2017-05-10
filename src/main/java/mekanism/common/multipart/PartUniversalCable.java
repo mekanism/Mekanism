@@ -35,7 +35,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
-public class PartUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver
+public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver
 {
 	public Tier.CableTier tier;
 

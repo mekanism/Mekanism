@@ -183,7 +183,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			
 			ItemStack stack = inventory[27];
 
-			if(!stack.isEmpty() && getEnergy() < MAX_ELECTRICITY)
+			if(stack != null && getEnergy() < MAX_ELECTRICITY)
 			{
 				if(stack.getItem() instanceof IEnergizedItem)
 				{
@@ -226,7 +226,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				else if(stack.getItem() == Items.REDSTONE && getEnergy()+general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
 					setEnergy(getEnergy() + general.ENERGY_PER_REDSTONE);
-					stack.shrink(1);
+					stack.stackSize--;
 				}
 			}
 

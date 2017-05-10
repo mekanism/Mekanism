@@ -74,7 +74,7 @@ public final class ChargeUtils
 			else if(stack.getItem() == Items.REDSTONE && storer.getEnergy()+general.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
 				storer.setEnergy(storer.getEnergy() + general.ENERGY_PER_REDSTONE);
-				stack.shrink(1);
+				inv.decrStackSize(slotID, 1);
 			}
 		}
 	}
