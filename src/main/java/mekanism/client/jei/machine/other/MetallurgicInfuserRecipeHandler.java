@@ -22,13 +22,6 @@ public class MetallurgicInfuserRecipeHandler implements IRecipeHandler<Metallurg
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() 
-	{
-		return category.getUid();
-	}
-
-	@Nonnull
-	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull MetallurgicInfuserRecipeWrapper recipe)
 	{
 		return recipe;
@@ -44,5 +37,11 @@ public class MetallurgicInfuserRecipeHandler implements IRecipeHandler<Metallurg
 	public String getRecipeCategoryUid(@Nonnull MetallurgicInfuserRecipeWrapper recipe) 
 	{
 		return category.getUid();
+	}
+
+	@Override
+	public String getRecipeCategoryUid()
+	{
+		return getRecipeCategoryUid(null);
 	}
 }

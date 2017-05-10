@@ -22,13 +22,6 @@ public class SolarNeutronRecipeHandler implements IRecipeHandler<SolarNeutronRec
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() 
-	{
-		return category.getUid();
-	}
-
-	@Nonnull
-	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull SolarNeutronRecipeWrapper recipe)
 	{
 		return recipe;
@@ -44,5 +37,11 @@ public class SolarNeutronRecipeHandler implements IRecipeHandler<SolarNeutronRec
 	public String getRecipeCategoryUid(@Nonnull SolarNeutronRecipeWrapper recipe) 
 	{
 		return category.getUid();
+	}
+
+	@Override
+	public String getRecipeCategoryUid()
+	{
+		return getRecipeCategoryUid(null);
 	}
 }

@@ -104,10 +104,10 @@ public class GuiSecurityTab extends GuiElement
 			
 			if(isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT))
 			{
-				displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis); 
+				displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis);
 			}
 			else {
-				displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis); 
+				displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis);
 			}
 		}
 

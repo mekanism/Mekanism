@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.machines.SeparatorRecipe;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ElectrolyticSeparatorRecipeWrapper extends BlankRecipeWrapper
@@ -24,25 +24,11 @@ public class ElectrolyticSeparatorRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return new ArrayList<ItemStack>();
-	}
-	
-	@Nonnull
-	@Override
-	public List<FluidStack> getFluidInputs() 
-	{
-		return Arrays.asList(recipe.getInput().ingredient);
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return new ArrayList<ItemStack>();
+		ingredients.setInput(FluidStack.class, recipe.recipeInput.ingredient);
+		ingredients.setOutputs(GasStack.class, Arrays.asList(recipe.recipeOutput.leftGas, recipe.recipeOutput.rightGas));
 	}
 	
 	@Nullable

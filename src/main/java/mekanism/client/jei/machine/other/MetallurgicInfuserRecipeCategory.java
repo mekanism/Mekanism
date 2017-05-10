@@ -25,6 +25,7 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -110,7 +111,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof MetallurgicInfuserRecipeWrapper)
 		{
@@ -124,7 +125,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(2, true, 11, 18);
 
 		itemStacks.set(0, tempRecipe.getInput().inputStack);
-		itemStacks.setFromRecipe(1, recipeWrapper.getOutputs());
+		itemStacks.set(1, tempRecipe.getOutput().output);
 		itemStacks.set(2, getInfuseStacks(tempRecipe.getInput().infuse.type));
 	}
 }

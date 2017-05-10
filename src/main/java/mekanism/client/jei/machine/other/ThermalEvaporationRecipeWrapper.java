@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -20,18 +21,11 @@ public class ThermalEvaporationRecipeWrapper extends BlankRecipeWrapper
 		recipe = r;
 		category = c;
 	}
-	
-	@Nonnull
+
 	@Override
-	public List<FluidStack> getFluidInputs() 
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return Arrays.asList(recipe.getInput().ingredient);
-	}
-	
-	@Nonnull
-	@Override
-	public List<FluidStack> getFluidOutputs()
-	{
-		return Arrays.asList(recipe.getOutput().output);
+		ingredients.setInput(FluidStack.class, recipe.getInput().ingredient);
+		ingredients.setOutput(FluidStack.class, recipe.getOutput().output);
 	}
 }

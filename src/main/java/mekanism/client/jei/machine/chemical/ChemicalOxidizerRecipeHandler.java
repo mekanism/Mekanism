@@ -22,13 +22,6 @@ public class ChemicalOxidizerRecipeHandler implements IRecipeHandler<ChemicalOxi
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() 
-	{
-		return category.getUid();
-	}
-
-	@Nonnull
-	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull ChemicalOxidizerRecipeWrapper recipe)
 	{
 		return recipe;
@@ -44,5 +37,11 @@ public class ChemicalOxidizerRecipeHandler implements IRecipeHandler<ChemicalOxi
 	public String getRecipeCategoryUid(@Nonnull ChemicalOxidizerRecipeWrapper recipe) 
 	{
 		return category.getUid();
+	}
+
+	@Override
+	public String getRecipeCategoryUid()
+	{
+		return getRecipeCategoryUid(null);
 	}
 }

@@ -2,9 +2,11 @@ package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -26,6 +28,7 @@ import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.crafting.ShapedMekanismRecipeHandler;
 import mekanism.client.jei.crafting.ShapelessMekanismRecipeHandler;
+import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
 import mekanism.client.jei.machine.AdvancedMachineRecipeHandler;
 import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
@@ -104,19 +107,20 @@ import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
-import mekanism.common.util.ItemDataUtils;
-import mezz.jei.api.IJeiRuntime;
-import mezz.jei.api.IModPlugin;
+import mezz.jei.api.BlankModPlugin;
 import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 
 @JEIPlugin
-public class MekanismJEI implements IModPlugin
+public class MekanismJEI extends BlankModPlugin
 {
 	public static ISubtypeInterpreter NBT_INTERPRETER = new ISubtypeInterpreter() {
 		@Override
@@ -139,24 +143,35 @@ public class MekanismJEI implements IModPlugin
 	};
 	
 	@Override
+	public void registerItemSubtypes(ISubtypeRegistry registry)
+	{
+		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.EnergyCube), NBT_INTERPRETER);
+		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock), NBT_INTERPRETER);
+		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), NBT_INTERPRETER);
+		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), NBT_INTERPRETER);
+		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.BasicBlock), NBT_INTERPRETER);
+		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), NBT_INTERPRETER);
+		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.GasTank), NBT_INTERPRETER);
+		registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.CardboardBox), NBT_INTERPRETER);
+	}
+	
+	@Override
+	public void registerIngredients(IModIngredientRegistration registry)
+	{
+		List<GasStack> list = GasRegistry.getRegisteredGasses().stream().filter(g -> g.isVisible()).map(g -> new GasStack(g, Fluid.BUCKET_VOLUME)).collect(Collectors.toList());
+		registry.register(GasStack.class, list, new GasStackHelper(), new GasStackRenderer());
+	}
+	
+	@Override
 	public void register(IModRegistry registry)
 	{
 		registry.addAdvancedGuiHandlers(new GuiElementHandler());
 		
-		registry.addRecipeHandlers(new ShapedMekanismRecipeHandler());
-		registry.addRecipeHandlers(new ShapelessMekanismRecipeHandler());
+		registry.addRecipeHandlers(new ShapedMekanismRecipeHandler(registry.getJeiHelpers()));
+		registry.addRecipeHandlers(new ShapelessMekanismRecipeHandler(registry.getJeiHelpers()));
 		
-		registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(MekanismItems.ItemProxy));
-		registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(MekanismBlocks.BoundingBlock));
-		
-		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.EnergyCube), NBT_INTERPRETER);
-		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock), NBT_INTERPRETER);
-		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), NBT_INTERPRETER);
-		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), NBT_INTERPRETER);
-		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.BasicBlock), NBT_INTERPRETER);
-		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), NBT_INTERPRETER);
-		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.GasTank), NBT_INTERPRETER);
-		registry.getJeiHelpers().getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(MekanismBlocks.CardboardBox), NBT_INTERPRETER);
+		registry.getJeiHelpers().getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(MekanismItems.ItemProxy));
+		registry.getJeiHelpers().getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(MekanismBlocks.BoundingBlock));
 		
 		try {
 			registerBasicMachine(registry, Recipe.ENRICHMENT_CHAMBER, "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE, EnrichmentRecipeHandler.class, EnrichmentRecipeWrapper.class);
@@ -329,7 +344,4 @@ public class MekanismJEI implements IModPlugin
 		
 		registry.addRecipes(recipes);
 	}
-	
-	@Override
-	public void onRuntimeAvailable(IJeiRuntime runtime) {}
 }
