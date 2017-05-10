@@ -163,7 +163,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				if(getItemCount() + stack.stackSize <= tier.storage)
 				{
-					if (!simulate)
+					if(!simulate)
 					{
 						setItemCount(getItemCount() + stack.stackSize);
 					}
@@ -173,7 +173,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 					ItemStack rejects = stack.copy();
 					rejects.stackSize = (getItemCount()+stack.stackSize) - tier.storage;
 
-					if (!simulate)
+					if(!simulate)
 					{
 						setItemCount(tier.storage);
 					}
@@ -182,7 +182,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				}
 			}
 			else {
-				if (!simulate)
+				if(!simulate)
 				{
 					setItemCount(Integer.MAX_VALUE);
 				}
@@ -538,6 +538,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		return i == 1 && isValid(itemstack);
 	}
 
+	//@Override
+	public boolean isEmpty()
+	{
+		return getItemCount() == 0;
+	}
+
 	@Override
 	public int getField(int id)
 	{
@@ -707,9 +713,25 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		{
 			this.tileEntityBin = tileEntityBin;
 		}
+		
+		//@Override
+		public int getSlotLimit(int slot)
+		{
+			if(slot != 0)
+			{
+				return 0;
+			}
+			
+			return tier.storage;
+		}
 
-		public int getSlots(){return 1;}
+		@Override
+		public int getSlots()
+		{
+			return 1;
+		}
 
+		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
 			if (slot != 0 || tileEntityBin.itemType == null)
@@ -720,14 +742,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return MekanismUtils.size(tileEntityBin.itemType, tileEntityBin.getItemCount());
 		}
 
+		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
 			if (slot != 0)
 			{
 				return null;
 			}
+			
 			return tileEntityBin.add(stack, simulate);
-
 		}
 
 		public ItemStack extractItem(int slot, int amount, boolean simulate)

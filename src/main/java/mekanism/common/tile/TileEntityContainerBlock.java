@@ -2,11 +2,14 @@ package mekanism.common.tile;
 
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ItemHandlerWrapper;
+import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -16,7 +19,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory, ITickable
 {
@@ -33,6 +38,20 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	public TileEntityContainerBlock(String name)
 	{
 		fullName = name;
+	}
+
+	//@Override
+	public boolean isEmpty()
+	{
+		for(ItemStack stack : inventory)
+		{
+			if(stack != null)
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	@Override
@@ -99,44 +118,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
-		if(getStackInSlot(slotID) != null)
-		{
-			ItemStack tempStack;
-
-			if(getStackInSlot(slotID).stackSize <= amount)
-			{
-				tempStack = getStackInSlot(slotID);
-				setInventorySlotContents(slotID, null);
-				return tempStack;
-			}
-			else {
-				tempStack = getStackInSlot(slotID).splitStack(amount);
-
-				if(getStackInSlot(slotID).stackSize == 0)
-				{
-					setInventorySlotContents(slotID, null);
-				}
-
-				return tempStack;
-			}
-		}
-		else {
-			return null;
-		}
+		return ItemStackHelper.getAndSplit(inventory, slotID, amount);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int slotID)
 	{
-		if(getStackInSlot(slotID) != null)
-		{
-			ItemStack tempStack = getStackInSlot(slotID);
-			setInventorySlotContents(slotID, null);
-			return tempStack;
-		}
-		else {
-			return null;
-		}
+		return ItemStackHelper.getAndRemove(inventory, slotID);
 	}
 
 	@Override
@@ -279,5 +267,24 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	public ITextComponent getDisplayName()
 	{
 		return new TextComponentString(getName());
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+	}
+	
+	private CapabilityWrapperManager itemManager = new CapabilityWrapperManager(TileEntityContainerBlock.class, ItemHandlerWrapper.class);
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			return (T)itemManager.getWrapper(this, facing);
+		}
+		
+		return super.getCapability(capability, facing);
 	}
 }
