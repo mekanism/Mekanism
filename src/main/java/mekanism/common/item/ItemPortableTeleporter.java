@@ -28,7 +28,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
+		list.add(SecurityUtils.getOwnerDisplay(entityplayer.getUniqueID(), getOwner(itemstack)));
 		
 		if(getFrequency(itemstack) != null)
 		{
@@ -46,7 +46,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		{
 			if(getOwner(itemstack) == null)
 			{
-				setOwner(itemstack, entityplayer.getName());
+				setOwner(itemstack, entityplayer.getUniqueID());
 				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
 			}
 			else {
@@ -88,32 +88,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	public boolean canSend(ItemStack itemStack)
 	{
 		return false;
-	}
-	
-	@Override
-	public String getOwner(ItemStack stack) 
-	{
-		if(ItemDataUtils.hasData(stack, "owner"))
-		{
-			return ItemDataUtils.getString(stack, "owner");
-		}
-		
-		return null;
-	}
-
-	@Override
-	public void setOwner(ItemStack stack, String owner) 
-	{
-		setFrequency(stack, null);
-		setPrivateMode(stack, false);
-		
-		if(owner == null || owner.isEmpty())
-		{
-			ItemDataUtils.removeData(stack, "owner");
-			return;
-		}
-		
-		ItemDataUtils.setString(stack, "owner", owner);
 	}
 	
 	@Override

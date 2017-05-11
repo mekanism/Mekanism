@@ -5,6 +5,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import java.util.UUID;
+
 public final class ItemDataUtils 
 {
 	public static final String DATA_ID = "mekData";
@@ -21,6 +23,12 @@ public final class ItemDataUtils
 		initStack(stack);
 		
 		return getDataMap(stack).hasKey(key);
+	}
+
+	public static boolean hasID(ItemStack stack, String key) {
+		initStack(stack);
+
+		return getDataMap(stack).hasUniqueId(key);
 	}
 	
 	public static void removeData(ItemStack stack, String key)
@@ -71,6 +79,14 @@ public final class ItemDataUtils
 		
 		return getDataMap(stack).getTagList(key, NBT.TAG_COMPOUND);
 	}
+
+
+	public static UUID getUUID(ItemStack stack, String key)
+	{
+		initStack(stack);
+
+		return getDataMap(stack).getUniqueId(key);
+	}
 	
 	public static void setInt(ItemStack stack, String key, int i)
 	{
@@ -113,6 +129,13 @@ public final class ItemDataUtils
 		
 		getDataMap(stack).setTag(key, tag);
 	}
+
+	public static void setUUID(ItemStack stack, String key, UUID uuid)
+	{
+		initStack(stack);
+
+		getDataMap(stack).setUniqueId(key, uuid);
+	}
 	
 	private static void initStack(ItemStack stack)
 	{
@@ -126,4 +149,5 @@ public final class ItemDataUtils
 			stack.getTagCompound().setTag(DATA_ID, new NBTTagCompound());
 		}
 	}
+
 }

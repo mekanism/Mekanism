@@ -3,6 +3,7 @@ package mekanism.common.security;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import mekanism.common.HashList;
 import mekanism.common.PacketHandler;
@@ -19,15 +20,15 @@ public class SecurityFrequency extends Frequency
 	
 	public boolean override;
 	
-	public HashList<String> trusted;
+	public HashList<UUID> trusted;
 	
 	public SecurityMode securityMode;
 	
-	public SecurityFrequency(String o)
+	public SecurityFrequency(UUID o)
 	{
 		super("Security", o);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 	}
 	
@@ -53,9 +54,9 @@ public class SecurityFrequency extends Frequency
 		{
 			NBTTagList trustedList = new NBTTagList();
 			
-			for(String s : trusted)
+			for(UUID uuid : trusted)
 			{
-				trustedList.appendTag(new NBTTagString(s));
+				trustedList.appendTag(new NBTTagString(uuid.toString()));
 			}
 			
 			nbtTags.setTag("trusted", trustedList);
@@ -67,7 +68,7 @@ public class SecurityFrequency extends Frequency
 	{
 		super.read(nbtTags);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 		
 		override = nbtTags.getBoolean("override");
@@ -79,7 +80,7 @@ public class SecurityFrequency extends Frequency
 			
 			for(int i = 0; i < trustedList.tagCount(); i++)
 			{
-				trusted.add(trustedList.getStringTagAt(i));
+				trusted.add(UUID.fromString(trustedList.getStringTagAt(i)));
 			}
 		}
 	}
@@ -94,9 +95,9 @@ public class SecurityFrequency extends Frequency
 		
 		data.add(trusted.size());
 		
-		for(String s : trusted)
+		for(UUID uuid : trusted)
 		{
-			data.add(s);
+			data.add(uuid.toString());
 		}
 	}
 
@@ -105,7 +106,7 @@ public class SecurityFrequency extends Frequency
 	{
 		super.read(dataStream);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 		
 		override = dataStream.readBoolean();
@@ -116,7 +117,7 @@ public class SecurityFrequency extends Frequency
 		
 		for(int i = 0; i < size; i++)
 		{
-			trusted.add(PacketHandler.readString(dataStream));
+			trusted.add(UUID.fromString(PacketHandler.readString(dataStream)));
 		}
 	}
 }

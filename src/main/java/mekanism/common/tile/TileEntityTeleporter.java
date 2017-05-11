@@ -222,7 +222,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		}
 	}
 	
-	public static FrequencyManager loadManager(String owner, World world)
+	public static FrequencyManager loadManager(UUID owner, World world)
 	{
 		if(Mekanism.privateTeleporters.containsKey(owner))
 		{

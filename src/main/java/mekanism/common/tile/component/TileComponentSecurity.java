@@ -1,8 +1,10 @@
 package mekanism.common.tile.component;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
@@ -16,13 +18,14 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileComponentSecurity implements ITileComponent
 {
 	/** TileEntity implementing this component. */
 	public TileEntityContainerBlock tileEntity;
 	
-	private String owner;
+	private UUID owner;
 	
 	private SecurityMode securityMode = SecurityMode.PUBLIC;
 	
@@ -46,12 +49,12 @@ public class TileComponentSecurity implements ITileComponent
 		return frequency;
 	}
 	
-	public String getOwner()
+	public UUID getOwner()
 	{
 		return owner;
 	}
 	
-	public void setOwner(String o)
+	public void setOwner(UUID o)
 	{
 		frequency = null;
 		owner = o;
@@ -81,7 +84,7 @@ public class TileComponentSecurity implements ITileComponent
 		return Mekanism.securityFrequencies;
 	}
 	
-	public void setFrequency(String owner)
+	public void setFrequency(UUID owner)
 	{
 		FrequencyManager manager = Mekanism.securityFrequencies;
 		manager.deactivate(Coord4D.get(tileEntity));
@@ -140,10 +143,20 @@ public class TileComponentSecurity implements ITileComponent
 	public void read(NBTTagCompound nbtTags) 
 	{
 		securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
-		
+
+		if(nbtTags.hasUniqueId("ownerUUID")) {
+			owner = nbtTags.getUniqueId("ownerUUID");
+		}
+
+		//TODO Remove in next version, currently needed for transition to UUIDs
 		if(nbtTags.hasKey("owner"))
 		{
-			owner = nbtTags.getString("owner");
+			String oldOwner = nbtTags.getString("owner");
+			GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(oldOwner);
+			if (gameProfile != null)
+			{
+				owner = gameProfile.getId();
+			}
 		}
 		
 		if(nbtTags.hasKey("securityFreq"))
@@ -160,7 +173,7 @@ public class TileComponentSecurity implements ITileComponent
 		
 		if(dataStream.readBoolean())
 		{
-			owner = PacketHandler.readString(dataStream);
+			owner = UUID.fromString(PacketHandler.readString(dataStream));
 		}
 		else {
 			owner = null;
@@ -179,10 +192,10 @@ public class TileComponentSecurity implements ITileComponent
 	public void write(NBTTagCompound nbtTags) 
 	{
 		nbtTags.setInteger("securityMode", securityMode.ordinal());
-		
+
 		if(owner != null)
 		{
-			nbtTags.setString("owner", owner);
+			nbtTags.setUniqueId("ownerUUID", owner);
 		}
 		
 		if(frequency != null)
@@ -201,7 +214,7 @@ public class TileComponentSecurity implements ITileComponent
 		if(owner != null)
 		{
 			data.add(true);
-			data.add(owner);
+			data.add(owner.toString());
 		}
 		else {
 			data.add(false);

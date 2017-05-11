@@ -1,8 +1,10 @@
 package mekanism.common.tile;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
@@ -27,7 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock
 {
-	public String owner;
+	public UUID owner;
 	
 	public SecurityFrequency frequency;
 	
@@ -73,7 +75,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 						{
 							item.setOwner(inventory[1], owner);
 						}
-						
+
 						if(item.getOwner(inventory[1]).equals(owner))
 						{
 							if(item instanceof ISecurityItem && ((ISecurityItem)item).hasSecurity(inventory[1]))
@@ -120,7 +122,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		return Mekanism.securityFrequencies;
 	}
 	
-	public void setFrequency(String owner)
+	public void setFrequency(UUID owner)
 	{
 		FrequencyManager manager = Mekanism.securityFrequencies;
 		manager.deactivate(Coord4D.get(this));
@@ -156,14 +158,14 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 			{
 				if(frequency != null)
 				{
-					frequency.trusted.add(PacketHandler.readString(dataStream));
+					frequency.trusted.add(UUID.fromString(PacketHandler.readString(dataStream)));
 				}
 			}
 			else if(type == 1)
 			{
 				if(frequency != null)
 				{
-					frequency.trusted.remove(PacketHandler.readString(dataStream));
+					frequency.trusted.remove(UUID.fromString(PacketHandler.readString(dataStream)));
 				}
 			}
 			else if(type == 2)
@@ -196,7 +198,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		{
 			if(dataStream.readBoolean())
 			{
-				owner = PacketHandler.readString(dataStream);
+				owner = UUID.fromString(PacketHandler.readString(dataStream));
 			}
 			else {
 				owner = null;
@@ -216,10 +218,21 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);
-		
+
+		if(nbtTags.hasUniqueId("ownerUUID"))
+		{
+			owner = nbtTags.getUniqueId("ownerUUID");
+		}
+
+		//TODO Remove in next version, currently needed for transition to UUIDs
 		if(nbtTags.hasKey("owner"))
 		{
-			owner = nbtTags.getString("owner");
+			String oldOwner = nbtTags.getString("owner");
+			GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(oldOwner);
+			if (gameProfile != null)
+			{
+				owner = gameProfile.getId();
+			}
 		}
 		
 		if(nbtTags.hasKey("frequency"))
@@ -236,7 +249,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		
 		if(owner != null)
 		{
-			nbtTags.setString("owner", owner);
+			nbtTags.setUniqueId("ownerUUID", owner);
 		}
 		
 		if(frequency != null)
@@ -257,7 +270,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		if(owner != null)
 		{
 			data.add(true);
-			data.add(owner);
+			data.add(owner.toString());
 		}
 		else {
 			data.add(false);

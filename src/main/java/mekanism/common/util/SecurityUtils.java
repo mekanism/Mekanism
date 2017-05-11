@@ -16,15 +16,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.UUID;
+
 public final class SecurityUtils 
 {
 	public static boolean canAccess(EntityPlayer player, ItemStack stack)
 	{
 		if(!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem)
 		{
-			String owner = ((IOwnerItem)stack.getItem()).getOwner(stack);
+			UUID owner = ((IOwnerItem)stack.getItem()).getOwner(stack);
 			
-			return owner == null || owner.equals(player.getName());
+			return owner == null || owner.equals(player.getUniqueID());
 		}
 		
 		if(stack == null || !(stack.getItem() instanceof ISecurityItem))
@@ -39,7 +41,7 @@ public final class SecurityUtils
 			return true;
 		}
 		
-		return canAccess(security.getSecurity(stack), player.getName(), security.getOwner(stack));
+		return canAccess(security.getSecurity(stack), player.getUniqueID(), security.getOwner(stack));
 	}
 	
 	public static boolean canAccess(EntityPlayer player, TileEntity tile)
@@ -56,10 +58,10 @@ public final class SecurityUtils
 			return true;
 		}
 		
-		return canAccess(security.getSecurity().getMode(), player.getName(), security.getSecurity().getOwner());
+		return canAccess(security.getSecurity().getMode(), player.getUniqueID(), security.getSecurity().getOwner());
 	}
 	
-	private static boolean canAccess(SecurityMode mode, String username, String owner)
+	private static boolean canAccess(SecurityMode mode, UUID username, UUID owner)
 	{
 		if(owner == null || username.equals(owner))
 		{
@@ -93,7 +95,7 @@ public final class SecurityUtils
 		return false;
 	}
 	
-	public static SecurityFrequency getFrequency(String owner)
+	public static SecurityFrequency getFrequency(UUID owner)
 	{
 		if(owner != null)
 		{
@@ -109,7 +111,7 @@ public final class SecurityUtils
 		return null;
 	}
 	
-	public static String getOwnerDisplay(String user, String owner)
+	public static String getOwnerDisplay(UUID user, UUID owner)
 	{
 		if(owner == null)
 		{

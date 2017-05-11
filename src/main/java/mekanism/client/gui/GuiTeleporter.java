@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -490,7 +491,7 @@ public class GuiTeleporter extends GuiMekanism
 		return EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noLink");
 	}
 	
-	private String getOwner()
+	private UUID getOwner()
 	{
 		if(tileEntity != null)
 		{

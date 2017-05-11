@@ -26,6 +26,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.UUID;
+
 @SideOnly(Side.CLIENT)
 public class GuiSecurityTab extends GuiElement
 {
@@ -72,7 +74,7 @@ public class GuiSecurityTab extends GuiElement
 		
 		int renderX = 26 + (18*mode.ordinal());
 
-		if(getOwner() != null && getOwner().equals(mc.thePlayer.getName()) &&
+		if(getOwner() != null && getOwner().equals(mc.thePlayer.getUniqueID()) &&
 				(data == null || !data.override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
@@ -99,7 +101,7 @@ public class GuiSecurityTab extends GuiElement
 		{
 			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
 			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
-			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getName(), getOwner());
+			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getUniqueID(), getOwner());
 			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 			
 			if(isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT))
@@ -151,7 +153,7 @@ public class GuiSecurityTab extends GuiElement
 		}
 	}
 	
-	private String getOwner()
+	private UUID getOwner()
 	{
 		if(isItem)
 		{
@@ -181,7 +183,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(button == 0 && general.allowProtection)
 		{
-			if(getOwner() != null && mc.thePlayer.getName().equals(getOwner()))
+			if(getOwner() != null && mc.thePlayer.getUniqueID().equals(getOwner()))
 			{
 				if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 				{
