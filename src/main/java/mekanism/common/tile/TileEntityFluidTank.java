@@ -544,7 +544,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		{
 			return fluidTank.drain(resource.amount, tier != FluidTankTier.CREATIVE && doDrain);
 		}
-		
+
 		return null;
 	}
 
@@ -555,7 +555,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		{
 			return fluidTank.drain(maxDrain, tier != FluidTankTier.CREATIVE && doDrain);
 		}
-		
+
 		return null;
 	}
 
