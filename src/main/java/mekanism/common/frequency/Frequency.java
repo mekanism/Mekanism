@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -110,7 +111,20 @@ public class Frequency
 	protected void read(NBTTagCompound nbtTags)
 	{
 		name = nbtTags.getString("name");
-		ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
+		if (nbtTags.hasKey("ownerUUID"))
+		{
+			ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
+		} else if (nbtTags.hasKey("owner"))
+		{
+			String oldOwner = nbtTags.getString("owner");
+			for (Map.Entry<UUID, String> entry : UsernameCache.getMap().entrySet())
+			{
+				if (entry.getValue().equals(oldOwner)){
+					ownerUUID = entry.getKey();
+					break;
+				}
+			}
+		}
 		publicFreq = nbtTags.getBoolean("publicFreq");
 	}
 

@@ -3,6 +3,7 @@ package mekanism.common.tile.component;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
@@ -154,6 +155,16 @@ public class TileComponentSecurity implements ITileComponent
 		if(nbtTags.hasKey("ownerUUID"))
 		{
 			ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
+		} else if (nbtTags.hasKey("owner"))
+		{
+			String oldOwner = nbtTags.getString("owner");
+			for (Map.Entry<UUID, String> entry : UsernameCache.getMap().entrySet())
+			{
+				if (entry.getValue().equals(oldOwner)){
+					ownerUUID = entry.getKey();
+					break;
+				}
+			}
 		}
 		
 		if(nbtTags.hasKey("securityFreq"))

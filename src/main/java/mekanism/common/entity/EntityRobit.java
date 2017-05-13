@@ -6,6 +6,7 @@ import ic2.api.item.IElectricItem;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
@@ -488,6 +489,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		if(nbtTags.hasKey("ownerUUID"))
 		{
 			setOwnerUUID(UUID.fromString(nbtTags.getString("ownerUUID")));
+		} else if (nbtTags.hasKey("owner"))
+		{
+			String oldOwner = nbtTags.getString("owner");
+			for (Map.Entry<UUID, String> entry : UsernameCache.getMap().entrySet())
+			{
+				if (entry.getValue().equals(oldOwner)){
+					setOwnerUUID(entry.getKey());
+					break;
+				}
+			}
 		}
 
 		setFollowing(nbtTags.getBoolean("follow"));

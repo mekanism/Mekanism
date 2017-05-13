@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
+import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class FrequencyManager
@@ -337,6 +339,16 @@ public class FrequencyManager
 				if(nbtTags.hasKey("ownerUUID"))
 				{
 					loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
+				} else if (nbtTags.hasKey("owner"))
+				{
+					String oldOwner = nbtTags.getString("owner");
+					for (Map.Entry<UUID, String> entry : UsernameCache.getMap().entrySet())
+					{
+						if (entry.getValue().equals(oldOwner)){
+							loadedOwner = entry.getKey();
+							break;
+						}
+					}
 				}
 				
 				NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
