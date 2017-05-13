@@ -321,10 +321,10 @@ public class ClientTickHandler
 					double y = entry.getKey().posY + rand.nextDouble()*2-2D;
 					double z = entry.getKey().posZ + rand.nextDouble()-0.5D;
 					
-					mc.world.spawnParticle(EnumParticleTypes.PORTAL, x, y, z, 0, 1, 0);
+					mc.theWorld.spawnParticle(EnumParticleTypes.PORTAL, x, y, z, 0, 1, 0);
 				}
 				
-				if(mc.world.getWorldTime() == entry.getValue().teleportTime)
+				if(mc.theWorld.getWorldTime() == entry.getValue().teleportTime)
 				{
 					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
 					iter.remove();
@@ -561,7 +561,7 @@ public class ClientTickHandler
 			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, hand, freq));
 		}
 		else {
-			portableTeleports.put(player, new TeleportData(hand, freq, mc.world.getWorldTime()+general.portableTeleporterDelay));
+			portableTeleports.put(player, new TeleportData(hand, freq, mc.theWorld.getWorldTime()+general.portableTeleporterDelay));
 		}
 	}
 	
