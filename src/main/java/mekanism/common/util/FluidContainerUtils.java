@@ -42,10 +42,7 @@ public final class FluidContainerUtils
 			return null;
 		}
 		
-		FluidStack ret = handler.drain(needed, true);
-		inv[slotID] = inv[slotID].getItem().getContainerItem(inv[slotID]);
-		
-		return ret;
+		return handler.drain(needed, true);
 	}
 	
 	public static int insertFluid(FluidTank tileTank, ItemStack container)
@@ -77,7 +74,7 @@ public final class FluidContainerUtils
 			ItemStack inputCopy = StackUtils.size(inventory[inSlot].copy(), 1);
 			
 			int drained = insertFluid(stack, inputCopy);
-			inputCopy = inputCopy.getItem().getContainerItem(inputCopy);
+			//inputCopy = inputCopy.getItem().getContainerItem(inputCopy);
 			
 			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].stackSize == inventory[outSlot].getMaxStackSize()))
 			{
