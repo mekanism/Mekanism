@@ -8,8 +8,8 @@ import javax.annotation.Nullable;
 
 import mcmultipart.api.addon.IMCMPAddon;
 import mcmultipart.api.addon.MCMPAddon;
-import mcmultipart.api.capability.MCMPCapabilities;
 import mcmultipart.api.multipart.IMultipartRegistry;
+import mcmultipart.api.ref.MCMPCapabilities;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.tile.TileEntityGlowPanel;
