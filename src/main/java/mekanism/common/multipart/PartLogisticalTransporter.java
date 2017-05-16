@@ -340,7 +340,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 			getTransmitter().setColor(TransporterUtils.colors.get(nbtTags.getInteger("color")));
 		}
 
-		if(nbtTags.hasKey("stacks"))
+		/*if(nbtTags.hasKey("stacks"))
 		{
 			NBTTagList tagList = nbtTags.getTagList("stacks", NBT.TAG_COMPOUND);
 
@@ -350,7 +350,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 
 				getTransmitter().transit.add(stack);
 			}
-		}
+		}*/
 	}
 
 	@Override
