@@ -66,21 +66,7 @@ public class TransitRequest
 	{
 		TransitRequest ret = new TransitRequest();
 		
-		if(InventoryUtils.isItemHandler(tile, side.getOpposite()))
-  		{
-  			IItemHandler inventory = InventoryUtils.getItemHandler(tile, side.getOpposite());
-  			
-  			for(int i = inventory.getSlots() - 1; i >= 0; i--)
-			{
-				ItemStack stack = inventory.extractItem(i, amount, true);
-				
-				if(!stack.isEmpty() && !ret.hasType(stack) && finder.modifies(stack))
-				{
-					ret.setItem(stack, i);
-				}
-			}
-  		}
-  		else if(tile instanceof ISidedInventory)
+  		if(tile instanceof ISidedInventory)
 		{
 			ISidedInventory sidedInventory = (ISidedInventory)tile;
 			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
@@ -122,6 +108,20 @@ public class TransitRequest
 				}
 			}
 		}
+		else if(InventoryUtils.isItemHandler(tile, side.getOpposite()))
+  		{
+  			IItemHandler inventory = InventoryUtils.getItemHandler(tile, side.getOpposite());
+  			
+  			for(int i = inventory.getSlots() - 1; i >= 0; i--)
+			{
+				ItemStack stack = inventory.extractItem(i, amount, true);
+				
+				if(!stack.isEmpty() && !ret.hasType(stack) && finder.modifies(stack))
+				{
+					ret.setItem(stack, i);
+				}
+			}
+  		}
 
 		return ret;
 	}
