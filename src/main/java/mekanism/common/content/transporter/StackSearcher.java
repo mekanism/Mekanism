@@ -21,11 +21,7 @@ public class StackSearcher
 		tileEntity = tile;
 		side = direction;
 		
-		if(InventoryUtils.isItemHandler(tile, direction.getOpposite()))
-		{
-			i = InventoryUtils.getItemHandler(tile, direction.getOpposite()).getSlots();
-		}
-		else if(tile instanceof ISidedInventory)
+		if(tile instanceof ISidedInventory)
 		{
 			slots = ((ISidedInventory)tile).getSlotsForFace(side.getOpposite());
 			
@@ -38,25 +34,15 @@ public class StackSearcher
 		{
 			i = ((IInventory)tile).getSizeInventory();
 		}
+		else if(InventoryUtils.isItemHandler(tile, direction.getOpposite()))
+		{
+			i = InventoryUtils.getItemHandler(tile, direction.getOpposite()).getSlots();
+		}
 	}
 
 	public InvStack takeTopStack(Finder id)
 	{
-		if(InventoryUtils.isItemHandler(tileEntity, side.getOpposite()))
-		{
-			IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
-			
-			for(i = i - 1; i >= 0; i--)
-			{
-				ItemStack stack = inventory.extractItem(i, 64, true);
-				
-				if(stack != null && id.modifies(stack))
-				{
-					return new InvStack(tileEntity, i, stack, side.getOpposite());
-				}
-			}
-		}
-		else if(tileEntity instanceof ISidedInventory)
+		if(tileEntity instanceof ISidedInventory)
 		{
 			ISidedInventory inventory = (ISidedInventory)tileEntity;
 			
@@ -91,6 +77,20 @@ public class StackSearcher
 				}
 			}
 		}
+		else if(InventoryUtils.isItemHandler(tileEntity, side.getOpposite()))
+		{
+			IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
+			
+			for(i = i - 1; i >= 0; i--)
+			{
+				ItemStack stack = inventory.extractItem(i, 64, true);
+
+				if(stack != null && id.modifies(stack))
+				{
+					return new InvStack(tileEntity, i, stack, side.getOpposite());
+				}
+			}
+		}
 
 		return null;
 	}
@@ -99,36 +99,7 @@ public class StackSearcher
 	{
 		InvStack ret = new InvStack(tileEntity, side.getOpposite());
 
-		if(InventoryUtils.isItemHandler(tileEntity, side.getOpposite()))
-		{
-			IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
-			
-			for(i = i - 1; i >= 0; i--)
-			{
-				ItemStack stack = inventory.extractItem(i, max, true);
-				
-				if(stack != null && StackUtils.equalsWildcard(stack, type))
-				{
-					int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
-
-					if(current+stack.stackSize <= max)
-					{
-						ret.appendStack(i, stack.copy());
-					}
-					else {
-						ItemStack copy = stack.copy();
-						copy.stackSize = max-current;
-						ret.appendStack(i, copy);
-					}
-
-					if(ret.getStack() != null && ret.getStack().stackSize == max)
-					{
-						return ret;
-					}
-				}
-			}
-		}
-		else if(tileEntity instanceof ISidedInventory)
+		if(tileEntity instanceof ISidedInventory)
 		{
 			ISidedInventory sidedInventory = (ISidedInventory)tileEntity;
 			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
@@ -180,6 +151,35 @@ public class StackSearcher
 				if(inventory.getStackInSlot(i) != null && StackUtils.equalsWildcard(inventory.getStackInSlot(i), type))
 				{
 					ItemStack stack = inventory.getStackInSlot(i);
+					int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
+
+					if(current+stack.stackSize <= max)
+					{
+						ret.appendStack(i, stack.copy());
+					}
+					else {
+						ItemStack copy = stack.copy();
+						copy.stackSize = max-current;
+						ret.appendStack(i, copy);
+					}
+
+					if(ret.getStack() != null && ret.getStack().stackSize == max)
+					{
+						return ret;
+					}
+				}
+			}
+		}
+		else if(InventoryUtils.isItemHandler(tileEntity, side.getOpposite()))
+		{
+			IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
+			
+			for(i = i - 1; i >= 0; i--)
+			{
+				ItemStack stack = inventory.extractItem(i, max, true);
+				
+				if(stack != null && StackUtils.equalsWildcard(stack, type))
+				{
 					int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
 
 					if(current+stack.stackSize <= max)
