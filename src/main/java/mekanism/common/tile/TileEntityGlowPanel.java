@@ -4,16 +4,18 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.property.IExtendedBlockState;
-//import net.minecraft.util.IIcon;
 
 public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 {
@@ -46,6 +48,17 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 		data.add(colour.getMetaValue());
 		
 		return data;
+	}
+	
+	@Override
+	public void validate()
+	{
+		super.validate();
+
+		if(world.isRemote)
+		{
+			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+		}
 	}
 
 	@Override
