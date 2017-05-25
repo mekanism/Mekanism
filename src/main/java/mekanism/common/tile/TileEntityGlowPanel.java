@@ -10,11 +10,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
@@ -79,6 +81,20 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 		
 		side = EnumFacing.getFront(nbt.getInteger("side"));
 		colour = EnumColor.DYES[nbt.getInteger("colour")];
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
+			return (T)this;
+		return super.getCapability(capability, facing);
 	}
 	
 	public static int hash(IExtendedBlockState state)
