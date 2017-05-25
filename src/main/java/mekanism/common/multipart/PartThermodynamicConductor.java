@@ -208,7 +208,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 		temperature += tier.inverseHeatCapacity * heatToAbsorb;
 		heatToAbsorb = 0;
 		
-		if(Math.abs(temperature - clientTemperature) > (temperature / 100))
+		if(Math.abs(temperature - clientTemperature) > (temperature / 20))
 		{
 			clientTemperature = temperature;
 			sendTemp();
