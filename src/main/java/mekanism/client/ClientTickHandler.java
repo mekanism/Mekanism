@@ -476,11 +476,11 @@ public class ClientTickHandler
 					{
 						if((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) || (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null)
 						{
-							return !player.onGround;
+							return !CommonPlayerTickHandler.isOnGround(player);
 						}
 						else if(mc.gameSettings.keyBindSneak.isKeyDown() && mc.currentScreen == null)
 						{
-							return !player.onGround;
+							return !CommonPlayerTickHandler.isOnGround(player);
 						}
 						
 						return true;
