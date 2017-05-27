@@ -1,4 +1,4 @@
-package mekanism.common.integration;
+package mekanism.common.integration.computer;
 
 import net.minecraft.inventory.IInventory;
 

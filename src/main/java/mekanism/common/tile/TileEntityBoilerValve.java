@@ -6,7 +6,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;

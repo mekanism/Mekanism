@@ -6,10 +6,14 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
+import mekanism.client.ClientTickHandler;
 import mekanism.client.render.particle.EntityJetpackFlameFX;
 import mekanism.client.render.particle.EntityJetpackSmokeFX;
 import mekanism.client.render.particle.EntityScubaBubbleFX;
+import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
@@ -36,6 +40,7 @@ public class RenderTickHandler
 {
 	public Random rand = new Random();
 	public Minecraft mc = Minecraft.getMinecraft();
+	public static int modeSwitchTimer = 0;
 
 	@SubscribeEvent
 	public void tickEnd(RenderTickEvent event)
@@ -78,8 +83,28 @@ public class RenderTickHandler
 						font.drawStringWithShadow("Side: " + pos.sideHit, 1, 37, 0x404040);
 					}
 				}
+				
+				if(modeSwitchTimer > 1 && mc.currentScreen == null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator)
+				{
+					ItemStack stack = player.getHeldItemMainhand();
+					ScaledResolution scaledresolution = new ScaledResolution(mc);
+					ConfiguratorMode mode = ((ItemConfigurator)stack.getItem()).getState(stack);
+					
+					int x = scaledresolution.getScaledWidth();
+					int y = scaledresolution.getScaledHeight();
+					int stringWidth = font.getStringWidth(mode.getName());
+					int color = new ColourRGBA(1, 1, 1, (float)modeSwitchTimer/100F).argb();
+					font.drawString(mode.getColor() + mode.getName(), x/2 - stringWidth/2, y-60, color);
+				}
+				
+				modeSwitchTimer = Math.max(modeSwitchTimer-1, 0);
+				
+				if(modeSwitchTimer == 0)
+				{
+					ClientTickHandler.wheelStatus = 0;
+				}
 	
-				if(player != null && mc.currentScreen == null && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty())
+				if(mc.currentScreen == null && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty())
 				{
 					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 	

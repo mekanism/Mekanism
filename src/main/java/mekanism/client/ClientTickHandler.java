@@ -16,6 +16,7 @@ import java.util.Set;
 
 import mekanism.api.IClientTicker;
 import mekanism.api.gas.GasStack;
+import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
@@ -24,13 +25,16 @@ import mekanism.common.ObfuscatedNames;
 import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketFlamethrowerData;
+import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
@@ -51,6 +55,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -90,6 +95,8 @@ public class ClientTickHandler
 
 	public static Set<IClientTicker> tickingSet = new HashSet<IClientTicker>();
 	public static Map<EntityPlayer, TeleportData> portableTeleports = new HashMap<>();
+	
+	public static int wheelStatus = 0;
 
 	@SubscribeEvent
 	public void onTick(ClientTickEvent event)
@@ -421,6 +428,40 @@ public class ClientTickHandler
 						}
 					}
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onMouseEvent(MouseEvent event)
+	{
+		if(client.allowConfiguratorModeScroll && mc.player != null && mc.player.isSneaking())
+		{
+			ItemStack stack = mc.player.getHeldItemMainhand();
+			int delta = event.getDwheel();
+			
+			if(stack.getItem() instanceof ItemConfigurator && delta != 0)
+			{
+				ItemConfigurator configurator = (ItemConfigurator)stack.getItem();
+				RenderTickHandler.modeSwitchTimer = 100;
+				
+				wheelStatus += event.getDwheel();
+				int scaledDelta = wheelStatus/120;
+				wheelStatus = wheelStatus % 120;
+				int newVal = configurator.getState(stack).ordinal() + (scaledDelta % ConfiguratorMode.values().length);
+				
+				if(newVal > 0)
+				{
+					newVal = newVal % ConfiguratorMode.values().length;
+				}
+				else if(newVal < 0) 
+				{
+					newVal = ConfiguratorMode.values().length + newVal;
+				}
+				
+				configurator.setState(stack, ConfiguratorMode.values()[newVal]);
+				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(EnumHand.MAIN_HAND, configurator.getState(stack)));
+				event.setCanceled(true);
 			}
 		}
 	}
