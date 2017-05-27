@@ -91,7 +91,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(usage.osmiumCompressorUsage);
 			dataStream.writeDouble(usage.combinerUsage);
 			dataStream.writeDouble(usage.crusherUsage);
-			dataStream.writeDouble(usage.factoryUsage);
 			dataStream.writeDouble(usage.metallurgicInfuserUsage);
 			dataStream.writeDouble(usage.purificationChamberUsage);
 			dataStream.writeDouble(usage.energizedSmelterUsage);
@@ -188,7 +187,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.osmiumCompressorUsage = dataStream.readDouble();
 			usage.combinerUsage = dataStream.readDouble();
 			usage.crusherUsage = dataStream.readDouble();
-			usage.factoryUsage = dataStream.readDouble();
 			usage.metallurgicInfuserUsage = dataStream.readDouble();
 			usage.purificationChamberUsage = dataStream.readDouble();
 			usage.energizedSmelterUsage = dataStream.readDouble();

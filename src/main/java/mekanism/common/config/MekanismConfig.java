@@ -97,7 +97,6 @@ public class MekanismConfig
 		public static double osmiumCompressorUsage;
 		public static double combinerUsage;
 		public static double crusherUsage;
-		public static double factoryUsage;
 		public static double metallurgicInfuserUsage;
 		public static double purificationChamberUsage;
 		public static double energizedSmelterUsage;

@@ -286,12 +286,6 @@ public class BlockStateMachine extends ExtendedBlockState
 					return usage.crusherUsage;
 				case DIGITAL_MINER:
 					return usage.digitalMinerUsage;
-				case BASIC_FACTORY:
-					return usage.factoryUsage * 3;
-				case ADVANCED_FACTORY:
-					return usage.factoryUsage * 5;
-				case ELITE_FACTORY:
-					return usage.factoryUsage * 7;
 				case METALLURGIC_INFUSER:
 					return usage.metallurgicInfuserUsage;
 				case PURIFICATION_CHAMBER:

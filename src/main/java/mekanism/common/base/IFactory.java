@@ -207,6 +207,11 @@ public interface IFactory
 
 			return cacheTile;
 		}
+		
+		public double getEnergyUsage()
+		{
+			return type.getUsage();
+		}
 
 		public int getMaxSecondaryEnergy()
 		{
