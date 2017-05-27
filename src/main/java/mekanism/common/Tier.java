@@ -557,7 +557,7 @@ public final class Tier
 		ADVANCED(28000, 800),
 		ELITE(56000, 1600),
 		ULTIMATE(112000, 3200),
-		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE/2);
 
 		public int storage;
 		private int baseStorage;
@@ -605,7 +605,7 @@ public final class Tier
 		ADVANCED(128000, 512),
 		ELITE(256000, 1028),
 		ULTIMATE(512000, 2056),
-		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE/2);
 
 		public int storage;
 		private int baseStorage;

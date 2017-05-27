@@ -386,9 +386,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				TileEntityFactory factory = (TileEntityFactory)tileEntity;
 				RecipeType recipeType = RecipeType.values()[getRecipeType(stack)];
-				factory.recipeType = recipeType;
-				factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
-				factory.secondaryEnergyPerTick = factory.getSecondaryEnergyPerTick(recipeType);
+				factory.setRecipeType(recipeType);
 				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
 				
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));

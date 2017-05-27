@@ -149,7 +149,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
-		super("null", machine.blockName, machine.baseEnergy, usage.factoryUsage, 0);
+		super("null", machine.blockName, 0, 0, 0);
 
 		tier = type;
 		inventory = NonNullList.withSize(5+type.processes*2, ItemStack.EMPTY);
@@ -206,7 +206,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		factory.ejectorComponent.readFrom(ejectorComponent);
 		factory.configComponent.readFrom(configComponent);
 		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-		factory.recipeType = recipeType;
+		factory.setRecipeType(recipeType);
 		factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 		factory.securityComponent.readFrom(securityComponent);
 		factory.infuseStored = infuseStored;
@@ -289,7 +289,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 						inventory.set(2, ItemStack.EMPTY);
 						inventory.set(3, returnStack);
 
-						recipeType = toSet;
+						setRecipeType(toSet);
 						gasTank.setGas(null);
 
 						secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
@@ -370,6 +370,20 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
 			lastUsage = prev-getEnergy();
 			prevEnergy = getEnergy();
+		}
+	}
+	
+	public void setRecipeType(RecipeType type)
+	{
+		recipeType = type;
+		BASE_MAX_ENERGY = maxEnergy = 200*tier.processes*recipeType.getEnergyUsage();
+		BASE_ENERGY_PER_TICK = energyPerTick = recipeType.getEnergyUsage();
+		upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
+		secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+		
+		for(Upgrade upgrade : upgradeComponent.getSupportedTypes())
+		{
+			recalculateUpgradables(upgrade);
 		}
 	}
 	
@@ -720,7 +734,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 			
 			if(recipeType != oldRecipe)
 			{
-				secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+				setRecipeType(recipeType);
 				
 				if(!upgraded)
 				{
@@ -755,15 +769,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	{
 		super.readFromNBT(nbtTags);
 
-		RecipeType oldRecipe = recipeType;
-		recipeType = RecipeType.values()[nbtTags.getInteger("recipeType")];
+		setRecipeType(RecipeType.values()[nbtTags.getInteger("recipeType")]);
 		upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
-
-		if(recipeType != oldRecipe)
-		{
-			secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-		}
-
 		recipeTicks = nbtTags.getInteger("recipeTicks");
 		sorting = nbtTags.getBoolean("sorting");
 		infuseStored.amount = nbtTags.getInteger("infuseStored");
