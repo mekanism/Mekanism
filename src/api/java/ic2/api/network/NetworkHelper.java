@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.relauncher.Side;
 
+import ic2.api.info.Info;
+
 /**
  * Provides methods to initiate events and synchronize tile entity fields in SMP.
  *
@@ -158,7 +160,7 @@ public final class NetworkHelper {
 	 */
 	public static void setInstance(INetworkManager server, INetworkManager client) {
 		ModContainer mc = Loader.instance().activeModContainer();
-		if (mc == null || !"IC2".equals(mc.getModId())) {
+		if (mc == null || !Info.MOD_ID.equals(mc.getModId())) {
 			throw new IllegalAccessError();
 		}
 		serverInstance = server;

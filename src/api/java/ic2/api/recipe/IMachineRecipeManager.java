@@ -1,6 +1,5 @@
 package ic2.api.recipe;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -8,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @author Player, RichardG
  */
-public interface IMachineRecipeManager {
+public interface IMachineRecipeManager<RI, RO, I> {
 	/**
 	 * Adds a recipe to the machine.
 	 *
@@ -19,21 +18,23 @@ public interface IMachineRecipeManager {
 	 * @note Replace is only as reliable as IRecipeInput.getInputs().
 	 *
 	 * @param input Recipe input
+	 * @param output Recipe outputs, zero or more depending on the machine.
 	 * @param metadata Meta data for additional recipe properties, may be null.
 	 * @param replace Replace conflicting existing recipes, not recommended, may be ignored.
-	 * @param outputs Recipe outputs, zero or more depending on the machine.
 	 * @return true on success, false otherwise, e.g. on conflicts.
 	 */
-	public boolean addRecipe(IRecipeInput input, NBTTagCompound metadata, boolean replace, ItemStack... outputs);
+	boolean addRecipe(RI input, RO output, NBTTagCompound metadata, boolean replace);
 
 	/**
-	 * Gets the recipe output for the given input.
+	 * Gets the recipe result for the given input.
 	 *
-	 * @param input Recipe input
-	 * @param adjustInput modify the input according to the recipe's requirements
-	 * @return Recipe output, or null if none
+	 * @param input Recipe input (not modified)
+	 * @param acceptTest If true the manager will accept partially missing ingredients or
+	 * ingredients with insufficient quantities. This is primarily used to check whether a
+	 * slot/tank/etc can accept the input while trying to supply a machine with resources.
+	 * @return Recipe result, or null if none
 	 */
-	public RecipeOutput getOutputFor(ItemStack input, boolean adjustInput);
+	MachineRecipeResult<RI, RO, I> apply(I input, boolean acceptTest);
 
 	/**
 	 * Get all registered recipes (optional operation).
@@ -44,23 +45,12 @@ public interface IMachineRecipeManager {
 	 * @return Iterable of all recipes registered to the manager.
 	 * @throws UnsupportedOperationException if {@link #isIterable()} is false.
 	 */
-	public Iterable<RecipeIoContainer> getRecipes();
+	Iterable<? extends MachineRecipe<RI, RO>> getRecipes();
 
 	/**
 	 * Determine whether the recipes can be iterated.
 	 *
 	 * @return true if {@link #getRecipes()} is implemented, false otherwise.
 	 */
-	public boolean isIterable();
-
-
-	public static class RecipeIoContainer {
-		public RecipeIoContainer(IRecipeInput input, RecipeOutput output) {
-			this.input = input;
-			this.output = output;
-		}
-
-		public final IRecipeInput input;
-		public final RecipeOutput output;
-	}
+	boolean isIterable();
 }

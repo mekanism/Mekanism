@@ -1,5 +1,7 @@
 package ic2.api.recipe;
 
+import net.minecraft.item.ItemStack;
+
 /**
  * General recipe registry.
  *
@@ -34,33 +36,33 @@ public class Recipes {
 	/**
 	 * Recipe manager for furnace recipes.
 	 *
-	 * <p>No recipe meta.
-	 *
-	 * @deprecated currently unused/not implemented, uses the vanilla furnace recipe list
+	 * <p>Recipe meta:
+	 * <ul>
+	 * <li>float experience: experience per smelt operation
+	 * </ul>
 	 */
-	@Deprecated
-	public static IMachineRecipeManager furnace;
+	public static IMachineRecipeManager<ItemStack, ItemStack, ItemStack> furnace;
 
 	/**
 	 * Recipe manager for macerator recipes.
 	 *
 	 * <p>No recipe meta.
 	 */
-	public static IMachineRecipeManager macerator;
+	public static IBasicMachineRecipeManager macerator;
 
 	/**
 	 * Recipe manager for extractor recipes.
 	 *
 	 * <p>No recipe meta.
 	 */
-	public static IMachineRecipeManager extractor;
+	public static IBasicMachineRecipeManager extractor;
 
 	/**
 	 * Recipe manager for compressor recipes.
 	 *
 	 * <p>No recipe meta.
 	 */
-	public static IMachineRecipeManager compressor;
+	public static IBasicMachineRecipeManager compressor;
 
 	/**
 	 * Recipe manager for thermal centrifuge recipes.
@@ -70,7 +72,7 @@ public class Recipes {
 	 * <li>int minHeat: minimum heat level required
 	 * </ul>
 	 */
-	public static IMachineRecipeManager centrifuge;
+	public static IBasicMachineRecipeManager centrifuge;
 
 	/**
 	 * Recipe manager for blast cutter recipes.
@@ -80,7 +82,7 @@ public class Recipes {
 	 * <li>int hardness: minimum blade hardness (3=iron, 6=steel, 9=diamond)
 	 * </ul>
 	 */
-	public static IMachineRecipeManager blockcutter;
+	public static IBasicMachineRecipeManager blockcutter;
 
 	/**
 	 * Recipe manager for blast furnace recipes.
@@ -91,7 +93,7 @@ public class Recipes {
 	 * <li>int duration: process duration (in ticks)
 	 * </ul>
 	 */
-	public static IMachineRecipeManager blastfurnace;
+	public static IBasicMachineRecipeManager blastfurnace;
 
 	/**
 	 * Recipe manager for recycler recipes.
@@ -101,28 +103,28 @@ public class Recipes {
 	 * @note the implementation is currently immutable, any non-blacklisted item will be accepted,
 	 * chance checking is up to the caller.
 	 */
-	public static IMachineRecipeManager recycler;
+	public static IBasicMachineRecipeManager recycler;
 
 	/**
 	 * Recipe manager for metal former extrusion mode recipes.
 	 *
 	 * <p>No recipe meta.
 	 */
-	public static IMachineRecipeManager metalformerExtruding;
+	public static IBasicMachineRecipeManager metalformerExtruding;
 
 	/**
 	 * Recipe manager for metal former cutting mode recipes.
 	 *
 	 * <p>No recipe meta.
 	 */
-	public static IMachineRecipeManager metalformerCutting;
+	public static IBasicMachineRecipeManager metalformerCutting;
 
 	/**
 	 * Recipe manager for metal former rolling mode recipes.
 	 *
 	 * <p>No recipe meta.
 	 */
-	public static IMachineRecipeManager metalformerRolling;
+	public static IBasicMachineRecipeManager metalformerRolling;
 
 	/**
 	 * Recipe manager for ore washing plant recipes.
@@ -132,7 +134,7 @@ public class Recipes {
 	 * <li>int amount: input fluid amount per cycle (in mB)
 	 * </ul>
 	 */
-	public static IMachineRecipeManager oreWashing;
+	public static IBasicMachineRecipeManager oreWashing;
 	public static ICannerBottleRecipeManager cannerBottle;
 	public static ICannerEnrichRecipeManager cannerEnrich;
 	public static IElectrolyzerRecipeManager electrolyzer;
@@ -141,10 +143,7 @@ public class Recipes {
 	/**
 	 * Recipe manager for uu mass fabricator (matter gen) recipes.
 	 *
-	 * <p>Recipe meta:
-	 * <ul>
-	 * <li>int amplification: amount of eu to be amplified per item (fixed +5x)
-	 * </ul>
+	 * <p>No recipe meta.
 	 *
 	 * <p>Reference values:
 	 * <ul>
@@ -152,7 +151,8 @@ public class Recipes {
 	 * <li>45000: Scrapbox
 	 * </ul>
 	 */
-	public static IMachineRecipeManager matterAmplifier;
+	public static IMachineRecipeManager<IRecipeInput, Integer, ItemStack> matterAmplifier;
+
 	/**
 	 * Reference scrap box chance values:
 	 *
@@ -184,4 +184,7 @@ public class Recipes {
 	 * Opposite of {@link #liquidCooldownManager}. This is for Liquids that can be heated up again.
 	 */
 	public static ILiquidHeatExchangerManager liquidHeatupManager;
+
+	public static IEmptyFluidContainerRecipeManager emptyFluidContainer;
+	public static IFillFluidContainerRecipeManager fillFluidContainer;
 }

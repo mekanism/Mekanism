@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
+import ic2.api.info.Info;
+
 
 /**
  * Provides access to IC2 blocks and items.
@@ -75,7 +77,7 @@ public final class IC2Items {
 	public static void setInstance(IItemAPI api) {
 		ModContainer mc = Loader.instance().activeModContainer();
 
-		if (mc == null || !"IC2".equals(mc.getModId())) {
+		if (mc == null || !Info.MOD_ID.equals(mc.getModId())) {
 			throw new IllegalAccessError("invoked from "+mc);
 		}
 

@@ -2,8 +2,6 @@ package ic2.api.reactor;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import ic2.api.info.ILocatable;
 
@@ -19,28 +17,6 @@ public interface IReactor extends ILocatable {
 	 * @return the reactor core's TE or null.
 	 */
 	public TileEntity getCoreTe();
-
-	/**
-	 * Return the reactor's current world instance (it's position can be acquired using {@link #getReactorPos()}.
-	 * <br/>
-	 * Should be the same world as {@link #getCoreTe()} returns if it's not null.
-	 * @deprecated See {@link #getWorldObj()}
-	 *
-	 * @return The reactor's world object
-	 */
-	@Deprecated //TODO: remove for 1.11
-	public World getReactorWorld(); //getWorld has obfuscation issues (https://github.com/md-5/SpecialSource/issues/12)
-
-	/**
-	 * Return the reactor's current position in the world ({@link #getReactorWorld()}.
-	 * <br/>
-	 * Should be the same position as {@link #getCoreTe()} returns if it's not null.
-	 * @deprecated See {@link #getPosition()}
-	 *
-	 * @return The reactor's current position
-	 */
-	@Deprecated //TODO: remove for 1.11
-	public BlockPos getReactorPos(); //As would getPos
 
 	/**
 	 * Get the reactor's heat.

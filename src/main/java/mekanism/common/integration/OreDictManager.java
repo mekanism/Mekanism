@@ -1,6 +1,5 @@
 package mekanism.common.integration;
 
-import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 
 import java.util.ArrayList;
@@ -328,7 +327,7 @@ public final class OreDictManager
 	public static void addIC2BronzeRecipe()
 	{
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, false, StackUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+			Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotBronze"), null, false, StackUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 		} catch(Exception e) {}
 	}
 

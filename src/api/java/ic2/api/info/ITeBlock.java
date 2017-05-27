@@ -1,8 +1,7 @@
 package ic2.api.info;
 
-import java.util.Set;
-
 import net.minecraft.block.material.Material;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -19,25 +18,14 @@ import ic2.api.tile.IWrenchable;
  *	by being able to extend it means all those methods you can now extend and be confident they will be called correctly.
  *	</p>
  *	<p>
- *  The more observant might have noticed there was an event that allowed you to do basically the same thing called <code>TeBlockBakeEvent</code>.
- *  Whilst that event used to add your own class onto <code>TeBlock</code> (that wasn't ideal as you could end up using the same ID as another addon which would cause a crash),
- *  this allows you to completely implement your own version of <code>TeBlock</code>, then let IC2 take it and build the necessary structures around it.
- *  Both mean you no longer have to use <code>EnumHelper</code> and lots of reflection to mess about with <code>TeBlock</code>,
- *  just to be left with either a crash from doing it too late/wrong, or lots of code bound to IC2 (such as language keys and blockstate jsons being in IC2's assets).
- *	</p>
- *	<p>
- *	Unlike <code>TeBlockBakeEvent</code>, this gives you near total control of your tile entities:
+ *	Because it allows effectively level control to IC2 itself, this gives you near total control of your tile entities:
  *	<blockquote>
  *	You can pick whether each of your tile entity items show up in creative, and the order in which they do.<br/>
- *	You can choose whether you use an <code>enum</code> or <code>class</code> for your implementation.
- *	We use (and I personally recommend) using an <code>enum</code>, as the values should never change, but in the end the choice is yours.<br/>
  *	There is a proper separation between each registered <code>ITeBlock</code> by resource location, rather than everything being inserted into a single <code>enum</code>.
  *	You also receive your own instance of <code>BlockTileEntity</code> and <code>ItemBlockTileEntity</code> rather than having to use IC2's own one.<br/>
  *	All the language keys and blockstate file are in your own assets (which you can, and in fact have to, pick).
+ *	You can have custom item models with non-standard model locations.
  *	</blockquote>
- *	It is a vast improvement over <code>TeBlockBakeEvent</code>, which is probably important as it's gone now ;)
- *	</p>
- *	<br/>
  *	The event allows you to properly register your own version of <code>TeBlock</code> in a way that will be as fully supported as is physically possible.
  *	It's not in the actual API itself as it's heavily dependent on internal classes, so you have this instead.
  *	This is also probably the most documented thing in the entire IC2 API. <small>I'm too kind really. ;)</small>
@@ -49,43 +37,41 @@ import ic2.api.tile.IWrenchable;
  *import net.minecraftforge.common.MinecraftForge;
  *import net.minecraftforge.fml.common.Mod;
  *import net.minecraftforge.fml.common.Mod.EventHandler;
- *import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+ *import net.minecraftforge.fml.common.event.FMLConstructionEvent;
  *import net.minecraftforge.fml.common.event.FMLInitializationEvent;
- *
- *{@literal @}Mod(modId="ExampleIC2Addon")
- *public class ExampleIC2Addon {
- *	public ExampleIC2Addon() {
- *		//You have to register before IC2 reaches Pre-Initialization, which unless you specifically load before it is unlikely you'll achieve.
- *		//Especially if you're an addon, you'll want to be loading after IC2 not before!
- *		//But, your mod's constructor will definitely be called before then. The issue is it's called more than once.
- *		//If you try registering the same tile entity ID twice it will crash (more on that later), so you'll have to use a singleton instance.
- *		//An enum works well for this, but anything will work as long as it's registered to the event bus once, and only once.
- *		MinecraftForge.EVENT_BUS.register(TileEntityRegisterer.INSTANCE);
- *	}
- *
- *	{@literal @}EventHandler
- *	public void preInit(FMLPreInitializationEvent event) {
- *		MyTeBlock.registerTileEntities();
- *	}
- *
- *	{@literal @}EventHandler
- *	public void preInit(FMLInitializationEvent event) {
- *		MyTeBlock.buildDummies();
- *	}
- *}
+ *import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  *
  *import ic2.api.event.TeBlockFinalCallEvent;
  *import ic2.core.block.TeBlockRegistry;
- *import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  *
- *public enum TileEntityRegisterer {
- *	INSTANCE;
+ *{@literal @}Mod(modId="ExampleIC2Addon")
+ *public class ExampleIC2Addon {
+ *	{@literal @}EventHandler
+ *	public void start(FMLConstructionEvent event) {
+ *		MinecraftForge.EVENT_BUS.register(this);
+ *	}
  *
  *	{@literal @}SubscribeEvent
  *	public void register(TeBlockFinalCallEvent event) {
  *		TeBlockRegistry.addAll(MyTeBlock.class, MyTeBlock.IDENTITY);
+ *
+ *		MinecraftForge.EVENT_BUS.unregister(this);
+ *	}
+ *
+ *	{@literal @}EventHandler
+ *	public void init(FMLInitializationEvent event) {
+ *		MyTeBlock.buildDummies();
  *	}
  *}
+ *
+ *
+ *import net.minecraft.block.material.Material;
+ *import net.minecraft.creativetab.CreativeTabs;
+ *import net.minecraft.item.EnumRarity;
+ *import net.minecraft.item.ItemStack;
+ *import net.minecraft.tileentity.TileEntity;
+ *import net.minecraft.util.EnumFacing;
+ *import net.minecraft.util.ResourceLocation;
  *
  *import ic2.core.block.BlockTileEntity;
  *import ic2.core.block.ITeBlock;
@@ -95,21 +81,14 @@ import ic2.api.tile.IWrenchable;
  *import ic2.core.ref.TeBlock.HarvestTool;
  *import ic2.core.ref.TeBlock.ITePlaceHandler;
  *import ic2.core.util.Util;
- *import net.minecraft.block.material.Material;
- *import net.minecraft.creativetab.CreativeTabs;
- *import net.minecraft.item.EnumRarity;
- *import net.minecraft.item.ItemStack;
- *import net.minecraft.tileentity.TileEntity;
- *import net.minecraft.util.EnumFacing;
- *import net.minecraft.util.ResourceLocation;
  *
  *public enum MyTeBlock implements ITeBlock {
- *	my_machine_name(MyMachineTileEntity.class, 0, false, Util.noFacings, false, HarvestTool.Pickaxe, DefaultDrop.Machine, 5, 10, EnumRarity.UNCOMMON, Material.IRON);
+ *	my_machine_name(MyMachineTileEntity.class, 0, false, Util.noFacings, false, HarvestTool.Pickaxe, DefaultDrop.Machine, 5, 10, EnumRarity.UNCOMMON, Material.IRON, false);
  *
  *	private MyTeBlock(Class<? extends TileEntityBlock> teClass, int ID,
  *			boolean hasActive, Set{@literal <}EnumFacing{@literal >} possibleFacings, boolean canBeWrenched,
  *			HarvestTool tool, DefaultDrop drop,
- *			float hardness, float explosionResistance, EnumRarity rarity, Material material) {
+ *			float hardness, float explosionResistance, EnumRarity rarity, Material material, boolean isTransparent) {
  *		this.teClass = teClass;
  *		this.ID = ID;
  *		this.hasActive = hasActive;
@@ -121,6 +100,9 @@ import ic2.api.tile.IWrenchable;
  *		this.explosionResistance = explosionResistance;
  *		this.rarity = rarity;
  *		this.material = material;
+ *		this.isTransparent = isTransparent;
+ *
+ *		TileEntity.addMapping(block.teClass, IDENTITY.getResourceDomain() + ':' + block.getName());
  *	}
  *
  *	{@literal @}Override
@@ -194,12 +176,8 @@ import ic2.api.tile.IWrenchable;
  *	}
  *
  *	{@literal @}Override
- *	public void addSubBlocks(List{@literal <}ItemStack{@literal >} list, BlockTileEntity block, ItemBlockTileEntity item, CreativeTabs tab) {
- *		for (MyTeBlock block : values()) {
- *			if (type.hasItem()) {
- *				list.add(block.getItemStack(type));
- *			}
- *		}
+ *	public boolean isTransparent() {
+ *		return isTransparent;
  *	}
  *
  *	{@literal @}Override
@@ -212,15 +190,9 @@ import ic2.api.tile.IWrenchable;
  *		return placeHandler;
  *	}
  *
- *	public static void registerTileEntities() {
- *		for (MyTeBlock block : values()) {
- *			if (block.teClass != null) TileEntity.addMapping(block.teClass, IDENTITY.getResourceDomain() + ':' + block.getName());
- *		}
- *	}
- *
  *	public static void buildDummies() {
  *		for (MyTeBlock block : values()) {
- *			//System.out.printf("Registering %s (with teClass %s)%n", block.getName(), block.teClass);
+ *			//System.out.printf("Building %s (with teClass %s)%n", block.getName(), block.teClass);
  *			if (block.teClass != null) {
  *				try {
  *					block.dummyTe = block.teClass.newInstance();
@@ -247,6 +219,7 @@ import ic2.api.tile.IWrenchable;
  *	private final float explosionResistance;
  *	private final EnumRarity rarity;
  *	private final Material material;
+ *	private final boolean isTransparent;
  *	private TileEntityBlock dummyTe;
  *	private ITePlaceHandler placeHandler;
  *
@@ -275,7 +248,7 @@ import ic2.api.tile.IWrenchable;
  *		<li><b>itemMeta</b>: The ID of the new instance. This is utterly critical, as it's the thing used to detect which <code>ITeBlock</code> an item is.
  *							That's very important as the tile entity class is worked out by the ID when a block's being placed in <code>ItemBlockTileEntity</code>.
  *							Changing this will cause everyone's items to change and there is no stopping that if you do.
- *							The ID you pick should start at 0, and go up to Short.MAX_VALUE.
+ *							The ID you pick should start at 0, and go up to {@link Short#MAX_VALUE}.
  *							Use -1 if the tile entity doesn't have an item form (or is placed using an item other than <code>ItemBlockTileEntity</code>).</li>
  *		<li><b>identifier</b>: The resource location associated with the <code>ITeBlock</code>.
  *								The language keys, translations and internal mappings all use this, so it's best to store it as a static final variable and use that.
@@ -291,16 +264,13 @@ import ic2.api.tile.IWrenchable;
  *		<li><b>hardness</b>: The hardness the block should have with the tile entity, IC2 normally uses 5.</li>
  *		<li><b>explosionResistance</b>: The explosionResistance the block should have with the tile entity, IC2 normally uses 10.</li>
  *		<li><b>rarity</b>: The <code>EnumRarity</code> that the item will have for the tile entity.</li>
- *		<li><b>material</b>: The {@link Material} that the block representing the tile entity should have. Maximum of 16 different ones per ITeBlock registration.</li>
+ *		<li><b>material</b>: The {@link Material} that the block representing the tile entity should have. Maximum of 8 different ones per ITeBlock registration.</li>
+ *		<li><b>isTransparent</b>: Whether the block should be rendered with {@link BlockRenderLayer#CUTOUT} or {@link BlockRenderLayer#SOLID}
+ *								(which controls whether transparency can be in the texture).</li>
  *		<li><b>placeHandler</b>: Custom placement logic, used for things like Reactor Chambers within IC2 itself.
  *								Returning null for this uses the default logic (placing like a normal block).</li>
  *		<li><b>dummyTe</b>: An instance of the tile entity never registered to the world (don't try doing that) used for getting additional information about the Tile Entity.
  *							Mostly an internal thing, only exposed in case your Tile Entity uses a special constructor.</li>
- *
- *		<li><b>addSubBlocks</b>: Called by <code>BlockTileEntity</code> to add all the <code>ITeBlock</code>s you want to the creative menu.
- *								{@link BlockTileEntity#getItemStack(ITeBlock)} will be a useful method to get the item stack, a block instance is passed for that reason.
- *								This is only called once on a random <code>ITeBlock</code> for the resource location, because they are internally stored in a {@link Set} so has no order.
- *								Will probably be changed to a static method if/when the move is made to only Java 8 support.
  *	</ul>
  *	<strong>IMPORTANT THINGS TO NOTE</strong>
  *		<dl>
@@ -309,15 +279,17 @@ import ic2.api.tile.IWrenchable;
  *				For <code>ItemBlockTileEntity</code>, use {@link BlockTileEntity#getItem()}.</dd>
  *			<dt>Using a custom item model for your <code>ITeBlock</code></dt>
  *			<dd>Implement <code>ITeBlockSpecialItem</code> along with <code>ITeBlock</code>, then the item model will be what's provided rather than the block model.</dd>
+ *			<dt>The default implementation for adding <code>ITeBlock</code>s to creative</dt>
+ *			<dd>The default logic adds all registered <code>ITeBlock</code>s that return true for {@link ic2.core.ref.TeBlock#hasItem()}.</dd>
  *		</dl>
  *		More will be added to this list if questions keep re-occurring, or are about a suitably important topic.
  *	</p>
  *  <hr>
  *	<p>
  *	There, that should be everything you need to utilise <code>ITeBlock</code> to add your own tile entities using IC2's very flexible framework.
- *	I'll be happy to answer any questions you have on it, your best bet is to ask me (Chocohead) on <a href="http://forum.industrial-craft.net">the IC2 forums</a>,
+ *	I'll be happy to answer any questions you have on it, your best bet is to ask me (Chocohead) on <a href="https://forum.industrial-craft.net">the IC2 forums</a>,
  *	although if you post in the support section other people might be able to help before I see your post.
- *	I'll certainly take suggestions too, this is a first version of <code>ITeBlock</code>, so I'm sure there could be improvements made.
+ *	I'll certainly take suggestions too, this is mostly just based on what IC2 uses/needs, so there might well be things missed that might be useful.
  *	<br/>
  *	<small>Goodness I spent too long on this again...</small>
  *	</p>
@@ -327,16 +299,17 @@ import ic2.api.tile.IWrenchable;
  *	@see {@link ic2.core.ref.TeBlock} for how all the IC2 implements {@link ITeBlock}.
  *	@see {@link ic2.core.ref.TeBlock.HarvestTool} for the currently available tools (you'll need this for adding new tile entities).
  *	@see {@link ic2.core.ref.TeBlock.DefaultDrop} for the currently available drops (you'll need this for adding new tile entities too).
+ *	@see {@link ic2.core.block.ITeBlock.ITeBlockCreativeRegisterer} for customising what blocks are added to creative past the default implementation
  *	@see {@link ic2.core.ref.TeBlock.ITePlaceHandler} for making your own block placement handler (example in {@link ic2.core.item.ItemHandlers#reactorChamberPlace}).
  *	@see {@link ic2.core.util.Util} for the useful facings you might want for <code>supportedFacings</code>.
  *	@see {@link ic2.core.block.TileEntityBlock} for the base tile entity.
  *	@see {@link ic2.core.block.BlockTileEntity} for the base block (you'll never need to construct this yourself).
- *	@see {@link ic2.core.item.block.ItemBlockTileEntity} for the base item  (you'll never need to construct this yourself either).
+ *	@see {@link ic2.core.item.block.ItemBlockTileEntity} for the base item  (you shouldn't need to construct this yourself either).
  *	@see {@link ITeBlockSpecialItem} for the interface used to have a custom item location.
  *
  *
- *	@since IC2 2.6.114
- *	@version 1.2
+ *	@since IC2 2.7.14
+ *	@version 2.0
  *
  *  @author Chocohead
  */

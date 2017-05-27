@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
  *
  * @author Chocohead
  */
-public interface IItemHudProvider extends IElectricItem {
+public interface IItemHudProvider {
 	/**
 	 * Whether the given stack should display the HUD overlay.
 	 *

@@ -8,6 +8,8 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import ic2.api.info.Info;
+
 /**
  * Helper class for registering {@link IRotorProvider}s to provide the default windmill renderer
  */
@@ -28,7 +30,7 @@ public class RotorRegistry {
 	 */
 	public static void setInstance(IRotorRegistry i) {
 		ModContainer mc = Loader.instance().activeModContainer();
-		if (mc == null || !"IC2".equals(mc.getModId())) {
+		if (mc == null || !Info.MOD_ID.equals(mc.getModId())) {
 			throw new IllegalAccessError("Only IC2 can set the instance");
 		} else {
 			INSTANCE = i;
