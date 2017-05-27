@@ -4,7 +4,7 @@ import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.ISidedInventory;

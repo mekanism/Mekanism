@@ -7,7 +7,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;

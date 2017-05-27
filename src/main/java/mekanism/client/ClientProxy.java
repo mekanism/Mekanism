@@ -279,6 +279,7 @@ public class ClientProxy extends CommonProxy
 		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
 		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
 		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
+		client.allowConfiguratorModeScroll = Mekanism.configuration.get("client", "ConfiguratorModeScroll", true).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{

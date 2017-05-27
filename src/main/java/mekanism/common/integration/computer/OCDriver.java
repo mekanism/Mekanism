@@ -1,4 +1,4 @@
-package mekanism.common.integration;
+package mekanism.common.integration.computer;
 
 import java.util.Arrays;
 import java.util.Locale;

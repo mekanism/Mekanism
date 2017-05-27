@@ -19,6 +19,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -63,7 +64,7 @@ public final class OreDictManager
 		{
 			for(ItemStack ore : OreDictionary.getOres("woodRubber"))
 			{
-				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.PLANKS, 4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 1), 1F);
+				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(), 4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 1), 1F);
 			}
 		}
 		
