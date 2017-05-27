@@ -144,15 +144,20 @@ public class CommonPlayerTickHandler
 	public static boolean isOnGround(EntityPlayer player)
 	{
 		int x = MathHelper.floor_double(player.posX);
-		int y = (int)Math.round(player.posY - 1);
+		int y = MathHelper.floor_double(player.posY-0.01);
 		int z = MathHelper.floor_double(player.posZ);
-
+		
 		BlockPos pos = new BlockPos(x, y, z);
 		IBlockState s = player.worldObj.getBlockState(pos);
-		AxisAlignedBB box = s.getCollisionBoundingBox(player.worldObj, pos);
-		AxisAlignedBB playerBox = player.getCollisionBoundingBox();
+		AxisAlignedBB box = s.getBoundingBox(player.worldObj, pos).offset(pos);
+		AxisAlignedBB playerBox = player.getEntityBoundingBox();
 		
-		return box != null && playerBox != null && playerBox.offset(0, -0.01, 0).intersectsWith(box);
+		if(!s.getBlock().isAir(s, player.worldObj, pos) && playerBox.offset(0, -0.01, 0).intersectsWith(box))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 
 	public boolean isJetpackOn(EntityPlayer player)
@@ -175,11 +180,11 @@ public class CommonPlayerTickHandler
 					{
 						if((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) || (Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND)))
 						{
-							return !player.onGround;
+							return !isOnGround(player);
 						}
 						else if(Mekanism.keyMap.has(player, KeySync.DESCEND))
 						{
-							return !player.onGround;
+							return !isOnGround(player);
 						}
 						
 						return true;
