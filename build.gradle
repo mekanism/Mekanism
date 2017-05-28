@@ -53,6 +53,10 @@ repositories {
         name 'opencomputers'
         url 'http://maven.cil.li/'
     }
+    maven {
+        name 'hwyla'
+        url 'http://tehnut.info/maven'
+    }
 }
 
 // Define properties file
@@ -85,6 +89,7 @@ dependencies {
     compile "net.darkhax.tesla:Tesla:${config.tesla_version}"
     compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
     compile "li.cil.oc:OpenComputers:MC${config.minecraft_version}-${config.opencomputers_version}:api"
+    deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
 }
 
 processResources
