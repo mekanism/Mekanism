@@ -157,66 +157,66 @@ public class ClientTickHandler
 				{
 					AbstractClientPlayer player = (AbstractClientPlayer)entityPlayer;
 
-						if(StringUtils.stripControlCodes(player.getName()).equals("mikeacttck"))
+					if(StringUtils.stripControlCodes(player.getName()).equals("mikeacttck"))
+					{
+						CapeBufferDownload download = mikeDownload.get(player.getName());
+
+						if(download == null)
 						{
-							CapeBufferDownload download = mikeDownload.get(player.getName());
+							download = new CapeBufferDownload(player.getName(), MIKE_CAPE);
+							mikeDownload.put(player.getName(), download);
 
-							if(download == null)
-							{
-								download = new CapeBufferDownload(player.getName(), MIKE_CAPE);
-								mikeDownload.put(player.getName(), download);
-
-								download.start();
-							}
-							else {
-								if(!download.downloaded)
-								{
-									continue;
-								}
-								
-								setCape(player, download.getResourceLocation());
-							}
+							download.start();
 						}
-						else if(StringUtils.stripControlCodes(player.getName()).equals("aidancbrady"))
+						else {
+							if(!download.downloaded)
+							{
+								continue;
+							}
+							
+							setCape(player, download.getResourceLocation());
+						}
+					}
+					else if(StringUtils.stripControlCodes(player.getName()).equals("aidancbrady"))
+					{
+						CapeBufferDownload download = aidanDownload.get(player.getName());
+
+						if(download == null)
 						{
-							CapeBufferDownload download = aidanDownload.get(player.getName());
+							download = new CapeBufferDownload(player.getName(), AIDAN_CAPE);
+							aidanDownload.put(player.getName(), download);
 
-							if(download == null)
-							{
-								download = new CapeBufferDownload(player.getName(), AIDAN_CAPE);
-								aidanDownload.put(player.getName(), download);
-
-								download.start();
-							}
-							else {
-								if(!download.downloaded)
-								{
-									continue;
-								}
-								
-								setCape(player, download.getResourceLocation());
-							}
+							download.start();
 						}
-						else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.getName())))
+						else {
+							if(!download.downloaded)
+							{
+								continue;
+							}
+							
+							setCape(player, download.getResourceLocation());
+						}
+					}
+					else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.getName())))
+					{
+						CapeBufferDownload download = donateDownload.get(player.getName());
+
+						if(download == null)
 						{
-							CapeBufferDownload download = donateDownload.get(player.getName());
+							download = new CapeBufferDownload(player.getName(), DONATE_CAPE);
+							donateDownload.put(player.getName(), download);
 
-							if(download == null)
-							{
-								download = new CapeBufferDownload(player.getName(), DONATE_CAPE);
-								donateDownload.put(player.getName(), download);
-
-								download.start();
-							}
-							else {
-								if(!download.downloaded)
-								{
-									continue;
-								}
-								
-								setCape(player, download.getResourceLocation());
-							}
+							download.start();
 						}
+						else {
+							if(!download.downloaded)
+							{
+								continue;
+							}
+							
+							setCape(player, download.getResourceLocation());
+						}
+					}
 				}
 			}
 			
