@@ -42,10 +42,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
-@Interface(iface = "powercrystals.minefactoryreloaded.api.IDeepStorageUnit", modid = "MineFactoryReloaded")
-public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable, ITierUpgradeable
+public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable
 {
 	public boolean isActive;
 
@@ -637,41 +635,41 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		return true;
 	}
 
-	@Override
-	public ItemStack getStoredItemType()
-	{
-		if(itemType == null)
-		{
-			return ItemStack.EMPTY;
-		}
-
-		return MekanismUtils.size(itemType, getItemCount());
-	}
-
-	@Override
-	public void setStoredItemCount(int amount)
-	{
-		if(amount == 0)
-		{
-			setStoredItemType(ItemStack.EMPTY, 0);
-		}
-
-		setItemCount(amount);
-	}
-
-	@Override
-	public void setStoredItemType(ItemStack type, int amount)
-	{
-		itemType = type;
-		cacheCount = amount;
-
-		topStack = ItemStack.EMPTY;
-		bottomStack = ItemStack.EMPTY;
-
-		markDirty();
-	}
-
-	@Override
+//	@Override
+//	public ItemStack getStoredItemType()
+//	{
+//		if(itemType == null)
+//		{
+//			return ItemStack.EMPTY;
+//		}
+//
+//		return MekanismUtils.size(itemType, getItemCount());
+//	}
+//
+//	@Override
+//	public void setStoredItemCount(int amount)
+//	{
+//		if(amount == 0)
+//		{
+//			setStoredItemType(ItemStack.EMPTY, 0);
+//		}
+//
+//		setItemCount(amount);
+//	}
+//
+//	@Override
+//	public void setStoredItemType(ItemStack type, int amount)
+//	{
+//		itemType = type;
+//		cacheCount = amount;
+//
+//		topStack = ItemStack.EMPTY;
+//		bottomStack = ItemStack.EMPTY;
+//
+//		markDirty();
+//	}
+//
+//	@Override
 	public int getMaxStoredCount()
 	{
 		return tier.storage;
