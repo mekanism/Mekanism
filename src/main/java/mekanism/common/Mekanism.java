@@ -152,9 +152,6 @@ import net.minecraftforge.oredict.RecipeSorter.Category;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import rebelkeithy.mods.metallurgy.api.IOreInfo;
-import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
-
 import com.mojang.authlib.GameProfile;
 
 /**
@@ -1125,70 +1122,6 @@ public class Mekanism
 	}
 	
 	/**
-	 * Integrates the mod with other mods -- registering items and blocks with the Forge Ore Dictionary
-	 * and adding machine recipes with other items' corresponding resources.
-	 */
-	public void addIntegratedItems()
-	{		
-		if(hooks.MetallurgyCoreLoaded)
-		{
-			try {
-				String[] setNames = {"base", "precious", "nether", "fantasy", "ender", "utility"};
-				
-				for(String setName : setNames )
-				{
-					for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet(setName).getOreList().values())
-					{
-						switch(oreInfo.getType()) 
-						{
-							case ALLOY: 
-							{
-								if(oreInfo.getIngot() != null && oreInfo.getDust() != null)
-								{
-									RecipeHandler.addCrusherRecipe(MekanismUtils.size(oreInfo.getIngot(), 1), MekanismUtils.size(oreInfo.getDust(), 1));
-								}
-								
-								break;
-							}
-							case DROP: 
-							{
-								ItemStack ore = oreInfo.getOre();
-								ItemStack drop = oreInfo.getDrop();
-								
-								if(drop != null && ore != null)
-								{ 
-									RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(drop, 12));
-								}
-								
-								break;
-							}
-							default: 
-							{
-								ItemStack ore = oreInfo.getOre();
-								ItemStack dust = oreInfo.getDust();
-								ItemStack ingot = oreInfo.getIngot();
-								
-								if(ore != null && dust != null)
-								{
-									RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(dust, 2));
-									RecipeHandler.addCombinerRecipe(MekanismUtils.size(dust, 8), MekanismUtils.size(ore, 1));
-								}
-								
-								if(ingot != null && dust != null)
-								{
-									RecipeHandler.addCrusherRecipe(MekanismUtils.size(ingot, 1), MekanismUtils.size(dust, 1));
-								}
-								
-								break;
-							}
-						}
-					}
-				}
-			} catch(Exception e) {}
-		}
-	}
-	
-	/**
 	 * Adds and registers all entities and tile entities.
 	 */
 	public void addEntities()
@@ -1425,8 +1358,6 @@ public class Mekanism
 		hooks.hook();
 		
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
-		
-		addIntegratedItems();
 		
 		OreDictManager.init();
 		
