@@ -35,11 +35,15 @@ repositories {
     }
     maven {
         name 'amadornes'
-        url "http://maven.amadornes.com/"
+        url 'http://maven.amadornes.com/'
     }
     maven {
         name 'prog'
-        url "http://dvs1.progwml6.com/files/maven"
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
+    maven {
+        name 'tesla'
+        url 'http://maven.epoxide.org'
     }
 }
 
@@ -70,6 +74,7 @@ minecraft {
 dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart-exp:${config.mcmp_version}"
     deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
+    compile "net.darkhax.tesla:Tesla:${config.tesla_version}"
 }
 
 processResources
