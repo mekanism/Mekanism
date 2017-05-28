@@ -143,7 +143,7 @@ public class ClientTickHandler
 			shouldReset = false;
 		}
 
-		if(mc.theWorld != null && !Mekanism.proxy.isPaused())
+		if(mc.theWorld != null && mc.thePlayer != null && !Mekanism.proxy.isPaused())
 		{
 			if((!initHoliday || MekanismClient.ticksPassed % 1200 == 0) && mc.thePlayer != null)
 			{
