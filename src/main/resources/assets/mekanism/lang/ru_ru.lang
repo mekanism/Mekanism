@@ -1,4 +1,4 @@
-﻿//********//
+//********//
 //MEKANISM//
 //********//
 
@@ -8,22 +8,23 @@ item.EnrichedAlloy.name=Обогащённый сплав
 item.ReinforcedAlloy.name=Укреплённый сплав
 item.AtomicAlloy.name=Атомный сплав
 item.EnergyTablet.name=Энергетический планшет
-item.SpeedUpgrade.name=Улучшение: «Скорость»
-item.EnergyUpgrade.name=Улучшение: «Энергия»
-item.FilterUpgrade.name=Улучшение: «Фильтр»
-item.GasUpgrade.name=Улучшение: «Газ»
-item.MufflingUpgrade.name=Улучшение: «Затишье»
+item.SpeedUpgrade.name=Улучшение «Скорость»
+item.EnergyUpgrade.name=Улучшение «Энергия»
+item.FilterUpgrade.name=Улучшение «Фильтр»
+item.MufflingUpgrade.name=Улучшение «Затишье»
+item.GasUpgrade.name=Улучшение «Газ»
+item.AnchorUpgrade.name=Улучшение «Якорь»
 item.Robit.name=Робит
 item.AtomicDisassembler.name=Атомный разборщик
 item.ElectricBow.name=Электрический лук
 item.EnrichedIron.name=Обогащённое железо
 item.CompressedCarbon.name=Сжатый уголь
-item.CompressedRedstone.name=Сжатый красный камень
+item.CompressedRedstone.name=Сжатый редстоун
 item.CompressedDiamond.name=Сжатый алмаз
 item.CompressedObsidian.name=Сжатый обсидиан
-item.PortableTeleporter.name=Переносной телепортер
-item.TeleportationCore.name=Ядро телепортации
-item.Configurator.name=Конфигуратор
+item.PortableTeleporter.name=Переносной телепорт
+item.TeleportationCore.name=Телепортационное ядро
+item.Configurator.name=Настройщик
 item.NetworkReader.name=Считыватель сети
 item.WalkieTalkie.name=Переносная рация
 item.Jetpack.name=Реактивный ранец
@@ -40,9 +41,9 @@ item.FreeRunners.name=Свободные бегунки
 item.ArmoredJetpack.name=Бронированный реактивный ранец
 item.ConfigurationCard.name=Карта настройки
 item.SeismicReader.name=Сейсмический считыватель
-item.HDPEPellet.name=Шарик полиэтилена НД
-item.HDPERod.name=Стержень полиэтилена НД
-item.HDPESheet.name=Лист полиэтилена НД
+item.HDPEPellet.name=Полиэтилен
+item.HDPERod.name=Полиэтиленовый стержень
+item.HDPESheet.name=Полиэтиленовый лист
 item.PlaStick.name=Пластиковая палка
 item.Substrate.name=Субстрат
 item.Flamethrower.name=Огнемёт
@@ -61,12 +62,14 @@ tile.GasTankBasic.name=Базовый газовый баллон
 tile.GasTankAdvanced.name=Продвинутый газовый баллон
 tile.GasTankElite.name=Элитный газовый баллон
 tile.GasTankUltimate.name=Совершенный газовый баллон
+tile.GasTankCreative.name=Творческий газовый баллон
 
 //Fluid Tank (part of MachineBlock2, naming handled differently)
-tile.FluidTankBasic.name=Базовый жидкостный бак
-tile.FluidTankAdvanced.name=Продвинутый жидкостный бак
-tile.FluidTankElite.name=Элитный жидкостный бак
-tile.FluidTankUltimate.name=Совершенный жидкостный бак
+tile.FluidTankBasic.name=Базовый жидкостный резервуар
+tile.FluidTankAdvanced.name=Продвинутый жидкостный резервуар
+tile.FluidTankElite.name=Элитный жидкостный резервуар
+tile.FluidTankUltimate.name=Совершенный жидкостный резервуар
+tile.FluidTankCreative.name=Творческий жидкостный резервуар
 
 //Cardboard Box
 tile.CardboardBox.name=Картонная коробка
@@ -82,12 +85,13 @@ tile.BasicBlock.OsmiumBlock.name=Осмиевый блок
 tile.BasicBlock.BronzeBlock.name=Бронзовый блок
 tile.BasicBlock.RefinedObsidian.name=Очищенный обсидиан
 tile.BasicBlock.CharcoalBlock.name=Древесноугольный блок
-tile.BasicBlock.RefinedGlowstone.name=Очищенный светящийся камень
+tile.BasicBlock.RefinedGlowstone.name=Очищенный светокамень
 tile.BasicBlock.SteelBlock.name=Стальной блок
 tile.BasicBlock.BinBasic.name=Основной ящик
 tile.BasicBlock.BinAdvanced.name=Продвинутый ящик
 tile.BasicBlock.BinElite.name=Элитный ящик
 tile.BasicBlock.BinUltimate.name=Совершенный ящик
+tile.BasicBlock.BinCreative.name=Творческий ящик
 tile.BasicBlock.TeleporterFrame.name=Каркас телепорта
 tile.BasicBlock.SteelCasing.name=Стальной корпус
 tile.BasicBlock.DynamicTank.name=Динамический резервуар
@@ -99,7 +103,7 @@ tile.BasicBlock.ThermalEvaporationController.name=Контроллер тепл�
 tile.BasicBlock.ThermalEvaporationValve.name=Вентиль теплового испарителя
 
 //Basic Block 2 (second ID iteration)
-tile.BasicBlock2.ThermalEvaporationBlock.name=Блок теплового испарителя
+tile.BasicBlock2.ThermalEvaporationBlock.name=Тепловой испаритель
 tile.BasicBlock2.InductionCasing.name=Индукционный корпус
 tile.BasicBlock2.InductionPort.name=Индукционный порт
 tile.BasicBlock2.InductionCellBasic.name=Базовая индукционная ячейка
@@ -111,7 +115,7 @@ tile.BasicBlock2.InductionProviderAdvanced.name=Продвинутый инду�
 tile.BasicBlock2.InductionProviderElite.name=Элитный индукционный поставщик
 tile.BasicBlock2.InductionProviderUltimate.name=Максимальный индукционный поставщик
 tile.BasicBlock2.SuperheatingElement.name=Сверхмощный нагревательный элемент
-tile.BasicBlock2.PressureDisperser.name=Распылитель давления
+tile.BasicBlock2.PressureDisperser.name=Рассеиватель давления
 tile.BasicBlock2.BoilerCasing.name=Обшивка бойлера
 tile.BasicBlock2.BoilerValve.name=Вентиль бойлера
 tile.BasicBlock2.SecurityDesk.name=Защитный блок
@@ -123,12 +127,12 @@ tile.MachineBlock.Combiner.name=Объединитель
 tile.MachineBlock.Crusher.name=Дробитель
 tile.MachineBlock.Factory.name=Фабрика
 tile.MachineBlock.MetallurgicInfuser.name=Металлургический наполнитель
-tile.MachineBlock.PurificationChamber.name=Камера очистки
+tile.MachineBlock.PurificationChamber.name=Камера очищения
 tile.MachineBlock.EnergizedSmelter.name=Энергетическая плавильня
 tile.MachineBlock.Teleporter.name=Телепорт
 tile.MachineBlock.ElectricPump.name=Электрическая помпа
-tile.MachineBlock.ElectricChest.name=Электрический сундук
-tile.MachineBlock.Chargepad.name=Заряжающая панель
+tile.MachineBlock.PersonalChest.name=Личный сундук
+tile.MachineBlock.Chargepad.name=Зарядник
 tile.MachineBlock.LogisticalSorter.name=Логистический сортировщик
 tile.MachineBlock.DigitalMiner.name=Цифровой шахтёр
 
@@ -183,31 +187,31 @@ tile.OreBlock.CopperOre.name=Медная руда
 tile.OreBlock.TinOre.name=Оловянная руда
 
 //Transmitters
-item.MultipartTransmitter.BasicPressurizedTube.name=Базовая герметичная труба
-item.MultipartTransmitter.AdvancedPressurizedTube.name=Продвинутая герметичная труба
-item.MultipartTransmitter.ElitePressurizedTube.name=Элитная герметичная труба
-item.MultipartTransmitter.UltimatePressurizedTube.name=Совершенная герметичная труба
-item.MultipartTransmitter.BasicUniversalCable.name=Базовый универсальный провод
-item.MultipartTransmitter.AdvancedUniversalCable.name=Продвинутый универсальный провод
-item.MultipartTransmitter.EliteUniversalCable.name=Элитный универсальный провод
-item.MultipartTransmitter.UltimateUniversalCable.name=Совершенный универсальный провод
-item.MultipartTransmitter.BasicMechanicalPipe.name=Базовая механическая труба
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Продвинутая механическая труба
-item.MultipartTransmitter.EliteMechanicalPipe.name=Элитная механическая труба
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Совершенная механическая труба
-item.MultipartTransmitter.BasicLogisticalTransporter.name=Базовый логистический транспортер
-item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Продвинутый логистический транспортер
-item.MultipartTransmitter.EliteLogisticalTransporter.name=Элитный логистический транспортер
-item.MultipartTransmitter.UltimateLogisticalTransporter.name=Совершенный логистический транспортер
-item.MultipartTransmitter.RestrictiveTransporter.name=Ограничительный транспортер
-item.MultipartTransmitter.DiversionTransporter.name=Отклоняющий транспортер
-item.MultipartTransmitter.BasicThermodynamicConductor.name=Базовый теплопровод
-item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Продвинутый теплопровод
-item.MultipartTransmitter.EliteThermodynamicConductor.name=Элитный теплопровод
-item.MultipartTransmitter.UltimateThermodynamicConductor.name=Совершенный теплопровод
+tile.Transmitter.BasicPressurizedTube.name=Базовая герметичная труба
+tile.Transmitter.AdvancedPressurizedTube.name=Продвинутая герметичная труба
+tile.Transmitter.ElitePressurizedTube.name=Элитная герметичная труба
+tile.Transmitter.UltimatePressurizedTube.name=Совершенная герметичная труба
+tile.Transmitter.BasicUniversalCable.name=Базовый универсальный провод
+tile.Transmitter.AdvancedUniversalCable.name=Продвинутый универсальный провод
+tile.Transmitter.EliteUniversalCable.name=Элитный универсальный провод
+tile.Transmitter.UltimateUniversalCable.name=Совершенный универсальный провод
+tile.Transmitter.BasicMechanicalPipe.name=Базовая механическая труба
+tile.Transmitter.AdvancedMechanicalPipe.name=Продвинутая механическая труба
+tile.Transmitter.EliteMechanicalPipe.name=Элитная механическая труба
+tile.Transmitter.UltimateMechanicalPipe.name=Совершенная механическая труба
+tile.Transmitter.BasicLogisticalTransporter.name=Базовый логистический транспортер
+tile.Transmitter.AdvancedLogisticalTransporter.name=Продвинутый логистический транспортер
+tile.Transmitter.EliteLogisticalTransporter.name=Элитный логистический транспортер
+tile.Transmitter.UltimateLogisticalTransporter.name=Совершенный логистический транспортер
+tile.Transmitter.RestrictiveTransporter.name=Ограничительный транспортер
+tile.Transmitter.DiversionTransporter.name=Отклоняющий транспортер
+tile.Transmitter.BasicThermodynamicConductor.name=Базовый теплопровод
+tile.Transmitter.AdvancedThermodynamicConductor.name=Продвинутый теплопровод
+tile.Transmitter.EliteThermodynamicConductor.name=Элитный теплопровод
+tile.Transmitter.UltimateThermodynamicConductor.name=Совершенный теплопровод
 
 //Glow Panel
-item.GlowPanel.name=Cветящийся полублок
+tile.GlowPanel.name=Cветящийся полублок
 
 //Energy Cubes
 tile.EnergyCubeBasic.name=Основной энергетический куб
@@ -216,10 +220,11 @@ tile.EnergyCubeElite.name=Элитный энергетический куб
 tile.EnergyCubeUltimate.name=Совершенный энергетический куб
 tile.EnergyCubeCreative.name=Творческий энергетический куб
 
-//Factory Installers
-item.basicFactoryInstaller.name=Основной установщик фабрик
-item.advancedFactoryInstaller.name=Продвинутый установщик фабрик
-item.eliteFactoryInstaller.name=Элитный установщик фабрик
+//Tier Installers
+item.basicFactoryInstaller.name=Основной установщик уровня
+item.advancedFactoryInstaller.name=Продвинутый установщик уровня
+item.eliteFactoryInstaller.name=Элитный установщик уровня
+item.ultimateTierInstaller.name=Совершенный установщик уровня
 
 //Dust
 item.ironDust.name=Железная пыль
@@ -286,19 +291,19 @@ gas.hydrogen=Водород
 gas.oxygen=Кислород
 gas.water=Водяной пар
 gas.chlorine=Хлор
-gas.sulfurDioxideGas=Диоксид серы
-gas.sulfurTrioxideGas=Триоксид серы
-gas.sulfuricAcid=Серная кислота
-gas.hydrogenChloride=Хлороводород
-gas.liquidOsmium=Жидкий осмий
-gas.liquidStone=Разжиженный камень
+gas.sulfurdioxide=Диоксид серы
+gas.sulfurtrioxide=Триоксид серы
+gas.sulfuricacid=Серная кислота
+gas.hydrogenchloride=Хлороводород
+gas.liquidosmium=Жидкий осмий
+gas.liquidstone=Разжиженный камень
 gas.ethene=Этилен
 gas.sodium=Натрий
 gas.brine=Газообразная рапа
 gas.deuterium=Дейтерий
 gas.tritium=Тритий
 gas.lithium=Литий
-gas.fusionFuelDT=Дейтерий-тритиевое топливо
+gas.fusionfuel=Дейтерий-тритиевое топливо
 
 gas.iron=Сульфат железа
 gas.gold=Сульфат золота
@@ -323,21 +328,21 @@ gas.fuel=Парообразное топливо
 gas.oil=Парообразная нефть
 
 //Fluids
-fluid.hydrogen=Жидкий водород
-fluid.oxygen=Жидкий кислород
-fluid.chlorine=Жидкий хлор
-fluid.sulfurDioxideGas=Жидкий диоксид серы
-fluid.sulfurTrioxideGas=Жидкий триоксид серы
-fluid.sulfuricAcid=Жидкая серная кислота
-fluid.hydrogenChloride=Жидкий хлороводород
+fluid.liquidhydrogen=Жидкий водород
+fluid.liquidoxygen=Жидкий кислород
+fluid.liquidchlorine=Жидкий хлор
+fluid.liquidsulfurdioxide=Жидкий диоксид серы
+fluid.liquidsulfurtrioxide=Жидкий триоксид серы
+fluid.sulfuricacid=Жидкая серная кислота
+fluid.liquidhydrogenchloride=Жидкий хлороводород
 fluid.brine=Рапа
-fluid.ethene=Жидкий этилен
-fluid.sodium=Жидкий натрий
+fluid.liquidethene=Жидкий этилен
+fluid.liquidsodium=Жидкий натрий
 fluid.heavyWater=Тяжёлая вода
-fluid.lithium=Жидкий литий
-fluid.deuterium=Жидкий дейтерий
-fluid.tritium=Жидкий тритий
-fluid.fusionFuelDT=Жидкое дейтерий-тритиевое топливо
+fluid.liquidlithium=Жидкий литий
+fluid.liquiddeuterium=Жидкий дейтерий
+fluid.liquidtritium=Жидкий тритий
+fluid.liquidfusionfuel=Жидкое дейтерий-тритиевое топливо
 fluid.steam=Пар
 
 //OreGas names
@@ -365,10 +370,10 @@ transmission.Items=Предметы
 transmission.Heat=Нагрев
 
 //Update handler text
-update.consider=Подумайте о обновлении до версии
+update.consider=Рассмотрите вопрос об обновлении до версии
 update.newFeatures=Нововведения
 update.visit=Посетите
-update.toDownload=Чтобы загрузить
+update.toDownload=чтобы загрузить
 update.devBuild=Используется сборка разработчиков
 update.outdated=Используется устаревшая версия одного или нескольких модулей
 
@@ -383,6 +388,8 @@ upgrade.gas=Газ
 upgrade.gas.desc=Увеличивает эффективность газоиспользующих механизмов.
 upgrade.muffling=Затишье
 upgrade.muffling.desc=Уменьшает громкость механизмов.
+upgrade.anchor=Якорь
+upgrade.anchor.desc=Прогружает машины в чанке.
 
 //Key description text
 key.mode=Переключить режим предмета
@@ -394,7 +401,7 @@ entity.Mekanism.Robit.name=Робит
 entity.Mekanism.BabySkeleton.name=Скелет-ребёнок
 
 //Config Gui
-mekanism.configgui.ctgy.general=Общие настройки Mekanism
+mekanism.configgui.ctgy.general=Общие настройки
 mekanism.configgui.ctgy.machines=Настройки механизмов
 mekanism.configgui.ctgy.tier=Настройки уровней
 mekanism.configgui.ctgy.usage=Настройки потребления
@@ -584,14 +591,14 @@ gui.factory.secondaryEnergy=Вторичная энергия
 gui.factory.autoSort=Авто-сортировка
 
 //Recipe types
-gui.factory.Smelting=Плавящая
-gui.factory.Enriching=Обогащающая
-gui.factory.Crushing=Дробящая
-gui.factory.Compressing=Сжимающая
-gui.factory.Combining=Объединяющая
-gui.factory.Purifying=Очищающая
-gui.factory.Injecting=Впрыскивающая
-gui.factory.Infusing=Наполняющая
+gui.factory.Smelting=Выплавка
+gui.factory.Enriching=Обогащение
+gui.factory.Crushing=Дробление
+gui.factory.Compressing=Сжатие
+gui.factory.Combining=Объединение
+gui.factory.Purifying=Очищение
+gui.factory.Injecting=Впрыскивание
+gui.factory.Infusing=Наполнение
 
 gui.seismicReader.short=Сейсм. считыватель
 gui.seismicReader.solids=Твёрдые
