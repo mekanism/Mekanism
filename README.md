@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/aidancbrady/Mekanism.svg?branch=master)](https://travis-ci.org/aidancbrady/Mekanism)
+
 # Mekanism for Minecraft 1.11 #
 
 [**Official Website**](http://aidancbrady.com/mekanism/)
