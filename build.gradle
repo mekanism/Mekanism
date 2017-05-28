@@ -45,6 +45,10 @@ repositories {
         name 'tesla'
         url 'http://maven.epoxide.org'
     }
+    maven {
+        name 'curseforge'
+        url 'https://minecraft.curseforge.com/api/maven/'
+    }
 }
 
 // Define properties file
@@ -75,6 +79,7 @@ dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart-exp:${config.mcmp_version}"
     deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
     compile "net.darkhax.tesla:Tesla:${config.tesla_version}"
+    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
 }
 
 processResources
