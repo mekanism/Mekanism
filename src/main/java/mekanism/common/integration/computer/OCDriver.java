@@ -7,10 +7,11 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.ManagedPeripheral;
 import li.cil.oc.api.network.Visibility;
+import li.cil.oc.api.prefab.AbstractManagedEnvironment;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
-import li.cil.oc.api.prefab.ManagedEnvironment;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -40,7 +41,7 @@ public class OCDriver extends DriverSidedTileEntity
         return null;
     }
 
-    public class OCManagedEnvironment extends ManagedEnvironment implements NamedBlock, ManagedPeripheral
+    public class OCManagedEnvironment extends AbstractManagedEnvironment implements NamedBlock, ManagedPeripheral
     {
         public IComputerIntegration computerTile;
 
