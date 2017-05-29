@@ -24,7 +24,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.IItemHandler;
-import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 public class TransporterManager
 {
@@ -145,10 +144,10 @@ public class TransporterManager
 			}
 		}
 		
-		if(Loader.isModLoaded("MinefactoryReloaded") && tile instanceof IDeepStorageUnit && !(tile instanceof TileEntityBin))
-		{
-			return;
-		}
+//		if(Loader.isModLoaded("MinefactoryReloaded") && tile instanceof IDeepStorageUnit && !(tile instanceof TileEntityBin))
+//		{
+//			return;
+//		}
 
 		if(tile instanceof ISidedInventory)
 		{
