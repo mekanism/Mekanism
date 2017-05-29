@@ -563,10 +563,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
+		TileEntity tile = worldObj.getTileEntity(getPos().offset(EnumFacing.DOWN));
 		if(from == EnumFacing.DOWN && worldObj != null && getPos() != null)
 		{
-			TileEntity tile = worldObj.getTileEntity(getPos().offset(EnumFacing.DOWN));
-			
 			if(isActive && !(tile instanceof TileEntityFluidTank))
 			{
 				return false;
@@ -577,7 +576,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		{
 			return true;
 		}
-		
+
+		if(isActive && tile instanceof TileEntityFluidTank) // Only fill if tanks underneath have same fluid.
+		{
+			return (fluidTank.getFluid() == null && ((TileEntityFluidTank)tile).canFill(EnumFacing.UP, fluid)) ||
+					(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == fluid);
+		}
+
 		return fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid;
 	}
 
