@@ -305,6 +305,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 	@Override
 	public boolean canReceiveEnergy(EnumFacing side)
 	{
+		if(side == null)
+		{
+			return true;
+		}
+		
 		return getConnectionType(side) == ConnectionType.NORMAL;
 	}
 
