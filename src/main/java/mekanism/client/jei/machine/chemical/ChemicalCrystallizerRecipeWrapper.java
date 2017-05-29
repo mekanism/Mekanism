@@ -6,13 +6,13 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
-public class ChemicalCrystallizerRecipeWrapper extends BlankRecipeWrapper
+public class ChemicalCrystallizerRecipeWrapper extends BaseRecipeWrapper
 {
 	public CrystallizerRecipe recipe;
 	
@@ -43,5 +43,11 @@ public class ChemicalCrystallizerRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public ChemicalCrystallizerRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

@@ -8,12 +8,11 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 
-public class ChanceMachineRecipeWrapper extends BlankRecipeWrapper
+public class ChanceMachineRecipeWrapper extends BaseRecipeWrapper
 {
 	public ChanceMachineRecipe recipe;
 	
@@ -43,5 +42,11 @@ public class ChanceMachineRecipeWrapper extends BlankRecipeWrapper
 			FontRenderer fontRendererObj = minecraft.fontRendererObj;
 			fontRendererObj.drawString(Math.round(output.secondaryChance*100) + "%", 104, 41, 0x404040, false);
 		}
+	}
+	
+	@Override
+	public ChanceMachineRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

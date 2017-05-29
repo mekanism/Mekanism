@@ -8,15 +8,15 @@ import javax.annotation.Nullable;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RotaryCondensentratorRecipeWrapper extends BlankRecipeWrapper
+public class RotaryCondensentratorRecipeWrapper extends BaseRecipeWrapper
 {
 	public Fluid fluidType;
 	public Gas gasType;
@@ -67,5 +67,11 @@ public class RotaryCondensentratorRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public RotaryCondensentratorRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

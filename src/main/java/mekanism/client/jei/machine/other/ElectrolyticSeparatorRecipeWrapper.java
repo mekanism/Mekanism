@@ -7,12 +7,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ElectrolyticSeparatorRecipeWrapper extends BlankRecipeWrapper
+public class ElectrolyticSeparatorRecipeWrapper extends BaseRecipeWrapper
 {
 	public SeparatorRecipe recipe;
 	
@@ -47,5 +47,11 @@ public class ElectrolyticSeparatorRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public ElectrolyticSeparatorRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

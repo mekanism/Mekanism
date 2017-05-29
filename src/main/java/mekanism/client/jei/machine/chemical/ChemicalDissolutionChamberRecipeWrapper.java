@@ -6,14 +6,14 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
-public class ChemicalDissolutionChamberRecipeWrapper extends BlankRecipeWrapper
+public class ChemicalDissolutionChamberRecipeWrapper extends BaseRecipeWrapper
 {
 	public DissolutionRecipe recipe;
 	
@@ -49,5 +49,11 @@ public class ChemicalDissolutionChamberRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public ChemicalDissolutionChamberRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

@@ -6,14 +6,14 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ChemicalWasherRecipeWrapper extends BlankRecipeWrapper
+public class ChemicalWasherRecipeWrapper extends BaseRecipeWrapper
 {
 	public WasherRecipe recipe;
 	
@@ -49,5 +49,11 @@ public class ChemicalWasherRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public ChemicalWasherRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

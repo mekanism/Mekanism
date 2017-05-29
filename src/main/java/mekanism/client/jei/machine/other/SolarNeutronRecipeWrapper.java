@@ -6,12 +6,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 
-public class SolarNeutronRecipeWrapper extends BlankRecipeWrapper
+public class SolarNeutronRecipeWrapper extends BaseRecipeWrapper
 {
 	public SolarNeutronRecipe recipe;
 	
@@ -46,5 +46,11 @@ public class SolarNeutronRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public SolarNeutronRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

@@ -4,10 +4,9 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
-public class MachineRecipeWrapper extends BlankRecipeWrapper
+public class MachineRecipeWrapper extends BaseRecipeWrapper
 {
 	public BasicMachineRecipe recipe;
 	
@@ -24,5 +23,11 @@ public class MachineRecipeWrapper extends BlankRecipeWrapper
 	{
 		ingredients.setInput(ItemStack.class, ((ItemStackInput)recipe.getInput()).ingredient);
 		ingredients.setOutput(ItemStack.class, ((ItemStackOutput)recipe.getOutput()).output);
+	}
+	
+	@Override
+	public MachineRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

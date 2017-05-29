@@ -6,14 +6,14 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-public class PRCRecipeWrapper extends BlankRecipeWrapper
+public class PRCRecipeWrapper extends BaseRecipeWrapper
 {
 	public PressurizedRecipe recipe;
 	
@@ -51,5 +51,11 @@ public class PRCRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public PRCRecipeCategory getCategory()
+	{
+		return category;
 	}
 }
