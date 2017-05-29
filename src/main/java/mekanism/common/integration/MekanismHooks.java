@@ -41,8 +41,8 @@ public final class MekanismHooks
 	public boolean AE2Loaded = false;
 	public boolean TeslaLoaded = false;
 
-//	public boolean MetallurgyCoreLoaded = false;
-//	public boolean MetallurgyBaseLoaded = false;
+	public boolean MetallurgyCoreLoaded = false;
+	public boolean MetallurgyBaseLoaded = false;
 
 	public void hook()
 	{
@@ -54,12 +54,12 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
 		if(Loader.isModLoaded("tesla")) TeslaLoaded = true;
 		
-//		if(Loader.isModLoaded("Metallurgy3Core"))
-//		{
-//			MetallurgyCoreLoaded = true;
-//
-//			if(Loader.isModLoaded("Metallurgy3Base")) MetallurgyBaseLoaded = true;
-//		}
+		if(Loader.isModLoaded("Metallurgy3Core"))
+		{
+			MetallurgyCoreLoaded = true;
+
+			if(Loader.isModLoaded("Metallurgy3Base")) MetallurgyBaseLoaded = true;
+		}
 
 		if(IC2Loaded)
 		{
@@ -72,10 +72,10 @@ public final class MekanismHooks
 			loadCCPeripheralProviders();
 		}
 
-//		if(MettallurgyCoreLoaded)
-//		{
-//			loadMettallurgy();
-//		}
+		if(MetallurgyCoreLoaded)
+		{
+			//loadMettallurgy();
+		}
 	}
 
 	@Method(modid = "IC2")
@@ -184,58 +184,58 @@ public final class MekanismHooks
 		}		
 	}
 
-//	public void loadMettallurgy()
-// 	{
-//		try
-//		{
-//			String[] setNames = {"base", "precious", "nether", "fantasy", "ender", "utility"};
-//
-//			for (String setName : setNames)
-//			{
-//				for (IOreInfo oreInfo : MetallurgyAPI.getMetalSet(setName).getOreList().values())
-//				{
-//					switch (oreInfo.getType())
-//					{
-//						case ALLOY:
-//							if (oreInfo.getIngot() != null && oreInfo.getDust() != null)
-//							{
-//								RecipeHandler.addCrusherRecipe(MekanismUtils.size(oreInfo.getIngot(), 1), MekanismUtils.size(oreInfo.getDust(), 1));
-//							}
-//
-//							break;
-//						case DROP:
-//							ItemStack ore = oreInfo.getOre();
-//							ItemStack drop = oreInfo.getDrop();
-//
-//							if (drop != null && ore != null)
-//							{
-//								RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(drop, 12));
-//							}
-//
-//							break;
-//						default:
-//							ItemStack ore = oreInfo.getOre();
-//							ItemStack dust = oreInfo.getDust();
-//							ItemStack ingot = oreInfo.getIngot();
-//
-//							if (ore != null && dust != null)
-//							{
-//								RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(dust, 2));
-//								RecipeHandler.addCombinerRecipe(MekanismUtils.size(dust, 8), MekanismUtils.size(ore, 1));
-//							}
-//
-//							if (ingot != null && dust != null)
-//							{
-//								RecipeHandler.addCrusherRecipe(MekanismUtils.size(ingot, 1), MekanismUtils.size(dust, 1));
-//							}
-//
-//							break;
-//					}
-//				}
-//			}
-//		}
-//		catch (Exception e)
-//		{
-//		}
-//	}
+	/*public void loadMetallurgy()
+ 	{
+		try
+		{
+			String[] setNames = {"base", "precious", "nether", "fantasy", "ender", "utility"};
+
+			for (String setName : setNames)
+			{
+				for (IOreInfo oreInfo : MetallurgyAPI.getMetalSet(setName).getOreList().values())
+				{
+					switch (oreInfo.getType())
+					{
+						case ALLOY:
+							if (oreInfo.getIngot() != null && oreInfo.getDust() != null)
+							{
+								RecipeHandler.addCrusherRecipe(MekanismUtils.size(oreInfo.getIngot(), 1), MekanismUtils.size(oreInfo.getDust(), 1));
+							}
+
+							break;
+						case DROP:
+							ItemStack ore = oreInfo.getOre();
+							ItemStack drop = oreInfo.getDrop();
+
+							if (drop != null && ore != null)
+							{
+								RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(drop, 12));
+							}
+
+							break;
+						default:
+							ItemStack ore = oreInfo.getOre();
+							ItemStack dust = oreInfo.getDust();
+							ItemStack ingot = oreInfo.getIngot();
+
+							if (ore != null && dust != null)
+							{
+								RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(dust, 2));
+								RecipeHandler.addCombinerRecipe(MekanismUtils.size(dust, 8), MekanismUtils.size(ore, 1));
+							}
+
+							if (ingot != null && dust != null)
+							{
+								RecipeHandler.addCrusherRecipe(MekanismUtils.size(ingot, 1), MekanismUtils.size(dust, 1));
+							}
+
+							break;
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+		}
+	}*/
 }
