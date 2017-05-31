@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.EnumSet;
@@ -13,8 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.util.CapabilityUtils;
@@ -140,6 +140,31 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		upgradeComponent.setSupported(Upgrade.ANCHOR);
 	}
 
+	// *------*
+	// Support functions for alternative miner operations
+	private boolean isInsideSphere( int x, int y, int z, int radius )
+	{
+		return Math.pow( x, 2 ) + Math.pow( y, 2 ) + Math.pow( z, 2 ) - Math.pow( radius, 2 ) <= 0;
+	}
+	
+	private boolean isSurface( int x, int y, int z, int radius )
+	{
+		int setCount = 0;
+		int unsetCount = 0;
+		
+		if( isInsideSphere( x+1, y, z, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x-1, y, z, radius) ) setCount++; else unsetCount++;
+
+		if( isInsideSphere( x, y+1, z, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x, y-1, z, radius) ) setCount++; else unsetCount++;
+
+		if( isInsideSphere( x, y, z+1, radius) ) setCount++; else unsetCount++;
+		if( isInsideSphere( x, y, z-1, radius) ) setCount++; else unsetCount++;
+
+		return setCount > 0 && unsetCount > 0;
+	}
+	// *------*
+
 	@Override
 	public void onUpdate()
 	{
@@ -200,7 +225,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						{
 							int index = set.nextSetBit(next);
 							Coord4D coord = getCoordFromIndex(index);
-	
+
 							if(index == -1)
 							{
 								toRemove.add(chunk);
@@ -1035,7 +1060,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public int getTotalSize()
 	{
-		return getDiameter()*getDiameter()*(maxY-minY+1);
+		// Get total size based on operation type
+		if( general.minerAltOperation )
+			return getDiameter()*getDiameter()*(getPos().getY() + radius + 1);
+		else
+			return getDiameter()*getDiameter()*(maxY-minY+1);
 	}
 
 	public int getDiameter()
@@ -1045,16 +1074,20 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public Coord4D getStartingCoord()
 	{
-		return new Coord4D(getPos().getX()-radius, minY, getPos().getZ()-radius, worldObj.provider.getDimension());
+		// Get stating coordinates based on operation type
+		if( general.minerAltOperation )
+			return new Coord4D(getPos().getX()-radius, getPos().getY()+radius, getPos().getZ()-radius, worldObj.provider.getDimension());
+		else
+			return new Coord4D(getPos().getX()-radius, minY, getPos().getZ()-radius, worldObj.provider.getDimension());
 	}
 
 	public Coord4D getCoordFromIndex(int index)
 	{
 		int diameter = getDiameter();
 		Coord4D start = getStartingCoord();
-
+		
 		int x = start.xCoord+index%diameter;
-		int y = start.yCoord+(index/diameter/diameter);
+		int y = general.minerAltOperation ? start.yCoord-(index/diameter/diameter) : start.yCoord+(index/diameter/diameter);
 		int z = start.zCoord+(index/diameter)%diameter;
 
 		return new Coord4D(x, y, z, worldObj.provider.getDimension());
