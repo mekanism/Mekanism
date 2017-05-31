@@ -27,25 +27,26 @@ public final class FluidContainerUtils
 	
 	public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainerBlock tile, int slotID, FluidChecker checker)
 	{
-		return extractFluid(tileTank.getCapacity()-tileTank.getFluidAmount(), tile.inventory, slotID, checker);
+		FluidStack ret = extractFluid(tileTank.getCapacity()-tileTank.getFluidAmount(), tile.inventory.get(slotID), checker);
+		tile.inventory.set(slotID, FluidUtil.getFluidHandler(tile.inventory.get(slotID)).getContainer());
+		return ret;
 	}
 	
-	public static FluidStack extractFluid(int needed, NonNullList<ItemStack> inv, int slotID, FluidChecker checker)
+	public static FluidStack extractFluid(int needed, ItemStack container, FluidChecker checker)
 	{
-		IFluidHandlerItem handler = FluidUtil.getFluidHandler(inv.get(slotID));
+		IFluidHandlerItem handler = FluidUtil.getFluidHandler(container);
 		
-		if(handler == null || FluidUtil.getFluidContained(inv.get(slotID)) == null)
+		if(handler == null || FluidUtil.getFluidContained(container) == null)
 		{
 			return null;
 		}
 		
-		if(checker != null && !checker.isValid(FluidUtil.getFluidContained(inv.get(slotID)).getFluid()))
+		if(checker != null && !checker.isValid(FluidUtil.getFluidContained(container).getFluid()))
 		{
 			return null;
 		}
 		
 		FluidStack ret = handler.drain(needed, true);
-		inv.set(slotID, handler.getContainer());
 		
 		return ret;
 	}
@@ -120,7 +121,7 @@ public final class FluidContainerUtils
 		final Fluid storedFinal = stored != null ? stored.getFluid() : null;
 		final ItemStack input = StackUtils.size(inventory.get(inSlot).copy(), 1);
 		
-		FluidStack ret = extractFluid(needed, inventory, inSlot, new FluidChecker() {
+		FluidStack ret = extractFluid(needed, input, new FluidChecker() {
 			@Override
 			public boolean isValid(Fluid f)
 			{
