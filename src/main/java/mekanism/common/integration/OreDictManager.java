@@ -166,7 +166,14 @@ public final class OreDictManager
 				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustCertusQuartz").get(0), 4));
 			} catch(Exception e) {}
 		}
-		
+
+		for(ItemStack ore : OreDictionary.getOres("oreDraconium"))
+		{
+			try {
+				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustDraconium").get(0), 3));
+			} catch(Exception e) {}
+		}
+
 		for(ItemStack ore : OreDictionary.getOres("crystalCertusQuartz"))
 		{
 			try {
