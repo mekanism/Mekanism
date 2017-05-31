@@ -372,23 +372,28 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 					case 2:
 					case 7:
 					case 8:
-						TileEntityMultiblock tileEntity = (TileEntityMultiblock)world.getTileEntity(pos);
-
-						if(tileEntity != null)
-						{
-							if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+						try {
+							TileEntityMultiblock tileEntity = (TileEntityMultiblock)world.getTileEntity(pos);
+	
+							if(tileEntity != null)
 							{
-								if(tileEntity.structure != null)
+								if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 								{
-									return false;
-								}
-							} 
-							else {
-								if(tileEntity.clientHasStructure)
-								{
-									return false;
+									if(tileEntity.structure != null)
+									{
+										return false;
+									}
+								} 
+								else {
+									if(tileEntity.clientHasStructure)
+									{
+										return false;
+									}
 								}
 							}
+						} catch(ClassCastException cce) {
+							System.err.println("Creature attempted to spawn in an invalid location");
+							return false;
 						}
 					default:
 						return super.canCreatureSpawn(state, world, pos, type);
