@@ -34,7 +34,6 @@ import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMess
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityLaser;
@@ -1030,11 +1029,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
-		{
-			return null;
-		}
-
 		return super.getCollisionBoundingBox(state, world, pos);
 	}
 
