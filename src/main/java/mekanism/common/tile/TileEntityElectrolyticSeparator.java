@@ -78,8 +78,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	public SeparatorRecipe cachedRecipe;
 	
 	public double clientEnergyUsed;
-	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
+
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     /** This machine's current RedstoneControl type. */
