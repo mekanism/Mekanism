@@ -1032,7 +1032,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	{
 		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
 		{
-			return null;
+			return CHARGEPAD_BOUNDS;
 		}
 
 		return super.getCollisionBoundingBox(state, world, pos);
