@@ -192,7 +192,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		List<AxisAlignedBB> boxes = tile.getCollisionBoxes();
 		AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(pos, start, end, boxes);
 		
-		if(result != null)
+		if(result != null && result.valid())
 		{
 			setDefaultForTile(tile, result.bounds);
 		}
