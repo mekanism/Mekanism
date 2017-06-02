@@ -21,6 +21,7 @@ import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -51,8 +52,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
 	public int delayTicks;
-
-	public EnumFacing testingSide = null;
 
 	public byte currentAcceptorConnections = 0x00;
 	public byte currentTransmitterConnections = 0x00;
@@ -274,7 +273,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			int ord = side.ordinal();
 			byte connections = getAllCurrentConnections();
 
-			if(connectionMapContainsSide(connections, side) || side == testingSide)
+			if(connectionMapContainsSide(connections, side))
 			{
 				list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord]);
 			}
@@ -286,7 +285,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
 	public abstract TransmitterType getTransmitterType();
 
-	public List<AxisAlignedBB> getCollisionBoxes(AxisAlignedBB mask)
+	public List<AxisAlignedBB> getCollisionBoxes(AxisAlignedBB entityBox)
 	{
 		List<AxisAlignedBB> list = new ArrayList<>();
 		
@@ -295,15 +294,15 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			int ord = side.ordinal();
 			byte connections = getAllCurrentConnections();
 
-			if(connectionMapContainsSide(connections, side) || side == testingSide)
+			if(connectionMapContainsSide(connections, side))
 			{
 				AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord];
-				if(box.intersectsWith(mask)) list.add(box);
+				if(box.intersectsWith(entityBox)) list.add(box);
 			}
 		}
 
 		AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6] : BlockTransmitter.largeSides[6];
-		if(box.intersectsWith(mask)) list.add(box);
+		if(box.intersectsWith(entityBox)) list.add(box);
 		return list;
 	}
 	
@@ -344,13 +343,12 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		{
 			return false;
 		}
-
-		/*testingSide = side; TODO occlusion
-		IMultipart testPart = new OcclusionHelper.NormallyOccludingPart(getTransmitterType().getSize() == Size.SMALL ? smallSides[side.ordinal()] : largeSides[side.ordinal()]);
-		boolean unblocked = OcclusionHelper.occlusionTest(testPart, (part) -> part == this, getContainer().getParts());//getContainer().canReplacePart(this, this);
-		testingSide = null;
 		
-		return unblocked;*/
+		if(Mekanism.hooks.MCMPLoaded)
+		{
+			return MultipartMekanism.hasConnectionWith(this, side);
+		}
+		
 		return true;
 	}
 	
