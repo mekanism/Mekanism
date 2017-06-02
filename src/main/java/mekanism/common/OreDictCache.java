@@ -18,7 +18,7 @@ public final class OreDictCache
 
 	public static List<String> getOreDictName(ItemStack check)
 	{
-		if(check == null || check.getItem() == null)
+		if(check.isEmpty())
 		{
 			return new ArrayList<String>();
 		}
