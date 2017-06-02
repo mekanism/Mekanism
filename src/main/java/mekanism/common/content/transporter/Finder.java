@@ -124,7 +124,7 @@ public abstract class Finder
 		@Override
 		public boolean modifies(ItemStack stack)
 		{
-			if(stack == null || !(stack.getItem() instanceof ItemBlock))
+			if(stack == null)
 			{
 				return false;
 			}
