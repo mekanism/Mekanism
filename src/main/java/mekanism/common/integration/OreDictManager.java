@@ -346,7 +346,6 @@ public final class OreDictManager
 		};
 		
 		InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
-		ArrayList recipeList = (ArrayList)CraftingManager.getInstance().getRecipeList();
 
 		for(int i = 1; i < 9; i++)
 		{
