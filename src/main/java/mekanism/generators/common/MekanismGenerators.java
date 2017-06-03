@@ -223,6 +223,8 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(generators.turbineDisperserGasFlow);
 		dataStream.writeInt(generators.condenserRate);
 		
+		dataStream.writeDouble(generators.energyPerFusionFuel);
+		
 		for(GeneratorType type : GeneratorType.getGeneratorsForConfig())
 		{
 			dataStream.writeBoolean(generators.generatorsManager.isEnabled(type.blockName));
@@ -249,6 +251,8 @@ public class MekanismGenerators implements IModule
 		generators.turbineVentGasFlow = dataStream.readDouble();
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
 		generators.condenserRate = dataStream.readInt();
+		
+		generators.energyPerFusionFuel = dataStream.readDouble();
 		
 		for(GeneratorType type : GeneratorType.getGeneratorsForConfig())
 		{
