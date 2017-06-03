@@ -223,13 +223,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		return (int)Math.round(acceptEnergy(from, maxReceive*general.FROM_RF, simulate)*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, acceptEnergy(from, maxReceive*general.FROM_RF, simulate)*general.TO_RF));
 	}
 
 	@Override
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
-		return (int)Math.round(pullEnergy(from, maxExtract*general.FROM_RF, simulate)*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, pullEnergy(from, maxExtract*general.FROM_RF, simulate)*general.TO_RF));
 	}
 
 	@Override
@@ -276,7 +276,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public int addEnergy(int amount)
 	{
 		setEnergy(getEnergy() + amount*general.FROM_IC2);
-		return (int)Math.round(getEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
@@ -310,21 +310,21 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public int getStored()
 	{
-		return (int)Math.round(getEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getCapacity()
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getOutput()
 	{
-		return (int)Math.round(getMaxOutput()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput()*general.TO_IC2));
 	}
 
 	@Override

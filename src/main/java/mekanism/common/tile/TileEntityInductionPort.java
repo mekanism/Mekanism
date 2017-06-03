@@ -251,7 +251,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				structure.remainingInput -= toAdd;
 			}
 
-			return (int)Math.round(toAdd*general.TO_RF);
+			return (int)Math.round(Math.min(Integer.MAX_VALUE, toAdd*general.TO_RF));
 		}
 
 		return 0;
@@ -270,7 +270,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				structure.remainingOutput -= toSend;
 			}
 
-			return (int)Math.round(toSend*general.TO_RF);
+			return (int)Math.round(Math.min(Integer.MAX_VALUE, toSend*general.TO_RF));
 		}
 
 		return 0;
@@ -285,13 +285,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy()*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));
 	}
 
 	@Override
@@ -322,7 +322,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount*general.FROM_IC2);
 		setEnergy(getEnergy() + toUse);
 		structure.remainingInput -= toUse;
-		return (int)Math.round(getEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
@@ -356,21 +356,21 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public int getStored()
 	{
-		return (int)Math.round(getEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getCapacity()
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getOutput()
 	{
-		return (int)Math.round(getMaxOutput()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput()*general.TO_IC2));
 	}
 
 	@Override
