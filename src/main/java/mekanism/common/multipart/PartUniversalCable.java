@@ -256,7 +256,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		return maxReceive - (int)Math.round(takeEnergy(maxReceive*general.FROM_RF, !simulate)*general.TO_RF);
+		return maxReceive - (int)Math.round(Math.min(Integer.MAX_VALUE, takeEnergy(maxReceive*general.FROM_RF, !simulate)*general.TO_RF));
 	}
 
 	@Override
@@ -268,13 +268,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy() * general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy() * general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));
 	}
 
 	@Override
