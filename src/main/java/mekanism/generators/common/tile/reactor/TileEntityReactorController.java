@@ -206,7 +206,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 

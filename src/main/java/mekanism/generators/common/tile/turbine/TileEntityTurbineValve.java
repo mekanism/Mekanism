@@ -192,7 +192,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 				setEnergy(getEnergy() - toSend);
 			}
 
-			return (int)Math.round(toSend*general.TO_RF);
+			return (int)Math.round(Math.min(Integer.MAX_VALUE, toSend*general.TO_RF));
 		}
 
 		return 0;
@@ -207,13 +207,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy()*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));
 	}
 
 	@Override
@@ -275,21 +275,21 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Method(modid = "IC2")
 	public int getStored()
 	{
-		return (int)Math.round(getEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getCapacity()
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getOutput()
 	{
-		return (int)Math.round(getMaxOutput()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput()*general.TO_IC2));
 	}
 
 	@Override
