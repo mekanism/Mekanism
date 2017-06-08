@@ -176,7 +176,10 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
-		return getDefaultForTile((TileEntitySidedPipe)world.getTileEntity(pos)).offset(pos);
+		AxisAlignedBB bounding = getDefaultForTile((TileEntitySidedPipe)world.getTileEntity(pos));
+		if (bounding == null)
+			return super.getSelectedBoundingBox(state,world,pos);
+		return bounding.offset(pos);
 	}
 	
 	@Override
@@ -385,7 +388,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     
     private static void setDefaultForTile(TileEntitySidedPipe tile, AxisAlignedBB box)
     {
-    	if(tile == null)
+    	if(tile == null || box==null)
     	{
     		return;
     	}
