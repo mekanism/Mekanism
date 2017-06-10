@@ -10,7 +10,7 @@ import net.minecraft.util.NonNullList;
 
 public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 {
-	public ItemStack itemStack;
+	public ItemStack itemStack = ItemStack.EMPTY;
 
 	public Gas gasType;
 

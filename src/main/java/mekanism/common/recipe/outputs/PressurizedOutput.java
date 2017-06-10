@@ -9,7 +9,7 @@ import net.minecraft.util.NonNullList;
 
 public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 {
-	private ItemStack itemOutput;
+	private ItemStack itemOutput = ItemStack.EMPTY;
 	private GasStack gasOutput;
 
 	public PressurizedOutput(ItemStack item, GasStack gas)
@@ -63,8 +63,10 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 				fillTank(tank);
 				addProducts(inventory, index);
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 

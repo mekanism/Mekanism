@@ -15,7 +15,7 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class PressurizedInput extends MachineInput<PressurizedInput>
 {
-	private ItemStack theSolid;
+	private ItemStack theSolid = ItemStack.EMPTY;
 	private FluidStack theFluid;
 	private GasStack theGas;
 
@@ -42,7 +42,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	@Override
 	public boolean isValid()
 	{
-		return theSolid != null && theFluid != null && theGas != null;
+		return !theSolid.isEmpty() && theFluid != null && theGas != null;
 	}
 
 	public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete)

@@ -12,9 +12,9 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 {
 	private static Random rand = new Random();
 
-	public ItemStack primaryOutput;
+	public ItemStack primaryOutput = ItemStack.EMPTY;
 
-	public ItemStack secondaryOutput;
+	public ItemStack secondaryOutput = ItemStack.EMPTY;
 
 	public double secondaryChance;
 
@@ -47,12 +47,12 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 
 	public boolean hasPrimary()
 	{
-		return primaryOutput != null;
+		return !primaryOutput.isEmpty();
 	}
 
 	public boolean hasSecondary()
 	{
-		return secondaryOutput != null;
+		return !secondaryOutput.isEmpty();
 	}
 
 	public boolean applyOutputs(NonNullList<ItemStack> inventory, int primaryIndex, int secondaryIndex, boolean doEmit)

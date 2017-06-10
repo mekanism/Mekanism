@@ -7,7 +7,7 @@ import net.minecraft.util.NonNullList;
 
 public class ItemStackOutput extends MachineOutput<ItemStackOutput>
 {
-	public ItemStack output;
+	public ItemStack output = ItemStack.EMPTY;
 
 	public ItemStackOutput(ItemStack stack)
 	{

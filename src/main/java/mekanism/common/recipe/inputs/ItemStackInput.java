@@ -9,7 +9,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemStackInput extends MachineInput<ItemStackInput>
 {
-	public ItemStack ingredient;
+	public ItemStack ingredient = ItemStack.EMPTY;
 
 	public ItemStackInput(ItemStack stack)
 	{
@@ -33,7 +33,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 	@Override
 	public boolean isValid()
 	{
-		return ingredient != null;
+		return !ingredient.isEmpty();
 	}
 
 	public ItemStackInput wildCopy()
