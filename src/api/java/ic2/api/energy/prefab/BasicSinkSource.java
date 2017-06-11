@@ -21,9 +21,9 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 
 		this.sinkTier = sinkTier;
 		this.sourceTier = sourceTier;
-		this.sourcePower = EnergyNet.instance.getPowerFromTier(sourceTier);
+		double power = EnergyNet.instance.getPowerFromTier(sourceTier);
 
-		if (getCapacity() < sourcePower) setCapacity(sourcePower);
+		if (getCapacity() < power) setCapacity(power);
 	}
 
 	public BasicSinkSource(ILocatable parent, double capacity, int sinkTier, int sourceTier) {
@@ -31,9 +31,9 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 
 		this.sinkTier = sinkTier;
 		this.sourceTier = sourceTier;
-		this.sourcePower = EnergyNet.instance.getPowerFromTier(sourceTier);
+		double power = EnergyNet.instance.getPowerFromTier(sourceTier);
 
-		if (getCapacity() < sourcePower) setCapacity(sourcePower);
+		if (getCapacity() < power) setCapacity(power);
 	}
 
 	public BasicSinkSource(World world, BlockPos pos, double capacity, int sinkTier, int sourceTier) {
@@ -41,9 +41,9 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 
 		this.sinkTier = sinkTier;
 		this.sourceTier = sourceTier;
-		this.sourcePower = EnergyNet.instance.getPowerFromTier(sourceTier);
+		double power = EnergyNet.instance.getPowerFromTier(sourceTier);
 
-		if (getCapacity() < sourcePower) setCapacity(sourcePower);
+		if (getCapacity() < power) setCapacity(power);
 	}
 
 	/**
@@ -66,7 +66,6 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 		if (getCapacity() < power) setCapacity(power);
 
 		this.sourceTier = tier;
-		this.sourcePower = power;
 	}
 
 	// energy net interface >>
@@ -90,7 +89,7 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 
 	@Override
 	public double getOfferedEnergy() {
-		return Math.min(energyStored, sourcePower);
+		return energyStored;
 	}
 
 	@Override
@@ -112,5 +111,4 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 
 	protected int sinkTier;
 	protected int sourceTier;
-	protected double sourcePower;
 }
