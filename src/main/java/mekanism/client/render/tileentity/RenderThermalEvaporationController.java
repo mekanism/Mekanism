@@ -106,8 +106,6 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 	}
 
 
-
-	@SuppressWarnings("incomplete-switch")
 	private DisplayInteger[] getListAndRender(Fluid fluid)
 	{
 		if(cachedCenterFluids.containsKey(fluid))
@@ -143,6 +141,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 		}
 
 		MekanismRenderer.resetColor();
+		cachedCenterFluids.put(fluid, displays);
 		return displays;
 	}
 
