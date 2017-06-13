@@ -1308,6 +1308,9 @@ public class Mekanism
 		//Set up multiparts
 		new MultipartMekanism();
 
+		//Integrate certain OreDictionary recipes
+		registerOreDict();
+
 		Mekanism.proxy.preInit();
 
 		//Register infuses
@@ -1374,9 +1377,6 @@ public class Mekanism
 				}
 			}
 		}
-		
-		//Integrate certain OreDictionary recipes
-		registerOreDict();
 
 		//Load this module
 		addRecipes();
