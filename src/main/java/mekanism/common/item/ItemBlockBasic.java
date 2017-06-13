@@ -204,7 +204,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 		{
 			if(!ItemDataUtils.hasData(stack, "newCount"))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 			
 			int newCount = ItemDataUtils.getInt(stack, "newCount");
@@ -216,7 +216,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
             return ret;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

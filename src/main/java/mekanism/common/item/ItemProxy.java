@@ -49,7 +49,7 @@ public class ItemProxy extends Item
 			return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
