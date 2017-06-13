@@ -1240,6 +1240,9 @@ public class Mekanism
 		MekanismItems.register();
 		MekanismBlocks.register();
 
+		//Integrate certain OreDictionary recipes
+		registerOreDict();
+
 		if(Loader.isModLoaded("mcmultipart")) 
 		{
 			//Set up multiparts
@@ -1315,9 +1318,6 @@ public class Mekanism
 				}
 			}
 		}
-		
-		//Integrate certain OreDictionary recipes
-		registerOreDict();
 
 		//Load this module
 		addRecipes();
