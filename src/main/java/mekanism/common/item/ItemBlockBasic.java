@@ -243,7 +243,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 				
 				tileEntity.tier = BinTier.values()[getBaseTier(stack).ordinal()];
 
-				if(inv.getItemType() != null)
+				if(!inv.getItemType().isEmpty())
 				{
 					tileEntity.setItemType(inv.getItemType());
 				}

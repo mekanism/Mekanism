@@ -86,11 +86,12 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 			for(int slotCount = 0; slotCount < getSizeInventory(); slotCount++)
 			{
-				if(getStackInSlot(slotCount) != null)
+				ItemStack stackInSlot = getStackInSlot(slotCount);
+				if(!stackInSlot.isEmpty())
 				{
 					NBTTagCompound tagCompound = new NBTTagCompound();
 					tagCompound.setByte("Slot", (byte)slotCount);
-					getStackInSlot(slotCount).writeToNBT(tagCompound);
+					stackInSlot.writeToNBT(tagCompound);
 					tagList.appendTag(tagCompound);
 				}
 			}

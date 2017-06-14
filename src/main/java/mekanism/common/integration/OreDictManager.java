@@ -366,7 +366,7 @@ public final class OreDictManager
 					tempCrafting.setInventorySlotContents(0, log);
 					ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
 
-					if(resultEntry != null)
+					if(resultEntry != null && !resultEntry.isEmpty())
 					{
 						RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6), new ItemStack(MekanismItems.Sawdust), 1);
 					}
@@ -377,7 +377,7 @@ public final class OreDictManager
 				tempCrafting.setInventorySlotContents(0, log);
 				ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
 
-				if(resultEntry != null)
+				if(resultEntry != null && !resultEntry.isEmpty())
 				{
 					RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6), new ItemStack(MekanismItems.Sawdust), 1);
 				}
