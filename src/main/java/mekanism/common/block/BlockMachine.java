@@ -405,7 +405,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
+	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(MachineType type : MachineType.getValidMachines())
 		{
@@ -418,25 +418,25 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					case ELITE_FACTORY:
 						for(RecipeType recipe : RecipeType.values())
 						{
-							ItemStack stack = new ItemStack(item, 1, type.meta);
+							ItemStack stack = new ItemStack(this, 1, type.meta);
 							((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
 							list.add(stack);
 						}
 
 						break;
 					case FLUID_TANK:
-						ItemBlockMachine itemMachine = (ItemBlockMachine)item;
+						ItemBlockMachine itemMachine = (ItemBlockMachine)Item.getItemFromBlock(this);
 
 						for(FluidTankTier tier : FluidTankTier.values())
 						{
-							ItemStack stack = new ItemStack(item, 1, type.meta);
+							ItemStack stack = new ItemStack(this, 1, type.meta);
 							itemMachine.setBaseTier(stack, tier.getBaseTier());
 							list.add(stack);
 						}
 
 						break;
 					default:
-						list.add(new ItemStack(item, 1, type.meta));
+						list.add(new ItemStack(this, 1, type.meta));
 				}
 			}
 		}

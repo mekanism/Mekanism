@@ -40,7 +40,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 	}
 
 	@Override
-	public void renderTileEntityAt(S configurable, double x, double y, double z, float partialTick, int destroyStage)
+	public void func_192841_a(S configurable, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
 	{
 		GlStateManager.pushMatrix();
 

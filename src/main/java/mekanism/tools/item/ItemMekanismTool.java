@@ -9,10 +9,12 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.world.World;
 
 public class ItemMekanismTool extends ItemTool
 {
@@ -23,7 +25,7 @@ public class ItemMekanismTool extends ItemTool
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}

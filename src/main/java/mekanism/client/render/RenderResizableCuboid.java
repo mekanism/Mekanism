@@ -10,7 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -152,7 +152,7 @@ public class RenderResizableCuboid {
         manager.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
         Tessellator tess = Tessellator.getInstance();
-        VertexBuffer wr = tess.getBuffer();
+        BufferBuilder wr = tess.getBuffer();
 
         GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
@@ -171,7 +171,7 @@ public class RenderResizableCuboid {
         GlStateManager.enableFog();
     }
 
-    private void renderCuboidFace(VertexBuffer wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
+    private void renderCuboidFace(BufferBuilder wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
             Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula,
             IBlockAccess access) {
         int ordinal = face.ordinal();
@@ -213,7 +213,7 @@ public class RenderResizableCuboid {
         else throw new RuntimeException("Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector + ")");
     }
 
-    private void renderPoint(VertexBuffer wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV,
+    private void renderPoint(BufferBuilder wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV,
             IBlockLocation locationFormula, IFacingLocation faceFormula, IBlockAccess access, EnumShadeArgument shadeTypes) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
@@ -271,7 +271,7 @@ public class RenderResizableCuboid {
         return faces;
     }
 
-    private void applyLocalAO(VertexBuffer wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes,
+    private void applyLocalAO(BufferBuilder wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes,
             Vec3d vertex) {
         // This doesn't work. At all.
         boolean allAround = false;
@@ -337,7 +337,7 @@ public class RenderResizableCuboid {
         setWorldRendererRGB(wr, color);
     }
     
-    public static void setWorldRendererRGB(VertexBuffer wr, Vec3d color) {
+    public static void setWorldRendererRGB(BufferBuilder wr, Vec3d color) {
         wr.color((float) color.xCoord, (float) color.yCoord, (float) color.zCoord, 1f);
     }
     

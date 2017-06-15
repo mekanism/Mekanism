@@ -71,11 +71,12 @@ public class ItemBlockGlowPanel extends ItemBlock
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> listToAddTo)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> listToAddTo)
 	{
+		if(!func_194125_a(tab)) return;
 		for(EnumColor color : EnumColor.DYES)
 		{
-			listToAddTo.add(new ItemStack(item, 1, color.getMetaValue()));
+			listToAddTo.add(new ItemStack(this, 1, color.getMetaValue()));
 		}
 	}
 

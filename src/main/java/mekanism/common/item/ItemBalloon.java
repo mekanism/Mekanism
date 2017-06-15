@@ -63,8 +63,9 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
+		if(!func_194125_a(tabs)) return;
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
 			EnumColor color = EnumColor.DYES[i];

@@ -11,7 +11,7 @@ import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -33,7 +33,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 	}
 	
 	@Override
-	public void renderTileEntityAt(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage)
+	public void func_192841_a(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
 	{
 		if(client.opaqueTransmitters)
 		{
@@ -104,7 +104,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 				{
 					GL11.glTranslated(0.5, 0.5, 0.5);
 					Tessellator tessellator = Tessellator.getInstance();
-					VertexBuffer worldRenderer = tessellator.getBuffer();
+					BufferBuilder worldRenderer = tessellator.getBuffer();
 					
 					if(renderFluidInOut(worldRenderer, side, pipe))
 					{
@@ -264,7 +264,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 		return displays;
 	}
 	
-	public boolean renderFluidInOut(VertexBuffer renderer, EnumFacing side, TileEntityMechanicalPipe pipe)
+	public boolean renderFluidInOut(BufferBuilder renderer, EnumFacing side, TileEntityMechanicalPipe pipe)
 	{
 		if(pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null)
 		{

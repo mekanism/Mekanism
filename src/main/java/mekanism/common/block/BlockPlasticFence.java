@@ -47,11 +47,11 @@ public class BlockPlasticFence extends BlockFence
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
+    public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
     {
         for(int i = 0; i < EnumColor.DYES.length; i++)
         {
-            list.add(new ItemStack(item, 1, i));
+            list.add(new ItemStack(this, 1, i));
         }
     }
 

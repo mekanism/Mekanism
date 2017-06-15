@@ -58,11 +58,11 @@ public class BlockOre extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
+	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(EnumOreType ore : EnumOreType.values())
 		{
-			list.add(new ItemStack(item, 1, ore.ordinal()));
+			list.add(new ItemStack(this, 1, ore.ordinal()));
 		}
 	}
 }

@@ -45,7 +45,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT>
 		float f3 = (1.0F - ((entityobsidiantnt.fuse - partialTicks) + 1.0F) / 100F) * 0.8F;
 		bindEntityTexture(entityobsidiantnt);
 		GlStateManager.translate(-0.5F, -0.5F, 0.5F);
-		renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), entityobsidiantnt.getBrightness(partialTicks));
+		renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), entityobsidiantnt.getBrightness());
         GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
 		if(entityobsidiantnt.fuse / 5 % 2 == 0)

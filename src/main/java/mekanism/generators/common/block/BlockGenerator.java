@@ -285,13 +285,13 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item i, CreativeTabs creativetabs, NonNullList<ItemStack> list)
+	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(GeneratorType type : GeneratorType.values())
 		{
 			if(type.isEnabled())
 			{
-				list.add(new ItemStack(i, 1, type.meta));
+				list.add(new ItemStack(this, 1, type.meta));
 			}
 		}
 	}

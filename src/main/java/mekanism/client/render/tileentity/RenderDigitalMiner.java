@@ -18,7 +18,7 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer<TileEntityDigi
 	private ModelDigitalMiner model = new ModelDigitalMiner();
 	
 	@Override
-	public void renderTileEntityAt(TileEntityDigitalMiner tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void func_192841_a(TileEntityDigitalMiner tileEntity, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
 	{
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

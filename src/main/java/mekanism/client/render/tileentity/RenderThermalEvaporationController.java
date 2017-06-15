@@ -26,7 +26,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 	private static Map<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void func_192841_a(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
 	{
 		if(tileEntity.structured && tileEntity.inputTank.getFluid() != null)
 		{

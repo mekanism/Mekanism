@@ -35,8 +35,9 @@ public class ItemOtherDust extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> itemList)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
+		if(!func_194125_a(tabs)) return;
 		for(int counter = 0; counter < subtypes.length; counter++)
 		{
 			if(counter != 2)

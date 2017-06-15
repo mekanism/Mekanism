@@ -36,7 +36,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 	private Fluid WATER = FluidRegistry.WATER;
 	
 	@Override
-	public void renderTileEntityAt(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void func_192841_a(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
 	{
 		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null && tileEntity.structure.upperRenderLocation != null)
 		{

@@ -73,13 +73,14 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> itemList)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
+		if(!func_194125_a(tabs)) return;
 		for(BaseTier tier : BaseTier.values())
 		{
 			if(tier.isObtainable())
 			{
-				itemList.add(new ItemStack(item, 1, tier.ordinal()));
+				itemList.add(new ItemStack(this, 1, tier.ordinal()));
 			}
 		}
 	}

@@ -15,7 +15,7 @@ public class RenderChargepad extends TileEntitySpecialRenderer<TileEntityChargep
 	private ModelChargepad model = new ModelChargepad();
 
 	@Override
-	public void renderTileEntityAt(TileEntityChargepad tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void func_192841_a(TileEntityChargepad tileEntity, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
 	{
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

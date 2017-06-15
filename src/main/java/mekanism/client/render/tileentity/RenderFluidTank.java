@@ -27,7 +27,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 	private static int stages = 1400;
 
 	@Override
-	public void renderTileEntityAt(TileEntityFluidTank tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void func_192841_a(TileEntityFluidTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
 	{
 		Fluid fluid = tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid() : null;
 		render(tileEntity.tier, fluid, tileEntity.prevScale, tileEntity.isActive, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);

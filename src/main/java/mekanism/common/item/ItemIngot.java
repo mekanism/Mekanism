@@ -31,11 +31,12 @@ public class ItemIngot extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> itemList)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
+		if(!func_194125_a(tabs)) return;
 		for(int counter = 0; counter <= 6; counter++)
 		{
-			itemList.add(new ItemStack(item, 1, counter));
+			itemList.add(new ItemStack(this, 1, counter));
 		}
 	}
 

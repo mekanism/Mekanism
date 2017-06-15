@@ -8,6 +8,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -48,8 +49,9 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 	}
 	
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
+		if(!func_194125_a(tabs)) return;
 		list.add(getEmptyItem());
 	}
 	
@@ -88,7 +90,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		GasStack gasStack = getGas(itemstack);
 		FluidStack fluidStack = FluidUtil.getFluidContained(itemstack);
