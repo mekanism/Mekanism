@@ -36,8 +36,8 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 	public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z)
 	{
 		String amount = "";
-
-		if(itemType != null && !itemType.isEmpty())
+		
+		if(!itemType.isEmpty())
 		{
 			amount = Integer.toString(clientAmount);
 			
@@ -45,10 +45,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 			{
 				amount = LangUtils.localize("gui.infinite");
 			}
-		}
-
-		if(itemType != null && !itemType.isEmpty())
-		{
+			
 			GlStateManager.pushMatrix();
 
 			switch(facing)

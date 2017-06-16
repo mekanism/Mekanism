@@ -42,7 +42,7 @@ public class ShapelessMekanismRecipeWrapper extends BlankRecipeWrapper
 		List<List<ItemStack>> inputs = stackHelper.expandRecipeItemStackInputs(recipe.getInput());
 		ingredients.setInputLists(ItemStack.class, inputs);
 
-		if(recipeOutput != null && !recipeOutput.isEmpty())
+		if(!recipeOutput.isEmpty())
 		{
 			ingredients.setOutput(ItemStack.class, recipeOutput);
 		}

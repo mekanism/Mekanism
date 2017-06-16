@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.List;
-import javax.annotation.Nullable;
 
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
@@ -44,7 +43,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	
 	public boolean isNew;
 	
-	public @Nullable ItemStack renderStack;
+	public ItemStack renderStack = ItemStack.EMPTY;
 	
 	public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tentity, int index)
 	{
@@ -150,7 +149,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			renderScaledText(filter.filter, 32, 38, 0x404040, 111);
 		}
 
-		if(renderStack != null && !renderStack.isEmpty())
+		if(!renderStack.isEmpty())
 		{
 			try {
 				GlStateManager.pushMatrix();
@@ -178,7 +177,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		
 		if(xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35)
 		{
-			if(renderStack != null && !renderStack.isEmpty())
+			if(!renderStack.isEmpty())
 			{
 				String name = ItemRegistryUtils.getMod(renderStack);
 				String extra = name.equals("null") ? "" : " (" + name + ")";
@@ -369,7 +368,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	{
 		if(filter.filter == null || filter.filter.isEmpty())
 		{
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 			return;
 		}
 		
@@ -377,7 +376,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		
 		if(stacks.isEmpty())
 		{
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 			return;
 		}
 		
@@ -386,7 +385,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			renderStack = stacks.get(filter.index).copy();
 		}
 		else {
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 			return;
 		}
 	}

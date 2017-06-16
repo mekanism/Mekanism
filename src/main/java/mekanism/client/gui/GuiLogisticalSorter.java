@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -174,7 +173,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			{
 				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0)
 				{
-					entry.getValue().renderStack = null;
+					entry.getValue().renderStack = ItemStack.EMPTY;
 				}
 			}
 
@@ -182,7 +181,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			{
 				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0)
 				{
-					entry.getValue().renderStack = null;
+					entry.getValue().renderStack = ItemStack.EMPTY;
 				}
 			}
 		}
@@ -472,7 +471,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					final TItemStackFilter itemFilter = (TItemStackFilter) filter;
 
-					if(itemFilter.itemType != null && !itemFilter.itemType.isEmpty())
+					if(!itemFilter.itemType.isEmpty())
 					{
 						GlStateManager.pushMatrix();
 						RenderHelper.enableGUIStandardItemLighting();
@@ -494,7 +493,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					ItemStack renderStack = oreDictStacks.get(filter).renderStack;
-					if(renderStack != null && !renderStack.isEmpty())
+					
+					if(!renderStack.isEmpty())
 					{
 						try {
 							GlStateManager.pushMatrix();
@@ -512,7 +512,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					final TMaterialFilter itemFilter = (TMaterialFilter) filter;
 
-					if(itemFilter.materialItem != null && !itemFilter.materialItem.isEmpty())
+					if(!itemFilter.materialItem.isEmpty())
 					{
 						GlStateManager.pushMatrix();
 						RenderHelper.enableGUIStandardItemLighting();
@@ -534,7 +534,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					ItemStack renderStack = modIDStacks.get(filter).renderStack;
-					if(renderStack != null && !renderStack.isEmpty())
+					
+					if(!renderStack.isEmpty())
 					{
 						try {
 							GlStateManager.pushMatrix();
@@ -724,10 +725,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 	public static class StackData
 	{
 		public List<ItemStack> iterStacks;
-
 		public int stackIndex;
-
-		public @Nullable ItemStack renderStack;
+		public ItemStack renderStack = ItemStack.EMPTY;
 	}
 
 	/**

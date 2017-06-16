@@ -410,7 +410,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 
 			if(mop != null && mop.sideHit == bin.facing)
 			{
-				if(bin.bottomStack != null && !bin.bottomStack.isEmpty())
+				if(!bin.bottomStack.isEmpty())
 				{
 					if(!player.isSneaking())
 					{

@@ -970,7 +970,7 @@ public final class MekanismUtils
 		{
 			Object obj = itr.next();
 
-			if(obj instanceof IRecipe && ((IRecipe)obj).getRecipeOutput() != null && !((IRecipe)obj).getRecipeOutput().isEmpty())
+			if(obj instanceof IRecipe && !((IRecipe)obj).getRecipeOutput().isEmpty())
 			{
 				for(ItemStack itemStack : itemStacks)
 				{
