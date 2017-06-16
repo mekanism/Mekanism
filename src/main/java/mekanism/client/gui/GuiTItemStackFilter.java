@@ -85,11 +85,11 @@ public class GuiTItemStackFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		minField = new GuiTextField(2, fontRendererObj, guiWidth + 149, guiHeight + 19, 20, 11);
+		minField = new GuiTextField(2, fontRenderer, guiWidth + 149, guiHeight + 19, 20, 11);
 		minField.setMaxStringLength(2);
 		minField.setText("" + filter.min);
 
-		maxField = new GuiTextField(3, fontRendererObj, guiWidth + 149, guiHeight + 31, 20, 11);
+		maxField = new GuiTextField(3, fontRenderer, guiWidth + 149, guiHeight + 31, 20, 11);
 		maxField.setMaxStringLength(2);
 		maxField.setText("" + filter.max);
 	}
@@ -171,14 +171,14 @@ public class GuiTItemStackFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
+		fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
 
 		if(!filter.itemType.isEmpty())
 		{
@@ -206,22 +206,22 @@ public class GuiTItemStackFilter extends GuiMekanism
 		
 		if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.sizeMode"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.sizeMode"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
 			if(filter.color != null)
 			{
-				drawCreativeTabHoveringText(filter.color.getColoredName(), xAxis, yAxis);
+				drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
+				drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 

@@ -36,7 +36,6 @@ import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
-import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -379,7 +378,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		IBlockState state = obj.getBlockState(world);
 		Block block = state.getBlock();
 		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, obj.xCoord, obj.yCoord, obj.zCoord).get();
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, obj.x, obj.y, obj.z).get();
 		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, obj.getPos(), state, dummy);
 		MinecraftForge.EVENT_BUS.post(event);
 		
@@ -1058,9 +1057,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		int diameter = getDiameter();
 		Coord4D start = getStartingCoord();
 
-		int x = start.xCoord+index%diameter;
-		int y = start.yCoord+(index/diameter/diameter);
-		int z = start.zCoord+(index/diameter)%diameter;
+		int x = start.x +index%diameter;
+		int y = start.y +(index/diameter/diameter);
+		int z = start.z +(index/diameter)%diameter;
 
 		return new Coord4D(x, y, z, world.provider.getDimension());
 	}

@@ -39,8 +39,8 @@ public class ChanceMachineRecipeWrapper extends BaseRecipeWrapper
 		
 		if(output.hasSecondary())
 		{
-			FontRenderer fontRendererObj = minecraft.fontRendererObj;
-			fontRendererObj.drawString(Math.round(output.secondaryChance*100) + "%", 104, 41, 0x404040, false);
+			FontRenderer fontRenderer = minecraft.fontRenderer;
+			fontRenderer.drawString(Math.round(output.secondaryChance*100) + "%", 104, 41, 0x404040, false);
 		}
 	}
 	

@@ -1203,7 +1203,7 @@ public class ClientProxy extends CommonProxy
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			return context.getServerHandler().playerEntity;
+			return context.getServerHandler().player;
 		}
 		else {
 			return Minecraft.getMinecraft().player;
@@ -1232,6 +1232,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public FontRenderer getFontRenderer()
 	{
-		return Minecraft.getMinecraft().fontRendererObj;
+		return Minecraft.getMinecraft().fontRenderer;
 	}
 }

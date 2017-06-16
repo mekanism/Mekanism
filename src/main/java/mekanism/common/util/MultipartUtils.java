@@ -20,7 +20,7 @@ public final class MultipartUtils
         Vec3d v1 = rotate(new Vec3d(aabb.minX, aabb.minY, aabb.minZ), side);
         Vec3d v2 = rotate(new Vec3d(aabb.maxX, aabb.maxY, aabb.maxZ), side);
         
-        return new AxisAlignedBB(v1.xCoord, v1.yCoord, v1.zCoord, v2.xCoord, v2.yCoord, v2.zCoord);
+        return new AxisAlignedBB(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
     }
 
     public static Vec3d rotate(Vec3d vec, EnumFacing side)
@@ -28,17 +28,17 @@ public final class MultipartUtils
         switch(side) 
         {
 	        case DOWN:
-	            return new Vec3d(vec.xCoord, vec.yCoord, vec.zCoord);
+	            return new Vec3d(vec.x, vec.y, vec.z);
 	        case UP:
-	            return new Vec3d(vec.xCoord, -vec.yCoord, -vec.zCoord);
+	            return new Vec3d(vec.x, -vec.y, -vec.z);
 	        case NORTH:
-	            return new Vec3d(vec.xCoord, -vec.zCoord, vec.yCoord);
+	            return new Vec3d(vec.x, -vec.z, vec.y);
 	        case SOUTH:
-	            return new Vec3d(vec.xCoord, vec.zCoord, -vec.yCoord);
+	            return new Vec3d(vec.x, vec.z, -vec.y);
 	        case WEST:
-	            return new Vec3d(vec.yCoord, -vec.xCoord, vec.zCoord);
+	            return new Vec3d(vec.y, -vec.x, vec.z);
 	        case EAST:
-	            return new Vec3d(-vec.yCoord, vec.xCoord, vec.zCoord);
+	            return new Vec3d(-vec.y, vec.x, vec.z);
         }
         
         return null;

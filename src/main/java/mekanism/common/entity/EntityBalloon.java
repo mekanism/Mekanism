@@ -96,7 +96,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		this(world);
 
 		latched = obj;
-		setPosition(latched.xCoord + 0.5F, latched.yCoord + 1.9F, latched.zCoord + 0.5F);
+		setPosition(latched.x + 0.5F, latched.y + 1.9F, latched.z + 0.5F);
 
 		prevPosX = posX;
 		prevPosY = posY;
@@ -105,9 +105,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		color = c;
 
 		dataManager.set(IS_LATCHED, (byte)1);
-		dataManager.set(LATCHED_X, latched != null ? latched.xCoord : 0); /* Latched X */
-		dataManager.set(LATCHED_Y, latched != null ? latched.yCoord : 0); /* Latched Y */
-		dataManager.set(LATCHED_Z, latched != null ? latched.zCoord : 0); /* Latched Z */
+		dataManager.set(LATCHED_X, latched != null ? latched.x : 0); /* Latched X */
+		dataManager.set(LATCHED_Y, latched != null ? latched.y : 0); /* Latched Y */
+		dataManager.set(LATCHED_Z, latched != null ? latched.z : 0); /* Latched Z */
 	}
 
 	@Override
@@ -152,9 +152,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			if(ticksExisted == 1)
 			{
 				dataManager.set(IS_LATCHED, new Byte(latched != null ? (byte)1 : (latchedEntity != null ? (byte)2 : (byte)0)));
-				dataManager.set(LATCHED_X, new Integer(latched != null ? latched.xCoord : 0));
-				dataManager.set(LATCHED_Y, new Integer(latched != null ? latched.yCoord : 0));
-				dataManager.set(LATCHED_Z, new Integer(latched != null ? latched.zCoord : 0));
+				dataManager.set(LATCHED_X, new Integer(latched != null ? latched.x : 0));
+				dataManager.set(LATCHED_Y, new Integer(latched != null ? latched.y : 0));
+				dataManager.set(LATCHED_Z, new Integer(latched != null ? latched.z : 0));
 				dataManager.set(LATCHED_ID, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1));
 			}
 		}
@@ -280,7 +280,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	{
 		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
 
-		Particle fx = new ParticleRedstone.Factory().createParticle(0, world, pos.xCoord, pos.yCoord, pos.zCoord, 0, 0, 0);
+		Particle fx = new ParticleRedstone.Factory().createParticle(0, world, pos.x, pos.y, pos.z, 0, 0, 0);
 		fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
 
 		Minecraft.getMinecraft().effectRenderer.addEffect(fx);

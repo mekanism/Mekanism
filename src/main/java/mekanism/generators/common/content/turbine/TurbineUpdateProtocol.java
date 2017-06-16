@@ -63,8 +63,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 			
 			if(innerRadius >= Math.ceil((structure.volHeight-2)/4))
 			{
-				int centerX = structure.minLocation.xCoord+(structure.volLength-1)/2;
-				int centerZ = structure.minLocation.zCoord+(structure.volWidth-1)/2;
+				int centerX = structure.minLocation.x +(structure.volLength-1)/2;
+				int centerZ = structure.minLocation.z +(structure.volWidth-1)/2;
 				
 				Coord4D complex = null;
 				
@@ -84,7 +84,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 						{
 							return false;
 						}
-						else if(coord.xCoord != centerX || coord.zCoord != centerZ)
+						else if(coord.x != centerX || coord.z != centerZ)
 						{
 							return false;
 						}
@@ -94,7 +94,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 					}
 					else if(tile instanceof TileEntityTurbineRotor)
 					{
-						if(coord.xCoord != centerX || coord.zCoord != centerZ)
+						if(coord.x != centerX || coord.z != centerZ)
 						{
 							return false;
 						}
@@ -122,20 +122,20 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				}
 				
 				//Make sure a flat, horizontal plane of dispersers exists within the multiblock around the complex
-				for(int x = complex.xCoord-innerRadius; x <= complex.xCoord+innerRadius; x++)
+				for(int x = complex.x -innerRadius; x <= complex.x +innerRadius; x++)
 				{
-					for(int z = complex.zCoord-innerRadius; z <= complex.zCoord+innerRadius; z++)
+					for(int z = complex.z -innerRadius; z <= complex.z +innerRadius; z++)
 					{
 						if(!(x == centerX && z == centerZ))
 						{
-							TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, complex.yCoord, z));
+							TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, complex.y, z));
 							
 							if(!(tile instanceof TileEntityPressureDisperser))
 							{
 								return false;
 							}
 							
-							dispersers.remove(new Coord4D(x, complex.yCoord, z, pointer.getWorld().provider.getDimension()));
+							dispersers.remove(new Coord4D(x, complex.y, z, pointer.getWorld().provider.getDimension()));
 						}
 					}
 				}
@@ -149,7 +149,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				//Make sure all condensers are in proper locations
 				for(Coord4D coord : condensers)
 				{
-					if(coord.yCoord <= complex.yCoord)
+					if(coord.y <= complex.y)
 					{
 						return false;
 					}
@@ -160,7 +160,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				int turbineHeight = 0;
 				
 				//Make sure a complete line of turbine rotors exist from the complex to the multiblock's base
-				for(int y = complex.yCoord-1; y > structure.minLocation.yCoord; y--)
+				for(int y = complex.y -1; y > structure.minLocation.y; y--)
 				{
 					TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(centerX, y, centerZ));
 					
@@ -209,7 +209,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				{
 					if(coord.getTileEntity(pointer.getWorld()) instanceof TileEntityTurbineVent)
 					{
-						if(coord.yCoord >= complex.yCoord)
+						if(coord.y >= complex.y)
 						{
 							structure.vents++;
 						}

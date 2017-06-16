@@ -225,6 +225,6 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 
 	@Override
 	public FontRenderer getFontRenderer(Minecraft minecraft, GasStack gasStack) {
-		return minecraft.fontRendererObj;
+		return minecraft.fontRenderer;
 	}
 }

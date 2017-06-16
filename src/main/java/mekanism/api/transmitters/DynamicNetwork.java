@@ -250,23 +250,23 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		IGridTransmitter<A, N> initTransmitter = transmitters.iterator().next();
 		Coord4D initCoord = initTransmitter.coord();
 		
-		int minX = initCoord.xCoord;
-		int minY = initCoord.yCoord;
-		int minZ = initCoord.zCoord;
-		int maxX = initCoord.xCoord;
-		int maxY = initCoord.yCoord;
-		int maxZ = initCoord.zCoord;
+		int minX = initCoord.x;
+		int minY = initCoord.y;
+		int minZ = initCoord.z;
+		int maxX = initCoord.x;
+		int maxY = initCoord.y;
+		int maxZ = initCoord.z;
 		
 		for(IGridTransmitter transmitter : transmitters)
 		{
 			Coord4D coord = transmitter.coord();
 			
-			if(coord.xCoord < minX) minX = coord.xCoord;
-			if(coord.yCoord < minY) minY = coord.yCoord;
-			if(coord.zCoord < minZ) minZ = coord.zCoord;
-			if(coord.xCoord > maxX) maxX = coord.xCoord;
-			if(coord.yCoord > maxY) maxY = coord.yCoord;
-			if(coord.xCoord > maxZ) maxZ = coord.zCoord;
+			if(coord.x < minX) minX = coord.x;
+			if(coord.y < minY) minY = coord.y;
+			if(coord.z < minZ) minZ = coord.z;
+			if(coord.x > maxX) maxX = coord.x;
+			if(coord.y > maxY) maxY = coord.y;
+			if(coord.x > maxZ) maxZ = coord.z;
 		}
 		
 		return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, initTransmitter.world().provider.getDimension());

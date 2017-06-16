@@ -95,7 +95,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
-		if(!func_194125_a(tabs)) return;
+		if(!isInCreativeTab(tabs)) return;
 		ItemStack discharged = new ItemStack(this);
 		list.add(discharged);
 		ItemStack charged = new ItemStack(this);

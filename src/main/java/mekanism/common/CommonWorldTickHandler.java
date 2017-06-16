@@ -109,9 +109,9 @@ public class CommonWorldTickHandler
 			        Random fmlRandom = new Random(world.getSeed());
 			        long xSeed = fmlRandom.nextLong() >> 2 + 1L;
 			        long zSeed = fmlRandom.nextLong() >> 2 + 1L;
-			        fmlRandom.setSeed((xSeed*nextChunk.chunkXPos + zSeed*nextChunk.chunkZPos) ^ world.getSeed());
+			        fmlRandom.setSeed((xSeed*nextChunk.x + zSeed*nextChunk.z) ^ world.getSeed());
 
-					Mekanism.genHandler.generate(fmlRandom, nextChunk.chunkXPos, nextChunk.chunkZPos, world, ((ChunkProviderServer)world.getChunkProvider()).chunkGenerator, world.getChunkProvider());
+					Mekanism.genHandler.generate(fmlRandom, nextChunk.x, nextChunk.z, world, ((ChunkProviderServer)world.getChunkProvider()).chunkGenerator, world.getChunkProvider());
 					Mekanism.logger.info("[Mekanism] Regenerating ores at chunk " + nextChunk);
 				}
 

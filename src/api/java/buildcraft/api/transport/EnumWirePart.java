@@ -39,7 +39,7 @@ public enum EnumWirePart {
 
         Vec3d center = new Vec3d(0.5, 0.5, 0.5);
         Vec3d edge = new Vec3d(x ? 0.75 : 0.25, y ? 0.75 : 0.25, z ? 0.75 : 0.25);
-        this.boundingBoxPossible = new AxisAlignedBB(center.xCoord, center.yCoord, center.zCoord, edge.xCoord, edge.yCoord, edge.zCoord);
+        this.boundingBoxPossible = new AxisAlignedBB(center.x, center.y, center.z, edge.x, edge.y, edge.z);
     }
 
     public AxisDirection getDirection(EnumFacing.Axis axis) {

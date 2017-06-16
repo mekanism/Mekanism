@@ -25,7 +25,7 @@ public final class FluidRenderer
 	
 	public static void translateToOrigin(Coord4D origin)
 	{
-		GL11.glTranslated(getX(origin.xCoord), getY(origin.yCoord), getZ(origin.zCoord));
+		GL11.glTranslated(getX(origin.x), getY(origin.y), getZ(origin.z));
 	}
 	
 	public static int getStages(RenderData data)
@@ -235,7 +235,7 @@ public final class FluidRenderer
 	
 	private static int getValveFluidHeight(ValveRenderData data)
 	{
-		return data.valveLocation.yCoord - data.location.yCoord;
+		return data.valveLocation.y - data.location.y;
 	}
 	
 	private static double getX(int x)

@@ -25,7 +25,7 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
 				
 				if(entity != null)
 				{
-					entity.setLocationAndAngles(message.pos.xCoord, message.pos.yCoord, message.pos.zCoord, entity.rotationYaw, entity.rotationPitch);
+					entity.setLocationAndAngles(message.pos.x, message.pos.y, message.pos.z, entity.rotationYaw, entity.rotationPitch);
 				}
 			}
 		}, player);
@@ -52,9 +52,9 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
 		{
 			dataStream.writeInt(entityId);
 
-			dataStream.writeFloat((float)pos.xCoord);
-			dataStream.writeFloat((float)pos.yCoord);
-			dataStream.writeFloat((float)pos.zCoord);
+			dataStream.writeFloat((float)pos.x);
+			dataStream.writeFloat((float)pos.y);
+			dataStream.writeFloat((float)pos.z);
 		}
 	
 		@Override

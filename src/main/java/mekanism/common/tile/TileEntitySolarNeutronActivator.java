@@ -38,7 +38,6 @@ import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -116,7 +115,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			
 			SolarNeutronRecipe recipe = getRecipe();
 
-			boolean sky =  ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.hasNoSky() && world.canSeeSky(getPos().up());
+			boolean sky =  ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.isNether() && world.canSeeSky(getPos().up()); // TODO Check isNether call, maybe it should be hasSkyLight
 			
 			if(world.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this))
 			{

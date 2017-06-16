@@ -119,17 +119,17 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
-		fontRendererObj.drawString(tileEntity.mode == 0 ? LangUtils.localize("gui.condensentrating") : LangUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
+		fontRenderer.drawString(tileEntity.mode == 0 ? LangUtils.localize("gui.condensentrating") : LangUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
 
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+			drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
 
 		if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

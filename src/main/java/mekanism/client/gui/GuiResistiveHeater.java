@@ -80,7 +80,7 @@ public class GuiResistiveHeater extends GuiMekanism
 		
 		String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
 		
-		energyUsageField = new GuiTextField(0, fontRendererObj, guiWidth + 49, guiHeight + 52, 66, 11);
+		energyUsageField = new GuiTextField(0, fontRenderer, guiWidth + 49, guiHeight + 52, 66, 11);
 		energyUsageField.setMaxStringLength(7);
 		energyUsageField.setEnableBackgroundDrawing(false);
 		energyUsageField.setText(prevEnergyUsage);
@@ -89,8 +89,8 @@ public class GuiResistiveHeater extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getName(), (xSize / 2) - (fontRendererObj.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
 		
 		renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils.getTemperatureDisplay(tileEntity.temperature, TemperatureUnit.AMBIENT), 50, 25, 0x00CD00, 76);
 		renderScaledText(LangUtils.localize("gui.usage") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.energyUsage) + "/t", 50, 41, 0x00CD00, 76);

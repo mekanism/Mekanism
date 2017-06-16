@@ -8,16 +8,10 @@ import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
-import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,7 +30,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 	private Fluid WATER = FluidRegistry.WATER;
 	
 	@Override
-	public void func_192841_a(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
+	public void renderTileEntityAt(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null && tileEntity.structure.upperRenderLocation != null)
 		{
@@ -45,7 +39,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 				RenderData data = new RenderData();
 
 				data.location = tileEntity.structure.renderLocation;
-				data.height = (tileEntity.structure.upperRenderLocation.yCoord-1)-tileEntity.structure.renderLocation.yCoord;
+				data.height = (tileEntity.structure.upperRenderLocation.y -1)-tileEntity.structure.renderLocation.y;
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
 				data.fluidType = WATER;
@@ -98,7 +92,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 				RenderData data = new RenderData();
 
 				data.location = tileEntity.structure.upperRenderLocation;
-				data.height = (tileEntity.structure.renderLocation.yCoord+tileEntity.structure.volHeight-2)-(tileEntity.structure.upperRenderLocation.yCoord);
+				data.height = (tileEntity.structure.renderLocation.y +tileEntity.structure.volHeight-2)-(tileEntity.structure.upperRenderLocation.y);
 				data.length = tileEntity.structure.volLength;
 				data.width = tileEntity.structure.volWidth;
 				data.fluidType = STEAM;

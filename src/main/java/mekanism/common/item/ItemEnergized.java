@@ -79,7 +79,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
-		if(!func_194125_a(tabs)) return;
+		if(!isInCreativeTab(tabs)) return;
 		ItemStack discharged = new ItemStack(this);
 		list.add(discharged);
 		ItemStack charged = new ItemStack(this);

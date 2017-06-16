@@ -31,7 +31,7 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
-		if(!func_194125_a(tabs)) return;
+		if(!isInCreativeTab(tabs)) return;
 		for(int counter = 0; counter < PlasticItem.values().length; counter++)
 		{
 			itemList.add(new ItemStack(this, 1, counter));

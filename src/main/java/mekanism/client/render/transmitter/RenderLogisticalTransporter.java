@@ -50,7 +50,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 	}
 	
 	@Override
-	public void func_192841_a(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
+	public void renderTileEntityAt(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(client.opaqueTransmitters)
 		{
@@ -70,7 +70,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 			if(stack != null)
 			{
 				GL11.glPushMatrix();
-				entityItem.setEntityItemStack(stack.itemStack);
+				entityItem.setItem(stack.itemStack);
 
 				float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick*transporter.tier.speed);
 

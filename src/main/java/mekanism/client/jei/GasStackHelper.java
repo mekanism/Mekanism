@@ -6,12 +6,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.MoreObjects;
+
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import net.minecraft.item.ItemStack;
-
-import com.google.common.base.Objects;
 
 public class GasStackHelper implements IIngredientHelper<GasStack>
 {
@@ -75,7 +75,7 @@ public class GasStackHelper implements IIngredientHelper<GasStack>
 	@Override
 	public String getErrorInfo(GasStack ingredient) 
 	{
-		Objects.ToStringHelper toStringHelper = Objects.toStringHelper(GasStack.class);
+		MoreObjects.ToStringHelper toStringHelper = MoreObjects.toStringHelper(GasStack.class);
 
 		Gas gas = ingredient.getGas();
 		

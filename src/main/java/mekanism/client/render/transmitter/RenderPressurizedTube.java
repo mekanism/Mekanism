@@ -18,7 +18,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
 	}
 	
 	@Override
-	public void func_192841_a(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
+	public void renderTileEntityAt(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(client.opaqueTransmitters || !tube.getTransmitter().hasTransmitterNetwork() || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
 		{

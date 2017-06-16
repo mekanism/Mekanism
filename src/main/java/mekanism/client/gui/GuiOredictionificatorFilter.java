@@ -126,7 +126,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			buttonList.get(1).enabled = false;
 		}
 
-		filterText = new GuiTextField(2, fontRendererObj, guiWidth + 33, guiHeight + 48, 96, 12);
+		filterText = new GuiTextField(2, fontRenderer, guiWidth + 33, guiHeight + 48, 96, 12);
 		filterText.setMaxStringLength(TileEntityOredictionificator.MAX_LENGTH);
 		filterText.setFocused(true);
 		
@@ -140,9 +140,9 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		String text = (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.filter");
-		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 6, 0x404040);
+		fontRenderer.drawString(text, (xSize/2)-(fontRenderer.getStringWidth(text)/2), 6, 0x404040);
 		
-		fontRendererObj.drawString(LangUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
 		
 		if(filter.filter != null)
 		{
@@ -162,17 +162,17 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		
 		if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.nextItem"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.nextItem"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35)
@@ -182,7 +182,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 				String name = ItemRegistryUtils.getMod(renderStack);
 				String extra = name.equals("null") ? "" : " (" + name + ")";
 				
-				drawCreativeTabHoveringText(renderStack.getDisplayName() + extra, xAxis, yAxis);
+				drawHoveringText(renderStack.getDisplayName() + extra, xAxis, yAxis);
 			}
 		}
 

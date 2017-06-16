@@ -83,8 +83,8 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 5, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 5, 0x404040);
 		
 		renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils.getTemperatureDisplay(tileEntity.structure.temperature, TemperatureUnit.AMBIENT), 43, 30, 0x00CD00, 90);
 		renderScaledText(LangUtils.localize("gui.boilRate") + ": " + tileEntity.structure.lastBoilRate + " mB/t", 43, 39, 0x00CD00, 90);
@@ -92,12 +92,12 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 		
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.structure.waterStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.waterStored) + ": " + tileEntity.structure.waterStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
+			drawHoveringText(tileEntity.structure.waterStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.waterStored) + ": " + tileEntity.structure.waterStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.structure.steamStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.steamStored) + ": " + tileEntity.structure.steamStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
+			drawHoveringText(tileEntity.structure.steamStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.steamStored) + ": " + tileEntity.structure.steamStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -55,15 +55,15 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 		flameVec = flameVec.multiply(new Pos3D(player.getLookVec())).rotateYaw(6);
 		
 		Pos3D mergedVec = playerPos.translate(flameVec);
-		setPosition(mergedVec.xCoord, mergedVec.yCoord, mergedVec.zCoord);
+		setPosition(mergedVec.x, mergedVec.y, mergedVec.z);
 		
 		Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(player.getLookVec()));
 		
 		setHeading(motion);
 		
-		motionX = motion.xCoord;
-		motionY = motion.yCoord;
-		motionZ = motion.zCoord;
+		motionX = motion.x;
+		motionY = motion.y;
+		motionZ = motion.z;
 		
 		owner = player;
         mode = ((ItemFlamethrower)player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
@@ -71,10 +71,10 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	
     public void setHeading(Pos3D motion)
     {
-        float d = MathHelper.sqrt((motion.xCoord * motion.xCoord) + (motion.zCoord * motion.zCoord));
+        float d = MathHelper.sqrt((motion.x * motion.x) + (motion.z * motion.z));
         
-        prevRotationYaw = rotationYaw = (float)(Math.atan2(motion.xCoord, motion.zCoord) * 180.0D / Math.PI);
-        prevRotationPitch = rotationPitch = (float)(Math.atan2(motion.yCoord, d) * 180.0D / Math.PI);
+        prevRotationYaw = rotationYaw = (float)(Math.atan2(motion.x, motion.z) * 180.0D / Math.PI);
+        prevRotationPitch = rotationPitch = (float)(Math.atan2(motion.y, d) * 180.0D / Math.PI);
     }
 	
 	@Override
@@ -119,11 +119,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 
         if(mop != null)
         {
-            motionVec = new Vec3d(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
+            motionVec = new Vec3d(mop.hitVec.x, mop.hitVec.y, mop.hitVec.z);
         }
 
         Entity entity = null;
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
         double entityDist = 0.0D;
         int i;
 
@@ -213,11 +213,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	
 	private boolean smeltItem(EntityItem item)
 	{
-		ItemStack result = FurnaceRecipes.instance().getSmeltingResult(item.getEntityItem());
+		ItemStack result = FurnaceRecipes.instance().getSmeltingResult(item.getItem());
 		
 		if(!result.isEmpty())
 		{
-			item.setEntityItemStack(StackUtils.size(result, item.getEntityItem().getCount()));
+			item.setItem(StackUtils.size(result, item.getItem().getCount()));
 			item.ticksExisted = 0;
 			
 			spawnParticlesAt(new Pos3D(item));
@@ -261,7 +261,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 				else {
 					world.setBlockToAir(block.getPos());
 					
-					EntityItem item = new EntityItem(world, block.xCoord + 0.5, block.yCoord + 0.5, block.zCoord + 0.5, result.copy());
+					EntityItem item = new EntityItem(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());
 					item.motionX = 0;
 					item.motionY = 0;
 					item.motionZ = 0;
@@ -300,7 +300,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	{
 		for(int i = 0; i < 10; i++)
 		{
-			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.xCoord + (rand.nextFloat()-0.5), pos.yCoord + (rand.nextFloat()-0.5), pos.zCoord + (rand.nextFloat()-0.5), 0, 0, 0);
+			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.x + (rand.nextFloat()-0.5), pos.y + (rand.nextFloat()-0.5), pos.z + (rand.nextFloat()-0.5), 0, 0, 0);
 		}
 	}
 

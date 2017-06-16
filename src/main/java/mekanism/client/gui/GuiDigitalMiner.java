@@ -170,18 +170,18 @@ public class GuiDigitalMiner extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getName(), 69, 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), 69, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		fontRendererObj.drawString(tileEntity.running ? LangUtils.localize("gui.digitalMiner.running") : LangUtils.localize("gui.idle"), 9, 10, 0x00CD00);
-		fontRendererObj.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
+		fontRenderer.drawString(tileEntity.running ? LangUtils.localize("gui.digitalMiner.running") : LangUtils.localize("gui.idle"), 9, 10, 0x00CD00);
+		fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.pull") + ": " + LangUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.silk") + ": " + LangUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.digitalMiner.pull") + ": " + LangUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.digitalMiner.silk") + ": " + LangUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
-		fontRendererObj.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
+		fontRenderer.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
 		if(!tileEntity.missingStack.isEmpty())
 		{
@@ -205,38 +205,38 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		if(xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+			drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
 
 		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
 		{
 			if(!tileEntity.missingStack.isEmpty())
 			{
-				drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
+				drawHoveringText(LangUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(LangUtils.localize("gui.well"), xAxis, yAxis);
+				drawHoveringText(LangUtils.localize("gui.well"), xAxis, yAxis);
 			}
 		}
 
 		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

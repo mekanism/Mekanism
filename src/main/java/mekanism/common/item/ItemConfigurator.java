@@ -166,7 +166,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 								if(slotStack.hasTagCompound())
 								{
-									item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+									item.getItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
 								}
 
 								float k = 0.05F;

@@ -98,7 +98,7 @@ public class RobitAIPickup extends EntityAIBase
 	}
 
 	@Override
-	public boolean continueExecuting()
+	public boolean shouldContinueExecuting()
 	{
 		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getDropPickup() && theRobit.getEnergy() > 0 && closest.world.provider.getDimension() == theRobit.world.provider.getDimension();
 	}

@@ -25,12 +25,12 @@ public class Pos3D extends Vec3d
 
 	public Pos3D(Vec3d vec)
 	{
-		super(vec.xCoord, vec.yCoord, vec.zCoord);
+		super(vec.x, vec.y, vec.z);
 	}
 	
 	public Pos3D(Coord4D coord)
 	{
-		super(coord.xCoord, coord.yCoord, coord.zCoord);
+		super(coord.x, coord.y, coord.z);
 	}
 
 	public Pos3D(Vec3i vec)
@@ -58,7 +58,7 @@ public class Pos3D extends Vec3d
 	}
 
 	/**
-	 * Creates a Pos3D with a TileEntity's xCoord, yCoord and zCoord values.
+	 * Creates a Pos3D with a TileEntity's x, y and z values.
 	 * @param tileEntity - TileEntity to create the Pos3D from
 	 */
 	public Pos3D(TileEntity tileEntity)
@@ -83,9 +83,9 @@ public class Pos3D extends Vec3d
 	 */
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
-		nbtTags.setDouble("x", xCoord);
-		nbtTags.setDouble("y", yCoord);
-		nbtTags.setDouble("z", zCoord);
+		nbtTags.setDouble("x", x);
+		nbtTags.setDouble("y", y);
+		nbtTags.setDouble("z", z);
 
 		return nbtTags;
 	}
@@ -97,7 +97,7 @@ public class Pos3D extends Vec3d
 	 */
 	public Pos3D diff(Vec3d vec)
 	{
-		return new Pos3D(xCoord-vec.xCoord, yCoord-vec.yCoord, zCoord-vec.zCoord);
+		return new Pos3D(x-vec.x, y-vec.y, z-vec.z);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class Pos3D extends Vec3d
      */
     public Coord4D getCoord(int dimensionId)
     {
-        return new Coord4D((int)xCoord, (int)yCoord, (int)zCoord, dimensionId);
+        return new Coord4D((int)x, (int)y, (int)z, dimensionId);
     }
 
 	/**
@@ -137,7 +137,7 @@ public class Pos3D extends Vec3d
 	 */
 	public Pos3D translate(double x, double y, double z)
 	{
-		return new Pos3D(xCoord + x, yCoord + y, zCoord + z);
+		return new Pos3D(x + x, y + y, z + z);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class Pos3D extends Vec3d
 	 */
 	public Pos3D translate(Vec3d pos)
 	{
-		return translate(pos.xCoord, pos.yCoord, pos.zCoord);
+		return translate(pos.x, pos.y, pos.z);
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class Pos3D extends Vec3d
 	 */
 	public Pos3D translateExcludingSide(EnumFacing direction, double amount)
 	{
-		double xPos = xCoord, yPos = yCoord, zPos = zCoord;
+		double xPos = x, yPos = y, zPos = z;
 		if(direction.getAxis() != Axis.X) xPos += amount;
 		if(direction.getAxis() != Axis.Y) yPos += amount;
 		if(direction.getAxis() != Axis.Z) zPos += amount;
@@ -178,9 +178,9 @@ public class Pos3D extends Vec3d
 	 */
 	public double distance(Vec3d pos)
 	{
-		double subX = xCoord - pos.xCoord;
-		double subY = yCoord - pos.yCoord;
-		double subZ = zCoord - pos.zCoord;
+		double subX = x - pos.x;
+		double subY = y - pos.y;
+		double subZ = z - pos.z;
 		return MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
 	}
 
@@ -193,16 +193,16 @@ public class Pos3D extends Vec3d
 	{
 		double yawRadians = Math.toRadians(yaw);
 
-		double xPos = xCoord;
-		double zPos = zCoord;
+		double xPos = x;
+		double zPos = z;
 
 		if(yaw != 0)
 		{
-			xPos = xCoord * Math.cos(yawRadians) - zCoord * Math.sin(yawRadians);
-			zPos = zCoord * Math.cos(yawRadians) + xCoord * Math.sin(yawRadians);
+			xPos = x * Math.cos(yawRadians) - z * Math.sin(yawRadians);
+			zPos = z * Math.cos(yawRadians) + x * Math.sin(yawRadians);
 		}
 
-		return new Pos3D(xPos, yCoord, zPos);
+		return new Pos3D(xPos, y, zPos);
 	}
 	
 	@Override
@@ -210,16 +210,16 @@ public class Pos3D extends Vec3d
 	{
 		double pitchRadians = Math.toRadians(pitch);
 		
-		double yPos = yCoord;
-		double zPos = zCoord;
+		double yPos = y;
+		double zPos = z;
 		
 		if(pitch != 0)
 		{
-			yPos = yCoord * Math.cos(pitchRadians) - zCoord * Math.sin(pitchRadians);
-			zPos = zCoord * Math.cos(pitchRadians) + yCoord * Math.sin(pitchRadians);
+			yPos = y * Math.cos(pitchRadians) - z * Math.sin(pitchRadians);
+			zPos = z * Math.cos(pitchRadians) + y * Math.sin(pitchRadians);
 		}
 		
-		return new Pos3D(xCoord, yPos, zPos);
+		return new Pos3D(x, yPos, zPos);
 	}
 	
 	public Pos3D rotate(float yaw, float pitch)
@@ -233,20 +233,20 @@ public class Pos3D extends Vec3d
         double pitchRadians = Math.toRadians(pitch);
         double rollRadians = Math.toRadians(roll);
 
-        double xPos = xCoord;
-        double yPos = yCoord;
-        double zPos = zCoord;
+        double xPos = x;
+        double yPos = y;
+        double zPos = z;
 
-        xPos = xCoord * Math.cos(yawRadians) * Math.cos(pitchRadians) + zCoord * (Math.cos(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) - Math.sin(yawRadians) * Math.cos(rollRadians)) + yCoord * (Math.cos(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) + Math.sin(yawRadians) * Math.sin(rollRadians));
-        zPos = xCoord * Math.sin(yawRadians) * Math.cos(pitchRadians) + zCoord * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) + Math.cos(yawRadians) * Math.cos(rollRadians)) + yCoord * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) - Math.cos(yawRadians) * Math.sin(rollRadians));
-        yPos = -xCoord * Math.sin(pitchRadians) + zCoord * Math.cos(pitchRadians) * Math.sin(rollRadians) + yCoord * Math.cos(pitchRadians) * Math.cos(rollRadians);
+        xPos = x * Math.cos(yawRadians) * Math.cos(pitchRadians) + z * (Math.cos(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) - Math.sin(yawRadians) * Math.cos(rollRadians)) + y * (Math.cos(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) + Math.sin(yawRadians) * Math.sin(rollRadians));
+        zPos = x * Math.sin(yawRadians) * Math.cos(pitchRadians) + z * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) + Math.cos(yawRadians) * Math.cos(rollRadians)) + y * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) - Math.cos(yawRadians) * Math.sin(rollRadians));
+        yPos = -x * Math.sin(pitchRadians) + z * Math.cos(pitchRadians) * Math.sin(rollRadians) + y * Math.cos(pitchRadians) * Math.cos(rollRadians);
         
         return new Pos3D(xPos, yPos, zPos);
     }
 	
 	public Pos3D multiply(Vec3d pos)
 	{
-		return scale(pos.xCoord, pos.yCoord, pos.zCoord);
+		return scale(pos.x, pos.y, pos.z);
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class Pos3D extends Vec3d
 	 */
 	public Pos3D scale(double x, double y, double z)
 	{
-		return new Pos3D(xCoord * x, yCoord * y, zCoord * z);
+		return new Pos3D(x * x, y * y, z * z);
 	}
 
 	@Override
@@ -277,9 +277,9 @@ public class Pos3D extends Vec3d
 		double[] matrix = new double[16];
 		Pos3D axis = clone().normalize();
 		
-		double x = axis.xCoord;
-		double y = axis.yCoord;
-		double z = axis.zCoord;
+		double x = axis.x;
+		double y = axis.y;
+		double z = axis.z;
 		
 		angle *= 0.0174532925D;
 		
@@ -303,9 +303,9 @@ public class Pos3D extends Vec3d
 
 	public static Pos3D translateMatrix(double[] matrix, Pos3D translation)
 	{
-		double x = translation.xCoord * matrix[0] + translation.yCoord * matrix[1] + translation.zCoord * matrix[2] + matrix[3];
-		double y = translation.xCoord * matrix[4] + translation.yCoord * matrix[5] + translation.zCoord * matrix[6] + matrix[7];
-		double z = translation.xCoord * matrix[8] + translation.yCoord * matrix[9] + translation.zCoord * matrix[10] + matrix[11];
+		double x = translation.x * matrix[0] + translation.y * matrix[1] + translation.z * matrix[2] + matrix[3];
+		double y = translation.x * matrix[4] + translation.y * matrix[5] + translation.z * matrix[6] + matrix[7];
+		double z = translation.x * matrix[8] + translation.y * matrix[9] + translation.z * matrix[10] + matrix[11];
 		
 		return new Pos3D(x, y, z);
 	}
@@ -333,17 +333,17 @@ public class Pos3D extends Vec3d
 	
 	public Pos3D xCrossProduct()
 	{
-		return new Pos3D(0.0D, zCoord, -yCoord);
+		return new Pos3D(0.0D, z, -y);
 	}
 
 	public Pos3D zCrossProduct()
 	{
-		return new Pos3D(-yCoord, xCoord, 0.0D);
+		return new Pos3D(-y, x, 0.0D);
 	}
 	
 	public Pos3D getPerpendicular()
 	{
-		if(zCoord == 0)
+		if(z == 0)
 		{
 			return zCrossProduct();
 		}
@@ -353,49 +353,49 @@ public class Pos3D extends Vec3d
 	
 	public Pos3D floor()
 	{
-		return new Pos3D(Math.floor(xCoord), Math.floor(yCoord), Math.floor(zCoord));
+		return new Pos3D(Math.floor(x), Math.floor(y), Math.floor(z));
 	}
 
 	public static AxisAlignedBB getAABB(Pos3D pos1, Pos3D pos2)
 	{
 		return new AxisAlignedBB(
-			pos1.xCoord,
-			pos1.yCoord,
-			pos1.zCoord,
-			pos2.xCoord,
-			pos2.yCoord,
-			pos2.zCoord
+			pos1.x,
+			pos1.y,
+			pos1.z,
+			pos2.x,
+			pos2.y,
+			pos2.z
 		);
 	}
 
 	@Override
 	public Pos3D clone()
 	{
-		return new Pos3D(xCoord, yCoord, zCoord);
+		return new Pos3D(x, y, z);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "[Pos3D: " + xCoord + ", " + yCoord + ", " + zCoord + "]";
+		return "[Pos3D: " + x + ", " + y + ", " + z + "]";
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Vec3d &&
-				((Vec3d)obj).xCoord == xCoord &&
-				((Vec3d)obj).xCoord == yCoord &&
-				((Vec3d)obj).xCoord == zCoord;
+				((Vec3d)obj).x == x &&
+				((Vec3d)obj).x == y &&
+				((Vec3d)obj).x == z;
 	}
 
 	@Override
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + new Double(xCoord).hashCode();
-		code = 31 * code + new Double(yCoord).hashCode();
-		code = 31 * code + new Double(zCoord).hashCode();
+		code = 31 * code + new Double(x).hashCode();
+		code = 31 * code + new Double(y).hashCode();
+		code = 31 * code + new Double(z).hashCode();
 		return code;
 	}
 }

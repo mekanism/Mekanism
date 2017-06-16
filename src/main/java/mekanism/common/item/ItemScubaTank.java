@@ -225,7 +225,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
-		if(!func_194125_a(tabs)) return;
+		if(!isInCreativeTab(tabs)) return;
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
 		list.add(empty);

@@ -152,7 +152,7 @@ public class CommonPlayerTickHandler
 		AxisAlignedBB box = s.getBoundingBox(player.world, pos).offset(pos);
 		AxisAlignedBB playerBox = player.getEntityBoundingBox();
 		
-		if(!s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersectsWith(box))
+		if(!s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(box))
 		{
 			return true;
 		}

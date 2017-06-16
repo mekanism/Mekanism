@@ -65,7 +65,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			ChargeUtils.charge(0, this);
 			
-			if(world.isDaytime() && ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.hasNoSky() && world.canSeeSky(getPos().add(0, 4, 0)))
+			if(world.isDaytime() && ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.isNether() && world.canSeeSky(getPos().add(0, 4, 0))) // TODO Check isNether call, maybe it should be hasSkyLight
 			{
 				seesSun = true;
 			}

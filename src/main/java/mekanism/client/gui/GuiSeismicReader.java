@@ -44,7 +44,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public GuiSeismicReader(World world, Coord4D coord, ItemStack stack)
 	{
-		pos = new Coord4D(coord.xCoord, Math.min(255, coord.yCoord), coord.zCoord, world.provider.getDimension());
+		pos = new Coord4D(coord.x, Math.min(255, coord.y), coord.z, world.provider.getDimension());
 		worldObj = world;
 
 		itemStack = stack;
@@ -101,7 +101,7 @@ public class GuiSeismicReader extends GuiScreen
 			GlStateManager.scale(0.7f, 0.7f, 0.7f);
 		}
 		
-		fontRendererObj.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
+		fontRenderer.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
 		GlStateManager.popMatrix();
 
 		// Render the item stacks
@@ -157,26 +157,26 @@ public class GuiSeismicReader extends GuiScreen
 			
 			String capitalised = renderString.substring(0, 1).toUpperCase() + renderString.substring(1);
 			float renderScale = 1.0f;
-			int lengthX = fontRendererObj.getStringWidth(capitalised);
+			int lengthX = fontRenderer.getStringWidth(capitalised);
 
 			renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(guiWidth + 72, guiHeight + 16, 0);
 			GlStateManager.scale(renderScale, renderScale, renderScale);
-			fontRendererObj.drawString(capitalised, 0, 0, 0x919191);
+			fontRenderer.drawString(capitalised, 0, 0, 0x919191);
 			GlStateManager.popMatrix();
 			
 			if(tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1)))
 			{
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
-				int fontLengthX = fontRendererObj.getStringWidth(capitalised) + 5;
+				int fontLengthX = fontRenderer.getStringWidth(capitalised) + 5;
 				int renderX = mouseX + 10, renderY = mouseY - 5;
 				GlStateManager.pushMatrix();
 				GL11.glColor3f(1, 1, 1);
 				drawTexturedModalRect(renderX, renderY, 0, 0, fontLengthX, 16);
 				drawTexturedModalRect(renderX + fontLengthX, renderY, 0, 16, 2, 16);
-				fontRendererObj.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);
+				fontRenderer.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);
 				GlStateManager.popMatrix();
 			}
 		}
@@ -199,7 +199,7 @@ public class GuiSeismicReader extends GuiScreen
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(guiWidth + 72, guiHeight + 26, 0);
 		GlStateManager.scale(0.70f, 0.70f, 0.70f);
-		fontRendererObj.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
+		fontRenderer.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
 		GlStateManager.popMatrix();
 		super.drawScreen(mouseX, mouseY, partialTick);
 	}
@@ -229,7 +229,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public void calculate()
 	{
-		for(BlockPos p = new BlockPos(pos.xCoord, 0, pos.zCoord); p.getY() < pos.yCoord; p = p.up())
+		for(BlockPos p = new BlockPos(pos.x, 0, pos.z); p.getY() < pos.y; p = p.up())
 		{
 			IBlockState state = worldObj.getBlockState(p);
 			Block block = state.getBlock();

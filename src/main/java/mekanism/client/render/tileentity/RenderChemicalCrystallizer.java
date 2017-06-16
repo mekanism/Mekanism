@@ -16,7 +16,7 @@ public class RenderChemicalCrystallizer extends TileEntitySpecialRenderer<TileEn
 	private ModelChemicalCrystallizer model = new ModelChemicalCrystallizer();
 
 	@Override
-	public void func_192841_a(TileEntityChemicalCrystallizer tileEntity, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
+	public void renderTileEntityAt(TileEntityChemicalCrystallizer tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
@@ -34,6 +34,6 @@ public class RenderChemicalCrystallizer extends TileEntitySpecialRenderer<TileEn
 		model.render(0.0625F);
 		GlStateManager.popMatrix();
 
-		MekanismRenderer.machineRenderer.func_192841_a(tileEntity, x, y, z, partialTick, destroyStage, p_192841_10_);
+		MekanismRenderer.machineRenderer.renderTileEntityAt(tileEntity, x, y, z, partialTick, destroyStage, alpha);
 	}
 }

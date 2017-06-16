@@ -54,12 +54,12 @@ public class SparkleAnimation
 					{
 						for(int i = 0; i < 6; i++)
 						{
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + random.nextDouble(), coord.yCoord + -.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + random.nextDouble(), coord.yCoord + 1.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + -.01, 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + 1.01, 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + -.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.xCoord + 1.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + -.01, coord.z + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + 1.01, coord.z + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + random.nextDouble(), coord.z + -.01, 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + random.nextDouble(), coord.z + 1.01, 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + -.01, coord.y + random.nextDouble(), coord.z + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + 1.01, coord.y + random.nextDouble(), coord.z + random.nextDouble(), 0, 0, 0);
 						}
 					}
 				}

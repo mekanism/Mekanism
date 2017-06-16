@@ -41,7 +41,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 			{
 				if(!player.world.isRemote)
 				{
-					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
 		
 					if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
 					{

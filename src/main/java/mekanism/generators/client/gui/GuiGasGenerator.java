@@ -62,10 +62,10 @@ public class GuiGasGenerator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		String s = LangUtils.localize("gui.burnRate") + ": " + tileEntity.clientUsed;
-		fontRendererObj.drawString(s, xSize - 8 - fontRendererObj.getStringWidth(s), (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(s, xSize - 8 - fontRenderer.getStringWidth(s), (ySize - 96) + 2, 0x404040);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

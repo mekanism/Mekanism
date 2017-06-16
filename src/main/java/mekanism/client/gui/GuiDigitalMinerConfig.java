@@ -410,15 +410,15 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		String prevMin = minField != null ? minField.getText() : "";
 		String prevMax = maxField != null ? maxField.getText() : "";
 
-		radiusField = new GuiTextField(1, fontRendererObj, guiWidth + 12, guiHeight + 67, 26, 11);
+		radiusField = new GuiTextField(1, fontRenderer, guiWidth + 12, guiHeight + 67, 26, 11);
 		radiusField.setMaxStringLength(2);
 		radiusField.setText(prevRad);
 
-		minField = new GuiTextField(2, fontRendererObj, guiWidth + 12, guiHeight + 92, 26, 11);
+		minField = new GuiTextField(2, fontRenderer, guiWidth + 12, guiHeight + 92, 26, 11);
 		minField.setMaxStringLength(3);
 		minField.setText(prevMin);
 
-		maxField = new GuiTextField(3, fontRendererObj, guiWidth + 12, guiHeight + 117, 26, 11);
+		maxField = new GuiTextField(3, fontRenderer, guiWidth + 12, guiHeight + 117, 26, 11);
 		maxField.setMaxStringLength(3);
 		maxField.setText(prevMax);
 	}
@@ -440,18 +440,18 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRendererObj.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
+		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		
-		fontRendererObj.drawString("I: " + (tileEntity.inverse ? LangUtils.localize("gui.on") : LangUtils.localize("gui.off")), 11, 131, 0x00CD00);
+		fontRenderer.drawString("I: " + (tileEntity.inverse ? LangUtils.localize("gui.on") : LangUtils.localize("gui.off")), 11, 131, 0x00CD00);
 
-		fontRendererObj.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
+		fontRenderer.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
 
-		fontRendererObj.drawString("Min: " + tileEntity.minY, 11, 83, 0x00CD00);
+		fontRenderer.drawString("Min: " + tileEntity.minY, 11, 83, 0x00CD00);
 
-		fontRendererObj.drawString("Max: " + tileEntity.maxY, 11, 108, 0x00CD00);
+		fontRenderer.drawString("Max: " + tileEntity.maxY, 11, 108, 0x00CD00);
 
 		for(int i = 0; i < 4; i++)
 		{
@@ -473,7 +473,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						GlStateManager.popMatrix();
 					}
 
-					fontRendererObj.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MOreDictFilter)
 				{
@@ -495,7 +495,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						} catch(Exception e) {}
 					}
 
-					fontRendererObj.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MMaterialFilter)
 				{
@@ -510,7 +510,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						GlStateManager.popMatrix();
 					}
 
-					fontRendererObj.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MModIDFilter)
 				{
@@ -532,14 +532,14 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						} catch(Exception e) {}
 					}
 
-					fontRendererObj.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
 				}
 			}
 		}
 
 		if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

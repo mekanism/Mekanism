@@ -672,7 +672,7 @@ public class CommonProxy implements IGuiProvider
 
 	public EntityPlayer getPlayer(MessageContext context)
 	{
-		return context.getServerHandler().playerEntity;
+		return context.getServerHandler().player;
 	}
 	
 	public void handlePacket(Runnable runnable, EntityPlayer player)

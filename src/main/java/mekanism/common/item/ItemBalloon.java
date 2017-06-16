@@ -14,7 +14,6 @@ import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -65,7 +64,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
-		if(!func_194125_a(tabs)) return;
+		if(!isInCreativeTab(tabs)) return;
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
 			EnumColor color = EnumColor.DYES[i];
@@ -88,7 +87,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 		{
 			Pos3D pos = new Pos3D(hand == EnumHand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
 
-			world.spawnEntity(new EntityBalloon(world, pos.xCoord-0.5, pos.yCoord-0.25, pos.zCoord-0.5, getColor(itemstack)));
+			world.spawnEntity(new EntityBalloon(world, pos.x-0.5, pos.y-0.25, pos.z-0.5, getColor(itemstack)));
 		}
 
 		if(!entityplayer.capabilities.isCreativeMode)
@@ -261,7 +260,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 				
 				if(!source.getWorld().isRemote)
 				{
-					source.getWorld().spawnEntity(new EntityBalloon(source.getWorld(), pos.xCoord, pos.yCoord, pos.zCoord, getColor(stack)));
+					source.getWorld().spawnEntity(new EntityBalloon(source.getWorld(), pos.x, pos.y, pos.z, getColor(stack)));
 				}
 			}
 			

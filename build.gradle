@@ -87,9 +87,9 @@ dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart-exp:${config.mcmp_version}"
     deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}:api"
 	runtime "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
-    compile "net.darkhax.tesla:Tesla:${config.tesla_version}"
-    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
-    compile "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api"
+    compile "net.darkhax.tesla:Tesla-${config.minecraft_version}:${config.tesla_version}"
+    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api" // Not updated yet
+    compile "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
 }
 

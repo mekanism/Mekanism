@@ -51,7 +51,7 @@ public class SchematicEntity extends Schematic {
         NBTTagList nbttaglist = entityNBT.getTagList("Pos", 6);
         Vec3d pos = new Vec3d(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
         pos = pos.add(transform);
-        entityNBT.setTag("Pos", this.newDoubleNBTList(pos.xCoord, pos.yCoord, pos.zCoord));
+        entityNBT.setTag("Pos", this.newDoubleNBTList(pos.x, pos.y, pos.z));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SchematicEntity extends Schematic {
         Vec3d pos = new Vec3d(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
         pos = pos.add(transform);
 
-        entityNBT.setTag("Pos", this.newDoubleNBTList(pos.xCoord, pos.yCoord, pos.zCoord));
+        entityNBT.setTag("Pos", this.newDoubleNBTList(pos.x, pos.y, pos.z));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class SchematicEntity extends Schematic {
         NBTTagList nbttaglist = entityNBT.getTagList("Pos", 6);
         Vec3d pos = new Vec3d(nbttaglist.getDoubleAt(0), nbttaglist.getDoubleAt(1), nbttaglist.getDoubleAt(2));
         pos = context.rotatePositionLeft(pos);
-        entityNBT.setTag("Pos", this.newDoubleNBTList(pos.xCoord, pos.yCoord, pos.zCoord));
+        entityNBT.setTag("Pos", this.newDoubleNBTList(pos.x, pos.y, pos.z));
 
         nbttaglist = entityNBT.getTagList("Rotation", 5);
         float yaw = nbttaglist.getFloatAt(0);

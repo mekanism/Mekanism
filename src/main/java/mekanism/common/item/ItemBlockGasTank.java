@@ -199,7 +199,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
-		if(!func_194125_a(tabs)) return;
+		if(!isInCreativeTab(tabs)) return;
 		for(GasTankTier tier : GasTankTier.values())
 		{
 			ItemStack empty = new ItemStack(this);

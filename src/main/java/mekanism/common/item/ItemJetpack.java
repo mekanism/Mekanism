@@ -214,7 +214,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
-		if(!func_194125_a(tabs)) return;
+		if(!isInCreativeTab(tabs)) return;
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
 		list.add(empty);

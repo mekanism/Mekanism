@@ -29,9 +29,9 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
  */
 public class Coord4D
 {
-	public int xCoord;
-	public int yCoord;
-	public int zCoord;
+	public int x;
+	public int y;
+	public int z;
 
 	public int dimensionId;
 	
@@ -41,9 +41,9 @@ public class Coord4D
 	 */
 	public Coord4D(Entity entity)
 	{
-		xCoord = (int)entity.posX;
-		yCoord = (int)entity.posY;
-		zCoord = (int)entity.posZ;
+		x = (int)entity.posX;
+		y = (int)entity.posY;
+		z = (int)entity.posZ;
 		
 		dimensionId = entity.world.provider.getDimension();
 	}
@@ -57,9 +57,9 @@ public class Coord4D
 	 */
 	public Coord4D(double x, double y, double z, int dimension)
 	{
-		xCoord = MathHelper.floor(x);
-		yCoord = MathHelper.floor(y);
-		zCoord = MathHelper.floor(z);
+		x = MathHelper.floor(x);
+		y = MathHelper.floor(y);
+		z = MathHelper.floor(z);
 
 		dimensionId = dimension;
 	}
@@ -92,7 +92,7 @@ public class Coord4D
 	
 	public BlockPos getPos()
 	{
-		return new BlockPos(xCoord, yCoord, zCoord);
+		return new BlockPos(x, y, z);
 	}
 
 	/**
@@ -132,9 +132,9 @@ public class Coord4D
 	 */
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
-		nbtTags.setInteger("x", xCoord);
-		nbtTags.setInteger("y", yCoord);
-		nbtTags.setInteger("z", zCoord);
+		nbtTags.setInteger("x", x);
+		nbtTags.setInteger("y", y);
+		nbtTags.setInteger("z", z);
 		nbtTags.setInteger("dimensionId", dimensionId);
 
 		return nbtTags;
@@ -146,9 +146,9 @@ public class Coord4D
 	 */
 	public void write(ArrayList data)
 	{
-		data.add(xCoord);
-		data.add(yCoord);
-		data.add(zCoord);
+		data.add(x);
+		data.add(y);
+		data.add(z);
 		data.add(dimensionId);
 	}
 	
@@ -158,9 +158,9 @@ public class Coord4D
 	 */
 	public void write(ByteBuf dataStream)
 	{
-		dataStream.writeInt(xCoord);
-		dataStream.writeInt(yCoord);
-		dataStream.writeInt(zCoord);
+		dataStream.writeInt(x);
+		dataStream.writeInt(y);
+		dataStream.writeInt(z);
 		dataStream.writeInt(dimensionId);
 	}
 
@@ -173,7 +173,7 @@ public class Coord4D
 	 */
 	public Coord4D translate(int x, int y, int z)
 	{
-		return new Coord4D(xCoord+x, yCoord+y, zCoord+z, dimensionId);
+		return new Coord4D(this.x +x, this.y +y, this.z +z, dimensionId);
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public class Coord4D
 	 */
 	public Coord4D translate(Coord4D coord)
 	{
-		return translate(coord.xCoord, coord.yCoord, coord.zCoord);
+		return translate(coord.x, coord.y, coord.z);
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class Coord4D
 			return this;
 		}
 		
-		return new Coord4D(xCoord+(side.getFrontOffsetX()*amount), yCoord+(side.getFrontOffsetY()*amount), zCoord+(side.getFrontOffsetZ()*amount), dimensionId);
+		return new Coord4D(x +(side.getFrontOffsetX()*amount), y +(side.getFrontOffsetY()*amount), z +(side.getFrontOffsetZ()*amount), dimensionId);
 	}
 	
 	public ItemStack getStack(IBlockAccess world)
@@ -225,7 +225,7 @@ public class Coord4D
 	}
 
 	/**
-	 * Returns a new Coord4D from a defined TileEntity's xCoord, yCoord and zCoord values.
+	 * Returns a new Coord4D from a defined TileEntity's x, y and z values.
 	 * @param tileEntity - TileEntity at the location that will represent this Coord4D
 	 * @return the Coord4D object from the TileEntity
 	 */
@@ -261,7 +261,7 @@ public class Coord4D
 	 */
 	public Coord4D difference(Coord4D other)
 	{
-		return new Coord4D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord, dimensionId);
+		return new Coord4D(x -other.x, y -other.y, z -other.z, dimensionId);
 	}
 
 	/**
@@ -276,7 +276,7 @@ public class Coord4D
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			if(side.getFrontOffsetX() == diff.xCoord && side.getFrontOffsetY() == diff.yCoord && side.getFrontOffsetZ() == diff.zCoord)
+			if(side.getFrontOffsetX() == diff.x && side.getFrontOffsetY() == diff.y && side.getFrontOffsetZ() == diff.z)
 			{
 				return side;
 			}
@@ -292,9 +292,9 @@ public class Coord4D
 	 */
 	public int distanceTo(Coord4D obj)
 	{
-		int subX = xCoord - obj.xCoord;
-		int subY = yCoord - obj.yCoord;
-		int subZ = zCoord - obj.zCoord;
+		int subX = x - obj.x;
+		int subY = y - obj.y;
+		int subZ = z - obj.z;
 		return (int)MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
 	}
 
@@ -316,7 +316,7 @@ public class Coord4D
 	 */
 	public TargetPoint getTargetPoint(double range)
 	{
-		return new TargetPoint(dimensionId, xCoord, yCoord, zCoord, range);
+		return new TargetPoint(dimensionId, x, y, z, range);
 	}
 
 	/**
@@ -336,7 +336,7 @@ public class Coord4D
 	 */
 	public boolean exists(World world)
 	{
-		return world.getChunkProvider() == null || world.getChunkProvider().getLoadedChunk(xCoord >> 4, zCoord >> 4) != null;
+		return world.getChunkProvider() == null || world.getChunkProvider().getLoadedChunk(x >> 4, z >> 4) != null;
 	}
 
 	/**
@@ -384,28 +384,28 @@ public class Coord4D
 	 */
 	public AxisAlignedBB getBoundingBox()
 	{
-		return new AxisAlignedBB(xCoord, yCoord, zCoord, xCoord+1, yCoord+1, zCoord+1);
+		return new AxisAlignedBB(x, y, z, x +1, y +1, z +1);
 	}
 
 	@Override
 	public Coord4D clone()
 	{
-		return new Coord4D(xCoord, yCoord, zCoord, dimensionId);
+		return new Coord4D(x, y, z, dimensionId);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "[Coord4D: " + xCoord + ", " + yCoord + ", " + zCoord + ", dim=" + dimensionId + "]";
+		return "[Coord4D: " + x + ", " + y + ", " + z + ", dim=" + dimensionId + "]";
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Coord4D &&
-				((Coord4D)obj).xCoord == xCoord &&
-				((Coord4D)obj).yCoord == yCoord &&
-				((Coord4D)obj).zCoord == zCoord &&
+				((Coord4D)obj).x == x &&
+				((Coord4D)obj).y == y &&
+				((Coord4D)obj).z == z &&
 				((Coord4D)obj).dimensionId == dimensionId;
 	}
 
@@ -413,9 +413,9 @@ public class Coord4D
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + xCoord;
-		code = 31 * code + yCoord;
-		code = 31 * code + zCoord;
+		code = 31 * code + x;
+		code = 31 * code + y;
+		code = 31 * code + z;
 		code = 31 * code + dimensionId;
 		return code;
 	}

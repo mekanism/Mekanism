@@ -23,7 +23,7 @@ public class ParticleLaser extends Particle
 
 	public ParticleLaser(World world, Pos3D start, Pos3D end, EnumFacing dir, double energy)
 	{
-		super(world, (start.xCoord + end.xCoord)/2D, (start.yCoord + end.yCoord)/2D, (start.zCoord+end.zCoord)/2D);
+		super(world, (start.x + end.x)/2D, (start.y + end.y)/2D, (start.z+end.z)/2D);
 		particleMaxAge = 5;
 		particleRed = 1;
 		particleGreen = 0;

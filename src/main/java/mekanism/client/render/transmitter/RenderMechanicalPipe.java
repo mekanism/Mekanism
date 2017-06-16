@@ -33,7 +33,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 	}
 	
 	@Override
-	public void func_192841_a(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
+	public void renderTileEntityAt(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(client.opaqueTransmitters)
 		{

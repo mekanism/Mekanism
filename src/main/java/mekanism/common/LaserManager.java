@@ -86,7 +86,7 @@ public class LaserManager
 		IBlockState state = blockCoord.getBlockState(world);
 		Block blockHit = state.getBlock();
 		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord).get();
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, blockCoord.x, blockCoord.y, blockCoord.z).get();
 		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord.getPos(), state, dummy);
 		MinecraftForge.EVENT_BUS.post(event);
 		

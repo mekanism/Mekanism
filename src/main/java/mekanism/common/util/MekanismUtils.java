@@ -1043,7 +1043,7 @@ public final class MekanismUtils
 
 		Vec3d headVec = getHeadVec(player);
 		Vec3d lookVec = player.getLook(1);
-		Vec3d endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
+		Vec3d endVec = headVec.addVector(lookVec.x*reach, lookVec.y*reach, lookVec.z*reach);
 
 		return world.rayTraceBlocks(headVec, endVec, true);
 	}
@@ -1209,7 +1209,7 @@ public final class MekanismUtils
 	 */
 	public static String getCoordDisplay(Coord4D obj)
 	{
-		return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
+		return "[" + obj.x + ", " + obj.y + ", " + obj.z + "]";
 	}
 	
 	@SideOnly(Side.CLIENT)

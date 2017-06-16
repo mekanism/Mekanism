@@ -127,12 +127,12 @@ public class GuiTransporterConfig extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		String text = LangUtils.localize("gui.configuration.transporter");
-		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 5, 0x404040);
+		fontRenderer.drawString(text, (xSize/2)-(fontRenderer.getStringWidth(text)/2), 5, 0x404040);
 		text = LangUtils.localize("gui.strictInput") + " (" + LangUtils.transOnOff(configurable.getEjector().hasStrictInput()) + ")";
 		renderScaledText(text, 53, 17, 0x00CD00, 70);
 		
-		fontRendererObj.drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
-		fontRendererObj.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
+		fontRenderer.drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
+		fontRenderer.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
 		
 		if(configurable.getEjector().getOutputColor() != null)
 		{
@@ -159,7 +159,7 @@ public class GuiTransporterConfig extends GuiMekanism
 			{
 				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 				{
-					drawCreativeTabHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
+					drawHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
 				}
 			}
 		}
@@ -168,16 +168,16 @@ public class GuiTransporterConfig extends GuiMekanism
 		{
 			if(configurable.getEjector().getOutputColor() != null)
 			{
-				drawCreativeTabHoveringText(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
+				drawHoveringText(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
+				drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 		
 		if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

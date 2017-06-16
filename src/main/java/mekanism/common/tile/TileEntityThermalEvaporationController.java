@@ -356,7 +356,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			middlePointer = middlePointer.offset(EnumFacing.DOWN);
 		}
 		
-		renderY = middlePointer.yCoord+1;
+		renderY = middlePointer.y +1;
 		
 		if(height < 3 || height > MAX_HEIGHT)
 		{
@@ -548,7 +548,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
 		
 		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing));
-		startPoint.yCoord = renderY;
+		startPoint.y = renderY;
 		
 		return startPoint;
 	}

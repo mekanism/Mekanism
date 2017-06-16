@@ -76,7 +76,7 @@ public class GuiTFilterSelect extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

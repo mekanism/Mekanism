@@ -51,7 +51,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
-		if(!func_194125_a(tabs)) return;
+		if(!isInCreativeTab(tabs)) return;
 		list.add(getEmptyItem());
 	}
 	

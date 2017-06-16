@@ -29,7 +29,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 	private static final int stages = 40;
 
 	@Override
-	public void func_192841_a(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float p_192841_10_)
+	public void renderTileEntityAt(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(tileEntity.bioFuelSlot.fluidStored > 0)
 		{
