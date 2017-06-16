@@ -116,7 +116,7 @@ public class RecipeUtils
 					{
 						if(!((IGasItem)toReturn.getItem()).canReceiveGas(toReturn, stored.getGas()))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 						
 						if(gasFound == null)
@@ -126,7 +126,7 @@ public class RecipeUtils
 						else {
 							if(gasFound.getGas() != stored.getGas())
 							{
-								return null;
+								return ItemStack.EMPTY;
 							}
 							
 							gasFound.amount += stored.amount;
@@ -174,7 +174,7 @@ public class RecipeUtils
 					{
 						if(FluidUtil.getFluidHandler(itemstack).fill(stored, false) == 0)
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 						
 						if(fluidFound == null)
@@ -184,7 +184,7 @@ public class RecipeUtils
 						else {
 							if(fluidFound.getFluid() != stored.getFluid())
 							{
-								return null;
+								return ItemStack.EMPTY;
 							}
 							
 							fluidFound.amount += stored.amount;

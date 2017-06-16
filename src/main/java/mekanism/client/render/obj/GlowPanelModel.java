@@ -63,7 +63,7 @@ public class GlowPanelModel extends OBJBakedModelBase
 	
 	public EnumColor getColor()
 	{
-		if(tempStack != null)
+		if(tempStack != null && !tempStack.isEmpty())
 		{
 			return EnumColor.DYES[tempStack.getItemDamage()];
 		}

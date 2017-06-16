@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -471,7 +472,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					final TItemStackFilter itemFilter = (TItemStackFilter) filter;
 
-					if(itemFilter.itemType != null)
+					if(itemFilter.itemType != null && !itemFilter.itemType.isEmpty())
 					{
 						GlStateManager.pushMatrix();
 						RenderHelper.enableGUIStandardItemLighting();
@@ -492,12 +493,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 						updateStackList(oreFilter);
 					}
 
-					if(oreDictStacks.get(filter).renderStack != null)
+					ItemStack renderStack = oreDictStacks.get(filter).renderStack;
+					if(renderStack != null && !renderStack.isEmpty())
 					{
 						try {
 							GlStateManager.pushMatrix();
 							RenderHelper.enableGUIStandardItemLighting();
-							itemRender.renderItemAndEffectIntoGUI(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
 							RenderHelper.disableStandardItemLighting();
 							GlStateManager.popMatrix();
 						} catch(final Exception e) {}
@@ -510,7 +512,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					final TMaterialFilter itemFilter = (TMaterialFilter) filter;
 
-					if(itemFilter.materialItem != null)
+					if(itemFilter.materialItem != null && !itemFilter.materialItem.isEmpty())
 					{
 						GlStateManager.pushMatrix();
 						RenderHelper.enableGUIStandardItemLighting();
@@ -531,12 +533,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 						updateStackList(modFilter);
 					}
 
-					if(modIDStacks.get(filter).renderStack != null)
+					ItemStack renderStack = modIDStacks.get(filter).renderStack;
+					if(renderStack != null && !renderStack.isEmpty())
 					{
 						try {
 							GlStateManager.pushMatrix();
 							RenderHelper.enableGUIStandardItemLighting();
-							itemRender.renderItemAndEffectIntoGUI(modIDStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
 							RenderHelper.disableStandardItemLighting();
 							GlStateManager.popMatrix();
 						} catch(final Exception e) {}
@@ -724,7 +727,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 		public int stackIndex;
 
-		public ItemStack renderStack;
+		public @Nullable ItemStack renderStack;
 	}
 
 	/**

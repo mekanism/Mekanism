@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -464,7 +465,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				{
 					MItemStackFilter itemFilter = (MItemStackFilter)filter;
 
-					if(itemFilter.itemType != null)
+					if(itemFilter.itemType != null && !itemFilter.itemType.isEmpty())
 					{
 						GlStateManager.pushMatrix();
 						RenderHelper.enableGUIStandardItemLighting();
@@ -484,12 +485,13 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						updateStackList(oreFilter);
 					}
 
-					if(oreDictStacks.get(filter).renderStack != null)
+					ItemStack renderStack = oreDictStacks.get(filter).renderStack;
+					if(renderStack != null && !renderStack.isEmpty())
 					{
 						try {
 							GlStateManager.pushMatrix();
 							RenderHelper.enableGUIStandardItemLighting();
-							itemRender.renderItemAndEffectIntoGUI(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
 							RenderHelper.disableStandardItemLighting();
 							GlStateManager.popMatrix();
 						} catch(Exception e) {}
@@ -501,7 +503,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				{
 					MMaterialFilter itemFilter = (MMaterialFilter)filter;
 
-					if(itemFilter.materialItem != null)
+					if(itemFilter.materialItem != null && !itemFilter.materialItem.isEmpty())
 					{
 						GlStateManager.pushMatrix();
 						RenderHelper.enableGUIStandardItemLighting();
@@ -521,12 +523,13 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						updateStackList(modFilter);
 					}
 
-					if(modIDStacks.get(filter).renderStack != null)
+					ItemStack renderStack = modIDStacks.get(filter).renderStack;
+					if(renderStack != null && !renderStack.isEmpty())
 					{
 						try {
 							GlStateManager.pushMatrix();
 							RenderHelper.enableGUIStandardItemLighting();
-							itemRender.renderItemAndEffectIntoGUI(modIDStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
 							RenderHelper.disableStandardItemLighting();
 							GlStateManager.popMatrix();
 						} catch(Exception e) {}
@@ -762,7 +765,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	{
 		public List<ItemStack> iterStacks;
 		public int stackIndex;
-		public ItemStack renderStack;
+		public @Nullable ItemStack renderStack;
 	}
 
 	/**

@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
@@ -48,7 +49,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 
 	public Gas prevGas;
 
-	public ItemStack renderStack;
+	public @Nullable ItemStack renderStack;
 
 	public int stackSwitch = 0;
 
@@ -125,7 +126,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 			}
 		}
 
-		if(renderStack != null)
+		if(renderStack != null && !renderStack.isEmpty())
 		{
 			try {
 				GlStateManager.pushMatrix();
