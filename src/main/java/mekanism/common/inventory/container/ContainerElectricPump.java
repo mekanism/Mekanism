@@ -74,13 +74,13 @@ public class ContainerElectricPump extends Container
 				{
 					if(!mergeItemStack(slotStack, 2, 3, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -90,14 +90,14 @@ public class ContainerElectricPump extends Container
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID == 0)
 				{
 					if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -105,7 +105,7 @@ public class ContainerElectricPump extends Container
 			{
 				if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else {
@@ -113,20 +113,20 @@ public class ContainerElectricPump extends Container
 				{
 					if(!mergeItemStack(slotStack, 30, inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID > 29)
 				{
 					if(!mergeItemStack(slotStack, 3, 29, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -141,7 +141,7 @@ public class ContainerElectricPump extends Container
 
 			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			currentSlot.onTake(player, slotStack);

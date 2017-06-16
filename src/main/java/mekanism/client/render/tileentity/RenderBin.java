@@ -37,7 +37,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 	{
 		String amount = "";
 
-		if(itemType != null)
+		if(itemType != null && !itemType.isEmpty())
 		{
 			amount = Integer.toString(clientAmount);
 			
@@ -47,7 +47,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 			}
 		}
 
-		if(itemType != null)
+		if(itemType != null && !itemType.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 

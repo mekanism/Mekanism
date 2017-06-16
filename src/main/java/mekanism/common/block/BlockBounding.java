@@ -76,7 +76,7 @@ public class BlockBounding extends Block
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
 			return state1.getBlock().getPickBlock(state1, target, world, tileEntity.mainPos, player);
 		} catch(Exception e) {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 

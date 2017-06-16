@@ -50,7 +50,7 @@ public class WailaDataProvider implements IWailaDataProvider
 	@Method(modid = "Waila")
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class InfusionInput extends MachineInput<InfusionInput>
 	@Override
 	public boolean isValid()
 	{
-		return infuse.type != null && inputStack != null;
+		return infuse.type != null && inputStack != null && !inputStack.isEmpty();
 	}
 
 	public boolean use(NonNullList<ItemStack> inventory, int index, InfuseStorage infuseStorage, boolean deplete)

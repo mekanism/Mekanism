@@ -26,12 +26,12 @@ public class ItemProxy extends Item
 	@Override
 	public boolean hasContainerItem(ItemStack itemStack)
 	{
-		return getSavedItem(itemStack) != null;
+		return !getSavedItem(itemStack).isEmpty();
 	}
 
 	public void setSavedItem(ItemStack stack, ItemStack save)
 	{
-		if(save == null)
+		if(save == null || save.isEmpty())
 		{
 			ItemDataUtils.setBoolean(stack, "hasStack", false);
 			ItemDataUtils.removeData(stack, "savedItem");
@@ -49,7 +49,7 @@ public class ItemProxy extends Item
 			return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

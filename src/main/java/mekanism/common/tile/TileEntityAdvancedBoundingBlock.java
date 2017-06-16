@@ -56,7 +56,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		return getInv().getStackInSlot(i);
@@ -67,7 +67,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		return getInv().decrStackSize(i, j);
@@ -78,7 +78,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		return getInv().removeStackFromSlot(i);
