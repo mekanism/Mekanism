@@ -1351,7 +1351,7 @@ public final class MekanismUtils
 			return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
 		}
 
-		List<IRecipe> list = (List<IRecipe>)((ArrayList<IRecipe>)CraftingManager.getInstance().getRecipeList()).clone();
+		List<IRecipe> list = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
 		
 		for(IRecipe recipe : list)
 		{
