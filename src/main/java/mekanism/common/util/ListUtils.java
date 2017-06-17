@@ -169,6 +169,18 @@ public class ListUtils
 	{
 		return (List<V>)Arrays.asList(values);
 	}
+	
+	public static <V> ArrayList<V> asArrayList(V... values)
+	{
+		ArrayList<V> ret = new ArrayList<>();
+		
+		for(V value : values)
+		{
+			ret.add(value);
+		}
+		
+		return ret;
+	}
 
 	public static double[] splitDouble(int size, double num)
 	{

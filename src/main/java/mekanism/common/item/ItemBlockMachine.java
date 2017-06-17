@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
+import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFluidItemWrapper;
+import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -37,6 +39,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -77,6 +80,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -131,7 +135,7 @@ import cofh.api.energy.IEnergyContainerItem;
 @InterfaceList({
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IEnergyContainerItem, IFluidItemWrapper, ITierItem, ISecurityItem
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IEnergyContainerItem, IFluidItemWrapper, ITierItem, ISecurityItem, IItemNetwork
 {
 	public Block metaBlock;
 
@@ -941,4 +945,17 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         	}
         };
     }
+    
+    @Override
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			if(MachineType.get(stack) == MachineType.FLUID_TANK)
+			{
+				boolean state = dataStream.readBoolean();
+				setBucketMode(stack, state);
+			}
+		}
+	}
 }

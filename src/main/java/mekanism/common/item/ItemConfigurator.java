@@ -1,5 +1,7 @@
 package mekanism.common.item;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +15,7 @@ import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -41,6 +44,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -50,7 +54,7 @@ import cofh.api.item.IToolHammer;
 @InterfaceList({
 	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
 })
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer, IItemNetwork
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -351,6 +355,16 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 				default:
 					return null;
 			}
+		}
+	}
+
+	@Override
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			int state = dataStream.readInt();
+			setState(stack, ConfiguratorMode.values()[state]);
 		}
 	}
 }

@@ -1,10 +1,14 @@
 package mekanism.common.item;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
+import mekanism.common.base.IItemNetwork;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -14,8 +18,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class ItemWalkieTalkie extends ItemMekanism
+public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 {
 	public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
 	
@@ -93,5 +98,15 @@ public class ItemWalkieTalkie extends ItemMekanism
 		}
 
 		return channel;
+	}
+
+	@Override
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			int channel = dataStream.readInt();
+			setChannel(stack, channel);
+		}
 	}
 }
