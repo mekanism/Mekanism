@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 5
+  },
+  "pattern": [
+    "ICI",
+    "ASA",
+    "ICI"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    },
+    "I": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

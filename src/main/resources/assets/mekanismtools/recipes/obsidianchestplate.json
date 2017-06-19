@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanismtools:obsidianchestplate"
+  },
+  "pattern": [
+    "* *",
+    "***",
+    "***"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotRefinedObsidian",
+      "type": "forge:ore_dict"
+    }
+  }
+}

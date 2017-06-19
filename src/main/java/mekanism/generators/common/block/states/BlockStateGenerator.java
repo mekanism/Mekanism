@@ -11,7 +11,6 @@ import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
-import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.block.BlockGenerator;
@@ -123,7 +122,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		public double maxEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
-		public Collection<ShapedMekanismRecipe> blockRecipes = new HashSet<ShapedMekanismRecipe>();
+//		public Collection<ShapedMekanismRecipe> blockRecipes = new HashSet<ShapedMekanismRecipe>();
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 	
@@ -172,24 +171,24 @@ public class BlockStateGenerator extends ExtendedBlockState
 			return generators.generatorsManager.isEnabled(blockName);
 		}
 
-		@Override
-		public void addRecipes(Collection<ShapedMekanismRecipe> recipes)
-		{
-			blockRecipes.addAll(recipes);
-		}
+//		@Override
+//		public void addRecipes(Collection<ShapedMekanismRecipe> recipes)
+//		{
+//			blockRecipes.addAll(recipes);
+//		}
+//
+//		@Override
+//		public void addRecipe(ShapedMekanismRecipe recipe)
+//		{
+//			blockRecipes.add(recipe);
+//		}
+//
+//		@Override
+//		public Collection<ShapedMekanismRecipe> getRecipes()
+//		{
+//			return blockRecipes;
+//		}
 
-		@Override
-		public void addRecipe(ShapedMekanismRecipe recipe)
-		{
-			blockRecipes.add(recipe);
-		}
-
-		@Override
-		public Collection<ShapedMekanismRecipe> getRecipes()
-		{
-			return blockRecipes;
-		}
-		
 		public static GeneratorType get(IBlockState state)
 		{
 			if(state.getBlock() instanceof BlockGenerator)

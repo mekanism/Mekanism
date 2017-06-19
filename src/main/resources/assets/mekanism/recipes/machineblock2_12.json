@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 12
+  },
+  "pattern": [
+    "TTT",
+    "CPC",
+    "TTT"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:machineblock",
+      "data": 12
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "ore": "ingotTin",
+      "type": "forge:ore_dict"
+    }
+  }
+}

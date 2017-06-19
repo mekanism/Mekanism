@@ -1,0 +1,36 @@
+{
+  "result": {
+    "nbt": {
+      "recipeType": 3
+    },
+    "item": "mekanism:machineblock",
+    "data": 6
+  },
+  "pattern": [
+    "ECE",
+    "oOo",
+    "ECE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "circuitAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "o": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    },
+    "O": {
+      "nbt": {
+        "recipeType": 3
+      },
+      "item": "mekanism:machineblock",
+      "data": 5
+    }
+  }
+}

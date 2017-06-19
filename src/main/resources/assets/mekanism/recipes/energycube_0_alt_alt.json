@@ -1,0 +1,35 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 2
+    },
+    "item": "mekanism:energycube",
+    "data": 0
+  },
+  "pattern": [
+    "RTR",
+    "gAg",
+    "RTR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "nbt": {
+        "tier": 1
+      },
+      "item": "mekanism:energycube",
+      "data": 0
+    },
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:energytablet"
+    },
+    "g": {
+      "ore": "ingotGold",
+      "type": "forge:ore_dict"
+    }
+  }
+}

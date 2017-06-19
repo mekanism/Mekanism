@@ -1,0 +1,39 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 0
+  },
+  "pattern": [
+    "GCG",
+    "tEI",
+    "GCG"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "t": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:machineblock2",
+      "data": 11
+    }
+  }
+}

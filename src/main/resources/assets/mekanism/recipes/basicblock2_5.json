@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanism:basicblock2",
+    "data": 5
+  },
+  "pattern": [
+    "ACA",
+    "CIC",
+    "ACA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "ingotCopper",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

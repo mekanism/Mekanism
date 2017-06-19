@@ -1,0 +1,31 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 0
+    },
+    "item": "mekanism:basicblock2",
+    "data": 3
+  },
+  "pattern": [
+    "LTL",
+    "TET",
+    "LTL"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "T": {
+      "item": "mekanism:energytablet"
+    },
+    "E": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:energycube",
+      "data": 0
+    },
+    "L": {
+      "ore": "dustLithium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

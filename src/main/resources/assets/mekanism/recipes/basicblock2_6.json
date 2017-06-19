@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "mekanism:basicblock2",
+    "data": 6
+  },
+  "pattern": [
+    "SFS",
+    "FAF",
+    "SFS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "F": {
+      "item": "minecraft:iron_bars"
+    }
+  }
+}

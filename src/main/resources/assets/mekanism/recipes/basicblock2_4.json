@@ -1,0 +1,32 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 0
+    },
+    "item": "mekanism:basicblock2",
+    "data": 4
+  },
+  "pattern": [
+    "LCL",
+    "CEC",
+    "LCL"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:energycube",
+      "data": 0
+    },
+    "L": {
+      "ore": "dustLithium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

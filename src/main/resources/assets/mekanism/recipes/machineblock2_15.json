@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 15
+  },
+  "pattern": [
+    "C",
+    "F"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "mekanism:machineblock",
+      "data": 13
+    },
+    "F": {
+      "item": "mekanism:machineblock2",
+      "data": 14
+    }
+  }
+}

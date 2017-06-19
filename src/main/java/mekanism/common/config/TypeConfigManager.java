@@ -29,11 +29,11 @@ public class TypeConfigManager
 			
 			if(manager.isEnabled(type.getBlockName()))
 			{
-				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
-				CraftingManager.getInstance().getRecipeList().addAll(type.getRecipes());
+//				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
+//				CraftingManager.getInstance().getRecipeList().addAll(type.getRecipes());
 			}
 			else {
-				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
+//				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
 			}
 		}
 	}

@@ -15,14 +15,11 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.inventory.InventoryBin;
-import mekanism.common.recipe.ShapedMekanismRecipe;
-import mekanism.common.recipe.ShapelessMekanismRecipe;
 import mekanism.common.security.ISecurityItem;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -298,37 +295,37 @@ public class RecipeUtils
 	
 	public static boolean removeRecipes(ItemStack stack)
 	{
-		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-		
-		for(Iterator<IRecipe> iter = recipes.iterator(); iter.hasNext();)
-		{
-			IRecipe iterRecipe = iter.next();
-			
-			if(iterRecipe instanceof ShapedMekanismRecipe || iterRecipe instanceof ShapelessMekanismRecipe)
-			{
-				if(StackUtils.equalsWildcard(stack, iterRecipe.getRecipeOutput()))
-				{
-					iter.remove();
-				}
-			}
-		}
+//		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+//
+//		for(Iterator<IRecipe> iter = recipes.iterator(); iter.hasNext();)
+//		{
+//			IRecipe iterRecipe = iter.next();
+//
+//			if(iterRecipe instanceof ShapedMekanismRecipe || iterRecipe instanceof ShapelessMekanismRecipe)
+//			{
+//				if(StackUtils.equalsWildcard(stack, iterRecipe.getRecipeOutput()))
+//				{
+//					iter.remove();
+//				}
+//			}
+//		}
 		
 		return false;
 	}
 	
 	public static IRecipe getRecipeFromGrid(InventoryCrafting inv, World world)
 	{
-		List<IRecipe> list = new ArrayList<IRecipe>(CraftingManager.getInstance().getRecipeList());
-		
-		for(Iterator<IRecipe> iter = list.iterator(); iter.hasNext();)
-		{
-			IRecipe recipe = iter.next();
-			
-			if(recipe.matches(inv, world))
-			{
-				return recipe;
-			}
-		}
+//		List<IRecipe> list = new ArrayList<IRecipe>(CraftingManager.getInstance().getRecipeList());
+//
+//		for(Iterator<IRecipe> iter = list.iterator(); iter.hasNext();)
+//		{
+//			IRecipe recipe = iter.next();
+//
+//			if(recipe.matches(inv, world))
+//			{
+//				return recipe;
+//			}
+//		}
 		
 		return null;
 	}

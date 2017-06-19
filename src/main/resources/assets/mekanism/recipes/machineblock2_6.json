@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 6
+  },
+  "pattern": [
+    "CGC",
+    "EAE",
+    "CGC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:atomicalloy"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0
+    }
+  }
+}

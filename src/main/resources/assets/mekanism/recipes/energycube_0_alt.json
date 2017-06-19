@@ -1,0 +1,35 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 1
+    },
+    "item": "mekanism:energycube",
+    "data": 0
+  },
+  "pattern": [
+    "ETE",
+    "oBo",
+    "ETE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:energycube",
+      "data": 0
+    },
+    "T": {
+      "item": "mekanism:energytablet"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "o": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

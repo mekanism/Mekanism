@@ -5,15 +5,12 @@ import java.util.List;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.ShapedMekanismRecipe;
-import mekanism.common.recipe.ShapelessMekanismRecipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class IMCHandler
 {
@@ -32,32 +29,32 @@ public class IMCHandler
 					
 					if(message.equals("ShapedMekanismRecipe"))
 					{
-						ShapedMekanismRecipe recipe = ShapedMekanismRecipe.create(msg.getNBTValue());
-						
-						if(recipe != null)
-						{
-							GameRegistry.addRecipe(recipe);
-							Mekanism.logger.info("[Mekanism] " + msg.getSender() + " added a shaped recipe to the recipe list.");
-						}
-						else {
-							Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to add an invalid shaped recipe.");
-						}
-						
+//						ShapedMekanismRecipe recipe = ShapedMekanismRecipe.create(msg.getNBTValue());
+//
+//						if(recipe != null)
+//						{
+//							GameRegistry.addRecipe(recipe);
+//							Mekanism.logger.info("[Mekanism] " + msg.getSender() + " added a shaped recipe to the recipe list.");
+//						}
+//						else {
+//							Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to add an invalid shaped recipe.");
+//						}
+
 						found = true;
 					}
 					else if(message.equals("ShapelessMekanismRecipe"))
 					{
-						ShapelessMekanismRecipe recipe = ShapelessMekanismRecipe.create(msg.getNBTValue());
-						
-						if(recipe != null)
-						{
-							GameRegistry.addRecipe(recipe);
-							Mekanism.logger.info("[Mekanism] " + msg.getSender() + " added a shapeless recipe to the recipe list.");
-						}
-						else {
-							Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to add an invalid shapeless recipe.");
-						}
-						
+//						ShapelessMekanismRecipe recipe = ShapelessMekanismRecipe.create(msg.getNBTValue());
+//
+//						if(recipe != null)
+//						{
+//							GameRegistry.addRecipe(recipe);
+//							Mekanism.logger.info("[Mekanism] " + msg.getSender() + " added a shapeless recipe to the recipe list.");
+//						}
+//						else {
+//							Mekanism.logger.error("[Mekanism] " + msg.getSender() + " attempted to add an invalid shapeless recipe.");
+//						}
+
 						found = true;
 					}
 					else if(message.equals("DeleteMekanismRecipes") || message.equals("RemoveMekanismRecipes"))

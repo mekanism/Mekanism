@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.common.Foo;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig.tools;
-import mekanism.common.recipe.ShapedMekanismRecipe;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Items;
@@ -19,7 +19,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -87,224 +86,8 @@ public class MekanismTools implements IModule
 		//Load the proxy
 		proxy.loadConfiguration();
 		
-		//Load this module
-		addRecipes();
-		
 		//Finalization
 		Mekanism.logger.info("Loaded MekanismTools module.");
-	}
-	
-	public void addRecipes()
-	{
-		//Crafting Recipes
-		//Base
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.WoodPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Items.WOODEN_AXE, Character.valueOf('Y'), Items.WOODEN_PICKAXE, Character.valueOf('Z'), Items.WOODEN_SHOVEL, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.StonePaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Items.STONE_AXE, Character.valueOf('Y'), Items.STONE_PICKAXE, Character.valueOf('Z'), Items.STONE_SHOVEL, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.IronPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Items.IRON_AXE, Character.valueOf('Y'), Items.IRON_PICKAXE, Character.valueOf('Z'), Items.IRON_SHOVEL, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.DiamondPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Items.DIAMOND_AXE, Character.valueOf('Y'), Items.DIAMOND_PICKAXE, Character.valueOf('Z'), Items.DIAMOND_SHOVEL, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GoldPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Items.GOLDEN_AXE, Character.valueOf('Y'), Items.GOLDEN_PICKAXE, Character.valueOf('Z'), Items.GOLDEN_SHOVEL, Character.valueOf('T'), Items.STICK
-		}));
-		
-		//Obsidian
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotRefinedObsidian"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianChestplate, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotRefinedObsidian"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianLeggings, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotRefinedObsidian"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotRefinedObsidian"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.ObsidianAxe, Character.valueOf('Y'), ToolsItems.ObsidianPickaxe, Character.valueOf('Z'), ToolsItems.ObsidianShovel, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotRefinedObsidian", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotRefinedObsidian", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianShovel, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotRefinedObsidian", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotRefinedObsidian", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotRefinedObsidian", Character.valueOf('T'), Items.STICK
-		}));
-		
-		//Glowstone
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstonePaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.GlowstoneAxe, Character.valueOf('Y'), ToolsItems.GlowstonePickaxe, Character.valueOf('Z'), ToolsItems.GlowstoneShovel, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstonePickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneShovel, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotRefinedGlowstone"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneChestplate, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotRefinedGlowstone"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneLeggings, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotRefinedGlowstone"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotRefinedGlowstone"
-		}));
-		
-		//Lazuli
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), new ItemStack(Items.DYE, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliChestplate, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Items.DYE, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliLeggings, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Items.DYE, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), new ItemStack(Items.DYE, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.LazuliAxe, Character.valueOf('Y'), ToolsItems.LazuliPickaxe, Character.valueOf('Z'), ToolsItems.LazuliShovel, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Items.DYE, 1, 4), Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Items.DYE, 1, 4), Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliShovel, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), new ItemStack(Items.DYE, 1, 4), Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Items.DYE, 1, 4), Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), new ItemStack(Items.DYE, 1, 4), Character.valueOf('T'), Items.STICK
-		}));
-		
-		//Osmium
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.OsmiumAxe, Character.valueOf('Y'), ToolsItems.OsmiumPickaxe, Character.valueOf('Z'), ToolsItems.OsmiumShovel, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumShovel, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotOsmium"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumChestplate, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotOsmium"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumLeggings, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotOsmium"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotOsmium"
-		}));
-		
-		//Bronze
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzePaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.BronzeAxe, Character.valueOf('Y'), ToolsItems.BronzePickaxe, Character.valueOf('Z'), ToolsItems.BronzeShovel, Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzePickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeShovel, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Items.STICK
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotBronze"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeChestplate, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotBronze"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeLeggings, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotBronze"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotBronze"
-		}));
-		
-		//Steel
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelPaxel, 1), new Object[] {
-			"XYZ", " I ", " I ", Character.valueOf('X'), ToolsItems.SteelAxe, Character.valueOf('Y'), ToolsItems.SteelPickaxe, Character.valueOf('Z'), ToolsItems.SteelShovel, Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelPickaxe, 1), new Object[] {
-			"XXX", " I ", " I ", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelAxe, 1), new Object[] {
-			"XX", "XI", " I", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelShovel, 1), new Object[] {
-			"X", "I", "I", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelHoe, 1), new Object[] {
-			"XX", " I", " I", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelSword, 1), new Object[] {
-			"X", "X", "I", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelHelmet, 1), new Object[] {
-			"***", "I I", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelChestplate, 1), new Object[] {
-			"I I", "*I*", "***", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelLeggings, 1), new Object[] {
-			"I*I", "* *", "* *", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelBoots, 1), new Object[] {
-			"I *", "* I", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Items.IRON_INGOT
-		}));
 	}
 	
 	public void addItems()

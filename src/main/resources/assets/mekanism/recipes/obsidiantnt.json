@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanism:obsidiantnt"
+  },
+  "pattern": [
+    "***",
+    "XXX",
+    "***"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "item": "minecraft:tnt"
+    },
+    "*": {
+      "item": "minecraft:obsidian"
+    }
+  }
+}

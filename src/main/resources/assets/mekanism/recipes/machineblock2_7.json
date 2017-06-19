@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 7
+  },
+  "pattern": [
+    "CWC",
+    "EIE",
+    "CGC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "W": {
+      "item": "minecraft:bucket"
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

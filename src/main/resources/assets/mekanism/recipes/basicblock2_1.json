@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:basicblock2",
+    "data": 1,
+    "count": 4
+  },
+  "pattern": [
+    " S ",
+    "SES",
+    " S "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 5
+  },
+  "pattern": [
+    "SES",
+    "SES",
+    "III"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "mekanismgenerators:generator",
+      "data": 1
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "I": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

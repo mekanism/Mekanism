@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 9
+  },
+  "pattern": [
+    "TLT",
+    "CIC",
+    "TTT"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "ore": "ingotTin",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    },
+    "L": {
+      "item": "minecraft:dye",
+      "data": 4
+    }
+  }
+}

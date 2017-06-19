@@ -1,0 +1,32 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 2
+    },
+    "item": "mekanism:machineblock2",
+    "data": 11
+  },
+  "pattern": [
+    "AIA",
+    "ITI",
+    "AIA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "nbt": {
+        "tier": 1
+      },
+      "item": "mekanism:machineblock2",
+      "data": 11
+    },
+    "I": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

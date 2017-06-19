@@ -1,0 +1,35 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 3
+    },
+    "item": "mekanism:basicblock2",
+    "data": 4
+  },
+  "pattern": [
+    "CPC",
+    "PEP",
+    "CPC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "nbt": {
+        "tier": 2
+      },
+      "item": "mekanism:basicblock2",
+      "data": 4
+    },
+    "C": {
+      "ore": "circuitUltimate",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "nbt": {
+        "tier": 3
+      },
+      "item": "mekanism:energycube",
+      "data": 0
+    }
+  }
+}

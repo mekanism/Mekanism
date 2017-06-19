@@ -93,7 +93,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import cofh.api.item.IToolHammer;
 
 /**
@@ -280,7 +279,7 @@ public final class MekanismUtils
 	 */
 	public static void addRecipe(ItemStack output, Object[] params)
 	{
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
+//		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
 	}
 
 	/**
@@ -966,23 +965,23 @@ public final class MekanismUtils
 	{
 		boolean didRemove = false;
 
-		for(Iterator itr = CraftingManager.getInstance().getRecipeList().iterator(); itr.hasNext();)
-		{
-			Object obj = itr.next();
-
-			if(obj instanceof IRecipe && ((IRecipe)obj).getRecipeOutput() != null)
-			{
-				for(ItemStack itemStack : itemStacks)
-				{
-					if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
-					{
-						itr.remove();
-						didRemove = true;
-						break;
-					}
-				}
-			}
-		}
+//		for(Iterator itr = CraftingManager.getInstance().getRecipeList().iterator(); itr.hasNext();)
+//		{
+//			Object obj = itr.next();
+//
+//			if(obj instanceof IRecipe && ((IRecipe)obj).getRecipeOutput() != null)
+//			{
+//				for(ItemStack itemStack : itemStacks)
+//				{
+//					if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
+//					{
+//						itr.remove();
+//						didRemove = true;
+//						break;
+//					}
+//				}
+//			}
+//		}
 
 		return didRemove;
 	}
@@ -1351,15 +1350,15 @@ public final class MekanismUtils
 			return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
 		}
 
-		List<IRecipe> list = (List<IRecipe>)((ArrayList<IRecipe>)CraftingManager.getInstance().getRecipeList()).clone();
-		
-		for(IRecipe recipe : list)
-		{
-			if(recipe.matches(inv, world))
-			{
-				return recipe.getCraftingResult(inv);
-			}
-		}
+//		List<IRecipe> list = (List<IRecipe>)((ArrayList<IRecipe>)CraftingManager.getInstance().getRecipeList()).clone();
+//
+//		for(IRecipe recipe : list)
+//		{
+//			if(recipe.matches(inv, world))
+//			{
+//				return recipe.getCraftingResult(inv);
+//			}
+//		}
 
 		return ItemStack.EMPTY;
 	}

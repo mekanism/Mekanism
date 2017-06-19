@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 15
+  },
+  "pattern": [
+    "IPI",
+    "ICI",
+    "III"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,9 +1,8 @@
 package mekanism.common.recipe;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.RecipeUtils;
@@ -12,178 +11,112 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IRecipeFactory;
+import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-public class ShapelessMekanismRecipe implements IRecipe
-{
-    private ItemStack output = ItemStack.EMPTY;
-    private ArrayList<Object> input = new ArrayList<Object>();
+import javax.annotation.Nonnull;
 
-    public ShapelessMekanismRecipe(Block result, Object... recipe){ this(new ItemStack(result), recipe); }
-    public ShapelessMekanismRecipe(Item  result, Object... recipe){ this(new ItemStack(result), recipe); }
-
-    public ShapelessMekanismRecipe(ItemStack result, Object... recipe)
+public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
+    public ShapelessMekanismRecipe(ResourceLocation group, Block result, Object... recipe)
     {
-        output = result.copy();
-        
-        for(Object obj : recipe)
-        {
-            if(obj instanceof ItemStack)
-            {
-                input.add(((ItemStack)obj).copy());
-            }
-            else if(obj instanceof Item)
-            {
-                input.add(new ItemStack((Item)obj));
-            }
-            else if(obj instanceof Block)
-            {
-                input.add(new ItemStack((Block)obj));
-            }
-            else if(obj instanceof String)
-            {
-                input.add(OreDictionary.getOres((String)obj));
-            }
-            else {
-                String ret = "Invalid shapeless Mekanism recipe: ";
-                
-                for(Object tmp :  recipe)
-                {
-                    ret += tmp + ", ";
-                }
-                
-                ret += output;
-                throw new RuntimeException(ret);
-            }
-        }
+        this(group, new ItemStack(result), recipe);
     }
 
-    @Override
-    public int getRecipeSize()
-    { 
-    	return input.size();
-    }
-
-    @Override
-    public ItemStack getRecipeOutput()
-    { 
-    	return output;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+    public ShapelessMekanismRecipe(ResourceLocation group, Item result, Object... recipe)
     {
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+        this(group, new ItemStack(result), recipe);
     }
 
-    @Override
-    public ItemStack getCraftingResult(InventoryCrafting inv)
-    { 
-    	return RecipeUtils.getCraftingResult(inv, output.copy());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public boolean matches(InventoryCrafting inv, World world)
+    public ShapelessMekanismRecipe(ResourceLocation group, NonNullList<Ingredient> input, @Nonnull ItemStack result)
     {
-        ArrayList<Object> required = new ArrayList<Object>(input);
-
-        for(int x = 0; x < inv.getSizeInventory(); x++)
-        {
-            ItemStack slot = inv.getStackInSlot(x);
-
-            if(!slot.isEmpty())
-            {
-                boolean inRecipe = false;
-                Iterator<Object> req = required.iterator();
-
-                while(req.hasNext())
-                {
-                    boolean match = false;
-
-                    Object next = req.next();
-
-                    if(next instanceof ItemStack)
-                    {
-                        match = RecipeUtils.areItemsEqualForCrafting((ItemStack)next, slot);
-                    }
-                    else if(next instanceof List)
-                    {
-                        Iterator<ItemStack> itr = ((List<ItemStack>)next).iterator();
-                        
-                        while(itr.hasNext() && !match)
-                        {
-                            match = RecipeUtils.areItemsEqualForCrafting(itr.next(), slot);
-                        }
-                    }
-
-                    if(match)
-                    {
-                        inRecipe = true;
-                        required.remove(next);
-                        
-                        break;
-                    }
-                }
-
-                if(!inRecipe)
-                {
-                    return false;
-                }
-            }
-        }
-
-        return required.isEmpty();
+        super(group, input, result);
     }
 
-    public ArrayList<Object> getInput()
+    public ShapelessMekanismRecipe(ResourceLocation group, @Nonnull ItemStack result, Object... recipe)
     {
-        return input;
+        super(group, result, recipe);
     }
-    
+
+    @Nonnull
+    @Override
+    public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv)
+    {
+        return RecipeUtils.getCraftingResult(inv, output);
+    }
+
     public static ShapelessMekanismRecipe create(NBTTagCompound nbtTags)
     {
-    	if(!nbtTags.hasKey("result") || !nbtTags.hasKey("input"))
-    	{
-    		Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: missing input or result compound tag.");
-    		return null;
-    	}
-    	
-    	ItemStack result = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("result"));
-    	NBTTagList list = nbtTags.getTagList("input", NBT.TAG_COMPOUND);
-    	
-    	if(result.isEmpty() || list.tagCount() == 0)
-    	{
-    		Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid result stack or input data list.");
-    		return null;
-    	}
-    	
-    	Object[] ret = new Object[list.tagCount()];
-    	
-    	for(int i = 0; i < list.tagCount(); i++)
-    	{
-    		NBTTagCompound compound = list.getCompoundTagAt(i);
-    		
-    		if(compound.hasKey("oredict"))
-    		{
-    			ret[i] = compound.getString("oredict");
-    		}
-    		else if(compound.hasKey("itemstack"))
-    		{
-    			ret[i] = InventoryUtils.loadFromNBT(compound.getCompoundTag("itemstack"));
-    		}
-    		else {
-    			Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid input tag data key.");
-    			return null;
-    		}
-    	}
-    	
-    	return new ShapelessMekanismRecipe(result, ret);
+        if(!nbtTags.hasKey("result") || !nbtTags.hasKey("input"))
+        {
+            Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: missing input or result compound tag.");
+            return null;
+        }
+
+        ItemStack result = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("result"));
+        NBTTagList list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
+
+        if(result.isEmpty() || list.tagCount() == 0)
+        {
+            Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid result stack or input data list.");
+            return null;
+        }
+
+        Object[] ret = new Object[list.tagCount()];
+
+        for(int i = 0; i < list.tagCount(); i++)
+        {
+            NBTTagCompound compound = list.getCompoundTagAt(i);
+
+            if(compound.hasKey("oredict"))
+            {
+                ret[i] = compound.getString("oredict");
+            }
+            else if(compound.hasKey("itemstack"))
+            {
+                ret[i] = InventoryUtils.loadFromNBT(compound.getCompoundTag("itemstack"));
+            }
+            else {
+                Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid input tag data key.");
+                return null;
+            }
+        }
+
+        return new ShapelessMekanismRecipe(null, result, ret); //TODO Find out correct value for group
+    }
+
+    // Copy of net.minecraftforge.oredict.ShapelessOreRecipe
+    public static ShapelessMekanismRecipe factory(JsonContext context, JsonObject json)
+    {
+        String group = JsonUtils.getString(json, "group", "");
+
+        NonNullList<Ingredient> ings = NonNullList.create();
+        for (JsonElement ele : JsonUtils.getJsonArray(json, "ingredients"))
+            ings.add(CraftingHelper.getIngredient(ele, context));
+
+        if (ings.isEmpty())
+            throw new JsonParseException("No ingredients for shapeless recipe");
+
+        ItemStack itemstack = ShapedRecipes.deserializeItem(JsonUtils.getJsonObject(json, "result"), true);
+        return new ShapelessMekanismRecipe(group.isEmpty() ? null : new ResourceLocation(group), ings, itemstack);
+    }
+
+    // Used in _factories.json
+    public static class RecipeFactory implements IRecipeFactory
+    {
+        @Override
+        public IRecipe parse(JsonContext context, JsonObject json)
+        {
+            return ShapelessMekanismRecipe.factory(context, json);
+        }
     }
 }

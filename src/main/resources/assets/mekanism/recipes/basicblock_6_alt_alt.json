@@ -1,0 +1,36 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 2
+    },
+    "item": "mekanism:basicblock",
+    "data": 6
+  },
+  "pattern": [
+    "SCS",
+    "ABA",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "B": {
+      "nbt": {
+        "tier": 1
+      },
+      "item": "mekanism:basicblock",
+      "data": 6
+    },
+    "S": {
+      "ore": "cobblestone",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "circuitElite",
+      "type": "forge:ore_dict"
+    }
+  }
+}

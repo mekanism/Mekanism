@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 13
+  },
+  "pattern": [
+    "SGS",
+    "CcC",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "chestWood",
+      "type": "forge:ore_dict"
+    },
+    "c": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

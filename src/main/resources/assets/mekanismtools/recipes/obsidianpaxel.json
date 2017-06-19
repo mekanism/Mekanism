@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:obsidianpaxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "mekanismtools:obsidianaxe"
+    },
+    "Y": {
+      "item": "mekanismtools:obsidianpickaxe"
+    },
+    "Z": {
+      "item": "mekanismtools:obsidianshovel"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "result": {
+    "nbt": {},
+    "item": "mekanism:jetpack"
+  },
+  "pattern": [
+    "SCS",
+    "TGT",
+    " T "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "ore": "ingotTin",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0
+    }
+  }
+}

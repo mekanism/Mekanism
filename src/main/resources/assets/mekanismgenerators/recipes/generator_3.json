@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 3
+  },
+  "pattern": [
+    "PEP",
+    "ICI",
+    "PEP"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "mekanism:electrolyticcore"
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

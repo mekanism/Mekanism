@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:portableteleporter"
+  },
+  "pattern": [
+    " E ",
+    "CTC",
+    " E "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:teleportationcore"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    }
+  }
+}

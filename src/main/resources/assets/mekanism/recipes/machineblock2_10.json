@@ -1,0 +1,40 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 10
+  },
+  "pattern": [
+    "SES",
+    "CIC",
+    "GFG"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "F": {
+      "item": "mekanism:basicblock",
+      "data": 9
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0
+    },
+    "I": {
+      "item": "mekanism:machineblock",
+      "data": 0
+    }
+  }
+}

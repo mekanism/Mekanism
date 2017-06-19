@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanism:machineblock3",
+    "data": 6
+  },
+  "pattern": [
+    "SCS",
+    "FHF",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "H": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

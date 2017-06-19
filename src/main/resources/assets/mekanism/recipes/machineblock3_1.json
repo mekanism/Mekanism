@@ -1,0 +1,34 @@
+{
+  "result": {
+    "item": "mekanism:machineblock3",
+    "data": 1
+  },
+  "pattern": [
+    "APA",
+    "CSC",
+    "BBB"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:polyethene",
+      "data": 2
+    },
+    "A": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "B": {
+      "ore": "ingotBronze",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    },
+    "C": {
+      "ore": "circuitElite",
+      "type": "forge:ore_dict"
+    }
+  }
+}

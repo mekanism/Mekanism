@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 14
+  },
+  "pattern": [
+    "PPP",
+    "SES"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:stone_pressure_plate"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    }
+  }
+}

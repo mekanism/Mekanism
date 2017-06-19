@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 12
+  },
+  "pattern": [
+    " B ",
+    "ECE",
+    "OOO"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "O": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

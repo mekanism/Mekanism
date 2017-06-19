@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismtools:lapislazulishovel"
+  },
+  "pattern": [
+    "X",
+    "T",
+    "T"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "minecraft:dye",
+      "data": 4
+    }
+  }
+}

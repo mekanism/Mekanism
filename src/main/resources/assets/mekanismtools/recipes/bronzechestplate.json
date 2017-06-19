@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanismtools:bronzechestplate"
+  },
+  "pattern": [
+    "* *",
+    "***",
+    "***"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotBronze",
+      "type": "forge:ore_dict"
+    }
+  }
+}

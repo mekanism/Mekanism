@@ -1,0 +1,36 @@
+{
+  "result": {
+    "nbt": {},
+    "item": "mekanism:flamethrower"
+  },
+  "pattern": [
+    "TTT",
+    "TGS",
+    "BCB"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "ore": "ingotBronze",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "item": "minecraft:flint_and_steel"
+    },
+    "C": {
+      "ore": "circuitAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "ore": "ingotTin",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0
+    }
+  }
+}
