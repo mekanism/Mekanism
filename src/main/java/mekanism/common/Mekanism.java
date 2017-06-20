@@ -145,7 +145,7 @@ import com.mojang.authlib.GameProfile;
  * @author AidanBrady
  *
  */
-@Mod(modid = "mekanism", name = "Mekanism", version = "9.3.2", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "mekanism", name = "Mekanism", version = "9.3.3", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = 	"after:mcmultipart;" +
 						"after:jei;" +
 						"after:buildcraft;" +
@@ -178,7 +178,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(9, 3, 2);
+	public static Version versionNumber = new Version(9, 3, 3);
 	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");
@@ -328,6 +328,7 @@ public class Mekanism
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.POISONOUS_POTATO), new ItemStack(MekanismItems.BioFuel, 4));
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.BEETROOT), new ItemStack(MekanismItems.BioFuel, 4));
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.BEETROOT_SEEDS), new ItemStack(MekanismItems.BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.CACTUS), new ItemStack(MekanismItems.BioFuel, 2));
 
 		//Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT));
@@ -668,6 +669,9 @@ public class Mekanism
 		MekanismItems.register();
 		MekanismBlocks.register();
 
+		//Integrate certain OreDictionary recipes
+		registerOreDict();
+
 		if(Loader.isModLoaded("mcmultipart")) 
 		{
 			//Set up multiparts
@@ -743,9 +747,6 @@ public class Mekanism
 				}
 			}
 		}
-		
-		//Integrate certain OreDictionary recipes
-		registerOreDict();
 
 		//Load this module
 		addRecipes();

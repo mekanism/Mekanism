@@ -14,16 +14,14 @@ import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
-import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import mekanism.common.network.PacketFlamethrowerData;
+import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
-import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
-import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -86,7 +84,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				
 				int toSet = configurator.getState(toolStack).ordinal() < ConfiguratorMode.values().length-1 ? configurator.getState(toolStack).ordinal() + 1 : 0;
 				configurator.setState(toolStack, ConfiguratorMode.values()[toSet]);
-				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(EnumHand.MAIN_HAND, configurator.getState(toolStack)));
+				Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(toSet)));
 				player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configureState") + ": " + configurator.getColor(configurator.getState(toolStack)) + configurator.getStateDisplay(configurator.getState(toolStack))));
 			}
 			else if(player.isSneaking() && item instanceof ItemElectricBow)
@@ -94,7 +92,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				ItemElectricBow bow = (ItemElectricBow)item;
 
 				bow.setFireState(toolStack, !bow.getFireState(toolStack));
-				Mekanism.packetHandler.sendToServer(new ElectricBowStateMessage(EnumHand.MAIN_HAND, bow.getFireState(toolStack)));
+				Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(bow.getFireState(toolStack))));
 				player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.fireMode") + ": " + (bow.getFireState(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(bow.getFireState(toolStack))));
 			}
 			else if(player.isSneaking() && item instanceof ItemBlockMachine)
@@ -104,7 +102,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				if(BlockStateMachine.MachineType.get(toolStack) == BlockStateMachine.MachineType.FLUID_TANK)
 				{
 					machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
-					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(EnumHand.MAIN_HAND, machine.getBucketMode(toolStack)));
+					Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(machine.getBucketMode(toolStack))));
 					player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + (machine.getBucketMode(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(machine.getBucketMode(toolStack))));
 				}
 			}
@@ -116,7 +114,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				{
 					int newChan = wt.getChannel(toolStack) < 9 ? wt.getChannel(toolStack) + 1 : 1;
 					wt.setChannel(toolStack, newChan);
-					Mekanism.packetHandler.sendToServer(new WalkieTalkieStateMessage(EnumHand.MAIN_HAND, newChan));
+					Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(newChan)));
 					SoundHandler.playSound(MekanismSounds.DING);
 				}
 			}

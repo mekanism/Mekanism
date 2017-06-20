@@ -25,7 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterStack
 {
-	public ItemStack itemStack;
+	public ItemStack itemStack = ItemStack.EMPTY;
 
 	public int progress;
 

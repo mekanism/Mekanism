@@ -740,7 +740,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
-			if(slot != 0 || tileEntityBin.itemType == null)
+			if(slot != 0 || tileEntityBin.itemType.isEmpty())
 			{
 				return ItemStack.EMPTY;
 			}

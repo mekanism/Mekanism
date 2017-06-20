@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -65,7 +66,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		{
 			if(xAxis >= 24 && xAxis <= 152 && yAxis >= 32+(22*type.ordinal()) && yAxis <= 32+22+(22*type.ordinal()))
 			{
-				displayTooltips(MekanismUtils.splitTooltip(type.getDescription(), null), xAxis, yAxis);
+				displayTooltips(MekanismUtils.splitTooltip(type.getDescription(), ItemStack.EMPTY), xAxis, yAxis);
 			}
 		}
 		

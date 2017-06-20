@@ -218,7 +218,7 @@ public class Coord4D
 		
 		if(state == null || state == Blocks.AIR)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		return new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));

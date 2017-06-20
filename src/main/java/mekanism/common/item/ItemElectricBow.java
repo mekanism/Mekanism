@@ -1,8 +1,12 @@
 package mekanism.common.item;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.base.IItemNetwork;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -23,8 +27,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class ItemElectricBow extends ItemEnergized
+public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 {
 	public ItemElectricBow()
 	{
@@ -193,5 +198,15 @@ public class ItemElectricBow extends ItemEnergized
 	public boolean canSend(ItemStack itemStack)
 	{
 		return false;
+	}
+	
+	@Override
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			boolean state = dataStream.readBoolean();
+			setFireState(stack, state);
+		}
 	}
 }

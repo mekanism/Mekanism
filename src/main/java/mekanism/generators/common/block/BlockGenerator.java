@@ -639,7 +639,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		
 		if(tileEntity == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		if(tileEntity instanceof ISecurityTile)

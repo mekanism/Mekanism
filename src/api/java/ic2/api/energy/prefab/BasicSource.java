@@ -96,7 +96,7 @@ public class BasicSource extends BasicEnergyTile implements IEnergySource {
 		super(parent, capacity);
 
 		this.tier = tier;
-		this.power = EnergyNet.instance.getPowerFromTier(tier);
+		double power = EnergyNet.instance.getPowerFromTier(tier);
 
 		if (getCapacity() < power) setCapacity(power);
 	}
@@ -105,7 +105,7 @@ public class BasicSource extends BasicEnergyTile implements IEnergySource {
 		super(parent, capacity);
 
 		this.tier = tier;
-		this.power = EnergyNet.instance.getPowerFromTier(tier);
+		double power = EnergyNet.instance.getPowerFromTier(tier);
 
 		if (getCapacity() < power) setCapacity(power);
 	}
@@ -114,7 +114,7 @@ public class BasicSource extends BasicEnergyTile implements IEnergySource {
 		super(world, pos, capacity);
 
 		this.tier = tier;
-		this.power = EnergyNet.instance.getPowerFromTier(tier);
+		double power = EnergyNet.instance.getPowerFromTier(tier);
 
 		if (getCapacity() < power) setCapacity(power);
 	}
@@ -130,7 +130,6 @@ public class BasicSource extends BasicEnergyTile implements IEnergySource {
 		if (getCapacity() < power) setCapacity(power);
 
 		this.tier = tier;
-		this.power = power;
 	}
 
 	// energy net interface >>
@@ -142,7 +141,7 @@ public class BasicSource extends BasicEnergyTile implements IEnergySource {
 
 	@Override
 	public double getOfferedEnergy() {
-		return Math.min(energyStored, power);
+		return energyStored;
 	}
 
 	@Override
@@ -163,5 +162,4 @@ public class BasicSource extends BasicEnergyTile implements IEnergySource {
 	}
 
 	protected int tier;
-	protected double power;
 }
