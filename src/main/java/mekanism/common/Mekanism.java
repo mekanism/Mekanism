@@ -97,20 +97,25 @@ import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -155,6 +160,7 @@ import com.mojang.authlib.GameProfile;
 						"after:computercraft;" +
 						"after:galacticraft api;" +
 						"after:metallurgycore")
+@Mod.EventBusSubscriber()
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */
@@ -188,33 +194,33 @@ public class Mekanism
 	/** FrequencyManagers for various networks */
 	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
 	public static Map<UUID, FrequencyManager> privateTeleporters = new HashMap<UUID, FrequencyManager>();
-	
+
 	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
 	public static Map<UUID, FrequencyManager> privateEntangloporters = new HashMap<UUID, FrequencyManager>();
-	
+
 	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
-	
+
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
-	
+
 	/** List of Mekanism modules loaded */
 	public static List<IModule> modulesLoaded = new ArrayList<IModule>();
-	
+
 	/** The latest version number which is received from the Mekanism server */
 	public static String latestVersionNumber;
-	
+
 	/** The recent news which is received from the Mekanism server */
 	public static String recentNews;
-	
+
 	/** The VoiceServer manager for walkie talkies */
 	public static VoiceServerManager voiceManager;
-	
+
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
-	
+
 	/** The server's world tick handler. */
 	public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
-	
+
 	/** The Mekanism world generation handler. */
 	public static GenHandler genHandler = new GenHandler();
 	
@@ -234,6 +240,35 @@ public class Mekanism
 	
 	static {		
 		MekanismFluids.register();
+	}
+
+	@SubscribeEvent
+	public static void registerBlocks(RegistryEvent.Register<Block> event)
+	{
+		// Register blocks and tile entities
+		MekanismBlocks.registerBlocks(event.getRegistry());
+	}
+
+	@SubscribeEvent
+	public static void registerItems(RegistryEvent.Register<Item> event)
+	{
+		// Register items and itemBlocks
+		MekanismItems.registerItems(event.getRegistry());
+		MekanismBlocks.registerItemBlocks(event.getRegistry());
+	}
+
+	@SubscribeEvent
+	public static void registerModels(ModelRegistryEvent event)
+	{
+		// Register models
+		proxy.registerBlockRenders();
+		proxy.registerItemRenders();
+	}
+
+	@SubscribeEvent
+	public static void registerSound(RegistryEvent.Register<SoundEvent> event)
+	{
+		MekanismSounds.register(event.getRegistry());
 	}
 
 	/**
@@ -664,13 +699,9 @@ public class Mekanism
 		{
 			logger.info("Detected Tekkit in root directory - hello, fellow user!");
 		}
-		
-		//Register blocks and items
-		MekanismItems.register();
-		MekanismBlocks.register();
 
-		//Integrate certain OreDictionary recipes
-		registerOreDict();
+		MinecraftForge.EVENT_BUS.register(MekanismItems.GasMask);
+		MinecraftForge.EVENT_BUS.register(MekanismItems.FreeRunners);
 
 		if(Loader.isModLoaded("mcmultipart")) 
 		{
@@ -747,6 +778,9 @@ public class Mekanism
 				}
 			}
 		}
+
+		//Integrate certain OreDictionary recipes
+		registerOreDict();
 
 		//Load this module
 		addRecipes();

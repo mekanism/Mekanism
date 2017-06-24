@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ObjectHolder("mekanismgenerators")
 public class GeneratorsItems
@@ -24,13 +25,11 @@ public class GeneratorsItems
 		}
 	};
 
-	public static void register()
+	public static void registerItems(IForgeRegistry<Item> registry)
 	{
-		GameRegistry.register(init(SolarPanel, "SolarPanel"));
-		GameRegistry.register(init(Hohlraum, "Hohlraum"));
-		GameRegistry.register(init(TurbineBlade, "TurbineBlade"));
-		
-		MekanismGenerators.proxy.registerItemRenders();
+		registry.register(init(SolarPanel, "SolarPanel"));
+		registry.register(init(Hohlraum, "Hohlraum"));
+		registry.register(init(TurbineBlade, "TurbineBlade"));
 	}
 	
 	public static Item init(Item item, String name)

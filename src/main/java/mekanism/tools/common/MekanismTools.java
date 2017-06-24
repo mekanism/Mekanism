@@ -11,16 +11,22 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig.tools;
+import mekanism.generators.common.GeneratorsBlocks;
+import mekanism.generators.common.GeneratorsItems;
+import net.minecraft.block.Block;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,6 +38,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod(modid = "mekanismtools", name = "MekanismTools", version = "9.3.3", dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
+@Mod.EventBusSubscriber()
 public class MekanismTools implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
@@ -67,6 +74,20 @@ public class MekanismTools implements IModule
 	
 	public static Map<ToolMaterial, Float> AXE_DAMAGE = new HashMap<ToolMaterial, Float>();
 	public static Map<ToolMaterial, Float> AXE_SPEED = new HashMap<ToolMaterial, Float>();
+
+	@SubscribeEvent
+	public static void registerItems(RegistryEvent.Register<Item> event)
+	{
+		// Register items and itemBlocks
+		ToolsItems.registerItems(event.getRegistry());
+	}
+
+	@SubscribeEvent
+	public static void registerModels(ModelRegistryEvent event)
+	{
+		// Register models
+		proxy.registerItemRenders();
+	}
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -283,7 +304,6 @@ public class MekanismTools implements IModule
 
 		ToolsItems.initializeItems();
 		ToolsItems.setHarvestLevels();
-		ToolsItems.register();
 	}
 
 	@SubscribeEvent

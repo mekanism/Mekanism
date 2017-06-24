@@ -8,8 +8,10 @@ import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.item.ItemBlockReactor;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ObjectHolder("mekanismgenerators")
 public class GeneratorsBlocks
@@ -18,17 +20,18 @@ public class GeneratorsBlocks
 	public static final Block Reactor = BlockReactor.getReactorBlock(REACTOR_BLOCK);
 	public static final Block ReactorGlass = BlockReactor.getReactorBlock(REACTOR_GLASS);
 	
-	public static void register()
+	public static void registerBlocks(IForgeRegistry<Block> registry)
 	{
-		GameRegistry.register(init(Generator, "Generator"));
-		GameRegistry.register(init(Reactor, "Reactor"));
-		GameRegistry.register(init(ReactorGlass, "ReactorGlass"));
-		
-		GameRegistry.register(GeneratorsItems.init(new ItemBlockGenerator(Generator), "Generator"));
-		GameRegistry.register(GeneratorsItems.init(new ItemBlockReactor(Reactor), "Reactor"));
-		GameRegistry.register(GeneratorsItems.init(new ItemBlockReactor(ReactorGlass), "ReactorGlass"));
-		
-		MekanismGenerators.proxy.registerBlockRenders();
+		registry.register(init(Generator, "Generator"));
+		registry.register(init(Reactor, "Reactor"));
+		registry.register(init(ReactorGlass, "ReactorGlass"));
+	}
+
+	public static void registerItemBlocks(IForgeRegistry<Item> registry)
+	{
+		registry.register(GeneratorsItems.init(new ItemBlockGenerator(Generator), "Generator"));
+		registry.register(GeneratorsItems.init(new ItemBlockReactor(Reactor), "Reactor"));
+		registry.register(GeneratorsItems.init(new ItemBlockReactor(ReactorGlass), "ReactorGlass"));
 	}
 	
 	public static Block init(Block block, String name)

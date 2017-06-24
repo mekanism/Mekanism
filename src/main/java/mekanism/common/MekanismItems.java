@@ -34,9 +34,8 @@ import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ObjectHolder("mekanism")
 public class MekanismItems
@@ -97,65 +96,61 @@ public class MekanismItems
 
 	/**
 	 * Adds and registers all items.
+	 * @param registry
 	 */
-	public static void register()
+	public static void registerItems(IForgeRegistry<Item> registry)
 	{
-		GameRegistry.register(init(ElectricBow, "ElectricBow"));
-		GameRegistry.register(init(Dust, "Dust"));
-		GameRegistry.register(init(Ingot, "Ingot"));
-		GameRegistry.register(init(EnergyTablet, "EnergyTablet"));
-		GameRegistry.register(init(SpeedUpgrade, "SpeedUpgrade"));
-		GameRegistry.register(init(EnergyUpgrade, "EnergyUpgrade"));
-		GameRegistry.register(init(FilterUpgrade, "FilterUpgrade"));
-		GameRegistry.register(init(MufflingUpgrade, "MufflingUpgrade"));
-		GameRegistry.register(init(GasUpgrade, "GasUpgrade"));
-		GameRegistry.register(init(AnchorUpgrade, "AnchorUpgrade"));
-		GameRegistry.register(init(Robit, "Robit"));
-		GameRegistry.register(init(AtomicDisassembler, "AtomicDisassembler"));
-		GameRegistry.register(init(EnrichedAlloy, "EnrichedAlloy"));
-		GameRegistry.register(init(ReinforcedAlloy, "ReinforcedAlloy"));
-		GameRegistry.register(init(AtomicAlloy, "AtomicAlloy"));
-		GameRegistry.register(init(ItemProxy, "ItemProxy"));
-		GameRegistry.register(init(ControlCircuit, "ControlCircuit"));
-		GameRegistry.register(init(EnrichedIron, "EnrichedIron"));
-		GameRegistry.register(init(CompressedCarbon, "CompressedCarbon"));
-		GameRegistry.register(init(CompressedRedstone, "CompressedRedstone"));
-		GameRegistry.register(init(CompressedDiamond, "CompressedDiamond"));
-		GameRegistry.register(init(CompressedObsidian, "CompressedObsidian"));
-		GameRegistry.register(init(PortableTeleporter, "PortableTeleporter"));
-		GameRegistry.register(init(TeleportationCore, "TeleportationCore"));
-		GameRegistry.register(init(Clump, "Clump"));
-		GameRegistry.register(init(DirtyDust, "DirtyDust"));
-		GameRegistry.register(init(Configurator, "Configurator"));
-		GameRegistry.register(init(NetworkReader, "NetworkReader"));
-		GameRegistry.register(init(WalkieTalkie, "WalkieTalkie"));
-		GameRegistry.register(init(Jetpack, "Jetpack"));
-		GameRegistry.register(init(Dictionary, "Dictionary"));
-		GameRegistry.register(init(GasMask, "GasMask"));
-		GameRegistry.register(init(ScubaTank, "ScubaTank"));
-		GameRegistry.register(init(Balloon, "Balloon"));
-		GameRegistry.register(init(Shard, "Shard"));
-		GameRegistry.register(init(ElectrolyticCore, "ElectrolyticCore"));
-		GameRegistry.register(init(Sawdust, "Sawdust"));
-		GameRegistry.register(init(Salt, "Salt"));
-		GameRegistry.register(init(Crystal, "Crystal"));
-		GameRegistry.register(init(FreeRunners, "FreeRunners"));
-		GameRegistry.register(init(ArmoredJetpack, "ArmoredJetpack"));
-		GameRegistry.register(init(ConfigurationCard, "ConfigurationCard"));
-		GameRegistry.register(init(CraftingFormula, "CraftingFormula"));
-		GameRegistry.register(init(SeismicReader, "SeismicReader"));
-		GameRegistry.register(init(Substrate, "Substrate"));
-		GameRegistry.register(init(Polyethene, "Polyethene"));
-		GameRegistry.register(init(BioFuel, "BioFuel"));
-		GameRegistry.register(init(Flamethrower, "Flamethrower"));
-		GameRegistry.register(init(GaugeDropper, "GaugeDropper"));
-		GameRegistry.register(init(TierInstaller, "TierInstaller"));
-		GameRegistry.register(init(OtherDust, "OtherDust"));
-
-		MinecraftForge.EVENT_BUS.register(GasMask);
-		MinecraftForge.EVENT_BUS.register(FreeRunners);
-		
-		Mekanism.proxy.registerItemRenders();
+		registry.register(init(ElectricBow, "ElectricBow"));
+		registry.register(init(Dust, "Dust"));
+		registry.register(init(Ingot, "Ingot"));
+		registry.register(init(EnergyTablet, "EnergyTablet"));
+		registry.register(init(SpeedUpgrade, "SpeedUpgrade"));
+		registry.register(init(EnergyUpgrade, "EnergyUpgrade"));
+		registry.register(init(FilterUpgrade, "FilterUpgrade"));
+		registry.register(init(MufflingUpgrade, "MufflingUpgrade"));
+		registry.register(init(GasUpgrade, "GasUpgrade"));
+		registry.register(init(AnchorUpgrade, "AnchorUpgrade"));
+		registry.register(init(Robit, "Robit"));
+		registry.register(init(AtomicDisassembler, "AtomicDisassembler"));
+		registry.register(init(EnrichedAlloy, "EnrichedAlloy"));
+		registry.register(init(ReinforcedAlloy, "ReinforcedAlloy"));
+		registry.register(init(AtomicAlloy, "AtomicAlloy"));
+		registry.register(init(ItemProxy, "ItemProxy"));
+		registry.register(init(ControlCircuit, "ControlCircuit"));
+		registry.register(init(EnrichedIron, "EnrichedIron"));
+		registry.register(init(CompressedCarbon, "CompressedCarbon"));
+		registry.register(init(CompressedRedstone, "CompressedRedstone"));
+		registry.register(init(CompressedDiamond, "CompressedDiamond"));
+		registry.register(init(CompressedObsidian, "CompressedObsidian"));
+		registry.register(init(PortableTeleporter, "PortableTeleporter"));
+		registry.register(init(TeleportationCore, "TeleportationCore"));
+		registry.register(init(Clump, "Clump"));
+		registry.register(init(DirtyDust, "DirtyDust"));
+		registry.register(init(Configurator, "Configurator"));
+		registry.register(init(NetworkReader, "NetworkReader"));
+		registry.register(init(WalkieTalkie, "WalkieTalkie"));
+		registry.register(init(Jetpack, "Jetpack"));
+		registry.register(init(Dictionary, "Dictionary"));
+		registry.register(init(GasMask, "GasMask"));
+		registry.register(init(ScubaTank, "ScubaTank"));
+		registry.register(init(Balloon, "Balloon"));
+		registry.register(init(Shard, "Shard"));
+		registry.register(init(ElectrolyticCore, "ElectrolyticCore"));
+		registry.register(init(Sawdust, "Sawdust"));
+		registry.register(init(Salt, "Salt"));
+		registry.register(init(Crystal, "Crystal"));
+		registry.register(init(FreeRunners, "FreeRunners"));
+		registry.register(init(ArmoredJetpack, "ArmoredJetpack"));
+		registry.register(init(ConfigurationCard, "ConfigurationCard"));
+		registry.register(init(CraftingFormula, "CraftingFormula"));
+		registry.register(init(SeismicReader, "SeismicReader"));
+		registry.register(init(Substrate, "Substrate"));
+		registry.register(init(Polyethene, "Polyethene"));
+		registry.register(init(BioFuel, "BioFuel"));
+		registry.register(init(Flamethrower, "Flamethrower"));
+		registry.register(init(GaugeDropper, "GaugeDropper"));
+		registry.register(init(TierInstaller, "TierInstaller"));
+		registry.register(init(OtherDust, "OtherDust"));
 	}
 	
 	public static Item init(Item item, String name)

@@ -27,10 +27,14 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -47,6 +51,7 @@ import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 
 @Mod(modid = "mekanismgenerators", name = "MekanismGenerators", version = "9.3.3", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod.EventBusSubscriber()
 public class MekanismGenerators implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
@@ -60,12 +65,32 @@ public class MekanismGenerators implements IModule
 	
 	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
 
+	@SubscribeEvent
+	public static void registerBlocks(RegistryEvent.Register<Block> event)
+	{
+		// Register blocks and tile entities
+		GeneratorsBlocks.registerBlocks(event.getRegistry());
+	}
+
+	@SubscribeEvent
+	public static void registerItems(RegistryEvent.Register<Item> event)
+	{
+		// Register items and itemBlocks
+		GeneratorsItems.registerItems(event.getRegistry());
+		GeneratorsBlocks.registerItemBlocks(event.getRegistry());
+	}
+
+	@SubscribeEvent
+	public static void registerModels(ModelRegistryEvent event)
+	{
+		// Register models
+		proxy.registerBlockRenders();
+		proxy.registerItemRenders();
+	}
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		GeneratorsBlocks.register();
-		GeneratorsItems.register();
-		
 		proxy.preInit();
 	}
 
