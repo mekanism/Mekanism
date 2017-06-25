@@ -55,7 +55,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
     @Override
     public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv)
     {
-        return RecipeUtils.getCraftingResult(inv, output);
+        return RecipeUtils.getCraftingResult(inv, output.copy());
     }
 
     public static ShapedMekanismRecipe create(NBTTagCompound nbtTags)

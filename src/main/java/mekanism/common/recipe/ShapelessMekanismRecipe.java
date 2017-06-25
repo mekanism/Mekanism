@@ -51,7 +51,7 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
     @Override
     public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv)
     {
-        return RecipeUtils.getCraftingResult(inv, output);
+        return RecipeUtils.getCraftingResult(inv, output.copy());
     }
 
     public static ShapelessMekanismRecipe create(NBTTagCompound nbtTags)
