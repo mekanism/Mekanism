@@ -4,7 +4,8 @@
       "tier": 3
     },
     "item": "mekanism:gastank",
-    "data": 0
+    "data": 0,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "APA",
@@ -26,7 +27,8 @@
         "tier": 2
       },
       "item": "mekanism:gastank",
-      "data": 0
+      "data": 0,
+      "type": "minecraft:item_nbt"
     }
   }
 }

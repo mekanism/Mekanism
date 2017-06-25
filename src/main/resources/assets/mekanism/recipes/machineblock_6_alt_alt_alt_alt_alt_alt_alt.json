@@ -4,7 +4,8 @@
       "recipeType": 7
     },
     "item": "mekanism:machineblock",
-    "data": 6
+    "data": 6,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "ECE",
@@ -30,7 +31,8 @@
         "recipeType": 7
       },
       "item": "mekanism:machineblock",
-      "data": 5
+      "data": 5,
+      "type": "minecraft:item_nbt"
     }
   }
 }

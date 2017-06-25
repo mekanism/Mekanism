@@ -5,7 +5,8 @@
     },
     "item": "mekanism:transmitter",
     "data": 5,
-    "count": 2
+    "count": 2,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "RRR",

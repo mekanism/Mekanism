@@ -18,7 +18,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
 	}
 	
 	@Override
-	public void renderTileEntityAt(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(client.opaqueTransmitters)
 		{

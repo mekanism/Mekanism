@@ -9,7 +9,7 @@
     "ILI",
     " I "
   ],
-  "type": "forge:ore_shaped",
+  "type": "mekanism:ore_shaped",
   "key": {
     "I": {
       "item": "mekanismgenerators:reactorglass",

@@ -26,7 +26,8 @@
         "tier": 0
       },
       "item": "mekanism:gastank",
-      "data": 0
+      "data": 0,
+      "type": "minecraft:item_nbt"
     }
   }
 }

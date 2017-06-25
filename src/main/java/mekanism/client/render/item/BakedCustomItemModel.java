@@ -82,8 +82,8 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 	
 	private Minecraft mc = Minecraft.getMinecraft();
 	
-	private static final RenderFluidTank fluidTankRenderer = (RenderFluidTank)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityFluidTank.class);
-	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityBin.class);
+	private static final RenderFluidTank fluidTankRenderer = (RenderFluidTank)TileEntityRendererDispatcher.instance.renderers.get(TileEntityFluidTank.class);
+	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.renderers.get(TileEntityBin.class);
 	
 	public static ModelJetpack jetpack = new ModelJetpack();
 	public static ModelArmoredJetpack armoredJetpack = new ModelArmoredJetpack();

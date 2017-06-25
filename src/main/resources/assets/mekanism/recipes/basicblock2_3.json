@@ -4,7 +4,8 @@
       "tier": 0
     },
     "item": "mekanism:basicblock2",
-    "data": 3
+    "data": 3,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "LTL",
@@ -21,7 +22,8 @@
         "tier": 0
       },
       "item": "mekanism:energycube",
-      "data": 0
+      "data": 0,
+      "type": "minecraft:item_nbt"
     },
     "L": {
       "ore": "dustLithium",

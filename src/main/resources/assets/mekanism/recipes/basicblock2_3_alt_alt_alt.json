@@ -4,7 +4,8 @@
       "tier": 3
     },
     "item": "mekanism:basicblock2",
-    "data": 3
+    "data": 3,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "TCT",
@@ -18,7 +19,8 @@
         "tier": 2
       },
       "item": "mekanism:basicblock2",
-      "data": 3
+      "data": 3,
+      "type": "minecraft:item_nbt"
     },
     "T": {
       "item": "mekanism:energytablet"
@@ -28,7 +30,8 @@
         "tier": 3
       },
       "item": "mekanism:energycube",
-      "data": 0
+      "data": 0,
+      "type": "minecraft:item_nbt"
     }
   }
 }

@@ -4,7 +4,8 @@
       "tier": 2
     },
     "item": "mekanism:machineblock2",
-    "data": 11
+    "data": 11,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "AIA",
@@ -22,7 +23,8 @@
         "tier": 1
       },
       "item": "mekanism:machineblock2",
-      "data": 11
+      "data": 11,
+      "type": "minecraft:item_nbt"
     },
     "I": {
       "ore": "ingotIron",

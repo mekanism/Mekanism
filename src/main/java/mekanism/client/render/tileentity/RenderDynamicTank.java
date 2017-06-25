@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank>
 {
 	@Override
-	public void renderTileEntityAt(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
 		{

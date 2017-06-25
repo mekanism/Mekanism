@@ -5,7 +5,8 @@
     },
     "item": "mekanism:transmitter",
     "data": 0,
-    "count": 8
+    "count": 8,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "TTT",
@@ -23,7 +24,8 @@
         "tier": 2
       },
       "item": "mekanism:transmitter",
-      "data": 0
+      "data": 0,
+      "type": "minecraft:item_nbt"
     }
   }
 }

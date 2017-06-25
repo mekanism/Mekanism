@@ -8,7 +8,7 @@
     "WOW",
     "CFC"
   ],
-  "type": "forge:ore_shaped",
+  "type": "mekanism:ore_shaped",
   "key": {
     "C": {
       "ore": "ingotCopper",

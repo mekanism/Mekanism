@@ -20,7 +20,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
 	private ModelEnergyCore core = new ModelEnergyCore();
 
 	@Override
-	public void renderTileEntityAt(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(tileEntity.isBurning())
 		{

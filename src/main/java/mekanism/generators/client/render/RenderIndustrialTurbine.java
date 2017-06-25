@@ -24,7 +24,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 	private Fluid STEAM = FluidRegistry.getFluid("steam");
 	
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntity tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		renderAModelAt((TileEntityTurbineCasing)tileEntity, x, y, z, partialTick, destroyStage);
 	}
@@ -46,7 +46,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 					break;
 				}
 				
-				TileEntityRendererDispatcher.instance.renderTileEntity(tile, partialTick, destroyStage);
+				TileEntityRendererDispatcher.instance.render(tile, partialTick, destroyStage);
 			}
 			
 			RenderTurbineRotor.internalRender = false;

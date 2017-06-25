@@ -1,7 +1,8 @@
 {
   "result": {
     "nbt": {},
-    "item": "mekanism:armoredjetpack"
+    "item": "mekanism:armoredjetpack",
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "D D",
@@ -24,7 +25,8 @@
     },
     "J": {
       "nbt": {},
-      "item": "mekanism:jetpack"
+      "item": "mekanism:jetpack",
+      "type": "minecraft:item_nbt"
     }
   }
 }

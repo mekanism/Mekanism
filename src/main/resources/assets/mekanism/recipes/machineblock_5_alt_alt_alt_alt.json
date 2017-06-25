@@ -4,7 +4,8 @@
       "recipeType": 4
     },
     "item": "mekanism:machineblock",
-    "data": 5
+    "data": 5,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "RCR",

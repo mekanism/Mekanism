@@ -4,7 +4,8 @@
       "tier": 1
     },
     "item": "mekanism:energycube",
-    "data": 0
+    "data": 0,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "ETE",
@@ -18,7 +19,8 @@
         "tier": 0
       },
       "item": "mekanism:energycube",
-      "data": 0
+      "data": 0,
+      "type": "minecraft:item_nbt"
     },
     "T": {
       "item": "mekanism:energytablet"

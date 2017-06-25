@@ -60,6 +60,9 @@ import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.generation.MekanismGeneratorRecipes;
+import mekanism.common.recipe.generation.MekanismRecipes;
+import mekanism.common.recipe.generation.MekanismToolsRecipes;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -276,6 +279,13 @@ public class Mekanism
 	 */
 	public void addRecipes()
 	{
+		if(true)
+		{
+			MekanismRecipes.generate();
+			MekanismToolsRecipes.generate();
+			MekanismGeneratorRecipes.generate();
+		}
+
 		//Add the bin recipe system to the CraftingManager
 //		CraftingManager.getInstance().getRecipeList().add(new BinRecipe());
 	

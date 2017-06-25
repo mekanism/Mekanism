@@ -6,17 +6,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.common.Foo;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig.tools;
-import mekanism.generators.common.GeneratorsBlocks;
-import mekanism.generators.common.GeneratorsItems;
-import net.minecraft.block.Block;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;

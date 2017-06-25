@@ -8,7 +8,7 @@
     "ITI",
     "III"
   ],
-  "type": "forge:ore_shaped",
+  "type": "mekanism:ore_shaped",
   "key": {
     "C": {
       "ore": "circuitUltimate",
@@ -19,7 +19,8 @@
         "tier": 0
       },
       "item": "mekanism:gastank",
-      "data": 0
+      "data": 0,
+      "type": "minecraft:item_nbt"
     },
     "G": {
       "ore": "paneGlass",

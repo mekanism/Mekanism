@@ -4,7 +4,8 @@
       "recipeType": 7
     },
     "item": "mekanism:machineblock",
-    "data": 7
+    "data": 7,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "RCR",
@@ -30,7 +31,8 @@
         "recipeType": 7
       },
       "item": "mekanism:machineblock",
-      "data": 6
+      "data": 6,
+      "type": "minecraft:item_nbt"
     }
   }
 }

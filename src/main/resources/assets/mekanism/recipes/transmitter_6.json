@@ -5,7 +5,8 @@
     },
     "item": "mekanism:transmitter",
     "data": 6,
-    "count": 8
+    "count": 8,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "SCS"

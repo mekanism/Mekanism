@@ -19,7 +19,8 @@
         "tier": 0
       },
       "item": "mekanism:gastank",
-      "data": 0
+      "data": 0,
+      "type": "minecraft:item_nbt"
     },
     "E": {
       "item": "mekanism:energytablet"
@@ -33,7 +34,8 @@
         "tier": 0
       },
       "item": "mekanism:machineblock2",
-      "data": 11
+      "data": 11,
+      "type": "minecraft:item_nbt"
     }
   }
 }

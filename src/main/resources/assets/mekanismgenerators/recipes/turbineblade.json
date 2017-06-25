@@ -7,7 +7,7 @@
     "SAS",
     " S "
   ],
-  "type": "forge:ore_shaped",
+  "type": "mekanism:ore_shaped",
   "key": {
     "A": {
       "item": "mekanism:enrichedalloy"

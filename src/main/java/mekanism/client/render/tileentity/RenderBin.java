@@ -21,7 +21,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 	private final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 
 	@Override
-	public void renderTileEntityAt(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.facing);
 

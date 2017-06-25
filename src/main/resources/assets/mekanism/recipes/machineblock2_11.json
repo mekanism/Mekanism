@@ -4,7 +4,8 @@
       "tier": 0
     },
     "item": "mekanism:machineblock2",
-    "data": 11
+    "data": 11,
+    "type": "minecraft:item_nbt"
   },
   "pattern": [
     "AIA",

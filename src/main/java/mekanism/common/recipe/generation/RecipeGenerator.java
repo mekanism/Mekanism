@@ -1,7 +1,8 @@
-package mekanism.common;
+package mekanism.common.recipe.generation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,23 +17,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Foo {
+public class RecipeGenerator {
 
-// Replace calls to GameRegistry.addShapeless/ShapedRecipe with these methods, which will dump it to a json in your dir of choice
-// Also works with OD, replace GameRegistry.addRecipe(new ShapedOreRecipe/ShapelessOreRecipe with the same calls
+    // Replace calls to GameRegistry.addShapeless/ShapedRecipe with these methods, which will dump it to a json in your dir of choice
+    // Also works with OD, replace GameRegistry.addRecipe(new ShapedOreRecipe/ShapelessOreRecipe with the same calls
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final File RECIPE_DIR = new File("recipeoutput");
+    private final File RECIPE_DIR;
 
-    private static HashMap<String, String> constants = new HashMap<>();
-
-    public static void addShapedRecipe(ItemStack result, Object... components) {
+    public RecipeGenerator(String modid)
+    {
+        RECIPE_DIR = new File("recipeoutput" + File.separator + modid);
         if (!RECIPE_DIR.exists()) {
-            RECIPE_DIR.mkdir();
+            boolean success = RECIPE_DIR.mkdirs();
+            if(!success)
+                throw new IllegalStateException("Cannot create recipe output dir!");
         }
+    }
 
-        // GameRegistry.addShapedRecipe(result, components);
-
+    public void addShapedRecipe(ItemStack result, Object... components) {
         Map<String, Object> json = new HashMap<>();
 
         List<String> pattern = new ArrayList<>();
@@ -49,31 +52,33 @@ public class Foo {
         for (; i < components.length; i++) {
             Object o = components[i];
             if (o instanceof Character) {
-                if (curKey != null)
-                    throw new IllegalArgumentException("Provided two char keys in a row");
+                if (curKey != null) {
+                    Mekanism.logger.fatal("Failed to convert recipe. Provided two chars keys in a row", new IllegalArgumentException());
+                    return;
+                }
                 curKey = (Character) o;
             } else {
-                if (curKey == null)
-                    throw new IllegalArgumentException("Providing object without a char key");
+                if (curKey == null) {
+                    Mekanism.logger.fatal("Failed to convert recipe. Providing object without a char key", new IllegalArgumentException());
+                    return;
+                }
                 if (o instanceof String)
                     isOreDict = true;
                 try {
                     key.put(Character.toString(curKey), serializeItem(o));
                 } catch (IllegalArgumentException e) {
-                    System.out.println("1 Failed to convert recipe" + e.getMessage());
-//                    e.printStackTrace();
+                    Mekanism.logger.fatal("Failed to convert recipe", e);
                     return;
                 }
                 curKey = null;
             }
         }
         json.put("key", key);
-        json.put("type", isOreDict ? "forge:ore_shaped" : "minecraft:crafting_shaped");
+        json.put("type", isOreDict ? "mekanism:ore_shaped" : "minecraft:crafting_shaped");
         try {
             json.put("result", serializeItem(result));
         } catch (IllegalArgumentException e) {
-            System.out.println("2 Failed to convert recipe" + e.getMessage());
-//            e.printStackTrace();
+            Mekanism.logger.fatal("Failed to convert recipe", e);
             return;
         }
 
@@ -91,18 +96,12 @@ public class Foo {
         try (FileWriter w = new FileWriter(f)) {
             GSON.toJson(json, w);
         } catch (IOException e) {
-            e.printStackTrace();
+            Mekanism.logger.fatal("Failed to write JSON", e);
         }
     }
 
-    public static void addShapelessRecipe(ItemStack result, Object... components)
+    public void addShapelessRecipe(ItemStack result, Object... components)
     {
-        if (!RECIPE_DIR.exists()) {
-            RECIPE_DIR.mkdir();
-        }
-
-        // GameRegistry.addShapelessRecipe(result, components);
-
         Map<String, Object> json = new HashMap<>();
 
         boolean isOreDict = false;
@@ -113,18 +112,16 @@ public class Foo {
             try {
                 ingredients.add(serializeItem(o));
             } catch (IllegalArgumentException e) {
-                System.out.println("3 Failed to convert recipe" + e.getMessage());
-//                e.printStackTrace();
+                Mekanism.logger.fatal("Failed to convert recipe", e);
                 return;
             }
         }
         json.put("ingredients", ingredients);
-        json.put("type", isOreDict ? "forge:ore_shapeless" : "minecraft:crafting_shapeless");
+        json.put("type", isOreDict ? "mekanism:ore_shapeless" : "minecraft:crafting_shapeless");
         try {
             json.put("result", serializeItem(result));
         } catch (IllegalArgumentException e) {
-            System.out.println("4 Failed to convert recipe" + e.getMessage());
-//            e.printStackTrace();
+            Mekanism.logger.fatal("Failed to convert recipe", e);
             return;
         }
 
@@ -143,7 +140,7 @@ public class Foo {
         try (FileWriter w = new FileWriter(f)) {
             GSON.toJson(json, w);
         } catch (IOException e) {
-            e.printStackTrace();
+            Mekanism.logger.fatal("Failed to write JSON", e);
         }
     }
 
@@ -178,10 +175,10 @@ public class Foo {
                     } else if (key.equals("mekData")) {
                         //TODO
                     } else {
-                        System.out.println("Key: " + key);
+                        throw new IllegalArgumentException("Missing NBT mapping for Key: " + key);
                     }
                 }
-
+                ret.put("type", "minecraft:item_nbt");
                 ret.put("nbt", tag);
             }
 
@@ -189,9 +186,6 @@ public class Foo {
         }
         if (thing instanceof String) {
             Map<String, Object> ret = new HashMap<>();
-
-//            ret.put("item", "#" + ((String) thing)); // NOTE you need to add this to your _constants.json!
-//            // todo autogenerate constants.json as well
 
             ret.put("type", "forge:ore_dict");
             ret.put("ore", thing);

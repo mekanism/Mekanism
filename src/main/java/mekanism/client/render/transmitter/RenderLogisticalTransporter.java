@@ -50,7 +50,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 	}
 	
 	@Override
-	public void renderTileEntityAt(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(client.opaqueTransmitters)
 		{

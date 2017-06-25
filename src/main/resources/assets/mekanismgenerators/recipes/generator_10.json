@@ -9,7 +9,7 @@
     "SOS",
     " S "
   ],
-  "type": "forge:ore_shaped",
+  "type": "mekanism:ore_shaped",
   "key": {
     "S": {
       "ore": "ingotSteel",

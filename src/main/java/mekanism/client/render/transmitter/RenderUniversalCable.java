@@ -18,7 +18,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
 	}
 	
 	@Override
-	public void renderTileEntityAt(TileEntityUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntityUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(client.opaqueTransmitters || cable.currentPower == 0)
 		{
