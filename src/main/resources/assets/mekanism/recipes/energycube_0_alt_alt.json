@@ -5,7 +5,7 @@
     },
     "item": "mekanism:energycube",
     "data": 0,
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     "RTR",
@@ -20,7 +20,7 @@
       },
       "item": "mekanism:energycube",
       "data": 0,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     },
     "R": {
       "ore": "alloyElite",

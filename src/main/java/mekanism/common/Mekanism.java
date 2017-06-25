@@ -279,7 +279,7 @@ public class Mekanism
 	 */
 	public void addRecipes()
 	{
-		if(true)
+		if(false) // Generate JSON files from code, disabled.
 		{
 			MekanismRecipes.generate();
 			MekanismToolsRecipes.generate();

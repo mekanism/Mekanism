@@ -5,7 +5,7 @@
     },
     "item": "mekanism:machineblock",
     "data": 6,
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     "ECE",
@@ -32,7 +32,7 @@
       },
       "item": "mekanism:machineblock",
       "data": 5,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     }
   }
 }

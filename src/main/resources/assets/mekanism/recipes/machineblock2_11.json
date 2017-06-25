@@ -5,7 +5,7 @@
     },
     "item": "mekanism:machineblock2",
     "data": 11,
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     "AIA",

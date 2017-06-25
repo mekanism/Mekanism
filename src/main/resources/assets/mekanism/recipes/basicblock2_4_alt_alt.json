@@ -5,7 +5,7 @@
     },
     "item": "mekanism:basicblock2",
     "data": 4,
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     "CPC",
@@ -20,7 +20,7 @@
       },
       "item": "mekanism:basicblock2",
       "data": 4,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     },
     "C": {
       "ore": "circuitElite",
@@ -32,7 +32,7 @@
       },
       "item": "mekanism:energycube",
       "data": 0,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     }
   }
 }

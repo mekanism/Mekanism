@@ -178,7 +178,7 @@ public class RecipeGenerator {
                         throw new IllegalArgumentException("Missing NBT mapping for Key: " + key);
                     }
                 }
-                ret.put("type", "minecraft:item_nbt");
+                ret.put("type", "mekanism:item_nbt");
                 ret.put("nbt", tag);
             }
 

@@ -2,5 +2,8 @@
   "recipes": {
     "ore_shaped": "mekanism.common.recipe.ShapedMekanismRecipe$RecipeFactory",
     "ore_shapeless": "mekanism.common.recipe.ShapelessMekanismRecipe$RecipeFactory"
+  },
+  "ingredients": {
+    "item_nbt": "mekanism.common.recipe.MekanismIngredient$IngredientFactory"
   }
 }

@@ -26,7 +26,7 @@
       },
       "item": "mekanism:gastank",
       "data": 0,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     },
     "I": {
       "item": "mekanism:basicblock",

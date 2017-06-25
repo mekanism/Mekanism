@@ -5,7 +5,7 @@
     },
     "item": "mekanism:basicblock2",
     "data": 3,
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     "TCT",
@@ -20,7 +20,7 @@
       },
       "item": "mekanism:basicblock2",
       "data": 3,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     },
     "T": {
       "item": "mekanism:energytablet"
@@ -31,7 +31,7 @@
       },
       "item": "mekanism:energycube",
       "data": 0,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     }
   }
 }

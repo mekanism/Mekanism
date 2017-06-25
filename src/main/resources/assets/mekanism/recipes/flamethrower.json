@@ -2,7 +2,7 @@
   "result": {
     "nbt": {},
     "item": "mekanism:flamethrower",
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     "TTT",
@@ -32,7 +32,7 @@
       },
       "item": "mekanism:gastank",
       "data": 0,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     }
   }
 }

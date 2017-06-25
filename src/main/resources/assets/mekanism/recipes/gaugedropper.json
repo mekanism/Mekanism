@@ -2,7 +2,7 @@
   "result": {
     "nbt": {},
     "item": "mekanism:gaugedropper",
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     " O ",

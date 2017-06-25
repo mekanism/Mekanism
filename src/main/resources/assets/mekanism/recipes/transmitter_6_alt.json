@@ -6,7 +6,7 @@
     "item": "mekanism:transmitter",
     "data": 6,
     "count": 8,
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     "TTT",
@@ -21,7 +21,7 @@
       },
       "item": "mekanism:transmitter",
       "data": 6,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     },
     "E": {
       "ore": "alloyAdvanced",

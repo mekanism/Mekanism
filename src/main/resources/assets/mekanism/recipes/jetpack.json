@@ -2,7 +2,7 @@
   "result": {
     "nbt": {},
     "item": "mekanism:jetpack",
-    "type": "minecraft:item_nbt"
+    "type": "mekanism:item_nbt"
   },
   "pattern": [
     "SCS",
@@ -29,7 +29,7 @@
       },
       "item": "mekanism:gastank",
       "data": 0,
-      "type": "minecraft:item_nbt"
+      "type": "mekanism:item_nbt"
     }
   }
 }
