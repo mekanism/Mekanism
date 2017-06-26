@@ -26,7 +26,6 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -48,7 +47,7 @@ import com.google.common.collect.Tables;
  * Model for all CTM blocks, credit to Chisel
  */
 @SuppressWarnings("deprecation")
-public class CTMModelFactory implements IPerspectiveAwareModel 
+public class CTMModelFactory implements IBakedModel
 {
 	private ListMultimap<BlockRenderLayer, BakedQuad> genQuads = MultimapBuilder.enumKeys(BlockRenderLayer.class).arrayListValues().build();
     private Table<BlockRenderLayer, EnumFacing, List<BakedQuad>> faceQuads = Tables.newCustomTable(Maps.newEnumMap(BlockRenderLayer.class), () -> Maps.newEnumMap(EnumFacing.class));
@@ -199,7 +198,7 @@ public class CTMModelFactory implements IPerspectiveAwareModel
             .build();
     
     @Override
-    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {
     	return Pair.of(this, transforms.get(cameraTransformType).getMatrix());
     }

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.vecmath.Matrix4f;
@@ -34,7 +35,6 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -76,7 +76,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
     	List<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
     	
         Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
-        Optional<TRSRTransformation> transform = Optional.absent();
+        Optional<TRSRTransformation> transform = Optional.empty();
         Map<Face, String> groupNameMap = new HashMap<Face, String>();
         
         for(Group g : getModel().getMatLib().getGroups().values())
@@ -87,7 +87,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
                 
                 if(state.parent != null)
                 {
-                    transform = state.parent.apply(Optional.absent());
+                    transform = state.parent.apply(Optional.empty());
                 }
                 
                 updateStateVisibilityMap(state);
@@ -104,7 +104,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
                 }
             }
             else {
-                transform = getState().apply(Optional.absent());
+                transform = getState().apply(Optional.empty());
                 Set<Face> groupFaces = g.applyTransform(transform);
                 
                 for(Face f : groupFaces)

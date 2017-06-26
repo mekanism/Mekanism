@@ -26,7 +26,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.Face;
@@ -165,10 +164,10 @@ public class GlowPanelModel extends OBJBakedModelBase
 		return null;
 	}
 
-	private Pair<IPerspectiveAwareModel, Matrix4f> thirdPersonTransform;
+	private Pair<IBakedModel, Matrix4f> thirdPersonTransform;
     
     @Override
-    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType) 
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType)
     {
     	if(transformType == TransformType.GUI)
     	{
