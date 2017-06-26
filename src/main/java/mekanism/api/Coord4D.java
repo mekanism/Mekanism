@@ -41,11 +41,11 @@ public class Coord4D
 	 */
 	public Coord4D(Entity entity)
 	{
-		x = (int)entity.posX;
-		y = (int)entity.posY;
-		z = (int)entity.posZ;
-		
-		dimensionId = entity.world.provider.getDimension();
+		this.x = (int)entity.posX;
+		this.y = (int)entity.posY;
+		this.z = (int)entity.posZ;
+
+		this.dimensionId = entity.world.provider.getDimension();
 	}
 
 	/**
@@ -57,11 +57,11 @@ public class Coord4D
 	 */
 	public Coord4D(double x, double y, double z, int dimension)
 	{
-		x = MathHelper.floor(x);
-		y = MathHelper.floor(y);
-		z = MathHelper.floor(z);
+		this.x = MathHelper.floor(x);
+		this.y = MathHelper.floor(y);
+		this.z = MathHelper.floor(z);
 
-		dimensionId = dimension;
+		this.dimensionId = dimension;
 	}
 	
 	public Coord4D(BlockPos pos, World world)
