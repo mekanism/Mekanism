@@ -1,0 +1,25 @@
+package mekanism.client.jei.machine.advanced;
+
+import mekanism.api.gas.Gas;
+import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
+import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
+import mekanism.common.MekanismItems;
+import mekanism.common.recipe.machines.AdvancedMachineRecipe;
+import mekanism.common.util.ListUtils;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
+
+public class OsmiumCompressorRecipeWrapper extends AdvancedMachineRecipeWrapper
+{
+	public OsmiumCompressorRecipeWrapper(AdvancedMachineRecipe r, AdvancedMachineRecipeCategory c)
+	{
+		super(r, c);
+	}
+	
+	@Override
+	public List<ItemStack> getFuelStacks(Gas gasType)
+	{
+		return ListUtils.asList(new ItemStack(MekanismItems.Ingot, 1, 1));
+	}
+}
