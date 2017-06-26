@@ -1,6 +1,9 @@
 package mekanism.common.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.energy.IEnergizedItem;
@@ -17,13 +20,17 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.GameData;
 
 public class RecipeUtils 
 {
@@ -289,41 +296,9 @@ public class RecipeUtils
 		
 		return ItemStack.EMPTY;
 	}
-	
-	public static boolean removeRecipes(ItemStack stack)
-	{
-//		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-//
-//		for(Iterator<IRecipe> iter = recipes.iterator(); iter.hasNext();)
-//		{
-//			IRecipe iterRecipe = iter.next();
-//
-//			if(iterRecipe instanceof ShapedMekanismRecipe || iterRecipe instanceof ShapelessMekanismRecipe)
-//			{
-//				if(StackUtils.equalsWildcard(stack, iterRecipe.getRecipeOutput()))
-//				{
-//					iter.remove();
-//				}
-//			}
-//		}
-		
-		return false;
-	}
-	
+
 	public static IRecipe getRecipeFromGrid(InventoryCrafting inv, World world)
 	{
-//		List<IRecipe> list = new ArrayList<IRecipe>(CraftingManager.getInstance().getRecipeList());
-//
-//		for(Iterator<IRecipe> iter = list.iterator(); iter.hasNext();)
-//		{
-//			IRecipe recipe = iter.next();
-//
-//			if(recipe.matches(inv, world))
-//			{
-//				return recipe;
-//			}
-//		}
-		
-		return null;
+		return CraftingManager.findMatchingRecipe(inv, world);
 	}
 }
