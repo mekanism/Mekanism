@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -52,8 +53,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IUpgradeTile, IRedstoneControl, ISecurityTile
 {
-	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
-	public Set<Coord4D> usedNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> activeNodes = new LinkedHashSet<>();
+	public Set<Coord4D> usedNodes = new HashSet<>();
 	
 	public boolean finishedCalc = false;
 	
