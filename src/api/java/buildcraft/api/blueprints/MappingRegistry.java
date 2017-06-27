@@ -28,7 +28,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLModContainer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
+//import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import buildcraft.api.core.BCLog;
@@ -281,23 +281,23 @@ public class MappingRegistry {
         String modName = name.split(":")[0];
         if (Loader.isModLoaded(modName)) {
             try {
-                FMLMissingMappingsEvent.MissingMapping mapping = new FMLMissingMappingsEvent.MissingMapping(isBlock ? GameRegistry.Type.BLOCK
-                    : GameRegistry.Type.ITEM, location, i);
-                ListMultimap<String, FMLMissingMappingsEvent.MissingMapping> missingMapping = ArrayListMultimap.create();
-                missingMapping.put(modName, mapping);
-                FMLMissingMappingsEvent event = new FMLMissingMappingsEvent(missingMapping);
-                for (ModContainer container : Loader.instance().getModList()) {
-                    if (container instanceof FMLModContainer) {
-                        event.applyModContainer(container);
-                        ((FMLModContainer) container).handleModStateEvent(event);
-                        if (mapping.getAction() != FMLMissingMappingsEvent.Action.DEFAULT) {
-                            break;
-                        }
-                    }
-                }
-                if (mapping.getAction() == FMLMissingMappingsEvent.Action.REMAP) {
-                    return mapping.getTarget();
-                }
+//                FMLMissingMappingsEvent.MissingMapping mapping = new FMLMissingMappingsEvent.MissingMapping(isBlock ? GameRegistry.Type.BLOCK
+//                    : GameRegistry.Type.ITEM, location, i);
+//                ListMultimap<String, FMLMissingMappingsEvent.MissingMapping> missingMapping = ArrayListMultimap.create();
+//                missingMapping.put(modName, mapping);
+//                FMLMissingMappingsEvent event = new FMLMissingMappingsEvent(missingMapping);
+//                for (ModContainer container : Loader.instance().getModList()) {
+//                    if (container instanceof FMLModContainer) {
+//                        event.applyModContainer(container);
+//                        ((FMLModContainer) container).handleModStateEvent(event);
+//                        if (mapping.getAction() != FMLMissingMappingsEvent.Action.DEFAULT) {
+//                            break;
+//                        }
+//                    }
+//                }
+//                if (mapping.getAction() == FMLMissingMappingsEvent.Action.REMAP) {
+//                    return mapping.getTarget();
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

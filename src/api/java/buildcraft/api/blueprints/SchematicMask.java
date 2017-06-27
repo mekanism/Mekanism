@@ -54,7 +54,7 @@ public class SchematicMask extends SchematicBlockBase {
                 }
                 ItemBlock itemBlock = (ItemBlock) stack.getItem();
 
-                IBlockState state = itemBlock.block.getStateForPlacement(context.world(), pos, solidFace, 0, 0, 0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
+                IBlockState state = itemBlock.getBlock().getStateForPlacement(context.world(), pos, solidFace, 0, 0, 0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
                 itemBlock.placeBlockAt(stack, player, context.world(), pos, solidFace, 0, 0, 0, state);
             }
         } else {
