@@ -1,5 +1,6 @@
 package mekanism.common.entity;
 
+import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 
@@ -59,7 +60,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
-import cofh.api.energy.IEnergyContainerItem;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = "Galacticraft API")
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable

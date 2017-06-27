@@ -57,6 +57,10 @@ repositories {
         name 'hwyla'
         url 'http://tehnut.info/maven'
     }
+    maven {
+        name 'CoFH Maven'
+        url = 'http://maven.covers1624.net'
+    }
 }
 
 // Define properties file
@@ -91,6 +95,7 @@ dependencies {
     compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api" // Not updated yet
     compile "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
+    deobfCompile "cofh:RedstoneFlux:${config.minecraft_version}-${config.redstoneflux_version}:universal"
 }
 
 processResources

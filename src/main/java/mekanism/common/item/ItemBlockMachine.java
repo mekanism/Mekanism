@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import io.netty.buffer.ByteBuf;
@@ -39,7 +40,6 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -88,7 +88,6 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import cofh.api.energy.IEnergyContainerItem;
 
 /**
  * Item class for handling multiple machine block IDs.

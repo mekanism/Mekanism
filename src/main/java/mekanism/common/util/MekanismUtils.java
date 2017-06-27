@@ -9,7 +9,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -71,8 +70,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -93,7 +90,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import cofh.api.item.IToolHammer;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -1493,7 +1489,7 @@ public final class MekanismUtils
 				return true;
 			}
 			
-			if(isCoFHHammer(tool.getItem()) && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
+			if(isCoFHHammer(tool.getItem())) // TODO Implement CoFH Hammer && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
 			{
 				return true;
 			}

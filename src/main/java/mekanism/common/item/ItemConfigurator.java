@@ -50,12 +50,11 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
 
 @InterfaceList({
 	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
 })
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer, IItemNetwork
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IItemNetwork
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -281,24 +280,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	{
 		return getState(stack) == ConfiguratorMode.WRENCH;
 	}
-
-	@Override
-	public boolean isUsable(ItemStack item, EntityLivingBase user, BlockPos pos)
-	{
-		return user instanceof EntityPlayer && canUseWrench(item, (EntityPlayer)user, pos);
-	}
-	
-	@Override
-	public boolean isUsable(ItemStack item, EntityLivingBase user, Entity entity)
-	{
-		return user instanceof EntityPlayer && canUseWrench(item, (EntityPlayer)user, null);
-	}
-
-	@Override
-	public void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos) {}
-	
-	@Override
-	public void toolUsed(ItemStack item, EntityLivingBase user, Entity entity) {}
 	
 	public static enum ConfiguratorMode
 	{

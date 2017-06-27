@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
@@ -14,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
 
 public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 {

@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
@@ -21,8 +23,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")

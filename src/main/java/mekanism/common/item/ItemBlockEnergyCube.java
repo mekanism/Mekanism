@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
@@ -55,7 +56,6 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import cofh.api.energy.IEnergyContainerItem;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
