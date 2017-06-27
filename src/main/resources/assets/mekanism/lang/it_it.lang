@@ -361,8 +361,8 @@ key.armorMode=Scambia modalità armatura
 key.voice=Voce
 
 //Entities
-entity.Mekanism.Robit.name=Robit
-entity.Mekanism.BabySkeleton.name=Scheletro baby
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Scheletro baby
 
 //Config Gui
 mekanism.configgui.ctgy.general=Impostazioni generali di Mekanism
