@@ -3,14 +3,17 @@ package mekanism.common.integration.multipart;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import mcmultipart.api.addon.IMCMPAddon;
 import mcmultipart.api.addon.MCMPAddon;
+import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.multipart.IMultipartRegistry;
@@ -161,5 +164,24 @@ public class MultipartMekanism implements IMCMPAddon
 		}
 		
 		return Collections.emptyList();
+	}
+	
+	public static boolean isMultiPartContainer(TileEntity entity)
+	{
+		return entity instanceof IMultipartContainer;
+	}
+	
+	public static Collection<TileEntity> getTileEntities(TileEntity container)
+	{
+		if(container instanceof IMultipartContainer)
+		{
+			return ((IMultipartContainer)container).getParts().values().stream()
+					.map(partInfo -> partInfo.getPart())
+					.filter(part -> part instanceof MultipartTile)
+					.map(part -> ((MultipartTile)part).getTileEntity())
+					.collect(Collectors.toList());
+		}
+		
+		return new ArrayList<TileEntity>();
 	}
 }

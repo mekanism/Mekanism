@@ -28,6 +28,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
 	public boolean unloaded = true;
 	
 	public boolean dataRequest = false;
+	
+	private N lastClientNetwork = null;
 
 	public TileEntityTransmitter()
 	{
@@ -49,6 +51,10 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
 		if(!getWorld().isRemote)
 		{
 			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
+		}
+		else if(lastClientNetwork != null)
+		{
+			getTransmitter().setTransmitterNetwork(lastClientNetwork);
 		}
 
 		unloaded = false;
@@ -90,6 +96,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
 		else {
+			lastClientNetwork = getTransmitter().getTransmitterNetwork();
 			getTransmitter().setTransmitterNetwork(null);
 		}
 	}

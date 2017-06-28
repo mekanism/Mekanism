@@ -4,7 +4,9 @@ import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.slot.EnumCenterSlot;
 import mcmultipart.api.slot.IPartSlot;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
@@ -28,6 +30,28 @@ public class MultipartTransmitter implements IMultipart
 	}
 	
 	@Override
+	public void onAdded(IPartInfo part)
+	{
+		TileEntity tile = part.getTile().getTileEntity();
+		
+		if(tile instanceof TileEntitySidedPipe) 
+		{
+			((TileEntitySidedPipe)tile).onPartChanged(null);
+		}
+	}
+	
+	@Override
+	public void onPartAdded(IPartInfo part, IPartInfo otherPart)
+	{
+		TileEntity tile = part.getTile().getTileEntity();
+		
+		if(tile instanceof TileEntitySidedPipe) 
+		{
+			tile.validate();
+		}
+	}
+	
+	@Override
     public void onPartChanged(IPartInfo part, IPartInfo otherPart)
 	{
 		TileEntity tile = part.getTile().getTileEntity();
@@ -37,4 +61,20 @@ public class MultipartTransmitter implements IMultipart
         	((TileEntitySidedPipe)tile).onPartChanged(otherPart.getPart());
         }
     }
+	
+	@Override
+	public void onPartRemoved(IPartInfo part, IPartInfo otherPart)
+	{
+		TileEntity tile = part.getTile().getTileEntity();
+		
+		if(tile instanceof TileEntitySidedPipe) 
+		{
+			((TileEntitySidedPipe)tile).onPartChanged(otherPart.getPart());
+		}
+	}
+	
+	@Override
+	public Block getBlock() {
+		return MekanismBlocks.Transmitter;
+	}
 }

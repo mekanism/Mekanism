@@ -482,6 +482,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 	}
 	
 	@Override
+	public void validate()
+	{
+		onWorldJoin();
+		super.validate();
+	}
+	
+	@Override
 	public void onChunkUnload()
 	{
 		onWorldSeparate();

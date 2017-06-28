@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -14,6 +15,7 @@ import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
+import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -95,11 +97,10 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn.getTileEntity(pos);
-		
-		if(tile instanceof TileEntitySidedPipe)
+		Optional<TileEntitySidedPipe> tile = getTileEntitySidedPipe(worldIn.getTileEntity(pos));
+		if(tile.isPresent())
 		{
-			state = state.withProperty(BlockStateTransmitter.tierProperty, ((TileEntitySidedPipe)tile).getBaseTier());
+			state = state.withProperty(BlockStateTransmitter.tierProperty, tile.get().getBaseTier());
 		}
 		
 		return state;
@@ -129,11 +130,11 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess w, BlockPos pos) 
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)w.getTileEntity(pos);
+		Optional<TileEntitySidedPipe> tile = getTileEntitySidedPipe(w.getTileEntity(pos));
 		
-		if(tile != null)
+		if(tile.isPresent())
 		{
-			return tile.getExtendedState(state);
+			return tile.get().getExtendedState(state);
 		}
 		else {
 			ConnectionType[] typeArray = new ConnectionType[] {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, 
@@ -147,9 +148,9 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(pos);
+		Optional<TileEntitySidedPipe> tile = getTileEntitySidedPipe(world.getTileEntity(pos));
 		
-		if(tile instanceof TileEntitySidedPipe && ((TileEntitySidedPipe)tile).getTransmitterType().getSize() == Size.SMALL)
+		if(tile.isPresent() && tile.get().getTransmitterType().getSize() == Size.SMALL)
 		{
 			return smallSides[6];
 		}
@@ -160,11 +161,11 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b) 
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
+		Optional<TileEntitySidedPipe> tile = getTileEntitySidedPipe(world.getTileEntity(pos));
 		
-		if(tile != null)
+		if(tile.isPresent())
 		{
-			List<AxisAlignedBB> boxes = tile.getCollisionBoxes(entityBox.offset(-pos.getX(), -pos.getY(), -pos.getZ()));
+			List<AxisAlignedBB> boxes = tile.get().getCollisionBoxes(entityBox.offset(-pos.getX(), -pos.getY(), -pos.getZ()));
 			
 			for(AxisAlignedBB box : boxes)
 			{
@@ -176,25 +177,25 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
-		return getDefaultForTile((TileEntitySidedPipe)world.getTileEntity(pos)).offset(pos);
+		return getDefaultForTile(getTileEntitySidedPipe(world.getTileEntity(pos)).orElse(null)).offset(pos);
 	}
 	
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) 
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
+		Optional<TileEntitySidedPipe> tile = getTileEntitySidedPipe(world.getTileEntity(pos));
 		
-		if(tile == null)
+		if(!tile.isPresent())
 		{
 			return null;
 		}
 		
-		List<AxisAlignedBB> boxes = tile.getCollisionBoxes();
+		List<AxisAlignedBB> boxes = tile.get().getCollisionBoxes();
 		AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(pos, start, end, boxes);
 		
 		if(result != null && result.valid())
 		{
-			setDefaultForTile(tile, result.bounds);
+			setDefaultForTile(tile.get(), result.bounds);
 		}
 		
 		return result != null ? result.hit : null;
@@ -226,16 +227,24 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
-		TileEntitySidedPipe tileEntity = (TileEntitySidedPipe)world.getTileEntity(pos);
-		ItemStack itemStack = new ItemStack(MekanismBlocks.Transmitter, 1, tileEntity.getTransmitterType().ordinal());
-		
-		if(!itemStack.hasTagCompound())
+		ItemStack itemStack;
+		Optional<TileEntitySidedPipe> tileEntity = getTileEntitySidedPipe(world.getTileEntity(pos));
+		if(!tileEntity.isPresent())
 		{
-			itemStack.setTagCompound(new NBTTagCompound());
+			itemStack = ItemStack.EMPTY;
 		}
-		
-		ITierItem tierItem = (ITierItem)itemStack.getItem();
-		tierItem.setBaseTier(itemStack, tileEntity.getBaseTier());
+		else
+		{
+			itemStack = new ItemStack(MekanismBlocks.Transmitter, 1, tileEntity.get().getTransmitterType().ordinal());
+			
+			if(!itemStack.hasTagCompound())
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+			
+			ITierItem tierItem = (ITierItem)itemStack.getItem();
+			tierItem.setBaseTier(itemStack, tileEntity.get().getBaseTier());
+		}
 
 		return itemStack;
 	}
@@ -286,24 +295,33 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
-		tile.onAdded();
+		Optional<TileEntitySidedPipe> tile = getTileEntitySidedPipe(world.getTileEntity(pos));
+		if(tile.isPresent())
+		{
+			tile.get().onAdded();
+		}
 	}
 	
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor)
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
-		EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
-		tile.onNeighborBlockChange(side);
+		Optional<TileEntitySidedPipe> tile = getTileEntitySidedPipe(world.getTileEntity(pos));
+		if(tile.isPresent())
+		{
+			EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
+			tile.get().onNeighborBlockChange(side);
+		}
 	}
 	
 	@Override
 	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
-		EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
-		tile.onNeighborTileChange(side);
+		Optional<TileEntitySidedPipe> tile = getTileEntitySidedPipe(world.getTileEntity(pos));
+		if(tile.isPresent())
+		{
+			EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
+			tile.get().onNeighborTileChange(side);
+		}
 	}
 	
 	@Override
@@ -423,5 +441,25 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		}
 		
 		return null;
+	}
+	
+	private Optional<TileEntitySidedPipe> getTileEntitySidedPipe(TileEntity entity)
+	{
+		if(entity instanceof TileEntitySidedPipe)
+		{
+			return Optional.of((TileEntitySidedPipe)entity);
+		}
+		else if(Mekanism.hooks.MCMPLoaded && MultipartMekanism.isMultiPartContainer(entity))
+		{
+			for(TileEntity childEntity : MultipartMekanism.getTileEntities(entity))
+			{
+				if(childEntity instanceof TileEntitySidedPipe)
+				{
+					return Optional.of((TileEntitySidedPipe)childEntity);
+				}
+			}
+		}
+		
+		return Optional.empty();
 	}
 }
