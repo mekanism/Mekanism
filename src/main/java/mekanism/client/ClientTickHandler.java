@@ -435,12 +435,12 @@ public class ClientTickHandler
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent event)
 	{
-		if(client.allowConfiguratorModeScroll && mc.player != null && mc.player.isSneaking())
+		if(client.allowConfiguratorModeScroll && mc.thePlayer != null && mc.thePlayer.isSneaking())
 		{
-			ItemStack stack = mc.player.getHeldItemMainhand();
+			ItemStack stack = mc.thePlayer.getHeldItemMainhand();
 			int delta = event.getDwheel();
 			
-			if(stack.getItem() instanceof ItemConfigurator && delta != 0)
+			if(stack != null && stack.getItem() instanceof ItemConfigurator && delta != 0)
 			{
 				ItemConfigurator configurator = (ItemConfigurator)stack.getItem();
 				RenderTickHandler.modeSwitchTimer = 100;
