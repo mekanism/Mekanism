@@ -390,8 +390,8 @@ key.armorMode=Přepínání Módů Brnění
 key.voice=Hlas
 
 //Entities
-entity.Mekanism.Robit.name=Robit
-entity.Mekanism.BabySkeleton.name=Dítě Kostlivce
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Dítě Kostlivce
 
 //Config Gui
 mekanism.configgui.ctgy.general=Základní Nastavení Mekanismu

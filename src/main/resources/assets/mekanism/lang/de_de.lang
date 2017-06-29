@@ -390,8 +390,8 @@ key.armorMode=Küstungsmoduswechsel
 key.voice=Stimme
 
 //Entities
-entity.Mekanism.Robit.name=Robit
-entity.Mekanism.BabySkeleton.name=Baby-Skelett
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Baby-Skelett
 
 //Config Gui
 mekanism.configgui.ctgy.general=Mekanism: Generelle Einstellungen

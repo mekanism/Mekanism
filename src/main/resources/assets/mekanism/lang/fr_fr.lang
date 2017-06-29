@@ -389,8 +389,8 @@ key.armorMode=Bascule de mode d'armure
 key.voice=Voix
 
 //Entities
-entity.Mekanism.Robit.name=Robit
-entity.Mekanism.BabySkeleton.name=Bébé squelette
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Bébé squelette
 
 //Config Gui
 mekanism.configgui.ctgy.general=Paramètres généraux de Mekanism
