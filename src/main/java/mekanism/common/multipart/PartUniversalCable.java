@@ -304,6 +304,10 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public boolean canReceiveEnergy(EnumFacing side)
 	{
+		if(side == null)
+		{
+			return true;
+		}
 		return getConnectionType(side) == ConnectionType.NORMAL;
 	}
 
