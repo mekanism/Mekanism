@@ -84,7 +84,7 @@ public class RenderTickHandler
 					}
 				}
 				
-				if(modeSwitchTimer > 1 && mc.currentScreen == null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator)
+				if(modeSwitchTimer > 1 && mc.currentScreen == null && player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator)
 				{
 					ItemStack stack = player.getHeldItemMainhand();
 					ScaledResolution scaledresolution = new ScaledResolution(mc);
