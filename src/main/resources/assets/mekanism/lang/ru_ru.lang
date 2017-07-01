@@ -397,8 +397,8 @@ key.armorMode=Переключить режим брони
 key.voice=Голос
 
 //Entities
-entity.Mekanism.Robit.name=Робит
-entity.Mekanism.BabySkeleton.name=Скелет-ребёнок
+entity.Robit.name=Робит
+entity.BabySkeleton.name=Скелет-ребёнок
 
 //Config Gui
 mekanism.configgui.ctgy.general=Общие настройки
