@@ -9,6 +9,7 @@ import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -63,14 +64,18 @@ public class MultipartTransmitter implements IMultipart
     }
 	
 	@Override
-	public void onPartRemoved(IPartInfo part, IPartInfo otherPart)
+	public void onPartHarvested(IPartInfo part, EntityPlayer player)
 	{
 		TileEntity tile = part.getTile().getTileEntity();
 		
 		if(tile instanceof TileEntitySidedPipe) 
 		{
-			((TileEntitySidedPipe)tile).onPartChanged(otherPart.getPart());
+			IBlockState partState = part.getState();
+			partState.getBlock().removedByPlayer(partState, part.getPartWorld(),
+					part.getContainer().getPartPos(), player, true);
 		}
+		
+		IMultipart.super.onPartHarvested(part, player);
 	}
 	
 	@Override
