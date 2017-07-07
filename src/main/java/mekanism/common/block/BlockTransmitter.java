@@ -262,7 +262,6 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(TransmitterType type : TransmitterType.values())

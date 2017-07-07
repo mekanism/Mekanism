@@ -404,7 +404,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(MachineType type : MachineType.getValidMachines())

@@ -300,7 +300,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(BasicBlockType type : BasicBlockType.values())

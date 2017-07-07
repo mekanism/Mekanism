@@ -164,7 +164,6 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(EnergyCubeTier tier : EnergyCubeTier.values())

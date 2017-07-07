@@ -46,7 +46,6 @@ public class BlockPlasticFence extends BlockFence
 	}
 
     @Override
-    @SideOnly(Side.CLIENT)
     public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
     {
         for(int i = 0; i < EnumColor.DYES.length; i++)

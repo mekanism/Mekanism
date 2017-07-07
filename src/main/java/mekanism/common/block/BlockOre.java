@@ -57,7 +57,6 @@ public class BlockOre extends Block
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(EnumOreType ore : EnumOreType.values())
