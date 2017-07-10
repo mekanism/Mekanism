@@ -25,7 +25,7 @@ public final class PluggableDefinition {
         this.creator = null;
     }
 
-    public PluggableDefinition(ResourceLocation identifier, IPluggableCreator creator) {
+    public PluggableDefinition(ResourceLocation identifier, @Nullable IPluggableCreator creator) {
         this.identifier = identifier;
         this.reader = creator;
         this.loader = creator;

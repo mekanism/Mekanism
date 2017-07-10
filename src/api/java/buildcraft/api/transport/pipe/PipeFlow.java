@@ -2,6 +2,8 @@ package buildcraft.api.transport.pipe;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -50,13 +52,10 @@ public abstract class PipeFlow implements ICapabilityProvider {
     }
 
     public final void sendCustomPayload(int id, IWriter writer) {
-        pipe.getHolder().sendMessage(PipeMessageReceiver.FLOW, new IWriter() {
-            @Override
-            public void write(PacketBuffer buffer) {
-                buffer.writeBoolean(true);
-                buffer.writeShort(id);
-                writer.write(buffer);
-            }
+        pipe.getHolder().sendMessage(PipeMessageReceiver.FLOW, buffer -> {
+            buffer.writeBoolean(true);
+            buffer.writeShort(id);
+            writer.write(buffer);
         });
     }
 
@@ -71,12 +70,12 @@ public abstract class PipeFlow implements ICapabilityProvider {
     }
 
     @Override
-    public final boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public final boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return getCapability(capability, facing) != null;
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         return null;
     }
 }

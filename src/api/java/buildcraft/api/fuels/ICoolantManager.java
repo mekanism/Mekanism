@@ -11,12 +11,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import buildcraft.api.core.StackKey;
-
 public interface ICoolantManager {
     ICoolant addCoolant(ICoolant coolant);
 
-    ICoolant addCoolant(Fluid fluid, float degreesCoolingPerMB);
+    ICoolant addCoolant(FluidStack fluid, float degreesCoolingPerMb);
+
+    default ICoolant addCoolant(Fluid fluid, float degreesCoolingPerMb) {
+        return addCoolant(new FluidStack(fluid, 1), degreesCoolingPerMb);
+    }
 
     ISolidCoolant addSolidCoolant(ISolidCoolant solidCoolant);
 
@@ -26,7 +28,9 @@ public interface ICoolantManager {
 
     Collection<ISolidCoolant> getSolidCoolants();
 
-    ICoolant getCoolant(Fluid fluid);
+    ICoolant getCoolant(FluidStack fluid);
+
+    float getDegreesPerMb(FluidStack fluid, float heat);
 
     ISolidCoolant getSolidCoolant(ItemStack solid);
 }

@@ -1,109 +1,72 @@
 package buildcraft.api.recipes;
 
-import java.io.IOException;
-import java.util.Iterator;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
-import net.minecraftforge.common.util.Constants;
+import buildcraft.api.core.BuildCraftAPI;
 
 /** Provides an immutable assembly recipe */
-public final class AssemblyRecipe {
+public final class AssemblyRecipe implements Comparable<AssemblyRecipe> {
+    public final ResourceLocation name;
     public final long requiredMicroJoules;
-    public final ImmutableSet<ItemStack> requiredStacks;
-    public final ItemStack output;
+    public final ImmutableSet<StackDefinition> requiredStacks;
+    public final @Nonnull ItemStack output;
+    /**
+     * Additional tag used to restore network-transmitted recipe to same state.<br>
+     * You need to register own {@link IAssemblyRecipeProvider} using {@link IAssemblyRecipeRegistry#addRecipeProvider(IAssemblyRecipeProvider)}
+     * to handle this and declare {@link IAssemblyRecipeProvider#getRecipe(ResourceLocation, NBTTagCompound)} method
+     */
+    public final @Nullable NBTTagCompound recipeTag;
 
-    public AssemblyRecipe(long requiredMicroJoules, ImmutableSet<ItemStack> requiredStacks, ItemStack output) {
+    public AssemblyRecipe(ResourceLocation name, long requiredMicroJoules, Set<StackDefinition> requiredStacks, @Nonnull ItemStack output, @Nullable NBTTagCompound recipeTag) {
+        this.name = name;
         this.requiredMicroJoules = requiredMicroJoules;
-        this.requiredStacks = requiredStacks;
+        this.requiredStacks = ImmutableSet.copyOf(requiredStacks);
         this.output = output;
+        this.recipeTag = recipeTag;
     }
 
-    public AssemblyRecipe(NBTTagCompound nbt) {
-        requiredMicroJoules = nbt.getLong("required_micro_joules");
-        NBTTagList requiredStacksTag = nbt.getTagList("required_stacks", Constants.NBT.TAG_COMPOUND);
-        NonNullList<ItemStack> requiredStacksArray = NonNullList.withSize(requiredStacksTag.tagCount(), ItemStack.EMPTY);
-        for(int i = 0; i < requiredStacksTag.tagCount(); i++) {
-            requiredStacksArray.set(i,  new ItemStack(requiredStacksTag.getCompoundTagAt(i)));
-        }
-        requiredStacks = ImmutableSet.copyOf(requiredStacksArray);
-        output = new ItemStack(nbt.getCompoundTag("output"));
+    public AssemblyRecipe(String name, long requiredMicroJoules, Set<StackDefinition> requiredStacks, @Nonnull ItemStack output, @Nullable NBTTagCompound recipeTag) {
+        this(BuildCraftAPI.nameToResourceLocation(name), requiredMicroJoules, requiredStacks, output, recipeTag);
     }
 
-    public AssemblyRecipe(PacketBuffer buffer) throws IOException {
-        requiredMicroJoules = buffer.readLong();
-        int count = buffer.readInt();
-        NonNullList<ItemStack> requiredStacksArray = NonNullList.withSize(count, ItemStack.EMPTY);
-        for(int i = 0; i < count; i++) {
-            requiredStacksArray.set(i, buffer.readItemStack());
-        }
-        requiredStacks = ImmutableSet.copyOf(requiredStacksArray);
-        output = buffer.readItemStack();
+    public AssemblyRecipe(ResourceLocation name, long requiredMicroJoules, Set<StackDefinition> requiredStacks, @Nonnull ItemStack output) {
+        this(name, requiredMicroJoules, requiredStacks, output, null);
     }
 
-    public NBTTagCompound writeToNBT() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setLong("required_micro_joules", requiredMicroJoules);
-        NBTTagList requiredStacksTag = new NBTTagList();
-        for(ItemStack requiredStack : requiredStacks) {
-            requiredStacksTag.appendTag(requiredStack.serializeNBT());
-        }
-        nbt.setTag("required_stacks", requiredStacksTag);
-        nbt.setTag("output", output.serializeNBT());
-        return nbt;
-    }
-
-    public void writeToBuffer(PacketBuffer buffer) {
-        buffer.writeLong(requiredMicroJoules);
-        buffer.writeInt(requiredStacks.size());
-        requiredStacks.forEach(buffer::writeItemStack);
-        buffer.writeItemStack(output);
+    public AssemblyRecipe(String name, long requiredMicroJoules, Set<StackDefinition> requiredStacks, @Nonnull ItemStack output) {
+        this(name, requiredMicroJoules, requiredStacks, output, null);
     }
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) {
+        if (this == o) {
             return true;
         }
-        if(o == null || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         AssemblyRecipe that = (AssemblyRecipe) o;
 
-        if(requiredMicroJoules != that.requiredMicroJoules) {
-            return false;
-        }
-        if(requiredStacks != null && that.requiredStacks != null) {
-            Iterator<ItemStack> iterator1 = requiredStacks.iterator();
-            Iterator<ItemStack> iterator2 = that.requiredStacks.iterator();
-            while(iterator1.hasNext()) {
-                if (!iterator2.hasNext()) {
-                    return false;
-                }
-                ItemStack o1 = iterator1.next();
-                ItemStack o2 = iterator2.next();
-                if (!ItemStack.areItemStacksEqual(o1, o2)) {
-                    return false;
-                }
-            }
-            return !iterator2.hasNext() && output != null ? ItemStack.areItemStacksEqual(output, that.output) : that.output == null;
-        } else {
-            return requiredStacks == null && that.requiredStacks == null && output != null ? ItemStack.areItemStacksEqual(output, that.output) : that.output == null;
-        }
+        return name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (requiredMicroJoules ^ (requiredMicroJoules >>> 32));
-        result = 31 * result + (requiredStacks != null ? requiredStacks.hashCode() : 0);
-        result = 31 * result + (output != null ? output.hashCode() : 0);
-        return result;
+        return name.hashCode();
+    }
+
+    @Override
+    public int compareTo(AssemblyRecipe o) {
+        return name.toString().compareTo(o.name.toString());
     }
 }

@@ -12,17 +12,17 @@ import buildcraft.api.core.BCLog;
 
 public abstract class RobotManager {
     public static IRobotRegistryProvider registryProvider;
-    public static ArrayList<Class<? extends AIRobot>> aiRobots = new ArrayList<Class<? extends AIRobot>>();
+    public static ArrayList<Class<? extends AIRobot>> aiRobots = new ArrayList<>();
 
     static {
-        aiRobotsByNames = new HashMap<String, Class<? extends AIRobot>>();
-        aiRobotsNames = new HashMap<Class<? extends AIRobot>, String>();
-        aiRobotsByLegacyClassNames = new HashMap<String, Class<? extends AIRobot>>();
-        resourceIdNames = new HashMap<Class<? extends ResourceId>, String>();
-        resourceIdByNames = new HashMap<String, Class<? extends ResourceId>>();
-        resourceIdLegacyClassNames = new HashMap<String, Class<? extends ResourceId>>();
-        dockingStationNames = new HashMap<Class<? extends DockingStation>, String>();
-        dockingStationByNames = new HashMap<String, Class<? extends DockingStation>>();
+        aiRobotsByNames = new HashMap<>();
+        aiRobotsNames = new HashMap<>();
+        aiRobotsByLegacyClassNames = new HashMap<>();
+        resourceIdNames = new HashMap<>();
+        resourceIdByNames = new HashMap<>();
+        resourceIdLegacyClassNames = new HashMap<>();
+        dockingStationNames = new HashMap<>();
+        dockingStationByNames = new HashMap<>();
 
         registerResourceId(ResourceIdBlock.class, "resourceIdBlock", "buildcraft.core.robots.ResourceIdBlock");
         registerResourceId(ResourceIdRequest.class, "resourceIdRequest", "buildcraft.core.robots.ResourceIdRequest");
@@ -52,7 +52,7 @@ public abstract class RobotManager {
         try {
             aiRobot.getConstructor(EntityRobotBase.class);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException("AI class " + aiRobot.getName() + " lacks NBT load construtor! This is a bug!");
+            throw new RuntimeException("AI class " + aiRobot.getName() + " lacks NBT load constructor! This is a bug!");
         }
 
         aiRobots.add(aiRobot);
@@ -91,8 +91,8 @@ public abstract class RobotManager {
         return resourceIdByNames.get(resourceIdName);
     }
 
-    public static String getResourceIdName(Class<? extends ResourceId> resouceIdClass) {
-        return resourceIdNames.get(resouceIdClass);
+    public static String getResourceIdName(Class<? extends ResourceId> resourceIdClass) {
+        return resourceIdNames.get(resourceIdClass);
     }
 
     public static Class<?> getResourceIdByLegacyClassName(String resourceIdLegacyClassName) {

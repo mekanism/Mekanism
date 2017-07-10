@@ -39,7 +39,8 @@ public enum EnumWirePart {
 
         Vec3d center = new Vec3d(0.5, 0.5, 0.5);
         Vec3d edge = new Vec3d(x ? 0.75 : 0.25, y ? 0.75 : 0.25, z ? 0.75 : 0.25);
-        this.boundingBoxPossible = new AxisAlignedBB(center.xCoord, center.yCoord, center.zCoord, edge.xCoord, edge.yCoord, edge.zCoord);
+        this.boundingBoxPossible = new AxisAlignedBB(center.xCoord, center.yCoord, center.zCoord, edge.xCoord,
+            edge.yCoord, edge.zCoord);
     }
 
     public AxisDirection getDirection(EnumFacing.Axis axis) {
@@ -50,16 +51,16 @@ public enum EnumWirePart {
                 return y;
             case Z:
                 return z;
+            default:
+                return null;
         }
-        return null;
     }
 
     public static EnumWirePart get(int x, int y, int z) {
-        return get(//
-                (x % 2 + 2) % 2 == 1,//
-                (y % 2 + 2) % 2 == 1,//
-                (z % 2 + 2) % 2 == 1 //
-        );
+        boolean bx = (x % 2 + 2) % 2 == 1;
+        boolean by = (y % 2 + 2) % 2 == 1;
+        boolean bz = (z % 2 + 2) % 2 == 1;
+        return get(bx, by, bz);
     }
 
     public static EnumWirePart get(boolean x, boolean y, boolean z) {

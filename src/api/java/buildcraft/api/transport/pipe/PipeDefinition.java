@@ -69,7 +69,7 @@ public final class PipeDefinition {
         private static String getActiveModId() {
             ModContainer mod = Loader.instance().activeModContainer();
             if (mod == null) {
-                throw new IllegalStateException("Cannot interact with PipeDefinition outside of an activly scoped mod!");
+                throw new IllegalStateException("Cannot interact with PipeDefinition outside of an actively scoped mod!");
             }
             return mod.getModId();
         }

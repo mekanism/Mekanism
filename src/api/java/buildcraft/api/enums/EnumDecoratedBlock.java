@@ -16,7 +16,7 @@ public enum EnumDecoratedBlock implements IStringSerializable {
 
     public final int lightValue;
 
-    private EnumDecoratedBlock(int lightValue) {
+    EnumDecoratedBlock(int lightValue) {
         this.lightValue = lightValue;
     }
 

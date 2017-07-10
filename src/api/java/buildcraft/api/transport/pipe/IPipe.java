@@ -29,8 +29,8 @@ public interface IPipe extends ICapabilityProvider {
 
     ConnectedType getConnectedType(EnumFacing side);
 
-    public enum ConnectedType {
+    enum ConnectedType {
         TILE,
-        PIPE;
+        PIPE
     }
 }

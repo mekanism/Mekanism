@@ -6,7 +6,7 @@ import net.minecraft.util.EnumFacing;
  *
  * Please use wisely. */
 public interface ITriggerExternalOverride {
-    public enum Result {
+    enum Result {
         TRUE,
         FALSE,
         IGNORE

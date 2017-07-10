@@ -9,15 +9,16 @@ package buildcraft.api.mj;
  * The respective Block MUST implement ILaserTargetBlock! */
 public interface ILaserTarget {
 
-    /** Returns true if the target currently needs power. For example, if the Advanced Crafting Table has work to do.
+    /** Returns The amount of power this target currently needs.
      *
-     * @return true if needs power */
-    boolean requiresLaserPower();
+     * @return The amount of power required, or 0 if no power is required. */
+    long getRequiredLaserPower();
 
     /** Transfers power from the laser to the target.
      *
-     * @param microJoules The number of micro Minecraft Joules to accept */
-    void receiveLaserPower(long microJoules);
+     * @param microJoules The number of micro Minecraft Joules to accept
+     * @return The excess power. If the input is less than or equal to {@link #getRequiredLaserPower()} then this will return 0. */
+    long receiveLaserPower(long microJoules);
 
     /** Return true if the Tile Entity object is no longer a valid target. For example, if its been invalidated.
      *

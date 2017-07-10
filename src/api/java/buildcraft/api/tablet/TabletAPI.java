@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class TabletAPI {
-    private static final Map<String, TabletProgramFactory> programs = new HashMap<String, TabletProgramFactory>();
+    private static final Map<String, TabletProgramFactory> programs = new HashMap<>();
 
     private TabletAPI() {
 

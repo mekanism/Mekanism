@@ -5,7 +5,7 @@ import java.util.Set;
 
 @Deprecated
 public final class LibraryAPI {
-    private static final Set<LibraryTypeHandler> handlers = new HashSet<LibraryTypeHandler>();
+    private static final Set<LibraryTypeHandler> handlers = new HashSet<>();
 
     private LibraryAPI() {
 

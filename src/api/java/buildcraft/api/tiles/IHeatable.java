@@ -12,7 +12,7 @@ public interface IHeatable {
     /** @return The preferred heat value, in degrees. */
     double getIdealHeatValue();
 
-    /** @return The maxmimum heat value, in degrees. */
+    /** @return The maximum heat value, in degrees. */
     double getMaxHeatValue();
 
     /** @return The current heat value, in degrees. */

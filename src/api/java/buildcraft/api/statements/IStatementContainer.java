@@ -4,6 +4,8 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.statements;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -11,5 +13,6 @@ import net.minecraft.util.EnumFacing;
 public interface IStatementContainer {
     TileEntity getTile();
 
+    @Nullable
     TileEntity getNeighbourTile(EnumFacing side);
 }

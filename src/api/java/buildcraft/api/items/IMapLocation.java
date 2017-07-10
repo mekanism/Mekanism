@@ -13,7 +13,7 @@ import buildcraft.api.core.IZone;
 
 /** Created by asie on 2/28/15. */
 public interface IMapLocation extends INamedItem {
-    public enum MapLocationType {
+    enum MapLocationType {
         CLEAN,
         SPOT,
         AREA,

@@ -14,7 +14,8 @@ public interface IGuiSlot {
     /** Return the parameter description in the UI */
     String getDescription();
 
-    /** @return A sprite to show in a GUI, or null if this should not render a sprite. */
+    /** @return A sprite to show in a GUI or in-world (so this must be stitched into the block texture atlas), or null
+     *         if this should not render a sprite. */
     @SideOnly(Side.CLIENT)
     TextureAtlasSprite getGuiSprite();
 }

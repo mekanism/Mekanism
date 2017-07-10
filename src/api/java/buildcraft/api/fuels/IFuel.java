@@ -4,10 +4,11 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.fuels;
 
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 public interface IFuel {
-    Fluid getFluid();
+    /** @return The input fluid. The {@link FluidStack#amount} is ignored. */
+    FluidStack getFluid();
 
     /** @return The number of ticks that a single bucket (1000mb) of this fuel will burn for. */
     int getTotalBurningTime();

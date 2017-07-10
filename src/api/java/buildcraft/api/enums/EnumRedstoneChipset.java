@@ -1,22 +1,26 @@
 package buildcraft.api.enums;
 
+import java.util.Locale;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IStringSerializable;
 
-public enum EnumRedstoneChipset {
+import buildcraft.api.BCItems;
+
+public enum EnumRedstoneChipset implements IStringSerializable {
     RED,
     IRON,
     GOLD,
-    DIAMOND,
-    PULSATING,
     QUARTZ,
-    COMP,
-    EMERALD;
+    DIAMOND;
+
+    private final String name = name().toLowerCase(Locale.ROOT);
 
     public ItemStack getStack(int stackSize) {
-        Item chipset = Item.getByNameOrId("buildcraft|silicon:redstoneChipset");
+        Item chipset = BCItems.SILICON_REDSTONE_CHIPSET;
         if (chipset == null) {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         return new ItemStack(chipset, stackSize, ordinal());
@@ -38,5 +42,10 @@ public enum EnumRedstoneChipset {
             return RED;
         }
         return values()[ordinal];
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

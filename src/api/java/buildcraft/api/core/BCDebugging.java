@@ -15,7 +15,7 @@ public class BCDebugging {
         NONE,
         ENABLE,
         LOGGING_ONLY,
-        ALL;
+        ALL
     }
 
     enum DebugLevel {
@@ -100,7 +100,7 @@ public class BCDebugging {
             log.append(option);
             log.append(" add the option \"-D");
             log.append(prop);
-            log.append("=true\" to your launch config as a VM argument (" + type + ").");
+            log.append("=true\" to your launch config as a VM argument (").append(type).append(").");
             BCLog.logger.info(log);
         }
         return false;

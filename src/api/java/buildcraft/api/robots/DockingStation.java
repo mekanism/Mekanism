@@ -4,6 +4,8 @@
  * of the license located in http://www.mod-buildcraft.com/MMPL-1.0.txt */
 package buildcraft.api.robots;
 
+import java.util.Arrays;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -134,7 +136,7 @@ public abstract class DockingStation {
             if (array.length == 3) {
                 pos = new BlockPos(array[0], array[1], array[2]);
             } else if (array.length != 0) {
-                BCLog.logger.warn("Found an integer array that wwas not the right length! (" + array + ")");
+                BCLog.logger.warn("Found an integer array that was not the right length! (" + Arrays.toString(array) + ")");
             } else {
                 BCLog.logger.warn("Did not find any integer positions! This is a bug!");
             }

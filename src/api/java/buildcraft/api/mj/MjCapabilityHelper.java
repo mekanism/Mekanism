@@ -35,23 +35,27 @@ public class MjCapabilityHelper implements ICapabilityProvider {
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == MjAPI.CAP_CONNECTOR) return true;
-        if (capability == MjAPI.CAP_RECEIVER) return receiver != null;
-        if (capability == MjAPI.CAP_REDSTONE_RECEIVER) return rsReceiver != null;
-        if (capability == MjAPI.CAP_READABLE) return readable != null;
-        if (capability == MjAPI.CAP_PASSIVE_PROVIDER) return provider != null;
-        return false;
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+        return getCapability(capability, facing) != null;
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == MjAPI.CAP_CONNECTOR) return (T) connector;
-        if (capability == MjAPI.CAP_RECEIVER) return (T) receiver;
-        if (capability == MjAPI.CAP_REDSTONE_RECEIVER) return (T) rsReceiver;
-        if (capability == MjAPI.CAP_READABLE) return (T) readable;
-        if (capability == MjAPI.CAP_PASSIVE_PROVIDER) return (T) provider;
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+        if (capability == MjAPI.CAP_CONNECTOR) {
+            return MjAPI.CAP_CONNECTOR.cast(connector);
+        }
+        if (capability == MjAPI.CAP_RECEIVER) {
+            return MjAPI.CAP_RECEIVER.cast(receiver);
+        }
+        if (capability == MjAPI.CAP_REDSTONE_RECEIVER) {
+            return MjAPI.CAP_REDSTONE_RECEIVER.cast(rsReceiver);
+        }
+        if (capability == MjAPI.CAP_READABLE) {
+            return MjAPI.CAP_READABLE.cast(readable);
+        }
+        if (capability == MjAPI.CAP_PASSIVE_PROVIDER) {
+            return MjAPI.CAP_PASSIVE_PROVIDER.cast(provider);
+        }
         return null;
     }
-
 }

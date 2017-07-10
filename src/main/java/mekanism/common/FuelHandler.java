@@ -2,10 +2,12 @@ package mekanism.common;
 
 import java.util.HashMap;
 
+import buildcraft.api.mj.MjAPI;
 import mekanism.api.gas.Gas;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ModAPIManager;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
@@ -28,7 +30,7 @@ public class FuelHandler
 
 		if(BCPresent() && gas.hasFluid() && BuildcraftFuelRegistry.fuel != null)
 		{
-			IFuel bcFuel = BuildcraftFuelRegistry.fuel.getFuel(gas.getFluid());
+			IFuel bcFuel = BuildcraftFuelRegistry.fuel.getFuel(new FluidStack(gas.getFluid(), 1));
 			
 			if(bcFuel != null)
 			{
@@ -56,7 +58,7 @@ public class FuelHandler
 		public FuelGas(IFuel bcFuel)
 		{
 			burnTicks = bcFuel.getTotalBurningTime() / Fluid.BUCKET_VOLUME;
-			energyPerTick = bcFuel.getPowerPerCycle() * general.FROM_RF;
+			energyPerTick = bcFuel.getPowerPerCycle() * MjAPI.MJ;
 		}
 	}
 

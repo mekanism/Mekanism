@@ -11,7 +11,7 @@ public enum EnumMachineState implements IStringSerializable {
     DONE;
 
     public static EnumMachineState getType(IBlockState state) {
-        return (EnumMachineState) state.getValue(BuildCraftProperties.MACHINE_STATE);
+        return state.getValue(BuildCraftProperties.MACHINE_STATE);
     }
 
     @Override

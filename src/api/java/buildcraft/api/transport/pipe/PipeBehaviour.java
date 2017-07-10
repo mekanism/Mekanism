@@ -1,5 +1,8 @@
 package buildcraft.api.transport.pipe;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -53,15 +56,17 @@ public abstract class PipeBehaviour implements ICapabilityProvider {
         return false;
     }
 
+    public void onEntityCollide(Entity entity) {}
+
     public void onTick() {}
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return false;
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+        return getCapability(capability, facing) != null;
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         return null;
     }
 }

@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,12 +15,16 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import buildcraft.api.transport.pipe.IPipeHolder;
 import buildcraft.api.transport.pipe.IPipeHolder.PipeMessageReceiver;
@@ -76,10 +82,19 @@ public abstract class PipePluggable {
         return null;
     }
 
-    /** Called whenever this pluggable is removed from the pipe.
+    /** Gets the {@link Capability} that is accessible from the pipe that this is attached to.
      * 
-     * @param toDrop A list containing all the items to drop (so you should add your items to this list) */
-    public void onRemove(NonNullList<ItemStack> toDrop) {
+     * @param cap
+     * @return */
+    public <T> T getInternalCapability(@Nonnull Capability<T> cap) {
+        return null;
+    }
+
+    /** Called whenever this pluggable is removed from the pipe. */
+    public void onRemove() {}
+
+    /** @param toDrop A list containing all the items to drop (so you should add your items to this list) * */
+    public void getDrops(NonNullList<ItemStack> toDrop) {
         ItemStack stack = getPickStack();
         if (!stack.isEmpty()) {
             toDrop.add(stack);
@@ -100,5 +115,35 @@ public abstract class PipePluggable {
     @Nullable
     public PluggableModelKey getModelRenderKey(BlockRenderLayer layer) {
         return null;
+    }
+
+    /** Called if the {@link IPluggableStaticBaker} returns quads with tint indexes set to
+     * <code>data * 6 + key.side.ordinal()</code>. <code>"data"</code> is passed in here as <code>"tintIndex"</code>.
+     * 
+     * @return The tint index to render the quad with, or -1 for default. */
+    @SideOnly(Side.CLIENT)
+    public int getBlockColor(int tintIndex) {
+        return -1;
+    }
+
+    /** PipePluggable version of
+     * {@link Block#canBeConnectedTo(net.minecraft.world.IBlockAccess, net.minecraft.util.math.BlockPos, EnumFacing)}. */
+    public boolean canBeConnected() {
+        return false;
+    }
+
+    /** PipePluggable version of
+     * {@link Block#isBlockSolid(net.minecraft.world.IBlockAccess, net.minecraft.util.math.BlockPos, EnumFacing)} */
+    public boolean isSideSolid() {
+        return false;
+    }
+
+    /** PipePluggable version of {@link Block#getExplosionResistance(World, BlockPos, Entity, Explosion)} */
+    public float getExplosionResistance(@Nullable Entity exploder, Explosion explosion) {
+        return 0;
+    }
+
+    public boolean canConnectToRedstone(@Nullable EnumFacing to) {
+        return false;
     }
 }

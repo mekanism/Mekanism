@@ -4,8 +4,8 @@
  * power should be passed around in code as micro Mj (10 ^ -6 of an Mj), but shown to the player as full MJ - so divided by 1
  * million.
  * <p>
- * A single MJ as a constant is available in {@link buildcraft.api.mj.MjAPI#ONE_MINECRAFT_JOULE}, and two player
- * formatter's ( {@link buildcraft.api.mj.MjAPI#formatMj(long)}, and {@link buildcraft.api.mj.MjAPI#formatMjShort(long)}
+ * A single MJ as a constant is available in {@link buildcraft.api.mj.MjAPI#ONE_MINECRAFT_JOULE}, and a player
+ * formatter {@link buildcraft.api.mj.MjAPI#formatMj(long)}
  * <p>
  * <h1>Capability's</h1>
  * <p>

@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public final class CropManager {
-    private static List<ICropHandler> handlers = new ArrayList<ICropHandler>();
+    private static List<ICropHandler> handlers = new ArrayList<>();
     private static ICropHandler defaultHandler;
 
     private CropManager() {

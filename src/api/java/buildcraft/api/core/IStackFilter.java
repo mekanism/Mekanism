@@ -7,6 +7,7 @@ package buildcraft.api.core;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 /** This interface provides a convenient means of dealing with entire classes of items without having to specify each
  * item individually. */
@@ -17,4 +18,11 @@ public interface IStackFilter {
      * @param stack The stack to test. stack.isEmpty will always return false.
      * @return True if it does match, false otherwise. */
     boolean matches(@Nonnull ItemStack stack);
+
+    /**
+     * Returns example stack to match this filter
+     */
+    default NonNullList<ItemStack> getExamples() {
+        return NonNullList.withSize(0, ItemStack.EMPTY);
+    }
 }

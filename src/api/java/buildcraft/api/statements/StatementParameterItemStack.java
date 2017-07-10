@@ -31,6 +31,7 @@ public class StatementParameterItemStack implements IStatementParameter {
         return null;
     }
 
+    @Nonnull
     @Override
     public ItemStack getItemStack() {
         return stack;

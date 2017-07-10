@@ -1,7 +1,5 @@
 package buildcraft.api.crops;
 
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

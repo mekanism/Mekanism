@@ -7,31 +7,22 @@ package buildcraft.api.tiles;
 /** This interface should be implemented by any Tile Entity which wishes to have non-redstone automation (for example,
  * BuildCraft Gates, but also other mods which implement it, e.g. OpenComputers). */
 public interface IControllable {
-    public enum Mode {
-        Unknown,
-        On,
-        Off,
-        Mode,
-        Loop;
+    enum Mode {
+        ON,
+        OFF,
+        LOOP;
 
         public static final Mode[] VALUES = values();
-        public static final Mode[] VALID_VALUES = { On, Off, Loop };
     }
 
     /** Get the current control mode of the Tile Entity.
-     * 
+     *
      * @return */
     Mode getControlMode();
 
     /** Set the mode of the Tile Entity.
      * 
-     * @param mode */
-    void setControlMode(Mode mode);
-
-    /** Check if a given control mode is accepted. If you query IControllable tiles, you MUST check with
-     * acceptsControlMode first.
-     * 
      * @param mode
      * @return True if this control mode is accepted. */
-    boolean acceptsControlMode(Mode mode);
+    boolean setControlMode(Mode mode, boolean simulate);
 }

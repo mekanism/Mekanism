@@ -8,7 +8,7 @@ public final class BuildcraftRecipeRegistry {
 
     public static IAssemblyRecipeRegistry assemblyRecipes;
     public static IIntegrationRecipeRegistry integrationRecipes;
-    public static IComplexRefineryRecipeManager complexRefinery;
+    public static IRefineryRecipeManager refineryRecipes;
 
     private BuildcraftRecipeRegistry() {}
 }
