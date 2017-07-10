@@ -28,6 +28,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 {
@@ -38,6 +40,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		super.addInformation(itemstack, world, list, flag);

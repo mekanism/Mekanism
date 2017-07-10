@@ -43,6 +43,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		GasStack gasStack = getGas(itemstack);

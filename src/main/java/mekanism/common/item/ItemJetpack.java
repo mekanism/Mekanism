@@ -64,6 +64,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
     }
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		GasStack gasStack = getGas(itemstack);

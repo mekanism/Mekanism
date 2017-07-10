@@ -20,6 +20,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 {
@@ -34,6 +36,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		super.addInformation(itemstack, world, list, flag);
