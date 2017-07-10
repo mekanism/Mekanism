@@ -8,6 +8,12 @@
     "F"
   ],
   "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "LaserTractorBeam"
+    }
+  ],
   "key": {
     "C": {
       "item": "mekanism:machineblock",

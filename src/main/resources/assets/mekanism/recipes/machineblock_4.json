@@ -9,6 +9,12 @@
     "TIT"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "DigitalMiner"
+    }
+  ],
   "key": {
     "A": {
       "item": "mekanism:atomicalloy"

@@ -9,6 +9,12 @@
     "NEN"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "generatorType": "BioGenerator"
+    }
+  ],
   "key": {
     "R": {
       "ore": "dustRedstone",

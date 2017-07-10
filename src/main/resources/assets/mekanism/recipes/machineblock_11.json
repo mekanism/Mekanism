@@ -9,6 +9,12 @@
     "COC"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "Teleporter"
+    }
+  ],
   "key": {
     "C": {
       "ore": "circuitBasic",

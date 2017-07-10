@@ -126,9 +126,6 @@ public class MekanismGenerators implements IModule
 			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (int)(240 * general.TO_RF), 40 * Fluid.BUCKET_VOLUME);
 		}
 		
-		//Update the config-dependent recipes after the recipes have actually been added in the first place
-		TypeConfigManager.updateConfigRecipes(GeneratorType.getGeneratorsForConfig(), generators.generatorsManager);
-		
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))
 		{
 			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
@@ -222,7 +219,6 @@ public class MekanismGenerators implements IModule
 		if(event.getModID().equals("mekanismgenerators"))
 		{
 			proxy.loadConfiguration();
-			TypeConfigManager.updateConfigRecipes(GeneratorType.getGeneratorsForConfig(), generators.generatorsManager);
 		}
 	}
 }

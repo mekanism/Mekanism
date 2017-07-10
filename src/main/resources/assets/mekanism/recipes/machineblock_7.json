@@ -13,6 +13,12 @@
     "RCR"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "Factory"
+    }
+  ],
   "key": {
     "R": {
       "ore": "alloyElite",

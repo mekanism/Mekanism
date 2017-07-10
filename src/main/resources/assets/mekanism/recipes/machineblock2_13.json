@@ -9,6 +9,12 @@
     "RE "
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "Laser"
+    }
+  ],
   "key": {
     "R": {
       "ore": "alloyElite",

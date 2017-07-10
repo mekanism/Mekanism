@@ -9,6 +9,12 @@
     "SWS"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "Oredictionificator"
+    }
+  ],
   "key": {
     "B": {
       "item": "mekanism:dictionary"

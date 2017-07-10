@@ -3,6 +3,10 @@ package mekanism.common.recipe.generation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockMachine;
+import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.item.ItemBlockMachine;
+import mekanism.generators.common.block.states.BlockStateGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -80,6 +84,24 @@ public class RecipeGenerator {
         } catch (IllegalArgumentException e) {
             Mekanism.logger.fatal("Failed to convert recipe", e);
             return;
+        }
+
+        // Add machine_enabled condition to all available machine types.
+        BlockStateMachine.MachineType machineType = BlockStateMachine.MachineType.get(result);
+        if(machineType != null) {
+            Map<String, String> condition = new HashMap<>();
+            condition.put("type", "machine_enabled");
+            condition.put("machineType", machineType.blockName);
+            json.put("conditions", new Object[]{condition});
+        }
+
+        // Add machine_enabled condition to generator types which can be disabled.
+        BlockStateGenerator.GeneratorType generatorType = BlockStateGenerator.GeneratorType.get(result);
+        if(generatorType != null && result.getItemDamage() <= BlockStateGenerator.GeneratorType.WIND_GENERATOR.meta) {
+            Map<String, String> condition = new HashMap<>();
+            condition.put("type", "machine_enabled");
+            condition.put("generatorType", generatorType.blockName);
+            json.put("conditions", new Object[]{condition});
         }
 
         // names the json the same name as the output's registry name

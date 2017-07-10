@@ -9,6 +9,12 @@
     "GCG"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "RotaryCondensentrator"
+    }
+  ],
   "key": {
     "C": {
       "ore": "circuitBasic",

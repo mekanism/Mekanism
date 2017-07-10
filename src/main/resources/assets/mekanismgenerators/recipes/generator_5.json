@@ -9,6 +9,12 @@
     "III"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "generatorType": "AdvancedSolarGenerator"
+    }
+  ],
   "key": {
     "S": {
       "item": "mekanismgenerators:generator",

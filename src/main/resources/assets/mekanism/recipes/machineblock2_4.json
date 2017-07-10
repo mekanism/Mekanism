@@ -9,6 +9,12 @@
     "IRI"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "ElectrolyticSeparator"
+    }
+  ],
   "key": {
     "R": {
       "ore": "dustRedstone",

@@ -9,6 +9,12 @@
     "IFI"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "MetallurgicInfuser"
+    }
+  ],
   "key": {
     "R": {
       "ore": "dustRedstone",

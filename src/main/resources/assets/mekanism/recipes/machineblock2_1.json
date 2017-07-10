@@ -9,6 +9,12 @@
     "ACA"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "ChemicalOxidizer"
+    }
+  ],
   "key": {
     "A": {
       "item": "mekanism:enrichedalloy"

@@ -9,6 +9,12 @@
     "RCR"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "EnrichmentChamber"
+    }
+  ],
   "key": {
     "R": {
       "ore": "alloyBasic",

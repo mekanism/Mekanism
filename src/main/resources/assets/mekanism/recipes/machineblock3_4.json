@@ -9,6 +9,12 @@
     "CEC"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "ResistiveHeater"
+    }
+  ],
   "key": {
     "R": {
       "ore": "dustRedstone",

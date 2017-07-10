@@ -9,6 +9,12 @@
     "CFC"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "generatorType": "HeatGenerator"
+    }
+  ],
   "key": {
     "C": {
       "ore": "ingotCopper",

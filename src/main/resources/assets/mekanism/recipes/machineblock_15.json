@@ -9,6 +9,12 @@
     "III"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "LogisticalSorter"
+    }
+  ],
   "key": {
     "P": {
       "item": "minecraft:piston"

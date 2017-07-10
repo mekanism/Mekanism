@@ -9,6 +9,12 @@
     "BBB"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "SolarNeutronActivator"
+    }
+  ],
   "key": {
     "P": {
       "item": "mekanism:polyethene",

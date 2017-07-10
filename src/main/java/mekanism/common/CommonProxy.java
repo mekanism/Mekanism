@@ -612,8 +612,6 @@ public class CommonProxy implements IGuiProvider
 		}
 		
 		BlockStateMachine.MachineType.updateAllUsages();
-		
-		TypeConfigManager.updateConfigRecipes(MachineType.getValidMachines(), general.machinesManager);
 
 		if(fromPacket)
 		{

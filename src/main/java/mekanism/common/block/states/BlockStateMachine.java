@@ -198,24 +198,6 @@ public class BlockStateMachine extends ExtendedBlockState
 			return general.machinesManager.isEnabled(blockName);
 		}
 
-//		@Override
-//		public void addRecipes(Collection<ShapedMekanismRecipe> recipes)
-//		{
-//			blockRecipes.addAll(recipes);
-//		}
-//
-//		@Override
-//		public void addRecipe(ShapedMekanismRecipe recipe)
-//		{
-//			blockRecipes.add(recipe);
-//		}
-//
-//		@Override
-//		public Collection<ShapedMekanismRecipe> getRecipes()
-//		{
-//			return blockRecipes;
-//		}
-
 		public static List<MachineType> getValidMachines()
 		{
 			List<MachineType> ret = new ArrayList<MachineType>();

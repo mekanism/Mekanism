@@ -9,6 +9,12 @@
     "CGC"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "ChemicalCrystallizer"
+    }
+  ],
   "key": {
     "A": {
       "item": "mekanism:atomicalloy"

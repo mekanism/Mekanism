@@ -9,6 +9,12 @@
     "PEP"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "generatorType": "GasGenerator"
+    }
+  ],
   "key": {
     "P": {
       "ore": "ingotOsmium",

@@ -9,6 +9,12 @@
     "ECE"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "PurificationChamber"
+    }
+  ],
   "key": {
     "R": {
       "item": "mekanism:machineblock",

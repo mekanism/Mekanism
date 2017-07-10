@@ -281,7 +281,7 @@ public class Mekanism
 	 */
 	public void addRecipes()
 	{
-		if(false) // Generate JSON files from code, disabled.
+		if(true) // Generate JSON files from code, disabled.
 		{
 			MekanismRecipes.generate();
 			MekanismToolsRecipes.generate();
@@ -700,6 +700,10 @@ public class Mekanism
 		//Set the mod's configuration
 		configuration = new Configuration(config);
 
+		//Load configuration
+		proxy.loadConfiguration();
+		proxy.onConfigSync(false);
+
         //Register tier information
         Tier.init();
 
@@ -775,10 +779,6 @@ public class Mekanism
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();
 		
-		//Load configuration
-		proxy.loadConfiguration();
-		proxy.onConfigSync(false);
-		
 		//Add baby skeleton spawner
 		if(general.spawnBabySkeletons)
 		{
@@ -835,9 +835,6 @@ public class Mekanism
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 		
 		OreDictManager.init();
-		
-		//Update the config-dependent recipes after the recipes have actually been added in the first place
-		TypeConfigManager.updateConfigRecipes(MachineType.getValidMachines(), general.machinesManager);
 		
 		logger.info("Hooking complete.");
 	}

@@ -9,6 +9,12 @@
     "SCS"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "FormulaicAssemblicator"
+    }
+  ],
   "key": {
     "B": {
       "ore": "circuitBasic",

@@ -122,7 +122,6 @@ public class BlockStateGenerator extends ExtendedBlockState
 		public double maxEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
-//		public Collection<ShapedMekanismRecipe> blockRecipes = new HashSet<ShapedMekanismRecipe>();
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 	
@@ -170,24 +169,6 @@ public class BlockStateGenerator extends ExtendedBlockState
 			
 			return generators.generatorsManager.isEnabled(blockName);
 		}
-
-//		@Override
-//		public void addRecipes(Collection<ShapedMekanismRecipe> recipes)
-//		{
-//			blockRecipes.addAll(recipes);
-//		}
-//
-//		@Override
-//		public void addRecipe(ShapedMekanismRecipe recipe)
-//		{
-//			blockRecipes.add(recipe);
-//		}
-//
-//		@Override
-//		public Collection<ShapedMekanismRecipe> getRecipes()
-//		{
-//			return blockRecipes;
-//		}
 
 		public static GeneratorType get(IBlockState state)
 		{

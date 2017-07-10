@@ -9,6 +9,12 @@
     "SSS"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "LaserAmplifier"
+    }
+  ],
   "key": {
     "S": {
       "ore": "ingotSteel",

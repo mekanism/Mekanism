@@ -8,6 +8,12 @@
     "SES"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "Chargepad"
+    }
+  ],
   "key": {
     "P": {
       "item": "minecraft:stone_pressure_plate"

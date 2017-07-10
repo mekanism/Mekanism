@@ -9,6 +9,12 @@
     "ICI"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "machine_enabled",
+      "machineType": "PrecisionSawmill"
+    }
+  ],
   "key": {
     "A": {
       "item": "mekanism:enrichedalloy"
