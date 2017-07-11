@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.client;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;

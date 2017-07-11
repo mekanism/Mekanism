@@ -20,6 +20,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -50,7 +51,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	
 	public TileEntityOredictionificator()
 	{
-		super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.machineName);
+		super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.blockName);
 		
 		inventory = new ItemStack[2];
 		doAutoSync = false;

@@ -24,6 +24,7 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.ITooltipCallback;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -111,7 +112,7 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof PRCRecipeWrapper)
 		{
@@ -123,15 +124,14 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(0, true, 53-xOffset, 34-yOffset);
 		itemStacks.init(1, false, 115-xOffset, 34-yOffset);
 		
-		itemStacks.set(0, recipeWrapper.getInputs());
-		itemStacks.set(1, recipeWrapper.getOutputs());
+		itemStacks.set(0, tempRecipe.recipeInput.getSolid());
+		itemStacks.set(1, tempRecipe.recipeOutput.getItemOutput());
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		
 		fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlay);
-		fluidStacks.set(0, recipeWrapper.getFluidInputs());
+		fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
 		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-
 			@Override
 			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip) 
 			{

@@ -3,7 +3,6 @@ package mekanism.common.content.tank;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockBasic;
@@ -14,6 +13,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;

@@ -5,14 +5,15 @@ import ic2.api.item.ISpecialElectricItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
@@ -21,8 +22,10 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.integration.IC2ItemManager;
-import mekanism.common.integration.TeslaItemWrapper;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.integration.ic2.IC2ItemManager;
+import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -82,7 +85,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 		else {
 			if(hasSecurity(itemstack))
 			{
-				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
+				list.add(SecurityUtils.getOwnerDisplay(entityplayer, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
 				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 				
 				if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
@@ -128,16 +131,16 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 			if(tileEntity instanceof ISecurityTile)
 			{
 				ISecurityTile security = (ISecurityTile)tileEntity;
-				security.getSecurity().setOwner(getOwner(stack));
+				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
 				
 				if(hasSecurity(stack))
 				{
 					security.getSecurity().setMode(getSecurity(stack));
 				}
 				
-				if(getOwner(stack) == null)
+				if(getOwnerUUID(stack) == null)
 				{
-					security.getSecurity().setOwner(player.getName());
+					security.getSecurity().setOwnerUUID(player.getUniqueID());
 				}
 			}
 			
@@ -321,26 +324,26 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	}
 	
 	@Override
-	public String getOwner(ItemStack stack) 
+	public UUID getOwnerUUID(ItemStack stack) 
 	{
-		if(ItemDataUtils.hasData(stack, "owner"))
+		if(ItemDataUtils.hasData(stack, "ownerUUID"))
 		{
-			return ItemDataUtils.getString(stack, "owner");
+			return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public void setOwner(ItemStack stack, String owner) 
+	public void setOwnerUUID(ItemStack stack, UUID owner) 
 	{
-		if(owner == null || owner.isEmpty())
+		if(owner == null)
 		{
-			ItemDataUtils.removeData(stack, "owner");
+			ItemDataUtils.removeData(stack, "ownerUUID");
 			return;
 		}
 		
-		ItemDataUtils.setString(stack, "owner", owner);
+		ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
 	}
 
 	@Override
@@ -375,6 +378,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
 	{
-		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper());
+		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
 	}
 }

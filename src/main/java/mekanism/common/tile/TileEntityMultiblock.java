@@ -14,8 +14,9 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import net.minecraft.block.state.IBlockState;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -81,14 +82,12 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			for(EntityPlayer player : playersUsing)
 			{
-				System.out.println(worldObj.isRemote + " " + clientHasStructure + " " + structure);
-				//player.closeScreen();
+				player.closeScreen();
 			}
 		}
 
 		if(!worldObj.isRemote)
 		{
-			//System.out.println(pos + " " + structure);
 			if(structure == null)
 			{
 				isRendering = false;
@@ -131,7 +130,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 			if(structure != null)
 			{
-				//System.out.println("Whee " + structure + " " + isInvalid());
 				getSynchronizedData().didTick = false;
 
 				if(getSynchronizedData().inventoryID != null)
@@ -290,6 +288,28 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				itemstack.stackSize = getInventoryStackLimit();
 			}
 		}
+	}
+	
+	@Override
+	public ItemStack decrStackSize(int slotID, int amount)
+	{
+		if(structure == null || getSynchronizedData().getInventory() == null)
+		{
+			return null;
+		}
+		
+		return ItemStackHelper.getAndSplit(getSynchronizedData().getInventory(), slotID, amount);
+	}
+
+	@Override
+	public ItemStack removeStackFromSlot(int slotID)
+	{
+		if(structure == null || getSynchronizedData().getInventory() == null)
+		{
+			return null;
+		}
+		
+		return ItemStackHelper.getAndRemove(getSynchronizedData().getInventory(), slotID);
 	}
 	
 	@Override

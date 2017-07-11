@@ -6,9 +6,10 @@ import ic2.api.item.IElectricItem;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
@@ -16,11 +17,14 @@ import mekanism.common.MekanismItems;
 import mekanism.common.RobitAIFollow;
 import mekanism.common.RobitAIPickup;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
+import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -47,7 +51,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import cofh.api.energy.IEnergyContainerItem;
@@ -68,7 +75,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public boolean texTick;
 	
     private static final DataParameter<Float> ELECTRICITY = EntityDataManager.<Float>createKey(EntityRobit.class, DataSerializers.FLOAT);
-    private static final DataParameter<String> OWNER = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<String> OWNER_UUID = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<String> OWNER_NAME = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> FOLLOW = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
 
@@ -127,7 +135,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		super.entityInit();
 
 		dataManager.register(ELECTRICITY, 0F);
-		dataManager.register(OWNER, "");
+		dataManager.register(OWNER_UUID, "");
+		dataManager.register(OWNER_NAME, "");
 		dataManager.register(FOLLOW, false);
 		dataManager.register(DROP_PICKUP, false);
 	}
@@ -164,54 +173,71 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				return;
 			}
 
-			if(!(homeLocation.getTileEntity(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(homeLocation.dimensionId)) instanceof TileEntityChargepad))
+			if(ticksExisted % 20 == 0)
 			{
-				drop();
-				setDead();
-
-				return;
+				World serverWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(homeLocation.dimensionId);
+				
+				if(homeLocation.exists(serverWorld))
+				{
+					if(!(homeLocation.getTileEntity(serverWorld) instanceof TileEntityChargepad))
+					{
+						drop();
+						setDead();
+					}
+				}
 			}
 
 			if(getEnergy() == 0 && !isOnChargepad())
 			{
 				goHome();
 			}
+			
+			ItemStack stack = inventory[27];
 
-			if(inventory[27] != null && getEnergy() < MAX_ELECTRICITY)
+			if(stack != null && getEnergy() < MAX_ELECTRICITY)
 			{
-				if(inventory[27].getItem() instanceof IEnergizedItem)
+				if(stack.getItem() instanceof IEnergizedItem)
 				{
-					setEnergy(getEnergy() + EnergizedItemManager.discharge(inventory[27], MAX_ELECTRICITY - getEnergy()));
+					setEnergy(getEnergy() + EnergizedItemManager.discharge(stack, MAX_ELECTRICITY - getEnergy()));
 				}
-				else if(MekanismUtils.useIC2() && inventory[27].getItem() instanceof IElectricItem)
+				else if(MekanismUtils.useTesla() && stack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null))
 				{
-					IElectricItem item = (IElectricItem)inventory[27].getItem();
-
-					if(item.canProvideEnergy(inventory[27]))
+					ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
+					
+					long needed = (long)Math.round((MAX_ELECTRICITY-getEnergy())*general.TO_TESLA);
+					setEnergy(getEnergy() + producer.takePower(needed, false)*general.FROM_TESLA);
+				}
+				else if(MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null))
+				{
+					IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
+					
+					if(storage.canExtract())
 					{
-						double gain = ElectricItem.manager.discharge(inventory[27], (MAX_ELECTRICITY - getEnergy())* general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
+						int needed = (int)Math.round(Math.min(Integer.MAX_VALUE, (MAX_ELECTRICITY-getEnergy())*general.TO_FORGE));
+						setEnergy(getEnergy() + storage.extractEnergy(needed, false)*general.FROM_FORGE);
+					}
+				}
+				else if(MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem)
+				{
+					IEnergyContainerItem item = (IEnergyContainerItem)stack.getItem();
+
+					int needed = (int)Math.round(Math.min(Integer.MAX_VALUE, (MAX_ELECTRICITY - getEnergy())*general.TO_RF));
+					setEnergy(getEnergy() + (item.extractEnergy(stack, needed, false)*general.FROM_RF));
+				}
+				else if(MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem)
+				{
+					IElectricItem item = (IElectricItem)stack.getItem();
+
+					if(item.canProvideEnergy(stack))
+					{
+						double gain = ElectricItem.manager.discharge(stack, (MAX_ELECTRICITY - getEnergy())*general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
 						setEnergy(getEnergy() + gain);
 					}
 				}
-				else if(MekanismUtils.useRF() && inventory[27].getItem() instanceof IEnergyContainerItem)
-				{
-					ItemStack itemStack = inventory[27];
-					IEnergyContainerItem item = (IEnergyContainerItem)inventory[27].getItem();
-
-					int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
-					int toTransfer = (int)Math.round(Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*general.TO_RF)));
-
-					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_RF));
-				}
-				else if(inventory[27].getItem() == Items.REDSTONE && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
+				else if(stack.getItem() == Items.REDSTONE && getEnergy()+general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
 					setEnergy(getEnergy() + general.ENERGY_PER_REDSTONE);
-					inventory[27].stackSize--;
-
-					if(inventory[27].stackSize <= 0)
-					{
-						inventory[27] = null;
-					}
+					stack.stackSize--;
 				}
 			}
 
@@ -428,9 +454,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		nbtTags.setString("name", getName());
 
-		if(getOwnerName() != null)
+		if(getOwnerUUID() != null)
 		{
-			nbtTags.setString("owner", getOwnerName());
+			nbtTags.setString("ownerUUID", getOwnerUUID().toString());
 		}
 
 		nbtTags.setBoolean("follow", getFollowing());
@@ -467,9 +493,19 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		setCustomNameTag(nbtTags.getString("name"));
 
-		if(nbtTags.hasKey("owner"))
+		if(nbtTags.hasKey("ownerUUID"))
 		{
-			setOwner(nbtTags.getString("owner"));
+			setOwnerUUID(UUID.fromString(nbtTags.getString("ownerUUID")));
+		} else if (nbtTags.hasKey("owner"))
+		{
+			String oldOwner = nbtTags.getString("owner");
+			for (Map.Entry<UUID, String> entry : UsernameCache.getMap().entrySet())
+			{
+				if (entry.getValue().equals(oldOwner)){
+					setOwnerUUID(entry.getKey());
+					break;
+				}
+			}
 		}
 
 		setFollowing(nbtTags.getBoolean("follow"));
@@ -537,17 +573,23 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public EntityPlayer getOwner()
 	{
-		return worldObj.getPlayerEntityByName(getOwnerName());
+		return worldObj.getPlayerEntityByUUID(getOwnerUUID());
 	}
 
 	public String getOwnerName()
 	{
-		return dataManager.get(OWNER);
+		return dataManager.get(OWNER_NAME);
 	}
 
-	public void setOwner(String username)
+	public UUID getOwnerUUID()
 	{
-		dataManager.set(OWNER, username);
+		return UUID.fromString(dataManager.get(OWNER_UUID));
+	}
+
+	public void setOwnerUUID(UUID uuid)
+	{
+		dataManager.set(OWNER_UUID, uuid.toString());
+		dataManager.set(OWNER_NAME, UsernameCache.getLastKnownUsername(uuid));
 	}
 
 	public boolean getFollowing()

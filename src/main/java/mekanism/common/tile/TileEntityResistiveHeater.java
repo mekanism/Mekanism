@@ -7,17 +7,18 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -28,7 +29,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile
+public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile
 {
 	public double energyUsage = 100;
 	
@@ -347,7 +348,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 				{
 					if(arguments[0] instanceof Double)
 					{
-						temperature = (Double)arguments[0];
+						energyUsage = (Double)arguments[0];
+						return new Object[] {"Set energy usage."};
 					}
 				}
 				

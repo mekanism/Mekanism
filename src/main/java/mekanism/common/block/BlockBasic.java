@@ -2,11 +2,11 @@ package mekanism.common.block;
 
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.util.StackUtils;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
@@ -26,7 +26,6 @@ import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -36,9 +35,11 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -451,13 +452,13 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		}
 		else if(tile instanceof TileEntitySecurityDesk)
 		{
-			String owner = ((TileEntitySecurityDesk)tile).owner;
+			UUID ownerUUID = ((TileEntitySecurityDesk)tile).ownerUUID;
 			
 			if(!entityplayer.isSneaking())
 			{
 				if(!world.isRemote)
 				{
-					if(owner == null || entityplayer.getName().equals(owner))
+					if(ownerUUID == null || entityplayer.getUniqueID().equals(ownerUUID))
 					{
 						entityplayer.openGui(Mekanism.instance, 57, world, pos.getX(), pos.getY(), pos.getZ());
 					}
@@ -503,7 +504,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			{
 				if(bin.getItemCount() < bin.tier.storage)
 				{
-					if(bin.addTicks == 0 && stack != null)
+					if(bin.addTicks == 0)
 					{
 						if(stack != null)
 						{
@@ -809,7 +810,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			
 			if(tileEntity instanceof TileEntitySecurityDesk)
 			{
-				((TileEntitySecurityDesk)tileEntity).owner = placer.getName();
+				((TileEntitySecurityDesk)tileEntity).ownerUUID = placer.getUniqueID();
 			}
 
 			if(tileEntity instanceof IBoundingBlock)

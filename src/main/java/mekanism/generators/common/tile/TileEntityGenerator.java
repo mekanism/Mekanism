@@ -6,20 +6,22 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityNoisyElectricBlock;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.block.states.BlockStateGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -27,7 +29,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl, ISecurityTile
+public abstract class TileEntityGenerator extends TileEntityNoisyBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl, ISecurityTile
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -86,6 +88,18 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 				{
 					clientActive = isActive;
 					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				}
+			}
+			
+			if(!worldObj.isRemote && general.destroyDisabledBlocks)
+			{
+				GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
+				
+				if(type != null && !type.isEnabled())
+				{
+					Mekanism.logger.info("[Mekanism] Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this) + " as according to config.");
+					worldObj.setBlockToAir(getPos());
+					return;
 				}
 			}
 

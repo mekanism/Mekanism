@@ -6,15 +6,16 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IActiveState
+public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveState
 {
 	public Coord4D digging;
 	public double diggingProgress;

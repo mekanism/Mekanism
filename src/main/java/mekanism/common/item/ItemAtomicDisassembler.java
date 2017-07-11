@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Multimap;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.ListUtils;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
@@ -35,6 +33,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+
+import com.google.common.collect.Multimap;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
@@ -176,26 +176,30 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
 	{
-		if(!world.isRemote && entityplayer.isSneaking())
+		if(entityplayer.isSneaking())
 		{
-			toggleMode(itemstack);
-			entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			if(!world.isRemote)
+			{
+				toggleMode(itemstack);
+				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			}
+			
+			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 		}
 
-		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult(EnumActionResult.PASS, itemstack);
 	}
 
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(!player.isSneaking())
+		Block block = world.getBlockState(pos).getBlock();
+		
+		if(!player.isSneaking() && (block == Blocks.DIRT || block == Blocks.GRASS || block == Blocks.GRASS_PATH))
 		{
 			if(useHoe(stack, player, world, pos, side) == EnumActionResult.FAIL)
 			{
-				if(world.getBlockState(pos).getBlock() != Blocks.FARMLAND)
-				{
-					return EnumActionResult.FAIL;
-				}
+				return EnumActionResult.FAIL;
 			}
 
 			switch(getEfficiency(stack))

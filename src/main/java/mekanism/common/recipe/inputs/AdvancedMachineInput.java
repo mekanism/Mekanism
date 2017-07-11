@@ -2,7 +2,8 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
-import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

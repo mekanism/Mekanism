@@ -22,13 +22,6 @@ public class RotaryCondensentratorRecipeHandler implements IRecipeHandler<Rotary
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() 
-	{
-		return category.getUid();
-	}
-
-	@Nonnull
-	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull RotaryCondensentratorRecipeWrapper recipe)
 	{
 		return recipe;
@@ -44,5 +37,11 @@ public class RotaryCondensentratorRecipeHandler implements IRecipeHandler<Rotary
 	public String getRecipeCategoryUid(@Nonnull RotaryCondensentratorRecipeWrapper recipe) 
 	{
 		return category.getUid();
+	}
+
+	@Override
+	public String getRecipeCategoryUid()
+	{
+		return getRecipeCategoryUid(null);
 	}
 }

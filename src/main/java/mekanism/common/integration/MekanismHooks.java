@@ -13,6 +13,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
 import mekanism.common.multipart.TransmitterType;
+import mekanism.common.integration.computer.CCPeripheral;
+import mekanism.common.integration.computer.OCDriver;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;

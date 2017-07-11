@@ -2,13 +2,11 @@ package mekanism.common.block;
 
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.util.StackUtils;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
@@ -32,25 +30,28 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -141,6 +142,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	
 	private static final AxisAlignedBB CHARGEPAD_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
 	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
+	private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
+	private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
 	public BlockMachine()
 	{
@@ -568,9 +571,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				case QUANTUM_ENTANGLOPORTER:
 					if(!entityplayer.isSneaking())
 					{
-						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
+						UUID owner = ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
 						
-						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getName().equals(owner))
+						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getUniqueID().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 						} 
@@ -887,7 +890,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}
@@ -987,7 +990,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-
+		TileEntity tile = world.getTileEntity(pos);
+		
 		if(type == null)
 		{
 			return super.getBoundingBox(state, world, pos);
@@ -999,6 +1003,16 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				return CHARGEPAD_BOUNDS;
 			case FLUID_TANK:
 				return TANK_BOUNDS;
+			case LASER:
+				if(tile instanceof TileEntityLaser)
+				{
+					return MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLaser)tile).facing).offset(0.5, 0.5, 0.5);
+				}
+			case LOGISTICAL_SORTER:
+				if(tile instanceof TileEntityLogisticalSorter)
+				{
+					return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter)tile).facing).offset(0.5, 0.5, 0.5);
+				}
 			default:
 				return super.getBoundingBox(state, world, pos);
 		}
@@ -1013,11 +1027,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
-		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
-		{
-			return null;
-		}
-
 		return super.getCollisionBoundingBox(state, world, pos);
 	}
 

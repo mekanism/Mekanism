@@ -4,7 +4,6 @@ import java.util.Map;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.util.StackUtils;
 import mekanism.common.InfuseStorage;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
@@ -16,8 +15,9 @@ import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
-import mekanism.common.tile.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -206,6 +206,11 @@ public interface IFactory
 			}
 
 			return cacheTile;
+		}
+		
+		public double getEnergyUsage()
+		{
+			return type.getUsage();
 		}
 
 		public int getMaxSecondaryEnergy()

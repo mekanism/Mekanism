@@ -17,11 +17,11 @@ public class MekanismAPI
 	/** Mekanism debug mode */
 	public static boolean debug = false;
 
-	public static boolean isBlockCompatible(Item item, int meta)
+	public static boolean isBlockCompatible(Block block, int meta)
 	{
 		for(BlockInfo i : cardboardBoxIgnore)
 		{
-			if(i.block == Block.getBlockFromItem(item) && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta))
+			if(i.block == block && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta))
 			{
 				return false;
 			}

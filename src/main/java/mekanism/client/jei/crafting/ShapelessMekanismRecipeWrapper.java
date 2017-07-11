@@ -1,22 +1,22 @@
 package mekanism.client.jei.crafting;
 
-import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import mekanism.common.recipe.ShapelessMekanismRecipe;
+import mezz.jei.api.IJeiHelpers;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
-import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
+import mezz.jei.api.recipe.IStackHelper;
 import net.minecraft.item.ItemStack;
 
-public class ShapelessMekanismRecipeWrapper extends BlankRecipeWrapper implements ICraftingRecipeWrapper
+public class ShapelessMekanismRecipeWrapper extends BlankRecipeWrapper
 {
-	@Nonnull
+	private final IJeiHelpers jeiHelpers;
 	private final ShapelessMekanismRecipe recipe;
 
-	public ShapelessMekanismRecipeWrapper(@Nonnull ShapelessMekanismRecipe r)
+	public ShapelessMekanismRecipeWrapper(IJeiHelpers helpers, ShapelessMekanismRecipe r)
 	{
+		jeiHelpers = helpers;
 		recipe = r;
 		
 		for(Object input : recipe.getInput()) 
@@ -25,7 +25,7 @@ public class ShapelessMekanismRecipeWrapper extends BlankRecipeWrapper implement
 			{
 				ItemStack itemStack = (ItemStack)input;
 				
-				if(itemStack.stackSize != 1) 
+				if(itemStack.stackSize != 1)
 				{
 					itemStack.stackSize = 1;
 				}
@@ -33,17 +33,18 @@ public class ShapelessMekanismRecipeWrapper extends BlankRecipeWrapper implement
 		}
 	}
 
-	@Nonnull
 	@Override
-	public List getInputs() 
+	public void getIngredients(IIngredients ingredients)
 	{
-		return recipe.getInput();
-	}
+		IStackHelper stackHelper = jeiHelpers.getStackHelper();
+		ItemStack recipeOutput = recipe.getRecipeOutput();
 
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs() 
-	{
-		return Collections.singletonList(recipe.getRecipeOutput());
+		List<List<ItemStack>> inputs = stackHelper.expandRecipeItemStackInputs(recipe.getInput());
+		ingredients.setInputLists(ItemStack.class, inputs);
+
+		if(recipeOutput != null) 
+		{
+			ingredients.setOutput(ItemStack.class, recipeOutput);
+		}
 	}
 }

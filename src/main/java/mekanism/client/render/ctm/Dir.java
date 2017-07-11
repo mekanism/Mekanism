@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 /**
- * Think of this class as a "Two dimensional ForgeDirection, with diagonals".
+ * Think of this class as a "Two dimensional EnumFacing, with diagonals".
  * <p>
  * It represents the eight different directions a face of a block can connect with CTM, and contains the logic for determining if a block is indeed connected in that direction.
  * <p>

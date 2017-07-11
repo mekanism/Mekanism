@@ -5,16 +5,17 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.SoundWrapper;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
@@ -63,7 +64,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		inventory = new ItemStack[1];
 	}
 
-	@Override
 	public boolean isFrame()
 	{
 		return false;
@@ -205,7 +205,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -276,9 +276,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 				getReactor().setCaseTemp(dataStream.readDouble());
 				getReactor().setInjectionRate(dataStream.readInt());
 				getReactor().setBurning(dataStream.readBoolean());
-				fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
-				deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
-				tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
+				fuelTank.setGas(new GasStack(MekanismFluids.FusionFuel, dataStream.readInt()));
+				deuteriumTank.setGas(new GasStack(MekanismFluids.Deuterium, dataStream.readInt()));
+				tritiumTank.setGas(new GasStack(MekanismFluids.Tritium, dataStream.readInt()));
 				waterTank.setCapacity(dataStream.readInt());
 				waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
 				steamTank.setCapacity(dataStream.readInt());

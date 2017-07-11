@@ -6,15 +6,16 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;

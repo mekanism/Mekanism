@@ -6,15 +6,15 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.generators;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -73,7 +73,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			{
 				if(FluidContainerUtils.isFluidContainer(inventory[0]))
 				{
-					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory[0], FluidChecker.check(FluidRegistry.LAVA)), true);
+					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(FluidRegistry.LAVA)), true);
 				}
 				else {
 					int fuel = getFuel(inventory[0]);

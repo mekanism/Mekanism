@@ -4,24 +4,28 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.generators;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
+import mekanism.common.config.TypeConfigManager;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
+import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -29,7 +33,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -104,8 +107,11 @@ public class MekanismGenerators implements IModule
 				}
 			}
 
-			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("ethene"), (int)(240 * general.TO_RF), 40 * Fluid.BUCKET_VOLUME);
+			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (int)(240 * general.TO_RF), 40 * Fluid.BUCKET_VOLUME);
 		}
+		
+		//Update the config-dependent recipes after the recipes have actually been added in the first place
+		TypeConfigManager.updateConfigRecipes(GeneratorType.getGeneratorsForConfig(), generators.generatorsManager);
 		
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))
 		{
@@ -115,19 +121,19 @@ public class MekanismGenerators implements IModule
 	
 	public void addRecipes()
 	{
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 0), new Object[] {
+		GeneratorType.HEAT_GENERATOR.addRecipe(new ShapedMekanismRecipe(GeneratorType.HEAT_GENERATOR.getStack(), new Object[] {
 			"III", "WOW", "CFC", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "ingotCopper", Character.valueOf('O'), "ingotOsmium", Character.valueOf('F'), Blocks.FURNACE, Character.valueOf('W'), "plankWood"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 1), new Object[] {
+		GeneratorType.SOLAR_GENERATOR.addRecipe(new ShapedMekanismRecipe(GeneratorType.SOLAR_GENERATOR.getStack(), new Object[] {
 			"SSS", "AIA", "PEP", Character.valueOf('S'), GeneratorsItems.SolarPanel, Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron", Character.valueOf('P'), "dustOsmium", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 5), new Object[] {
-			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(GeneratorsBlocks.Generator, 1, 1), Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron"
+		GeneratorType.ADVANCED_SOLAR_GENERATOR.addRecipe(new ShapedMekanismRecipe(GeneratorType.ADVANCED_SOLAR_GENERATOR.getStack(), new Object[] {
+			"SES", "SES", "III", Character.valueOf('S'), GeneratorType.SOLAR_GENERATOR.getStack(), Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 4), new Object[] {
+		GeneratorType.BIO_GENERATOR.addRecipe(new ShapedMekanismRecipe(GeneratorType.BIO_GENERATOR.getStack(), new Object[] {
 			"RER", "BCB", "NEN", Character.valueOf('R'), "dustRedstone", Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('B'), MekanismItems.BioFuel, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('N'), "ingotIron"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 3), new Object[] {
+		GeneratorType.GAS_GENERATOR.addRecipe(new ShapedMekanismRecipe(GeneratorType.GAS_GENERATOR.getStack(), new Object[] {
 			"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('C'), MekanismItems.ElectrolyticCore
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsItems.SolarPanel), new Object[] {
@@ -162,26 +168,26 @@ public class MekanismGenerators implements IModule
 		}));
 		
 		//Reactor Recipes
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 4, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_FRAME.getStack(4), new Object[] {
 			" C ", "CAC", " C ", Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('A'), "alloyUltimate"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 2, 3), new Object[] {
-			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_PORT.getStack(2), new Object[] {
+			" I ", "ICI", " I ", Character.valueOf('I'), ReactorBlockType.REACTOR_FRAME.getStack(1), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 4, 0), new Object[] {
-			" I ", "IGI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('G'), "blockGlass"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_GLASS.getStack(4), new Object[] {
+			" I ", "IGI", " I ", Character.valueOf('I'), ReactorBlockType.REACTOR_FRAME.getStack(1), Character.valueOf('G'), "blockGlass"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 0), new Object[] {
-			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank(GasTankTier.BASIC)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_CONTROLLER.getStack(1), new Object[] {
+			"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), ReactorBlockType.REACTOR_FRAME.getStack(1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank(GasTankTier.BASIC)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 2, 1), new Object[] {
-			" I ", "ILI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.ReactorGlass, 1, 0), Character.valueOf('L'), "blockRedstone"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.LASER_FOCUS_MATRIX.getStack(2), new Object[] {
+			" I ", "ILI", " I ", Character.valueOf('I'), ReactorBlockType.REACTOR_GLASS.getStack(1), Character.valueOf('L'), "blockRedstone"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 4), new Object[] {
-			" R ", "RFR", " R ", Character.valueOf('R'), "dustRedstone", Character.valueOf('F'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(ReactorBlockType.REACTOR_LOGIC_ADAPTER.getStack(1), new Object[] {
+			" R ", "RFR", " R ", Character.valueOf('R'), "dustRedstone", Character.valueOf('F'), ReactorBlockType.REACTOR_FRAME.getStack(1)
 		}));
 
-		FuelHandler.addGas(GasRegistry.getGas("ethene"), general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+		FuelHandler.addGas(MekanismFluids.Ethene, general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
 	}
 
 	@Override
@@ -216,6 +222,13 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(generators.turbineVentGasFlow);
 		dataStream.writeDouble(generators.turbineDisperserGasFlow);
 		dataStream.writeInt(generators.condenserRate);
+		
+		dataStream.writeDouble(generators.energyPerFusionFuel);
+		
+		for(GeneratorType type : GeneratorType.getGeneratorsForConfig())
+		{
+			dataStream.writeBoolean(generators.generatorsManager.isEnabled(type.blockName));
+		}
 	}
 
 	@Override
@@ -238,6 +251,13 @@ public class MekanismGenerators implements IModule
 		generators.turbineVentGasFlow = dataStream.readDouble();
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
 		generators.condenserRate = dataStream.readInt();
+		
+		generators.energyPerFusionFuel = dataStream.readDouble();
+		
+		for(GeneratorType type : GeneratorType.getGeneratorsForConfig())
+		{
+			generators.generatorsManager.setEntry(type.blockName, dataStream.readBoolean());
+		}
 	}
 	
 	@Override
@@ -252,6 +272,7 @@ public class MekanismGenerators implements IModule
 		if(event.getModID().equals("MekanismGenerators"))
 		{
 			proxy.loadConfiguration();
+			TypeConfigManager.updateConfigRecipes(GeneratorType.getGeneratorsForConfig(), generators.generatorsManager);
 		}
 	}
 }

@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -18,8 +17,9 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerElectricMachine;
-import mekanism.common.tile.TileEntityElectricMachine;
+import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fml.relauncher.Side;

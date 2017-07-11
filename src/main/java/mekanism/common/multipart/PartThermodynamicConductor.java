@@ -9,15 +9,15 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.ColourRGBA;
-import mekanism.common.HeatNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.transmitters.grid.HeatNetwork;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -208,7 +208,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 		temperature += tier.inverseHeatCapacity * heatToAbsorb;
 		heatToAbsorb = 0;
 		
-		if(Math.abs(temperature - clientTemperature) > (temperature / 100))
+		if(Math.abs(temperature - clientTemperature) > (temperature / 20))
 		{
 			clientTemperature = temperature;
 			sendTemp();

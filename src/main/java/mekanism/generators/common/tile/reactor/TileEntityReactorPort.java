@@ -15,14 +15,14 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.reactor.IReactorBlock;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -178,15 +178,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(getReactor() != null)
 		{
-			if(stack.getGas() == GasRegistry.getGas("deuterium"))
+			if(stack.getGas() == MekanismFluids.Deuterium)
 			{
 				return getReactor().getDeuteriumTank().receive(stack, doTransfer);
 			}
-			else if(stack.getGas() == GasRegistry.getGas("tritium"))
+			else if(stack.getGas() == MekanismFluids.Tritium)
 			{
 				return getReactor().getTritiumTank().receive(stack, doTransfer);
 			}
-			else if(stack.getGas() == GasRegistry.getGas("fusionFuelDT"))
+			else if(stack.getGas() == MekanismFluids.FusionFuel)
 			{
 				return getReactor().getFuelTank().receive(stack, doTransfer);
 			}
@@ -204,7 +204,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return (type == GasRegistry.getGas("deuterium") || type == GasRegistry.getGas("tritium") || type == GasRegistry.getGas("fusionFuelDT"));
+		return (type == MekanismFluids.Deuterium || type == MekanismFluids.Tritium || type == MekanismFluids.FusionFuel);
 	}
 
 	@Override
@@ -245,7 +245,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public boolean canOutputTo(EnumFacing side)
+	public boolean canOutputEnergy(EnumFacing side)
 	{
 		return true;
 	}
@@ -368,7 +368,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		
 		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			if(!(adj instanceof IReactorBlock))
+			if(!(adj instanceof TileEntityReactorBlock))
 			{
 				return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			}

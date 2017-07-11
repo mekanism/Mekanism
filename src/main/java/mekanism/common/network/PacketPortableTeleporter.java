@@ -4,12 +4,12 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
-import mekanism.api.ObfuscatedNames;
 import mekanism.api.Range4D;
-import mekanism.api.util.ReflectionUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -17,6 +17,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.util.ReflectionUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -57,7 +58,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							Mekanism.proxy.handleTeleporterUpdate(message);
 							break;
 						case SET_FREQ:
-							FrequencyManager manager1 = getManager(message.frequency.isPublic() ? null : player.getName(), world);
+							FrequencyManager manager1 = getManager(message.frequency.isPublic() ? null : player.getUniqueID(), world);
 							Frequency toUse = null;
 							
 							for(Frequency freq : manager1.getFrequencies())
@@ -71,7 +72,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							
 							if(toUse == null)
 							{
-								toUse = new Frequency(message.frequency.name, player.getName()).setPublic(message.frequency.isPublic());
+								toUse = new Frequency(message.frequency.name, player.getPersistentID()).setPublic(message.frequency.isPublic());
 								manager1.addFrequency(toUse);
 							}
 							
@@ -82,15 +83,15 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							
 							break;
 						case DEL_FREQ:
-							FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getName(), world);
-							manager.remove(message.frequency.name, player.getName());
+							FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getUniqueID(), world);
+							manager.remove(message.frequency.name, player.getUniqueID());
 							
 							item.setFrequency(itemstack, null);
 							item.setPrivateMode(itemstack, false);
 							
 							break;
 						case TELEPORT:
-							FrequencyManager manager2 = getManager(message.frequency.isPublic() ? null : player.getName(), world);
+							FrequencyManager manager2 = getManager(message.frequency.isPublic() ? null : player.getUniqueID(), world);
 							Frequency found = null;
 							
 							for(Frequency freq : manager2.getFrequencies())
@@ -159,7 +160,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 		
 		List<Frequency> privateFreqs = new ArrayList<Frequency>();
 		
-		for(Frequency f : getManager(player.getName(), world).getFrequencies())
+		for(Frequency f : getManager(player.getUniqueID(), world).getFrequencies())
 		{
 			privateFreqs.add(f);
 		}
@@ -168,7 +169,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 		
 		if(given != null)
 		{
-			FrequencyManager manager = given.isPublic() ? getManager(null, world) : getManager(player.getName(), world);
+			FrequencyManager manager = given.isPublic() ? getManager(null, world) : getManager(player.getUniqueID(), world);
 			boolean found = false;
 			
 			for(Frequency iterFreq : manager.getFrequencies())
@@ -211,7 +212,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 		Mekanism.packetHandler.sendTo(new PortableTeleporterMessage(hand, given, status, publicFreqs, privateFreqs), (EntityPlayerMP)player);
 	}
 	
-	public FrequencyManager getManager(String owner, World world)
+	public FrequencyManager getManager(UUID owner, World world)
 	{
 		if(owner == null)
 		{
@@ -220,7 +221,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 		else {
 			if(!Mekanism.privateTeleporters.containsKey(owner))
 			{
-				FrequencyManager manager = new FrequencyManager(Frequency.class, owner);
+				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, owner);
 				Mekanism.privateTeleporters.put(owner, manager);
 				manager.createOrLoad(world);
 			}

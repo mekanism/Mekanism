@@ -22,13 +22,6 @@ public class ChemicalWasherRecipeHandler implements IRecipeHandler<ChemicalWashe
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() 
-	{
-		return category.getUid();
-	}
-
-	@Nonnull
-	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull ChemicalWasherRecipeWrapper recipe)
 	{
 		return recipe;
@@ -44,5 +37,11 @@ public class ChemicalWasherRecipeHandler implements IRecipeHandler<ChemicalWashe
 	public String getRecipeCategoryUid(@Nonnull ChemicalWasherRecipeWrapper recipe) 
 	{
 		return category.getUid();
+	}
+
+	@Override
+	public String getRecipeCategoryUid()
+	{
+		return getRecipeCategoryUid(null);
 	}
 }

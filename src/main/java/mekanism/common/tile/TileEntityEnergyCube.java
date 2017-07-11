@@ -7,6 +7,7 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.IConfigCardAccess;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -16,12 +17,14 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -31,9 +34,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable, IConfigCardAccess
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
@@ -336,5 +340,22 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	public TileComponentSecurity getSecurity()
 	{
 		return securityComponent;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.CONFIG_CARD_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

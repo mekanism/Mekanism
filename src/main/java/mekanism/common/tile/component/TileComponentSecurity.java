@@ -3,26 +3,30 @@ package mekanism.common.tile.component;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.UsernameCache;
 
 public class TileComponentSecurity implements ITileComponent
 {
 	/** TileEntity implementing this component. */
 	public TileEntityContainerBlock tileEntity;
 	
-	private String owner;
+	private UUID ownerUUID;
+	private String clientOwner;
 	
 	private SecurityMode securityMode = SecurityMode.PUBLIC;
 	
@@ -37,7 +41,7 @@ public class TileComponentSecurity implements ITileComponent
 	
 	public void readFrom(TileComponentSecurity security)
 	{
-		owner = security.owner;
+		ownerUUID = security.ownerUUID;
 		securityMode = security.securityMode;
 	}
 	
@@ -46,22 +50,29 @@ public class TileComponentSecurity implements ITileComponent
 		return frequency;
 	}
 	
-	public String getOwner()
+	public UUID getOwnerUUID()
 	{
-		return owner;
+		return ownerUUID;
 	}
 	
-	public void setOwner(String o)
+	public String getClientOwner()
+	{
+		return clientOwner;
+	}
+	
+	public void setOwnerUUID(UUID uuid)
 	{
 		frequency = null;
-		owner = o;
+		ownerUUID = uuid;
 	}
 	
 	public SecurityMode getMode()
 	{
-		if(general.allowProtection) {
+		if(general.allowProtection) 
+		{
 			return securityMode;
-		} else {
+		} 
+		else {
 			return SecurityMode.PUBLIC;
 		}
 	}
@@ -73,7 +84,7 @@ public class TileComponentSecurity implements ITileComponent
 	
 	public FrequencyManager getManager(Frequency freq)
 	{
-		if(owner == null || freq == null)
+		if(ownerUUID == null || freq == null)
 		{
 			return null;
 		}
@@ -81,14 +92,14 @@ public class TileComponentSecurity implements ITileComponent
 		return Mekanism.securityFrequencies;
 	}
 	
-	public void setFrequency(String owner)
+	public void setFrequency(UUID owner)
 	{
 		FrequencyManager manager = Mekanism.securityFrequencies;
 		manager.deactivate(Coord4D.get(tileEntity));
 		
 		for(Frequency freq : manager.getFrequencies())
 		{
-			if(freq.owner.equals(owner))
+			if(freq.ownerUUID.equals(owner))
 			{
 				frequency = (SecurityFrequency)freq;
 				frequency.activeCoords.add(Coord4D.get(tileEntity));
@@ -111,9 +122,9 @@ public class TileComponentSecurity implements ITileComponent
 	{
 		if(!tileEntity.getWorld().isRemote)
 		{
-			if(frequency == null && owner != null)
+			if(frequency == null && ownerUUID != null)
 			{
-				setFrequency(owner);
+				setFrequency(ownerUUID);
 			}
 			
 			FrequencyManager manager = getManager(frequency);
@@ -122,12 +133,12 @@ public class TileComponentSecurity implements ITileComponent
 			{
 				if(frequency != null && !frequency.valid)
 				{
-					frequency = (SecurityFrequency)manager.validateFrequency(owner, Coord4D.get(tileEntity), frequency);
+					frequency = (SecurityFrequency)manager.validateFrequency(ownerUUID, Coord4D.get(tileEntity), frequency);
 				}
 				
 				if(frequency != null)
 				{
-					frequency = (SecurityFrequency)manager.update(owner, Coord4D.get(tileEntity), frequency);
+					frequency = (SecurityFrequency)manager.update(Coord4D.get(tileEntity), frequency);
 				}
 			}
 			else {
@@ -141,9 +152,19 @@ public class TileComponentSecurity implements ITileComponent
 	{
 		securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
 		
-		if(nbtTags.hasKey("owner"))
+		if(nbtTags.hasKey("ownerUUID"))
 		{
-			owner = nbtTags.getString("owner");
+			ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
+		} else if (nbtTags.hasKey("owner"))
+		{
+			String oldOwner = nbtTags.getString("owner");
+			for (Map.Entry<UUID, String> entry : UsernameCache.getMap().entrySet())
+			{
+				if (entry.getValue().equals(oldOwner)){
+					ownerUUID = entry.getKey();
+					break;
+				}
+			}
 		}
 		
 		if(nbtTags.hasKey("securityFreq"))
@@ -160,10 +181,12 @@ public class TileComponentSecurity implements ITileComponent
 		
 		if(dataStream.readBoolean())
 		{
-			owner = PacketHandler.readString(dataStream);
+			ownerUUID = UUID.fromString(PacketHandler.readString(dataStream));
+			clientOwner = PacketHandler.readString(dataStream);
 		}
 		else {
-			owner = null;
+			ownerUUID = null;
+			clientOwner = null;
 		}
 		
 		if(dataStream.readBoolean())
@@ -180,9 +203,9 @@ public class TileComponentSecurity implements ITileComponent
 	{
 		nbtTags.setInteger("securityMode", securityMode.ordinal());
 		
-		if(owner != null)
+		if(ownerUUID != null)
 		{
-			nbtTags.setString("owner", owner);
+			nbtTags.setString("ownerUUID", ownerUUID.toString());
 		}
 		
 		if(frequency != null)
@@ -198,10 +221,11 @@ public class TileComponentSecurity implements ITileComponent
 	{
 		data.add(securityMode.ordinal());
 		
-		if(owner != null)
+		if(ownerUUID != null)
 		{
 			data.add(true);
-			data.add(owner);
+			data.add(ownerUUID.toString());
+			data.add(UsernameCache.getLastKnownUsername(ownerUUID));
 		}
 		else {
 			data.add(false);

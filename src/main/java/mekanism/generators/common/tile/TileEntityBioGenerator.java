@@ -4,12 +4,12 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.MekanismConfig.generators;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;

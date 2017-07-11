@@ -5,13 +5,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -20,10 +19,13 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
@@ -51,8 +53,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IUpgradeTile, IRedstoneControl, ISecurityTile
 {
-	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
-	public Set<Coord4D> usedNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> activeNodes = new LinkedHashSet<>();
+	public Set<Coord4D> usedNodes = new HashSet<>();
 	
 	public boolean finishedCalc = false;
 	
@@ -558,6 +560,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 			default:
 				break;
 		}

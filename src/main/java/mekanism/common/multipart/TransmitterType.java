@@ -44,7 +44,7 @@ public enum TransmitterType
 		transparencyRender = transparency;
 		indexes = is;
 	}
-	
+
 	public BaseTier getTier()
 	{
 		return tier;
@@ -59,7 +59,7 @@ public enum TransmitterType
 	{
 		return size;
 	}
-	
+
 	public boolean hasTransparency()
 	{
 		return transparencyRender;

@@ -10,30 +10,40 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import mekanism.api.IClientTicker;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.GasStack;
-import mekanism.api.util.ReflectionUtils;
+import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
+import mekanism.common.ObfuscatedNames;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.frequency.Frequency;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketFlamethrowerData;
+import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
+import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
+import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -41,8 +51,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -70,6 +83,7 @@ public class ClientTickHandler
 	public boolean shouldReset = false;
 
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
+	public static Random rand = new Random();
 
 	public static final String MIKE_CAPE = "https://dl.dropboxusercontent.com/s/ji06yflixnszcby/cape.png";
 	public static final String DONATE_CAPE = "https://dl.dropboxusercontent.com/u/90411166/donate.png";
@@ -80,6 +94,9 @@ public class ClientTickHandler
 	private Map<String, CapeBufferDownload> aidanDownload = new HashMap<String, CapeBufferDownload>();
 
 	public static Set<IClientTicker> tickingSet = new HashSet<IClientTicker>();
+	public static Map<EntityPlayer, TeleportData> portableTeleports = new HashMap<>();
+	
+	public static int wheelStatus = 0;
 
 	@SubscribeEvent
 	public void onTick(ClientTickEvent event)
@@ -126,7 +143,7 @@ public class ClientTickHandler
 			shouldReset = false;
 		}
 
-		if(mc.theWorld != null && !Mekanism.proxy.isPaused())
+		if(mc.theWorld != null && mc.thePlayer != null && !Mekanism.proxy.isPaused())
 		{
 			if((!initHoliday || MekanismClient.ticksPassed % 1200 == 0) && mc.thePlayer != null)
 			{
@@ -300,6 +317,26 @@ public class ClientTickHandler
 					}
 				}
 			}
+			
+			for(Iterator<Entry<EntityPlayer, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext();)
+			{
+				Entry<EntityPlayer, TeleportData> entry = iter.next();
+				
+				for(int i = 0; i < 100; i++)
+				{
+					double x = entry.getKey().posX + rand.nextDouble()-0.5D;
+					double y = entry.getKey().posY + rand.nextDouble()*2-2D;
+					double z = entry.getKey().posZ + rand.nextDouble()-0.5D;
+					
+					mc.theWorld.spawnParticle(EnumParticleTypes.PORTAL, x, y, z, 0, 1, 0);
+				}
+				
+				if(mc.theWorld.getWorldTime() == entry.getValue().teleportTime)
+				{
+					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
+					iter.remove();
+				}
+			}
 
 			ItemStack chestStack = mc.thePlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 			
@@ -395,6 +432,40 @@ public class ClientTickHandler
 		}
 	}
 	
+	@SubscribeEvent
+	public void onMouseEvent(MouseEvent event)
+	{
+		if(client.allowConfiguratorModeScroll && mc.thePlayer != null && mc.thePlayer.isSneaking())
+		{
+			ItemStack stack = mc.thePlayer.getHeldItemMainhand();
+			int delta = event.getDwheel();
+			
+			if(stack != null && stack.getItem() instanceof ItemConfigurator && delta != 0)
+			{
+				ItemConfigurator configurator = (ItemConfigurator)stack.getItem();
+				RenderTickHandler.modeSwitchTimer = 100;
+				
+				wheelStatus += event.getDwheel();
+				int scaledDelta = wheelStatus/120;
+				wheelStatus = wheelStatus % 120;
+				int newVal = configurator.getState(stack).ordinal() + (scaledDelta % ConfiguratorMode.values().length);
+				
+				if(newVal > 0)
+				{
+					newVal = newVal % ConfiguratorMode.values().length;
+				}
+				else if(newVal < 0) 
+				{
+					newVal = ConfiguratorMode.values().length + newVal;
+				}
+				
+				configurator.setState(stack, ConfiguratorMode.values()[newVal]);
+				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(EnumHand.MAIN_HAND, configurator.getState(stack)));
+				event.setCanceled(true);
+			}
+		}
+	}
+	
 	public static void setCape(AbstractClientPlayer player, ResourceLocation cape)
 	{
 		try {
@@ -446,11 +517,11 @@ public class ClientTickHandler
 					{
 						if((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) || (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null)
 						{
-							return !player.onGround;
+							return !CommonPlayerTickHandler.isOnGround(player);
 						}
 						else if(mc.gameSettings.keyBindSneak.isKeyDown() && mc.currentScreen == null)
 						{
-							return !player.onGround;
+							return !CommonPlayerTickHandler.isOnGround(player);
 						}
 						
 						return true;
@@ -522,5 +593,30 @@ public class ClientTickHandler
 		}
 		
 		return false;
+	}
+	
+	public static void portableTeleport(EntityPlayer player, EnumHand hand, Frequency freq)
+	{
+		if(general.portableTeleporterDelay == 0)
+		{
+			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, hand, freq));
+		}
+		else {
+			portableTeleports.put(player, new TeleportData(hand, freq, mc.theWorld.getWorldTime()+general.portableTeleporterDelay));
+		}
+	}
+	
+	private static class TeleportData
+	{
+		private EnumHand hand;
+		private Frequency freq;
+		private long teleportTime;
+		
+		public TeleportData(EnumHand h, Frequency f, long t)
+		{
+			hand = h;
+			freq = f;
+			teleportTime = t;
+		}
 	}
 }

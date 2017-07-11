@@ -6,27 +6,28 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.HashList;
-import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.transmitters.grid.InventoryNetwork;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
-public class MultipartTransporter extends MultipartTransmitter<IInventory, InventoryNetwork> implements ILogisticalTransporter
+public class MultipartTransporter extends MultipartTransmitter<TileEntity, InventoryNetwork> implements ILogisticalTransporter
 {
 	public HashList<TransporterStack> transit = new HashList<>();
 
@@ -108,27 +109,24 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 						else {
 							if(stack.pathType != Path.NONE)
 							{
-								if(next != null && next.getTileEntity(world()) instanceof IInventory)
+								TileEntity tile = next.getTileEntity(world());
+								
+								if(next != null && tile != null)
 								{
 									needsSync.add(stack);
-									IInventory inventory = (IInventory)next.getTileEntity(world());
+									TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack), stack.getSide(this), stack.pathType == Path.HOME);
 
-									if(inventory != null)
+									if(response.getRejected(stack.itemStack) == null)
 									{
-										ItemStack rejected = InventoryUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this), stack.pathType == Path.HOME);
+										TransporterManager.remove(stack);
+										remove.add(stack);
+										continue;
+									}
+									else {
+										needsSync.add(stack);
+										stack.itemStack = response.getRejected(stack.itemStack);
 
-										if(rejected == null)
-										{
-											TransporterManager.remove(stack);
-											remove.add(stack);
-											continue;
-										}
-										else {
-											needsSync.add(stack);
-											stack.itemStack = rejected;
-
-											prevSet = next;
-										}
+										prevSet = next;
 									}
 								}
 							}
@@ -232,7 +230,9 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 
 		if(stack.pathType != Path.NONE)
 		{
-			if(!TransporterManager.didEmit(stack.itemStack, stack.recalculatePath(this, 0)))
+			TransitResponse ret = stack.recalculatePath(TransitRequest.getFromTransport(stack), this, 0);
+			
+			if(ret.isEmpty())
 			{
 				if(!stack.calculateIdle(this))
 				{
@@ -258,31 +258,30 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public ItemStack insert(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min)
 	{
-		return insert_do(original, itemStack, color, doEmit, min, false);
+		return insert_do(original, request, color, doEmit, min, false);
 	}
 
-	private ItemStack insert_do(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min, boolean force)
+	private TransitResponse insert_do(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min, boolean force)
 	{
 		EnumFacing from = coord().sideDifference(original).getOpposite();
 
 		TransporterStack stack = new TransporterStack();
-		stack.itemStack = itemStack;
 		stack.originalLocation = original;
 		stack.homeLocation = original;
 		stack.color = color;
 
 		if((force && !canReceiveFrom(original.getTileEntity(world()), from)) || !stack.canInsertToTransporter(this, from))
 		{
-			return itemStack;
+			return TransitResponse.EMPTY;
 		}
 
-		ItemStack rejected = stack.recalculatePath(this, min);
-
-		if(TransporterManager.didEmit(stack.itemStack, rejected))
+		TransitResponse response = stack.recalculatePath(request, this, min);
+		
+		if(!response.isEmpty())
 		{
-			stack.itemStack = TransporterManager.getToUse(stack.itemStack, rejected);
+			stack.itemStack = response.stack;
 
 			if(doEmit)
 			{
@@ -291,33 +290,32 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 				MekanismUtils.saveChunk(getPart());
 			}
 
-			return rejected;
+			return response;
 		}
 
-		return itemStack;
+		return TransitResponse.EMPTY;
 	}
 
 	@Override
-	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min)
 	{
 		EnumFacing from = coord().sideDifference(Coord4D.get(outputter)).getOpposite();
 
 		TransporterStack stack = new TransporterStack();
-		stack.itemStack = itemStack;
 		stack.originalLocation = Coord4D.get(outputter);
 		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
 
 		if(!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(this, from))
 		{
-			return itemStack;
+			return TransitResponse.EMPTY;
 		}
 
-		ItemStack rejected = stack.recalculateRRPath(outputter, this, min);
+		TransitResponse response = stack.recalculateRRPath(request, outputter, this, min);
 
-		if(TransporterManager.didEmit(stack.itemStack, rejected))
+		if(!response.isEmpty())
 		{
-			stack.itemStack = TransporterManager.getToUse(stack.itemStack, rejected);
+			stack.itemStack = response.stack;
 
 			if(doEmit)
 			{
@@ -325,11 +323,11 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
 				MekanismUtils.saveChunk(getPart());
 			}
-
-			return rejected;
+			
+			return response;
 		}
 
-		return itemStack;
+		return TransitResponse.EMPTY;
 	}
 
 	@Override

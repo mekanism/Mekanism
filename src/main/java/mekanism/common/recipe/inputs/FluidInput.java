@@ -57,6 +57,7 @@ public class FluidInput extends MachineInput<FluidInput>
 		{
 			return !other.isValid();
 		}
+		
 		return ingredient.equals(other.ingredient);
 	}
 

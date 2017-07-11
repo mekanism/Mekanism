@@ -11,7 +11,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -24,12 +23,14 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -102,12 +103,12 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		{
 			if(inventory[0] != null && gasTank.getGas() != null)
 			{
-				gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), tier != GasTankTier.CREATIVE);
+				gasTank.draw(GasUtils.addGas(inventory[0], gasTank.getGas()), tier != GasTankTier.CREATIVE);
 			}
 
 			if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
 			{
-				gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
+				gasTank.receive(GasUtils.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
 				
 				if(tier == GasTankTier.CREATIVE && gasTank.getGas() != null)
 				{
@@ -120,7 +121,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 				if(configComponent.isEjecting(TransmissionType.GAS))
 				{
 					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), tier.output));
-					gasTank.draw(GasTransmission.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, facing, 2)), tier != GasTankTier.CREATIVE);
+					gasTank.draw(GasUtils.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, facing, 2)), tier != GasTankTier.CREATIVE);
 				}
 			}
 

@@ -12,8 +12,8 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGasTank;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -289,7 +289,7 @@ public class BlockGasTank extends BlockContainer
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}
@@ -369,17 +369,20 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean isFullBlock(IBlockState state) {
+	public boolean isFullBlock(IBlockState state) 
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state) {
+	public boolean isFullCube(IBlockState state) 
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
+	{
 		return false;
 	}
 }

@@ -15,9 +15,7 @@ import java.util.stream.Collectors;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -29,12 +27,15 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.transporter.InvStack;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
@@ -42,6 +43,8 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -53,7 +56,6 @@ import net.minecraft.block.BlockBush;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -303,22 +305,26 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					setActive(false);
 				}
 			}
+			
+			TransitRequest ejectMap = getEjectItemMap();
 
-			if(doEject && delayTicks == 0 && getTopEject(false, null) != null && getEjectInv() != null && getEjectTile() != null)
+			if(doEject && delayTicks == 0 && !ejectMap.isEmpty() && getEjectInv() != null && getEjectTile() != null)
 			{
-				if(getEjectInv() instanceof IInventory)
+				if(CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 				{
-					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), facing.getOpposite(), false);
+					TransitResponse response = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), ejectMap, null, true, 0);
 
-					getTopEject(true, remains);
-				}
-				else if(CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
-				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), CapabilityUtils.getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()), getTopEject(false, null), null, true, 0);
-
-					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
+					if(!response.isEmpty())
 					{
-						getTopEject(true, rejected);
+						response.getInvStack(this, facing.getOpposite()).use();
+					}
+				}
+				else {
+					TransitResponse response = InventoryUtils.putStackInInventory(getEjectInv(), ejectMap, facing.getOpposite(), false);
+
+					if(!response.isEmpty())
+					{
+						response.getInvStack(this, facing.getOpposite()).use();
 					}
 				}
 
@@ -436,9 +442,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 		}
 
-		if(doPull && getPullInv() instanceof IInventory)
+		if(doPull && getPullInv() != null)
 		{
-			InvStack stack = InventoryUtils.takeDefinedItem((IInventory)getPullInv(), EnumFacing.UP, filter.replaceStack.copy(), 1, 1);
+			InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), EnumFacing.UP, filter.replaceStack.copy(), 1, 1);
 
 			if(stack != null)
 			{
@@ -462,8 +468,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return toReturn;
 	}
 
-	public ItemStack getTopEject(boolean remove, ItemStack reject)
+	public TransitRequest getEjectItemMap()
 	{
+		TransitRequest request = new TransitRequest();
+		
 		for(int i = 27-1; i >= 0; i--)
 		{
 			ItemStack stack = inventory[i];
@@ -475,16 +483,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					continue;
 				}
 
-				if(remove)
+				if(!request.hasType(stack))
 				{
-					inventory[i] = reject;
+					request.setItem(stack, i);
 				}
-
-				return stack;
 			}
 		}
 
-		return null;
+		return request;
 	}
 
 	public boolean canInsert(List<ItemStack> stacks)
@@ -501,6 +507,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		stacks:
 		for(ItemStack stack : stacks)
 		{
+			stack = stack.copy();
+			
 			if(stack == null || stack.getItem() == null)
 			{
 				continue;
@@ -614,6 +622,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		oresToMine.clear();
 		replaceMap.clear();
 		missingStack = null;
+		setActive(false);
 
 		MekanismUtils.saveChunk(this);
 	}
@@ -1185,13 +1194,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public int[] getBoundSlots(Coord4D location, EnumFacing side)
+	public int[] getBoundSlots(BlockPos location, EnumFacing side)
 	{
 		EnumFacing dir = facing.getOpposite();
 
 		BlockPos pull = getPos().up();
 		BlockPos eject = pull.offset(dir);
-
+		
 		if((location.equals(eject) && side == dir) || (location.equals(pull) && side == EnumFacing.UP))
 		{
 			if(EJECT_INV == null)
@@ -1211,7 +1220,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack)
+	public boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack)
 	{
 		EnumFacing side = facing.getOpposite();
 
@@ -1234,7 +1243,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, EnumFacing dir)
+	public boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing dir)
 	{
 		EnumFacing side = facing.getOpposite();
 
@@ -1270,7 +1279,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		numPowering--;
 	}
 
-	public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};
+	public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
 	@Override
 	public String[] getMethods()
@@ -1281,114 +1290,147 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		if(arguments.length > 0)
+		if(method == 0)
 		{
-			int num = 0;
-
-			if(arguments[0] instanceof Double)
+			if(arguments.length != 1 || !(arguments[0] instanceof Double))
 			{
-				num = ((Double)arguments[0]).intValue();
+				return new Object[] {"Invalid parameters."};
 			}
-			else if(arguments[0] instanceof String && (method != 5 && method != 6))
+			
+			radius = ((Double)arguments[0]).intValue();
+		}
+		else if(method == 1)
+		{
+			if(arguments.length != 1 || !(arguments[0] instanceof Double))
 			{
-				num = Integer.parseInt((String)arguments[0]);
+				return new Object[] {"Invalid parameters."};
 			}
-
-			if(num != 0)
+			
+			minY = ((Double)arguments[0]).intValue();
+		}
+		else if(method == 2)
+		{
+			if(arguments.length != 1 || !(arguments[0] instanceof Double))
 			{
-				if(method == 0)
-				{
-					radius = num;
-				}
-				else if(method == 1)
-				{
-					minY = num;
-				}
-				else if(method == 2)
-				{
-					maxY = num;
-				}
-				else if(method == 3)
-				{
-					int meta = 0;
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			maxY = ((Double)arguments[0]).intValue();
+		}
+		else if(method == 3)
+		{
+			if(arguments.length < 1 || !(arguments[0] instanceof Double))
+			{
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			int id = ((Double)arguments[0]).intValue();
+			int meta = 0;
 
-					if(arguments.length > 1)
-					{
-						if(arguments[1] instanceof Double)
-						{
-							meta = ((Double)arguments[1]).intValue();
-						}
-						else if(arguments[1] instanceof String)
-						{
-							meta = Integer.parseInt((String)arguments[1]);
-						}
-					}
-
-					filters.add(new MItemStackFilter(new ItemStack(Item.getItemById(num), 1, meta)));
-				}
-				else if(method == 4)
+			if(arguments.length > 1)
+			{
+				if(arguments[1] instanceof Double)
 				{
-					Iterator<MinerFilter> iter = filters.iterator();
-
-					while(iter.hasNext())
-					{
-						MinerFilter filter = iter.next();
-
-						if(filter instanceof MItemStackFilter)
-						{
-							if(MekanismUtils.getID(((MItemStackFilter)filter).itemType) == num)
-							{
-								iter.remove();
-							}
-						}
-					}
-				}
-				else if(method == 5)
-				{
-					String ore = (String)arguments[0];
-					MOreDictFilter filter = new MOreDictFilter();
-
-					filter.oreDictName = ore;
-					filters.add(filter);
-				}
-				else if(method == 6)
-				{
-					String ore = (String)arguments[0];
-					Iterator<MinerFilter> iter = filters.iterator();
-
-					while(iter.hasNext())
-					{
-						MinerFilter filter = iter.next();
-
-						if(filter instanceof MOreDictFilter)
-						{
-							if(((MOreDictFilter)filter).oreDictName.equals(ore))
-							{
-								iter.remove();
-							}
-						}
-					}
-				}
-				else if(method == 7)
-				{
-					reset();
-				}
-				else if(method == 8)
-				{
-					start();
-				}
-				else if(method == 9)
-				{
-					stop();
+					meta = ((Double)arguments[1]).intValue();
 				}
 			}
+
+			filters.add(new MItemStackFilter(new ItemStack(Item.getItemById(id), 1, meta)));
+			
+			return new Object[] {"Added filter."};
+		}
+		else if(method == 4)
+		{
+			if(arguments.length < 1 || !(arguments[0] instanceof Double))
+			{
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			int id = ((Double)arguments[0]).intValue();
+			Iterator<MinerFilter> iter = filters.iterator();
+
+			while(iter.hasNext())
+			{
+				MinerFilter filter = iter.next();
+
+				if(filter instanceof MItemStackFilter)
+				{
+					if(MekanismUtils.getID(((MItemStackFilter)filter).itemType) == id)
+					{
+						iter.remove();
+						return new Object[] {"Removed filter."};
+					}
+				}
+			}
+			
+			return new Object[] {"Couldn't find filter."};
+		}
+		else if(method == 5)
+		{
+			if(arguments.length < 1 || !(arguments[0] instanceof String))
+			{
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			String ore = (String)arguments[0];
+			MOreDictFilter filter = new MOreDictFilter();
+
+			filter.oreDictName = ore;
+			filters.add(filter);
+			
+			return new Object[] {"Added filter."};
+		}
+		else if(method == 6)
+		{
+			if(arguments.length < 1 || !(arguments[0] instanceof String))
+			{
+				return new Object[] {"Invalid parameters."};
+			}
+			
+			String ore = (String)arguments[0];
+			Iterator<MinerFilter> iter = filters.iterator();
+
+			while(iter.hasNext())
+			{
+				MinerFilter filter = iter.next();
+
+				if(filter instanceof MOreDictFilter)
+				{
+					if(((MOreDictFilter)filter).oreDictName.equals(ore))
+					{
+						iter.remove();
+						return new Object[] {"Removed filter."};
+					}
+				}
+			}
+			
+			return new Object[] {"Couldn't find filter."};
+		}
+		else if(method == 7)
+		{
+			reset();
+			return new Object[] {"Reset miner."};
+		}
+		else if(method == 8)
+		{
+			start();
+			return new Object[] {"Started miner."};
+		}
+		else if(method == 9)
+		{
+			stop();
+			return new Object[] {"Stopped miner."};
+		}
+		else if(method == 10)
+		{
+			return new Object[] {searcher != null ? searcher.found : 0};
 		}
 
 		for(EntityPlayer player : playersUsing)
 		{
 			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<Object>())), (EntityPlayerMP)player);
 		}
-
+		
 		return null;
 	}
 
@@ -1508,22 +1550,23 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 			default:
 				break;
 		}
 	}
 	
 	@Override
-	public boolean canBoundReceiveEnergy(Coord4D coord, EnumFacing side)
+	public boolean canBoundReceiveEnergy(BlockPos coord, EnumFacing side)
 	{
 		EnumFacing left = MekanismUtils.getLeft(facing);
 		EnumFacing right = MekanismUtils.getRight(facing);
 		
-		if(coord.equals(Coord4D.get(this).offset(left)))
+		if(coord.equals(getPos().offset(left)))
 		{
 			return side == left;
 		}
-		else if(coord.equals(Coord4D.get(this).offset(right)))
+		else if(coord.equals(getPos().offset(right)))
 		{
 			return side == right;
 		}

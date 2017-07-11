@@ -15,8 +15,8 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -300,7 +300,7 @@ public class BlockEnergyCube extends BlockContainer
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}

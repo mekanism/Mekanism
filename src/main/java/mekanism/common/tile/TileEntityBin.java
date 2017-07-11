@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.BaseTier;
@@ -17,16 +15,19 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -163,7 +164,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				if(getItemCount() + stack.stackSize <= tier.storage)
 				{
-					if (!simulate)
+					if(!simulate)
 					{
 						setItemCount(getItemCount() + stack.stackSize);
 					}
@@ -173,7 +174,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 					ItemStack rejects = stack.copy();
 					rejects.stackSize = (getItemCount()+stack.stackSize) - tier.storage;
 
-					if (!simulate)
+					if(!simulate)
 					{
 						setItemCount(tier.storage);
 					}
@@ -182,7 +183,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				}
 			}
 			else {
-				if (!simulate)
+				if(!simulate)
 				{
 					setItemCount(Integer.MAX_VALUE);
 				}
@@ -260,17 +261,22 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 					if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP))
 					{
 						ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
+						TransitResponse response = TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0);
 
-						ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
-
-						if(TransporterManager.didEmit(bottomStack, rejects))
+						if(!response.isEmpty())
 						{
-							setInventorySlotContents(0, rejects);
+							bottomStack.stackSize -= (response.stack.stackSize);
+							setInventorySlotContents(0, bottomStack);
 						}
 					}
-					else if(tile instanceof IInventory)
-					{
-						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, EnumFacing.DOWN, false));
+					else {
+						TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), EnumFacing.DOWN, false);
+						
+						if(!response.isEmpty())
+						{
+							bottomStack.stackSize -= (response.stack.stackSize);
+							setInventorySlotContents(0, bottomStack);
+						}
 					}
 
 					delayTicks = 10;
@@ -538,6 +544,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		return i == 1 && isValid(itemstack);
 	}
 
+	//@Override
+	public boolean isEmpty()
+	{
+		return getItemCount() == 0;
+	}
+
 	@Override
 	public int getField(int id)
 	{
@@ -707,9 +719,25 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		{
 			this.tileEntityBin = tileEntityBin;
 		}
+		
+		//@Override
+		public int getSlotLimit(int slot)
+		{
+			if(slot != 0)
+			{
+				return 0;
+			}
+			
+			return tier.storage;
+		}
 
-		public int getSlots(){return 1;}
+		@Override
+		public int getSlots()
+		{
+			return 1;
+		}
 
+		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
 			if (slot != 0 || tileEntityBin.itemType == null)
@@ -720,14 +748,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return MekanismUtils.size(tileEntityBin.itemType, tileEntityBin.getItemCount());
 		}
 
+		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
 			if (slot != 0)
 			{
 				return null;
 			}
+			
 			return tileEntityBin.add(stack, simulate);
-
 		}
 
 		public ItemStack extractItem(int slot, int amount, boolean simulate)

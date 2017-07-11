@@ -9,7 +9,6 @@ import java.util.Map;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.ITierItem;
@@ -151,7 +150,7 @@ public class RecipeUtils
 				
 				if(itemstack != null && itemstack.getItem() instanceof ISecurityItem)
 				{
-					((ISecurityItem)toReturn.getItem()).setOwner(toReturn, ((ISecurityItem)itemstack.getItem()).getOwner(itemstack));
+					((ISecurityItem)toReturn.getItem()).setOwnerUUID(toReturn, ((ISecurityItem)itemstack.getItem()).getOwnerUUID(itemstack));
 					((ISecurityItem)toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem)itemstack.getItem()).getSecurity(itemstack));
 					
 					break;

@@ -8,7 +8,6 @@ import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
 import mekanism.generators.client.gui.GuiIndustrialTurbine;
-import mekanism.generators.client.gui.GuiNeutronCapture;
 import mekanism.generators.client.gui.GuiReactorController;
 import mekanism.generators.client.gui.GuiReactorFuel;
 import mekanism.generators.client.gui.GuiReactorHeat;
@@ -42,7 +41,6 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
-import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
@@ -112,10 +110,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		
 		for(ReactorBlockType type : ReactorBlockType.values())
 		{
-			if(type.isValidReactorBlock())
-			{
-				ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
-			}
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
 		}
 	}
 	
@@ -178,8 +173,6 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 				return new GuiReactorFuel(player.inventory, (TileEntityReactorController)tileEntity);
 			case 13:
 				return new GuiReactorStats(player.inventory, (TileEntityReactorController)tileEntity);
-			case 14:
-				return new GuiNeutronCapture(player.inventory, (TileEntityReactorNeutronCapture)tileEntity);
 			case 15:
 				return new GuiReactorLogicAdapter(player.inventory, (TileEntityReactorLogicAdapter)tileEntity);
 		}

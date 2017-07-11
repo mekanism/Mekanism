@@ -1,7 +1,7 @@
 package mekanism.generators.common.inventory.container;
 
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismFluids;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
@@ -85,7 +85,7 @@ public class ContainerGasGenerator extends Container
 			{
 				if(slotID != 0 && slotID != 1)
 				{
-					if(((IGasItem)slotStack.getItem()).getGas(slotStack) != null && ((IGasItem)slotStack.getItem()).getGas(slotStack).getGas() == GasRegistry.getGas("hydrogen"))
+					if(((IGasItem)slotStack.getItem()).getGas(slotStack) != null && ((IGasItem)slotStack.getItem()).getGas(slotStack).getGas() == MekanismFluids.Hydrogen)
 					{
 						if(!mergeItemStack(slotStack, 0, 1, false))
 						{

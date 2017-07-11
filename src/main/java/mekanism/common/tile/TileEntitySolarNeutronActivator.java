@@ -6,16 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.util.ListUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -26,6 +23,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -33,7 +31,10 @@ import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -104,12 +105,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			
 			if(inventory[0] != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
 			{
-				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
+				inputTank.receive(GasUtils.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 			
 			if(inventory[1] != null && outputTank.getGas() != null)
 			{
-				outputTank.draw(GasTransmission.addGas(inventory[1], outputTank.getGas()), true);
+				outputTank.draw(GasUtils.addGas(inventory[1], outputTank.getGas()), true);
 			}
 			
 			SolarNeutronRecipe recipe = getRecipe();
@@ -129,7 +130,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			if(outputTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
-				outputTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(facing)), true);
+				outputTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(facing)), true);
 			}
 		}
 	}

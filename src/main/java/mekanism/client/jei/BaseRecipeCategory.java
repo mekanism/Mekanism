@@ -1,5 +1,6 @@
 package mekanism.client.jei;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +12,10 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.util.LangUtils;
+import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.IRecipeCategory;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -72,9 +76,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 			e.renderBackground(0, 0, -xOffset, -yOffset);
 		}
 	}
-
-	@Override
-	public void drawAnimations(Minecraft minecraft) {}
 	
 	@Override
 	public void drawTexturedRect(int x, int y, int u, int v, int w, int h) 
@@ -172,4 +173,26 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	public void addGuiElements() {}
 	
 	public static class GuiDummy extends Gui {}
+	
+	@Override
+	public IDrawable getIcon() 
+	{
+		return null;
+	}
+
+	@Override
+	public List getTooltipStrings(int mouseX, int mouseY) 
+	{
+		return Collections.emptyList();
+	}
+
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper)
+	{
+		setRecipe(recipeLayout, recipeWrapper, null);
+	}
+
+	public void  drawAnimations(Minecraft minecraft)
+	{
+
+	}
 }

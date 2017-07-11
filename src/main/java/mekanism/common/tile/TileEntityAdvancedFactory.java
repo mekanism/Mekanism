@@ -32,9 +32,6 @@ public class TileEntityAdvancedFactory extends TileEntityFactory
 		configComponent.setCanEject(TransmissionType.GAS, false);
 		
 		configComponent.setInputConfig(TransmissionType.ENERGY);
-
-		upgradeComponent = new TileComponentUpgrade(this, 0);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));

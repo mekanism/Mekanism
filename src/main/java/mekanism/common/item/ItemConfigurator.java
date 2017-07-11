@@ -11,15 +11,15 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IMekWrench;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -158,32 +158,22 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 								float yRandom = random.nextFloat() * 0.8F + 0.1F;
 								float zRandom = random.nextFloat() * 0.8F + 0.1F;
 
-								while(slotStack.stackSize > 0)
+								EntityItem item = new EntityItem(world, pos.getX() + xRandom, pos.getY() + yRandom, pos.getZ() + zRandom, slotStack.copy());
+
+
+								if(slotStack.hasTagCompound())
 								{
-									int j = random.nextInt(21) + 10;
-
-									if(j > slotStack.stackSize)
-									{
-										j = slotStack.stackSize;
-									}
-
-									slotStack.stackSize -= j;
-									EntityItem item = new EntityItem(world, pos.getX() + xRandom, pos.getY() + yRandom, pos.getZ() + zRandom, new ItemStack(slotStack.getItem(), j, slotStack.getItemDamage()));
-
-									if(slotStack.hasTagCompound())
-									{
-										item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
-									}
-
-									float k = 0.05F;
-									item.motionX = random.nextGaussian() * k;
-									item.motionY = random.nextGaussian() * k + 0.2F;
-									item.motionZ = random.nextGaussian() * k;
-									world.spawnEntityInWorld(item);
-
-									inv.setInventorySlotContents(i, null);
-									setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
+									item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
 								}
+
+								float k = 0.05F;
+								item.motionX = random.nextGaussian() * k;
+								item.motionY = random.nextGaussian() * k + 0.2F;
+								item.motionZ = random.nextGaussian() * k;
+								world.spawnEntityInWorld(item);
+
+								inv.setInventorySlotContents(i, null);
+								setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
 							}
 						}
 

@@ -22,13 +22,6 @@ public class ChemicalDissolutionChamberRecipeHandler implements IRecipeHandler<C
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() 
-	{
-		return category.getUid();
-	}
-
-	@Nonnull
-	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull ChemicalDissolutionChamberRecipeWrapper recipe)
 	{
 		return recipe;
@@ -44,5 +37,11 @@ public class ChemicalDissolutionChamberRecipeHandler implements IRecipeHandler<C
 	public String getRecipeCategoryUid(@Nonnull ChemicalDissolutionChamberRecipeWrapper recipe) 
 	{
 		return category.getUid();
+	}
+
+	@Override
+	public String getRecipeCategoryUid()
+	{
+		return getRecipeCategoryUid(null);
 	}
 }

@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyGauge;
 import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
@@ -18,6 +17,7 @@ import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;

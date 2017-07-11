@@ -1,13 +1,14 @@
 package mekanism.client.gui.element;
 
+import java.util.UUID;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.ListUtils;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -15,6 +16,7 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
@@ -72,8 +74,7 @@ public class GuiSecurityTab extends GuiElement
 		
 		int renderX = 26 + (18*mode.ordinal());
 
-		if(getOwner() != null && getOwner().equals(mc.thePlayer.getName()) &&
-				(data == null || !data.override))
+		if(getOwner() != null && getOwner().equals(mc.thePlayer.getUniqueID()) && (data == null || !data.override))
 		{
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 			{
@@ -99,15 +100,15 @@ public class GuiSecurityTab extends GuiElement
 		{
 			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
 			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
-			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer.getName(), getOwner());
+			String ownerText = SecurityUtils.getOwnerDisplay(mc.thePlayer, getOwnerUsername());
 			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 			
 			if(isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT))
 			{
-				displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis); 
+				displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis);
 			}
 			else {
-				displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis); 
+				displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis);
 			}
 		}
 
@@ -151,7 +152,7 @@ public class GuiSecurityTab extends GuiElement
 		}
 	}
 	
-	private String getOwner()
+	private UUID getOwner()
 	{
 		if(isItem)
 		{
@@ -161,10 +162,27 @@ public class GuiSecurityTab extends GuiElement
 				return null;
 			}
 			
-			return ((ISecurityItem)getItem().getItem()).getOwner(getItem());
+			return ((ISecurityItem)getItem().getItem()).getOwnerUUID(getItem());
 		}
 		else {
-			return ((ISecurityTile)tileEntity).getSecurity().getOwner();
+			return ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
+		}
+	}
+	
+	private String getOwnerUsername()
+	{
+		if(isItem)
+		{
+			if(getItem() == null || !(getItem().getItem() instanceof ISecurityItem))
+			{
+				mc.thePlayer.closeScreen();
+				return null;
+			}
+			
+			return MekanismClient.clientUUIDMap.get(((ISecurityItem)getItem().getItem()).getOwnerUUID(getItem()));
+		}
+		else {
+			return ((ISecurityTile)tileEntity).getSecurity().getClientOwner();
 		}
 	}
 	
@@ -181,7 +199,7 @@ public class GuiSecurityTab extends GuiElement
 	{
 		if(button == 0 && general.allowProtection)
 		{
-			if(getOwner() != null && mc.thePlayer.getName().equals(getOwner()))
+			if(getOwner() != null && mc.thePlayer.getUniqueID().equals(getOwner()))
 			{
 				if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
 				{

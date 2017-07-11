@@ -13,7 +13,7 @@ import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -23,9 +23,9 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE>
 {
-	public TileEntityChanceMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityChanceMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage, int ticksRequired, ResourceLocation location)
 	{
-		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, maxEnergy, baseEnergyUsage, 3, ticksRequired, location);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
@@ -38,9 +38,6 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 
 		inventory = new ItemStack[5];
-
-		upgradeComponent = new TileComponentUpgrade(this, 3);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));

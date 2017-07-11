@@ -8,8 +8,8 @@ import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
@@ -20,7 +20,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -43,7 +43,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import buildcraft.api.tools.IToolWrench;
 
-public abstract class BlockReactor extends BlockContainer implements ICTMBlock
+public abstract class BlockReactor extends Block implements ICTMBlock, ITileEntityProvider
 {
 	public CTMData[] ctmData = new CTMData[16];
 
@@ -94,11 +94,11 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 		switch(getReactorBlock())
 		{
 			case REACTOR_BLOCK:
-				ctmData[0] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				ctmData[1] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				ctmData[2] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				ctmData[3] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				ctmData[4] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.NEUTRON_CAPTURE, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[0] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[1] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[2] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[3] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
+				ctmData[4] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
 				
 				break;
 			case REACTOR_GLASS:
@@ -219,7 +219,7 @@ public abstract class BlockReactor extends BlockContainer implements ICTMBlock
 	{
 		for(BlockStateReactor.ReactorBlockType type : BlockStateReactor.ReactorBlockType.values())
 		{
-			if(type.blockType == getReactorBlock() && type.isValidReactorBlock())
+			if(type.blockType == getReactorBlock())
 			{
 				list.add(new ItemStack(item, 1, type.meta));
 			}

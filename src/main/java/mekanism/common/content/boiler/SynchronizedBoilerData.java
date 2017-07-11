@@ -7,10 +7,10 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;

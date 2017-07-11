@@ -3,12 +3,11 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.StackUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
@@ -17,6 +16,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.security.ISecurityTile;
@@ -24,9 +24,11 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,6 +54,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	
 	public boolean isRecipe = false;
 	
+	public boolean stockControl = false;
+	public boolean needsOrganize = true; //organize on load
+	
 	public int pulseOperations;
 	
 	public RecipeFormula formula;
@@ -63,9 +68,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	public TileComponentConfig configComponent;
 	public TileComponentSecurity securityComponent;
 	
-	public ItemStack lastFormulaStack;
+	public ItemStack lastFormulaStack = null;
 	public boolean needsFormulaUpdate = false;
-	public ItemStack lastOutputStack;
+	public ItemStack lastOutputStack = null;
 	
 	public TileEntityFormulaicAssemblicator()
 	{
@@ -99,6 +104,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		
 		if(!worldObj.isRemote)
 		{
+			if(formula != null && stockControl && needsOrganize)
+			{
+				needsOrganize = false;
+				organizeStock();
+			}
+			
 			ChargeUtils.discharge(1, this);
 			
 			if(controlType != RedstoneControl.PULSE)
@@ -233,6 +244,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				isRecipe = formula.matches(worldObj, inventory, 27);
 				lastOutputStack = isRecipe ? formula.recipe.getRecipeOutput() : null;
 			}
+			
+			needsOrganize = true;
 		}
 	}
 	
@@ -346,7 +359,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			else {
 				boolean found = false;
 				
-				for(int j = 3; j <= 20; j++)
+				for(int j = 20; j >= 3; j--)
 				{
 					if(inventory[j] != null && formula.isIngredientInPos(worldObj, inventory[j], i-27))
 					{
@@ -407,6 +420,50 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		}
 		
 		markDirty();
+	}
+	
+	private void toggleStockControl()
+	{
+		if(!worldObj.isRemote && formula != null)
+		{
+			stockControl = !stockControl;
+			
+			if(stockControl)
+			{
+				organizeStock();
+			}
+		}
+	}
+	
+	private void organizeStock()
+	{
+		for(int j = 3; j <= 20; j++)
+		{
+			for(int i = 20; i > j; i--)
+			{
+				if(inventory[i] != null)
+				{
+					if(inventory[j] == null)
+					{
+						inventory[j] = inventory[i];
+						inventory[i] = null;
+						markDirty();
+						return;
+					}
+					else if(inventory[j].stackSize < inventory[j].getMaxStackSize())
+					{
+						if(InventoryUtils.areItemsStackable(inventory[i], inventory[j]))
+						{
+							int newCount = inventory[j].stackSize + inventory[i].stackSize;
+							inventory[j].stackSize = Math.min(inventory[j].getMaxStackSize(), newCount);
+							inventory[i].stackSize = Math.max(0, newCount - inventory[j].getMaxStackSize());
+							markDirty();
+							return;
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private ItemStack tryMoveToInput(ItemStack stack)
@@ -487,6 +544,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				if(formula.isValidFormula(worldObj))
 				{
 					item.setInventory(inventory[2], formula.input);
+					markDirty();
 				}
 			}
 		}
@@ -529,7 +587,31 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 				return true;
 			}
 			else {
-				return formula.isIngredient(worldObj, itemstack);
+				List<Integer> indices = formula.getIngredientIndices(worldObj, itemstack);
+				
+				if(indices.size() > 0)
+				{
+					if(stockControl)
+					{
+						int filled = 0;
+						
+						for(int i = 3; i < 20; i++)
+						{
+							if(inventory[i] != null)
+							{
+								if(formula.isIngredientInPos(worldObj, inventory[i], indices.get(0)))
+								{
+									filled++;
+								}
+							}
+						}
+						
+						return filled < indices.size()*2;
+					}
+					else {
+						return true;
+					}
+				}
 			}
 		}
 		else if(slotID == 1)
@@ -549,6 +631,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		pulseOperations = nbtTags.getInteger("pulseOperations");
+		stockControl = nbtTags.getBoolean("stockControl");
 	}
 
 	@Override
@@ -560,6 +643,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setInteger("pulseOperations", pulseOperations);
+		nbtTags.setBoolean("stockControl", stockControl);
 		
 		return nbtTags;
 	}
@@ -597,6 +681,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 					moveItemsToInput(true);
 				}
 			}
+			else if(type == 5)
+			{
+				toggleStockControl();
+			}
 			
 			return;
 		}
@@ -609,6 +697,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			operatingTicks = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			isRecipe = dataStream.readBoolean();
+			stockControl = dataStream.readBoolean();
 			
 			if(dataStream.readBoolean())
 			{
@@ -642,6 +731,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		data.add(operatingTicks);
 		data.add(controlType.ordinal());
 		data.add(isRecipe);
+		data.add(stockControl);
 		
 		if(needsFormulaUpdate)
 		{
@@ -734,9 +824,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		{
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				break;
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
+				break;
 			default:
 				break;
 		}

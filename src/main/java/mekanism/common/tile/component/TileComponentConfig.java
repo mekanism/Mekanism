@@ -13,7 +13,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -138,6 +138,11 @@ public class TileComponentConfig implements ITileComponent
 	
 	public SideData getOutput(TransmissionType type, EnumFacing side, EnumFacing facing)
 	{
+		if(side == null)
+		{
+			return EMPTY;
+		}
+		
 		return getOutput(type, MekanismUtils.getBaseOrientation(side, facing));
 	}
 	

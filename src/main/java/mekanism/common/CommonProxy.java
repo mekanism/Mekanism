@@ -5,17 +5,15 @@ import java.lang.ref.WeakReference;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.machines;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Pos3D;
-import mekanism.api.util.UnitDisplayUtils.EnergyType;
-import mekanism.api.util.UnitDisplayUtils.TempType;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.TypeConfigManager;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -61,7 +59,6 @@ import mekanism.common.inventory.container.ContainerThermalEvaporationController
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
-import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -75,12 +72,10 @@ import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityCombiner;
-import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
@@ -113,13 +108,17 @@ import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import mekanism.common.util.UnitDisplayUtils.EnergyType;
+import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -234,6 +233,8 @@ public class CommonProxy implements IGuiProvider
 		general.TO_RF = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "RFToJoules", 0.4D).getDouble();
 		general.FROM_TESLA = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToTesla", 2.5D).getDouble();
 		general.TO_TESLA = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TeslaToJoules", 0.4D).getDouble();
+		general.FROM_FORGE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToForge", 2.5D).getDouble();
+		general.TO_FORGE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ForgeToJoules", 0.4D).getDouble();
 		general.FROM_H2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HydrogenEnergyDensity", 200D, "Determines Electrolytic Separator usage").getDouble();
 		general.ETHENE_BURN_TIME = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EthyleneBurnTime", 40).getInt();
 		general.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble();
@@ -265,10 +266,12 @@ public class CommonProxy implements IGuiProvider
 		general.allowTransmitterAlloyUpgrade = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowTransmitterAlloyUpgrade", true).getBoolean();
 		general.allowChunkloading = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowChunkloading", true).getBoolean();
 		general.allowProtection = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowProtection", true).getBoolean();
+		general.portableTeleporterDelay = 100;//Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PortableTeleporterDelay", 0).getInt();
 		
 		general.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false).getBoolean();
 		general.blacklistRF = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistRFPower", false).getBoolean();
 		general.blacklistTesla = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistTeslaPower", false).getBoolean();
+		general.blacklistForge = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistForgePower", false).getBoolean();
 		
 		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J", null, new String[]{"J", "RF", "EU", "T"}).getString();
 
@@ -321,18 +324,16 @@ public class CommonProxy implements IGuiProvider
 		general.laserRange = Mekanism.configuration.get("general", "LaserRange", 64).getInt();
 		general.laserEnergyNeededPerHardness = Mekanism.configuration.get("general", "LaserDiggingEnergy", 100000).getInt();
 		general.destroyDisabledBlocks = Mekanism.configuration.get("general", "DestroyDisabledBlocks", true).getBoolean();
-
 		
 		for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 		{
-			machines.setEntry(type.machineName, Mekanism.configuration.get("machines", type.machineName + "Enabled", true).getBoolean());
+			general.machinesManager.setEntry(type.blockName, Mekanism.configuration.get("machines", type.blockName + "Enabled", true).getBoolean());
 		}
 		
 		usage.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble();
 		usage.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 100D).getDouble();
 		usage.combinerUsage = Mekanism.configuration.get("usage", "CombinerUsage", 50D).getDouble();
 		usage.crusherUsage = Mekanism.configuration.get("usage", "CrusherUsage", 50D).getDouble();
-		usage.factoryUsage = Mekanism.configuration.get("usage", "FactoryUsage", 50D).getDouble();
 		usage.metallurgicInfuserUsage = Mekanism.configuration.get("usage", "MetallurgicInfuserUsage", 50D).getDouble();
 		usage.purificationChamberUsage = Mekanism.configuration.get("usage", "PurificationChamberUsage", 200D).getDouble();
 		usage.energizedSmelterUsage = Mekanism.configuration.get("usage", "EnergizedSmelterUsage", 50D).getDouble();
@@ -441,6 +442,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerNull();
 				}
+				
+				return null;
 			case 15:
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 16:
@@ -456,6 +459,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitMain(player.inventory, robit);
 				}
+				
+				return null;
 			case 22:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -463,6 +468,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitCrafting(player.inventory, robit);
 				}
+				
+				return null;
 			case 23:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -470,6 +477,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitInventory(player.inventory, robit);
 				}
+				
+				return null;
 			case 24:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 				
@@ -477,6 +486,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitSmelting(player.inventory, robit);
 				}
+				
+				return null;
 			case 25:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -484,6 +495,8 @@ public class CommonProxy implements IGuiProvider
 				{
 					return new ContainerRobitRepair(player.inventory, robit);
 				}
+				
+				return null;
 			case 26:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 27:
@@ -573,21 +586,6 @@ public class CommonProxy implements IGuiProvider
 	{
 		return (File)FMLInjectionData.data()[6];
 	}
-	
-	public void updateConfigRecipes()
-	{
-		for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
-		{
-			if(machines.isEnabled(type.machineName))
-			{
-				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
-				CraftingManager.getInstance().getRecipeList().addAll(type.getRecipes());
-			}
-			else {
-				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
-			}
-		}
-	}
 
 	public void onConfigSync(boolean fromPacket)
 	{
@@ -601,7 +599,7 @@ public class CommonProxy implements IGuiProvider
 		
 		BlockStateMachine.MachineType.updateAllUsages();
 		
-		updateConfigRecipes();
+		TypeConfigManager.updateConfigRecipes(MachineType.getValidMachines(), general.machinesManager);
 
 		if(fromPacket)
 		{

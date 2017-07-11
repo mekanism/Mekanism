@@ -7,21 +7,23 @@ import ic2.api.energy.tile.IEnergyTile;
 import java.util.Collection;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.CapabilityUtils;
-import mekanism.common.EnergyNetwork;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
+import mekanism.common.integration.tesla.TeslaCableIntegration;
+import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -29,16 +31,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
-import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
-@InterfaceList({
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla")
-})
-public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, ITeslaConsumer
+public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver
 {
 	public Tier.CableTier tier;
 
@@ -73,7 +71,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			if(!sides.isEmpty())
 			{
 				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
-				double canDraw = tier.cableCapacity/10F;
+				double canDraw = tier.cableCapacity;
 
 				for(EnumFacing side : sides)
 				{
@@ -81,7 +79,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 					{
 						TileEntity outputter = connectedOutputters[side.ordinal()];
 
-						if(CapabilityUtils.hasCapability(outputter, Capabilities.CABLE_OUTPUTTER_CAPABILITY, side.getOpposite()) && CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
+						if(CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite()) && CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()))
 						{
 							IStrictEnergyStorage storage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
 							double received = Math.min(storage.getEnergy(), canDraw);
@@ -97,27 +95,38 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 						else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite()))
 						{
 							ITeslaProducer producer = CapabilityUtils.getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
-							double received = producer.takePower((long)(canDraw*general.TO_TESLA), true)*general.FROM_TESLA;
-							double toDraw = received;
+							double toDraw = producer.takePower((long)Math.round(Math.min(Integer.MAX_VALUE, canDraw*general.TO_TESLA)), true)*general.FROM_TESLA;
 							
-							if(received > 0)
+							if(toDraw > 0)
 							{
-								toDraw -= takeEnergy(received, true);
+								toDraw -= takeEnergy(toDraw, true);
 							}
 							
-							producer.takePower((long)(toDraw*general.TO_TESLA), false);
+							producer.takePower((long)Math.round(toDraw*general.TO_TESLA), false);
+						}
+						
+						else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite()))
+						{
+							IEnergyStorage storage = CapabilityUtils.getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite());
+							double toDraw = storage.extractEnergy((int)Math.round(canDraw*general.TO_FORGE), true)*general.FROM_FORGE;
+							
+							if(toDraw > 0)
+							{
+								toDraw -= takeEnergy(toDraw, true);
+							}
+							
+							storage.extractEnergy((int)Math.round(toDraw*general.TO_TESLA), false);
 						}
 						else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
 						{
-							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(canDraw*general.TO_RF), true)*general.FROM_RF;
-							double toDraw = received;
+							double toDraw = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)Math.round(Math.min(Integer.MAX_VALUE, canDraw*general.TO_RF)), true)*general.FROM_RF;
 
-							if(received > 0)
+							if(toDraw > 0)
 							{
-								toDraw -= takeEnergy(received, true);
+								toDraw -= takeEnergy(toDraw, true);
 							}
 
-							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(toDraw*general.TO_RF), false);
+							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)Math.round(toDraw*general.TO_RF), false);
 						}
 						else if(MekanismUtils.useIC2())
 						{
@@ -247,13 +256,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		return maxReceive - (int)Math.round(takeEnergy(maxReceive*general.FROM_RF, !simulate)*general.TO_RF);
-	}
-
-	@Override
-	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
-	{
-		return 0;
+		return maxReceive - (int)Math.round(Math.min(Integer.MAX_VALUE, takeEnergy(maxReceive*general.FROM_RF, !simulate)*general.TO_RF));
 	}
 
 	@Override
@@ -265,13 +268,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy() * general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy() * general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));
 	}
 
 	@Override
@@ -281,7 +284,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!canReceiveEnergy(side))
 		{
@@ -289,7 +292,11 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		}
 
 		double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
-		setEnergy(getEnergy() + toUse);
+		
+		if(!simulate)
+		{
+			setEnergy(getEnergy() + toUse);
+		}
 
 		return toUse;
 	}
@@ -297,6 +304,10 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public boolean canReceiveEnergy(EnumFacing side)
 	{
+		if(side == null)
+		{
+			return true;
+		}
 		return getConnectionType(side) == ConnectionType.NORMAL;
 	}
 
@@ -334,13 +345,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		else {
 			buffer.amount = energy;
 		}
-	}
-	
-	@Override
-	@Method(modid = "tesla")
-	public long givePower(long power, boolean simulated) 
-	{
-		return power - (long)Math.round(takeEnergy(power*general.FROM_TESLA, !simulated)*general.TO_TESLA);
 	}
 
 	public double takeEnergy(double energy, boolean doEmit)
@@ -398,23 +402,36 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		
 		super.writeUpdatePacket(packet);
 	}
-
+	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
 				|| capability == Capabilities.TESLA_CONSUMER_CAPABILITY
+				|| capability == CapabilityEnergy.ENERGY
 				|| super.hasCapability(capability, facing);
 	}
+	
+	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(getClass(), TeslaCableIntegration.class);
+	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(getClass(), ForgeEnergyCableIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
-				capability == Capabilities.TESLA_CONSUMER_CAPABILITY)
+		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
 		{
 			return (T)this;
+		}
+		
+		if(capability == Capabilities.TESLA_CONSUMER_CAPABILITY)
+		{
+			return (T)teslaManager.getWrapper(this, facing);
+		}
+		
+		if(capability == CapabilityEnergy.ENERGY)
+		{
+			return (T)forgeEnergyManager.getWrapper(this, facing);
 		}
 		
 		return super.getCapability(capability, facing);

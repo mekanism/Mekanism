@@ -4,13 +4,12 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
-import mekanism.api.MekanismConfig.client;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
@@ -20,22 +19,29 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transporter.Finder.FirstFinder;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
 import mekanism.common.content.transporter.TItemStackFilter;
+import mekanism.common.content.transporter.TOreDictFilter;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -46,7 +52,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, ISpecialConfigData, ISustainedData, ISecurityTile
+public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration
 {
 	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 
@@ -98,72 +104,64 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
 				TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(worldObj);
 
-				if(back instanceof IInventory && (front != null && CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()) || front instanceof IInventory))
+				boolean sentItems = false;
+				int min = 0;
+
+				outer:
+				for(TransporterFilter filter : filters)
 				{
-					IInventory inventory = InventoryUtils.checkChestInv((IInventory)back);
-
-					boolean sentItems = false;
-					int min = 0;
-
-					outer:
-					for(TransporterFilter filter : filters)
+					inner:
+					for(StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.i >= 0;)
 					{
-						inner:
-						for(StackSearcher search = new StackSearcher(inventory, facing.getOpposite()); search.i >= 0;)
+						InvStack invStack = filter.getStackFromInventory(search);
+
+						if(invStack == null || invStack.getStack() == null)
 						{
-							InvStack invStack = filter.getStackFromInventory(search);
-
-							if(invStack == null || invStack.getStack() == null)
-							{
-								break inner;
-							}
-
-							if(filter.canFilter(invStack.getStack()))
-							{
-								if(filter instanceof TItemStackFilter)
-								{
-									TItemStackFilter itemFilter = (TItemStackFilter)filter;
-
-									if(itemFilter.sizeMode)
-									{
-										min = itemFilter.min;
-									}
-								}
-
-								ItemStack used = emitItemToTransporter(front, invStack, filter.color, min);
-
-								if(used != null)
-								{
-									invStack.use(used.stackSize);
-									inventory.markDirty();
-									setActive(true);
-									sentItems = true;
-
-									break outer;
-								}
-							}
+							break inner;
 						}
-					}
 
-					if(!sentItems && autoEject)
-					{
-						InvStack invStack = InventoryUtils.takeTopStack(inventory, facing.getOpposite(), new FirstFinder());
-						
-						if(invStack != null && invStack.getStack() != null)
+						if(filter.canFilter(invStack.getStack(), true))
 						{
-							ItemStack used = emitItemToTransporter(front, invStack, color, 0);
+							if(filter instanceof TItemStackFilter)
+							{
+								TItemStackFilter itemFilter = (TItemStackFilter)filter;
+
+								if(itemFilter.sizeMode)
+								{
+									min = itemFilter.min;
+								}
+							}
 							
-							if(used != null)
+							TransitRequest request = TransitRequest.getFromStack(invStack.getStack());
+							TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
+							
+							if(!response.isEmpty())
 							{
-								invStack.use(used.stackSize);
-								inventory.markDirty();
+								invStack.use(response.stack.stackSize);
+								back.markDirty();
 								setActive(true);
+								sentItems = true;
+
+								break outer;
 							}
 						}
 					}
-
-					delayTicks = 10;
 				}
+
+				if(!sentItems && autoEject)
+				{
+					TransitRequest request = TransitRequest.getTopStacks(back, facing.getOpposite(), 64, new StrictFilterFinder());
+					TransitResponse response = emitItemToTransporter(front, request, color, 0);
+					
+					if(response != null)
+					{
+						response.getInvStack(back, facing).use(response.stack.stackSize);
+						back.markDirty();
+						setActive(true);
+					}
+				}
+				
+				delayTicks = 10;
 			}
 
 			if(playersUsing.size() > 0)
@@ -176,46 +174,23 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 	}
 	
-	/*
-	 * Returns used
-	 */
-	public ItemStack emitItemToTransporter(TileEntity front, InvStack inInventory, EnumColor filterColor, int min)
+	public TransitResponse emitItemToTransporter(TileEntity front, TransitRequest request, EnumColor filterColor, int min)
 	{
-		ItemStack used = null;
-
 		if(CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()))
 		{
 			ILogisticalTransporter transporter = CapabilityUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
 
 			if(!roundRobin)
 			{
-				ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, true, min);
-
-				if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-				{
-					used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-				}
+				return TransporterUtils.insert(this, transporter, request, filterColor, true, min);
 			}
 			else {
-				ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, true, min);
-
-				if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-				{
-					used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-				}
+				return TransporterUtils.insertRR(this, transporter, request, filterColor, true, min);
 			}
 		}
-		else if(front instanceof IInventory)
-		{
-			ItemStack rejects = InventoryUtils.putStackInInventory((IInventory)front, inInventory.getStack(), facing, false);
-
-			if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-			{
-				used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-			}
+		else {
+			return InventoryUtils.putStackInInventory(front, request, facing, false);
 		}
-		
-		return used;
 	}
 
 	@Override
@@ -469,30 +444,19 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public boolean canSendHome(ItemStack stack)
 	{
 		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
-
-		if(back instanceof IInventory)
-		{
-			return InventoryUtils.canInsert(back, null, stack, facing.getOpposite(), true);
-		}
-
-		return false;
+		return InventoryUtils.canInsert(back, null, stack, facing.getOpposite(), true);
 	}
 
 	public boolean hasInventory()
 	{
-		return Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj) instanceof IInventory;
+		TileEntity tile = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
+		return TransporterUtils.isValidAcceptorOnSide(tile, facing.getOpposite());
 	}
 
-	public ItemStack sendHome(ItemStack stack)
+	public TransitResponse sendHome(ItemStack stack)
 	{
 		TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(worldObj);
-
-		if(back instanceof IInventory)
-		{
-			return InventoryUtils.putStackInInventory((IInventory)back, stack, facing.getOpposite(), true);
-		}
-
-		return stack;
+		return InventoryUtils.putStackInInventory(back, TransitRequest.getFromStack(stack), facing.getOpposite(), true);
 	}
 	
 	@Override
@@ -718,6 +682,159 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 	}
 	
+	public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
+	{
+		if(arguments.length > 0)
+		{
+			if(method == 0)
+			{
+				if(!(arguments[0] instanceof String))
+				{
+					return new Object[] {"Invalid parameters."};
+				}
+				
+				color = EnumColor.getFromDyeName((String)arguments[0]);
+				
+				if(color == null)
+				{
+					return new Object[] {"Default color set to null"};
+				}
+				else {
+					return new Object[] {"Default color set to " + color.dyeName};
+				}
+			}
+			else if(method == 1)
+			{
+				if(!(arguments[0] instanceof Boolean))
+				{
+					return new Object[] {"Invalid parameters."};
+				}
+				
+				roundRobin = (Boolean)arguments[0];
+				
+				return new Object[] {"Round-robin mode set to " + roundRobin};
+			}
+			else if(method == 2)
+			{
+				if(!(arguments[0] instanceof Boolean))
+				{
+					return new Object[] {"Invalid parameters."};
+				}
+				
+				autoEject = (Boolean)arguments[0];
+				
+				return new Object[] {"Auto-eject mode set to " + autoEject};
+			}
+			else if(method == 3)
+			{
+				if(arguments.length != 6 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double) || 
+						!(arguments[2] instanceof String) || !(arguments[3] instanceof Boolean) || 
+						!(arguments[4] instanceof Double) || !(arguments[5] instanceof Double))
+				{
+					return new Object[] {"Invalid parameters."};
+				}
+				
+				TItemStackFilter filter = new TItemStackFilter();
+				filter.itemType = new ItemStack(Item.getByNameOrId((String)arguments[0]), 1, ((Double)arguments[1]).intValue());
+				
+				if(filter.itemType.getItem() == null)
+				{
+					return new Object[] {"Invalid item type."};
+				}
+
+				filter.color = EnumColor.getFromDyeName((String)arguments[2]);
+				filter.sizeMode = (Boolean)arguments[3];
+				filter.min = ((Double)arguments[4]).intValue();
+				filter.max = ((Double)arguments[5]).intValue();
+				filters.add(filter);
+				
+				return new Object[] {"Added filter."};
+			}
+			else if(method == 4)
+			{
+				if(arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double))
+				{
+					return new Object[] {"Invalid parameters."};
+				}
+				
+				ItemStack stack = new ItemStack(Item.getByNameOrId((String)arguments[0]), 1, ((Double)arguments[1]).intValue());
+				Iterator<TransporterFilter> iter = filters.iterator();
+
+				while(iter.hasNext())
+				{
+					TransporterFilter filter = iter.next();
+
+					if(filter instanceof TItemStackFilter)
+					{
+						if(StackUtils.equalsWildcard(((TItemStackFilter)filter).itemType, stack))
+						{
+							iter.remove();
+							return new Object[] {"Removed filter."};
+						}
+					}
+				}
+				
+				return new Object[] {"Couldn't find filter."};
+			}
+			else if(method == 5)
+			{
+				if(arguments.length != 2 || !(arguments[0] instanceof String) | !(arguments[1] instanceof String))
+				{
+					return new Object[] {"Invalid parameters."};
+				}
+				
+				TOreDictFilter filter = new TOreDictFilter();
+				filter.oreDictName = (String)arguments[0];
+				filter.color = EnumColor.getFromDyeName((String)arguments[1]);
+				filters.add(filter);
+				
+				return new Object[] {"Added filter."};
+			}
+			else if(method == 6)
+			{
+				if(arguments.length != 1 || !(arguments[0] instanceof String))
+				{
+					return new Object[] {"Invalid parameters."};
+				}
+				
+				String ore = (String)arguments[0];
+				Iterator<TransporterFilter> iter = filters.iterator();
+
+				while(iter.hasNext())
+				{
+					TransporterFilter filter = iter.next();
+
+					if(filter instanceof TOreDictFilter)
+					{
+						if(((TOreDictFilter)filter).oreDictName.equals(ore))
+						{
+							iter.remove();
+							return new Object[] {"Removed filter."};
+						}
+					}
+				}
+				
+				return new Object[] {"Couldn't find filter."};
+			}
+		}
+
+		for(EntityPlayer player : playersUsing)
+		{
+			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<Object>())), (EntityPlayerMP)player);
+		}
+
+		return null;
+	}
+	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
@@ -734,5 +851,22 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 		
 		return super.getCapability(capability, side);
+	}
+	
+	private class StrictFilterFinder extends Finder
+	{
+		@Override
+		public boolean modifies(ItemStack stack)
+		{
+			for(TransporterFilter filter : filters)
+			{
+				if(filter.canFilter(stack, false) && !filter.allowDefault)
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
 	}
 }

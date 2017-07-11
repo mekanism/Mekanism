@@ -1,14 +1,16 @@
 package mekanism.common.recipe;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
-import mekanism.api.util.StackUtils;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
@@ -49,6 +51,7 @@ import mekanism.common.recipe.outputs.GasOutput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
@@ -68,7 +71,22 @@ public final class RecipeHandler
 
 	public static void removeRecipe(Recipe recipeMap, MachineRecipe recipe)
 	{
-		recipeMap.remove(recipe);
+		List<MachineInput> toRemove = new ArrayList<>();
+		
+		for(Iterator iter = recipeMap.get().keySet().iterator(); iter.hasNext();)
+		{
+			MachineInput iterInput = (MachineInput)iter.next();
+			
+			if(iterInput.testEquality(recipe.getInput()))
+			{
+				toRemove.add(iterInput);
+			}
+		}
+		
+		for(MachineInput iterInput : toRemove)
+		{
+			recipeMap.get().remove(iterInput);
+		}
 	}
 
 	/**
@@ -159,9 +177,9 @@ public final class RecipeHandler
 	 * @param input - input ItemStack
 	 * @param output - output ItemStack
 	 */
-	public static void addChemicalInjectionChamberRecipe(ItemStack input, String gasName, ItemStack output)
+	public static void addChemicalInjectionChamberRecipe(ItemStack input, Gas gas, ItemStack output)
 	{
-		addRecipe(Recipe.CHEMICAL_INJECTION_CHAMBER, new InjectionRecipe(input, gasName, output));
+		addRecipe(Recipe.CHEMICAL_INJECTION_CHAMBER, new InjectionRecipe(input, gas, output));
 	}
 
 	/**
@@ -539,25 +557,25 @@ public final class RecipeHandler
 
 	public static enum Recipe
 	{
-		ENERGIZED_SMELTER(MachineType.ENERGIZED_SMELTER.machineName, ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class),
-		ENRICHMENT_CHAMBER(MachineType.ENRICHMENT_CHAMBER.machineName, ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class),
-		OSMIUM_COMPRESSOR(MachineType.OSMIUM_COMPRESSOR.machineName, AdvancedMachineInput.class, ItemStackOutput.class, OsmiumCompressorRecipe.class),
-		COMBINER(MachineType.COMBINER.machineName, AdvancedMachineInput.class, ItemStackOutput.class, CombinerRecipe.class),
-		CRUSHER(MachineType.CRUSHER.machineName, ItemStackInput.class, ItemStackOutput.class, CrusherRecipe.class),
-		PURIFICATION_CHAMBER(MachineType.PURIFICATION_CHAMBER.machineName, AdvancedMachineInput.class, ItemStackOutput.class, PurificationRecipe.class),
-		METALLURGIC_INFUSER(MachineType.METALLURGIC_INFUSER.machineName, InfusionInput.class, ItemStackOutput.class, MetallurgicInfuserRecipe.class),
-		CHEMICAL_INFUSER(MachineType.CHEMICAL_INFUSER.machineName, ChemicalPairInput.class, GasOutput.class, ChemicalInfuserRecipe.class),
-		CHEMICAL_OXIDIZER(MachineType.CHEMICAL_OXIDIZER.machineName, ItemStackInput.class, GasOutput.class, OxidationRecipe.class),
-		CHEMICAL_INJECTION_CHAMBER(MachineType.CHEMICAL_INJECTION_CHAMBER.machineName, AdvancedMachineInput.class, ItemStackOutput.class, InjectionRecipe.class),
-		ELECTROLYTIC_SEPARATOR(MachineType.ELECTROLYTIC_SEPARATOR.machineName, FluidInput.class, ChemicalPairOutput.class, SeparatorRecipe.class),
-		PRECISION_SAWMILL(MachineType.PRECISION_SAWMILL.machineName, ItemStackInput.class, ChanceOutput.class, SawmillRecipe.class),
-		CHEMICAL_DISSOLUTION_CHAMBER(MachineType.CHEMICAL_DISSOLUTION_CHAMBER.machineName, ItemStackInput.class, GasOutput.class, DissolutionRecipe.class),
-		CHEMICAL_WASHER(MachineType.CHEMICAL_WASHER.machineName, GasInput.class, GasOutput.class, WasherRecipe.class),
-		CHEMICAL_CRYSTALLIZER(MachineType.CHEMICAL_CRYSTALLIZER.machineName, GasInput.class, ItemStackOutput.class, CrystallizerRecipe.class),
-		PRESSURIZED_REACTION_CHAMBER(MachineType.PRESSURIZED_REACTION_CHAMBER.machineName, PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class),
-		AMBIENT_ACCUMULATOR(MachineType.AMBIENT_ACCUMULATOR.machineName, IntegerInput.class, GasOutput.class, AmbientGasRecipe.class),
+		ENERGIZED_SMELTER(MachineType.ENERGIZED_SMELTER.blockName, ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class),
+		ENRICHMENT_CHAMBER(MachineType.ENRICHMENT_CHAMBER.blockName, ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class),
+		OSMIUM_COMPRESSOR(MachineType.OSMIUM_COMPRESSOR.blockName, AdvancedMachineInput.class, ItemStackOutput.class, OsmiumCompressorRecipe.class),
+		COMBINER(MachineType.COMBINER.blockName, AdvancedMachineInput.class, ItemStackOutput.class, CombinerRecipe.class),
+		CRUSHER(MachineType.CRUSHER.blockName, ItemStackInput.class, ItemStackOutput.class, CrusherRecipe.class),
+		PURIFICATION_CHAMBER(MachineType.PURIFICATION_CHAMBER.blockName, AdvancedMachineInput.class, ItemStackOutput.class, PurificationRecipe.class),
+		METALLURGIC_INFUSER(MachineType.METALLURGIC_INFUSER.blockName, InfusionInput.class, ItemStackOutput.class, MetallurgicInfuserRecipe.class),
+		CHEMICAL_INFUSER(MachineType.CHEMICAL_INFUSER.blockName, ChemicalPairInput.class, GasOutput.class, ChemicalInfuserRecipe.class),
+		CHEMICAL_OXIDIZER(MachineType.CHEMICAL_OXIDIZER.blockName, ItemStackInput.class, GasOutput.class, OxidationRecipe.class),
+		CHEMICAL_INJECTION_CHAMBER(MachineType.CHEMICAL_INJECTION_CHAMBER.blockName, AdvancedMachineInput.class, ItemStackOutput.class, InjectionRecipe.class),
+		ELECTROLYTIC_SEPARATOR(MachineType.ELECTROLYTIC_SEPARATOR.blockName, FluidInput.class, ChemicalPairOutput.class, SeparatorRecipe.class),
+		PRECISION_SAWMILL(MachineType.PRECISION_SAWMILL.blockName, ItemStackInput.class, ChanceOutput.class, SawmillRecipe.class),
+		CHEMICAL_DISSOLUTION_CHAMBER(MachineType.CHEMICAL_DISSOLUTION_CHAMBER.blockName, ItemStackInput.class, GasOutput.class, DissolutionRecipe.class),
+		CHEMICAL_WASHER(MachineType.CHEMICAL_WASHER.blockName, GasInput.class, GasOutput.class, WasherRecipe.class),
+		CHEMICAL_CRYSTALLIZER(MachineType.CHEMICAL_CRYSTALLIZER.blockName, GasInput.class, ItemStackOutput.class, CrystallizerRecipe.class),
+		PRESSURIZED_REACTION_CHAMBER(MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class),
+		AMBIENT_ACCUMULATOR(MachineType.AMBIENT_ACCUMULATOR.blockName, IntegerInput.class, GasOutput.class, AmbientGasRecipe.class),
 		THERMAL_EVAPORATION_PLANT("ThermalEvaporationPlant", FluidInput.class, FluidOutput.class, ThermalEvaporationRecipe.class),
-		SOLAR_NEUTRON_ACTIVATOR(MachineType.SOLAR_NEUTRON_ACTIVATOR.machineName, GasInput.class, GasOutput.class, SolarNeutronRecipe.class);
+		SOLAR_NEUTRON_ACTIVATOR(MachineType.SOLAR_NEUTRON_ACTIVATOR.blockName, GasInput.class, GasOutput.class, SolarNeutronRecipe.class);
 
 		private HashMap recipes;
 		private String recipeName;
@@ -610,8 +628,13 @@ public final class RecipeHandler
 				MachineOutput output = outputClass.newInstance();
 				output.load(nbtTags);
 				
-				Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
-				return (RECIPE)construct.newInstance(input, output);
+				try {
+					Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
+					return (RECIPE)construct.newInstance(input, output);
+				} catch(Exception e) {
+					Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass, NBTTagCompound.class);
+					return (RECIPE)construct.newInstance(input, output, nbtTags);
+				}
 			} catch(Exception e) {
 				return null;
 			}

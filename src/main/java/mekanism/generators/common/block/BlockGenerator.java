@@ -3,7 +3,6 @@ package mekanism.generators.common.block;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.MekanismConfig.client;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
@@ -16,13 +15,14 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -288,7 +288,10 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	{
 		for(GeneratorType type : GeneratorType.values())
 		{
-			list.add(new ItemStack(i, 1, type.meta));
+			if(type.isEnabled())
+			{
+				list.add(new ItemStack(i, 1, type.meta));
+			}
 		}
 	}
 
@@ -643,7 +646,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}

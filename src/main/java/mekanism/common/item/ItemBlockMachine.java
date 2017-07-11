@@ -6,13 +6,14 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
@@ -30,17 +31,19 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.integration.IC2ItemManager;
-import mekanism.common.integration.TeslaItemWrapper;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.integration.ic2.IC2ItemManager;
+import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -152,7 +155,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		if(MachineType.get(itemstack) != null)
 		{
-			return getUnlocalizedName() + "." + MachineType.get(itemstack).machineName;
+			return getUnlocalizedName() + "." + MachineType.get(itemstack).blockName;
 		}
 
 		return "null";
@@ -215,7 +218,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			if(hasSecurity(itemstack))
 			{
-				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
+				list.add(SecurityUtils.getOwnerDisplay(entityplayer, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
 				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 				
 				if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
@@ -330,16 +333,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(tileEntity instanceof ISecurityTile)
 			{
 				ISecurityTile security = (ISecurityTile)tileEntity;
-				security.getSecurity().setOwner(getOwner(stack));
+				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
 				
 				if(hasSecurity(stack))
 				{
 					security.getSecurity().setMode(getSecurity(stack));
 				}
 				
-				if(getOwner(stack) == null)
+				if(getOwnerUUID(stack) == null)
 				{
-					security.getSecurity().setOwner(player.getName());
+					security.getSecurity().setOwnerUUID(player.getUniqueID());
 				}
 			}
 			
@@ -382,9 +385,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				TileEntityFactory factory = (TileEntityFactory)tileEntity;
 				RecipeType recipeType = RecipeType.values()[getRecipeType(stack)];
-				factory.recipeType = recipeType;
-				factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
-				factory.secondaryEnergyPerTick = factory.getSecondaryEnergyPerTick(recipeType);
+				factory.setRecipeType(recipeType);
 				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType());
 				
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
@@ -461,9 +462,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			if(!world.isRemote)
 			{
-				if(getOwner(itemstack) == null)
+				if(getOwnerUUID(itemstack) == null)
 				{
-					setOwner(itemstack, entityplayer.getName());
+					setOwnerUUID(itemstack, entityplayer.getUniqueID());
 				}
 				
 				if(SecurityUtils.canAccess(entityplayer, itemstack))
@@ -864,26 +865,26 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public String getOwner(ItemStack stack) 
+	public UUID getOwnerUUID(ItemStack stack) 
 	{
-		if(ItemDataUtils.hasData(stack, "owner"))
+		if(ItemDataUtils.hasData(stack, "ownerUUID"))
 		{
-			return ItemDataUtils.getString(stack, "owner");
+			return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public void setOwner(ItemStack stack, String owner) 
+	public void setOwnerUUID(ItemStack stack, UUID owner) 
 	{
-		if(owner == null || owner.isEmpty())
+		if(owner == null)
 		{
-			ItemDataUtils.removeData(stack, "owner");
+			ItemDataUtils.removeData(stack, "ownerUUID");
 			return;
 		}
 		
-		ItemDataUtils.setString(stack, "owner", owner);
+		ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
 	}
 
 	@Override
@@ -925,7 +926,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
     {
-        return new ItemCapabilityWrapper(stack, new FluidItemWrapper(), new TeslaItemWrapper()) {
+        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper(), new FluidItemWrapper()) {
         	@Override
         	public boolean hasCapability(Capability<?> capability, EnumFacing facing) 
         	{

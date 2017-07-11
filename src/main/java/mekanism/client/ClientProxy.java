@@ -13,8 +13,6 @@ import java.util.Map;
 import mcmultipart.client.multipart.MultipartRegistryClient;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
@@ -125,6 +123,8 @@ import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -147,7 +147,6 @@ import mekanism.common.multipart.PartRestrictiveTransporter;
 import mekanism.common.multipart.PartThermodynamicConductor;
 import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
-import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
@@ -165,7 +164,6 @@ import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
@@ -198,6 +196,8 @@ import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -279,6 +279,7 @@ public class ClientProxy extends CommonProxy
 		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
 		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
 		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
+		client.allowConfiguratorModeScroll = Mekanism.configuration.get("client", "ConfiguratorModeScroll", true).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{
@@ -721,6 +722,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiTeleporter(player, EnumHand.values()[pos.getX()], itemStack);
 				}
+				
+				return null;
 			case 15:
 				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 16:
@@ -737,6 +740,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitMain(player.inventory, robit);
 				}
+				
+				return null;
 			case 22:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -744,6 +749,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitCrafting(player.inventory, robit);
 				}
+				
+				return null;
 			case 23:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 				
@@ -751,6 +758,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitInventory(player.inventory, robit);
 				}
+				
+				return null;
 			case 24:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -758,6 +767,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitSmelting(player.inventory, robit);
 				}
+				
+				return null;
 			case 25:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -765,6 +776,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitRepair(player.inventory, robit);
 				}
+				
+				return null;
 			case 29:
 				return new GuiChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer)tileEntity);
 			case 30:
@@ -790,6 +803,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiSeismicReader(world, new Coord4D(player), itemStack1.copy());
 				}
+				
+				return null;
 			case 39:
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 			case 40:

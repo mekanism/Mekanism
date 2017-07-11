@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

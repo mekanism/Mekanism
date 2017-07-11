@@ -13,9 +13,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.usage;
-import mekanism.api.util.CapabilityUtils;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -24,10 +22,14 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.LangUtils;
@@ -260,7 +262,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	private boolean shouldTake(FluidStack fluid, Coord4D coord)
 	{
-		if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == FluidRegistry.getFluid("heavywater"))
+		if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == MekanismFluids.HeavyWater)
 		{
 			return general.pumpWaterSources;
 		}
@@ -618,6 +620,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 			default:
 				break;
 		}

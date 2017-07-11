@@ -10,7 +10,7 @@ import java.util.Set;
 
 import javax.vecmath.Matrix4f;
 
-import mekanism.api.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.common.multipart.ColorProperty;
 import mekanism.common.multipart.ConnectionProperty;

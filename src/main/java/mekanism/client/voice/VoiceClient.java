@@ -9,8 +9,8 @@ import java.net.Socket;
 
 import javax.sound.sampled.AudioFormat;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig.general;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

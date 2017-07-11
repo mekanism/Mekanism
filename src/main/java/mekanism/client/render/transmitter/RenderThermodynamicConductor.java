@@ -1,9 +1,9 @@
 package mekanism.client.render.transmitter;
 
-import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.ColourTemperature;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.multipart.PartThermodynamicConductor;
+import mekanism.common.config.MekanismConfig.client;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;

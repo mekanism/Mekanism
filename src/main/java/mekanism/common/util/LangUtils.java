@@ -4,6 +4,8 @@ import mekanism.api.gas.GasStack;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.IllegalFormatException;
+
 public final class LangUtils
 {
 	public static String transOnOff(boolean b)
@@ -39,5 +41,16 @@ public final class LangUtils
 	public static String localize(String s)
 	{
 		return I18n.translateToLocal(s);
+	}
+
+	public static String localizeWithFormat(String key, Object... format)
+	{
+		String s = localize(key);
+
+		try {
+			return String.format(s, format);
+		} catch(IllegalFormatException e) {
+			return "Format error: " + s;
+		}
 	}
 }

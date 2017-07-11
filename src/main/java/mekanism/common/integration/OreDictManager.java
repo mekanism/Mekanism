@@ -11,13 +11,15 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -62,18 +64,18 @@ public final class OreDictManager
 		{
 			for(ItemStack ore : OreDictionary.getOres("woodRubber"))
 			{
-				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.PLANKS, 4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 1), 1F);
+				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(), 4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 1), 1F);
 			}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustSulfur"))
 		{
-			RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 100));
+			RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(MekanismFluids.SulfurDioxide, 100));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustSalt"))
 		{
-			RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas("brine"), 15));
+			RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(MekanismFluids.Brine, 15));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustRefinedObsidian"))
@@ -99,7 +101,7 @@ public final class OreDictManager
 			
 			for(ItemStack ore : OreDictionary.getOres("crystal" + resource.getName()))
 			{
-				RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), "hydrogenChloride", new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
+				RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride, new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
 			}
 			
 			for(ItemStack ore : OreDictionary.getOres("dustDirty" + resource.getName()))
@@ -111,7 +113,7 @@ public final class OreDictManager
 			{
 				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Dust, 2, resource.ordinal()));
 				RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
-				RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), "hydrogenChloride", new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
+				RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride, new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
 				RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas(resource.getName().toLowerCase()), 1000));
 			}
 			
@@ -291,7 +293,7 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("dustLithium"))
 		{
-			RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas("lithium"), 100));
+			RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(MekanismFluids.Lithium, 100));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
@@ -345,7 +347,6 @@ public final class OreDictManager
 		};
 		
 		InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
-		ArrayList recipeList = (ArrayList)CraftingManager.getInstance().getRecipeList();
 
 		for(int i = 1; i < 9; i++)
 		{

@@ -23,7 +23,7 @@ public class TMaterialFilter extends TransporterFilter
 	}
 
 	@Override
-	public boolean canFilter(ItemStack itemStack)
+	public boolean canFilter(ItemStack itemStack, boolean strict)
 	{
 		if(itemStack == null || !(itemStack.getItem() instanceof ItemBlock))
 		{
@@ -96,6 +96,8 @@ public class TMaterialFilter extends TransporterFilter
 	public TMaterialFilter clone()
 	{
 		TMaterialFilter filter = new TMaterialFilter();
+		filter.allowDefault = allowDefault;
+		filter.color = color;
 		filter.materialItem = materialItem;
 
 		return filter;
