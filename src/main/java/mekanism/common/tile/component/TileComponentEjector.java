@@ -195,7 +195,7 @@ public class TileComponentEjector implements ITileComponent
 
 				if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
 				{
-					TransitResponse response = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), TransitRequest.getFromStack(stack), outputColor, true, 0);
+					TransitResponse response = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), TransitRequest.getFromStack(stack.copy()), outputColor, true, 0);
 
 					if(!response.isEmpty())
 					{
@@ -203,7 +203,7 @@ public class TileComponentEjector implements ITileComponent
 					}
 				}
 				else {
-					TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(stack), side, false);
+					TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(stack.copy()), side, false);
 					
 					if(!response.isEmpty())
 					{
