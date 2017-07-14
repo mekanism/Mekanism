@@ -12,7 +12,7 @@ import net.minecraft.util.EnumHand;
 public class InventoryPersonalChest extends InventoryBasic
 {
 	public EntityPlayer entityPlayer;
-	public ItemStack itemStack;
+	public ItemStack itemStack = ItemStack.EMPTY;
 
 	public boolean reading;
 	
