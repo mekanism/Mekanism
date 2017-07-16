@@ -17,6 +17,7 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Upgrade;
@@ -695,7 +696,32 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return MekanismUtils.getMaxEnergy(itemStack, MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
+		MachineType machineType = MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage());
+
+		if(machineType == MachineType.BASIC_FACTORY || machineType == MachineType.ADVANCED_FACTORY || machineType == MachineType.ELITE_FACTORY)
+		{
+			// 200*tier.processes*recipeType.getEnergyUsage(); // From TileEntityFactory
+
+			RecipeType recipeType = RecipeType.values()[getRecipeType(itemStack)];
+
+			int tierProcess;
+			if (machineType == MachineType.BASIC_FACTORY)
+			{
+				tierProcess = Tier.FactoryTier.BASIC.processes;
+			}
+			else if (machineType == MachineType.ADVANCED_FACTORY)
+			{
+				tierProcess = Tier.FactoryTier.ADVANCED.processes;
+			}
+			else {
+				tierProcess = Tier.FactoryTier.ELITE.processes;
+			}
+
+			double baseMaxEnergy = 200 * tierProcess * recipeType.getEnergyUsage();
+			return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
+		}
+
+		return MekanismUtils.getMaxEnergy(itemStack, machineType.baseEnergy);
 	}
 
 	@Override
