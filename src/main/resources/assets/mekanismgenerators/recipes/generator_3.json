@@ -11,7 +11,7 @@
   "type": "mekanism:ore_shaped",
   "conditions": [
     {
-      "type": "machine_enabled",
+      "type": "mekanism:machine_enabled",
       "generatorType": "GasGenerator"
     }
   ],

@@ -90,7 +90,7 @@ public class RecipeGenerator {
         BlockStateMachine.MachineType machineType = BlockStateMachine.MachineType.get(result);
         if(machineType != null) {
             Map<String, String> condition = new HashMap<>();
-            condition.put("type", "machine_enabled");
+            condition.put("type", "mekanism:machine_enabled");
             condition.put("machineType", machineType.blockName);
             json.put("conditions", new Object[]{condition});
         }
@@ -99,7 +99,7 @@ public class RecipeGenerator {
         BlockStateGenerator.GeneratorType generatorType = BlockStateGenerator.GeneratorType.get(result);
         if(generatorType != null && result.getItemDamage() <= BlockStateGenerator.GeneratorType.WIND_GENERATOR.meta) {
             Map<String, String> condition = new HashMap<>();
-            condition.put("type", "machine_enabled");
+            condition.put("type", "mekanism:machine_enabled");
             condition.put("generatorType", generatorType.blockName);
             json.put("conditions", new Object[]{condition});
         }

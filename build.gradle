@@ -89,7 +89,7 @@ minecraft {
 
 dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart-exp:${config.mcmp_version}"
-    deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}:api"
+    deobfProvided "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}:api"
 	runtime "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
     compile "net.darkhax.tesla:Tesla-${config.minecraft_version}:${config.tesla_version}"
     compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api" // Not updated yet

@@ -281,7 +281,7 @@ public class Mekanism
 	 */
 	public void addRecipes()
 	{
-		if(true) // Generate JSON files from code, disabled.
+		if(false) // Generate JSON files from code, disabled.
 		{
 			MekanismRecipes.generate();
 			MekanismToolsRecipes.generate();

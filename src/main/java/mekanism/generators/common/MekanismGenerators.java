@@ -84,6 +84,7 @@ public class MekanismGenerators implements IModule
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		proxy.preInit();
+		proxy.loadConfiguration();
 	}
 
 	@EventHandler
@@ -100,7 +101,6 @@ public class MekanismGenerators implements IModule
 		MinecraftForge.EVENT_BUS.register(this);
 
 		//Load the proxy
-		proxy.loadConfiguration();
 		proxy.registerRegularTileEntities();
 		proxy.registerSpecialTileEntities();
 		

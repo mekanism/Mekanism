@@ -1,7 +1,6 @@
 package mekanism.common.recipe;
 
 import com.google.gson.JsonObject;
-import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
@@ -14,16 +13,14 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory
     @Override
     public BooleanSupplier parse(JsonContext context, JsonObject json)
     {
-        String machineType = JsonUtils.getString(json, "machineType");
-        if(!machineType.isEmpty())
+        if(JsonUtils.hasField(json, "machineType"))
         {
-            return () -> MekanismConfig.general.machinesManager.isEnabled(machineType);
+            return () -> MekanismConfig.general.machinesManager.isEnabled(JsonUtils.getString(json, "machineType"));
         }
 
-        String generatorType = JsonUtils.getString(json, "generatorType");
-        if(!generatorType.isEmpty())
+        if(JsonUtils.hasField(json, "generatorType"))
         {
-            return () -> MekanismConfig.generators.generatorsManager.isEnabled(generatorType);
+            return () -> MekanismConfig.generators.generatorsManager.isEnabled(JsonUtils.getString(json, "generatorType"));
         }
 
         throw new IllegalStateException("Config defined with machine_enabled condition without a machine/generator type!");
