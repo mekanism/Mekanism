@@ -698,26 +698,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		MachineType machineType = MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage());
 
-		if(machineType == MachineType.BASIC_FACTORY || machineType == MachineType.ADVANCED_FACTORY || machineType == MachineType.ELITE_FACTORY)
+		if(machineType.isFactory())
 		{
 			// 200*tier.processes*recipeType.getEnergyUsage(); // From TileEntityFactory
-
 			RecipeType recipeType = RecipeType.values()[getRecipeType(itemStack)];
-
-			int tierProcess;
-			if (machineType == MachineType.BASIC_FACTORY)
-			{
-				tierProcess = Tier.FactoryTier.BASIC.processes;
-			}
-			else if (machineType == MachineType.ADVANCED_FACTORY)
-			{
-				tierProcess = Tier.FactoryTier.ADVANCED.processes;
-			}
-			else {
-				tierProcess = Tier.FactoryTier.ELITE.processes;
-			}
-
+			int tierProcess = machineType.factoryTier.processes;
 			double baseMaxEnergy = 200 * tierProcess * recipeType.getEnergyUsage();
+
 			return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
 		}
 
