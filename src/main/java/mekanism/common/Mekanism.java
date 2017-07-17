@@ -1212,9 +1212,9 @@ public class Mekanism
 	}
 	
 	@EventHandler
-	public void loadComplete(FMLLoadCompleteEvent event)
+	public void loadComplete(FMLInterModComms.IMCEvent event)
 	{
-		new IMCHandler().onIMCEvent(FMLInterModComms.fetchRuntimeMessages(this));
+		new IMCHandler().onIMCEvent(event.getMessages());
 	}
 	
 	@EventHandler
