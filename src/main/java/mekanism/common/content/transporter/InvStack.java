@@ -77,7 +77,7 @@ public final class InvStack
 				}
 				else {
 					ItemStack ret = stack.copy();
-					ret.setCount(inventory.getStackInSlot(slotIDs.get(i)).getCount() - stack.getCount());
+					ret.setCount(inventory.getStackInSlot(slotIDs.get(i)).getCount() - amount);
 					inventory.setInventorySlotContents(slotIDs.get(i), ret);
 					amount -= stack.getCount();
 				}
