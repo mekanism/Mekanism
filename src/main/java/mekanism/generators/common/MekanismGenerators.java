@@ -102,13 +102,13 @@ public class MekanismGenerators implements IModule
 		{
 			for(IFuel s : BuildcraftFuelRegistry.fuel.getFuels())
 			{
-				if(!(s.getFluid() == null || GasRegistry.containsGas(s.getFluid().getFluid().getName())))
+				if(s.getFluid() != null && !GasRegistry.containsGas(s.getFluid().getFluid().getName()))
 				{
 					GasRegistry.register(new Gas(s.getFluid().getFluid()));
 				}
 			}
 
-			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), 240 * MjAPI.MJ, 40 * Fluid.BUCKET_VOLUME);
+			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (int)(240 * general.TO_RF / 20 * MjAPI.MJ), 40 * Fluid.BUCKET_VOLUME);
 		}
 		
 		//Update the config-dependent recipes after the recipes have actually been added in the first place

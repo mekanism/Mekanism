@@ -58,7 +58,10 @@ public class FuelHandler
 		public FuelGas(IFuel bcFuel)
 		{
 			burnTicks = bcFuel.getTotalBurningTime() / Fluid.BUCKET_VOLUME;
-			energyPerTick = bcFuel.getPowerPerCycle() / MjAPI.MJ;
+
+			// getPowerPerCycle returns value in 1 BuildCraft micro MJ
+			// 1 BuildCraft MJ equals 20 RF
+			energyPerTick = bcFuel.getPowerPerCycle() / (double) MjAPI.MJ * 20 * general.FROM_RF;
 		}
 	}
 
