@@ -124,7 +124,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
 		}
 
 		if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
