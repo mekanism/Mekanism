@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class IMCHandler
 {
-	@EventHandler
 	public void onIMCEvent(List<IMCMessage> messages)
 	{
 		for(IMCMessage msg : messages)
