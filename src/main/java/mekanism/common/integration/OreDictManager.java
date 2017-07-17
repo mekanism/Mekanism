@@ -160,7 +160,7 @@ public final class OreDictManager
 			} catch(Exception e) {}
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("oreCertusQuartz"))
+		/*for(ItemStack ore : OreDictionary.getOres("oreCertusQuartz"))
 		{
 			try {
 				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustCertusQuartz").get(0), 4));
@@ -179,7 +179,7 @@ public final class OreDictManager
 			try {
 				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("crystalCertusQuartz").get(0), 1));
 			} catch(Exception e) {}
-		}
+		}*/
 		
 		for(ItemStack ore : OreDictionary.getOres("gemQuartz"))
 		{
@@ -200,7 +200,7 @@ public final class OreDictManager
 			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.QUARTZ, 6));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("crystalFluix"))
+		/*for(ItemStack ore : OreDictionary.getOres("crystalFluix"))
 		{
 			try {
 				RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustFluix").get(0), 1));
@@ -212,7 +212,7 @@ public final class OreDictManager
 			try {
 				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("crystalFluix").get(0), 1));
 			} catch(Exception e) {}
-		}
+		}*/
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 		{

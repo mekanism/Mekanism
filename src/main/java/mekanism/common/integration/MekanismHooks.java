@@ -156,13 +156,6 @@ public final class MekanismHooks
 	@Method(modid = "appliedenergistics2")
 	public void registerAE2P2P() 
 	{
-		String energyP2P = "add-p2p-attunement-rf-power";
-		
-		if(IC2Loaded)
-		{
-			energyP2P = "add-p2p-attunement-ic2-power";
-		}
-		
 		for(TransmitterType type : TransmitterType.values())
 		{
 			if(type.getTransmission().equals(TransmissionType.ITEM))
@@ -179,7 +172,7 @@ public final class MekanismHooks
 			
 			if(type.getTransmission().equals(TransmissionType.ENERGY))
 			{
-				FMLInterModComms.sendMessage("appliedenergistics2", energyP2P, new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
+				FMLInterModComms.sendMessage("appliedenergistics2", "add-p2p-attunement-forge-power", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
 				continue;
 			}
 
