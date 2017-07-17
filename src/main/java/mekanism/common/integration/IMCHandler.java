@@ -26,6 +26,15 @@ public class IMCHandler
 
 				String message = msg.key;
 
+				if(message.equals("ShapedMekanismRecipe") ||
+						message.equals("ShapelessMekanismRecipe") ||
+						message.equals("DeleteMekanismRecipes") ||
+						message.equals("RemoveMekanismRecipes"))
+				{
+					Mekanism.logger.warn("[Mekanism] " + msg.getSender() + " tried to send IMC " + message + " which has been deleted. Please notify the mod developer to use JSON recipes.");
+					found = true;
+				}
+
 				if(message.startsWith("Delete") || message.startsWith("Remove"))
 				{
 					message = message.replace("Delete", "").replace("Remove", "");
