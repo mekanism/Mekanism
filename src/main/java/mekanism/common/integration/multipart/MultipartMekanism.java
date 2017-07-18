@@ -6,7 +6,6 @@ import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHIN
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -171,17 +170,22 @@ public class MultipartMekanism implements IMCMPAddon
 		return entity instanceof IMultipartContainer;
 	}
 	
-	public static Collection<TileEntity> getTileEntities(TileEntity container)
+	public static Collection<TileEntity> getMekanismTileEntities(TileEntity container)
 	{
+		ArrayList<TileEntity> entities = new ArrayList<>();
+		
 		if(container instanceof IMultipartContainer)
 		{
-			return ((IMultipartContainer)container).getParts().values().stream()
-					.map(partInfo -> partInfo.getPart())
-					.filter(part -> part instanceof MultipartTile)
-					.map(part -> ((MultipartTile)part).getTileEntity())
-					.collect(Collectors.toList());
+			for(IPartInfo partInfo : ((IMultipartContainer)container).getParts().values())
+			{
+				IMultipartTile partTile = partInfo.getTile();
+				if(partTile instanceof MultipartTile)
+				{
+					entities.add(((MultipartTile)partTile).getTileEntity());
+				}
+			}
 		}
 		
-		return new ArrayList<TileEntity>();
+		return entities;
 	}
 }

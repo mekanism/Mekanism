@@ -37,7 +37,7 @@ public class MultipartTransmitter implements IMultipart
 		
 		if(tile instanceof TileEntitySidedPipe) 
 		{
-			((TileEntitySidedPipe)tile).onPartChanged(null);
+			((TileEntitySidedPipe)tile).onAdded();
 		}
 	}
 	
