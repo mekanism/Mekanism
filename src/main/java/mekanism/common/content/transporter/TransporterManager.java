@@ -9,6 +9,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack.Path;
@@ -112,6 +113,11 @@ public class TransporterManager
 			for(int get = 0; get <= slots.length - 1; get++)
 			{
 				int slotID = slots[get];
+
+				if (slotID >= ret.size()){
+					Mekanism.logger.error("Inventory {} gave slot number >= the number of slots it reported! {} >= {} ", inv.getClass().getName(), slotID, inv.getSizeInventory());
+					continue;
+				}
 
 				ret.set(slotID, !sidedInventory.getStackInSlot(slotID).isEmpty() ? sidedInventory.getStackInSlot(slotID).copy() : ItemStack.EMPTY);
 			}
