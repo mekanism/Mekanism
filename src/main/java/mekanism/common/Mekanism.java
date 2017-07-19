@@ -240,11 +240,12 @@ public class Mekanism
 	
 	public static KeySync keyMap = new KeySync();
 	
-	public static Set<String> jetpackOn = new HashSet<String>();
-	public static Set<String> gasmaskOn = new HashSet<String>();
-	public static Set<String> flamethrowerActive = new HashSet<String>();
+	public static Set<String> jetpackOn = new HashSet<>();
+	public static Set<String> gasmaskOn = new HashSet<>();
+	public static Set<String> freeRunnerOn = new HashSet<>();
+	public static Set<String> flamethrowerActive = new HashSet<>();
 	
-	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
+	public static Set<Coord4D> activeVibrators = new HashSet<>();
 	
 	static {		
 		MekanismFluids.register();
@@ -1202,6 +1203,7 @@ public class Mekanism
 		worldTickHandler.resetRegenChunks();
 		privateTeleporters.clear();
 		privateEntangloporters.clear();
+		freeRunnerOn.clear();
 		
 		//Reset consistent managers
 		MultiblockManager.reset();

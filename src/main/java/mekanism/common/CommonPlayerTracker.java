@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
+import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
@@ -32,8 +33,9 @@ public class CommonPlayerTracker
 			Mekanism.packetHandler.sendTo(new JetpackDataMessage(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new ScubaTankDataMessage(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new SecurityUpdateMessage(SecurityPacket.FULL, null, null), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP)event.player);
 
-			Mekanism.logger.info("Sent config to '" + event.player.getDisplayName() + ".'");
+			Mekanism.logger.info("Sent config to '" + event.player.getDisplayNameString() + ".'");
 		}
 	}
 
@@ -43,6 +45,7 @@ public class CommonPlayerTracker
 		Mekanism.jetpackOn.remove(event.player.getName());
 		Mekanism.gasmaskOn.remove(event.player.getName());
 		Mekanism.flamethrowerActive.remove(event.player.getName());
+		Mekanism.freeRunnerOn.remove(event.player.getName());
 	}
 
 	@SubscribeEvent
@@ -51,11 +54,13 @@ public class CommonPlayerTracker
 		Mekanism.jetpackOn.remove(event.player.getName());
 		Mekanism.gasmaskOn.remove(event.player.getName());
 		Mekanism.flamethrowerActive.remove(event.player.getName());
+		Mekanism.freeRunnerOn.remove(event.player.getName());
 
 		if(!event.player.world.isRemote)
 		{
 			Mekanism.packetHandler.sendTo(new JetpackDataMessage(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new ScubaTankDataMessage(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP)event.player);
 		}
 	}
 }
