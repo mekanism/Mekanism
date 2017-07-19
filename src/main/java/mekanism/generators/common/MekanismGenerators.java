@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseRegistry;
@@ -274,5 +275,13 @@ public class MekanismGenerators implements IModule
 			proxy.loadConfiguration();
 			TypeConfigManager.updateConfigRecipes(GeneratorType.getGeneratorsForConfig(), generators.generatorsManager);
 		}
+	}
+
+	@SubscribeEvent
+	public void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event)
+	{
+		// Mekanism Generators multiblock structures
+		MekanismAPI.addBoxBlacklist(GeneratorsBlocks.Generator, 5); // Advanced Solar Generator
+		MekanismAPI.addBoxBlacklist(GeneratorsBlocks.Generator, 6); // Wind Generator
 	}
 }
