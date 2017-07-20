@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/ctm/superheating_element"
+      "all": "mekanism:blocks/superheating_element"
     }
   },
   "variants": {

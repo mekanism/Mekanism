@@ -3,9 +3,9 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanismgenerators:blocks/ctm/reactor_frame",
-      "front": "mekanismgenerators:blocks/ctm/reactor_frame",
-      "top": "mekanismgenerators:blocks/ctm/reactor_controller"
+      "sides": "mekanismgenerators:blocks/reactor_frame",
+      "front": "mekanismgenerators:blocks/reactor_frame",
+      "top": "mekanismgenerators:blocks/reactor_controller"
     }
   },
   "variants": {

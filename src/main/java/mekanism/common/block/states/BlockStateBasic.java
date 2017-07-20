@@ -1,6 +1,5 @@
 package mekanism.common.block.states;
 
-import mekanism.client.render.ctm.PropertyCTMRenderContext;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
@@ -45,11 +44,10 @@ public class BlockStateBasic extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
 	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
-	public static final PropertyCTMRenderContext ctmProperty = new PropertyCTMRenderContext();
 
 	public BlockStateBasic(BlockBasic block, PropertyEnum<BasicBlockType> typeProperty)
 	{
-		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
+		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty}, new IUnlistedProperty[] {});
 	}
 
 	public static enum BasicBlock

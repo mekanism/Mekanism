@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanismgenerators:blocks/ctm/turbine_casing"
+      "all": "mekanismgenerators:blocks/turbine_casing"
     }
   },
   "variants": {

@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/ctm/electromagnetic_coil"
+      "all": "mekanism:blocks/electromagnetic_coil"
     }
   },
   "variants": {

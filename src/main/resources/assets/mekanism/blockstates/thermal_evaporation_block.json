@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/ctm/thermal_evaporation_block"
+      "all": "mekanism:blocks/thermal_evaporation_block"
     }
   },
   "variants": {

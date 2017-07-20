@@ -34,7 +34,7 @@ public class BlockStateReactor extends ExtendedBlockState
 	
 	public BlockStateReactor(BlockReactor block, PropertyEnum<ReactorBlockType> typeProperty)
 	{
-		super(block, new IProperty[] {typeProperty, activeProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
+		super(block, new IProperty[] {typeProperty, activeProperty}, new IUnlistedProperty[] {});
 	}
 	
 	public static enum ReactorBlock

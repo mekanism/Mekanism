@@ -3,7 +3,6 @@ package mekanism.generators.client;
 import java.io.IOException;
 
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.ctm.CTMRegistry;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -138,10 +137,6 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	public void preInit()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
-		
-		CTMRegistry.registerCTMs("mekanismgenerators", "turbine_vent", "turbine_valve", "turbine_casing", "electromagnetic_coil", 
-				"reactor_controller", "reactor_frame", "reactor_port", "reactor_port_output", "reactor_glass", "laser_focus_matrix", 
-				"reactor_logic_adapter", "reactor_controller_on", "saturating_condenser");
 	}
 
 	@Override

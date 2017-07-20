@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/ctm/induction_cell_basic"
+      "all": "mekanism:blocks/induction_cell_basic"
     }
   },
   "variants": {

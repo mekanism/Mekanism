@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/ctm/induction_port"
+      "all": "mekanism:blocks/induction_port"
     }
   },
   "variants": {

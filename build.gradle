@@ -57,6 +57,10 @@ repositories {
         name 'hwyla'
         url 'http://tehnut.info/maven'
     }
+    maven {
+        name 'tterrag'
+        url 'http://maven.tterrag.com/'
+    }
 }
 
 // Define properties file
@@ -90,6 +94,8 @@ dependencies {
     compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
     compile "li.cil.oc:OpenComputers:MC${config.minecraft_version}-${config.opencomputers_version}:api"
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
+    deobfProvided "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}:api"
+    runtime "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}"
 }
 
 processResources

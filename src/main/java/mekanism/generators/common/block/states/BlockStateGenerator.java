@@ -53,7 +53,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 
 	public BlockStateGenerator(BlockGenerator block, PropertyEnum typeProperty)
 	{
-		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
+		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty}, new IUnlistedProperty[] {});
 	}
 
 	public static enum GeneratorBlock
