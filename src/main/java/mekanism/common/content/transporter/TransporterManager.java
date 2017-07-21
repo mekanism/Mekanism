@@ -115,7 +115,7 @@ public class TransporterManager
 				int slotID = slots[get];
 
 				if (slotID >= ret.size()){
-					Mekanism.logger.error("Inventory {} gave slot number >= the number of slots it reported! {} >= {} ", inv.getClass().getName(), slotID, inv.getSizeInventory());
+					Mekanism.logger.error("Inventory {} gave slot number >= the number of slots it reported! {} >= {} ", inv.getClass().getName(), slotID, ret.size());
 					continue;
 				}
 
