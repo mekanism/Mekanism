@@ -748,6 +748,47 @@ public class ClientProxy extends CommonProxy
 		};
 		
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.Transmitter), transmitterMesher);
+
+		//Walkie Talkie dynamic texture
+		ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemWalkieTalkie)
+				{
+					ItemWalkieTalkie item = (ItemWalkieTalkie)stack.getItem();
+
+					if(item.getOn(stack))
+					{
+						return ItemWalkieTalkie.CHANNEL_MODELS.get(item.getChannel(stack));
+					}
+				}
+
+				return ItemWalkieTalkie.OFF_MODEL;
+			}
+		});
+
+		//Crafting Formula dynamic texture
+		ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula)
+				{
+					ItemCraftingFormula item = (ItemCraftingFormula)stack.getItem();
+
+					if(item.getInventory(stack) == null)
+					{
+						return ItemCraftingFormula.MODEL;
+					}
+					else {
+						return item.isInvalid(stack) ? ItemCraftingFormula.INVALID_MODEL : ItemCraftingFormula.ENCODED_MODEL;
+					}
+				}
+
+				return ItemCraftingFormula.MODEL;
+			}
+		});
 		
 		OBJLoader.INSTANCE.addDomain("mekanism");
 	}
@@ -1109,47 +1150,6 @@ public class ClientProxy extends CommonProxy
 			public Render<? super EntityFlame> createRenderFor(RenderManager manager)
 			{
 				return new RenderFlame(manager);
-			}
-		});
-		
-		//Walkie Talkie dynamic texture
-		ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) 
-			{
-				if(!stack.isEmpty() && stack.getItem() instanceof ItemWalkieTalkie)
-				{
-					ItemWalkieTalkie item = (ItemWalkieTalkie)stack.getItem();
-					
-					if(item.getOn(stack))
-					{
-						return ItemWalkieTalkie.CHANNEL_MODELS.get(item.getChannel(stack));
-					}
-				}
-				
-				return ItemWalkieTalkie.OFF_MODEL;
-			}
-		});
-		
-		//Crafting Formula dynamic texture
-		ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) 
-			{
-				if(!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula)
-				{
-					ItemCraftingFormula item = (ItemCraftingFormula)stack.getItem();
-					
-					if(item.getInventory(stack) == null)
-					{
-						return ItemCraftingFormula.MODEL;
-					}
-					else {
-						return item.isInvalid(stack) ? ItemCraftingFormula.INVALID_MODEL : ItemCraftingFormula.ENCODED_MODEL;
-					}
-				}
-				
-				return ItemCraftingFormula.MODEL;
 			}
 		});
 		
