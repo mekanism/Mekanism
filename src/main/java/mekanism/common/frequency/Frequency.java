@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.UsernameCache;
 
@@ -132,7 +133,7 @@ public class Frequency
 	{
 		data.add(name);
 		data.add(ownerUUID.toString());
-		data.add(UsernameCache.getLastKnownUsername(ownerUUID));
+		data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
 		data.add(publicFreq);
 	}
 
