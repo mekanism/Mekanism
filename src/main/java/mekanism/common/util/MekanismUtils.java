@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import com.mojang.authlib.GameProfile;
 import ic2.api.energy.EnergyNet;
 
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
@@ -85,16 +87,20 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cofh.api.item.IToolHammer;
+
+import javax.annotation.Nonnull;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -1501,6 +1507,19 @@ public final class MekanismUtils
 		} catch(Throwable t) {}
 		
 		return false;
+	}
+
+	@Nonnull
+	public static String getLastKnownUsername(UUID uuid)
+	{
+		String ret = UsernameCache.getLastKnownUsername(uuid);
+		if (ret == null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){ // see if MC/Yggdrasil knows about it?!
+			GameProfile gp = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
+			if (gp != null){
+				ret = gp.getName();
+			}
+		}
+		return ret != null ? ret : "<???>";
 	}
 
 	public static enum ResourceType
