@@ -112,6 +112,8 @@ public final class MekanismUtils
 
 	public static final Map<String, Class<?>> classesFound = new HashMap<String, Class<?>>();
 
+	private static final List<UUID> warnedFails = new ArrayList<>();
+
 	/**
 	 * Checks for a new version of Mekanism.
 	 */
@@ -1513,11 +1515,15 @@ public final class MekanismUtils
 	public static String getLastKnownUsername(UUID uuid)
 	{
 		String ret = UsernameCache.getLastKnownUsername(uuid);
-		if (ret == null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){ // see if MC/Yggdrasil knows about it?!
+		if (ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){ // see if MC/Yggdrasil knows about it?!
 			GameProfile gp = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
 			if (gp != null){
 				ret = gp.getName();
 			}
+		}
+		if (ret == null && !warnedFails.contains(uuid)){
+			Mekanism.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
+			warnedFails.add(uuid);
 		}
 		return ret != null ? ret : "<???>";
 	}
