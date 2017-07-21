@@ -158,6 +158,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
 		gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS*tier.processes);
 		maxInfuse = BASE_MAX_INFUSE*tier.processes;
+
+		setRecipeType(recipeType);
 	}
 	
 	@Override

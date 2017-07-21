@@ -14,7 +14,6 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
 public class IMCHandler
 {
-	@EventHandler
 	public void onIMCEvent(List<IMCMessage> messages)
 	{
 		for(IMCMessage msg : messages)
