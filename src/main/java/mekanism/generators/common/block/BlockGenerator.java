@@ -57,10 +57,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -171,7 +169,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn instanceof ChunkCache ? ((ChunkCache)worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+		TileEntity tile = MekanismUtils.getTileEntitySave(worldIn, pos);
 		
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
 		{
@@ -256,7 +254,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	{
 		if(client.enableAmbientLighting)
 		{
-			TileEntity tileEntity = world instanceof ChunkCache ? ((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos);
+			TileEntity tileEntity = MekanismUtils.getTileEntitySave(world, pos);
 
 			if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 			{
