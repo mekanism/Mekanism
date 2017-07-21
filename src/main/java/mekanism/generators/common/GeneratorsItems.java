@@ -6,8 +6,11 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
@@ -20,7 +23,8 @@ public class GeneratorsItems
 		@Override
 		public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player)
 		{
-			return world.getTileEntity(pos) instanceof TileEntityTurbineRotor;
+			TileEntity entity = world instanceof ChunkCache ? ((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos);
+			return entity instanceof TileEntityTurbineRotor;
 		}
 	};
 

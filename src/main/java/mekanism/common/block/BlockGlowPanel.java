@@ -26,8 +26,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -71,7 +73,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = world instanceof ChunkCache ? (TileEntityGlowPanel)((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : (TileEntityGlowPanel)world.getTileEntity(pos);
 		return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
 	}
 
@@ -79,8 +81,8 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) 
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
-		
+		TileEntityGlowPanel tileEntity = world instanceof ChunkCache ? (TileEntityGlowPanel)((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : (TileEntityGlowPanel)world.getTileEntity(pos);
+
 		if(tileEntity != null)
 		{
 			state = state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
@@ -117,7 +119,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = world instanceof ChunkCache ? (TileEntityGlowPanel)((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : (TileEntityGlowPanel)world.getTileEntity(pos);
 		
 		if(!tileEntity.getWorld().isRemote && !canStay(tileEntity))
 		{			
@@ -137,7 +139,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(pos);
+		TileEntity tile = world instanceof ChunkCache ? ((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos);
 		
 		if(tile != null && tile instanceof TileEntityGlowPanel)
 		{

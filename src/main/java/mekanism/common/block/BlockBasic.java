@@ -63,10 +63,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -158,7 +160,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn.getTileEntity(pos);
+		TileEntity tile = worldIn instanceof ChunkCache ? ((ChunkCache)worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
 		
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
 		{
@@ -344,7 +346,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 						return false;
 					case 9:
 					case 11:
-						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(pos);
+						TileEntityDynamicTank tileEntity = world instanceof ChunkCache ? (TileEntityDynamicTank)((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : (TileEntityDynamicTank)world.getTileEntity(pos);
 
 						if(tileEntity != null)
 						{
@@ -372,7 +374,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 					case 2:
 					case 7:
 					case 8:
-						TileEntityMultiblock tileEntity = (TileEntityMultiblock)world.getTileEntity(pos);
+						TileEntityMultiblock tileEntity = world instanceof ChunkCache ? (TileEntityMultiblock)((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : (TileEntityMultiblock)world.getTileEntity(pos);
 
 						if(tileEntity != null)
 						{
@@ -716,7 +718,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(pos);
+		TileEntity tileEntity = world instanceof ChunkCache ? ((ChunkCache)world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
 
 		if(tileEntity instanceof IActiveState)
