@@ -74,7 +74,7 @@ public class BlockGasTank extends BlockContainer
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = MekanismUtils.getTileEntitySave(worldIn, pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 		
 		if(tile instanceof TileEntityGasTank)
 		{

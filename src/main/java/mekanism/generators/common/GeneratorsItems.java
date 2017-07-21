@@ -21,7 +21,7 @@ public class GeneratorsItems
 		@Override
 		public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player)
 		{
-			return MekanismUtils.getTileEntitySave(world, pos) instanceof TileEntityTurbineRotor;
+			return MekanismUtils.getTileEntitySafe(world, pos) instanceof TileEntityTurbineRotor;
 		}
 	};
 

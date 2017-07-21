@@ -169,7 +169,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = MekanismUtils.getTileEntitySave(worldIn, pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 		
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
 		{
@@ -254,7 +254,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	{
 		if(client.enableAmbientLighting)
 		{
-			TileEntity tileEntity = MekanismUtils.getTileEntitySave(world, pos);
+			TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 
 			if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 			{

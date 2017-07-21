@@ -72,7 +72,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySave(world, pos);
+		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySafe(world, pos);
 		return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
 	}
 
@@ -80,7 +80,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) 
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySave(world, pos);
+		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySafe(world, pos);
 
 		if(tileEntity != null)
 		{
@@ -118,7 +118,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySave(world, pos);
+		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySafe(world, pos);
 		
 		if(!tileEntity.getWorld().isRemote && !canStay(tileEntity))
 		{			
@@ -138,7 +138,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tile = MekanismUtils.getTileEntitySave(world, pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 		
 		if(tile != null && tile instanceof TileEntityGlowPanel)
 		{

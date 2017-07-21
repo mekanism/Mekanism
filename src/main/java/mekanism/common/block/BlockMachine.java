@@ -206,7 +206,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = MekanismUtils.getTileEntitySave(worldIn, pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 		
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
 		{
@@ -383,7 +383,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	{
 		if(client.enableAmbientLighting)
 		{
-			TileEntity tileEntity = MekanismUtils.getTileEntitySave(world, pos);
+			TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 
 			if(tileEntity instanceof IActiveState)
 			{
@@ -992,7 +992,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-		TileEntity tile = MekanismUtils.getTileEntitySave(world, pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 		
 		if(type == null)
 		{
@@ -1105,7 +1105,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	@Override
 	public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
-		TileEntity tile = MekanismUtils.getTileEntitySave(world, pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 		
 		if(tile instanceof TileEntityLaserAmplifier)
 		{

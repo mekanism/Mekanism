@@ -1529,7 +1529,7 @@ public final class MekanismUtils
 		}
 	}
 
-	public static TileEntity getTileEntitySave(IBlockAccess worldIn, BlockPos pos)
+	public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos)
 	{
 		return worldIn instanceof ChunkCache ? ((ChunkCache)worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
 	}
