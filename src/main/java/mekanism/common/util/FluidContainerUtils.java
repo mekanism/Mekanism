@@ -13,8 +13,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public final class FluidContainerUtils 
+public final class FluidContainerUtils
 {
+	private FluidContainerUtils(){}
+
 	public static boolean isFluidContainer(ItemStack stack)
 	{
 		return !stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
@@ -27,28 +29,25 @@ public final class FluidContainerUtils
 	
 	public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainerBlock tile, int slotID, FluidChecker checker)
 	{
-		FluidStack ret = extractFluid(tileTank.getCapacity()-tileTank.getFluidAmount(), tile.inventory.get(slotID), checker);
-		tile.inventory.set(slotID, FluidUtil.getFluidHandler(tile.inventory.get(slotID)).getContainer());
-		return ret;
+		return extractFluid(tileTank.getCapacity()-tileTank.getFluidAmount(), tile.inventory.get(slotID), checker);
 	}
 	
 	public static FluidStack extractFluid(int needed, ItemStack container, FluidChecker checker)
 	{
 		IFluidHandlerItem handler = FluidUtil.getFluidHandler(container);
+		FluidStack fluidStack = FluidUtil.getFluidContained(container);
 		
-		if(handler == null || FluidUtil.getFluidContained(container) == null)
+		if(handler == null || fluidStack == null)
 		{
 			return null;
 		}
 		
-		if(checker != null && !checker.isValid(FluidUtil.getFluidContained(container).getFluid()))
+		if(checker != null && !checker.isValid(fluidStack.getFluid()))
 		{
 			return null;
 		}
 		
-		FluidStack ret = handler.drain(needed, true);
-		
-		return ret;
+		return handler.drain(needed, true);
 	}
 	
 	public static int insertFluid(FluidTank tileTank, ItemStack container)
@@ -60,7 +59,7 @@ public final class FluidContainerUtils
 	{
 		IFluidHandler handler = FluidUtil.getFluidHandler(container);
 		
-		if(fluid == null)
+		if(fluid == null || handler == null)
 		{
 			return 0;
 		}
@@ -128,8 +127,9 @@ public final class FluidContainerUtils
 				return (checker == null || checker.isValid(f)) && (storedFinal == null || storedFinal == f);
 			}
 		});
-		
-		ItemStack inputCopy = FluidUtil.getFluidHandler(input).getContainer();
+
+		IFluidHandlerItem iFluidHandlerItem = FluidUtil.getFluidHandler(input);
+		ItemStack inputCopy = iFluidHandlerItem != null ? iFluidHandlerItem.getContainer() : ItemStack.EMPTY;
 		
 		if(FluidUtil.getFluidContained(inputCopy) == null && !inputCopy.isEmpty())
 		{
