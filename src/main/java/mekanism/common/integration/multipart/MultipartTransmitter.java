@@ -5,11 +5,13 @@ import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.slot.EnumCenterSlot;
 import mcmultipart.api.slot.IPartSlot;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -49,6 +51,7 @@ public class MultipartTransmitter implements IMultipart
 		if(tile instanceof TileEntitySidedPipe) 
 		{
 			tile.validate();
+			((TileEntitySidedPipe)tile).notifyTileChange();
 		}
 	}
 	
@@ -79,7 +82,25 @@ public class MultipartTransmitter implements IMultipart
 	}
 	
 	@Override
-	public Block getBlock() {
+	public void onPartPlacedBy(IPartInfo part, EntityLivingBase placer, ItemStack stack)
+	{
+		TileEntity tile = part.getTile().getTileEntity();
+		
+		if(tile instanceof TileEntitySidedPipe)
+		{
+			BaseTier baseTier = BaseTier.BASIC;
+			if(stack.hasTagCompound())
+			{
+				baseTier = BaseTier.values()[stack.getTagCompound().getInteger("tier")];
+			}
+			
+			((TileEntitySidedPipe)tile).setBaseTier(baseTier);
+		}
+	}
+	
+	@Override
+	public Block getBlock()
+	{
 		return MekanismBlocks.Transmitter;
 	}
 }

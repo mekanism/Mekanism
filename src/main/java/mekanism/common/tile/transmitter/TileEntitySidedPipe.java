@@ -412,6 +412,14 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		return nbtTags;
 	}
 	
+	@Override
+	public NBTTagCompound getUpdateTag()
+	{
+		NBTTagCompound nbtTags = super.getUpdateTag();
+		nbtTags.setInteger("tier", getBaseTier().ordinal());
+		return nbtTags;
+	}
+	
 	protected void onRefresh() {}
 
 	public void refreshConnections()

@@ -37,6 +37,11 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception 
 	{
+		if(Mekanism.hooks.MCMPLoaded)
+		{
+			dataStream.readByte();
+		}
+		
 		side = EnumFacing.getFront(dataStream.readInt());
 		colour = EnumColor.DYES[dataStream.readInt()];
 		
@@ -46,6 +51,11 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
+		if(Mekanism.hooks.MCMPLoaded)
+		{
+			data.add((byte)side.ordinal());
+		}
+		
 		data.add(side.ordinal());
 		data.add(colour.getMetaValue());
 		
@@ -72,6 +82,12 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 		nbt.setInteger("colour", colour.getMetaValue());
 		
 		return nbt;
+	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag()
+	{
+		return writeToNBT(new NBTTagCompound());
 	}
 
 	@Override

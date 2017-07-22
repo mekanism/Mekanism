@@ -3,7 +3,6 @@ package mekanism.common.integration.multipart;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -17,12 +16,16 @@ import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.multipart.IMultipartRegistry;
 import mcmultipart.api.multipart.IMultipartTile;
+import mcmultipart.api.multipart.MultipartCapabilityHelper;
 import mcmultipart.api.multipart.MultipartOcclusionHelper;
 import mcmultipart.api.ref.MCMPCapabilities;
+import mcmultipart.api.slot.EnumCenterSlot;
+import mcmultipart.api.world.IMultipartBlockAccess;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.item.Item;
@@ -31,6 +34,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -65,6 +70,7 @@ public class MultipartMekanism implements IMCMPAddon
 		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.Transmitter), s -> true, MekanismBlocks.Transmitter);
 		registry.registerPartWrapper(MekanismBlocks.GlowPanel, new MultipartGlowPanel());
 		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);
+		MultipartCapabilityHelper.registerCapabilityJoiner(Capabilities.TILE_NETWORK_CAPABILITY, MultipartTileNetworkJoiner::new);
     }
 	
 	private void register(AttachCapabilitiesEvent<TileEntity> e, String id)
@@ -165,27 +171,38 @@ public class MultipartMekanism implements IMCMPAddon
 		return Collections.emptyList();
 	}
 	
-	public static boolean isMultiPartContainer(TileEntity entity)
+	public static boolean hasCenterSlot(IBlockAccess world, BlockPos pos)
 	{
-		return entity instanceof IMultipartContainer;
-	}
-	
-	public static Collection<TileEntity> getMekanismTileEntities(TileEntity container)
-	{
-		ArrayList<TileEntity> entities = new ArrayList<>();
-		
-		if(container instanceof IMultipartContainer)
+		IMultipartContainer container = null;
+		if(world instanceof IMultipartBlockAccess)
 		{
-			for(IPartInfo partInfo : ((IMultipartContainer)container).getParts().values())
+			container = ((IMultipartBlockAccess) world).getPartInfo().getContainer();
+		}
+		else
+		{
+			TileEntity possibleContainer = world.getTileEntity(pos);
+			if(possibleContainer instanceof IMultipartContainer)
 			{
-				IMultipartTile partTile = partInfo.getTile();
-				if(partTile instanceof MultipartTile)
-				{
-					entities.add(((MultipartTile)partTile).getTileEntity());
-				}
+				container = (IMultipartContainer)possibleContainer;
 			}
 		}
 		
-		return entities;
+		boolean hasCenterSlot = false;
+		if(container != null)
+		{
+			hasCenterSlot = container.getPart(EnumCenterSlot.CENTER).isPresent();
+		}
+		
+		return hasCenterSlot;
+	}
+	
+	public static TileEntity unwrapTileEntity(IBlockAccess world)
+	{
+		TileEntity tile = null;
+		if(world instanceof IMultipartBlockAccess)
+		{
+			tile = ((IMultipartBlockAccess)world).getPartInfo().getTile().getTileEntity();
+		}
+		return tile;
 	}
 }

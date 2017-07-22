@@ -184,6 +184,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 	{
 		if(FMLCommonHandler.instance().getSide().isClient())
 		{
+			if(Mekanism.hooks.MCMPLoaded)
+			{
+				dataStream.readByte();
+			}
+			
 			int type = dataStream.readInt();
 			
 			if(type == 0)
@@ -244,6 +249,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
+		if(Mekanism.hooks.MCMPLoaded)
+		{
+			data.add((byte)6);
+		}
+		
 		data.add(0);
 		
 		super.getNetworkedData(data);
@@ -271,6 +281,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 	public ArrayList<Object> getSyncPacket(TransporterStack stack, boolean kill)
 	{
 		ArrayList<Object> data = new ArrayList<Object>();
+		
+		if(Mekanism.hooks.MCMPLoaded)
+		{
+			data.add((byte)6);
+		}
 
 		data.add(1);
 		data.add(kill);
