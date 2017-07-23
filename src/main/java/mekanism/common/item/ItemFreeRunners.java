@@ -44,7 +44,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = "redstoneflux")
 })
 public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
@@ -140,6 +141,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canReceive(theItem))
@@ -159,6 +161,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int extractEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canSend(theItem))
@@ -178,12 +181,14 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getEnergyStored(ItemStack theItem)
 	{
 		return (int)Math.round(getEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
 		return (int)Math.round(getMaxEnergy(theItem)*general.TO_RF);

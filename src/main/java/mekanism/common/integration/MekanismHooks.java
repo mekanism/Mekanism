@@ -41,6 +41,7 @@ public final class MekanismHooks
 	public boolean AE2Loaded = false;
 	public boolean TeslaLoaded = false;
 	public boolean MCMPLoaded = false;
+	public boolean RFLoaded = false;
 
 	public boolean MetallurgyCoreLoaded = false;
 	public boolean MetallurgyBaseLoaded = false;
@@ -55,6 +56,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
 		if(Loader.isModLoaded("tesla")) TeslaLoaded = true;
 		if(Loader.isModLoaded("mcmultipart")) MCMPLoaded = true;
+		if(Loader.isModLoaded("redstoneflux")) RFLoaded = true;
 		
 		if(Loader.isModLoaded("Metallurgy3Core"))
 		{

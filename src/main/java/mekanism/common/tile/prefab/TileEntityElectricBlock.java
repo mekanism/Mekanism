@@ -221,30 +221,35 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, acceptEnergy(from, maxReceive*general.FROM_RF, simulate)*general.TO_RF));
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, pullEnergy(from, maxExtract*general.FROM_RF, simulate)*general.TO_RF));
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getMaxEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));

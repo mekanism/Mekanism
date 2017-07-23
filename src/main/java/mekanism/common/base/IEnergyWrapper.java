@@ -18,6 +18,8 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 
 @InterfaceList({
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux"),
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
 	@Interface(iface = "ic2.api.energy.tile.IEnergyEmitter", modid = "IC2"),

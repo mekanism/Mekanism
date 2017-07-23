@@ -175,12 +175,14 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		return 0;
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
@@ -199,18 +201,21 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return structure != null;
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getMaxEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));

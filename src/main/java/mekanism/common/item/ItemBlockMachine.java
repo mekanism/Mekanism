@@ -18,7 +18,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Upgrade;
@@ -135,7 +134,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 @InterfaceList({
-	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = "redstoneflux")
 })
 public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IEnergyContainerItem, IFluidItemWrapper, ITierItem, ISecurityItem, IItemNetwork
 {
@@ -731,6 +731,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canReceive(theItem))
@@ -750,6 +751,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int extractEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canSend(theItem))
@@ -769,12 +771,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getEnergyStored(ItemStack theItem)
 	{
 		return (int)(getEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
 		return (int)(getMaxEnergy(theItem)*general.TO_RF);

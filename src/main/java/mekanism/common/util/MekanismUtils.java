@@ -1195,7 +1195,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return !general.blacklistRF;
+		return Mekanism.hooks.RFLoaded && !general.blacklistRF;
 	}
 	
 	/**

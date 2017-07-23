@@ -18,6 +18,8 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux")
 })
 public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData, ISecurityTile
 {

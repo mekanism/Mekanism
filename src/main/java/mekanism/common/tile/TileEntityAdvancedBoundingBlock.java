@@ -25,7 +25,9 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux")
 })
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData
 {
@@ -240,6 +242,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(getInv() == null || !canReceiveEnergy(from))
@@ -251,6 +254,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getInv() == null)
@@ -262,6 +266,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		if(getInv() == null)
@@ -273,6 +278,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getEnergyStored(EnumFacing from)
 	{
 		if(getInv() == null)
@@ -284,6 +290,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "redstoneflux")
 	public int getMaxEnergyStored(EnumFacing from)
 	{
 		if(getInv() == null)
