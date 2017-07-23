@@ -9,6 +9,7 @@ import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGlowPanel;
 import mekanism.common.tile.TileEntityGlowPanel;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -71,7 +72,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySafe(world, pos);
 		return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
 	}
 
@@ -79,8 +80,8 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) 
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
-		
+		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySafe(world, pos);
+
 		if(tileEntity != null)
 		{
 			state = state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
@@ -117,7 +118,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) MekanismUtils.getTileEntitySafe(world, pos);
 		
 		if(!tileEntity.getWorld().isRemote && !canStay(tileEntity))
 		{			
@@ -137,7 +138,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 		
 		if(tile != null && tile instanceof TileEntityGlowPanel)
 		{

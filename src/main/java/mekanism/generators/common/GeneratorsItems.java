@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import mekanism.common.item.ItemMekanism;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +21,7 @@ public class GeneratorsItems
 		@Override
 		public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player)
 		{
-			return world.getTileEntity(pos) instanceof TileEntityTurbineRotor;
+			return MekanismUtils.getTileEntitySafe(world, pos) instanceof TileEntityTurbineRotor;
 		}
 	};
 
