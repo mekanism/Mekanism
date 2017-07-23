@@ -158,8 +158,8 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn.getTileEntity(pos);
-		
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
+
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
 		{
 			state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).facing);
@@ -344,7 +344,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 						return false;
 					case 9:
 					case 11:
-						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(pos);
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) MekanismUtils.getTileEntitySafe(world, pos);
 
 						if(tileEntity != null)
 						{
@@ -372,7 +372,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 					case 2:
 					case 7:
 					case 8:
-						TileEntityMultiblock tileEntity = (TileEntityMultiblock)world.getTileEntity(pos);
+						TileEntityMultiblock tileEntity = (TileEntityMultiblock) MekanismUtils.getTileEntitySafe(world, pos);
 
 						if(tileEntity != null)
 						{
@@ -716,7 +716,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(pos);
+		TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 		int metadata = state.getBlock().getMetaFromState(state);
 
 		if(tileEntity instanceof IActiveState)
