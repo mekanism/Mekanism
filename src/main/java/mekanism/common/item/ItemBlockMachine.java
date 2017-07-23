@@ -244,7 +244,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(type.isElectric)
 			{
-				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
 			}
 
 			if(hasTank(itemstack) && type != MachineType.FLUID_TANK)

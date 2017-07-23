@@ -64,7 +64,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			@Override
 			public String getText(double level)
 			{
-				return LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(level);
+				return LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(level, tileEntity.getMaxEnergy());
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));

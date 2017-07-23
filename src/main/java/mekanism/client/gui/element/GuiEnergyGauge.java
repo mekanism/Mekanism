@@ -52,7 +52,7 @@ public class GuiEnergyGauge extends GuiGauge
 	@Override
 	public String getTooltipText()
 	{
-		return infoHandler.getEnergyStorage().getEnergy() > 0 ? MekanismUtils.getEnergyDisplay(infoHandler.getEnergyStorage().getEnergy()) : LangUtils.localize("gui.empty");
+		return infoHandler.getEnergyStorage().getEnergy() > 0 ? MekanismUtils.getEnergyDisplay(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()) : LangUtils.localize("gui.empty");
 	}
 
 	public static interface IEnergyInfoHandler

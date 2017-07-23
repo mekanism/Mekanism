@@ -1098,6 +1098,19 @@ public final class MekanismUtils
 
 		return "error";
 	}
+
+	public static String getEnergyDisplay(double energy, double max)
+	{
+		if(energy == Double.MAX_VALUE)
+		{
+			return LangUtils.localize("gui.infinite");
+		}
+
+		String energyString = getEnergyDisplay(energy);
+		String maxString = getEnergyDisplay(max);
+
+		return energyString + "/" + maxString;
+	}
 	
 	/**
 	 * Convert from the unit defined in the configuration to joules.
