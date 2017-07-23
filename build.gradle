@@ -128,6 +128,10 @@ task MDKZip(type: Zip) {
     baseName = 'MDK'
     from sourceSets.main.java.srcDirs
     include 'mekanism/api/**'
+    exclude 'mekanism/api/energy/ICableOutputter.java'
+    exclude 'mekanism/api/gas/IGasTransmitter.java'
+    exclude 'mekanism/api/ItemRetriever.java'
+    exclude 'mekanism/api/reactor/**'
 }
 
 task releaseJars(type: Copy) {
