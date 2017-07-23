@@ -3,12 +3,12 @@ package mekanism.client.gui.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.UnitDisplayUtils.TempType;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

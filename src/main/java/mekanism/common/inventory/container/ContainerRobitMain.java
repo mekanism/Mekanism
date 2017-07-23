@@ -51,6 +51,6 @@ public class ContainerRobitMain extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 }

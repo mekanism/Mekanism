@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync;
@@ -150,7 +150,11 @@ public class PacketHandler
 		try {
 			for(Object data : dataValues)
 			{
-				if(data instanceof Integer)
+				if(data instanceof Byte)
+				{
+					output.writeByte((Byte)data);
+				}
+				else if(data instanceof Integer)
 				{
 					output.writeInt((Integer)data);
 				}
@@ -177,10 +181,6 @@ public class PacketHandler
 				else if(data instanceof String)
 				{
 					writeString(output, (String)data);
-				}
-				else if(data instanceof Byte)
-				{
-					output.writeByte((Byte)data);
 				}
 				else if(data instanceof EnumFacing)
 				{
@@ -256,7 +256,7 @@ public class PacketHandler
 	{
 		if(general.logPackets)
 		{
-			System.out.println("[Mekanism] " + log);
+			Mekanism.logger.info(log);
 		}
 	}
 	
@@ -288,7 +288,7 @@ public class PacketHandler
 	{
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		
-		for(EntityPlayerMP player : server.getPlayerList().getPlayerList())
+		for(EntityPlayerMP player : server.getPlayerList().getPlayers())
 		{
 			sendTo(message, player);
 		}
@@ -336,7 +336,7 @@ public class PacketHandler
 
 		if(server != null && cuboid != null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayerList())
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayers())
 			{
 				if(player.dimension == dimId && cuboid.isVecInside(new Vec3d(player.posX, player.posY, player.posZ)))
 				{
@@ -352,7 +352,7 @@ public class PacketHandler
 
 		if(server != null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayerList())
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayers())
 			{
 				if(player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range))
 				{

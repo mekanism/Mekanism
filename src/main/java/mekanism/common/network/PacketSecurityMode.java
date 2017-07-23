@@ -1,6 +1,9 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.UUID;
+
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
@@ -28,13 +31,13 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 			{
 				if(message.packetType == SecurityPacketType.BLOCK)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 					
 					if(tileEntity instanceof ISecurityTile)
 					{
-						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
+						UUID owner = ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
 						
-						if(owner != null && player.getName().equals(owner))
+						if(owner != null && player.getUniqueID().equals(owner))
 						{
 							((ISecurityTile)tileEntity).getSecurity().setMode(message.value);
 						}

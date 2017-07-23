@@ -12,7 +12,7 @@ public class ContainerRobitCrafting extends ContainerWorkbench
 	
 	public ContainerRobitCrafting(InventoryPlayer inventory, EntityRobit entity)
 	{
-		super(inventory, entity.worldObj, BlockPos.ORIGIN);
+		super(inventory, entity.world, BlockPos.ORIGIN);
 		robit = entity;
 	}
 

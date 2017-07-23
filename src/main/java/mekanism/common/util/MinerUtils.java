@@ -5,10 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.ListUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -31,8 +31,10 @@ public final class MinerUtils
 			return block.getDrops(world, obj.getPos(), state, 0);
 		}
 		else {
-			List<ItemStack> ret = new LinkedList<>();
-			ret.add(new ItemStack(block, 1, block.getMetaFromState(state)));
+			List<ItemStack> ret = new ArrayList<ItemStack>();
+			Item item = Item.getItemFromBlock(block);
+			int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
+			ret.add(new ItemStack(item, 1, meta));
 
 			if(specialSilkIDs.contains(block) || (block.getDrops(world, obj.getPos(), state, 0) != null && block.getDrops(world, obj.getPos(), state, 0).size() > 0))
 			{

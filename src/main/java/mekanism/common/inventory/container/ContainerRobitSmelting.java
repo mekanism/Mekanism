@@ -111,7 +111,7 @@ public class ContainerRobitSmelting extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -123,56 +123,56 @@ public class ContainerRobitSmelting extends Container
 			{
 				if(!mergeItemStack(slotStack, 3, 39, true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(slotID != 1 && slotID != 0)
 			{
-				if(FurnaceRecipes.instance().getSmeltingResult(slotStack) != null)
+				if(!FurnaceRecipes.instance().getSmeltingResult(slotStack).isEmpty())
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(TileEntityFurnace.isItemFuel(slotStack))
 				{
 					if(!mergeItemStack(slotStack, 1, 2, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID >= 3 && slotID < 30)
 				{
 					if(!mergeItemStack(slotStack, 30, 39, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID >= 30 && slotID < 39 && !mergeItemStack(slotStack, 3, 30, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(!mergeItemStack(slotStack, 3, 39, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack(null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;

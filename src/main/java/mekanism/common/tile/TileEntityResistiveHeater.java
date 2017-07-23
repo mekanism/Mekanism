@@ -7,17 +7,18 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,10 +26,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile
+public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile
 {
 	public double energyUsage = 100;
 	
@@ -55,7 +57,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	public TileEntityResistiveHeater()
 	{
 		super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.baseEnergy);
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -63,18 +65,18 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote && updateDelay > 0)
+		if(world.isRemote && updateDelay > 0)
 		{
 			updateDelay--;
 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			boolean packet = false;
 			
@@ -194,7 +196,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -264,7 +266,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	@Override
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 		
 		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
@@ -347,7 +349,8 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 				{
 					if(arguments[0] instanceof Double)
 					{
-						temperature = (Double)arguments[0];
+						energyUsage = (Double)arguments[0];
+						return new Object[] {"Set energy usage."};
 					}
 				}
 				

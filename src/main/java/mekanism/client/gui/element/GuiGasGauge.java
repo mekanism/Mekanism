@@ -50,9 +50,9 @@ public class GuiGasGauge extends GuiGauge<Gas>
 	{
 		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			ItemStack stack = mc.player.inventory.getItemStack();
 			
-			if(guiObj instanceof GuiMekanism && stack != null && stack.getItem() instanceof ItemGaugeDropper)
+			if(guiObj instanceof GuiMekanism && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper)
 			{
 				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				

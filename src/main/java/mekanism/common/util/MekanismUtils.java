@@ -13,21 +13,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import mcmultipart.multipart.Multipart;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IMekWrench;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.UnitDisplayUtils;
-import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
-import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.Tier.BaseTier;
@@ -47,17 +42,24 @@ import mekanism.common.base.IModule;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
+import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
@@ -74,6 +76,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -91,7 +94,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
 
 /**
@@ -127,28 +129,28 @@ public final class MekanismUtils
 
 					if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list.isEmpty())
 					{
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
 
 						if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
 						{
-							entityplayer.addChatMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
+							entityplayer.sendMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
 						}
 
 						for(IModule module : list)
 						{
-							entityplayer.addChatMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion()));
+							entityplayer.sendMessage(new TextComponentString(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion()));
 						}
 
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 						return true;
 					}
 					else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
 					{
-						entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
+						entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
 						return true;
 					}
 				}
@@ -255,7 +257,7 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Copies an ItemStack and returns it with a defined stackSize.
+	 * Copies an ItemStack and returns it with a defined getCount().
 	 * @param itemstack - stack to change size
 	 * @param size - size to change to
 	 * @return resized ItemStack
@@ -263,7 +265,7 @@ public final class MekanismUtils
 	public static ItemStack size(ItemStack itemstack, int size)
 	{
 		ItemStack newStack = itemstack.copy();
-		newStack.stackSize = size;
+		newStack.setCount(size);
 		return newStack;
 	}
 
@@ -347,6 +349,15 @@ public final class MekanismUtils
 		
 		return stack;
 	}
+	
+	public static ItemStack getTransmitter(TransmitterType type, BaseTier tier, int amount)
+	{
+		ItemStack stack = new ItemStack(MekanismBlocks.Transmitter, amount, type.ordinal());
+		ItemBlockTransmitter itemTransmitter = (ItemBlockTransmitter)stack.getItem();
+		itemTransmitter.setBaseTier(stack, tier);
+		
+		return stack;
+	}
 
 	/**
 	 * Retrieves a Factory with a defined tier and recipe type.
@@ -356,7 +367,7 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getFactory(FactoryTier tier, RecipeType type)
 	{
-		ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, 5+tier.ordinal());
+		ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, MachineType.BASIC_FACTORY.ordinal()+tier.ordinal());
 		((IFactory)itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
 		return itemstack;
 	}
@@ -782,7 +793,7 @@ public final class MekanismUtils
 	{
 		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).renderUpdate())
 		{
-			world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
+			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
 
 		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).lightUpdate() && client.machineEffects)
@@ -836,7 +847,7 @@ public final class MekanismUtils
 				return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
 			}
 			else {
-				return new FluidStack(FluidRegistry.getFluid("heavywater"), 10);
+				return new FluidStack(MekanismFluids.HeavyWater, 10);
 			}
 		}
 		else if((block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) && state.getValue(BlockLiquid.LEVEL) == 0)
@@ -985,16 +996,6 @@ public final class MekanismUtils
 
 		tileEntity.getWorld().markChunkDirty(tileEntity.getPos(), tileEntity);
 	}
-	
-	public static void saveChunk(Multipart multipart)
-	{
-		if(multipart == null || multipart.getWorld() == null)
-		{
-			return;
-		}
-
-		multipart.getWorld().markChunkDirty(multipart.getPos(), null);
-	}
 
 	/**
 	 * Whether or not a certain TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity implements
@@ -1054,7 +1055,7 @@ public final class MekanismUtils
 		double posY = player.posY;
 		double posZ = player.posZ;
 
-		if(!player.worldObj.isRemote)
+		if(!player.world.isRemote)
 		{
 			posY += player.getEyeHeight();
 
@@ -1187,6 +1188,15 @@ public final class MekanismUtils
 	{
 		return Mekanism.hooks.TeslaLoaded && !general.blacklistTesla;
 	}
+	
+	/**
+	 * Whether or not Forge power should be used.
+	 * @return if Forge power should be used
+	 */
+	public static boolean useForge()
+	{
+		return !general.blacklistForge;
+	}
 
 	/**
 	 * Gets a clean view of a coordinate value without the dimension ID.
@@ -1206,7 +1216,7 @@ public final class MekanismUtils
 		try {
 			FontRenderer renderer = (FontRenderer)Mekanism.proxy.getFontRenderer();
 			
-			if(stack != null && stack.getItem().getFontRenderer(stack) != null)
+			if(!stack.isEmpty() && stack.getItem().getFontRenderer(stack) != null)
 			{
 				renderer = stack.getItem().getFontRenderer(stack);
 			}
@@ -1304,37 +1314,37 @@ public final class MekanismUtils
 	 */
 	public static ItemStack findMatchingRecipe(InventoryCrafting inv, World world)
 	{
-		ItemStack[] dmgItems = new ItemStack[2];
+		NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
 
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			if(inv.getStackInSlot(i) != null)
+			if(!inv.getStackInSlot(i).isEmpty())
 			{
-				if(dmgItems[0] == null)
+				if(dmgItems.get(0).isEmpty())
 				{
-					dmgItems[0] = inv.getStackInSlot(i);
+					dmgItems.set(0, inv.getStackInSlot(i));
 				}
 				else {
-					dmgItems[1] = inv.getStackInSlot(i);
+					dmgItems.set(1, inv.getStackInSlot(i));
 					break;
 				}
 			}
 		}
 
-		if((dmgItems[0] == null) || (dmgItems[0].getItem() == null))
+		if((dmgItems.get(0).isEmpty()) || (dmgItems.get(0).getItem() == null))
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		if((dmgItems[1] != null) && (dmgItems[0].getItem() == dmgItems[1].getItem()) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && dmgItems[0].getItem().isRepairable())
+		if((!dmgItems.get(1).isEmpty()) && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) && (dmgItems.get(0).getCount() == 1) && (dmgItems.get(1).getCount() == 1) && dmgItems.get(0).getItem().isRepairable())
 		{
-			Item theItem = dmgItems[0].getItem();
-			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamage();
-			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamage();
+			Item theItem = dmgItems.get(0).getItem();
+			int dmgDiff0 = theItem.getMaxDamage() - dmgItems.get(0).getItemDamage();
+			int dmgDiff1 = theItem.getMaxDamage() - dmgItems.get(1).getItemDamage();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
 			
-			return new ItemStack(dmgItems[0].getItem(), 1, solve);
+			return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
 		}
 
 		List<IRecipe> list = (List<IRecipe>)((ArrayList<IRecipe>)CraftingManager.getInstance().getRecipeList()).clone();
@@ -1347,7 +1357,7 @@ public final class MekanismUtils
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	/**
@@ -1370,7 +1380,7 @@ public final class MekanismUtils
 	
 	/**
 	 * Whether or not a given EntityPlayer is considered an Op.
-	 * @param player - player to check
+	 * @param p - player to check
 	 * @return if the player has operator privileges
 	 */
 	public static boolean isOp(EntityPlayer p)
@@ -1392,7 +1402,7 @@ public final class MekanismUtils
 	 */
 	public static int getID(ItemStack itemStack)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return -1;
 		}
@@ -1464,7 +1474,7 @@ public final class MekanismUtils
 	{
 		ItemStack tool = player.inventory.getCurrentItem();
 		
-		if(tool == null)
+		if(tool.isEmpty())
 		{
 			return false;
 		}
@@ -1475,7 +1485,7 @@ public final class MekanismUtils
 		}
 		
 		try {
-			if(isBCWrench(tool.getItem()) && ((IToolWrench)tool.getItem()).canWrench(player, pos))
+			if(isBCWrench(tool.getItem())) //TODO too much hassle to check BC wrench-ability
 			{
 				return true;
 			}

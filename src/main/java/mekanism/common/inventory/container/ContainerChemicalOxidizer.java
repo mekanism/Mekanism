@@ -55,13 +55,13 @@ public class ContainerChemicalOxidizer extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return tileEntity.isUseableByPlayer(entityplayer);
+		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -75,14 +75,14 @@ public class ContainerChemicalOxidizer extends Container
 				{
 					if(!mergeItemStack(slotStack, 0, 1, true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID == 0)
 				{
 					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -92,14 +92,14 @@ public class ContainerChemicalOxidizer extends Container
 				{
 					if(!mergeItemStack(slotStack, 1, 2, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID == 1)
 				{
 					if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -109,13 +109,13 @@ public class ContainerChemicalOxidizer extends Container
 				{
 					if(!mergeItemStack(slotStack, 2, 3, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -124,38 +124,38 @@ public class ContainerChemicalOxidizer extends Container
 				{
 					if(!mergeItemStack(slotStack, 30, inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID > 29)
 				{
 					if(!mergeItemStack(slotStack, 3, 29, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;

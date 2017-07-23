@@ -1,17 +1,18 @@
 package mekanism.client.jei.machine.chemical;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.util.LangUtils;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
-import net.minecraft.item.ItemStack;
+import mezz.jei.api.ingredients.IIngredients;
 
-public class ChemicalInfuserRecipeWrapper extends BlankRecipeWrapper
+public class ChemicalInfuserRecipeWrapper extends BaseRecipeWrapper
 {
 	public ChemicalInfuserRecipe recipe;
 	
@@ -23,18 +24,11 @@ public class ChemicalInfuserRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return new ArrayList<ItemStack>();
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return new ArrayList<ItemStack>();
+		ingredients.setInputs(GasStack.class, Arrays.asList(recipe.recipeInput.leftGas, recipe.recipeInput.rightGas));
+		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
 	}
 	
 	@Nullable
@@ -57,5 +51,11 @@ public class ChemicalInfuserRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public ChemicalInfuserRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

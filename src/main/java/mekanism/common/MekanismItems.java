@@ -33,14 +33,12 @@ import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.multipart.ItemGlowPanel;
-import mekanism.common.multipart.ItemPartTransmitter;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
-@ObjectHolder("Mekanism")
+@ObjectHolder("mekanism")
 public class MekanismItems
 {
 	public static final Item EnrichedAlloy = new ItemAlloy();
@@ -78,8 +76,6 @@ public class MekanismItems
 	public static final ItemGaugeDropper GaugeDropper = (ItemGaugeDropper)new ItemGaugeDropper();
 	public static final Item ConfigurationCard = new ItemConfigurationCard();
 	public static final Item CraftingFormula = new ItemCraftingFormula();
-	public static final Item PartTransmitter = new ItemPartTransmitter();
-	public static final Item GlowPanel = new ItemGlowPanel();
 	public static final ItemScubaTank ScubaTank = (ItemScubaTank)new ItemScubaTank();
 	public static final ItemGasMask GasMask = (ItemGasMask)new ItemGasMask();
 	public static final ItemJetpack Jetpack = (ItemJetpack)new ItemJetpack();
@@ -104,7 +100,6 @@ public class MekanismItems
 	 */
 	public static void register()
 	{
-		GameRegistry.register(init(PartTransmitter, "MultipartTransmitter"));
 		GameRegistry.register(init(ElectricBow, "ElectricBow"));
 		GameRegistry.register(init(Dust, "Dust"));
 		GameRegistry.register(init(Ingot, "Ingot"));
@@ -152,7 +147,6 @@ public class MekanismItems
 		GameRegistry.register(init(Substrate, "Substrate"));
 		GameRegistry.register(init(Polyethene, "Polyethene"));
 		GameRegistry.register(init(BioFuel, "BioFuel"));
-		GameRegistry.register(init(GlowPanel, "GlowPanel"));
 		GameRegistry.register(init(Flamethrower, "Flamethrower"));
 		GameRegistry.register(init(GaugeDropper, "GaugeDropper"));
 		GameRegistry.register(init(TierInstaller, "TierInstaller"));

@@ -4,11 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 
 public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock implements IComputerIntegration
 {
@@ -20,20 +22,20 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 	{
 		super("ThermalEvaporationBlock");
 
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	public TileEntityThermalEvaporationBlock(String fullName)
 	{
 		super(fullName);
 
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	@Override
 	public void onUpdate() 
 	{
-		if(!worldObj.isRemote && ticker == 5 && !attempted && master == null)
+		if(!world.isRemote && ticker == 5 && !attempted && master == null)
 		{
 			updateController();
 		}
@@ -72,7 +74,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 	{
 		super.onNeighborChange(block);
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			TileEntityThermalEvaporationController tile = getController();
 			
@@ -103,7 +105,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 	{
 		if(master != null)
 		{
-			TileEntity tile = master.getTileEntity(worldObj);
+			TileEntity tile = master.getTileEntity(world);
 			
 			if(tile instanceof TileEntityThermalEvaporationController)
 			{
@@ -133,13 +135,13 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 			{
 				Coord4D coord = pos.offset(side);
 				
-				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock)
+				if(!iterated.contains(coord) && coord.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock)
 				{
-					((TileEntityThermalEvaporationBlock)coord.getTileEntity(worldObj)).attempted = true;
+					((TileEntityThermalEvaporationBlock)coord.getTileEntity(world)).attempted = true;
 					
-					if(coord.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationController)
+					if(coord.getTileEntity(world) instanceof TileEntityThermalEvaporationController)
 					{
-						found = (TileEntityThermalEvaporationController)coord.getTileEntity(worldObj);
+						found = (TileEntityThermalEvaporationController)coord.getTileEntity(world);
 						return;
 					}
 					

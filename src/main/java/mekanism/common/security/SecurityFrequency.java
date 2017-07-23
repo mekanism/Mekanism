@@ -3,6 +3,7 @@ package mekanism.common.security;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import mekanism.common.HashList;
 import mekanism.common.PacketHandler;
@@ -11,6 +12,7 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class SecurityFrequency extends Frequency
@@ -23,9 +25,9 @@ public class SecurityFrequency extends Frequency
 	
 	public SecurityMode securityMode;
 	
-	public SecurityFrequency(String o)
+	public SecurityFrequency(UUID uuid)
 	{
-		super("Security", o);
+		super("Security", uuid);
 		
 		trusted = new HashList<String>();
 		securityMode = SecurityMode.PUBLIC;
@@ -111,7 +113,6 @@ public class SecurityFrequency extends Frequency
 		override = dataStream.readBoolean();
 		securityMode = SecurityMode.values()[dataStream.readInt()];
 		
-		trusted.clear();
 		int size = dataStream.readInt();
 		
 		for(int i = 0; i < size; i++)

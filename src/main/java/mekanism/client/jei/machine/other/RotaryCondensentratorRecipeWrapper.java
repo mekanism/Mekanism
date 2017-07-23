@@ -1,22 +1,22 @@
 package mekanism.client.jei.machine.other;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.util.LangUtils;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RotaryCondensentratorRecipeWrapper extends BlankRecipeWrapper
+public class RotaryCondensentratorRecipeWrapper extends BaseRecipeWrapper
 {
 	public Fluid fluidType;
 	public Gas gasType;
@@ -34,43 +34,17 @@ public class RotaryCondensentratorRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
-	{
-		return new ArrayList<ItemStack>();
-	}
-	
-	@Nonnull
-	@Override
-	public List<FluidStack> getFluidInputs() 
+	public void getIngredients(IIngredients ingredients) 
 	{
 		if(condensentrating)
 		{
-			return new ArrayList<FluidStack>();
+			ingredients.setInput(GasStack.class, new GasStack(gasType, 1000));
+			ingredients.setOutput(FluidStack.class, new FluidStack(fluidType, 1000));
 		}
 		else {
-			return Arrays.asList(new FluidStack(fluidType, 1000));
-		}
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return new ArrayList<ItemStack>();
-	}
-	
-	@Nonnull
-	@Override
-	public List<FluidStack> getFluidOutputs() 
-	{
-		if(condensentrating)
-		{
-			return Arrays.asList(new FluidStack(fluidType, 1000));
-		}
-		else {
-			return new ArrayList<FluidStack>();
+			ingredients.setInput(FluidStack.class, new FluidStack(fluidType, 1000));
+			ingredients.setOutput(GasStack.class, new GasStack(gasType, 1000));
 		}
 	}
 	
@@ -93,5 +67,11 @@ public class RotaryCondensentratorRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public RotaryCondensentratorRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

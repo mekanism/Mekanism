@@ -54,13 +54,13 @@ public class ContainerElectricPump extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return tileEntity.isUseableByPlayer(entityplayer);
+		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -131,20 +131,20 @@ public class ContainerElectricPump extends Container
 				}
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
 				return null;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;

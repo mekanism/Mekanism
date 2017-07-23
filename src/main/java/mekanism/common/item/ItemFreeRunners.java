@@ -6,14 +6,15 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.integration.IC2ItemManager;
-import mekanism.common.integration.TeslaItemWrapper;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.integration.ic2.IC2ItemManager;
+import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -29,6 +30,8 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -88,7 +91,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
+	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
 		ItemStack discharged = new ItemStack(this);
 		list.add(discharged);
@@ -194,6 +197,12 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	{
 		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
 	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
 
 	@Override
 	@Method(modid = "IC2")
@@ -208,11 +217,11 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		EntityLivingBase base = event.getEntityLiving();
 		ItemStack stack = base.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-		if(stack != null && stack.getItem() instanceof ItemFreeRunners)
+		if(!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners)
 		{
 			ItemFreeRunners boots = (ItemFreeRunners)stack.getItem();
 
-			if(boots.getEnergy(stack) > 0 && event.getSource() == DamageSource.fall)
+			if(boots.getEnergy(stack) > 0 && event.getSource() == DamageSource.FALL)
 			{
 				boots.setEnergy(stack, boots.getEnergy(stack)-event.getAmount()*50);
 				event.setCanceled(true);
@@ -223,6 +232,6 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
 	{
-		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper());
+		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import mekanism.common.Mekanism;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -20,7 +22,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class ShapelessMekanismRecipe implements IRecipe
 {
-    private ItemStack output = null;
+    private ItemStack output = ItemStack.EMPTY;
     private ArrayList<Object> input = new ArrayList<Object>();
 
     public ShapelessMekanismRecipe(Block result, Object... recipe){ this(new ItemStack(result), recipe); }
@@ -75,7 +77,7 @@ public class ShapelessMekanismRecipe implements IRecipe
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
@@ -96,7 +98,7 @@ public class ShapelessMekanismRecipe implements IRecipe
         {
             ItemStack slot = inv.getStackInSlot(x);
 
-            if(slot != null)
+            if(!slot.isEmpty())
             {
                 boolean inRecipe = false;
                 Iterator<Object> req = required.iterator();
@@ -153,10 +155,10 @@ public class ShapelessMekanismRecipe implements IRecipe
     		return null;
     	}
     	
-    	ItemStack result = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("result"));
+    	ItemStack result = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("result"));
     	NBTTagList list = nbtTags.getTagList("input", NBT.TAG_COMPOUND);
     	
-    	if(result == null || list.tagCount() == 0)
+    	if(result.isEmpty() || list.tagCount() == 0)
     	{
     		Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid result stack or input data list.");
     		return null;
@@ -174,7 +176,7 @@ public class ShapelessMekanismRecipe implements IRecipe
     		}
     		else if(compound.hasKey("itemstack"))
     		{
-    			ret[i] = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("itemstack"));
+    			ret[i] = InventoryUtils.loadFromNBT(compound.getCompoundTag("itemstack"));
     		}
     		else {
     			Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid input tag data key.");

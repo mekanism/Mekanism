@@ -4,9 +4,9 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismFluids;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -15,6 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 
 public class ItemHohlraum extends ItemMekanism implements IGasItem
 {
@@ -70,7 +72,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 			return 0;
 		}
 
-		if(stack.getGas() != GasRegistry.getGas("fusionFuelDT"))
+		if(stack.getGas() != MekanismFluids.FusionFuel)
 		{
 			return 0;
 		}
@@ -95,7 +97,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return type == GasRegistry.getGas("fusionFuelDT");
+		return type == MekanismFluids.FusionFuel;
 	}
 
 	@Override
@@ -115,6 +117,12 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	{
 		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
 	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
 
 	@Override
 	public GasStack getGas(ItemStack itemstack)
@@ -146,14 +154,14 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(GasRegistry.getGas("fusionFuelDT"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
+		setGas(filled, new GasStack(MekanismFluids.FusionFuel, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 }

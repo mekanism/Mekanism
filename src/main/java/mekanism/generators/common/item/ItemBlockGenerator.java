@@ -4,21 +4,26 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
-import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.integration.ic2.IC2ItemManager;
+import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -35,6 +40,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -105,7 +111,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			return "KillMe!";
 		}
 
-		return getUnlocalizedName() + "." + GeneratorType.get(itemstack).name;
+		return getUnlocalizedName() + "." + GeneratorType.get(itemstack).blockName;
 	}
 
 	@Override
@@ -125,7 +131,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			{
 				if(hasSecurity(itemstack))
 				{
-					list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
+					list.add(SecurityUtils.getOwnerDisplay(entityplayer, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
 					list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 					
 					if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
@@ -212,16 +218,16 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			if(tileEntity instanceof ISecurityTile)
 			{
 				ISecurityTile security = (ISecurityTile)tileEntity;
-				security.getSecurity().setOwner(getOwner(stack));
+				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
 				
 				if(hasSecurity(stack))
 				{
 					security.getSecurity().setMode(getSecurity(stack));
 				}
 				
-				if(getOwner(stack) == null)
+				if(getOwnerUUID(stack) == null)
 				{
-					security.getSecurity().setOwner(player.getName());
+					security.getSecurity().setOwnerUUID(player.getUniqueID());
 				}
 			}
 			
@@ -412,26 +418,26 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 	
 	@Override
-	public String getOwner(ItemStack stack) 
+	public UUID getOwnerUUID(ItemStack stack) 
 	{
-		if(ItemDataUtils.hasData(stack, "owner"))
+		if(ItemDataUtils.hasData(stack, "ownerUUID"))
 		{
-			return ItemDataUtils.getString(stack, "owner");
+			return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public void setOwner(ItemStack stack, String owner) 
+	public void setOwnerUUID(ItemStack stack, UUID owner) 
 	{
-		if(owner == null || owner.isEmpty())
+		if(owner == null)
 		{
-			ItemDataUtils.removeData(stack, "owner");
+			ItemDataUtils.removeData(stack, "ownerUUID");
 			return;
 		}
 		
-		ItemDataUtils.setString(stack, "owner", owner);
+		ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
 	}
 
 	@Override
@@ -464,4 +470,10 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		return hasSecurity(stack);
 	}
+	
+	@Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+    {
+        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
+    }
 }

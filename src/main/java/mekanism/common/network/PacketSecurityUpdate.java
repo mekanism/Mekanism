@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -12,6 +13,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
+import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -23,7 +25,10 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 	{
 		if(message.packetType == SecurityPacket.UPDATE)
 		{
-			MekanismClient.clientSecurityMap.put(message.playerUsername, message.securityData);
+			if(message.securityData != null)
+			{
+				MekanismClient.clientSecurityMap.put(message.playerUUID, message.securityData);
+			}
 		}
 		
 		return null;
@@ -33,18 +38,20 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 	{
 		public SecurityPacket packetType;
 		
+		public UUID playerUUID;
 		public String playerUsername;
 		public SecurityData securityData;
 		
 		public SecurityUpdateMessage() {}
 	
-		public SecurityUpdateMessage(SecurityPacket type, String username, SecurityData data)
+		public SecurityUpdateMessage(SecurityPacket type, UUID uuid, SecurityData data)
 		{
 			packetType = type;
 			
 			if(packetType == SecurityPacket.UPDATE)
 			{
-				playerUsername = username;
+				playerUUID = uuid;
+				playerUsername = UsernameCache.getLastKnownUsername(uuid);
 				securityData = data;
 			}
 		}
@@ -56,8 +63,17 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 			
 			if(packetType == SecurityPacket.UPDATE)
 			{
+				PacketHandler.writeString(dataStream, playerUUID.toString());
 				PacketHandler.writeString(dataStream, playerUsername);
-				securityData.write(dataStream);
+				
+				if(securityData != null)
+				{
+					dataStream.writeBoolean(true);
+					securityData.write(dataStream);
+				}
+				else {
+					dataStream.writeBoolean(false);
+				}
 			}
 			else if(packetType == SecurityPacket.FULL)
 			{
@@ -75,7 +91,8 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 				
 				for(SecurityFrequency frequency : frequencies)
 				{
-					PacketHandler.writeString(dataStream, frequency.owner);
+					PacketHandler.writeString(dataStream, frequency.ownerUUID.toString());
+					PacketHandler.writeString(dataStream, UsernameCache.getLastKnownUsername(frequency.ownerUUID));
 					new SecurityData(frequency).write(dataStream);
 				}
 			}
@@ -88,8 +105,15 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 			
 			if(packetType == SecurityPacket.UPDATE)
 			{
+				playerUUID = UUID.fromString(PacketHandler.readString(dataStream));
 				playerUsername = PacketHandler.readString(dataStream);
-				securityData = SecurityData.read(dataStream);
+				
+				if(dataStream.readBoolean())
+				{
+					securityData = SecurityData.read(dataStream);
+				}
+				
+				MekanismClient.clientUUIDMap.put(playerUUID, playerUsername);
 			}
 			else if(packetType == SecurityPacket.FULL)
 			{
@@ -99,10 +123,10 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 				
 				for(int i = 0; i < amount; i++)
 				{
-					String owner = PacketHandler.readString(dataStream);
-					SecurityData data = SecurityData.read(dataStream);
-					
-					MekanismClient.clientSecurityMap.put(owner, data);
+					UUID uuid = UUID.fromString(PacketHandler.readString(dataStream));
+					String username = PacketHandler.readString(dataStream);
+					MekanismClient.clientSecurityMap.put(uuid, SecurityData.read(dataStream));
+					MekanismClient.clientUUIDMap.put(uuid, username);
 				}
 			}
 		}

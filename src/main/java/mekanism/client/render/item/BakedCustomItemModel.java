@@ -27,6 +27,7 @@ import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData.IOState;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -70,6 +71,7 @@ import net.minecraftforge.fluids.Fluid;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
 
 public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 {
@@ -120,7 +122,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		{
 			if(basicType == BasicBlockType.BIN)
 			{
-				GlStateManager.pushMatrix();
+				/*GlStateManager.pushMatrix();
 				ItemBlockBasic itemBasic = (ItemBlockBasic)stack.getItem();
 				InventoryBin inv = new InventoryBin(stack);
 				binRenderer.render(EnumFacing.NORTH, inv.getItemType(), inv.getItemCount(), false, -0.5, -0.5, -0.5);
@@ -131,7 +133,7 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		        GlStateManager.enableBlend();
 		        GlStateManager.blendFunc(770, 771);
 		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-				GlStateManager.popMatrix();
+				GlStateManager.popMatrix(); TODO get this working*/
 			}
 			else if(basicType == BasicBlockType.SECURITY_DESK)
 			{
@@ -424,27 +426,41 @@ public class BakedCustomItemModel implements IBakedModel, IPerspectiveAwareModel
 		}
 		
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexFormat prevFormat = null;
-		int prevMode = -1;
-		
-		MekanismRenderer.pauseRenderer(tessellator);
-		
 		List<BakedQuad> generalQuads = new LinkedList<BakedQuad>();
-		
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(0.5F, 0.5F, 0.5F);
-		GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
-    	doRender(prevTransform);
-        GlStateManager.enableLighting();
-        GlStateManager.enableLight(0);
-        GlStateManager.enableLight(1);
-        GlStateManager.enableColorMaterial();
-        GlStateManager.colorMaterial(1032, 5634); 
-        GlStateManager.enableCull();
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-    	GlStateManager.popMatrix();
-    	
-    	MekanismRenderer.resumeRenderer(tessellator);
+
+		//Test if the current thread has a Context loaded (we don't use it so no need to import its type)
+		Object contextCapabilities;
+		try {
+			contextCapabilities = GLContext.getCapabilities();
+		} catch (RuntimeException e){
+			contextCapabilities = null;
+		}
+
+		if (contextCapabilities != null && MekanismRenderer.isDrawing(tessellator)) {
+			try {
+				VertexFormat prevFormat = null;
+				int prevMode = -1;
+
+				MekanismRenderer.pauseRenderer(tessellator);
+
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(0.5F, 0.5F, 0.5F);
+				GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+				doRender(prevTransform);
+				GlStateManager.enableLighting();
+				GlStateManager.enableLight(0);
+				GlStateManager.enableLight(1);
+				GlStateManager.enableColorMaterial();
+				GlStateManager.colorMaterial(1032, 5634);
+				GlStateManager.enableCull();
+				Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+				GlStateManager.popMatrix();
+
+				MekanismRenderer.resumeRenderer(tessellator);
+			} catch (Throwable t) {
+				Mekanism.logger.error("Error caught in CustomItemModel", t);
+			}
+		}
     	
 		if(Block.getBlockFromItem(stack.getItem()) != null)
 		{

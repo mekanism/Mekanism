@@ -20,14 +20,14 @@ public interface ITankManager
 		{
 			ItemStack stack = player.inventory.getItemStack();
 			
-			if(stack == null || !(stack.getItem() instanceof ItemGaugeDropper))
+			if(stack.isEmpty() || !(stack.getItem() instanceof ItemGaugeDropper))
 			{
 				return;
 			}
 			
 			ItemGaugeDropper dropper = (ItemGaugeDropper)stack.getItem();
 			
-			if(stack != null)
+			if(!stack.isEmpty())
 			{
 				if(tank instanceof GasTank)
 				{

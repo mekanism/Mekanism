@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -46,7 +47,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	public TileEntityDynamicTank(String name)
 	{
 		super(name);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(structure != null && clientHasStructure && isRendering)
 			{
@@ -70,7 +71,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			{
 				for(ValveData data : valveViewing)
 				{
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(world);
 
 					if(tileEntity != null)
 					{
@@ -82,7 +83,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null)
 			{
@@ -128,7 +129,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		int needed = (structure.volume*TankUpdateProtocol.FLUID_PER_TANK)-(structure.fluidStored != null ? structure.fluidStored.amount : 0);
 
-		if(FluidContainerUtils.isFluidContainer(structure.inventory[0]))
+		if(FluidContainerUtils.isFluidContainer(structure.inventory.get(0)))
 		{
 			structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.inventory, structure.editMode, structure.fluidStored, needed, 0, 1, null);
 			
@@ -144,7 +145,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			if(!BlockBasic.manageInventory(player, this, hand, stack))
 			{
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				player.openGui(Mekanism.instance, 18, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
+				player.openGui(Mekanism.instance, 18, world, getPos().getX(), getPos().getY(), getPos().getZ());
 			}
 			else {
 				player.inventory.markDirty();
@@ -260,7 +261,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 						
 						valveViewing.add(data);
 	
-						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(world);
 	
 						if(tileEntity != null)
 						{

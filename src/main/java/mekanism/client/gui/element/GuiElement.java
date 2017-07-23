@@ -3,9 +3,9 @@ package mekanism.client.gui.element;
 import java.awt.Rectangle;
 import java.util.List;
 
-import mekanism.api.ObfuscatedNames;
-import mekanism.api.util.ReflectionUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.ObfuscatedNames;
+import mekanism.common.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -74,7 +74,6 @@ public abstract class GuiElement
 		{
 			try {
 				int left = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-				System.out.println(left + " " + guiLeft);
 				ReflectionUtils.setPrivateValue(guiObj, left + guiLeft, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -125,6 +124,8 @@ public abstract class GuiElement
 	public void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {}
 
 	public void mouseReleased(int x, int y, int type) {}
+	
+	public void mouseWheel(int x, int y, int delta) {}
 	
 	public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
 

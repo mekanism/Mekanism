@@ -18,7 +18,7 @@ public final class BuildCraftProperties {
     public static final BuildCraftProperty<EnumEngineType> ENGINE_TYPE = BuildCraftProperty.create("type", EnumEngineType.class);
     public static final BuildCraftProperty<EnumLaserTableType> LASER_TABLE_TYPE = BuildCraftProperty.create("type", EnumLaserTableType.class);
     public static final BuildCraftProperty<EnumMachineState> MACHINE_STATE = BuildCraftProperty.create("state", EnumMachineState.class);
-    public static final BuildCraftProperty<EnumEnergyStage> ENERGY_STAGE = BuildCraftProperty.create("stage", EnumEnergyStage.class);
+    public static final BuildCraftProperty<EnumPowerStage> ENERGY_STAGE = BuildCraftProperty.create("stage", EnumPowerStage.class);
     public static final BuildCraftProperty<EnumBlueprintType> BLUEPRINT_TYPE = BuildCraftProperty.create("blueprint_type", EnumBlueprintType.class);
     public static final BuildCraftProperty<EnumDecoratedBlock> DECORATED_BLOCK = BuildCraftProperty.create("decoration_type", EnumDecoratedBlock.class);
 
@@ -29,6 +29,7 @@ public final class BuildCraftProperties {
     public static final BuildCraftProperty<Boolean> MOVING = BuildCraftProperty.create("moving", false);
     public static final BuildCraftProperty<Boolean> LED_DONE = BuildCraftProperty.create("led_done", false);
     public static final BuildCraftProperty<Boolean> ACTIVE = BuildCraftProperty.create("active", false);
+    public static final BuildCraftProperty<Boolean> VALID = BuildCraftProperty.create("valid", false);
 
     public static final BuildCraftProperty<Boolean> CONNECTED_UP = BuildCraftProperty.create("connected_up", false);
     public static final BuildCraftProperty<Boolean> CONNECTED_DOWN = BuildCraftProperty.create("connected_down", false);

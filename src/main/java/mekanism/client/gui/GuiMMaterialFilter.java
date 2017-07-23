@@ -88,7 +88,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			if(filter.materialItem != null)
+			if(!filter.materialItem.isEmpty())
 			{
 				if(isNew)
 				{
@@ -100,8 +100,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
-			else if(filter.materialItem == null)
-			{
+			else {
 				status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
 				ticker = 20;
 			}
@@ -123,13 +122,9 @@ public class GuiMMaterialFilter extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		fontRendererObj.drawString(LangUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
 
-		if(filter.materialItem != null)
+		if(!filter.materialItem.isEmpty())
 		{
 			renderScaledText(filter.materialItem.getDisplayName(), 35, 41, 0x00CD00, 107);
-		}
-
-		if(filter.materialItem != null)
-		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
 			itemRender.renderItemAndEffectIntoGUI(filter.materialItem, 12, 19);
@@ -137,7 +132,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 			GlStateManager.popMatrix();
 		}
 		
-		if(filter.replaceStack != null)
+		if(!filter.replaceStack.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
@@ -257,22 +252,22 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
 						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							filter.materialItem = stack.copy();
-							filter.materialItem.stackSize = 1;
+							filter.materialItem.setCount(1);
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					filter.materialItem = null;
+					filter.materialItem = ItemStack.EMPTY;
 				}
 
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -281,26 +276,26 @@ public class GuiMMaterialFilter extends GuiMekanism
 			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 			{
 				boolean doNull = false;
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
-				ItemStack toUse = null;
+				ItemStack stack = mc.player.inventory.getItemStack();
+				ItemStack toUse = ItemStack.EMPTY;
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
 						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							toUse = stack.copy();
-							toUse.stackSize = 1;
+							toUse.setCount(1);
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					doNull = true;
 				}
 
-				if(toUse != null || doNull)
+				if(!toUse.isEmpty() || doNull)
 				{
 					filter.replaceStack = toUse;
 				}

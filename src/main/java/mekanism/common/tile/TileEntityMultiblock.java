@@ -14,16 +14,16 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import net.minecraft.block.state.IBlockState;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -59,7 +59,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(structure == null)
 			{
@@ -77,18 +77,16 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			prevStructure = clientHasStructure;
 		}
 
-		if(playersUsing.size() > 0 && ((worldObj.isRemote && !clientHasStructure) || (!worldObj.isRemote && structure == null)))
+		if(playersUsing.size() > 0 && ((world.isRemote && !clientHasStructure) || (!world.isRemote && structure == null)))
 		{
 			for(EntityPlayer player : playersUsing)
 			{
-				System.out.println(worldObj.isRemote + " " + clientHasStructure + " " + structure);
-				//player.closeScreen();
+				player.closeScreen();
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			//System.out.println(pos + " " + structure);
 			if(structure == null)
 			{
 				isRendering = false;
@@ -116,11 +114,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				for(EnumFacing side : EnumFacing.VALUES)
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
-					TileEntity tile = obj.getTileEntity(worldObj);
+					TileEntity tile = obj.getTileEntity(world);
 
-					if(!obj.isAirBlock(worldObj) && (tile == null || tile.getClass() != getClass()))
+					if(!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos(), getPos());
+						obj.getBlock(world).onNeighborChange(world, obj.getPos(), getPos());
 					}
 				}
 
@@ -131,7 +129,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 			if(structure != null)
 			{
-				//System.out.println("Whee " + structure + " " + isInvalid());
 				getSynchronizedData().didTick = false;
 
 				if(getSynchronizedData().inventoryID != null)
@@ -147,7 +144,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	@Override
 	public void doUpdate()
 	{
-		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))
+		if(!world.isRemote && (structure == null || !getSynchronizedData().didTick))
 		{
 			getProtocol().doUpdate();
 
@@ -164,7 +161,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			for(Coord4D obj : getSynchronizedData().locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(worldObj);
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(world);
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
@@ -273,23 +270,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 	
 	@Override
-	public ItemStack getStackInSlot(int slotID)
+	protected NonNullList<ItemStack> getInventory()
 	{
-		return structure != null && getSynchronizedData().getInventory() != null ? getSynchronizedData().getInventory()[slotID] : null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
-	{
-		if(structure != null && getSynchronizedData().getInventory() != null)
-		{
-			getSynchronizedData().getInventory()[slotID] = itemstack;
-
-			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
-			{
-				itemstack.stackSize = getInventoryStackLimit();
-			}
-		}
+		return structure != null ? structure.getInventory() : null;
 	}
 	
 	@Override

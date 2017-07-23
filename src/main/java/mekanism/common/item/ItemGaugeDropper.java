@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
@@ -47,7 +48,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 	}
 	
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
+	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
 		list.add(getEmptyItem());
 	}
@@ -68,8 +69,10 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(player.isSneaking() && !world.isRemote)
 		{
 			setGas(stack, null);

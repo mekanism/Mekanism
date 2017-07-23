@@ -1,11 +1,9 @@
 package mekanism.common.item;
 
-import java.util.List;
-
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -27,7 +26,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 	}
 	
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(world.isRemote) 
 		{
@@ -35,6 +34,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 		}
 		
 		TileEntity tile = world.getTileEntity(pos);
+		ItemStack stack = player.getHeldItem(hand);
 		BaseTier tier = BaseTier.values()[stack.getItemDamage()];
 		
 		if(tile instanceof ITierUpgradeable)
@@ -48,7 +48,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 			{
 				if(!player.capabilities.isCreativeMode)
 				{
-					stack.stackSize--;
+					stack.shrink(1);
 				}
 				
 				return EnumActionResult.SUCCESS;
@@ -73,7 +73,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> itemList)
+	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
 		for(BaseTier tier : BaseTier.values())
 		{

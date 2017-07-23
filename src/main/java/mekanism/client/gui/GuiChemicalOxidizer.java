@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.gas.GasTank;
-import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
@@ -21,6 +20,7 @@ import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerChemicalOxidizer;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -46,7 +46,7 @@ public class GuiChemicalOxidizer extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyUsage);
+				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
 				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png")));

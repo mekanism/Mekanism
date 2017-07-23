@@ -1,7 +1,8 @@
 package mekanism.common.entity;
 
-import mekanism.api.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.general;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
@@ -71,7 +72,7 @@ public class EntityObsidianTNT extends Entity
 
 		motionY -= 0.04;
 
-		moveEntity(motionX, motionY, motionZ);
+		move(MoverType.SELF, motionX, motionY, motionZ);
 
 		motionX *= 0.98;
 		motionY *= 0.98;
@@ -86,7 +87,7 @@ public class EntityObsidianTNT extends Entity
 
 		if(fuse-- <= 0)
 		{
-			if(!worldObj.isRemote)
+			if(!world.isRemote)
 			{
 				setDead();
 				explode();
@@ -97,18 +98,18 @@ public class EntityObsidianTNT extends Entity
 					setDead();
 				}
 				else {
-					worldObj.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
+					world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
 				}
 			}
 		}
 		else {
-			worldObj.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
+			world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
 		}
 	}
 
 	private void explode()
 	{
-		worldObj.createExplosion(null, posX, posY, posZ, general.obsidianTNTBlastRadius, true);
+		world.createExplosion(null, posX, posY, posZ, general.obsidianTNTBlastRadius, true);
 		hasExploded = true;
 	}
 

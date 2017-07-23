@@ -6,7 +6,10 @@ package buildcraft.api.fuels;
 
 import java.util.Collection;
 
+import net.minecraft.item.ItemStack;
+
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import buildcraft.api.core.StackKey;
 
@@ -17,7 +20,7 @@ public interface ICoolantManager {
 
     ISolidCoolant addSolidCoolant(ISolidCoolant solidCoolant);
 
-    ISolidCoolant addSolidCoolant(StackKey solid, StackKey liquid, float multiplier);
+    ISolidCoolant addSolidCoolant(ItemStack solid, FluidStack fluid, float multiplier);
 
     Collection<ICoolant> getCoolants();
 
@@ -25,5 +28,5 @@ public interface ICoolantManager {
 
     ICoolant getCoolant(Fluid fluid);
 
-    ISolidCoolant getSolidCoolant(StackKey solid);
+    ISolidCoolant getSolidCoolant(ItemStack solid);
 }

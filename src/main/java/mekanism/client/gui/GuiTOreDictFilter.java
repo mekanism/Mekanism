@@ -49,7 +49,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 
 	private GuiTextField oreDictText;
 
-	public ItemStack renderStack;
+	public ItemStack renderStack = ItemStack.EMPTY;
 
 	public int ticker = 0;
 
@@ -89,8 +89,8 @@ public class GuiTOreDictFilter extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
-		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
+		buttonList.add(new GuiButton(0, guiWidth + 47, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
+		buttonList.add(new GuiButton(1, guiWidth + 109, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
 
 		if(isNew)
 		{
@@ -167,8 +167,9 @@ public class GuiTOreDictFilter extends GuiMekanism
 		fontRendererObj.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		renderScaledText(LangUtils.localize("gui.key") + ": " + filter.oreDictName, 35, 32, 0x00CD00, 107);
+		fontRendererObj.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
 
-		if(renderStack != null)
+		if(!renderStack.isEmpty())
 		{
 			try {
 				GlStateManager.pushMatrix();
@@ -191,6 +192,11 @@ public class GuiTOreDictFilter extends GuiMekanism
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GlStateManager.popMatrix();
+		}
+		
+		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+		{
+			drawCreativeTabHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
@@ -233,6 +239,14 @@ public class GuiTOreDictFilter extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
+		}
+		
+		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+		{
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 11, 11, 11);
 		}
 
 		oreDictText.drawTextBox();
@@ -277,7 +291,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 		}
 		else if(iterStacks != null && iterStacks.size() == 0)
 		{
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 		}
 	}
 
@@ -303,6 +317,12 @@ public class GuiTOreDictFilter extends GuiMekanism
 			{
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setOreDictKey();
+			}
+			
+			if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+			{
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				filter.allowDefault = !filter.allowDefault;
 			}
 		}
 

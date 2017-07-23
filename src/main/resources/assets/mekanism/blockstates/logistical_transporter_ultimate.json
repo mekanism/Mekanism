@@ -13,7 +13,7 @@
     }
   },
   "variants": {
-    "multipart": [{}],
+    "normal": [{}],
     "inventory": [{}]
   }
 }

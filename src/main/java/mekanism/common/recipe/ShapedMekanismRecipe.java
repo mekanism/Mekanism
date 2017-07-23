@@ -3,6 +3,8 @@ package mekanism.common.recipe;
 import java.util.HashMap;
 
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -11,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -26,7 +29,7 @@ public class ShapedMekanismRecipe implements IRecipe
 	private static final int MAX_CRAFT_GRID_WIDTH = 3;
 	private static final int MAX_CRAFT_GRID_HEIGHT = 3;
 
-	private ItemStack output = null;
+	private ItemStack output = ItemStack.EMPTY;
 	private Object[] input = null;
 
 	public int width = 0;
@@ -154,7 +157,7 @@ public class ShapedMekanismRecipe implements IRecipe
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
@@ -225,7 +228,7 @@ public class ShapedMekanismRecipe implements IRecipe
 						return false;
 					}
 				}
-				else if(target == null && slot != null)
+				else if(target == null && !slot.isEmpty())
 				{
 					return false;
 				}
@@ -254,10 +257,10 @@ public class ShapedMekanismRecipe implements IRecipe
     		return null;
     	}
     	
-    	ItemStack result = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("result"));
+    	ItemStack result = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("result"));
     	NBTTagList list = nbtTags.getTagList("input", NBT.TAG_COMPOUND);
     	
-    	if(result == null || list.tagCount() == 0)
+    	if(result.isEmpty() || list.tagCount() == 0)
     	{
     		Mekanism.logger.error("[Mekanism] Shaped recipe parse error: invalid result stack or input data list.");
     		return null;
@@ -291,7 +294,7 @@ public class ShapedMekanismRecipe implements IRecipe
     		}
     		else if(compound.hasKey("itemstack"))
     		{
-    			ret[i] = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("itemstack"));
+    			ret[i] = InventoryUtils.loadFromNBT(compound.getCompoundTag("itemstack"));
     		}
     		else {
     			Mekanism.logger.error("[Mekanism] Shaped recipe parse error: invalid input tag data key.");

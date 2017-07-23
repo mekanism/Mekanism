@@ -3,7 +3,6 @@ package mekanism.common.content.matrix;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.multiblock.MultiblockCache;
@@ -12,6 +11,7 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

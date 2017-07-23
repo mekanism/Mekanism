@@ -15,14 +15,14 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.reactor.IReactorBlock;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -35,6 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -54,7 +55,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		super("name", 1);
 		
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -86,12 +87,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(changed)
 		{
-			worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+			world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 		}
 		
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			CableUtils.emit(this);
 			
@@ -101,7 +102,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 				
 				for(EnumFacing side : EnumFacing.values())
 				{
-					TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+					TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
 
 					if(tile != null && !(tile instanceof TileEntityReactorPort) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 					{
@@ -178,15 +179,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(getReactor() != null)
 		{
-			if(stack.getGas() == GasRegistry.getGas("deuterium"))
+			if(stack.getGas() == MekanismFluids.Deuterium)
 			{
 				return getReactor().getDeuteriumTank().receive(stack, doTransfer);
 			}
-			else if(stack.getGas() == GasRegistry.getGas("tritium"))
+			else if(stack.getGas() == MekanismFluids.Tritium)
 			{
 				return getReactor().getTritiumTank().receive(stack, doTransfer);
 			}
-			else if(stack.getGas() == GasRegistry.getGas("fusionFuelDT"))
+			else if(stack.getGas() == MekanismFluids.FusionFuel)
 			{
 				return getReactor().getFuelTank().receive(stack, doTransfer);
 			}
@@ -204,7 +205,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return (type == GasRegistry.getGas("deuterium") || type == GasRegistry.getGas("tritium") || type == GasRegistry.getGas("fusionFuelDT"));
+		return (type == MekanismFluids.Deuterium || type == MekanismFluids.Tritium || type == MekanismFluids.FusionFuel);
 	}
 
 	@Override
@@ -245,7 +246,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public boolean canOutputTo(EnumFacing side)
+	public boolean canOutputEnergy(EnumFacing side)
 	{
 		return true;
 	}
@@ -364,11 +365,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 		
 		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{
-			if(!(adj instanceof IReactorBlock))
+			if(!(adj instanceof TileEntityReactorBlock))
 			{
 				return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			}
@@ -380,7 +381,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
-		return getReactor() != null && getReactor().isFormed() ? getReactor().getInventory()[slotID] : null;
+		return getReactor() != null && getReactor().isFormed() ? getReactor().getInventory().get(slotID) : ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -394,11 +395,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(getReactor() != null && getReactor().isFormed())
 		{
-			getReactor().getInventory()[slotID] = itemstack;
+			getReactor().getInventory().set(slotID, itemstack);
 
-			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+			if(!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit())
 			{
-				itemstack.stackSize = getInventoryStackLimit();
+				itemstack.setCount(getInventoryStackLimit());
 			}
 		}
 	}
@@ -447,7 +448,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 			
 			if(prevEject != fluidEject)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -465,12 +466,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			fluidEject = !fluidEject;
 			String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
-			player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
-			
+			player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			markDirty();
 		}

@@ -1,8 +1,6 @@
 package mekanism.common;
 
-import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.GasStack;
-import mekanism.api.util.ReflectionUtils;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
@@ -10,6 +8,7 @@ import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.util.ReflectionUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -40,7 +39,7 @@ public class CommonPlayerTickHandler
 	{
 		ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 		
-		if(feetStack != null && feetStack.getItem() instanceof ItemFreeRunners)
+		if(!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners)
 		{
 			player.stepHeight = 1.002F;
 		}
@@ -53,7 +52,7 @@ public class CommonPlayerTickHandler
 		
 		if(isFlamethrowerOn(player))
 		{
-			player.worldObj.spawnEntityInWorld(new EntityFlame(player));
+			player.world.spawnEntity(new EntityFlame(player));
 			
 			if(!player.capabilities.isCreativeMode)
 			{
@@ -144,23 +143,28 @@ public class CommonPlayerTickHandler
 	
 	public static boolean isOnGround(EntityPlayer player)
 	{
-		int x = MathHelper.floor_double(player.posX);
-		int y = (int)Math.round(player.posY - 1);
-		int z = MathHelper.floor_double(player.posZ);
-
-		BlockPos pos = new BlockPos(x, y, z);
-		IBlockState s = player.worldObj.getBlockState(pos);
-		AxisAlignedBB box = s.getCollisionBoundingBox(player.worldObj, pos);
-		AxisAlignedBB playerBox = player.getCollisionBoundingBox();
+		int x = MathHelper.floor(player.posX);
+		int y = MathHelper.floor(player.posY-0.01);
+		int z = MathHelper.floor(player.posZ);
 		
-		return box != null && playerBox != null && playerBox.offset(0, -0.01, 0).intersectsWith(box);
+		BlockPos pos = new BlockPos(x, y, z);
+		IBlockState s = player.world.getBlockState(pos);
+		AxisAlignedBB box = s.getBoundingBox(player.world, pos).offset(pos);
+		AxisAlignedBB playerBox = player.getEntityBoundingBox();
+		
+		if(!s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersectsWith(box))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 
 	public boolean isJetpackOn(EntityPlayer player)
 	{
-		ItemStack stack = player.inventory.armorInventory[2];
+		ItemStack stack = player.inventory.armorInventory.get(2);
 
-		if(stack != null && !player.capabilities.isCreativeMode)
+		if(!stack.isEmpty() && !player.capabilities.isCreativeMode)
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
@@ -176,11 +180,11 @@ public class CommonPlayerTickHandler
 					{
 						if((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) || (Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND)))
 						{
-							return !player.onGround;
+							return !isOnGround(player);
 						}
 						else if(Mekanism.keyMap.has(player, KeySync.DESCEND))
 						{
-							return !player.onGround;
+							return !isOnGround(player);
 						}
 						
 						return true;
@@ -194,10 +198,10 @@ public class CommonPlayerTickHandler
 
 	public static boolean isGasMaskOn(EntityPlayer player)
 	{
-		ItemStack tank = player.inventory.armorInventory[2];
-		ItemStack mask = player.inventory.armorInventory[3];
+		ItemStack tank = player.inventory.armorInventory.get(2);
+		ItemStack mask = player.inventory.armorInventory.get(3);
 
-		if(tank != null && mask != null)
+		if(!tank.isEmpty() && !mask.isEmpty())
 		{
 			if(tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask)
 			{
@@ -220,7 +224,7 @@ public class CommonPlayerTickHandler
 	{
 		if(Mekanism.flamethrowerActive.contains(player.getName()))
 		{
-			if(player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
+			if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 			{
 				return true;
 			}

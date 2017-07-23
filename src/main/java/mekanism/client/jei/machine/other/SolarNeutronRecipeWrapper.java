@@ -3,15 +3,15 @@ package mekanism.client.jei.machine.other;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.util.LangUtils;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
-import net.minecraft.item.ItemStack;
+import mezz.jei.api.ingredients.IIngredients;
 
-public class SolarNeutronRecipeWrapper extends BlankRecipeWrapper
+public class SolarNeutronRecipeWrapper extends BaseRecipeWrapper
 {
 	public SolarNeutronRecipe recipe;
 	
@@ -23,18 +23,11 @@ public class SolarNeutronRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return new ArrayList<ItemStack>();
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return new ArrayList<ItemStack>();
+		ingredients.setInput(GasStack.class, recipe.getInput().ingredient);
+		ingredients.setOutput(GasStack.class, recipe.getOutput().output);
 	}
 	
 	@Nullable
@@ -53,5 +46,11 @@ public class SolarNeutronRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public SolarNeutronRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

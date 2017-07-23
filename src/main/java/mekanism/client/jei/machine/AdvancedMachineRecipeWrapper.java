@@ -1,20 +1,18 @@
 package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import mekanism.api.gas.Gas;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 
-public abstract class AdvancedMachineRecipeWrapper extends BlankRecipeWrapper
+public abstract class AdvancedMachineRecipeWrapper extends BaseRecipeWrapper
 {
 	public AdvancedMachineRecipe recipe;
 	
@@ -26,18 +24,11 @@ public abstract class AdvancedMachineRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return Arrays.asList(((AdvancedMachineInput)recipe.getInput()).itemStack);
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return Arrays.asList(((ItemStackOutput)recipe.getOutput()).output);
+		ingredients.setInput(ItemStack.class, ((AdvancedMachineInput)recipe.getInput()).itemStack);
+		ingredients.setOutput(ItemStack.class, ((ItemStackOutput)recipe.getOutput()).output);
 	}
 	
 	@Nullable
@@ -52,6 +43,12 @@ public abstract class AdvancedMachineRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public AdvancedMachineRecipeCategory getCategory()
+	{
+		return category;
 	}
 	
 	public abstract List<ItemStack> getFuelStacks(Gas gasType);

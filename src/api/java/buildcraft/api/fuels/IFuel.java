@@ -9,7 +9,9 @@ import net.minecraftforge.fluids.Fluid;
 public interface IFuel {
     Fluid getFluid();
 
+    /** @return The number of ticks that a single bucket (1000mb) of this fuel will burn for. */
     int getTotalBurningTime();
 
-    int getPowerPerCycle();
+    /** @return The amount (in micro mj) of power that this fuel will give off in 1 tick. */
+    long getPowerPerCycle();
 }

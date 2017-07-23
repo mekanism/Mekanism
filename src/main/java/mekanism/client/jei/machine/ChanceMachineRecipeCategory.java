@@ -1,5 +1,7 @@
 package mekanism.client.jei.machine;
 
+import java.util.List;
+
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
@@ -9,6 +11,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.util.MekanismUtils;
@@ -18,6 +21,7 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
@@ -73,7 +77,7 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof ChanceMachineRecipeWrapper)
 		{
@@ -86,13 +90,13 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(1, false, 87, 18);
 		itemStacks.init(2, false, 103, 18);
 
-		itemStacks.setFromRecipe(0, recipeWrapper.getInputs());
+		itemStacks.set(0, ((ItemStackInput)tempRecipe.recipeInput).ingredient);
 		
 		ChanceOutput output = (ChanceOutput)tempRecipe.getOutput();
 		
 		if(output.hasPrimary())
 		{
-			itemStacks.setFromRecipe(1, output.primaryOutput);
+			itemStacks.set(1, output.primaryOutput);
 		}
 		
 		if(output.hasSecondary())

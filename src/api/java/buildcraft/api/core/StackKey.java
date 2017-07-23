@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 /** This class is used whenever stacks needs to be stored as keys. */
@@ -55,7 +54,7 @@ public final class StackKey {
     }
 
     public static StackKey fluid(Fluid fluid) {
-        return new StackKey(new FluidStack(fluid, FluidContainerRegistry.BUCKET_VOLUME));
+        return new StackKey(new FluidStack(fluid, 1000));
     }
 
     public static StackKey fluid(FluidStack fluidStack) {

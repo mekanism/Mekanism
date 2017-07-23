@@ -3,10 +3,9 @@ package mekanism.client.render.transmitter;
 import java.util.HashMap;
 import java.util.Map;
 
-import mcmultipart.client.multipart.MultipartSpecialRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
-import mekanism.common.multipart.PartTransmitter;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
@@ -14,6 +13,7 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
-public abstract class RenderTransmitterBase<T extends PartTransmitter> extends MultipartSpecialRenderer<T>
+public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> extends TileEntitySpecialRenderer<T>
 {
 	private static OBJModel contentsModel;
 	private static Map<String, IBakedModel> contentsMap = new HashMap<String, IBakedModel>();
@@ -106,7 +106,7 @@ public abstract class RenderTransmitterBase<T extends PartTransmitter> extends M
 		return modelParts;
 	}
 	
-	public IBakedModel getModelForSide(PartTransmitter part, EnumFacing side)
+	public IBakedModel getModelForSide(TileEntityTransmitter part, EnumFacing side)
 	{
 		String sideName = side.name().toLowerCase();
 		String typeName = part.getConnectionType(side).name().toUpperCase();

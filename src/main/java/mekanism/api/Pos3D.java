@@ -181,7 +181,7 @@ public class Pos3D extends Vec3d
 		double subX = xCoord - pos.xCoord;
 		double subY = yCoord - pos.yCoord;
 		double subZ = zCoord - pos.zCoord;
-		return MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
+		return MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
 	}
 
 	/**

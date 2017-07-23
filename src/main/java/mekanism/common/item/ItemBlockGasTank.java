@@ -2,16 +2,17 @@ package mekanism.common.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
@@ -19,6 +20,7 @@ import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -38,7 +40,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -88,16 +92,16 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			if(tileEntity instanceof ISecurityTile)
 			{
 				ISecurityTile security = (ISecurityTile)tileEntity;
-				security.getSecurity().setOwner(getOwner(stack));
+				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
 				
 				if(hasSecurity(stack))
 				{
 					security.getSecurity().setMode(getSecurity(stack));
 				}
 				
-				if(getOwner(stack) == null)
+				if(getOwnerUUID(stack) == null)
 				{
-					security.getSecurity().setOwner(player.getName());
+					security.getSecurity().setOwnerUUID(player.getUniqueID());
 				}
 			}
 			
@@ -147,7 +151,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		else {
 			if(hasSecurity(itemstack))
 			{
-				list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
+				list.add(SecurityUtils.getOwnerDisplay(entityplayer, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
 				list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
 				
 				if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
@@ -191,7 +195,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
+	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
 		for(GasTankTier tier : GasTankTier.values())
 		{
@@ -339,26 +343,32 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 	
 	@Override
-	public String getOwner(ItemStack stack) 
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
+	
+	@Override
+	public UUID getOwnerUUID(ItemStack stack) 
 	{
-		if(ItemDataUtils.hasData(stack, "owner"))
+		if(ItemDataUtils.hasData(stack, "ownerUUID"))
 		{
-			return ItemDataUtils.getString(stack, "owner");
+			return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public void setOwner(ItemStack stack, String owner) 
+	public void setOwnerUUID(ItemStack stack, UUID owner) 
 	{
-		if(owner == null || owner.isEmpty())
+		if(owner == null)
 		{
-			ItemDataUtils.removeData(stack, "owner");
+			ItemDataUtils.removeData(stack, "ownerUUID");
 			return;
 		}
 		
-		ItemDataUtils.setString(stack, "owner", owner);
+		ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
 	}
 
 	@Override

@@ -1,10 +1,14 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
+import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
+import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -28,7 +32,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(SecurityUtils.getOwnerDisplay(entityplayer.getName(), getOwner(itemstack)));
+		list.add(SecurityUtils.getOwnerDisplay(entityplayer, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
 		
 		if(getFrequency(itemstack) != null)
 		{
@@ -40,14 +44,17 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
+		
 		if(!world.isRemote)
 		{
-			if(getOwner(itemstack) == null)
+			if(getOwnerUUID(itemstack) == null)
 			{
-				setOwner(itemstack, entityplayer.getName());
-				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
+				setOwnerUUID(itemstack, entityplayer.getUniqueID());
+				Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
+				entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
 			}
 			else {
 				if(SecurityUtils.canAccess(entityplayer, itemstack))
@@ -72,7 +79,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 
 		int neededEnergy = 1000;
 
-		if(entity.worldObj.provider.getDimension() != coords.dimensionId)
+		if(entity.world.provider.getDimension() != coords.dimensionId)
 		{
 			neededEnergy += 10000;
 		}
@@ -91,29 +98,29 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	}
 	
 	@Override
-	public String getOwner(ItemStack stack) 
+	public UUID getOwnerUUID(ItemStack stack) 
 	{
-		if(ItemDataUtils.hasData(stack, "owner"))
+		if(ItemDataUtils.hasData(stack, "ownerUUID"))
 		{
-			return ItemDataUtils.getString(stack, "owner");
+			return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public void setOwner(ItemStack stack, String owner) 
+	public void setOwnerUUID(ItemStack stack, UUID owner) 
 	{
 		setFrequency(stack, null);
 		setPrivateMode(stack, false);
 		
-		if(owner == null || owner.isEmpty())
+		if(owner == null)
 		{
-			ItemDataUtils.removeData(stack, "owner");
+			ItemDataUtils.removeData(stack, "ownerUUID");
 			return;
 		}
 		
-		ItemDataUtils.setString(stack, "owner", owner);
+		ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
 	}
 	
 	@Override

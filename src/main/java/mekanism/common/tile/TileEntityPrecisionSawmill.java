@@ -2,8 +2,8 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SawmillRecipe;
@@ -16,7 +16,7 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillR
 {
 	public TileEntityPrecisionSawmill()
 	{
-		super("sawmill", "PrecisionSawmill", MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), usage.precisionSawmillUsage, 200, BlockStateMachine.MachineType.PRECISION_SAWMILL.baseEnergy);
+		super("sawmill", "PrecisionSawmill", BlockStateMachine.MachineType.PRECISION_SAWMILL.baseEnergy, usage.precisionSawmillUsage, 200, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
 	}
 
 	@Override

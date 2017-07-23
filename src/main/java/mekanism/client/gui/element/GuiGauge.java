@@ -131,9 +131,9 @@ public abstract class GuiGauge<T> extends GuiElement
 	{
 		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			ItemStack stack = mc.player.inventory.getItemStack();
 
-			if(stack != null && stack.getItem() instanceof ItemConfigurator && color != null)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null)
 			{
 				if(guiObj instanceof GuiMekanism && ((GuiMekanism)guiObj).getTileEntity() != null)
 				{

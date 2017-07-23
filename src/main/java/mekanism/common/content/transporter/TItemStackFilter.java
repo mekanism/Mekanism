@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,22 +18,25 @@ public class TItemStackFilter extends TransporterFilter
 	public int min;
 	public int max;
 
-	public ItemStack itemType;
+	public ItemStack itemType = ItemStack.EMPTY;
 
 	@Override
-	public boolean canFilter(ItemStack itemStack)
+	public boolean canFilter(ItemStack itemStack, boolean strict)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return false;
 		}
 
-		if(sizeMode && max == 0)
+		if(strict && sizeMode)
 		{
-			return false;
+			if(max == 0 || itemStack.getCount() < min)
+			{
+				return false;
+			}
 		}
 
-		return (itemType.getHasSubtypes() ? itemType.isItemEqual(itemStack) : itemType.getItem() == itemStack.getItem()) && (!sizeMode || itemStack.stackSize >= min);
+		return (itemType.getHasSubtypes() ? itemType.isItemEqual(itemStack) : itemType.getItem() == itemStack.getItem());
 	}
 
 	@Override
@@ -73,7 +77,7 @@ public class TItemStackFilter extends TransporterFilter
 		min = nbtTags.getInteger("min");
 		max = nbtTags.getInteger("max");
 
-		itemType = ItemStack.loadItemStackFromNBT(nbtTags);
+		itemType = InventoryUtils.loadFromNBT(nbtTags);
 	}
 
 	@Override
@@ -88,7 +92,7 @@ public class TItemStackFilter extends TransporterFilter
 		data.add(max);
 
 		data.add(MekanismUtils.getID(itemType));
-		data.add(itemType.stackSize);
+		data.add(itemType.getCount());
 		data.add(itemType.getItemDamage());
 	}
 
@@ -110,7 +114,7 @@ public class TItemStackFilter extends TransporterFilter
 		int code = 1;
 		code = 31 * code + super.hashCode();
 		code = 31 * code + MekanismUtils.getID(itemType);
-		code = 31 * code + itemType.stackSize;
+		code = 31 * code + itemType.getCount();
 		code = 31 * code + itemType.getItemDamage();
 		code = 31 * code + (sizeMode ? 1 : 0);
 		code = 31 * code + min;
@@ -129,6 +133,7 @@ public class TItemStackFilter extends TransporterFilter
 	public TItemStackFilter clone()
 	{
 		TItemStackFilter filter = new TItemStackFilter();
+		filter.allowDefault = allowDefault;
 		filter.color = color;
 		filter.itemType = itemType.copy();
 		filter.sizeMode = sizeMode;

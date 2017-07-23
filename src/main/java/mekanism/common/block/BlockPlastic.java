@@ -1,7 +1,5 @@
 package mekanism.common.block;
 
-import java.util.List;
-
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStatePlastic;
@@ -15,6 +13,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
@@ -57,20 +57,18 @@ public class BlockPlastic extends Block
 	{
 		return state.getValue(BlockStatePlastic.colorProperty).getDyeDamage();
 	}
-
+	
 	@Override
-	public Vec3d modifyAcceleration(World world, BlockPos pos, Entity e, Vec3d motion)
-	{
+	public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn)
+    {
 		if(type == PlasticBlockType.ROAD)
 		{
 			double boost = 1.6;
-
-			double a = Math.atan2(motion.xCoord, motion.zCoord);
-			return new Vec3d(motion.xCoord + Math.sin(a) * boost * slipperiness, motion.yCoord, motion.zCoord + Math.cos(a) * boost * slipperiness);
+			double a = Math.atan2(entityIn.motionX, entityIn.motionZ);
+			entityIn.motionX += Math.sin(a) * boost * slipperiness;
+			entityIn.motionZ += Math.cos(a) * boost * slipperiness;
 		}
-		
-		return motion;
-	}
+    }
 
 	@Override
 	public int damageDropped(IBlockState state)
@@ -80,7 +78,7 @@ public class BlockPlastic extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{

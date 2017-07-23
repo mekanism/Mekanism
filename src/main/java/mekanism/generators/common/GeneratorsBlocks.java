@@ -11,7 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
-@ObjectHolder("MekanismGenerators")
+@ObjectHolder("mekanismgenerators")
 public class GeneratorsBlocks
 {
 	public static final Block Generator = BlockGenerator.getGeneratorBlock(GENERATOR_BLOCK_1);

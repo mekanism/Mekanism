@@ -12,8 +12,8 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGasTank;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -36,13 +36,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import buildcraft.api.tools.IToolWrench;
 
 public class BlockGasTank extends BlockContainer
 {
-	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.2F, 0.0F, 0.2F, 0.8F, 1.0F, 0.8F);
+	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
 	public BlockGasTank()
 	{
@@ -98,7 +99,7 @@ public class BlockGasTank extends BlockContainer
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
-		int side = MathHelper.floor_double((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int side = MathHelper.floor((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int change = 3;
 
 		switch(side)
@@ -114,7 +115,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(!world.isRemote)
 		{
@@ -136,7 +137,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -144,8 +145,9 @@ public class BlockGasTank extends BlockContainer
 		}
 
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
+		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(stack != null)
+		if(!stack.isEmpty())
 		{
 			Item tool = stack.getItem();
 
@@ -162,13 +164,13 @@ public class BlockGasTank extends BlockContainer
 	
 					if(MekanismUtils.isBCWrench(tool))
 					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
+						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
 					}
 	
 					int change = tileEntity.facing.rotateY().ordinal();
 	
 					tileEntity.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this);
+					world.notifyNeighborsOfStateChange(pos, this, true);
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -209,7 +211,7 @@ public class BlockGasTank extends BlockContainer
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return world.setBlockToAir(pos);
@@ -230,7 +232,7 @@ public class BlockGasTank extends BlockContainer
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;
@@ -289,7 +291,7 @@ public class BlockGasTank extends BlockContainer
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}
@@ -365,6 +367,24 @@ public class BlockGasTank extends BlockContainer
 			}
 		}
 		
+		return false;
+	}
+
+	@Override
+	public boolean isFullBlock(IBlockState state) 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState state) 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
+	{
 		return false;
 	}
 }

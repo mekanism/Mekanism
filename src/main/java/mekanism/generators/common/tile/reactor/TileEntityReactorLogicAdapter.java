@@ -4,13 +4,12 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import dan200.computercraft.api.lua.LuaException;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration
 {
@@ -31,20 +30,19 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			boolean outputting = checkMode();
 			
 			if(outputting != prevOutputting)
 			{
-				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 			}
 			
 			prevOutputting = outputting;
 		}
 	}
 	
-	@Override
 	public boolean isFrame()
 	{
 		return false;
@@ -52,7 +50,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	
 	public boolean checkMode()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			return prevOutputting;
 		}
@@ -140,7 +138,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 
     private static final String[] methods = new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing", "getIgnitionTemp", 
-    	"getEnergy", "getMaxEnergy", "getWater", "getSteam", "getFuel"};
+    	"getEnergy", "getMaxEnergy", "getWater", "getSteam", "getFuel", "getDeuterium", "getTritium"};
 	
 	@Override
 	public String[] getMethods()
@@ -149,7 +147,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 
 	@Override
-	public Object[] invoke(int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		if(getReactor() == null || !getReactor().isFormed())
 		{
@@ -198,8 +196,12 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             	return new Object[] {getReactor().getSteamTank().getFluidAmount()};
             case 15:
             	return new Object[] {getReactor().getFuelTank().getStored()};
+			case 16:
+				return new Object[] {getReactor().getDeuteriumTank().getStored()};
+			case 17:
+				return new Object[] {getReactor().getTritiumTank().getStored()};
 			default:
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 	

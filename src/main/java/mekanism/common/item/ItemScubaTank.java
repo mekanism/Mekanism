@@ -3,14 +3,14 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
@@ -24,6 +24,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -65,6 +67,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	{
 		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
 	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
 
 	@Override
 	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
@@ -127,7 +135,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 			return 0;
 		}
 
-		if(stack.getGas() != GasRegistry.getGas("oxygen"))
+		if(stack.getGas() != MekanismFluids.Oxygen)
 		{
 			return 0;
 		}
@@ -174,7 +182,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return type == GasRegistry.getGas("oxygen");
+		return type == MekanismFluids.Oxygen;
 	}
 
 	@Override
@@ -213,14 +221,14 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list)
+	public void getSubItems(Item item, CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(GasRegistry.getGas("oxygen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
+		setGas(filled, new GasStack(MekanismFluids.Oxygen, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 }

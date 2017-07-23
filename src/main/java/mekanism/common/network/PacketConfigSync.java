@@ -1,16 +1,15 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.machines;
-import mekanism.api.MekanismConfig.usage;
-import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.base.IModule;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
+import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -45,6 +44,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.TO_RF);
 			dataStream.writeDouble(general.FROM_TESLA);
 			dataStream.writeDouble(general.TO_TESLA);
+			dataStream.writeDouble(general.FROM_FORGE);
+			dataStream.writeDouble(general.TO_FORGE);
 			dataStream.writeDouble(general.FROM_H2);
 			dataStream.writeInt(general.ETHENE_BURN_TIME);
 			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
@@ -56,6 +57,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.blacklistIC2);
 			dataStream.writeBoolean(general.blacklistRF);
 			dataStream.writeBoolean(general.blacklistTesla);
+			dataStream.writeBoolean(general.blacklistForge);
 			dataStream.writeDouble(general.armoredJetpackDamageRatio);
 			dataStream.writeInt(general.armoredJetpackDamageMax);
 			dataStream.writeBoolean(general.aestheticWorldDamage);
@@ -78,17 +80,17 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.allowTransmitterAlloyUpgrade);
 			dataStream.writeBoolean(general.allowChunkloading);
 			dataStream.writeBoolean(general.allowProtection);
+			dataStream.writeInt(general.portableTeleporterDelay);
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
-				dataStream.writeBoolean(machines.isEnabled(type.machineName));
+				dataStream.writeBoolean(general.machinesManager.isEnabled(type.blockName));
 			}
 	
 			dataStream.writeDouble(usage.enrichmentChamberUsage);
 			dataStream.writeDouble(usage.osmiumCompressorUsage);
 			dataStream.writeDouble(usage.combinerUsage);
 			dataStream.writeDouble(usage.crusherUsage);
-			dataStream.writeDouble(usage.factoryUsage);
 			dataStream.writeDouble(usage.metallurgicInfuserUsage);
 			dataStream.writeDouble(usage.purificationChamberUsage);
 			dataStream.writeDouble(usage.energizedSmelterUsage);
@@ -138,6 +140,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.TO_RF = dataStream.readDouble();
 			general.FROM_TESLA = dataStream.readDouble();
 			general.TO_TESLA = dataStream.readDouble();
+			general.FROM_FORGE = dataStream.readDouble();
+			general.TO_FORGE = dataStream.readDouble();
 			general.FROM_H2 = dataStream.readDouble();
 			general.ETHENE_BURN_TIME = dataStream.readInt();
 			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
@@ -149,6 +153,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.blacklistIC2 = dataStream.readBoolean();
 			general.blacklistRF = dataStream.readBoolean();
 			general.blacklistTesla = dataStream.readBoolean();
+			general.blacklistForge = dataStream.readBoolean();
 			general.armoredJetpackDamageRatio = dataStream.readDouble();
 			general.armoredJetpackDamageMax = dataStream.readInt();
 			general.aestheticWorldDamage = dataStream.readBoolean();
@@ -171,17 +176,17 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.allowTransmitterAlloyUpgrade = dataStream.readBoolean();
 			general.allowChunkloading = dataStream.readBoolean();
 			general.allowProtection = dataStream.readBoolean();
+			general.portableTeleporterDelay = dataStream.readInt();
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
-				machines.setEntry(type.machineName, dataStream.readBoolean());
+				general.machinesManager.setEntry(type.blockName, dataStream.readBoolean());
 			}
 	
 			usage.enrichmentChamberUsage = dataStream.readDouble();
 			usage.osmiumCompressorUsage = dataStream.readDouble();
 			usage.combinerUsage = dataStream.readDouble();
 			usage.crusherUsage = dataStream.readDouble();
-			usage.factoryUsage = dataStream.readDouble();
 			usage.metallurgicInfuserUsage = dataStream.readDouble();
 			usage.purificationChamberUsage = dataStream.readDouble();
 			usage.energizedSmelterUsage = dataStream.readDouble();

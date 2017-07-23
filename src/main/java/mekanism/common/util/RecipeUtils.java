@@ -9,7 +9,6 @@ import java.util.Map;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.ITierItem;
@@ -36,11 +35,11 @@ public class RecipeUtils
 {
 	public static boolean areItemsEqualForCrafting(ItemStack target, ItemStack input)
 	{
-		if(target == null && input != null || target != null && input == null)
+		if(target.isEmpty() && !input.isEmpty() || !target.isEmpty() && input.isEmpty())
 		{
 			return false;
 		}
-		else if(target == null && input == null)
+		else if(target.isEmpty() && input.isEmpty())
 		{
 			return true;
 		}
@@ -92,7 +91,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && itemstack.getItem() instanceof IEnergizedItem)
+				if(!itemstack.isEmpty() && itemstack.getItem() instanceof IEnergizedItem)
 				{
 					energyFound += ((IEnergizedItem)itemstack.getItem()).getEnergy(itemstack);
 				}
@@ -109,7 +108,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && itemstack.getItem() instanceof IGasItem)
+				if(!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem)
 				{
 					GasStack stored = ((IGasItem)itemstack.getItem()).getGas(itemstack);
 					
@@ -149,9 +148,9 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 				
-				if(itemstack != null && itemstack.getItem() instanceof ISecurityItem)
+				if(!itemstack.isEmpty() && itemstack.getItem() instanceof ISecurityItem)
 				{
-					((ISecurityItem)toReturn.getItem()).setOwner(toReturn, ((ISecurityItem)itemstack.getItem()).getOwner(itemstack));
+					((ISecurityItem)toReturn.getItem()).setOwnerUUID(toReturn, ((ISecurityItem)itemstack.getItem()).getOwnerUUID(itemstack));
 					((ISecurityItem)toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem)itemstack.getItem()).getSecurity(itemstack));
 					
 					break;
@@ -203,13 +202,13 @@ public class RecipeUtils
 		if(BasicBlockType.get(toReturn) == BasicBlockType.BIN)
 		{
 			int foundCount = 0;
-			ItemStack foundType = null;
+			ItemStack foundType = ItemStack.EMPTY;
 			
 			for(int i = 0; i < 9; i++)
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && BasicBlockType.get(itemstack) == BasicBlockType.BIN)
+				if(!itemstack.isEmpty() && BasicBlockType.get(itemstack) == BasicBlockType.BIN)
 				{
 					InventoryBin binInv = new InventoryBin(itemstack);
 					
@@ -218,7 +217,7 @@ public class RecipeUtils
 				}
 			}
 			
-			if(foundCount > 0 && foundType != null)
+			if(foundCount > 0 && !foundType.isEmpty())
 			{
 				InventoryBin binInv = new InventoryBin(toReturn);
 				binInv.setItemCount(foundCount);
@@ -234,7 +233,7 @@ public class RecipeUtils
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && BlockStateMachine.MachineType.get(itemstack) != null && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades)
+				if(!itemstack.isEmpty() && BlockStateMachine.MachineType.get(itemstack) != null && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades)
 				{
 					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
 					
@@ -273,7 +272,7 @@ public class RecipeUtils
 		
 		if(nbtTags.hasKey("itemstack"))
 		{
-			return ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("itemstack"));
+			return InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemstack"));
 		}
 		else if(nbtTags.hasKey("itemname"))
 		{
@@ -294,7 +293,7 @@ public class RecipeUtils
 			}
 		}
 		
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	public static boolean removeRecipes(ItemStack stack)

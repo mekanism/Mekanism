@@ -7,20 +7,20 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
-import mekanism.api.ObfuscatedNames;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.ReflectionUtils;
 import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.IMetaItem;
+import mekanism.common.util.ReflectionUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -235,6 +235,15 @@ public class MekanismRenderer
 			prevFormat = tess.getBuffer().getVertexFormat();
 			prevMode = tess.getBuffer().getDrawMode();
 			tess.draw();
+		}
+	}
+	
+	public static void saveRenderer(Tessellator tess)
+	{
+		if(MekanismRenderer.isDrawing(tess))
+		{
+			prevFormat = tess.getBuffer().getVertexFormat();
+			prevMode = tess.getBuffer().getDrawMode();
 		}
 	}
 	

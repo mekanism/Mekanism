@@ -8,8 +8,8 @@ import javax.vecmath.Matrix4f;
 
 import mekanism.api.EnumColor;
 import mekanism.client.render.ctm.CTMModelFactory;
-import mekanism.common.multipart.ColorProperty;
-import mekanism.common.multipart.PartGlowPanel;
+import mekanism.common.block.property.PropertyColor;
+import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -70,7 +70,7 @@ public class GlowPanelModel extends OBJBakedModelBase
 		
 		if(tempState != null)
 		{
-			return ((IExtendedBlockState)tempState).getValue(ColorProperty.INSTANCE).color;
+			return ((IExtendedBlockState)tempState).getValue(PropertyColor.INSTANCE).color;
 		}
 		
 		return EnumColor.WHITE;
@@ -137,8 +137,8 @@ public class GlowPanelModel extends OBJBakedModelBase
     	
     	if(state != null && tempState == null)
     	{
-	    	int hash = PartGlowPanel.hash((IExtendedBlockState)state);
-			EnumColor color = ((IExtendedBlockState)state).getValue(ColorProperty.INSTANCE).color;
+	    	int hash = TileEntityGlowPanel.hash((IExtendedBlockState)state);
+			EnumColor color = ((IExtendedBlockState)state).getValue(PropertyColor.INSTANCE).color;
 			
 			if(!glowPanelCache.containsKey(hash))
 			{

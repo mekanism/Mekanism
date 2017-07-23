@@ -13,8 +13,10 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection
@@ -29,17 +31,17 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	public TileEntityAmbientAccumulator()
 	{
 		super("AmbientAccumulator");
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			if(cachedRecipe == null || worldObj.provider.getDimension() != cachedDimensionId)
+			if(cachedRecipe == null || world.provider.getDimension() != cachedDimensionId)
 			{
-				cachedDimensionId = worldObj.provider.getDimension();
+				cachedDimensionId = world.provider.getDimension();
 				cachedRecipe = RecipeHandler.getDimensionGas(new IntegerInput(cachedDimensionId));
 			}
 

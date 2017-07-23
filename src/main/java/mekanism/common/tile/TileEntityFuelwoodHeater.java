@@ -6,15 +6,16 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -49,24 +51,24 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	public TileEntityFuelwoodHeater() 
 	{
 		super("FuelwoodHeater");
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 	
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote && updateDelay > 0)
+		if(world.isRemote && updateDelay > 0)
 		{
 			updateDelay--;
 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -86,17 +88,17 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 				burning = true;
 			}
 			else {
-				if(inventory[0] != null)
+				if(!inventory.get(0).isEmpty())
 				{
-					maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[0])/2;
+					maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory.get(0))/2;
 					
 					if(burnTime > 0)
 					{
-						inventory[0].stackSize--;
+						inventory.get(0).shrink(1);
 						
-						if(inventory[0].stackSize == 0)
+						if(inventory.get(0).getCount() == 0)
 						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+							inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 						}
 						
 						burning = true;
@@ -160,7 +162,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -272,7 +274,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	@Override
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 		
 		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 		{

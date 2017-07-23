@@ -1,5 +1,7 @@
 package buildcraft.api.enums;
 
+import java.util.Locale;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.IStringSerializable;
@@ -14,6 +16,7 @@ public enum EnumSpring implements IStringSerializable {
     public final int tickRate, chance;
     public IBlockState liquidBlock;
     public boolean canGen = true;
+    private final String lowerCaseName = name().toLowerCase(Locale.ROOT);
 
     private EnumSpring(int tickRate, int chance, IBlockState liquidBlock) {
         this.tickRate = tickRate;
@@ -27,6 +30,6 @@ public enum EnumSpring implements IStringSerializable {
 
     @Override
     public String getName() {
-        return this.name();
+        return lowerCaseName;
     }
 }

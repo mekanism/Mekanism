@@ -17,7 +17,7 @@ public class PacketElectricBowState implements IMessageHandler<ElectricBowStateM
 	{
 		ItemStack itemstack = PacketHandler.getPlayer(context).getHeldItem(message.currentHand);
 		
-		if(itemstack != null && itemstack.getItem() instanceof ItemElectricBow)
+		if(!itemstack.isEmpty() && itemstack.getItem() instanceof ItemElectricBow)
 		{
 			((ItemElectricBow)itemstack.getItem()).setFireState(itemstack, message.fireMode);
 		}

@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.MekanismConfig.tools;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
+import mekanism.common.config.MekanismConfig.tools;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
@@ -32,17 +32,17 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "9.2.2", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
+@Mod(modid = "mekanismtools", name = "MekanismTools", version = "9.3.2", dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
 public class MekanismTools implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
 	public static ToolsCommonProxy proxy;
 	
-	@Instance("MekanismTools")
+	@Instance("mekanismtools")
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(9, 2, 2);
+	public static Version versionNumber = new Version(9, 3, 2);
 
 	//Enums: Tools
 	public static ToolMaterial toolOBSIDIAN;

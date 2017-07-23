@@ -6,22 +6,22 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.CapabilityUtils;
-import mekanism.common.EnergyNetwork;
-import mekanism.common.FluidNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
+import mekanism.common.transmitters.grid.EnergyNetwork;
+import mekanism.common.transmitters.grid.FluidNetwork;
+import mekanism.common.transmitters.grid.GasNetwork;
+import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
@@ -45,7 +45,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			{
 				if(message.packetType == PacketType.UPDATE)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
@@ -56,7 +56,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 						
 						for(Coord4D coord : message.transmitterCoords)
 						{
-							TileEntity tile = coord.getTileEntity(player.worldObj);
+							TileEntity tile = coord.getTileEntity(player.world);
 
 							if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 							{
@@ -75,7 +75,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				
 				if(message.packetType == PacketType.ENERGY)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 					
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
@@ -89,7 +89,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				}
 				else if(message.packetType == PacketType.GAS)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{
@@ -111,7 +111,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				}
 				else if(message.packetType == PacketType.FLUID)
 				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
 					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
 					{

@@ -19,8 +19,8 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
-import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -210,7 +210,7 @@ public class GuiSideConfiguration extends GuiMekanism
 
 		TileEntity tile = (TileEntity)configurable;
 
-		if(tile == null || mc.theWorld.getTileEntity(tile.getPos()) == null)
+		if(tile == null || mc.world.getTileEntity(tile.getPos()) == null)
 		{
 			mc.displayGuiScreen(null);
 		}

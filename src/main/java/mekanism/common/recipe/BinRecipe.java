@@ -10,6 +10,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,17 +33,17 @@ public class BinRecipe implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
 	{
-		return getCraftingResult(inv) != null;
+		return !getCraftingResult(inv).isEmpty();
 	}
 
 	private boolean isBin(ItemStack itemStack)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return false;
 		}
 
-		return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.stackSize <= 1;
+		return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.getCount() <= 1;
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class BinRecipe implements IRecipe
 
 	public ItemStack getResult(IInventory inv)
 	{
-		ItemStack bin = null;
+		ItemStack bin = ItemStack.EMPTY;
 
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
@@ -61,31 +62,31 @@ public class BinRecipe implements IRecipe
 
 			if(isBin(stack))
 			{
-				if(bin != null)
+				if(!bin.isEmpty())
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 
 				bin = stack.copy();
 			}
 		}
 
-		if(bin == null || bin.stackSize > 1)
+		if(bin.isEmpty() || bin.getCount() > 1)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		ItemStack addStack = null;
+		ItemStack addStack = ItemStack.EMPTY;
 
 		for(int i = 0; i < 9; i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
-			if(stack != null && !isBin(stack))
+			if(!stack.isEmpty() && !isBin(stack))
 			{
-				if(addStack != null)
+				if(!addStack.isEmpty())
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 
 				addStack = stack.copy();
@@ -94,13 +95,13 @@ public class BinRecipe implements IRecipe
 
 		InventoryBin binInv = new InventoryBin(bin);
 
-		if(addStack != null)
+		if(!addStack.isEmpty())
 		{
 			if(!(addStack.getItem() instanceof ItemProxy))
 			{
-				if(binInv.getItemType() != null && !binInv.getItemType().isItemEqual(addStack))
+				if(!binInv.getItemType().isEmpty() && !binInv.getItemType().isItemEqual(addStack))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 	
 				binInv.add(addStack);
@@ -122,11 +123,11 @@ public class BinRecipe implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
@@ -134,7 +135,7 @@ public class BinRecipe implements IRecipe
 	@SubscribeEvent
 	public void onCrafting(ItemCraftedEvent event)
 	{
-		if(getResult(event.craftMatrix) != null)
+		if(!getResult(event.craftMatrix).isEmpty())
 		{
 			if(!isBin(event.crafting))
 			{
@@ -148,7 +149,7 @@ public class BinRecipe implements IRecipe
 						int size = inv.getItemCount();
 
 						ItemStack testRemove = inv.removeStack();
-						int newCount = size-(testRemove != null ? testRemove.stackSize : 0);
+						int newCount = size-(!testRemove.isEmpty() ? testRemove.getCount() : 0);
 						
 						if(inv.getTier() == BinTier.CREATIVE)
 						{
@@ -169,7 +170,7 @@ public class BinRecipe implements IRecipe
 					{
 						bin = i;
 					}
-					else if(!isBin(event.craftMatrix.getStackInSlot(i)) && event.craftMatrix.getStackInSlot(i) != null)
+					else if(!isBin(event.craftMatrix.getStackInSlot(i)) && !event.craftMatrix.getStackInSlot(i).isEmpty())
 					{
 						other = i;
 					}
@@ -180,14 +181,14 @@ public class BinRecipe implements IRecipe
 
 				ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
 
-				if(testRemain != null && testRemain.stackSize > 0)
+				if(!testRemain.isEmpty() && testRemain.getCount() > 0)
 				{
 					ItemStack proxy = new ItemStack(MekanismItems.ItemProxy);
 					((ItemProxy)proxy.getItem()).setSavedItem(proxy, testRemain.copy());
 					event.craftMatrix.setInventorySlotContents(other, proxy);
 				}
 				else {
-					event.craftMatrix.setInventorySlotContents(other, null);
+					event.craftMatrix.setInventorySlotContents(other, ItemStack.EMPTY);
 				}
 			}
 		}

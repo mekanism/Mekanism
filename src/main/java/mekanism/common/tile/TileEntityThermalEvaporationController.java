@@ -8,21 +8,21 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.MekanismUtils;
@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -85,7 +86,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		super("ThermalEvaporationController");
 		
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			updatedThisTick = false;
 			
@@ -188,7 +189,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	
 	protected void refresh()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(!updatedThisTick)
 			{
@@ -232,7 +233,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		if(outputTank.getFluid() != null)
 		{
-			if(FluidContainerUtils.isFluidContainer(inventory[2]))
+			if(FluidContainerUtils.isFluidContainer(inventory.get(2)))
 			{
 				FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
 			}
@@ -240,7 +241,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		
 		if(structured)
 		{
-			if(FluidContainerUtils.isFluidContainer(inventory[0]))
+			if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 			{
 				FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
 					@Override
@@ -257,7 +258,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		if(!temperatureSet)
 		{
-			biomeTemp = worldObj.getBiomeForCoordsBody(getPos()).getFloatTemperature(getPos());
+			biomeTemp = world.getBiomeForCoordsBody(getPos()).getFloatTemperature(getPos());
 			temperatureSet = true;
 		}
 		
@@ -302,7 +303,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	
 	public int getActiveSolars()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			return clientSolarAmount;
 		}
@@ -331,13 +332,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		
 		Coord4D startPoint = Coord4D.get(this);
 		
-		while(startPoint.offset(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock)
+		while(startPoint.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock)
 		{
 			startPoint = startPoint.offset(EnumFacing.UP);
 		}
 		
 		Coord4D test = startPoint.offset(EnumFacing.DOWN).offset(right, 2);
-		isLeftOnFace = test.getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock;
+		isLeftOnFace = test.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock;
 		
 		startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
 		
@@ -380,17 +381,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			for(int z = 0; z < 4; z++)
 			{
 				Coord4D pointer = current.offset(right, x).offset(back, z);
-				TileEntity pointerTile = pointer.getTileEntity(worldObj);
+				TileEntity pointerTile = pointer.getTileEntity(world);
 				
 				int corner = getCorner(x, z);
 				
 				if(corner != -1)
 				{
-					if(addSolarPanel(pointer.getTileEntity(worldObj), corner))
+					if(addSolarPanel(pointer.getTileEntity(world), corner))
 					{
 						continue;
 					}
-					else if(pointer.offset(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile))
+					else if(pointer.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile))
 					{
 						return false;
 					}
@@ -398,13 +399,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 				else {
 					if((x == 1 || x == 2) && (z == 1 || z == 2))
 					{
-						if(!pointer.isAirBlock(worldObj))
+						if(!pointer.isAirBlock(world))
 						{
 							return false;
 						}
 					}
 					else {
-						if(pointer.offset(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile))
+						if(pointer.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile))
 						{
 							return false;
 						}
@@ -455,7 +456,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			for(int z = 0; z < 4; z++)
 			{
 				Coord4D pointer = current.offset(right, x).offset(back, z);
-				TileEntity pointerTile = pointer.getTileEntity(worldObj);
+				TileEntity pointerTile = pointer.getTileEntity(world);
 				
 				if((x == 1 || x == 2) && (z == 1 || z == 2))
 				{
@@ -474,7 +475,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 						}
 					}
 					else {
-						if(foundCenter || !pointer.isAirBlock(worldObj))
+						if(foundCenter || !pointer.isAirBlock(world))
 						{
 							height = -1;
 							return false;
@@ -589,7 +590,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			if(structured != clientStructured)
 			{
 				inputTank.setCapacity(getMaxFluid());
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 				
 				if(structured)
 				{
@@ -692,7 +693,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		for(Coord4D tankPart : tankParts)
 		{
-			TileEntity tile = tankPart.getTileEntity(worldObj);
+			TileEntity tile = tankPart.getTileEntity(world);
 			
 			if(tile instanceof TileEntityThermalEvaporationBlock)
 			{

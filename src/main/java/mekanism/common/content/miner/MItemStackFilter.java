@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MItemStackFilter extends MinerFilter
 {
-	public ItemStack itemType;
+	public ItemStack itemType = ItemStack.EMPTY;
 	public boolean fuzzy;
 
 	public MItemStackFilter(ItemStack item)
@@ -24,7 +25,7 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return false;
 		}
@@ -56,7 +57,7 @@ public class MItemStackFilter extends MinerFilter
 		super.read(nbtTags);
 		
 		fuzzy = nbtTags.getBoolean("fuzzy");
-		itemType = ItemStack.loadItemStackFromNBT(nbtTags);
+		itemType = InventoryUtils.loadFromNBT(nbtTags);
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class MItemStackFilter extends MinerFilter
 		data.add(fuzzy);
 		
 		data.add(MekanismUtils.getID(itemType));
-		data.add(itemType.stackSize);
+		data.add(itemType.getCount());
 		data.add(itemType.getItemDamage());
 	}
 
@@ -88,7 +89,7 @@ public class MItemStackFilter extends MinerFilter
 	{
 		int code = 1;
 		code = 31 * code + MekanismUtils.getID(itemType);
-		code = 31 * code + itemType.stackSize;
+		code = 31 * code + itemType.getCount();
 		code = 31 * code + itemType.getItemDamage();
 		return code;
 	}

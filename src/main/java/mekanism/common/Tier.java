@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.common.multipart.TransmitterType;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.util.LangUtils;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
@@ -249,21 +249,17 @@ public final class Tier
 
 	public static enum CableTier implements ITier
 	{
-		BASIC(3200, TransmitterType.UNIVERSAL_CABLE_BASIC),
-		ADVANCED(12800, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
-		ELITE(64000, TransmitterType.UNIVERSAL_CABLE_ELITE),
-		ULTIMATE(320000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
+		BASIC(3200),
+		ADVANCED(12800),
+		ELITE(64000),
+		ULTIMATE(320000);
 
 		public int cableCapacity;
 		private int baseCapacity;
-		
-		public TransmitterType type;
 
-		private CableTier(int capacity, TransmitterType transmitterType)
+		private CableTier(int capacity)
 		{
 			baseCapacity = cableCapacity = capacity;
-			
-			type = transmitterType;
 		}
 		
 		@Override
@@ -306,25 +302,21 @@ public final class Tier
 
 	public static enum PipeTier implements ITier
 	{
-		BASIC(1000, 100, TransmitterType.MECHANICAL_PIPE_BASIC),
-		ADVANCED(4000, 400, TransmitterType.MECHANICAL_PIPE_ADVANCED),
-		ELITE(16000, 1600, TransmitterType.MECHANICAL_PIPE_ELITE),
-		ULTIMATE(64000, 6400, TransmitterType.MECHANICAL_PIPE_ULTIMATE);
+		BASIC(1000, 100),
+		ADVANCED(4000, 400),
+		ELITE(16000, 1600),
+		ULTIMATE(64000, 6400);
 
 		public int pipeCapacity;
 		private int baseCapacity;
 		
 		public int pipePullAmount;
 		private int basePull;
-		
-		public TransmitterType type;
 
-		private PipeTier(int capacity, int pullAmount, TransmitterType transmitterType)
+		private PipeTier(int capacity, int pullAmount)
 		{
 			baseCapacity = pipeCapacity = capacity;
 			basePull = pipePullAmount = pullAmount;
-			
-			type = transmitterType;
 		}
 
 		@Override
@@ -370,25 +362,21 @@ public final class Tier
 
 	public static enum TubeTier implements ITier
 	{
-		BASIC(256, 64, TransmitterType.PRESSURIZED_TUBE_BASIC),
-		ADVANCED(1024, 256, TransmitterType.PRESSURIZED_TUBE_ADVANCED),
-		ELITE(4096, 1024, TransmitterType.PRESSURIZED_TUBE_ELITE),
-		ULTIMATE(16384, 4096, TransmitterType.PRESSURIZED_TUBE_ULTIMATE);
+		BASIC(256, 64),
+		ADVANCED(1024, 256),
+		ELITE(4096, 1024),
+		ULTIMATE(16384, 4096);
 
 		public int tubeCapacity;
 		private int baseCapacity;
 		
 		public int tubePullAmount;
 		private int basePull;
-		
-		public TransmitterType type;
 
-		private TubeTier(int capacity, int pullAmount, TransmitterType transmitterType)
+		private TubeTier(int capacity, int pullAmount)
 		{
 			baseCapacity = tubeCapacity = capacity;
 			basePull = tubePullAmount = pullAmount;
-			
-			type = transmitterType;
 		}
 
 		@Override
@@ -434,25 +422,21 @@ public final class Tier
 	
 	public static enum TransporterTier implements ITier
 	{
-		BASIC(1, 5, TransmitterType.LOGISTICAL_TRANSPORTER_BASIC),
-		ADVANCED(16, 10, TransmitterType.LOGISTICAL_TRANSPORTER_ADVANCED),
-		ELITE(32, 20, TransmitterType.LOGISTICAL_TRANSPORTER_ELITE),
-		ULTIMATE(64, 50, TransmitterType.LOGISTICAL_TRANSPORTER_ULTIMATE);
+		BASIC(1, 5),
+		ADVANCED(16, 10),
+		ELITE(32, 20),
+		ULTIMATE(64, 50);
 
 		public int pullAmount;
 		private int basePull;
 		
 		public int speed;
 		private int baseSpeed;
-		
-		public TransmitterType type;
 
-		private TransporterTier(int pull, int s, TransmitterType transmitterType)
+		private TransporterTier(int pull, int s)
 		{
 			basePull = pullAmount = pull;
 			baseSpeed = speed = s;
-			
-			type = transmitterType;
 		}
 
 		@Override
@@ -498,10 +482,10 @@ public final class Tier
 	
 	public static enum ConductorTier implements ITier
 	{
-		BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_BASIC),
-		ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ADVANCED),
-		ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ELITE),
-		ULTIMATE(5, 1, 100000, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ULTIMATE);
+		BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
+		ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1)),
+		ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
+		ULTIMATE(5, 1, 100000, new ColourRGBA(0.2, 0.2, 0.2, 1));
 
 		public double inverseConduction;
 		private double baseConduction;
@@ -513,18 +497,14 @@ public final class Tier
 		private double baseConductionInsulation;
 		
 		public ColourRGBA baseColour;
-		
-		public TransmitterType type;
 
-		private ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour, TransmitterType transmitterType)
+		private ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour)
 		{
 			baseConduction = inverseConduction = inversek;
 			baseHeatCapacity = inverseHeatCapacity = inverseC;
 			baseConductionInsulation = inverseConductionInsulation = insulationInversek;
 			
 			baseColour = colour;
-			
-			type = transmitterType;
 		}
 
 		@Override
@@ -577,7 +557,7 @@ public final class Tier
 		ADVANCED(28000, 800),
 		ELITE(56000, 1600),
 		ULTIMATE(112000, 3200),
-		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE/2);
 
 		public int storage;
 		private int baseStorage;
@@ -625,7 +605,7 @@ public final class Tier
 		ADVANCED(128000, 512),
 		ELITE(256000, 1028),
 		ULTIMATE(512000, 2056),
-		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE/2);
 
 		public int storage;
 		private int baseStorage;

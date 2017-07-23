@@ -46,7 +46,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	protected int updateDelay = 0;
 
 	protected boolean firstUpdate = true;
-	protected World worldObj = null;
+	protected World world = null;
 
 	public void addNewTransmitters(Collection<IGridTransmitter<A, N>> newTransmitters)
 	{
@@ -61,9 +61,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			{
 				if(transmitter.isValid())
 				{
-					if(worldObj == null)
+					if(world == null)
 					{
-						worldObj = transmitter.world();
+						world = transmitter.world();
 					}
 
 					for(EnumFacing side : EnumFacing.VALUES)
@@ -180,7 +180,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	public void invalidateTransmitter(IGridTransmitter<A, N> transmitter)
 	{
-		if(!worldObj.isRemote && transmitter.isValid())
+		if(!world.isRemote && transmitter.isValid())
 		{
 			transmitter.takeShare();
 			transmitter.setTransmitterNetwork(null);
@@ -334,7 +334,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	public World getWorld()
 	{
-		return worldObj;
+		return world;
 	}
 
 	public abstract Set<Pair<Coord4D, A>> getAcceptors(Object data);

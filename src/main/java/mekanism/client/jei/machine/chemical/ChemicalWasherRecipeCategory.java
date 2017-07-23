@@ -10,6 +10,7 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.ITooltipCallback;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -66,7 +67,7 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof ChemicalWasherRecipeWrapper)
 		{
@@ -76,7 +77,7 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		
 		fluidStacks.init(0, true, 6-xOffset, 5-yOffset, 16, 58, 1000, false, fluidOverlay);
-		fluidStacks.set(0, recipeWrapper.getFluidInputs());
+		fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
 		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
 
 			@Override

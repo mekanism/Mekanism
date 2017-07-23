@@ -6,15 +6,15 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.generators;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -57,7 +58,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public TileEntityHeatGenerator()
 	{
 		super("heat", "HeatGenerator", 160000, generators.heatGeneration*2);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -65,18 +66,18 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(1, this);
 
-			if(inventory[0] != null)
+			if(!inventory.get(0).isEmpty())
 			{
-				if(FluidContainerUtils.isFluidContainer(inventory[0]))
+				if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 				{
-					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory[0], FluidChecker.check(FluidRegistry.LAVA)), true);
+					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(FluidRegistry.LAVA)), true);
 				}
 				else {
-					int fuel = getFuel(inventory[0]);
+					int fuel = getFuel(inventory.get(0));
 
 					if(fuel > 0)
 					{
@@ -86,17 +87,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 						{
 							lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
 
-							if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
+							if(!inventory.get(0).getItem().getContainerItem(inventory.get(0)).isEmpty())
 							{
-								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+								inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 							}
 							else {
-								inventory[0].stackSize--;
-							}
-
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
+								inventory.get(0).shrink(1);
 							}
 						}
 					}
@@ -203,7 +199,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			}
 		}
 
-		if(worldObj.provider.getDimension() == -1)
+		if(world.provider.getDimension() == -1)
 		{
 			netherBoost = generators.heatGenerationNether;
 		}
@@ -213,7 +209,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	
 	private boolean isLava(BlockPos pos)
 	{
-		return worldObj.getBlockState(pos).getBlock() == Blocks.LAVA;
+		return world.getBlockState(pos).getBlock() == Blocks.LAVA;
 	}
 
 	public int getFuel(ItemStack itemstack)
@@ -432,7 +428,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(canConnectHeat(side))
 		{
-			TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+			TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 			
 			if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 			{

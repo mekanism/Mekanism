@@ -2,13 +2,15 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
-import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 {
-	public ItemStack itemStack;
+	public ItemStack itemStack = ItemStack.EMPTY;
 
 	public Gas gasType;
 
@@ -23,7 +25,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		itemStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("input"));
+		itemStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
 		gasType = Gas.readFromNBT(nbtTags.getCompoundTag("gasType"));
 	}
 
@@ -36,16 +38,16 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 	@Override
 	public boolean isValid()
 	{
-		return itemStack != null && gasType != null;
+		return !itemStack.isEmpty() && gasType != null;
 	}
 
-	public boolean useItem(ItemStack[] inventory, int index, boolean deplete)
+	public boolean useItem(NonNullList<ItemStack> inventory, int index, boolean deplete)
 	{
-		if(inputContains(inventory[index], itemStack))
+		if(inputContains(inventory.get(index), itemStack))
 		{
 			if(deplete)
 			{
-				inventory[index] = StackUtils.subtract(inventory[index], itemStack);
+				inventory.set(index, StackUtils.subtract(inventory.get(index), itemStack));
 			}
 			
 			return true;
@@ -67,7 +69,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 
 	public boolean matches(AdvancedMachineInput input)
 	{
-		return StackUtils.equalsWildcard(itemStack, input.itemStack) && input.itemStack.stackSize >= itemStack.stackSize;
+		return StackUtils.equalsWildcard(itemStack, input.itemStack) && input.itemStack.getCount() >= itemStack.getCount();
 	}
 
 	@Override

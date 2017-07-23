@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
+import ic2.api.info.Info;
+
 
 /**
  * Provides access to IC2 blocks and items.
@@ -17,7 +19,7 @@ import net.minecraftforge.fml.common.ModContainer;
  *
  * Getting the associated Block/Item for an ItemStack x: Blocks:
  * ((ItemBlock)x.getItem).getBlock() Items: x.getItem()
- * Alternatively, you can direwctly call IC2Items.instance.getItem(name) or IC2Items.instance.getBlock(name)
+ * Alternatively, you can directly call IC2Items.instance.getItem(name) or IC2Items.instance.getBlock(name)
  *
  * It is recommended, that you keep a reference to the Items you get here.
  *
@@ -75,7 +77,7 @@ public final class IC2Items {
 	public static void setInstance(IItemAPI api) {
 		ModContainer mc = Loader.instance().activeModContainer();
 
-		if (mc == null || !"IC2".equals(mc.getModId())) {
+		if (mc == null || !Info.MOD_ID.equals(mc.getModId())) {
 			throw new IllegalAccessError("invoked from "+mc);
 		}
 
@@ -159,6 +161,7 @@ dust,small_obsidian	Tiny Pile of Obsidian Dust
 dust,small_silver	Tiny Pile of Silver Dust
 dust,small_sulfur	Tiny Pile of Sulfur Dust
 dust,small_tin	Tiny Pile of Tin Dust
+dust,tin_hydrated	Hydrated Tin Dust
 
 ingot:
 ingot,alloy	Mixed Metal Ingot
@@ -224,6 +227,7 @@ misc_resource,iridium_shard	Iridium Shard
 misc_resource,matter	UU-Matter
 misc_resource,resin	Sticky Resin
 misc_resource,slag	Slag
+misc_resource,iodine	Iodine
 
 block_cutting_blade:
 block_cutting_blade,iron	Block Cutting Blade (Iron)
@@ -267,6 +271,8 @@ crafting,steel_rotor_blade	Steel Rotor Blade
 crafting,carbon_rotor_blade	Carbon Rotor Blade
 crafting,steam_turbine_blade	Steam Turbine Blade
 crafting,steam_turbine	Steam Turbine
+crafting,jetpack_attachment_plate	Jetpack Attachment Plate
+crafting,coin	Industrial Credit
 
 crystal_memory:
 crystal_memory	Crystal Memory
@@ -283,7 +289,7 @@ crop_res,hops	Hops
 crop_res,weed	Weed
 
 terra_wart:
-terra_wart	item.terra_wart
+terra_wart	Terra Wart
 
 re_battery:
 re_battery	RE-Battery
@@ -363,6 +369,9 @@ neutron_reflector	Neutron Reflector
 thick_neutron_reflector:
 thick_neutron_reflector	Thick Neutron Reflector
 
+iridium_reflector:
+iridium_reflector	Iridium Neutron Reflector
+
 rsh_condensator:
 rsh_condensator	RSH-Condensator
 
@@ -425,6 +434,7 @@ debug_item	Debug Item
 
 foam_sprayer:
 foam_sprayer	CF Sprayer
+foam_sprayer,ic2construction_foam	CF Sprayer
 
 forge_hammer:
 forge_hammer	Forge Hammer
@@ -434,6 +444,9 @@ frequency_transmitter	Frequency Transmitter
 
 meter:
 meter	EU-Reader
+
+remote:
+remote	Dynamite-O-Mote
 
 tool_box:
 tool_box	Tool Box
@@ -456,8 +469,14 @@ mug,cold_coffee	Cold Coffee
 mug,dark_coffee	Dark Coffee
 mug,coffee	Coffee
 
+crop_stick:
+crop_stick	Crop
+
 cropnalyzer:
 cropnalyzer	Cropnalyzer
+
+crop_seed_bag:
+crop_seed_bag	* Seeds
 
 weeding_trowel:
 weeding_trowel	Weeding Trowel
@@ -563,8 +582,11 @@ upgrade,transformer	Transformer Upgrade
 upgrade,energy_storage	Energy Storage Upgrade
 upgrade,redstone_inverter	Redstone Signal Inverter Upgrade
 upgrade,ejector	Ejector Upgrade
+upgrade,advanced_ejector	Advanced Ejector Upgrade
 upgrade,pulling	Pulling Upgrade
+upgrade,advanced_pulling	Advanced Pulling Upgrade
 upgrade,fluid_ejector	Fluid Ejector Upgrade
+upgrade,fluid_pulling	Fluid Pulling Upgrade
 
 advanced_batpack:
 advanced_batpack	Adv.Batpack
@@ -652,6 +674,9 @@ static_boots	Static Boots
 filled_tin_can:
 filled_tin_can	(Filled) Tin Can
 
+iodine_tablet:
+iodine_tablet	Iodine Tablet
+
 rotor_wood:
 rotor_wood	Kinetic Gearbox Rotor (Wood)
 
@@ -663,6 +688,12 @@ rotor_carbon	Kinetic Gearbox Rotor (Carbon)
 
 rotor_steel:
 rotor_steel	Kinetic Gearbox Rotor (Steel)
+
+dynamite:
+dynamite	Dynamite
+
+dynamite_sticky:
+dynamite_sticky	Sticky Dynamite
 
 
 =================================================
@@ -752,6 +783,13 @@ te,hv_transformer	HV-Transformer
 te,ev_transformer	EV-Transformer
 te,tank	Tank
 te,chunk_loader	Chunk Loader
+te,item_buffer_2	Compact Item Buffer
+te,rci_rsh	Reactor Coolant Injector (RSH)
+te,rci_lzh	Reactor Coolant Injector (LZH)
+te,creative_generator	Creative Generator
+te,steam_repressurizer	Steam Re-Pressurizer
+te,industrial_workbench	Industrial Workbench
+te,batch_crafter	Batch Crafter
 
 resource:
 resource,basalt	Basalt
@@ -793,7 +831,9 @@ fence:
 fence,iron	Iron Fence
 
 sheet:
+sheet,resin	Resin Sheet
 sheet,rubber	Rubber Sheet
+sheet,wool	Wool Sheet
 
 glass:
 glass,reinforced	Reinforced Glass

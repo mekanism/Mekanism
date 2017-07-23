@@ -6,22 +6,24 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,7 +47,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		super("SeismicVibrator", BlockStateMachine.MachineType.SEISMIC_VIBRATOR.baseEnergy);
 		
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -53,7 +55,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(isActive)
 			{
@@ -67,7 +69,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, getPos());
+					MekanismUtils.updateBlock(world, getPos());
 				}
 			}
 		}
@@ -145,7 +147,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -233,14 +235,14 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, getPos().up(), Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(world, getPos().up(), Coord4D.get(this));
 	}
 
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlockToAir(getPos().up());
-		worldObj.setBlockToAir(getPos());
+		world.setBlockToAir(getPos().up());
+		world.setBlockToAir(getPos());
 	}
 	
 	@Override

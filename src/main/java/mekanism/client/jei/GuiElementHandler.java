@@ -36,4 +36,10 @@ public class GuiElementHandler implements IAdvancedGuiHandler
 		
 		return null;
 	}
+
+	@Override
+	public Object getIngredientUnderMouse(GuiContainer guiContainer, int mouseX, int mouseY)
+	{
+		return null;
+	}
 }

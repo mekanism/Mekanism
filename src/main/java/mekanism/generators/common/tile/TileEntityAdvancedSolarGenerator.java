@@ -4,9 +4,9 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,13 +29,13 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	public void onPlace()
 	{
 		Coord4D current = Coord4D.get(this);
-		MekanismUtils.makeBoundingBlock(worldObj, getPos().add(0, 1, 0), current);
+		MekanismUtils.makeBoundingBlock(world, getPos().add(0, 1, 0), current);
 
 		for(int x = -1; x <= 1; x++)
 		{
 			for(int z = -1; z <= 1; z++)
 			{
-				MekanismUtils.makeBoundingBlock(worldObj, getPos().add(x, 2, z), current);
+				MekanismUtils.makeBoundingBlock(world, getPos().add(x, 2, z), current);
 			}
 		}
 	}
@@ -43,18 +43,18 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	@Override
 	public void onBreak()
 	{
-		worldObj.setBlockToAir(getPos().add(0, 1, 0));
+		world.setBlockToAir(getPos().add(0, 1, 0));
 
 		for(int x = -1; x <= 1; x++)
 		{
 			for(int z = -1; z <= 1; z++)
 			{
-				worldObj.setBlockToAir(getPos().add(x, 2, z));
+				world.setBlockToAir(getPos().add(x, 2, z));
 			}
 		}
 
 		invalidate();
-		worldObj.setBlockToAir(getPos());
+		world.setBlockToAir(getPos());
 	}
 
 	@Override

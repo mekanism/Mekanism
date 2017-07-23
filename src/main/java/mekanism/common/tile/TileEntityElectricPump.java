@@ -13,9 +13,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.usage;
-import mekanism.api.util.CapabilityUtils;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -24,10 +22,14 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.LangUtils;
@@ -40,6 +42,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -89,7 +92,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public TileEntityElectricPump()
 	{
 		super("ElectricPump", 10000);
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 		
 		upgradeComponent.setSupported(Upgrade.FILTER);
 	}
@@ -97,20 +100,20 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(2, this);
 	
 			if(fluidTank.getFluid() != null)
 			{
-				if(FluidContainerUtils.isFluidContainer(inventory[0]))
+				if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 				{
 					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
 				}
 			}
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
@@ -149,9 +152,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		super.onUpdate();
 
-		if(!worldObj.isRemote && fluidTank.getFluid() != null)
+		if(!world.isRemote && fluidTank.getFluid() != null)
 		{
-			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
 
 			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN))
 			{
@@ -176,7 +179,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
 			Coord4D wrapper = Coord4D.get(this).offset(orientation);
-			FluidStack fluid = MekanismUtils.getFluid(worldObj, wrapper, hasFilter());
+			FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
 
 			if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 			{
@@ -188,7 +191,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					
 					if(shouldTake(fluid, wrapper))
 					{
-						worldObj.setBlockToAir(wrapper.getPos());
+						world.setBlockToAir(wrapper.getPos());
 					}
 				}
 
@@ -200,7 +203,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		//and then add the adjacent block to the recurring list
 		for(Coord4D wrapper : tempPumpList)
 		{
-			FluidStack fluid = MekanismUtils.getFluid(worldObj, wrapper, hasFilter());
+			FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
 
 			if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 			{
@@ -211,7 +214,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 					if(shouldTake(fluid, wrapper))
 					{
-						worldObj.setBlockToAir(wrapper.getPos());
+						world.setBlockToAir(wrapper.getPos());
 					}
 				}
 
@@ -225,7 +228,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 				if(Coord4D.get(this).distanceTo(side) <= general.maxPumpRange)
 				{
-					fluid = MekanismUtils.getFluid(worldObj, side, hasFilter());
+					fluid = MekanismUtils.getFluid(world, side, hasFilter());
 					
 					if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 					{
@@ -237,7 +240,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 							
 							if(shouldTake(fluid, side))
 							{
-								worldObj.setBlockToAir(side.getPos());
+								world.setBlockToAir(side.getPos());
 							}
 						}
 
@@ -260,7 +263,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	private boolean shouldTake(FluidStack fluid, Coord4D coord)
 	{
-		if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == FluidRegistry.getFluid("heavywater"))
+		if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == MekanismFluids.HeavyWater)
 		{
 			return general.pumpWaterSources;
 		}
@@ -514,7 +517,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		reset();
 
-		player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
+		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
 
 		return EnumActionResult.SUCCESS;
 	}
@@ -618,6 +621,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 			default:
 				break;
 		}

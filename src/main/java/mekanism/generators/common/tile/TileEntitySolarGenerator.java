@@ -5,12 +5,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.biome.BiomeDesert;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,7 +34,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	public TileEntitySolarGenerator(String name, double maxEnergy, double output)
 	{
 		super("solar", name, maxEnergy, output);
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -60,11 +61,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(0, this);
 			
-			if(worldObj.isDaytime() && ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.getHasNoSky() && worldObj.canSeeSky(getPos().add(0, 4, 0)))
+			if(world.isDaytime() && ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.hasNoSky() && world.canSeeSky(getPos().add(0, 4, 0)))
 			{
 				seesSun = true;
 			}
@@ -85,7 +86,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeForCoords(getPos()).getBiomeClass() == BiomeDesert.class;
+		return world.provider.getBiomeForCoords(getPos()).getBiomeClass() == BiomeDesert.class;
 	}
 
 	@Override
@@ -124,9 +125,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			ret = GENERATION_RATE;
 
-			if(MekanismUtils.existsAndInstance(worldObj.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel"))
+			if(MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel"))
 			{
-				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
+				ret *= ((ISolarLevel)world.provider).getSolarEnergyMultiplier();
 			}
 
 			if(isDesert())

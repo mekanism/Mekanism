@@ -1,5 +1,7 @@
 package mekanism.client.jei.machine.other;
 
+import java.util.List;
+
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mezz.jei.api.IGuiHelper;
@@ -7,9 +9,11 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 {
@@ -63,7 +67,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof RotaryCondensentratorRecipeWrapper)
 		{
@@ -73,6 +77,13 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		
 		fluidStacks.init(0, !tempRecipe.condensentrating, 134-xOffset, 14-yOffset, 16, 58, 1000, false, fluidOverlay);
-		fluidStacks.set(0, tempRecipe.condensentrating ? recipeWrapper.getFluidOutputs() : recipeWrapper.getFluidInputs());
+		
+		if(tempRecipe.condensentrating)
+		{
+			fluidStacks.set(0, ingredients.getOutputs(FluidStack.class).get(0));
+		}
+		else {
+			fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
+		}
 	}
 }

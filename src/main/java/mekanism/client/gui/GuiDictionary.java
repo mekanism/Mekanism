@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiDictionary extends GuiMekanism
 {
-	public ItemStack itemType;
+	public ItemStack itemType = ItemStack.EMPTY;
 	
 	public GuiScrollList scrollList;
 
@@ -43,7 +43,7 @@ public class GuiDictionary extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
-		if(itemType != null)
+		if(!itemType.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
@@ -118,10 +118,10 @@ public class GuiDictionary extends GuiMekanism
 				{
 					ItemStack stack = hovering.getStack();
 
-					if(stack != null)
+					if(!stack.isEmpty())
 					{
 						itemType = stack.copy();
-						itemType.stackSize = 1;
+						itemType.setCount(1);
 
 						scrollList.setText(MekanismUtils.getOreDictName(itemType));
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -133,18 +133,18 @@ public class GuiDictionary extends GuiMekanism
 
 			if(xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					itemType = stack.copy();
-					itemType.stackSize = 1;
+					itemType.setCount(1);
 
 					scrollList.setText(MekanismUtils.getOreDictName(itemType));
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					itemType = null;
+					itemType = ItemStack.EMPTY;
 					
 					scrollList.setText(null);
 				}

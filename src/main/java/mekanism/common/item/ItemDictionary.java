@@ -27,8 +27,10 @@ public class ItemDictionary extends ItemMekanism
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(!player.isSneaking())
 		{
 			IBlockState state = world.getBlockState(pos);
@@ -43,15 +45,15 @@ public class ItemDictionary extends ItemMekanism
 
 					if(!names.isEmpty())
 					{
-						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
+						player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
 
 						for(String name : names)
 						{
-							player.addChatMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
+							player.sendMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
 						}
 					}
 					else {
-						player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
+						player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
 					}
 				}
 
@@ -63,13 +65,16 @@ public class ItemDictionary extends ItemMekanism
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
+		
 		if(entityplayer.isSneaking())
 		{
 			entityplayer.openGui(Mekanism.instance, 0, world, 0, 0, 0);
+			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 		}
 
-		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult(EnumActionResult.PASS, itemstack);
 	}
 }

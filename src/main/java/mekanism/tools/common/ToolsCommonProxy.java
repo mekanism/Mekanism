@@ -1,7 +1,7 @@
 package mekanism.tools.common;
 
-import mekanism.api.MekanismConfig.tools;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig.tools;
 
 public class ToolsCommonProxy 
 {

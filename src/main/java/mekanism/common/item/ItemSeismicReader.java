@@ -29,15 +29,16 @@ public class ItemSeismicReader extends ItemEnergized
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
 		Chunk3D chunk = new Chunk3D(entityplayer);
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
 		
 		if(getEnergy(itemstack) < ENERGY_USAGE && !entityplayer.capabilities.isCreativeMode)
 		{
 			if(!world.isRemote)
 			{
-				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.needsEnergy")));
+				entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.needsEnergy")));
 			}
 			
 			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
@@ -46,7 +47,7 @@ public class ItemSeismicReader extends ItemEnergized
 		{
 			if(!world.isRemote)
 			{
-				entityplayer.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.noVibrations")));
+				entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.noVibrations")));
 			}
 			
 			return new ActionResult(EnumActionResult.SUCCESS, itemstack);

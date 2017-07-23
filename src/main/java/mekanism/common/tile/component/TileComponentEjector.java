@@ -11,21 +11,21 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -122,7 +122,7 @@ public class TileComponentEjector implements ITileComponent
 					if(tank.getStored() > 0)
 					{
 						GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
-						int emit = GasTransmission.emit(toEmit, tileEntity, outputSides);
+						int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
 						tank.draw(emit, true);
 					}
 				}
@@ -180,7 +180,7 @@ public class TileComponentEjector implements ITileComponent
 		{
 			int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];
 
-			if(tileEntity.getStackInSlot(slotID) == null)
+			if(tileEntity.getStackInSlot(slotID).isEmpty())
 			{
 				continue;
 			}
@@ -193,26 +193,30 @@ public class TileComponentEjector implements ITileComponent
 				TileEntity tile = Coord4D.get(tileEntity).offset(side).getTileEntity(tileEntity.getWorld());
 				ItemStack prev = stack.copy();
 
-				if(tile instanceof IInventory && !(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite())))
+				if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
 				{
-					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side, false);
-				}
-				else if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
-				{
-					ItemStack rejects = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), stack, outputColor, true, 0);
+					TransitResponse response = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), TransitRequest.getFromStack(stack.copy()), outputColor, true, 0);
 
-					if(TransporterManager.didEmit(stack, rejects))
+					if(!response.isEmpty())
 					{
-						stack = rejects;
+						stack.shrink(response.stack.getCount());
+					}
+				}
+				else {
+					TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(stack.copy()), side, false);
+					
+					if(!response.isEmpty())
+					{
+						stack.shrink(response.stack.getCount());
 					}
 				}
 
-				if(stack == null || prev.stackSize != stack.stackSize)
+				if(stack.isEmpty() || prev.getCount() != stack.getCount())
 				{
 					trackers.get(TransmissionType.ITEM)[index] = side.ordinal();
 				}
 
-				if(stack == null)
+				if(stack.isEmpty())
 				{
 					break;
 				}

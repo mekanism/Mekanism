@@ -1,9 +1,17 @@
 package mekanism.generators.common.block.states;
 
-import mekanism.api.MekanismConfig.general;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBlockType;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.block.BlockGenerator;
@@ -92,7 +100,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		}
 	}
 	
-	public static enum GeneratorType implements IStringSerializable
+	public static enum GeneratorType implements IStringSerializable, IBlockType
 	{
 		HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true, Plane.HORIZONTAL, false),
 		SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true, Plane.HORIZONTAL, false),
@@ -110,11 +118,12 @@ public class BlockStateGenerator extends ExtendedBlockState
 	
 		public GeneratorBlock blockType;
 		public int meta;
-		public String name;
+		public String blockName;
 		public int guiId;
 		public double maxEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
+		public Collection<ShapedMekanismRecipe> blockRecipes = new HashSet<ShapedMekanismRecipe>();
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 	
@@ -122,13 +131,63 @@ public class BlockStateGenerator extends ExtendedBlockState
 		{
 			blockType = block;
 			meta = i;
-			name = s;
+			blockName = s;
 			guiId = j;
 			maxEnergy = k;
 			tileEntityClass = tileClass;
 			hasModel = model;
 			facingPredicate = predicate;
 			activable = hasActiveTexture;
+		}
+		
+		public static List<GeneratorType> getGeneratorsForConfig()
+		{
+			List<GeneratorType> ret = new ArrayList<GeneratorType>();
+
+			for(GeneratorType type : GeneratorType.values())
+			{
+				if(type.ordinal() <= 5)
+				{
+					ret.add(type);
+				}
+			}
+
+			return ret;
+		}
+		
+		@Override
+		public String getBlockName()
+		{
+			return blockName;
+		}
+
+		@Override
+		public boolean isEnabled()
+		{
+			if(meta > WIND_GENERATOR.meta)
+			{
+				return true;
+			}
+			
+			return generators.generatorsManager.isEnabled(blockName);
+		}
+
+		@Override
+		public void addRecipes(Collection<ShapedMekanismRecipe> recipes)
+		{
+			blockRecipes.addAll(recipes);
+		}
+
+		@Override
+		public void addRecipe(ShapedMekanismRecipe recipe)
+		{
+			blockRecipes.add(recipe);
+		}
+
+		@Override
+		public Collection<ShapedMekanismRecipe> getRecipes()
+		{
+			return blockRecipes;
 		}
 		
 		public static GeneratorType get(IBlockState state)
@@ -188,7 +247,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		
 		public String getDescription()
 		{
-			return LangUtils.localize("tooltip." + name);
+			return LangUtils.localize("tooltip." + blockName);
 		}
 		
 		public ItemStack getStack()

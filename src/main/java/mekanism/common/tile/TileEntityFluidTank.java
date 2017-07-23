@@ -6,9 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.BaseTier;
@@ -21,11 +19,14 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +38,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
@@ -81,7 +83,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		super("FluidTank");
 		
 		fluidTank = new FluidTank(tier.storage);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -110,7 +112,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public void onUpdate() 
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -119,7 +121,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, getPos());
+					MekanismUtils.updateBlock(world, getPos());
 				}
 			}
 			
@@ -160,7 +162,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			prevAmount = fluidTank.getFluidAmount();
 			
-			if(inventory[0] != null)
+			if(!inventory.get(0).isEmpty())
 			{
 				manageInventory();
 			}
@@ -197,7 +199,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(world);
 			
 			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP))
 			{
@@ -210,7 +212,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	
 	private void manageInventory()
 	{
-		if(FluidContainerUtils.isFluidContainer(inventory[0]))
+		if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 		{
 			FluidStack ret = FluidContainerUtils.handleContainerItem(this, inventory, editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 			
@@ -244,9 +246,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		Coord4D up = Coord4D.get(this).offset(EnumFacing.UP);
 		
-		if(up.getTileEntity(worldObj) instanceof TileEntityFluidTank)
+		if(up.getTileEntity(world) instanceof TileEntityFluidTank)
 		{
-			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(worldObj), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
+			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(world), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
 			
 			if(PipeUtils.canFill(handler, fluid))
 			{
@@ -361,7 +363,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			{
 				updateDelay = general.UPDATE_DELAY;
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -369,7 +371,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public int getRedstoneLevel()
 	{
         double fractionFull = (float)fluidTank.getFluidAmount()/(float)fluidTank.getCapacity();
-        return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return MathHelper.floor((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
 	
 	public int getCurrentNeeded()
@@ -382,7 +384,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		}
 		
 		Coord4D top = Coord4D.get(this).offset(EnumFacing.UP);
-		TileEntity topTile = top.getTileEntity(worldObj);
+		TileEntity topTile = top.getTileEntity(world);
 		
 		if(topTile instanceof TileEntityFluidTank)
 		{
@@ -465,10 +467,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			setActive(!getActive());
-			worldObj.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+			world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
 		}
 		
 		return EnumActionResult.SUCCESS;
@@ -562,10 +564,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if(from == EnumFacing.DOWN && worldObj != null && getPos() != null)
+		TileEntity tile = world.getTileEntity(getPos().offset(EnumFacing.DOWN));
+		if(from == EnumFacing.DOWN && world != null && getPos() != null)
 		{
-			TileEntity tile = worldObj.getTileEntity(getPos().offset(EnumFacing.DOWN));
-			
 			if(isActive && !(tile instanceof TileEntityFluidTank))
 			{
 				return false;
@@ -576,7 +577,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		{
 			return true;
 		}
-		
+
+		if(isActive && tile instanceof TileEntityFluidTank) // Only fill if tanks underneath have same fluid.
+		{
+			return (fluidTank.getFluid() == null && ((TileEntityFluidTank)tile).canFill(EnumFacing.UP, fluid)) ||
+					(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == fluid);
+		}
+
 		return fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid;
 	}
 

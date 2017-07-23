@@ -3,15 +3,15 @@ package mekanism.client.render.transmitter;
 import java.util.HashMap;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.client;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.multipart.PartDiversionTransporter;
-import mekanism.common.multipart.PartLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogisticalTransporter>
+public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter>
 {
 	private ModelTransporterBox modelBox = new ModelTransporterBox();
 	
@@ -50,7 +50,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 	}
 	
 	@Override
-	public void renderMultipartAt(PartLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage)
+	public void renderTileEntityAt(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(client.opaqueTransmitters)
 		{
@@ -63,7 +63,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 		entityItem.hoverStart = 0;
 
 		entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
-		entityItem.worldObj = transporter.getWorld();
+		entityItem.world = transporter.getWorld();
 
 		for(TransporterStack stack : transporter.getTransmitter().transit.clone())
 		{
@@ -95,20 +95,20 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<PartLogis
 			}
 		}
 
-		if(transporter instanceof PartDiversionTransporter)
+		if(transporter instanceof TileEntityDiversionTransporter)
 		{
-			EntityPlayer player = mc.thePlayer;
-			World world = mc.thePlayer.worldObj;
+			EntityPlayer player = mc.player;
+			World world = mc.player.world;
 			ItemStack itemStack = player.inventory.getCurrentItem();
 			RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 
-			if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator)
+			if(pos != null && !itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator)
 			{
 				Coord4D obj = new Coord4D(pos.getBlockPos(), transporter.getWorld());
 
 				if(obj.equals(new Coord4D(transporter.getPos(), transporter.getWorld())))
 				{
-					int mode = ((PartDiversionTransporter)transporter).modes[pos.sideHit.ordinal()];
+					int mode = ((TileEntityDiversionTransporter)transporter).modes[pos.sideHit.ordinal()];
 
 					pushTransporter();
 

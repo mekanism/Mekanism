@@ -25,28 +25,28 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage>
 				{
 					if(message.guiType == 0)
 					{
-						player.openGui(Mekanism.instance, 21, player.worldObj, message.entityId, 0, 0);
+						player.openGui(Mekanism.instance, 21, player.world, message.entityId, 0, 0);
 					}
 					else if(message.guiType == 1)
 					{
-						player.openGui(Mekanism.instance, 22, player.worldObj, message.entityId, 0, 0);
+						player.openGui(Mekanism.instance, 22, player.world, message.entityId, 0, 0);
 					}
 					else if(message.guiType == 2)
 					{
-						player.openGui(Mekanism.instance, 23, player.worldObj, message.entityId, 0, 0);
+						player.openGui(Mekanism.instance, 23, player.world, message.entityId, 0, 0);
 					}
 					else if(message.guiType == 3)
 					{
-						player.openGui(Mekanism.instance, 24, player.worldObj, message.entityId, 0, 0);
+						player.openGui(Mekanism.instance, 24, player.world, message.entityId, 0, 0);
 					}
 					else if(message.guiType == 4)
 					{
-						player.openGui(Mekanism.instance, 25, player.worldObj, message.entityId, 0, 0);
+						player.openGui(Mekanism.instance, 25, player.world, message.entityId, 0, 0);
 					}
 				}
 				else if(message.activeType == RobitPacketType.FOLLOW)
 				{
-					EntityRobit robit = (EntityRobit)player.worldObj.getEntityByID(message.entityId);
+					EntityRobit robit = (EntityRobit)player.world.getEntityByID(message.entityId);
 		
 					if(robit != null)
 					{
@@ -55,7 +55,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage>
 				}
 				else if(message.activeType == RobitPacketType.NAME)
 				{
-					EntityRobit robit = (EntityRobit)player.worldObj.getEntityByID(message.entityId);
+					EntityRobit robit = (EntityRobit)player.world.getEntityByID(message.entityId);
 		
 					if(robit != null)
 					{
@@ -64,7 +64,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage>
 				}
 				else if(message.activeType == RobitPacketType.GO_HOME)
 				{
-					EntityRobit robit = (EntityRobit)player.worldObj.getEntityByID(message.entityId);
+					EntityRobit robit = (EntityRobit)player.world.getEntityByID(message.entityId);
 		
 					if(robit != null)
 					{
@@ -73,7 +73,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage>
 				}
 				else if(message.activeType == RobitPacketType.DROP_PICKUP)
 				{
-					EntityRobit robit = (EntityRobit)player.worldObj.getEntityByID(message.entityId);
+					EntityRobit robit = (EntityRobit)player.world.getEntityByID(message.entityId);
 		
 					if(robit != null)
 					{

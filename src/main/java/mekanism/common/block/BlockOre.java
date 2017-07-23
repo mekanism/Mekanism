@@ -1,7 +1,5 @@
 package mekanism.common.block;
 
-import java.util.List;
-
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateOre;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
@@ -12,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -59,7 +58,7 @@ public class BlockOre extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(EnumOreType ore : EnumOreType.values())
 		{

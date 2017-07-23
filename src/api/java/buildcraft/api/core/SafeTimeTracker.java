@@ -6,6 +6,7 @@ package buildcraft.api.core;
 
 import net.minecraft.world.World;
 
+/** Provides a way of tracking time in the world, without requiring manual ticking. */
 public class SafeTimeTracker {
 
     private long lastMark = Long.MIN_VALUE;
@@ -32,6 +33,7 @@ public class SafeTimeTracker {
         randomRange = random;
     }
 
+    /** Return true if the internal delay has passed since last time marked was called successfully. */
     public boolean markTimeIfDelay(World world) {
         return markTimeIfDelay(world, internalDelay);
     }

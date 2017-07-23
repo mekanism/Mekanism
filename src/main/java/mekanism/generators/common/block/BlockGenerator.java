@@ -1,9 +1,7 @@
 package mekanism.generators.common.block;
 
-import java.util.List;
 import java.util.Random;
 
-import mekanism.api.MekanismConfig.client;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
@@ -16,13 +14,14 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -52,10 +51,12 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -184,7 +185,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(!world.isRemote)
 		{
@@ -207,7 +208,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
-		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int side = MathHelper.floor((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(entityliving.rotationPitch);
 		int change = 3;
 
@@ -284,11 +285,14 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item i, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item i, CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(GeneratorType type : GeneratorType.values())
 		{
-			list.add(new ItemStack(i, 1, type.meta));
+			if(type.isEnabled())
+			{
+				list.add(new ItemStack(i, 1, type.meta));
+			}
 		}
 	}
 
@@ -388,7 +392,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 
 				EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, new ItemStack(GeneratorsItems.TurbineBlade, amount));
 
-				world.spawnEntityInWorld(entityItem);
+				world.spawnEntity(entityItem);
 			}
 		}
 
@@ -401,7 +405,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -410,8 +414,9 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
+		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(stack != null)
+		if(!stack.isEmpty())
 		{
 			Item tool = stack.getItem();
 
@@ -428,13 +433,13 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	
 					if(MekanismUtils.isBCWrench(tool))
 					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
+						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
 					}
 	
 					int change = tileEntity.facing.rotateY().ordinal();
 	
 					tileEntity.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this);
+					world.notifyNeighborsOfStateChange(pos, this, true);
 				}
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -455,17 +460,17 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			
 			if(!entityplayer.isSneaking())
 			{
-				if(stack != null && stack.getItem() == GeneratorsItems.TurbineBlade)
+				if(!stack.isEmpty() && stack.getItem() == GeneratorsItems.TurbineBlade)
 				{
 					if(!world.isRemote && rod.editBlade(true))
 					{
 						if(!entityplayer.capabilities.isCreativeMode)
 						{
-							stack.stackSize--;
+							stack.shrink(1);
 							
-							if(stack.stackSize == 0)
+							if(stack.getCount() == 0)
 							{
-								entityplayer.setHeldItem(hand, null);
+								entityplayer.setHeldItem(hand, ItemStack.EMPTY);
 							}
 						}
 					}
@@ -476,7 +481,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			else {
 				if(!world.isRemote)
 				{
-					if(stack == null)
+					if(stack.isEmpty())
 					{
 						if(rod.editBlade(false))
 						{
@@ -489,13 +494,13 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 					}
 					else if(stack.getItem() == GeneratorsItems.TurbineBlade)
 					{
-						if(stack.stackSize < stack.getMaxStackSize())
+						if(stack.getCount() < stack.getMaxStackSize())
 						{
 							if(rod.editBlade(false))
 							{
 								if(!entityplayer.capabilities.isCreativeMode)
 								{
-									stack.stackSize++;
+									stack.grow(1);
 									entityplayer.inventory.markDirty();
 								}
 							}
@@ -615,7 +620,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return world.setBlockToAir(pos);
@@ -643,7 +648,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}
@@ -694,7 +699,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
@@ -15,7 +14,8 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,7 +37,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			@Override
 			public void run()
 			{
-				TileEntity tile = message.coord4D.getTileEntity(player.worldObj);
+				TileEntity tile = message.coord4D.getTileEntity(player.world);
 				ITileNetwork network = CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
 				
 				if(tile instanceof ISideConfiguration)

@@ -6,36 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.usage;
-import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.util.ListUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,6 +36,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -53,7 +47,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandlerWrapper, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
+public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, ITubeConnection, IUpgradeInfoHandler, ITankManager
 {
 	public GasTank gasTank = new GasTank(MAX_FLUID);
 
@@ -66,30 +60,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public int gasOutput = 256;
 	
-	public int updateDelay;
-
-	public boolean isActive;
-
-	public boolean clientActive;
-
-	public double prevEnergy;
-
-	public final double BASE_ENERGY_USAGE = usage.rotaryCondensentratorUsage;
-	
-	public double energyPerTick = BASE_ENERGY_USAGE;
-	
 	public double clientEnergyUsed;
-	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 5);
-	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
-
-	/** This machine's current RedstoneControl type. */
-	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileEntityRotaryCondensentrator()
 	{
-		super("RotaryCondensentrator", BlockStateMachine.MachineType.ROTARY_CONDENSENTRATOR.baseEnergy);
-		inventory = new ItemStack[6];
+		super("machine.rotarycondensentrator", "RotaryCondensentrator", BlockStateMachine.MachineType.ROTARY_CONDENSENTRATOR.baseEnergy, usage.rotaryCondensentratorUsage, 5);
+		inventory = NonNullList.withSize(6, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -97,42 +73,18 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			if(updateDelay > 0)
-			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, getPos());
-				}
-			}
-		}
-
-		if(!worldObj.isRemote)
-		{
-			if(updateDelay > 0)
-			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				}
-			}
-
 			ChargeUtils.discharge(4, this);
 
 			if(mode == 0)
 			{
-				if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
+				if(!inventory.get(1).isEmpty() && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
 				{
-					gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
+					gasTank.receive(GasUtils.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded()), true);
 				}
 
-				if(FluidContainerUtils.isFluidContainer(inventory[2]))
+				if(FluidContainerUtils.isFluidContainer(inventory.get(2)))
 				{
 					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
 				}
@@ -157,18 +109,18 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			}
 			else if(mode == 1)
 			{
-				if(inventory[0] != null && gasTank.getGas() != null)
+				if(!inventory.get(0).isEmpty() && gasTank.getGas() != null)
 				{
-					gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
+					gasTank.draw(GasUtils.addGas(inventory.get(0), gasTank.getGas()), true);
 				}
 
 				if(gasTank.getGas() != null)
 				{
 					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getGas().amount, gasOutput));
-					gasTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
+					gasTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
 				}
 
-				if(FluidContainerUtils.isFluidContainer(inventory[2]))
+				if(FluidContainerUtils.isFluidContainer(inventory.get(2)))
 				{
 					FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
 				}
@@ -256,8 +208,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			mode = dataStream.readInt();
-			isActive = dataStream.readBoolean();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
 			clientEnergyUsed = dataStream.readDouble();
 	
 			if(dataStream.readBoolean())
@@ -275,13 +225,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			else {
 				gasTank.setGas(null);
 			}
-	
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				updateDelay = general.UPDATE_DELAY;
-				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, getPos());
-			}
 		}
 	}
 
@@ -291,8 +234,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		super.getNetworkedData(data);
 
 		data.add(mode);
-		data.add(isActive);
-		data.add(controlType.ordinal());
 		data.add(clientEnergyUsed);
 
 		if(fluidTank.getFluid() != null)
@@ -324,9 +265,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		super.readFromNBT(nbtTags);
 
 		mode = nbtTags.getInteger("mode");
-		isActive = nbtTags.getBoolean("isActive");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
 
 		if(nbtTags.hasKey("fluidTank"))
@@ -341,8 +279,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("mode", mode);
-		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 
 		if(fluidTank.getFluid() != null)
@@ -351,44 +287,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		}
 		
 		return nbtTags;
-	}
-
-	@Override
-	public boolean canSetFacing(int i)
-	{
-		return i != 0 && i != 1;
-	}
-
-	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
-
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-
-			updateDelay = 10;
-			clientActive = active;
-		}
-	}
-
-	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
-
-	@Override
-	public boolean renderUpdate()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
 	}
 
 	@Override
@@ -522,46 +420,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public RedstoneControl getControlType()
-	{
-		return controlType;
-	}
-
-	@Override
-	public void setControlType(RedstoneControl type)
-	{
-		controlType = type;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean canPulse()
-	{
-		return false;
-	}
-	
-	@Override
-	public TileComponentUpgrade getComponent() 
-	{
-		return upgradeComponent;
-	}
-	
-	@Override
-	public void recalculateUpgradables(Upgrade upgrade)
-	{
-		super.recalculateUpgradables(upgrade);
-
-		switch(upgrade)
-		{
-			case ENERGY:
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_USAGE);
-			default:
-				break;
-		}
-	}
-
-	@Override
 	public List<String> getInfo(Upgrade upgrade) 
 	{
 		return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
@@ -571,11 +429,5 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public Object[] getTanks() 
 	{
 		return new Object[] {gasTank, fluidTank};
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity()
-	{
-		return securityComponent;
 	}
 }

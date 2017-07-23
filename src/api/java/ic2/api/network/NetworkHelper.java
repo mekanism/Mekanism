@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.relauncher.Side;
 
+import ic2.api.info.Info;
+
 /**
  * Provides methods to initiate events and synchronize tile entity fields in SMP.
  *
@@ -20,6 +22,10 @@ import net.minecraftforge.fml.relauncher.Side;
  * which is needed by the clients outside the GUI, such as rendering the block, playing sounds or
  * producing effects. Anything which is only visible inside the GUI should be synchronized through
  * the Container class associated to the GUI in Container.updateProgressBar().
+ *
+ * All methods in this class use the current effective side to determine the Network Manager to use.
+ * If you do not want it to use the effective side, use {@link #getNetworkManager(Side)} to get the
+ * Network Manager for a specific side.
  */
 public final class NetworkHelper {
 	// server -> client
@@ -93,6 +99,15 @@ public final class NetworkHelper {
 		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).initiateItemEvent(player, stack, event, limitRange);
 	}
 
+	/**
+	 * Send initial TileEntity data to the clients. Requires the te to implement
+	 * {@link INetworkDataProvider}.
+	 * @param te The te to send the initial data for.
+	 */
+	public static void sendInitialData(TileEntity te) {
+		getNetworkManager(FMLCommonHandler.instance().getEffectiveSide()).sendInitialData(te);
+	}
+
 
 	// client -> server
 
@@ -145,7 +160,7 @@ public final class NetworkHelper {
 	 */
 	public static void setInstance(INetworkManager server, INetworkManager client) {
 		ModContainer mc = Loader.instance().activeModContainer();
-		if (mc == null || !"IC2".equals(mc.getModId())) {
+		if (mc == null || !Info.MOD_ID.equals(mc.getModId())) {
 			throw new IllegalAccessError();
 		}
 		serverInstance = server;

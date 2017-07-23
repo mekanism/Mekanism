@@ -2,11 +2,13 @@ package mekanism.common.tile;
 
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -23,7 +25,7 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
 	public TileEntityPersonalChest()
 	{
 		super("PersonalChest");
-		inventory = new ItemStack[54];
+		inventory = NonNullList.withSize(54, ItemStack.EMPTY);
 		
 		securityComponent = new TileComponentSecurity(this);
 	}
@@ -36,7 +38,7 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
 
 		if((playersUsing.size() > 0) && (lidAngle == 0.0F))
 		{
-			worldObj.playSound(null, getPos().getX() + 0.5F, getPos().getY() + 0.5D, getPos().getZ() + 0.5F, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, (worldObj.rand.nextFloat()*0.1F) + 0.9F);
+			world.playSound(null, getPos().getX() + 0.5F, getPos().getY() + 0.5D, getPos().getZ() + 0.5F, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, (world.rand.nextFloat()*0.1F) + 0.9F);
 		}
 
 		if((playersUsing.size() == 0 && lidAngle > 0.0F) || (playersUsing.size() > 0 && lidAngle < 1.0F))
@@ -60,7 +62,7 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
 
 			if(lidAngle < split && angle >= split)
 			{
-				worldObj.playSound(null, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, (worldObj.rand.nextFloat()*0.1F) + 0.9F);
+				world.playSound(null, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, (world.rand.nextFloat()*0.1F) + 0.9F);
 			}
 
 			if(lidAngle < 0.0F)

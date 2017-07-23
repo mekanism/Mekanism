@@ -11,11 +11,10 @@ import java.util.UUID;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.ObfuscatedNames;
 import mekanism.api.Range4D;
-import mekanism.api.util.ReflectionUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
@@ -25,7 +24,7 @@ import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -33,8 +32,10 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ReflectionUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -48,6 +49,7 @@ import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -88,7 +90,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	public TileEntityTeleporter()
 	{
 		super("Teleporter", BlockStateMachine.MachineType.TELEPORTER.baseEnergy);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		
 		securityComponent = new TileComponentSecurity(this);
 		chunkLoaderComponent = new TileComponentChunkLoader(this);
@@ -107,7 +109,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			resetBounds();
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			FrequencyManager manager = getManager(frequency);
 			
@@ -115,12 +117,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			{
 				if(frequency != null && !frequency.valid)
 				{
-					frequency = manager.validateFrequency(getSecurity().getOwner(), Coord4D.get(this), frequency);
+					frequency = manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
 				}
 				
 				if(frequency != null)
 				{
-					frequency = manager.update(getSecurity().getOwner(), Coord4D.get(this), frequency);
+					frequency = manager.update(Coord4D.get(this), frequency);
 				}
 			}
 			else {
@@ -191,7 +193,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			}
 		}
 		
-		Frequency freq = new Frequency(name, getSecurity().getOwner()).setPublic(publicFreq);
+		Frequency freq = new Frequency(name, getSecurity().getOwnerUUID()).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = freq;
@@ -201,7 +203,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public FrequencyManager getManager(Frequency freq)
 	{
-		if(getSecurity().getOwner() == null || freq == null)
+		if(getSecurity().getOwnerUUID() == null || freq == null)
 		{
 			return null;
 		}
@@ -211,25 +213,15 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			return Mekanism.publicTeleporters;
 		}
 		else {
-			if(!Mekanism.privateTeleporters.containsKey(getSecurity().getOwner()))
+			if(!Mekanism.privateTeleporters.containsKey(getSecurity().getOwnerUUID()))
 			{
-				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwner());
-				Mekanism.privateTeleporters.put(getSecurity().getOwner(), manager);
-				manager.createOrLoad(worldObj);
+				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwnerUUID());
+				Mekanism.privateTeleporters.put(getSecurity().getOwnerUUID(), manager);
+				manager.createOrLoad(world);
 			}
 			
-			return Mekanism.privateTeleporters.get(getSecurity().getOwner());
+			return Mekanism.privateTeleporters.get(getSecurity().getOwnerUUID());
 		}
-	}
-	
-	public static FrequencyManager loadManager(String owner, World world)
-	{
-		if(Mekanism.privateTeleporters.containsKey(owner))
-		{
-			return Mekanism.privateTeleporters.get(owner);
-		}
-		
-		return FrequencyManager.loadOnly(world, owner, Frequency.class, "Teleporter");
 	}
 	
 	@Override
@@ -237,7 +229,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		super.onChunkUnload();
 		
-		if(!worldObj.isRemote && frequency != null)
+		if(!world.isRemote && frequency != null)
 		{
 			FrequencyManager manager = getManager(frequency);
 			
@@ -253,7 +245,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		super.invalidate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(frequency != null)
 			{
@@ -271,7 +263,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		List<UUID> list = new ArrayList<UUID>();
 		
-		for(Entity e : (List<Entity>)worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds))
+		for(Entity e : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, teleportBounds))
 		{
 			list.add(e.getPersistentID());
 		}
@@ -348,7 +340,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public void teleport()
 	{
-		if(worldObj.isRemote) return;
+		if(world.isRemote) return;
 
 		List<Entity> entitiesInPortal = getToTeleport();
 
@@ -385,7 +377,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
 
-				worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
+				world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
 			}
 		}
 	}
@@ -398,13 +390,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			WorldServer oldWorld = player.mcServer.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
 			WorldServer newWorld = player.mcServer.worldServerForDimension(player.dimension);
-			player.connection.sendPacket(new SPacketRespawn(player.dimension, player.worldObj.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+			player.connection.sendPacket(new SPacketRespawn(player.dimension, player.world.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
 			oldWorld.removeEntityDangerously(player);
 			player.isDead = false;
 
 			if(player.isEntityAlive())
 			{
-				newWorld.spawnEntityInWorld(player);
+				newWorld.spawnEntity(player);
 				player.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 				newWorld.updateEntityWithOptionalForce(player, false);
 				player.setWorld(newWorld);
@@ -434,18 +426,18 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
 
-		if(entity.worldObj.provider.getDimension() != coord.dimensionId)
+		if(entity.world.provider.getDimension() != coord.dimensionId)
 		{
-			entity.worldObj.removeEntity(entity);
+			entity.world.removeEntity(entity);
 			entity.isDead = false;
 
-			world.spawnEntityInWorld(entity);
+			world.spawnEntity(entity);
 			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
 			world.updateEntityWithOptionalForce(entity, false);
 			entity.setWorld(world);
 			world.resetUpdateEntityTick();
 
-			Entity e = EntityList.createEntityByName(EntityList.getEntityString(entity), world);
+			Entity e = EntityList.newEntity(entity.getClass(), world);
 
 			if(e != null)
 			{
@@ -456,7 +448,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 					exception.printStackTrace();
 				}
 				
-				world.spawnEntityInWorld(e);
+				world.spawnEntity(e);
 				teleporter.didTeleport.add(e.getPersistentID());
 			}
 
@@ -476,7 +468,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
         for(EnumFacing iterSide : MekanismUtils.SIDE_DIRS)
         {
-            if(upperCoord.offset(iterSide).isAirBlock(player.worldObj))
+            if(upperCoord.offset(iterSide).isAirBlock(player.world))
             {
                 side = iterSide;
                 break;
@@ -509,7 +501,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public List<Entity> getToTeleport()
 	{
-		List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds);
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, teleportBounds);
 		List<Entity> ret = new ArrayList<Entity>();
 
 		for(Entity entity : entities)
@@ -527,7 +519,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		int energyCost = 1000;
 
-		if(entity.worldObj.provider.getDimension() != coords.dimensionId)
+		if(entity.world.provider.getDimension() != coords.dimensionId)
 		{
 			energyCost+=10000;
 		}
@@ -555,7 +547,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public boolean isFrame(int x, int y, int z)
 	{
-		IBlockState state = worldObj.getBlockState(new BlockPos(x, y, z));
+		IBlockState state = world.getBlockState(new BlockPos(x, y, z));
 		return state.getBlock() == MekanismBlocks.BasicBlock && state.getBlock().getMetaFromState(state) == 7;
 	}
 
@@ -613,7 +605,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 				
 				if(manager != null)
 				{
-					manager.remove(freq, getSecurity().getOwner());
+					manager.remove(freq, getSecurity().getOwnerUUID());
 				}
 			}
 			

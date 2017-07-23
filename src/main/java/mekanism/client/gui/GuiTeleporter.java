@@ -3,17 +3,20 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.ClientTickHandler;
+import mekanism.client.MekanismClient;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
@@ -51,7 +54,7 @@ public class GuiTeleporter extends GuiMekanism
 	public ResourceLocation resource;
 	
 	public TileEntityTeleporter tileEntity;
-	public ItemStack itemStack;
+	public ItemStack itemStack = ItemStack.EMPTY;
 	
 	public EntityPlayer entityPlayer;
 	
@@ -162,7 +165,7 @@ public class GuiTeleporter extends GuiMekanism
 		setButton = new GuiButton(2, guiWidth + 27, guiHeight + 116, 60, 20, LangUtils.localize("gui.set"));
 		deleteButton = new GuiButton(3, guiWidth + 89, guiHeight + 116, 60, 20, LangUtils.localize("gui.delete"));
 		
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			teleportButton = new GuiButton(4, guiWidth + 42, guiHeight + 140, 92, 20, LangUtils.localize("gui.teleport"));
 		}
@@ -179,7 +182,7 @@ public class GuiTeleporter extends GuiMekanism
 		buttonList.add(setButton);
 		buttonList.add(deleteButton);
 		
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			buttonList.add(teleportButton);
 			
@@ -240,7 +243,7 @@ public class GuiTeleporter extends GuiMekanism
 		else {
 			for(Frequency freq : getPublicCache())
 			{
-				text.add(freq.name + " (" + freq.owner + ")");
+				text.add(freq.name + " (" + freq.clientOwner + ")");
 			}
 		}
 		
@@ -268,7 +271,7 @@ public class GuiTeleporter extends GuiMekanism
 				setButton.enabled = false;
 			}
 			
-			if(getOwner().equals(freq.owner))
+			if(getOwner().equals(freq.ownerUUID))
 			{
 				deleteButton.enabled = true;
 			}
@@ -281,7 +284,7 @@ public class GuiTeleporter extends GuiMekanism
 			deleteButton.enabled = false;
 		}
 		
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			if(clientFreq != null && clientStatus == 1)
 			{
@@ -404,7 +407,7 @@ public class GuiTeleporter extends GuiMekanism
 			if(clientFreq != null && clientStatus == 1)
 			{
 				mc.setIngameFocus();
-				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, currentHand, clientFreq));
+				ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
 			}
 		}
 		
@@ -418,7 +421,7 @@ public class GuiTeleporter extends GuiMekanism
 		int yAxis = (mouseY-(height-ySize)/2);
 
 		fontRendererObj.drawString(getName(), (xSize/2)-(fontRendererObj.getStringWidth(getName())/2), 4, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (getOwner() != null ? getOwner() : LangUtils.localize("gui.none")), 8, itemStack != null ? ySize-12 : (ySize-96)+4, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (getOwnerUsername() != null ? getOwnerUsername() : LangUtils.localize("gui.none")), 8, !itemStack.isEmpty() ? ySize-12 : (ySize-96)+4, 0x404040);
 		
 		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
@@ -490,14 +493,25 @@ public class GuiTeleporter extends GuiMekanism
 		return EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noLink");
 	}
 	
-	private String getOwner()
+	private UUID getOwner()
 	{
 		if(tileEntity != null)
 		{
-			return tileEntity.getSecurity().getOwner();
+			return tileEntity.getSecurity().getOwnerUUID();
 		}
 		else {
-			return ((IOwnerItem)itemStack.getItem()).getOwner(itemStack);
+			return ((IOwnerItem)itemStack.getItem()).getOwnerUUID(itemStack);
+		}
+	}
+	
+	private String getOwnerUsername()
+	{
+		if(tileEntity != null)
+		{
+			return tileEntity.getSecurity().getClientOwner();
+		}
+		else {
+			return MekanismClient.clientUUIDMap.get(((IOwnerItem)itemStack.getItem()).getOwnerUUID(itemStack));
 		}
 	}
 	
@@ -528,7 +542,7 @@ public class GuiTeleporter extends GuiMekanism
 	
 	private double getEnergy()
 	{
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			return ((ItemPortableTeleporter)itemStack.getItem()).getEnergy(itemStack);
 		}
@@ -538,7 +552,7 @@ public class GuiTeleporter extends GuiMekanism
 	
 	private double getMaxEnergy()
 	{
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			return ((ItemPortableTeleporter)itemStack.getItem()).getMaxEnergy(itemStack);
 		}

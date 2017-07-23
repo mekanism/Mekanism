@@ -4,17 +4,16 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.util.CapabilityUtils;
-import mekanism.api.util.ListUtils;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -25,36 +24,43 @@ public final class TransporterUtils
 
 	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
-		if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || !(tile instanceof IInventory))
+		if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
 		{
 			return false;
 		}
 
-		IInventory inventory = (IInventory)tile;
-
-		if(inventory.getSizeInventory() > 0)
+		if(tile instanceof IInventory)
 		{
-			if(!(inventory instanceof ISidedInventory))
+			IInventory inventory = (IInventory)tile;
+			
+			if(inventory.getSizeInventory() > 0)
 			{
-				return true;
+				if(!(inventory instanceof ISidedInventory))
+				{
+					return true;
+				}
+	
+				int[] slots = ((ISidedInventory)inventory).getSlotsForFace(side.getOpposite());
+	
+				return (slots != null && slots.length > 0);
 			}
-
-			int[] slots = ((ISidedInventory)inventory).getSlotsForFace(side.getOpposite());
-
-			return (slots != null && slots.length > 0);
+		}
+		else if(InventoryUtils.isItemHandler(tile, side.getOpposite()))
+		{
+			return true;
 		}
 		
 		return false;
 	}
 
-	public static ItemStack insert(TileEntity outputter, ILogisticalTransporter transporter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public static TransitResponse insert(TileEntity outputter, ILogisticalTransporter transporter, TransitRequest request, EnumColor color, boolean doEmit, int min)
 	{
-		return transporter.insert(Coord4D.get(outputter), itemStack.copy(), color, doEmit, min);
+		return transporter.insert(Coord4D.get(outputter), request, color, doEmit, min);
 	}
 
-	public static ItemStack insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public static TransitResponse insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, TransitRequest request, EnumColor color, boolean doEmit, int min)
 	{
-		return transporter.insertRR(outputter, itemStack.copy(), color, doEmit, min);
+		return transporter.insertRR(outputter, request, color, doEmit, min);
 	}
 
 	public static EnumColor increment(EnumColor color)
@@ -105,7 +111,7 @@ public final class TransporterUtils
 		entityItem.motionY = 0;
 		entityItem.motionZ = 0;
 
-		tileEntity.world().spawnEntityInWorld(entityItem);
+		tileEntity.world().spawnEntity(entityItem);
 	}
 
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)

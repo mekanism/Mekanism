@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -23,6 +22,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.PressurizedInput;
@@ -30,7 +30,7 @@ import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.recipe.outputs.PressurizedOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -39,6 +39,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -58,7 +59,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 	public TileEntityPRC()
 	{
-		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.machineName, new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
+		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy, usage.pressurizedReactionBaseUsage, 3, 100, new ResourceLocation("mekanism", "gui/GuiPRC.png"));
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 		
@@ -80,10 +81,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		
 		configComponent.setInputConfig(TransmissionType.ENERGY);
 
-		inventory = new ItemStack[4];
-
-		upgradeComponent = new TileComponentUpgrade(this, 3);
-		upgradeComponent.setSupported(Upgrade.MUFFLING);
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
@@ -95,7 +93,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			PressurizedRecipe recipe = getRecipe();
 
@@ -180,7 +178,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public PressurizedInput getInput()
 	{
-		return new PressurizedInput(inventory[0], inputFluidTank.getFluid(), inputGasTank.getGas());
+		return new PressurizedInput(inventory.get(0), inputFluidTank.getFluid(), inputGasTank.getGas());
 	}
 
 	@Override

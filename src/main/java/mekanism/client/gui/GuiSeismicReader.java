@@ -143,7 +143,7 @@ public class GuiSeismicReader extends GuiScreen
 		// Get the name from the stack and render it
 		if(currentLayer - 1 >= 0)
 		{
-			ItemStack nameStack = new ItemStack(blockList.get(currentLayer - 1).getRight(), 0, blockList.get(currentLayer - 1).getLeft());
+			ItemStack nameStack = new ItemStack(blockList.get(currentLayer - 1).getRight(), 1, blockList.get(currentLayer - 1).getLeft());
 			String renderString = "unknown";
 			
 			if(nameStack.getItem() != null)
@@ -229,7 +229,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public void calculate()
 	{
-		for(BlockPos p = new BlockPos(pos.zCoord, 0, pos.zCoord); p.getY() < pos.yCoord; p = p.up())
+		for(BlockPos p = new BlockPos(pos.xCoord, 0, pos.zCoord); p.getY() < pos.yCoord; p = p.up())
 		{
 			IBlockState state = worldObj.getBlockState(p);
 			Block block = state.getBlock();

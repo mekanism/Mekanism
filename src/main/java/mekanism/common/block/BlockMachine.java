@@ -1,19 +1,15 @@
 package mekanism.common.block;
 
-import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.util.StackUtils;
 import mekanism.client.render.ctm.CTMBlockRenderContext;
 import mekanism.client.render.ctm.CTMData;
 import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
@@ -32,25 +28,28 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -73,19 +72,19 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import buildcraft.api.tools.IToolWrench;
@@ -141,6 +140,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	
 	private static final AxisAlignedBB CHARGEPAD_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
 	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
+	private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
+	private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
 	public BlockMachine()
 	{
@@ -246,7 +247,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(placer.rotationPitch);
 		int change = 3;
 
@@ -260,7 +261,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			if(height >= 65)
 			{
 				change = 1;
-			} else if(height <= -65)
+			} 
+			else if(height <= -65)
 			{
 				change = 0;
 			}
@@ -403,7 +405,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(MachineType type : MachineType.getValidMachines())
 		{
@@ -441,7 +443,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 		{
@@ -450,8 +452,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		int metadata = state.getBlock().getMetaFromState(state);
+		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(stack != null)
+		if(!stack.isEmpty())
 		{
 			Item tool = stack.getItem();
 
@@ -468,7 +471,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 					if(MekanismUtils.isBCWrench(tool))
 					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, pos);
+						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
 					}
 
 					int change = tileEntity.facing.rotateY().ordinal();
@@ -491,7 +494,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					}
 
 					tileEntity.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this);
+					world.notifyNeighborsOfStateChange(pos, this, true);
 				} 
 				else {
 					SecurityUtils.displayNoAccess(entityplayer);
@@ -529,7 +532,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 					{
 						if(SecurityUtils.canAccess(entityplayer, tileEntity))
 						{
-							if(stack != null && FluidContainerUtils.isFluidContainer(stack))
+							if(!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack))
 							{
 								if(manageInventory(entityplayer, (TileEntityFluidTank)tileEntity, hand, stack))
 								{
@@ -568,9 +571,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				case QUANTUM_ENTANGLOPORTER:
 					if(!entityplayer.isSneaking())
 					{
-						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
+						UUID owner = ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
 						
-						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getName().equals(owner))
+						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getUniqueID().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 						} 
@@ -682,7 +685,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return world.setBlockToAir(pos);
@@ -726,23 +729,24 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		
 		if(FluidContainerUtils.isFluidContainer(itemStack))
 		{
-			IFluidHandler handler = FluidUtil.getFluidHandler(copyStack);
+			IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
 			
 			if(FluidUtil.getFluidContained(copyStack) == null)
 			{
 				if(tileEntity.fluidTank.getFluid() != null)
 				{
 					int filled = handler.fill(tileEntity.fluidTank.getFluid(), !player.capabilities.isCreativeMode);
+					copyStack = handler.getContainer();
 					
 					if(filled > 0)
 					{
-						if(itemStack.stackSize == 1)
+						if(itemStack.getCount() == 1)
 						{
 							player.setHeldItem(hand, copyStack);
 						}
-						else if(itemStack.stackSize > 1 && player.inventory.addItemStackToInventory(copyStack))
+						else if(itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(copyStack))
 						{
-							itemStack.stackSize--;
+							itemStack.shrink(1);
 						}
 						
 						if(tileEntity.tier != FluidTankTier.CREATIVE)
@@ -765,10 +769,11 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				
 				boolean filled = false;
 				FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
+				copyStack = handler.getContainer();
 				
-				if(copyStack.stackSize == 0)
+				if(copyStack.getCount() == 0)
 				{
-					copyStack = null;
+					copyStack = ItemStack.EMPTY;
 				}
 				
 				if(drained != null)
@@ -778,9 +783,9 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 						filled = true;
 					}
 					else {
-						if(copyStack != null)
+						if(!copyStack.isEmpty())
 						{
-							if(itemStack.stackSize == 1)
+							if(itemStack.getCount() == 1)
 							{
 								player.setHeldItem(hand, copyStack);
 								filled = true;
@@ -788,18 +793,18 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 							else {
 								if(player.inventory.addItemStackToInventory(copyStack))
 								{
-									itemStack.stackSize--;
+									itemStack.shrink(1);
 	
 									filled = true;
 								}
 							}
 						}
 						else {
-							itemStack.stackSize--;
+							itemStack.shrink(1);
 	
-							if(itemStack.stackSize == 0)
+							if(itemStack.getCount() == 0)
 							{
-								player.setHeldItem(hand, null);
+								player.setHeldItem(hand, ItemStack.EMPTY);
 							}
 	
 							filled = true;
@@ -832,7 +837,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(!world.isRemote)
 		{
@@ -887,7 +892,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			
 			if(securityItem.hasSecurity(itemStack))
 			{
-				securityItem.setOwner(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwner());
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
 		}
@@ -922,7 +927,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 			energizedItem.setEnergy(itemStack, ((IStrictEnergyStorage)tileEntity).getEnergy());
 		}
 
-		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).inventory.length > 0)
+		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).inventory.size() > 0)
 		{
 			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
 			inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
@@ -977,7 +982,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;
@@ -987,7 +992,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-
+		TileEntity tile = world.getTileEntity(pos);
+		
 		if(type == null)
 		{
 			return super.getBoundingBox(state, world, pos);
@@ -999,6 +1005,16 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				return CHARGEPAD_BOUNDS;
 			case FLUID_TANK:
 				return TANK_BOUNDS;
+			case LASER:
+				if(tile instanceof TileEntityLaser)
+				{
+					return MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLaser)tile).facing).offset(0.5, 0.5, 0.5);
+				}
+			case LOGISTICAL_SORTER:
+				if(tile instanceof TileEntityLogisticalSorter)
+				{
+					return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter)tile).facing).offset(0.5, 0.5, 0.5);
+				}
 			default:
 				return super.getBoundingBox(state, world, pos);
 		}
@@ -1011,13 +1027,8 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
     }
 	
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
-		{
-			return null;
-		}
-
 		return super.getCollisionBoundingBox(state, world, pos);
 	}
 

@@ -25,7 +25,7 @@ public class Info {
 	public static boolean isIc2Available() {
 		if (ic2Available != null) return ic2Available;
 
-		boolean loaded = Loader.isModLoaded("IC2");
+		boolean loaded = Loader.isModLoaded(MOD_ID);
 
 		if (Loader.instance().hasReachedState(LoaderState.CONSTRUCTING)) {
 			ic2Available = loaded;
@@ -34,5 +34,6 @@ public class Info {
 		return loaded;
 	}
 
+	public static String MOD_ID = "ic2";
 	private static Boolean ic2Available = null;
 }

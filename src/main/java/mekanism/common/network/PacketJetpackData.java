@@ -34,16 +34,16 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 						Mekanism.jetpackOn.remove(message.username);
 					}
 		
-					if(!player.worldObj.isRemote)
+					if(!player.world.isRemote)
 					{
-						Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimension());
+						Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.world.provider.getDimension());
 					}
 				}
 				else if(message.packetType == JetpackPacket.MODE)
 				{
 					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 		
-					if(stack != null && stack.getItem() instanceof ItemJetpack)
+					if(!stack.isEmpty() && stack.getItem() instanceof ItemJetpack)
 					{
 						if(!message.value)
 						{

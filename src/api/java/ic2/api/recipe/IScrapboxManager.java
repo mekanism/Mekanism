@@ -4,7 +4,7 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 
-public interface IScrapboxManager {
+public interface IScrapboxManager extends IBasicMachineRecipeManager {
 	void addDrop(ItemStack drop, float rawChance);
 
 	ItemStack getDrop(ItemStack input, boolean adjustInput);

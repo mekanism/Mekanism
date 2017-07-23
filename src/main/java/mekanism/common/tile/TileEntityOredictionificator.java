@@ -20,6 +20,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -29,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -50,16 +52,16 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	
 	public TileEntityOredictionificator()
 	{
-		super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.machineName);
+		super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.blockName);
 		
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		doAutoSync = false;
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(playersUsing.size() > 0)
 			{
@@ -71,34 +73,34 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			
 			didProcess = false;
 			
-			if(MekanismUtils.canFunction(this) && inventory[0] != null && getValidName(inventory[0]) != null)
+			if(MekanismUtils.canFunction(this) && !inventory.get(0).isEmpty() && getValidName(inventory.get(0)) != null)
 			{
-				ItemStack result = getResult(inventory[0]);
+				ItemStack result = getResult(inventory.get(0));
 				
-				if(result != null)
+				if(!result.isEmpty())
 				{
-					if(inventory[1] == null)
+					if(inventory.get(1).isEmpty())
 					{
-						inventory[0].stackSize--;
+						inventory.get(0).shrink(1);
 						
-						if(inventory[0].stackSize <= 0)
+						if(inventory.get(0).getCount() <= 0)
 						{
-							inventory[0] = null;
+							inventory.set(0, ItemStack.EMPTY);
 						}
 						
-						inventory[1] = result;
+						inventory.set(1, result);
 						didProcess = true;
 					}
-					else if(inventory[1].isItemEqual(result) && inventory[1].stackSize < inventory[1].getMaxStackSize())
+					else if(inventory.get(1).isItemEqual(result) && inventory.get(1).getCount() < inventory.get(1).getMaxStackSize())
 					{
-						inventory[0].stackSize--;
+						inventory.get(0).shrink(1);
 						
-						if(inventory[0].stackSize <= 0)
+						if(inventory.get(0).getCount() <= 0)
 						{
-							inventory[0] = null;
+							inventory.set(0, ItemStack.EMPTY);
 						}
 						
-						inventory[1].stackSize++;
+						inventory.get(1).grow(1);
 						didProcess = true;
 					}
 					
@@ -132,7 +134,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		
 		if(s == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		
 		List<ItemStack> ores = OreDictionary.getOres(s);
@@ -146,12 +148,12 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 					return MekanismUtils.size(ores.get(filter.index), 1);
 				}
 				else {
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 		}
 		
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -179,7 +181,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		return slotID == 0 && getResult(itemstack) != null;
+		return slotID == 0 && !getResult(itemstack).isEmpty();
 
 	}
 	
@@ -319,7 +321,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public void openInventory(EntityPlayer player)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 		}

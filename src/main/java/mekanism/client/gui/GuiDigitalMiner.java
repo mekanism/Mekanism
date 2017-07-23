@@ -6,7 +6,6 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -27,6 +26,7 @@ import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -183,7 +183,7 @@ public class GuiDigitalMiner extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
 		fontRendererObj.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
-		if(tileEntity.missingStack != null)
+		if(!tileEntity.missingStack.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
@@ -220,7 +220,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
 		{
-			if(tileEntity.missingStack != null)
+			if(!tileEntity.missingStack.isEmpty())
 			{
 				drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
 			}

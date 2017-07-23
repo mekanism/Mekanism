@@ -47,8 +47,10 @@ public class ItemWalkieTalkie extends ItemMekanism
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack itemStack = player.getHeldItem(hand);
+		
 		if(player.isSneaking())
 		{
 			setOn(itemStack, !getOn(itemStack));

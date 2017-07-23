@@ -11,6 +11,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -30,7 +31,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	{
 		receivedCoords = true;
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			mainPos = pos;
 
@@ -43,7 +44,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	{
 		super.validate();
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
 		}
@@ -51,13 +52,13 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 
 	public void onNeighborChange(Block block)
 	{
-		TileEntity tile = worldObj.getTileEntity(mainPos);
+		TileEntity tile = world.getTileEntity(mainPos);
 
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)tile;
 
-			int power = worldObj.isBlockIndirectlyGettingPowered(getPos());
+			int power = world.isBlockIndirectlyGettingPowered(getPos());
 
 			if(prevPower != power)
 			{
@@ -82,7 +83,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			mainPos = new BlockPos(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 			prevPower = dataStream.readInt();

@@ -1,17 +1,12 @@
 package mekanism.client.jei.machine;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 
-public class MachineRecipeWrapper extends BlankRecipeWrapper
+public class MachineRecipeWrapper extends BaseRecipeWrapper
 {
 	public BasicMachineRecipe recipe;
 	
@@ -23,17 +18,16 @@ public class MachineRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return Arrays.asList(((ItemStackInput)recipe.getInput()).ingredient);
+		ingredients.setInput(ItemStack.class, ((ItemStackInput)recipe.getInput()).ingredient);
+		ingredients.setOutput(ItemStack.class, ((ItemStackOutput)recipe.getOutput()).output);
 	}
-
-	@Nonnull
+	
 	@Override
-	public List<ItemStack> getOutputs()
+	public MachineRecipeCategory getCategory()
 	{
-		return Arrays.asList(((ItemStackOutput)recipe.getOutput()).output);
+		return category;
 	}
 }

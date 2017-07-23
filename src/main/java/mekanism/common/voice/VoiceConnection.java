@@ -48,7 +48,7 @@ public class VoiceConnection extends Thread
 				while(username == null && retryCount <= 100)
 				{
 					try {
-						List l = Collections.synchronizedList((List)((ArrayList)server.getPlayerList().getPlayerList()).clone());
+						List l = Collections.synchronizedList((List)((ArrayList)server.getPlayerList().getPlayers()).clone());
 
 						for(Object obj : l)
 						{
@@ -177,7 +177,7 @@ public class VoiceConnection extends Thread
 	
 	public boolean canListen(int channel, ItemStack itemStack)
 	{
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			if(itemStack.getItem() instanceof ItemWalkieTalkie)
 			{
@@ -198,7 +198,7 @@ public class VoiceConnection extends Thread
 	{
 		ItemStack itemStack = getPlayer().inventory.getCurrentItem();
 
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie)itemStack.getItem();
 

@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
@@ -43,7 +43,7 @@ public class ContainerNull extends Container
 	{
 		if(tileEntity != null)
 		{
-			return tileEntity.isUseableByPlayer(entityplayer);
+			return tileEntity.isUsableByPlayer(entityplayer);
 		}
 		
 		return true;

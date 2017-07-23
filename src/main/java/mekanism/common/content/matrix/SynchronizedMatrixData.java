@@ -8,11 +8,12 @@ import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityInductionCell;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixData>
 {
-	public ItemStack[] inventory = new ItemStack[2];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	
 	public Set<Coord4D> cells = new HashSet<Coord4D>();
 	
@@ -29,7 +30,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 	public double transferCap;
 	
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}

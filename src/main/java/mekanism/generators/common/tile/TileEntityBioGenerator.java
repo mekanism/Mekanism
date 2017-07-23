@@ -4,18 +4,20 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.MekanismConfig.generators;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -34,7 +36,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	public TileEntityBioGenerator()
 	{
 		super("bio", "BioGenerator", 160000, generators.bioGeneration*2);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -42,33 +44,27 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	{
 		super.onUpdate();
 
-		if(inventory[0] != null)
+		if(!inventory.get(0).isEmpty())
 		{
 			ChargeUtils.charge(1, this);
 			
-			FluidStack fluid = FluidUtil.getFluidContained(inventory[0]);
+			FluidStack fluid = FluidUtil.getFluidContained(inventory.get(0));
 
 			if(fluid != null && FluidRegistry.isFluidRegistered("bioethanol"))
 			{
 				if(fluid.getFluid() == FluidRegistry.getFluid("bioethanol"))
 				{
-					IFluidHandler handler = FluidUtil.getFluidHandler(inventory[0]);
+					IFluidHandler handler = FluidUtil.getFluidHandler(inventory.get(0));
 					FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID-bioFuelSlot.fluidStored, true);
 					
 					if(drained != null)
 					{
 						bioFuelSlot.fluidStored += drained.amount;
-						
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
-						}
 					}
 				}
 			}
 			else {
-				int fuel = getFuel(inventory[0]);
-				ItemStack prevStack = inventory[0].copy();
+				int fuel = getFuel(inventory.get(0));
 
 				if(fuel > 0)
 				{
@@ -78,17 +74,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					{
 						bioFuelSlot.fluidStored += fuel;
 
-						if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
+						if(!inventory.get(0).getItem().getContainerItem(inventory.get(0)).isEmpty())
 						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+							inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 						}
 						else {
-							inventory[0].stackSize--;
-						}
-
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
+							inventory.get(0).shrink(1);
 						}
 					}
 				}
@@ -97,7 +88,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
 		if(canOperate())
 		{
-			if(!worldObj.isRemote)
+			if(!world.isRemote)
 			{
 				setActive(true);
 			}
@@ -106,7 +97,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			setEnergy(electricityStored + generators.bioGeneration);
 		}
 		else {
-			if(!worldObj.isRemote)
+			if(!world.isRemote)
 			{
 				setActive(false);
 			}
@@ -303,7 +294,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		return null;
+		return PipeUtils.EMPTY;
 	}
 
 	@Override

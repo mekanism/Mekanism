@@ -53,11 +53,12 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 	}
 	
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(player.isSneaking())
 		{
 			TileEntity tile = world.getTileEntity(pos);
+			ItemStack stack = player.getHeldItem(hand);
 			Upgrade type = getUpgradeType(stack);
 			
 			if(tile instanceof IUpgradeTile)
@@ -69,7 +70,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 					if(!world.isRemote && component.getUpgrades(type) < type.getMax())
 					{
 						component.addUpgrade(type);
-						stack.stackSize--;
+						stack.shrink(1);
 					}
 				}
 				

@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,7 +46,7 @@ public class ItemProxy extends Item
 	{
 		if(ItemDataUtils.getBoolean(stack, "hasStack"))
 		{
-			return ItemStack.loadItemStackFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
+			return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
 		}
 
 		return null;
@@ -58,11 +59,11 @@ public class ItemProxy extends Item
 		{
 			EntityPlayer player = (EntityPlayer)entity;
 			
-			for(int i = 0; i < player.inventory.mainInventory.length; i++)
+			for(int i = 0; i < player.inventory.mainInventory.size(); i++)
 			{
-				if(player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == this)
+				if(!player.inventory.mainInventory.get(i).isEmpty() && player.inventory.mainInventory.get(i).getItem() == this)
 				{
-					player.inventory.mainInventory[i] = null;
+					player.inventory.mainInventory.remove(i);
 				}
 			}
 		}

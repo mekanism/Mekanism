@@ -7,7 +7,7 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -29,6 +29,17 @@ import cofh.api.energy.IEnergyReceiver;
 })
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData
 {
+	@Override
+	public boolean isEmpty()
+	{
+		if(getInv() == null)
+		{
+			return true;
+		}
+		
+		return getInv().isEmpty();
+	}
+	
 	@Override
 	public int getSizeInventory()
 	{
@@ -124,14 +135,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(EntityPlayer entityplayer)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
 
-		return getInv().isUseableByPlayer(entityplayer);
+		return getInv().isUsableByPlayer(entityplayer);
 	}
 
 	@Override
@@ -164,7 +175,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canBoundInsert(Coord4D.get(this), i, itemstack);
+		return getInv().canBoundInsert(getPos(), i, itemstack);
 	}
 
 	@Override
@@ -196,7 +207,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return InventoryUtils.EMPTY;
 		}
 
-		return getInv().getBoundSlots(Coord4D.get(this), side);
+		return getInv().getBoundSlots(getPos(), side);
 	}
 
 	@Override
@@ -213,7 +224,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canBoundExtract(Coord4D.get(this), i, itemstack, side);
+		return getInv().canBoundExtract(getPos(), i, itemstack, side);
 	}
 
 	@Override
@@ -284,47 +295,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public double getEnergy()
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getEnergy();
-	}
-
-	@Override
-	public void setEnergy(double energy)
-	{
-		if(getInv() == null)
-		{
-			return;
-		}
-
-		getInv().setEnergy(energy);
-	}
-
-	@Override
-	public double getMaxEnergy()
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getMaxEnergy();
-	}
-
-	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(getInv() == null || !canReceiveEnergy(side))
 		{
 			return 0;
 		}
 
-		return getInv().transferEnergyToAcceptor(side, amount);
+		return getInv().acceptEnergy(side, amount, simulate);
 	}
 
 	@Override
@@ -335,7 +313,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 
-		return getInv().canBoundReceiveEnergy(Coord4D.get(this), side);
+		return getInv().canBoundReceiveEnergy(getPos(), side);
 	}
 
 	@Override
@@ -381,15 +359,15 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 		
-		TileEntity tile = new Coord4D(mainPos, worldObj).getTileEntity(worldObj);
+		TileEntity tile = new Coord4D(mainPos, world).getTileEntity(world);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
-			worldObj.setBlockToAir(mainPos);
+			world.setBlockToAir(mainPos);
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainPos, worldObj).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)new Coord4D(mainPos, world).getTileEntity(world);
 	}
 
 	@Override

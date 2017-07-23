@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+@Deprecated
 public final class RecipeOutput {
 	public RecipeOutput(NBTTagCompound metadata1, List<ItemStack> items1) {
 		assert !items1.contains(null);

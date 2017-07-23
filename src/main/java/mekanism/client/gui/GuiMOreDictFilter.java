@@ -48,7 +48,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 	private GuiTextField oreDictText;
 
-	public ItemStack renderStack;
+	public ItemStack renderStack = ItemStack.EMPTY;
 
 	public int ticker = 0;
 
@@ -167,7 +167,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		renderScaledText(LangUtils.localize("gui.key") + ": " + filter.oreDictName, 35, 32, 0x00CD00, 107);
 
-		if(renderStack != null)
+		if(!renderStack.isEmpty())
 		{
 			try {
 				GlStateManager.pushMatrix();
@@ -178,7 +178,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 			} catch(Exception e) {}
 		}
 		
-		if(filter.replaceStack != null)
+		if(!filter.replaceStack.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
@@ -290,7 +290,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 		}
 		else if(iterStacks != null && iterStacks.size() == 0)
 		{
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 		}
 	}
 
@@ -327,26 +327,26 @@ public class GuiMOreDictFilter extends GuiMekanism
 			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 			{
 				boolean doNull = false;
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
-				ItemStack toUse = null;
+				ItemStack stack = mc.player.inventory.getItemStack();
+				ItemStack toUse = ItemStack.EMPTY;
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
 						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							toUse = stack.copy();
-							toUse.stackSize = 1;
+							toUse.setCount(1);
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					doNull = true;
 				}
 
-				if(toUse != null || doNull)
+				if(!toUse.isEmpty() || doNull)
 				{
 					filter.replaceStack = toUse;
 				}

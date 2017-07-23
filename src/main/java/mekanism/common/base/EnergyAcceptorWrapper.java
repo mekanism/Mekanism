@@ -4,14 +4,16 @@ import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 
 public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
@@ -27,13 +29,17 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		
 		EnergyAcceptorWrapper wrapper = null;
 		
-		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, null))
+		if(CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side))
 		{
 			wrapper = new MekanismAcceptor(CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side));
 		}
 		else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side))
 		{
 			wrapper = new TeslaAcceptor(CapabilityUtils.getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side));
+		}
+		else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side))
+		{
+			wrapper = new ForgeAcceptor(CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side));
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{
@@ -69,9 +75,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(EnumFacing side, double amount)
+		public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 		{
-			return acceptor.transferEnergyToAcceptor(side, amount);
+			return acceptor.acceptEnergy(side, amount, simulate);
 		}
 
 		@Override
@@ -81,27 +87,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double getEnergy()
-		{
-			return acceptor.getEnergy();
-		}
-
-		@Override
-		public void setEnergy(double energy)
-		{
-			acceptor.setEnergy(energy);
-		}
-
-		@Override
-		public double getMaxEnergy()
-		{
-			return acceptor.getMaxEnergy();
-		}
-
-		@Override
 		public boolean needsEnergy(EnumFacing side)
 		{
-			return acceptor.getMaxEnergy() - acceptor.getEnergy() > 0;
+			return acceptor.acceptEnergy(side, 1, true) > 0;
 		}
 	}
 
@@ -115,35 +103,15 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(EnumFacing side, double amount)
+		public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 		{
-			return fromRF(acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), false));
+			return fromRF(acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), simulate));
 		}
 
 		@Override
 		public boolean canReceiveEnergy(EnumFacing side)
 		{
 			return acceptor.canConnectEnergy(side);
-		}
-
-		@Override
-		public double getEnergy()
-		{
-			return fromRF(acceptor.getEnergyStored(null));
-		}
-
-		@Override
-		public void setEnergy(double energy)
-		{
-			int rfToSet = toRF(energy);
-			int amountToReceive = rfToSet - acceptor.getEnergyStored(null);
-			acceptor.receiveEnergy(null, amountToReceive, false);
-		}
-
-		@Override
-		public double getMaxEnergy()
-		{
-			return fromRF(acceptor.getMaxEnergyStored(null));
 		}
 
 		@Override
@@ -173,7 +141,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double transferEnergyToAcceptor(EnumFacing side, double amount)
+		public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 		{
 			double toTransfer = Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE);
 			double rejects = acceptor.injectEnergy(side, toTransfer, 0);
@@ -185,21 +153,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public boolean canReceiveEnergy(EnumFacing side)
 		{
 			return acceptor.acceptsEnergyFrom(null, side);
-		}
-
-		@Override
-		public double getEnergy()
-		{
-			return 0;
-		}
-
-		@Override
-		public void setEnergy(double energy) {}
-
-		@Override
-		public double getMaxEnergy()
-		{
-			return 0;
 		}
 
 		@Override
@@ -229,7 +182,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 		
 		@Override
-		public double transferEnergyToAcceptor(EnumFacing side, double amount) 
+		public double acceptEnergy(EnumFacing side, double amount, boolean simulate) 
 		{
 			return fromTesla(acceptor.givePower(toTesla(amount), false));
 		}
@@ -238,21 +191,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public boolean canReceiveEnergy(EnumFacing side) 
 		{
 			return acceptor.givePower(1, true) > 0;
-		}
-
-		@Override
-		public double getEnergy() 
-		{
-			return 0;
-		}
-
-		@Override
-		public void setEnergy(double energy) {}
-
-		@Override
-		public double getMaxEnergy() 
-		{
-			return 0;
 		}
 
 		@Override
@@ -269,6 +207,44 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public double fromTesla(double tesla)
 		{
 			return tesla*general.FROM_TESLA;
+		}
+	}
+	
+	public static class ForgeAcceptor extends EnergyAcceptorWrapper
+	{
+		private IEnergyStorage acceptor;
+		
+		public ForgeAcceptor(IEnergyStorage forgeConsumer)
+		{
+			acceptor = forgeConsumer;
+		}
+		
+		@Override
+		public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
+		{
+			return fromForge(acceptor.receiveEnergy(Math.min(Integer.MAX_VALUE, toForge(amount)), simulate));
+		}
+
+		@Override
+		public boolean canReceiveEnergy(EnumFacing side) 
+		{
+			return acceptor.canReceive();
+		}
+
+		@Override
+		public boolean needsEnergy(EnumFacing side) 
+		{
+			return acceptor.canReceive();
+		}
+		
+		public int toForge(double joules)
+		{
+			return (int)Math.round(joules*general.TO_FORGE);
+		}
+		
+		public double fromForge(double forge)
+		{
+			return forge*general.FROM_FORGE;
 		}
 	}
 }

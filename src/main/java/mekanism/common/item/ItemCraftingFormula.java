@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,7 +36,7 @@ public class ItemCraftingFormula extends ItemMekanism
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		ItemStack[] inv = getInventory(itemstack);
+		NonNullList<ItemStack> inv = getInventory(itemstack);
 		
 		if(inv != null)
 		{
@@ -43,13 +44,13 @@ public class ItemCraftingFormula extends ItemMekanism
 		}
 	}
 	
-	private void addIngredientDetails(ItemStack[] inv, List list)
+	private void addIngredientDetails(NonNullList<ItemStack> inv, List list)
 	{
 		List<ItemStack> stacks = new ArrayList<ItemStack>();
 		
 		for(ItemStack stack : inv)
 		{
-			if(stack != null)
+			if(!stack.isEmpty())
 			{
 				boolean found = false;
 				
@@ -57,7 +58,7 @@ public class ItemCraftingFormula extends ItemMekanism
 				{
 					if(InventoryUtils.canStack(stack, iterStack))
 					{
-						iterStack.stackSize += stack.stackSize;
+						iterStack.grow(stack.getCount());
 						found = true;
 					}
 				}
@@ -73,13 +74,15 @@ public class ItemCraftingFormula extends ItemMekanism
 		
 		for(ItemStack stack : stacks)
 		{
-			list.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.stackSize + ")");
+			list.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.getCount() + ")");
 		}
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
@@ -124,7 +127,7 @@ public class ItemCraftingFormula extends ItemMekanism
 		ItemDataUtils.setBoolean(stack, "invalid", invalid);
 	}
 	
-	public ItemStack[] getInventory(ItemStack stack)
+	public NonNullList<ItemStack> getInventory(ItemStack stack)
 	{
 		if(!ItemDataUtils.hasData(stack, "Items"))
 		{
@@ -132,7 +135,7 @@ public class ItemCraftingFormula extends ItemMekanism
 		}
 		
 		NBTTagList tagList = ItemDataUtils.getList(stack, "Items");
-		ItemStack[] inventory = new ItemStack[9];
+		NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
@@ -141,14 +144,14 @@ public class ItemCraftingFormula extends ItemMekanism
 
 			if(slotID >= 0 && slotID < 9)
 			{
-				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+				inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
 			}
 		}
 		
 		return inventory;
 	}
 	
-	public void setInventory(ItemStack stack, ItemStack[] inv)
+	public void setInventory(ItemStack stack, NonNullList<ItemStack> inv)
 	{
 		if(inv == null)
 		{
@@ -160,11 +163,11 @@ public class ItemCraftingFormula extends ItemMekanism
 
 		for(int slotCount = 0; slotCount < 9; slotCount++)
 		{
-			if(inv[slotCount] != null)
+			if(!inv.get(slotCount).isEmpty())
 			{
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setByte("Slot", (byte)slotCount);
-				inv[slotCount].writeToNBT(tagCompound);
+				inv.get(slotCount).writeToNBT(tagCompound);
 				tagList.appendTag(tagCompound);
 			}
 		}

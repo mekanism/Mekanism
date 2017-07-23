@@ -2,10 +2,12 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
-import mekanism.api.util.StackUtils;
 import mekanism.common.InfuseStorage;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 /**
  * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input ItemStack.
@@ -34,7 +36,7 @@ public class InfusionInput extends MachineInput<InfusionInput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		inputStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("input"));
+		inputStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
 		InfuseType type = InfuseRegistry.get(nbtTags.getString("infuseType"));
 		int amount = nbtTags.getInteger("infuseAmount");
 		infuse = new InfuseStorage(type, amount);
@@ -54,13 +56,13 @@ public class InfusionInput extends MachineInput<InfusionInput>
 		return infuse.type != null && inputStack != null;
 	}
 
-	public boolean use(ItemStack[] inventory, int index, InfuseStorage infuseStorage, boolean deplete)
+	public boolean use(NonNullList<ItemStack> inventory, int index, InfuseStorage infuseStorage, boolean deplete)
 	{
-		if(inputContains(inventory[index], inputStack) && infuseStorage.contains(infuse))
+		if(inputContains(inventory.get(index), inputStack) && infuseStorage.contains(infuse))
 		{
 			if(deplete)
 			{
-				inventory[index] = StackUtils.subtract(inventory[index], inputStack);
+				inventory.set(index, StackUtils.subtract(inventory.get(index), inputStack));
 				infuseStorage.subtract(infuse);
 			}
 			

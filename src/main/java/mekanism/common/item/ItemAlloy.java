@@ -1,10 +1,10 @@
 package mekanism.common.item;
 
 import mekanism.api.IAlloyInteraction;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.MekanismItems;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -22,9 +22,10 @@ public class ItemAlloy extends ItemMekanism
 	}
 	
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 		TileEntity tile = world.getTileEntity(pos);
+		ItemStack stack = player.getHeldItem(hand);
 		
 		if(general.allowTransmitterAlloyUpgrade && CapabilityUtils.hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side))
 		{

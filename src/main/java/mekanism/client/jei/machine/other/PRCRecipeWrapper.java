@@ -1,19 +1,19 @@
 package mekanism.client.jei.machine.other;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.util.LangUtils;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-public class PRCRecipeWrapper extends BlankRecipeWrapper
+public class PRCRecipeWrapper extends BaseRecipeWrapper
 {
 	public PressurizedRecipe recipe;
 	
@@ -25,25 +25,14 @@ public class PRCRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return Arrays.asList(recipe.getInput().getSolid());
-	}
-	
-	@Nonnull
-	@Override
-	public List<FluidStack> getFluidInputs() 
-	{
-		return Arrays.asList(recipe.getInput().getFluid());
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return Arrays.asList(recipe.getOutput().getItemOutput());
+		ingredients.setInput(ItemStack.class, recipe.recipeInput.getSolid());
+		ingredients.setInput(FluidStack.class, recipe.recipeInput.getFluid());
+		ingredients.setInput(GasStack.class, recipe.recipeInput.getGas());
+		ingredients.setOutput(ItemStack.class, recipe.recipeOutput.getItemOutput());
+		ingredients.setOutput(GasStack.class, recipe.recipeOutput.getGasOutput());
 	}
 	
 	@Nullable
@@ -62,5 +51,11 @@ public class PRCRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public PRCRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

@@ -15,17 +15,18 @@ import java.util.EnumSet;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.integration.TeslaIntegration;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,6 +37,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -68,7 +70,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			register();
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null && mode)
 			{
@@ -114,9 +116,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public void register()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
 			if(registered != this)
 			{
@@ -136,9 +138,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public void deregister()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
+			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
@@ -170,7 +172,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			
 			if(prevMode != mode)
 			{
-				MekanismUtils.updateBlock(worldObj, getPos());
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 	}
@@ -249,7 +251,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				structure.remainingInput -= toAdd;
 			}
 
-			return (int)Math.round(toAdd*general.TO_RF);
+			return (int)Math.round(Math.min(Integer.MAX_VALUE, toAdd*general.TO_RF));
 		}
 
 		return 0;
@@ -268,7 +270,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				structure.remainingOutput -= toSend;
 			}
 
-			return (int)Math.round(toSend*general.TO_RF);
+			return (int)Math.round(Math.min(Integer.MAX_VALUE, toSend*general.TO_RF));
 		}
 
 		return 0;
@@ -283,13 +285,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getEnergy()*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_RF);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));
 	}
 
 	@Override
@@ -320,18 +322,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount*general.FROM_IC2);
 		setEnergy(getEnergy() + toUse);
 		structure.remainingInput -= toUse;
-		return (int)Math.round(getEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public boolean isTeleporterCompatible(EnumFacing side)
 	{
-		return canOutputTo(side);
+		return canOutputEnergy(side);
 	}
 
 	@Override
-	public boolean canOutputTo(EnumFacing side)
+	public boolean canOutputEnergy(EnumFacing side)
 	{
 		return getOutputtingSides().contains(side);
 	}
@@ -354,21 +356,21 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public int getStored()
 	{
-		return (int)Math.round(getEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getCapacity()
 	{
-		return (int)Math.round(getMaxEnergy()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_IC2));
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getOutput()
 	{
-		return (int)Math.round(getMaxOutput()*general.TO_IC2);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput()*general.TO_IC2));
 	}
 
 	@Override
@@ -408,7 +410,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			return amount;
 		}
 
-		return amount-transferEnergyToAcceptor(direction, amount*general.FROM_IC2)*general.TO_IC2;
+		return amount-acceptEnergy(direction, amount*general.FROM_IC2, false)*general.TO_IC2;
 	}
 
 	@Override
@@ -424,7 +426,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(EnumFacing side, double amount)
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!getConsumingSides().contains(side))
 		{
@@ -432,14 +434,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		}
 
 		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount);
-		setEnergy(getEnergy() + toUse);
-		structure.remainingInput -= toUse;
+		
+		if(!simulate)
+		{
+			setEnergy(getEnergy() + toUse);
+			structure.remainingInput -= toUse;
+		}
 
 		return toUse;
 	}
 	
 	@Override
-	public double removeEnergyFromProvider(EnumFacing side, double amount)
+	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		if(!getOutputtingSides().contains(side))
 		{
@@ -455,11 +461,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			mode = !mode;
 			String modeText = " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
-			player.addChatMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
+			player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
 			
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
 			markDirty();
@@ -503,21 +509,23 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-				|| capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY
+				|| capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
 				|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
 				|| capability == Capabilities.CONFIGURABLE_CAPABILITY
 				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
 				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
+				|| capability == CapabilityEnergy.ENERGY
 				|| super.hasCapability(capability, facing);
 	}
 	
-	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(TileEntityElectricBlock.class, TeslaIntegration.class);
+	private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(IEnergyWrapper.class, TeslaIntegration.class);
+	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
-				capability == Capabilities.CABLE_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY)
+				capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY)
 		{
 			return (T)this;
 		}
@@ -527,6 +535,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
 		{
 			return (T)teslaManager.getWrapper(this, facing);
+		}
+		
+		if(capability == CapabilityEnergy.ENERGY)
+		{
+			return (T)forgeEnergyManager.getWrapper(this, facing);
 		}
 		
 		return super.getCapability(capability, facing);

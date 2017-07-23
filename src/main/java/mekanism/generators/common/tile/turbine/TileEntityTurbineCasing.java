@@ -5,12 +5,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.generators;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -47,7 +47,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null)
 			{
@@ -80,8 +80,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 						setEnergy(getEnergy()+((int)rate)*energyMultiplier);
 						
 						structure.fluidStored.amount -= rate;
-						structure.clientFlow = Math.min((int)rate, structure.condensers*generators.condenserRate);
-						structure.flowRemaining = (int)rate;
+						structure.clientFlow = (int)rate;
+						structure.flowRemaining = Math.min((int)rate, structure.condensers*generators.condenserRate);
 						
 						if(structure.fluidStored.amount == 0)
 						{
@@ -134,7 +134,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 		if(!player.isSneaking() && structure != null)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			player.openGui(MekanismGenerators.instance, 6, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
+			player.openGui(MekanismGenerators.instance, 6, world, getPos().getX(), getPos().getY(), getPos().getZ());
 			
 			return true;
 		}
@@ -216,7 +216,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null)
 			{

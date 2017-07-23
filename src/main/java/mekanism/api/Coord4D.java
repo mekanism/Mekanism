@@ -45,7 +45,7 @@ public class Coord4D
 		yCoord = (int)entity.posY;
 		zCoord = (int)entity.posZ;
 		
-		dimensionId = entity.worldObj.provider.getDimension();
+		dimensionId = entity.world.provider.getDimension();
 	}
 
 	/**
@@ -57,9 +57,9 @@ public class Coord4D
 	 */
 	public Coord4D(double x, double y, double z, int dimension)
 	{
-		xCoord = MathHelper.floor_double(x);
-		yCoord = MathHelper.floor_double(y);
-		zCoord = MathHelper.floor_double(z);
+		xCoord = MathHelper.floor(x);
+		yCoord = MathHelper.floor(y);
+		zCoord = MathHelper.floor(z);
 
 		dimensionId = dimension;
 	}
@@ -295,7 +295,7 @@ public class Coord4D
 		int subX = xCoord - obj.xCoord;
 		int subY = yCoord - obj.yCoord;
 		int subZ = zCoord - obj.zCoord;
-		return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
+		return (int)MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
 	}
 
 	/**

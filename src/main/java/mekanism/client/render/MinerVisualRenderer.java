@@ -61,7 +61,7 @@ public final class MinerVisualRenderer
 				{
 					if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
 					{
-						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.getDimension())));
+						models.add(createModel(new Coord4D(x, y, z, mc.world.provider.getDimension())));
 					}
 				}
 			}

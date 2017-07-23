@@ -54,7 +54,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 		if(data != null)
 		{
 			try {
-				list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, data.meta).getDisplayName());
+				list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, 1, data.meta).getDisplayName());
 				list.add(LangUtils.localize("tooltip.meta") + ": " + data.meta);
 	
 				if(data.tileTag != null)
@@ -72,15 +72,17 @@ public class ItemBlockCardboardBox extends ItemBlock
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(!player.isSneaking() && !world.isAirBlock(pos) && stack.getItemDamage() == 0)
 		{
 			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 			int meta = block.getMetaFromState(state);
 
-			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta) && state.getBlockHardness(world, pos) != -1)
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(block, meta) && state.getBlockHardness(world, pos) != -1)
 			{
 				BlockData data = new BlockData();
 				data.block = block;
@@ -99,7 +101,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				if(!player.capabilities.isCreativeMode)
 				{
-					stack.stackSize--;
+					stack.shrink(1);
 				}
 
 				world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1), 3);

@@ -1,10 +1,11 @@
 package mekanism.common.inventory;
 
-import mekanism.api.util.StackUtils;
 import mekanism.common.Tier.BinTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -19,29 +20,29 @@ public class InventoryBin
 
 	public ItemStack getStack()
 	{
-		if(getItemCount() > 0 && getItemType() != null)
+		if(getItemCount() > 0 && !getItemType().isEmpty())
 		{
 			ItemStack ret = getItemType().copy();
-			ret.stackSize = Math.min(getItemType().getMaxStackSize(), getItemCount());
+			ret.setCount(Math.min(getItemType().getMaxStackSize(), getItemCount()));
 
 			return ret;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public ItemStack removeStack()
 	{
 		ItemStack stack = getStack();
 
-		if(stack == null)
+		if(stack.isEmpty())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		if(getTier() != BinTier.CREATIVE)
 		{
-			setItemCount(getItemCount() - stack.stackSize);
+			setItemCount(getItemCount() - stack.getCount());
 		}
 		
 		return stack.copy();
@@ -51,21 +52,21 @@ public class InventoryBin
 	{
 		if(isValid(stack) && (getTier() == BinTier.CREATIVE || getItemCount() != getMaxStorage()))
 		{
-			if(getItemType() == null)
+			if(getItemType().isEmpty())
 			{
 				setItemType(stack);
 			}
 
 			if(getTier() != BinTier.CREATIVE)
 			{
-				if(getItemCount() + stack.stackSize <= getMaxStorage())
+				if(getItemCount() + stack.getCount() <= getMaxStorage())
 				{
-					setItemCount(getItemCount() + stack.stackSize);
-					return null;
+					setItemCount(getItemCount() + stack.getCount());
+					return ItemStack.EMPTY;
 				}
 				else {
 					ItemStack rejects = getItemType().copy();
-					rejects.stackSize = (getItemCount()+stack.stackSize) - getMaxStorage();
+					rejects.setCount((getItemCount()+stack.getCount()) - getMaxStorage());
 	
 					setItemCount(getMaxStorage());
 	
@@ -82,7 +83,7 @@ public class InventoryBin
 
 	public boolean isValid(ItemStack stack)
 	{
-		if(stack == null || stack.stackSize <= 0)
+		if(stack.isEmpty() || stack.getCount() <= 0)
 		{
 			return false;
 		}
@@ -92,7 +93,7 @@ public class InventoryBin
 			return false;
 		}
 
-		if(getItemType() == null)
+		if(getItemType().isEmpty())
 		{
 			return true;
 		}
@@ -126,7 +127,7 @@ public class InventoryBin
 
 		if(getItemCount() == 0)
 		{
-			setItemType(null);
+			setItemType(ItemStack.EMPTY);
 		}
 	}
 
@@ -134,15 +135,15 @@ public class InventoryBin
 	{
 		if(getItemCount() == 0)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		return ItemStack.loadItemStackFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
+		return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
 	}
 
 	public void setItemType(ItemStack stack)
 	{
-		if(stack == null)
+		if(stack.isEmpty())
 		{
 			ItemDataUtils.removeData(bin, "storedItem");
 			return;

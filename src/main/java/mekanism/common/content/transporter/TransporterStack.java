@@ -7,12 +7,14 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -142,7 +144,7 @@ public class TransporterStack
 		}
 
 		pathType = Path.values()[nbtTags.getInteger("pathType")];
-		itemStack = ItemStack.loadItemStackFromNBT(nbtTags);
+		itemStack = InventoryUtils.loadFromNBT(nbtTags);
 	}
 
 	public static TransporterStack readFromNBT(NBTTagCompound nbtTags)
@@ -188,36 +190,36 @@ public class TransporterStack
 		return pathToTarget;
 	}
 
-	public ItemStack recalculatePath(ILogisticalTransporter transporter, int min)
+	public TransitResponse recalculatePath(TransitRequest request, ILogisticalTransporter transporter, int min)
 	{
-		Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, min);
+		Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min);
 
 		if(newPath == null)
 		{
-			return itemStack;
+			return TransitResponse.EMPTY;
 		}
 
 		idleDir = null;
 		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
-		return newPath.rejected;
+		return newPath.response;
 	}
 
-	public ItemStack recalculateRRPath(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min)
+	public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min)
 	{
-		Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, outputter, min);
+		Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
 
 		if(newPath == null)
 		{
-			return itemStack;
+			return TransitResponse.EMPTY;
 		}
 
 		idleDir = null;
 		setPath(newPath.path, Path.DEST);
 		initiatedPath = true;
 
-		return newPath.rejected;
+		return newPath.response;
 	}
 
 	public boolean calculateIdle(ILogisticalTransporter transporter)

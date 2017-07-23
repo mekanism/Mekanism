@@ -2,15 +2,16 @@ package mekanism.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
-import mekanism.api.MekanismConfig.general;
 import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey.KeyMessage;
 import mekanism.common.security.SecurityData;
@@ -20,7 +21,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class MekanismClient extends Mekanism
 {
-	public static Map<String, SecurityData> clientSecurityMap = new HashMap<String, SecurityData>();
+	public static Map<UUID, SecurityData> clientSecurityMap = new HashMap<UUID, SecurityData>();
+	public static Map<UUID, String> clientUUIDMap = new HashMap<UUID, String>();
 	
 	public static VoiceClient voiceClient;
 
@@ -30,16 +32,17 @@ public class MekanismClient extends Mekanism
 	{
 		boolean down = Minecraft.getMinecraft().currentScreen == null && key.isPressed();
 
-		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, type))
+		if(down != keyMap.has(Minecraft.getMinecraft().player, type))
 		{
 			Mekanism.packetHandler.sendToServer(new KeyMessage(type, down));
-			keyMap.update(Minecraft.getMinecraft().thePlayer, type, down);
+			keyMap.update(Minecraft.getMinecraft().player, type, down);
 		}
 	}
 
 	public static void reset()
 	{
 		clientSecurityMap.clear();
+		clientUUIDMap.clear();
 		
 		if(general.voiceServerEnabled)
 		{
@@ -51,6 +54,7 @@ public class MekanismClient extends Mekanism
 		}
 
 		ClientTickHandler.tickingSet.clear();
+		ClientTickHandler.portableTeleports.clear();
 		
 		TransmitterModel.clearCache();
 

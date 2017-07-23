@@ -1,9 +1,6 @@
 package mekanism.common.block;
 
 import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
-
-import java.util.List;
-
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import net.minecraft.block.BlockFence;
@@ -17,6 +14,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -49,7 +47,7 @@ public class BlockPlasticFence extends BlockFence
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item item, CreativeTabs creativetabs, List<ItemStack> list)
+    public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
     {
         for(int i = 0; i < EnumColor.DYES.length; i++)
         {

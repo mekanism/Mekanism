@@ -10,7 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -35,7 +35,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 			@Override
 			public void run()
 			{
-				if(!player.worldObj.isRemote)
+				if(!player.world.isRemote)
 				{
 					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		
@@ -46,11 +46,11 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 							return;
 						}
 		
-						SimpleGuiMessage.openServerGui(message.guiHandler, message.guiId, (EntityPlayerMP)player, player.worldObj, message.coord4D);
+						SimpleGuiMessage.openServerGui(message.guiHandler, message.guiId, (EntityPlayerMP)player, player.world, message.coord4D);
 					}
 				}
 				else {
-					FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiHandler, message.guiId, player, player.worldObj, message.coord4D));
+					FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
 					player.openContainer.windowId = message.windowId;
 				}
 			}

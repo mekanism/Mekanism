@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -48,7 +49,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	public TileEntityBoilerCasing(String name)
 	{
 		super(name);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -56,7 +57,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	{
 		super.onUpdate();
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(structure != null && clientHasStructure && isRendering)
 			{
@@ -72,7 +73,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			{
 				for(ValveData data : valveViewing)
 				{
-					TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing)data.location.getTileEntity(worldObj);
+					TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing)data.location.getTileEntity(world);
 
 					if(tileEntity != null)
 					{
@@ -84,7 +85,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null)
 			{
@@ -179,7 +180,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 		if(!player.isSneaking() && structure != null)
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			player.openGui(Mekanism.instance, 54, worldObj, getPos().getX(), getPos().getY(), getPos().getZ());
+			player.openGui(Mekanism.instance, 54, world, getPos().getX(), getPos().getY(), getPos().getZ());
 			
 			return true;
 		}
@@ -347,7 +348,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 						
 						valveViewing.add(data);
 	
-						TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing)data.location.getTileEntity(worldObj);
+						TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing)data.location.getTileEntity(world);
 	
 						if(tileEntity != null)
 						{

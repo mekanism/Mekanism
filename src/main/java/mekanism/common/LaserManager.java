@@ -3,11 +3,11 @@ package mekanism.common;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -68,7 +68,7 @@ public class LaserManager
 			
 			if(energy > 256)
 			{
-				e.attackEntityFrom(DamageSource.generic, (float)energy/1000F);
+				e.attackEntityFrom(DamageSource.GENERIC, (float)energy/1000F);
 			}
 		}
 		

@@ -25,7 +25,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
 	}
 
 	@Override
@@ -62,13 +62,13 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
 	}
 
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
 	}
 	
 	@Override
@@ -80,7 +80,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			{
@@ -94,7 +94,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
 			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			{

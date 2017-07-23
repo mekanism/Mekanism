@@ -46,7 +46,7 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(world.isBlockIndirectlyGettingPowered(pos) > 0)
 		{
@@ -62,7 +62,7 @@ public class BlockObsidianTNT extends Block
 		{
 			EntityObsidianTNT entity = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
 			entity.fuse = world.rand.nextInt(entity.fuse / 4) + entity.fuse / 8;
-			world.spawnEntityInWorld(entity);
+			world.spawnEntity(entity);
 		}
 	}
 
@@ -71,15 +71,17 @@ public class BlockObsidianTNT extends Block
 		if(!world.isRemote)
 		{
 			EntityObsidianTNT entity = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
-			world.spawnEntityInWorld(entity);
+			world.spawnEntity(entity);
 			entity.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
 		}
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(stack != null && stack.getItem() == Items.FLINT_AND_STEEL)
+		ItemStack stack = entityplayer.getHeldItem(hand);
+		
+		if(!stack.isEmpty() && stack.getItem() == Items.FLINT_AND_STEEL)
 		{
 			explode(world, pos);
 			world.setBlockToAir(pos);
@@ -87,7 +89,7 @@ public class BlockObsidianTNT extends Block
 			return true;
 		}
 		else {
-			return super.onBlockActivated(world, pos, state, entityplayer, hand, stack, side, hitX, hitY, hitZ);
+			return super.onBlockActivated(world, pos, state, entityplayer, hand, side, hitX, hitY, hitZ);
 		}
 	}
 

@@ -13,8 +13,8 @@ import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
-import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,7 +39,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 			@Override
 			public void run()
 			{
-				if(!player.worldObj.isRemote)
+				if(!player.world.isRemote)
 				{
 					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		
@@ -49,16 +49,16 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 					}
 				}
 				else {
-					if(message.coord4D.getTileEntity(player.worldObj) instanceof TileEntityLogisticalSorter)
+					if(message.coord4D.getTileEntity(player.world) instanceof TileEntityLogisticalSorter)
 					{
 						try {
 							if(message.packetType == SorterGuiPacket.CLIENT)
 							{
-								FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), -1));
+								FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), -1));
 							}
 							else if(message.packetType == SorterGuiPacket.CLIENT_INDEX)
 							{
-								FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos(), message.index));
+								FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), message.index));
 							}
 		
 							player.openContainer.windowId = message.windowId;

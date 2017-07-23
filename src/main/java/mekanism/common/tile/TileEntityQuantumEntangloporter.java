@@ -13,7 +13,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.CapabilityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData.IOState;
@@ -26,12 +25,14 @@ import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.IComputerIntegration;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -40,6 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -82,7 +84,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			}
 		}
 
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 		
 		configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[] {0};
 		configComponent.getOutputs(TransmissionType.FLUID).get(2).availableSlots = new int[] {0};
@@ -101,7 +103,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(configComponent.isEjecting(TransmissionType.ENERGY))
 			{
@@ -121,13 +123,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			{
 				if(frequency != null && !frequency.valid)
 				{
-					frequency = (InventoryFrequency)manager.validateFrequency(getSecurity().getOwner(), Coord4D.get(this), frequency);
+					frequency = (InventoryFrequency)manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
 					markDirty();
 				}
 				
 				if(frequency != null)
 				{
-					frequency = (InventoryFrequency)manager.update(getSecurity().getOwner(), Coord4D.get(this), frequency);
+					frequency = (InventoryFrequency)manager.update(Coord4D.get(this), frequency);
 					
 					if(frequency == null)
 					{
@@ -156,7 +158,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		super.invalidate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(frequency != null)
 			{
@@ -183,7 +185,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	
 	public FrequencyManager getManager(Frequency freq)
 	{
-		if(getSecurity().getOwner() == null || freq == null)
+		if(getSecurity().getOwnerUUID() == null || freq == null)
 		{
 			return null;
 		}
@@ -193,14 +195,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			return Mekanism.publicEntangloporters;
 		}
 		else {
-			if(!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwner()))
+			if(!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwnerUUID()))
 			{
-				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwner());
-				Mekanism.privateEntangloporters.put(getSecurity().getOwner(), manager);
-				manager.createOrLoad(worldObj);
+				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwnerUUID());
+				Mekanism.privateEntangloporters.put(getSecurity().getOwnerUUID(), manager);
+				manager.createOrLoad(world);
 			}
 			
-			return Mekanism.privateEntangloporters.get(getSecurity().getOwner());
+			return Mekanism.privateEntangloporters.get(getSecurity().getOwnerUUID());
 		}
 	}
 	
@@ -222,7 +224,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			}
 		}
 		
-		Frequency freq = new InventoryFrequency(name, getSecurity().getOwner()).setPublic(publicFreq);
+		Frequency freq = new InventoryFrequency(name, getSecurity().getOwnerUUID()).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = (InventoryFrequency)freq;
@@ -281,7 +283,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 				
 				if(manager != null)
 				{
-					manager.remove(freq, getSecurity().getOwner());
+					manager.remove(freq, getSecurity().getOwnerUUID());
 				}
 			}
 			
@@ -508,29 +510,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public int getSizeInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
-		return 1;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slotID)
-	{
-		return hasFrequency() && slotID == 0 ? frequency.storedItem : null;
-	}
-	
-	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
-	{
-		if(hasFrequency() && slotID == 0)
-		{
-			frequency.storedItem = itemstack;
-	
-			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
-			{
-				itemstack.stackSize = getInventoryStackLimit();
-			}
-		}
+		return hasFrequency() ? frequency.inventory : null;
 	}
 
 	@Override
@@ -585,7 +567,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(worldObj);
+		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 		
 		if(hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, facing).ioState == IOState.INPUT)
 		{

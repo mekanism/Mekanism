@@ -5,13 +5,13 @@ import java.util.Collection;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.InventoryNetwork;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import mekanism.common.transmitters.grid.InventoryNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -23,15 +23,15 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultLogisticalTransporter implements ILogisticalTransporter
 {
     @Override
-    public ItemStack insert(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+    public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min)
     {
-        return null;
+        return TransitResponse.EMPTY;
     }
 
     @Override
-    public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min)
     {
-        return null;
+        return TransitResponse.EMPTY;
     }
 
     @Override
@@ -161,7 +161,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter
     }
 
     @Override
-    public IInventory getAcceptor(EnumFacing side)
+    public TileEntity getAcceptor(EnumFacing side)
     {
         return null;
     }

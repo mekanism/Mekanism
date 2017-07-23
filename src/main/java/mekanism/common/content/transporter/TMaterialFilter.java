@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.common.content.transporter.Finder.MaterialFinder;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -15,7 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class TMaterialFilter extends TransporterFilter
 {
-	public ItemStack materialItem;
+	public ItemStack materialItem = ItemStack.EMPTY;
 	
 	public Material getMaterial()
 	{
@@ -23,9 +24,9 @@ public class TMaterialFilter extends TransporterFilter
 	}
 
 	@Override
-	public boolean canFilter(ItemStack itemStack)
+	public boolean canFilter(ItemStack itemStack, boolean strict)
 	{
-		if(itemStack == null || !(itemStack.getItem() instanceof ItemBlock))
+		if(itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock))
 		{
 			return false;
 		}
@@ -53,7 +54,7 @@ public class TMaterialFilter extends TransporterFilter
 	{
 		super.read(nbtTags);
 		
-		materialItem = ItemStack.loadItemStackFromNBT(nbtTags);
+		materialItem = InventoryUtils.loadFromNBT(nbtTags);
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class TMaterialFilter extends TransporterFilter
 		super.write(data);
 
 		data.add(MekanismUtils.getID(materialItem));
-		data.add(materialItem.stackSize);
+		data.add(materialItem.getCount());
 		data.add(materialItem.getItemDamage());
 	}
 
@@ -81,7 +82,7 @@ public class TMaterialFilter extends TransporterFilter
 	{
 		int code = 1;
 		code = 31 * code + MekanismUtils.getID(materialItem);
-		code = 31 * code + materialItem.stackSize;
+		code = 31 * code + materialItem.getCount();
 		code = 31 * code + materialItem.getItemDamage();
 		return code;
 	}
@@ -96,6 +97,8 @@ public class TMaterialFilter extends TransporterFilter
 	public TMaterialFilter clone()
 	{
 		TMaterialFilter filter = new TMaterialFilter();
+		filter.allowDefault = allowDefault;
+		filter.color = color;
 		filter.materialItem = materialItem;
 
 		return filter;

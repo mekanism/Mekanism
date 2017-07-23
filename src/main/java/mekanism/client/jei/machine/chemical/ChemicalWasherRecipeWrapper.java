@@ -1,20 +1,19 @@
 package mekanism.client.jei.machine.chemical;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import mekanism.api.gas.GasStack;
+import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.util.LangUtils;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
-import net.minecraft.item.ItemStack;
+import mezz.jei.api.ingredients.IIngredients;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ChemicalWasherRecipeWrapper extends BlankRecipeWrapper
+public class ChemicalWasherRecipeWrapper extends BaseRecipeWrapper
 {
 	public WasherRecipe recipe;
 	
@@ -26,25 +25,12 @@ public class ChemicalWasherRecipeWrapper extends BlankRecipeWrapper
 		category = c;
 	}
 	
-	@Nonnull
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients) 
 	{
-		return new ArrayList<ItemStack>();
-	}
-	
-	@Nonnull
-	@Override
-	public List<FluidStack> getFluidInputs() 
-	{
-		return Arrays.asList(new FluidStack(FluidRegistry.WATER, 1000));
-	}
-
-	@Nonnull
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return new ArrayList<ItemStack>();
+		ingredients.setInput(FluidStack.class, new FluidStack(FluidRegistry.WATER, 1000));
+		ingredients.setInput(GasStack.class, recipe.recipeInput.ingredient);
+		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
 	}
 	
 	@Nullable
@@ -63,5 +49,11 @@ public class ChemicalWasherRecipeWrapper extends BlankRecipeWrapper
 		}
 		
 		return currenttip;
+	}
+	
+	@Override
+	public ChemicalWasherRecipeCategory getCategory()
+	{
+		return category;
 	}
 }

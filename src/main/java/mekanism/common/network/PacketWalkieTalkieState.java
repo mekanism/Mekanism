@@ -17,7 +17,7 @@ public class PacketWalkieTalkieState implements IMessageHandler<WalkieTalkieStat
 	{
 		ItemStack itemstack = PacketHandler.getPlayer(context).getHeldItem(message.currentHand);
 		
-		if(itemstack != null && itemstack.getItem() instanceof ItemWalkieTalkie)
+		if(!itemstack.isEmpty() && itemstack.getItem() instanceof ItemWalkieTalkie)
 		{
 			((ItemWalkieTalkie)itemstack.getItem()).setChannel(itemstack, message.channel);
 		}

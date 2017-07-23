@@ -33,16 +33,16 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 		                Mekanism.flamethrowerActive.remove(message.username);
 		            }
 		
-		            if(!player.worldObj.isRemote)
+		            if(!player.world.isRemote)
 		            {
-		                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.currentHand, message.username, message.value), player.worldObj.provider.getDimension());
+		                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.currentHand, message.username, message.value), player.world.provider.getDimension());
 		            }
 		        }
 		        else if(message.packetType == FlamethrowerPacket.MODE)
 		        {
 		            ItemStack stack = player.getHeldItem(message.currentHand);
 		
-		            if(stack != null && stack.getItem() instanceof ItemFlamethrower)
+		            if(!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower)
 		            {
 		                ((ItemFlamethrower)stack.getItem()).incrementMode(stack);
 		            }

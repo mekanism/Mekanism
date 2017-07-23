@@ -94,7 +94,7 @@ public interface IElectricItemManager {
 	 *
 	 * @param stack electric item's stack
 	 * @param amount amount of energy to discharge in EU
-	 * @param entity entity holding the item
+	 * @param entity entity holding the item, may be null
 	 * @return true if the operation succeeded
 	 */
 	boolean use(ItemStack stack, double amount, EntityLivingBase entity);

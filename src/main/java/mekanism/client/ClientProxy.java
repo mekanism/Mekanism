@@ -10,11 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mcmultipart.client.multipart.MultipartRegistryClient;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
@@ -125,6 +122,10 @@ import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -134,20 +135,13 @@ import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.multipart.PartDiversionTransporter;
-import mekanism.common.multipart.PartLogisticalTransporter;
-import mekanism.common.multipart.PartMechanicalPipe;
-import mekanism.common.multipart.PartPressurizedTube;
-import mekanism.common.multipart.PartRestrictiveTransporter;
-import mekanism.common.multipart.PartThermodynamicConductor;
-import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
-import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
@@ -165,7 +159,6 @@ import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
@@ -198,6 +191,15 @@ import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -212,7 +214,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
-import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -251,6 +253,7 @@ public class ClientProxy extends CommonProxy
 {
 	public static Map<String, ModelResourceLocation> machineResources = new HashMap<String, ModelResourceLocation>();
 	public static Map<String, ModelResourceLocation> basicResources = new HashMap<String, ModelResourceLocation>();
+	public static Map<String, ModelResourceLocation> transmitterResources = new HashMap<String, ModelResourceLocation>();
 	
 	public static final String[] CUSTOM_RENDERS = new String[] {"fluid_tank", "bin_basic", "bin_advanced", "bin_elite", "bin_ultimate", 
 		"Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower", "personal_chest",
@@ -262,6 +265,7 @@ public class ClientProxy extends CommonProxy
 	private static final IStateMapper plasticMapper = new PlasticBlockStateMapper();
 	private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
 	private static final IStateMapper boxMapper = new CardboardBoxStateMapper();
+	private static final IStateMapper transmitterMapper = new TransmitterStateMapper();
 	
 	@Override
 	public void loadConfiguration()
@@ -279,6 +283,7 @@ public class ClientProxy extends CommonProxy
 		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
 		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
 		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
+		client.allowConfiguratorModeScroll = Mekanism.configuration.get("client", "ConfiguratorModeScroll", true).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{
@@ -289,7 +294,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand)
 	{
-		TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)entityplayer.worldObj.getTileEntity(pos);
+		TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)entityplayer.world.getTileEntity(pos);
 
 		if(id == 0)
 		{
@@ -350,19 +355,18 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter", new RenderQuantumEntangloporter());
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 		
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartMechanicalPipe.class, new RenderMechanicalPipe());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartUniversalCable.class, new RenderUniversalCable());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartThermodynamicConductor.class, new RenderThermodynamicConductor());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartLogisticalTransporter.class, new RenderLogisticalTransporter());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartDiversionTransporter.class, new RenderLogisticalTransporter());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartRestrictiveTransporter.class, new RenderLogisticalTransporter());
-		MultipartRegistryClient.bindMultipartSpecialRenderer(PartPressurizedTube.class, new RenderPressurizedTube());
+		ClientRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe", new RenderMechanicalPipe());
+		ClientRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable", new RenderUniversalCable());
+		ClientRegistry.registerTileEntity(TileEntityThermodynamicConductor.class, "ThermodynamicConductor", new RenderThermodynamicConductor());
+		ClientRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter", new RenderLogisticalTransporter());
+		ClientRegistry.registerTileEntity(TileEntityDiversionTransporter.class, "DiversionTransporter", new RenderLogisticalTransporter());
+		ClientRegistry.registerTileEntity(TileEntityRestrictiveTransporter.class, "RestrictiveTransporter", new RenderLogisticalTransporter());
+		ClientRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube", new RenderPressurizedTube());
 	}
 
 	@Override
 	public void registerItemRenders()
 	{
-    	registerItemRender(MekanismItems.PartTransmitter);
 		registerItemRender(MekanismItems.ElectricBow);
 		registerItemRender(MekanismItems.Dust);
 		registerItemRender(MekanismItems.Ingot);
@@ -412,7 +416,6 @@ public class ClientProxy extends CommonProxy
 		registerItemRender(MekanismItems.GaugeDropper);
 		registerItemRender(MekanismItems.TierInstaller);
 		registerItemRender(MekanismItems.OtherDust);
-		registerItemRender(MekanismItems.GlowPanel);
 		
 		ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF_MODEL);
 		
@@ -440,12 +443,18 @@ public class ClientProxy extends CommonProxy
 		ModelLoader.setCustomStateMapper(MekanismBlocks.RoadPlasticBlock, plasticMapper);
 		ModelLoader.setCustomStateMapper(MekanismBlocks.PlasticFence, fenceMapper);
 		ModelLoader.setCustomStateMapper(MekanismBlocks.CardboardBox, boxMapper);
+		ModelLoader.setCustomStateMapper(MekanismBlocks.Transmitter, transmitterMapper);
 		
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0, new ModelResourceLocation("mekanism:ObsidianTNT", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, new ModelResourceLocation("mekanism:SaltBlock", "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1, new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.EnergyCube), 0, new ModelResourceLocation("mekanism:EnergyCube", "inventory"));
+		
+		for(int i = 0; i < EnumColor.DYES.length; i++)
+		{
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPanel), i, new ModelResourceLocation("mekanism:glowpanel", "inventory"));
+		}
 
 		for(MachineType type : MachineType.values())
 		{
@@ -591,6 +600,50 @@ public class ClientProxy extends CommonProxy
 			
 			ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[] {}));
 		}
+		
+		for(TransmitterType type : TransmitterType.values())
+		{
+			List<ModelResourceLocation> modelsToAdd = new ArrayList<ModelResourceLocation>();
+			String resource = "mekanism:" + type.getName();
+			BaseTier tierPointer = null;
+			
+			if(type.hasTiers())
+			{
+				tierPointer = BaseTier.values()[0];
+				resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+			}
+			
+			while(true)
+			{
+				if(transmitterResources.get(resource) == null)
+				{
+					String properties = "inventory";
+					ModelResourceLocation model = new ModelResourceLocation(resource, properties);
+					
+					transmitterResources.put(resource, model);
+					modelsToAdd.add(model);
+					
+					if(type.hasTiers())
+					{
+						if(tierPointer.ordinal() < BaseTier.values().length-1)
+						{
+							tierPointer = BaseTier.values()[tierPointer.ordinal()+1];
+							
+							if(tierPointer.isObtainable())
+							{
+								resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+								
+								continue;
+							}
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			ModelLoader.registerItemVariants(Item.getItemFromBlock(MekanismBlocks.Transmitter), modelsToAdd.toArray(new ModelResourceLocation[] {}));
+		}
 
 		for(EnumColor color : EnumColor.DYES)
 		{
@@ -671,6 +724,31 @@ public class ClientProxy extends CommonProxy
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
 		
+		ItemMeshDefinition transmitterMesher = new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				TransmitterType type = TransmitterType.get(stack.getItemDamage());
+				
+				if(type != null)
+				{
+					String resource = "mekanism:" + type.getName();
+					
+					if(type.hasTiers())
+					{
+						BaseTier tier = ((ItemBlockTransmitter)stack.getItem()).getBaseTier(stack);
+						resource = "mekanism:" + type.getName() + "_" + tier.getName();
+					}
+					
+					return transmitterResources.get(resource);
+				}
+				
+				return null;
+			}
+		};
+		
+		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.Transmitter), transmitterMesher);
+		
 		OBJLoader.INSTANCE.addDomain("mekanism");
 	}
 	
@@ -717,10 +795,12 @@ public class ClientProxy extends CommonProxy
 			case 14:
 				ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
 
-				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
+				if(!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{
 					return new GuiTeleporter(player, EnumHand.values()[pos.getX()], itemStack);
 				}
+				
+				return null;
 			case 15:
 				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 16:
@@ -737,6 +817,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitMain(player.inventory, robit);
 				}
+				
+				return null;
 			case 22:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -744,6 +826,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitCrafting(player.inventory, robit);
 				}
+				
+				return null;
 			case 23:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 				
@@ -751,6 +835,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitInventory(player.inventory, robit);
 				}
+				
+				return null;
 			case 24:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -758,6 +844,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitSmelting(player.inventory, robit);
 				}
+				
+				return null;
 			case 25:
 				robit = (EntityRobit)world.getEntityByID(pos.getX());
 
@@ -765,6 +853,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitRepair(player.inventory, robit);
 				}
+				
+				return null;
 			case 29:
 				return new GuiChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer)tileEntity);
 			case 30:
@@ -786,10 +876,12 @@ public class ClientProxy extends CommonProxy
 			case 38:
 				ItemStack itemStack1 = player.getHeldItem(EnumHand.values()[pos.getX()]);
 
-				if(itemStack1 != null && itemStack1.getItem() instanceof ItemSeismicReader)
+				if(!itemStack1.isEmpty() && itemStack1.getItem() instanceof ItemSeismicReader)
 				{
 					return new GuiSeismicReader(world, new Coord4D(player), itemStack1.copy());
 				}
+				
+				return null;
 			case 39:
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 			case 40:
@@ -840,7 +932,7 @@ public class ClientProxy extends CommonProxy
 	{
 		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
 		
-		if(screen instanceof GuiTeleporter && ((GuiTeleporter)screen).itemStack != null)
+		if(screen instanceof GuiTeleporter && !((GuiTeleporter)screen).itemStack.isEmpty())
 		{
 			GuiTeleporter teleporter = (GuiTeleporter)screen;
 			
@@ -856,7 +948,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void addHitEffects(Coord4D coord, RayTraceResult mop)
 	{
-		if(Minecraft.getMinecraft().theWorld != null)
+		if(Minecraft.getMinecraft().world != null)
 		{
 			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord.getPos(), mop);
 		}
@@ -1007,7 +1099,7 @@ public class ClientProxy extends CommonProxy
 		});
 		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new IRenderFactory<EntityBabySkeleton>() {
 			@Override
-			public Render<EntitySkeleton> createRenderFor(RenderManager manager)
+			public Render<AbstractSkeleton> createRenderFor(RenderManager manager)
 			{
 				return new RenderSkeleton(manager);
 			}
@@ -1025,7 +1117,7 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) 
 			{
-				if(stack != null && stack.getItem() instanceof ItemWalkieTalkie)
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemWalkieTalkie)
 				{
 					ItemWalkieTalkie item = (ItemWalkieTalkie)stack.getItem();
 					
@@ -1044,7 +1136,7 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) 
 			{
-				if(stack != null && stack.getItem() instanceof ItemCraftingFormula)
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula)
 				{
 					ItemCraftingFormula item = (ItemCraftingFormula)stack.getItem();
 					
@@ -1114,20 +1206,20 @@ public class ClientProxy extends CommonProxy
 			return context.getServerHandler().playerEntity;
 		}
 		else {
-			return Minecraft.getMinecraft().thePlayer;
+			return Minecraft.getMinecraft().player;
 		}
 	}
 	
 	@Override
 	public void handlePacket(Runnable runnable, EntityPlayer player)
 	{
-		if(player == null || player.worldObj.isRemote)
+		if(player == null || player.world.isRemote)
 		{
 			Minecraft.getMinecraft().addScheduledTask(runnable);
 		}
-		else if(player != null && !player.worldObj.isRemote)
+		else if(player != null && !player.world.isRemote)
 		{
-			((WorldServer)player.worldObj).addScheduledTask(runnable); //singleplayer
+			((WorldServer)player.world).addScheduledTask(runnable); //singleplayer
 		}
 	}
 

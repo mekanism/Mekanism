@@ -5,49 +5,43 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig;
-import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.util.ListUtils;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.IComputerIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -59,7 +53,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandlerWrapper, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager, IRedstoneControl, IActiveState, ISecurityTile
+public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeInfoHandler, ITankManager
 {
 	/** This separator's water slot. */
 	public FluidTank fluidTank = new FluidTank(24000);
@@ -81,24 +75,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	/** Type type of gas this block is dumping. */
 	public GasMode dumpRight = GasMode.IDLE;
-	
-	public double BASE_ENERGY_USAGE;
-	
-	public double energyPerTick;
-
-    public int updateDelay;
-
-	public boolean isActive = false;
-
-    public boolean clientActive = false;
-
-    public double prevEnergy;
 
 	public SeparatorRecipe cachedRecipe;
 	
 	public double clientEnergyUsed;
-	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
+
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     /** This machine's current RedstoneControl type. */
@@ -106,8 +87,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public TileEntityElectrolyticSeparator()
 	{
-		super("ElectrolyticSeparator", BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
-		inventory = new ItemStack[5];
+		super("machine.electrolyticseparator", "ElectrolyticSeparator", BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy, 0, 4);
+		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -115,51 +96,30 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 
-        if(worldObj.isRemote && updateDelay > 0)
-        {
-            updateDelay--;
-
-            if(updateDelay == 0 && clientActive != isActive)
-            {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(worldObj, getPos());
-            }
-        }
-
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-            if(updateDelay > 0)
-            {
-                updateDelay--;
-
-                if(updateDelay == 0 && clientActive != isActive)
-                {
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-                }
-            }
-
 			ChargeUtils.discharge(3, this);
 			
-			if(inventory[0] != null)
+			if(!inventory.get(0).isEmpty())
 			{
-				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory[0]))
+				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory.get(0)))
 				{
-					if(FluidContainerUtils.isFluidContainer(inventory[0]))
+					if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 					{
-						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
+						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), true);
 					}
 				}
 			}
 
-			if(inventory[1] != null && leftTank.getStored() > 0)
+			if(!inventory.get(1).isEmpty() && leftTank.getStored() > 0)
 			{
-				leftTank.draw(GasTransmission.addGas(inventory[1], leftTank.getGas()), true);
+				leftTank.draw(GasUtils.addGas(inventory.get(1), leftTank.getGas()), true);
 				MekanismUtils.saveChunk(this);
 			}
 
-			if(inventory[2] != null && rightTank.getStored() > 0)
+			if(!inventory.get(2).isEmpty() && rightTank.getStored() > 0)
 			{
-				rightTank.draw(GasTransmission.addGas(inventory[2], rightTank.getGas()), true);
+				rightTank.draw(GasUtils.addGas(inventory.get(2), rightTank.getGas()), true);
 				MekanismUtils.saveChunk(this);
 			}
 			
@@ -169,9 +129,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
                 setActive(true);
 
-				boolean update = BASE_ENERGY_USAGE != recipe.energyUsage;
+				boolean update = BASE_ENERGY_PER_TICK != recipe.energyUsage;
 				
-				BASE_ENERGY_USAGE = recipe.energyUsage;
+				BASE_ENERGY_PER_TICK = recipe.energyUsage;
 				
 				if(update)
 				{
@@ -198,7 +158,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				if(dumpLeft != GasMode.DUMPING)
 				{
 					GasStack toSend = new GasStack(leftTank.getGas().getGas(), Math.min(leftTank.getStored(), output));
-					leftTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
+					leftTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
 				}
 				else {
 					leftTank.draw(dumpAmount, true);
@@ -215,7 +175,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				if(dumpRight != GasMode.DUMPING)
 				{
 					GasStack toSend = new GasStack(rightTank.getGas().getGas(), Math.min(rightTank.getStored(), output));
-					rightTank.draw(GasTransmission.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
+					rightTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
 				}
 				else {
 					rightTank.draw(dumpAmount, true);
@@ -317,11 +277,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(slotID == 1)
 		{
-			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("hydrogen"));
+			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Hydrogen);
 		}
 		else if(slotID == 2)
 		{
-			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen"));
+			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Oxygen);
 		}
 		else if(slotID == 3)
 		{
@@ -393,18 +353,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				rightTank.setGas(null);
 			}
 	
-	        controlType = RedstoneControl.values()[dataStream.readInt()];
 			dumpLeft = GasMode.values()[dataStream.readInt()];
 			dumpRight = GasMode.values()[dataStream.readInt()];
-			clientActive = dataStream.readBoolean();
 			clientEnergyUsed = dataStream.readDouble();
-	
-	        if(updateDelay == 0 && clientActive != isActive)
-	        {
-	            updateDelay = MekanismConfig.general.UPDATE_DELAY;
-	            isActive = clientActive;
-	            MekanismUtils.updateBlock(worldObj, getPos());
-	        }
 		}
 	}
 
@@ -443,10 +394,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			data.add(false);
 		}
 
-        data.add(controlType.ordinal());
 		data.add(dumpLeft.ordinal());
 		data.add(dumpRight.ordinal());
-		data.add(isActive);
 		data.add(clientEnergyUsed);
 
 		return data;
@@ -468,9 +417,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
 		}
 
-        isActive = nbtTags.getBoolean("isActive");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
 		leftTank.read(nbtTags.getCompoundTag("leftTank"));
 		rightTank.read(nbtTags.getCompoundTag("rightTank"));
 
@@ -487,9 +433,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
 		}
-
-        nbtTags.setBoolean("isActive", isActive);
-        nbtTags.setInteger("controlType", controlType.ordinal());
 
 		nbtTags.setTag("leftTank", leftTank.write(new NBTTagCompound()));
 		nbtTags.setTag("rightTank", rightTank.write(new NBTTagCompound()));
@@ -675,84 +618,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		
 		return super.getCapability(capability, side);
-	}
-
-    @Override
-    public RedstoneControl getControlType()
-    {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type)
-    {
-        controlType = type;
-        MekanismUtils.saveChunk(this);
-    }
-
-    @Override
-    public boolean canPulse()
-    {
-        return false;
-    }
-
-    @Override
-    public void setActive(boolean active)
-    {
-        isActive = active;
-
-        if(clientActive != active && updateDelay == 0)
-        {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
-
-            updateDelay = 10;
-            clientActive = active;
-        }
-    }
-
-    @Override
-    public boolean getActive()
-    {
-        return isActive;
-    }
-
-    @Override
-    public boolean renderUpdate()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean lightUpdate()
-    {
-        return true;
-    }
-	
-	@Override
-	public TileComponentUpgrade getComponent() 
-	{
-		return upgradeComponent;
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity()
-	{
-		return securityComponent;
-	}
-	
-	@Override
-	public void recalculateUpgradables(Upgrade upgrade)
-	{
-		super.recalculateUpgradables(upgrade);
-
-		switch(upgrade)
-		{
-			case ENERGY:
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				energyPerTick = BASE_ENERGY_USAGE; //Don't scale energy usage.
-			default:
-				break;
-		}
 	}
 	
 	@Override

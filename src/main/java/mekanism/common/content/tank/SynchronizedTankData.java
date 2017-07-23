@@ -8,6 +8,7 @@ import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
@@ -20,7 +21,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 	
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-	public ItemStack[] inventory = new ItemStack[2];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
 	public Set<ValveData> valves = new HashSet<ValveData>();
 	
@@ -47,7 +48,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 	}
 	
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}

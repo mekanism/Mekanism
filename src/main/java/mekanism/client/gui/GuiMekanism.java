@@ -10,7 +10,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -21,6 +21,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
@@ -116,9 +117,9 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 				}
 			}
 
-			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			ItemStack stack = mc.player.inventory.getItemStack();
 
-			if(stack != null && stack.getItem() instanceof ItemConfigurator && hovering != null)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && hovering != null)
 			{
 				SideData data = getFromSlot(hovering);
 
@@ -158,7 +159,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY)
 	{
-		return isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);
+		return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
 	}
 
 	@Override
@@ -256,6 +257,29 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	public void handleMouse(Slot slot, int slotIndex, int button, ClickType modifier)
 	{
 		handleMouseClick(slot, slotIndex, button, modifier);
+	}
+	
+	@Override
+	public void handleMouseInput() throws java.io.IOException
+	{
+		super.handleMouseInput();
+		
+		int xAxis = Mouse.getEventX() * width / mc.displayWidth - getXPos();
+		int yAxis = height - Mouse.getEventY() * height / mc.displayHeight - 1 - getYPos();
+		int delta = Mouse.getEventDWheel();
+		
+		if(delta != 0) 
+		{
+			mouseWheel(xAxis, yAxis, delta);
+		}
+	}
+	
+	public void mouseWheel(int xAxis, int yAxis, int delta)
+	{
+		for(GuiElement element : guiElements)
+		{
+			element.mouseWheel(xAxis, yAxis, delta);
+		}
 	}
 	
 	public int getXPos()

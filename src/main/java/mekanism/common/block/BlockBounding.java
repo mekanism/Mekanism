@@ -49,12 +49,12 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
-			return state1.getBlock().onBlockActivated(world, tileEntity.mainPos, state1, player, hand, stack, side, hitX, hitY, hitZ);
+			return state1.getBlock().onBlockActivated(world, tileEntity.mainPos, state1, player, hand, side, hitX, hitY, hitZ);
 		} catch(Exception e) {
 			return false;
 		}
@@ -93,13 +93,13 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
 			tileEntity.onNeighborChange(state.getBlock());
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
-			state1.getBlock().neighborChanged(state1, world, tileEntity.mainPos, this);
+			state1.getBlock().neighborChanged(state1, world, tileEntity.mainPos, neighborBlock, neighborPos);
 		} catch(Exception e) {}
 	}
 	

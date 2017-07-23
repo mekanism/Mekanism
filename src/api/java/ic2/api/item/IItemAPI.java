@@ -1,6 +1,7 @@
 package ic2.api.item;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -10,6 +11,17 @@ import net.minecraft.item.ItemStack;
  *
  */
 public interface IItemAPI {
+
+	/**
+	 * Get the <b>default</b> blockstate for a specific block name and variant.<br/>
+	 * For machines etc, you might want to make your detection a bit more fuzzy,
+	 * because the BlockState also contains properties like the facing and the active
+	 * state of a machine.
+	 * @param name The name of the block.
+	 * @param variant The variant of the block.
+	 * @return The default state of the block with that variant.
+	 */
+	IBlockState getBlockState(String name, String variant);
 
 	/**
 	 * Get an ItemStack for a specific item name.

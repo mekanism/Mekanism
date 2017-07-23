@@ -1,5 +1,7 @@
 package mekanism.client.jei.machine;
 
+import java.util.List;
+
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
@@ -12,6 +14,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.IGuiHelper;
@@ -19,6 +22,7 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -91,7 +95,7 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof AdvancedMachineRecipeWrapper)
 		{
@@ -106,8 +110,8 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(1, false, 87, 18);
 		itemStacks.init(2, false, 27, 36);
 
-		itemStacks.setFromRecipe(0, recipeWrapper.getInputs());
-		itemStacks.setFromRecipe(1, recipeWrapper.getOutputs());
+		itemStacks.set(0, input.itemStack);
+		itemStacks.set(1, ((ItemStackOutput)tempRecipe.recipeOutput).output);
 		itemStacks.set(2, ((AdvancedMachineRecipeWrapper)recipeWrapper).getFuelStacks(input.gasType));
 	}
 }

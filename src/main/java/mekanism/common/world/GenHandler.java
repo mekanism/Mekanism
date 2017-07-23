@@ -2,8 +2,8 @@ package mekanism.common.world;
 
 import java.util.Random;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.config.MekanismConfig.general;
 import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -42,8 +42,8 @@ public class GenHandler implements IWorldGenerator
 			
 			for(int i = 0; i < general.saltPerChunk; i++)
 			{
-				int randPosX = (chunkX*16) + random.nextInt(16);
-				int randPosZ = (chunkZ*16) + random.nextInt(16);
+				int randPosX = (chunkX*16) + random.nextInt(16) + 8;
+				int randPosZ = (chunkZ*16) + random.nextInt(16) + 8;
 				BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 60, randPosZ));
 				new WorldGenSalt(6).generate(world, random, pos);
 			}

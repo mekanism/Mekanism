@@ -23,7 +23,7 @@ public class PacketContainerEditMode implements IMessageHandler<ContainerEditMod
 			@Override
 			public void run()
 			{
-				TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
+				TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 				
 				if(tileEntity instanceof IFluidContainerManager)
 				{

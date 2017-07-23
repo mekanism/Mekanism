@@ -1,16 +1,16 @@
 package mekanism.client.render.transmitter;
 
-import mekanism.api.MekanismConfig.client;
 import mekanism.client.render.ColourTemperature;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.multipart.PartThermodynamicConductor;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderThermodynamicConductor extends RenderTransmitterBase<PartThermodynamicConductor>
+public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor>
 {
 	public RenderThermodynamicConductor()
 	{
@@ -18,7 +18,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<PartTher
 	}
 	
 	@Override
-	public void renderMultipartAt(PartThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage)
+	public void renderTileEntityAt(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(client.opaqueTransmitters)
 		{
@@ -43,7 +43,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<PartTher
 		pop();
 	}
 	
-	public void renderHeatSide(VertexBuffer renderer, EnumFacing side, PartThermodynamicConductor cable)
+	public void renderHeatSide(VertexBuffer renderer, EnumFacing side, TileEntityThermodynamicConductor cable)
 	{
 		bindTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));

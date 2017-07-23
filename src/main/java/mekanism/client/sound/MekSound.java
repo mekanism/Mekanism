@@ -1,6 +1,6 @@
 package mekanism.client.sound;
 
-import mekanism.api.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.client;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEventAccessor;

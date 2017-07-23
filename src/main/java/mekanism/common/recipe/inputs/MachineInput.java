@@ -1,7 +1,7 @@
 package mekanism.common.recipe.inputs;
 
-import mekanism.api.util.StackUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -27,14 +27,14 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 	
 	public static boolean inputContains(ItemStack container, ItemStack contained)
 	{
-		if(container != null && container.stackSize >= contained.stackSize)
+		if(container != null && container.getCount() >= contained.getCount())
 		{
 			if(MekanismUtils.getOreDictName(container).contains("treeSapling"))
 			{
 				return StackUtils.equalsWildcard(contained, container);
 			}
 			
-			return StackUtils.equalsWildcardWithNBT(contained, container) && container.stackSize >= contained.stackSize;
+			return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
 		}
 		
 		return false;

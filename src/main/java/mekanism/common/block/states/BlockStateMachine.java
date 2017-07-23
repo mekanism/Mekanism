@@ -5,14 +5,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.machines;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -118,7 +118,7 @@ public class BlockStateMachine extends ExtendedBlockState
 		}
 	}
 
-	public static enum MachineType implements IStringSerializable
+	public static enum MachineType implements IStringSerializable, IBlockType
 	{
 		ENRICHMENT_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 0, "EnrichmentChamber", 3, TileEntityEnrichmentChamber.class, true, false, true, Plane.HORIZONTAL, true),
 		OSMIUM_COMPRESSOR(MachineBlock.MACHINE_BLOCK_1, 1, "OsmiumCompressor", 4, TileEntityOsmiumCompressor.class, true, false, true, Plane.HORIZONTAL, true),
@@ -162,14 +162,14 @@ public class BlockStateMachine extends ExtendedBlockState
 
 		public MachineBlock typeBlock;
 		public int meta;
-		public String machineName;
+		public String blockName;
 		public int guiId;
 		public double baseEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean isElectric;
 		public boolean hasModel;
 		public boolean supportsUpgrades;
-		public Collection<ShapedMekanismRecipe> machineRecipes = new HashSet<ShapedMekanismRecipe>();
+		public Collection<ShapedMekanismRecipe> blockRecipes = new HashSet<ShapedMekanismRecipe>();
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 
@@ -177,7 +177,7 @@ public class BlockStateMachine extends ExtendedBlockState
 		{
 			typeBlock = block;
 			meta = i;
-			machineName = s;
+			blockName = s;
 			guiId = j;
 			tileEntityClass = tileClass;
 			isElectric = electric;
@@ -186,25 +186,35 @@ public class BlockStateMachine extends ExtendedBlockState
 			facingPredicate = predicate;
 			activable = hasActiveTexture;
 		}
+		
+		@Override
+		public String getBlockName()
+		{
+			return blockName;
+		}
 
+		@Override
 		public boolean isEnabled()
 		{
-			return machines.isEnabled(this.machineName);
+			return general.machinesManager.isEnabled(blockName);
 		}
 
+		@Override
 		public void addRecipes(Collection<ShapedMekanismRecipe> recipes)
 		{
-			machineRecipes.addAll(recipes);
+			blockRecipes.addAll(recipes);
 		}
 
+		@Override
 		public void addRecipe(ShapedMekanismRecipe recipe)
 		{
-			machineRecipes.add(recipe);
+			blockRecipes.add(recipe);
 		}
 
+		@Override
 		public Collection<ShapedMekanismRecipe> getRecipes()
 		{
-			return machineRecipes;
+			return blockRecipes;
 		}
 
 		public static List<MachineType> getValidMachines()
@@ -276,12 +286,6 @@ public class BlockStateMachine extends ExtendedBlockState
 					return usage.crusherUsage;
 				case DIGITAL_MINER:
 					return usage.digitalMinerUsage;
-				case BASIC_FACTORY:
-					return usage.factoryUsage * 3;
-				case ADVANCED_FACTORY:
-					return usage.factoryUsage * 5;
-				case ELITE_FACTORY:
-					return usage.factoryUsage * 7;
 				case METALLURGIC_INFUSER:
 					return usage.metallurgicInfuserUsage;
 				case PURIFICATION_CHAMBER:
@@ -361,7 +365,7 @@ public class BlockStateMachine extends ExtendedBlockState
 
 		public String getDescription()
 		{
-			return LangUtils.localize("tooltip." + machineName);
+			return LangUtils.localize("tooltip." + blockName);
 		}
 
 		public ItemStack getStack()

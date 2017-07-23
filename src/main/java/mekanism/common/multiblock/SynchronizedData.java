@@ -5,6 +5,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>>
 {
@@ -33,7 +34,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 	
 	public Set<Coord4D> internalLocations = new HashSet<Coord4D>();
 	
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return null;
 	}
