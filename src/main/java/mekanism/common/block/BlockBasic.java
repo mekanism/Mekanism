@@ -51,6 +51,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -59,6 +60,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -158,8 +160,8 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn.getTileEntity(pos);
-		
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
+
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
 		{
 			state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).facing);
@@ -343,7 +345,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 						return false;
 					case 9:
 					case 11:
-						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(pos);
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) MekanismUtils.getTileEntitySafe(world, pos);
 
 						if(tileEntity != null)
 						{
@@ -371,7 +373,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 					case 2:
 					case 7:
 					case 8:
-						TileEntityMultiblock tileEntity = (TileEntityMultiblock)world.getTileEntity(pos);
+						TileEntityMultiblock tileEntity = (TileEntityMultiblock) MekanismUtils.getTileEntitySafe(world, pos);
 
 						if(tileEntity != null)
 						{
@@ -411,12 +413,27 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 			{
 				if(!bin.bottomStack.isEmpty())
 				{
-					if(!player.isSneaking())
+					ItemStack stack;
+					if(player.isSneaking())
 					{
-						world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
+						stack = bin.remove(1).copy();
 					}
-					else {
-						world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
+					else
+					{
+						stack = bin.removeStack().copy();
+					}
+
+					if(!player.inventory.addItemStackToInventory(stack))
+					{
+						BlockPos dropPos = pos.offset(bin.facing);
+						Entity item = new EntityItem(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
+						item.addVelocity(-item.motionX, -item.motionY, -item.motionZ);
+						world.spawnEntity(item);
+					}
+					else
+					{
+						world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f,
+								SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 					}
 				}
 			}
@@ -715,7 +732,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(pos);
+		TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 		int metadata = state.getBlock().getMetaFromState(state);
 
 		if(tileEntity instanceof IActiveState)

@@ -95,7 +95,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn.getTileEntity(pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 		
 		if(tile instanceof TileEntitySidedPipe)
 		{
@@ -129,7 +129,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess w, BlockPos pos) 
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)w.getTileEntity(pos);
+		TileEntitySidedPipe tile = (TileEntitySidedPipe) MekanismUtils.getTileEntitySafe(w, pos);
 		
 		if(tile != null)
 		{
@@ -147,7 +147,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 		
 		if(tile instanceof TileEntitySidedPipe && ((TileEntitySidedPipe)tile).getTransmitterType().getSize() == Size.SMALL)
 		{
@@ -300,7 +300,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
+		TileEntitySidedPipe tile = (TileEntitySidedPipe) MekanismUtils.getTileEntitySafe(world, pos);
 		EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
 		tile.onNeighborTileChange(side);
 	}

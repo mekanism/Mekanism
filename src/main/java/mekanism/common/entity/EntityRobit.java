@@ -578,7 +578,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void setOwnerUUID(UUID uuid)
 	{
 		dataManager.set(OWNER_UUID, uuid.toString());
-		dataManager.set(OWNER_NAME, UsernameCache.getLastKnownUsername(uuid));
+		dataManager.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
 	}
 
 	public boolean getFollowing()

@@ -64,7 +64,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
-		setMaxStackSize(1);
+		setMaxStackSize(16);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -338,7 +338,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return true;
+		return getGas(stack) != null; // No bar for empty containers as bars are drawn on top of stack count number
 	}
 	
 	@Override
@@ -403,5 +403,16 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	public boolean hasOwner(ItemStack stack)
 	{
 		return hasSecurity(stack);
+	}
+
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		GasStack gasStack = getGas(stack);
+		if(gasStack != null)
+		{
+			return 1;
+		}
+		return super.getItemStackLimit(stack);
 	}
 }

@@ -200,12 +200,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				toRemove.add(coord);
 			}
 		}
-		
-		for(Coord4D coord : toRemove)
-		{
-			activeNodes.remove(coord);
-			usedNodes.add(coord);
-		}
+
+		usedNodes.addAll(toRemove);
+		activeNodes.removeAll(toRemove);
 	}
 	
 	public boolean canReplace(Coord4D coord, boolean checkNodes, boolean isPathfinding)

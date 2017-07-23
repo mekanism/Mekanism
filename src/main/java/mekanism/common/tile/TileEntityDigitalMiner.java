@@ -190,22 +190,22 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 				if(delay == 0)
 				{
-					Set<Chunk3D> toRemove = new HashSet<Chunk3D>();
 					boolean did = false;
 					
-					for(Chunk3D chunk : oresToMine.keySet())
+					for(Iterator<Chunk3D> it = oresToMine.keySet().iterator(); it.hasNext();)
 					{
+						Chunk3D chunk = it.next();
 						BitSet set = oresToMine.get(chunk);
 						int next = 0;
 	
-						while(true)
+						while(!did)
 						{
 							int index = set.nextSetBit(next);
 							Coord4D coord = getCoordFromIndex(index);
 	
 							if(index == -1)
 							{
-								toRemove.add(chunk);
+								it.remove();
 								break;
 							}
 	
@@ -215,7 +215,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								
 								if(set.cardinality() == 0)
 								{
-									toRemove.add(chunk);
+									it.remove();
 								}
 								
 								next = index + 1;
@@ -232,7 +232,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								
 								if(set.cardinality() == 0)
 								{
-									toRemove.add(chunk);
+									it.remove();
 								}
 								
 								next = index + 1;
@@ -256,7 +256,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								
 								if(set.cardinality() == 0)
 								{
-									toRemove.add(chunk);
+									it.remove();
 									break;
 								}
 								
@@ -274,7 +274,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								
 								if(set.cardinality() == 0)
 								{
-									toRemove.add(chunk);
+									it.remove();
 								}
 	
 								world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
@@ -284,16 +284,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 							break;
 						}
-						
-						if(did)
-						{
-							break;
-						}
-					}
-					
-					for(Chunk3D chunk : toRemove)
-					{
-						oresToMine.remove(chunk);
 					}
 					
 					delay = getDelay();

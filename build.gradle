@@ -61,6 +61,10 @@ repositories {
         name 'CoFH Maven'
         url = 'http://maven.covers1624.net'
     }
+    maven {
+        name 'buildcraft'
+        url 'https://mod-buildcraft.com/maven/'
+    }
 }
 
 // Define properties file
@@ -96,6 +100,7 @@ dependencies {
     compile "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
     deobfCompile "cofh:RedstoneFlux:${config.minecraft_version}-${config.redstoneflux_version}:universal"
+    deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
 }
 
 processResources

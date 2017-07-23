@@ -92,7 +92,7 @@ public class GuiTeleporter extends GuiMekanism
 			@Override
 			public String getTooltip()
 			{
-				return MekanismUtils.getEnergyDisplay(getEnergy());
+				return MekanismUtils.getEnergyDisplay(getEnergy(), getMaxEnergy());
 			}
 			
 			@Override
@@ -124,7 +124,7 @@ public class GuiTeleporter extends GuiMekanism
 			@Override
 			public String getTooltip()
 			{
-				return MekanismUtils.getEnergyDisplay(getEnergy());
+				return MekanismUtils.getEnergyDisplay(getEnergy(), getMaxEnergy());
 			}
 			
 			@Override
