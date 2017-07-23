@@ -390,8 +390,8 @@ key.armorMode=アーマーモード切り替え
 key.voice=周波数
 
 //Entities
-entity.Mekanism.Robit.name=ロビット
-entity.Mekanism.BabySkeleton.name=ベビースケルトン
+entity.Robit.name=ロビット
+entity.BabySkeleton.name=ベビースケルトン
 
 //Config Gui
 mekanism.configgui.ctgy.general=Mekanism 基本設定

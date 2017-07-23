@@ -10,6 +10,7 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGlowPanel;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.tile.TileEntityGlowPanel;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -258,7 +259,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     
     private static TileEntityGlowPanel getTileEntityGlowPanel(IBlockAccess world, BlockPos pos)
     {
-    	TileEntity tileEntity = world.getTileEntity(pos);
+    	TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
     	TileEntityGlowPanel glowPanel = null;
     	if(tileEntity instanceof TileEntityGlowPanel)
     	{

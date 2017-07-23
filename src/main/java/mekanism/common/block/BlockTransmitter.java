@@ -440,7 +440,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	
 	private static TileEntitySidedPipe getTileEntitySidedPipe(IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(pos);
+		TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 		TileEntitySidedPipe sidedPipe = null;
 		if(tileEntity instanceof TileEntitySidedPipe)
 		{

@@ -17,6 +17,7 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Upgrade;
@@ -243,7 +244,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(type.isElectric)
 			{
-				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
 			}
 
 			if(hasTank(itemstack) && type != MachineType.FLUID_TANK)
@@ -695,7 +696,19 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return MekanismUtils.getMaxEnergy(itemStack, MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
+		MachineType machineType = MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage());
+
+		if(machineType.isFactory())
+		{
+			// 200*tier.processes*recipeType.getEnergyUsage(); // From TileEntityFactory
+			RecipeType recipeType = RecipeType.values()[getRecipeType(itemStack)];
+			int tierProcess = machineType.factoryTier.processes;
+			double baseMaxEnergy = 200 * tierProcess * recipeType.getEnergyUsage();
+
+			return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
+		}
+
+		return MekanismUtils.getMaxEnergy(itemStack, machineType.baseEnergy);
 	}
 
 	@Override
@@ -957,5 +970,19 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				setBucketMode(stack, state);
 			}
 		}
+	}
+
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		if(MachineType.get(stack) == MachineType.FLUID_TANK)
+		{
+			if(getFluidStack(stack) != null)
+			{
+				return 1;
+			}
+			return 16;
+		}
+		return super.getItemStackLimit(stack);
 	}
 }

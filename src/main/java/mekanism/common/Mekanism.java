@@ -1212,9 +1212,9 @@ public class Mekanism
 	}
 	
 	@EventHandler
-	public void loadComplete(FMLLoadCompleteEvent event)
+	public void loadComplete(FMLInterModComms.IMCEvent event)
 	{
-		new IMCHandler().onIMCEvent(FMLInterModComms.fetchRuntimeMessages(this));
+		new IMCHandler().onIMCEvent(event.getMessages());
 	}
 	
 	@EventHandler
@@ -1426,11 +1426,21 @@ public class Mekanism
 	public void onBlacklistUpdate(BoxBlacklistEvent event)
 	{
 		MekanismAPI.addBoxBlacklist(MekanismBlocks.CardboardBox, OreDictionary.WILDCARD_VALUE);
+
+		// Mekanism multiblock structures
 		MekanismAPI.addBoxBlacklist(MekanismBlocks.BoundingBlock, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(MekanismBlocks.BasicBlock2, 9);   // Security Desk
+		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock, 4);  // Digital Miner
+		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock2, 9); // Seismic Vibrator
+		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock3, 1); // Solar Neutron Activator
+
+		// Minecraft unobtainable
 		MekanismAPI.addBoxBlacklist(Blocks.BEDROCK, 0);
 		MekanismAPI.addBoxBlacklist(Blocks.PORTAL, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.END_PORTAL, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.END_PORTAL_FRAME, OreDictionary.WILDCARD_VALUE);
+
+		// Minecraft multiblock structures
 		MekanismAPI.addBoxBlacklist(Blocks.BED, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.OAK_DOOR, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.SPRUCE_DOOR, OreDictionary.WILDCARD_VALUE);

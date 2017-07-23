@@ -390,8 +390,8 @@ key.armorMode=Alternar Modo de Armadura
 key.voice=Voz
 
 //Entities
-entity.Mekanism.Robit.name=Robit
-entity.Mekanism.BabySkeleton.name=Esqueleto Bebê
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Esqueleto Bebê
 
 //Config Gui
 mekanism.configgui.ctgy.general=Configurações Gerais do Mekanism
