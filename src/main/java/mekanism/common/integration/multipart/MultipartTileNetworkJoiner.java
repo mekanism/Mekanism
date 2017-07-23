@@ -6,11 +6,13 @@ import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 import mcmultipart.api.container.IMultipartContainer;
+import mcmultipart.api.multipart.IMultipartTile;
 import mcmultipart.api.slot.EnumFaceSlot;
 import mcmultipart.api.slot.IPartSlot;
 import mcmultipart.api.world.IMultipartBlockAccess;
 import mekanism.common.base.ITileNetwork;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 
 /**
@@ -24,7 +26,7 @@ import net.minecraft.world.IBlockAccess;
  */
 public class MultipartTileNetworkJoiner implements ITileNetwork
 {
-	private final HashMap<Byte, ITileNetwork> tileSideMap;  
+	private final HashMap<Byte, ITileNetwork> tileSideMap;
 	
 	 /**
 	 * Called by MCMP's multipart container when more than one part implements {@link ITileNetwork}.<br>
@@ -71,9 +73,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork
 	{
 		while(dataStream.readableBytes() > 0)
 		{
-			dataStream.markReaderIndex();
 			byte side = dataStream.readByte();
-			dataStream.resetReaderIndex();
 			
 			ITileNetwork networkTile = tileSideMap.get(side);
 			if(networkTile == null)
@@ -88,11 +88,46 @@ public class MultipartTileNetworkJoiner implements ITileNetwork
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
+		ArrayList<Object> childData = new ArrayList<>();
 		for(byte slotValue : tileSideMap.keySet())
 		{
-			tileSideMap.get(slotValue).getNetworkedData(data);
+			tileSideMap.get(slotValue).getNetworkedData(childData);
+			data.addAll(childData);
+			childData.clear();
 		}
 		
 		return data;
+	}
+
+	/**
+	 * Determines whether or not an {@link ITileNetwork} joiner is needed and, if so, adds a single byte header
+	 * used to route packets inside multipart containers.
+	 * @param entity The entity for which <code>getNetworkedData</code> is being called
+	 * @param data The network data list
+	 * @param facing The side this part is attached to or <code>null</code> for the center slot
+	 */
+	public static void addMultipartHeader(TileEntity entity, ArrayList<Object> data, EnumFacing facing)
+	{
+		int tileNetworkParts = 0;
+		IMultipartContainer container = MultipartMekanism.getContainer(entity.getWorld(), entity.getPos());
+		if(container != null)
+		{
+			for(IPartSlot slot : container.getParts().keySet())
+			{
+				TileEntity part = container.getPartTile(slot)
+						.map(multiPartTile -> multiPartTile.getTileEntity())
+						.orElse(null);
+				
+				if(part instanceof ITileNetwork)
+				{
+					tileNetworkParts++;
+				}
+			}
+		}
+		
+		if(tileNetworkParts > 1)
+		{
+			data.add(0, (byte)(facing == null ? 6 : facing.ordinal()));
+		}
 	}
 }

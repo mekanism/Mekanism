@@ -140,11 +140,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			dataStream.readByte();
-		}
-		
 		tier = ConductorTier.values()[dataStream.readInt()];
 		
 		super.handlePacketData(dataStream);
@@ -155,11 +150,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			data.add((byte)6);
-		}
-		
 		data.add(tier.ordinal());
 		
 		super.getNetworkedData(data);

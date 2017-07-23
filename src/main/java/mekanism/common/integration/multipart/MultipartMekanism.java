@@ -171,7 +171,7 @@ public class MultipartMekanism implements IMCMPAddon
 		return Collections.emptyList();
 	}
 	
-	public static boolean hasCenterSlot(IBlockAccess world, BlockPos pos)
+	static IMultipartContainer getContainer(IBlockAccess world, BlockPos pos)
 	{
 		IMultipartContainer container = null;
 		if(world instanceof IMultipartBlockAccess)
@@ -187,7 +187,13 @@ public class MultipartMekanism implements IMCMPAddon
 			}
 		}
 		
+		return container;
+	}
+	
+	public static boolean hasCenterSlot(IBlockAccess world, BlockPos pos)
+	{
 		boolean hasCenterSlot = false;
+		IMultipartContainer container = getContainer(world, pos);
 		if(container != null)
 		{
 			hasCenterSlot = container.getPart(EnumCenterSlot.CENTER).isPresent();

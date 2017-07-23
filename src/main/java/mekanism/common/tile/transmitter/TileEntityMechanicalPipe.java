@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
@@ -315,11 +314,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			dataStream.readByte();
-		}
-		
 		tier = PipeTier.values()[dataStream.readInt()];
 		
 		super.handlePacketData(dataStream);
@@ -328,11 +322,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			data.add((byte)6);
-		}
-		
 		data.add(tier.ordinal());
 		
 		super.getNetworkedData(data);

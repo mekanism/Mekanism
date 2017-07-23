@@ -10,7 +10,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
@@ -299,11 +298,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			dataStream.readByte();
-		}
-		
 		tier = TubeTier.values()[dataStream.readInt()];
 		
 		super.handlePacketData(dataStream);
@@ -312,11 +306,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			data.add((byte)6);
-		}
-		
 		data.add(tier.ordinal());
 		
 		super.getNetworkedData(data);

@@ -13,7 +13,6 @@ import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.CableTier;
@@ -393,11 +392,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			dataStream.readByte();
-		}
-		
 		tier = CableTier.values()[dataStream.readInt()];
 		
 		super.handlePacketData(dataStream);
@@ -406,11 +400,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			data.add((byte)6);
-		}
-		
 		data.add(tier.ordinal());
 		
 		super.getNetworkedData(data);

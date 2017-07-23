@@ -21,6 +21,7 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
@@ -184,11 +185,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 	{
 		if(FMLCommonHandler.instance().getSide().isClient())
 		{
-			if(Mekanism.hooks.MCMPLoaded)
-			{
-				dataStream.readByte();
-			}
-			
 			int type = dataStream.readInt();
 			
 			if(type == 0)
@@ -249,11 +245,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			data.add((byte)6);
-		}
-		
 		data.add(0);
 		
 		super.getNetworkedData(data);
@@ -284,7 +275,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 		
 		if(Mekanism.hooks.MCMPLoaded)
 		{
-			data.add((byte)6);
+			MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
 		}
 
 		data.add(1);
@@ -359,7 +350,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 		TransporterUtils.incrementColor(getTransmitter());
 		onPartChanged(null);
 		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld())));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList<>())), new Range4D(new Coord4D(getPos(), getWorld())));
 		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
 		return EnumActionResult.SUCCESS;

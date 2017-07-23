@@ -11,6 +11,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,11 +38,6 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception 
 	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			dataStream.readByte();
-		}
-		
 		side = EnumFacing.getFront(dataStream.readInt());
 		colour = EnumColor.DYES[dataStream.readInt()];
 		
@@ -53,7 +49,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	{
 		if(Mekanism.hooks.MCMPLoaded)
 		{
-			data.add((byte)side.ordinal());
+			MultipartTileNetworkJoiner.addMultipartHeader(this, data, side);
 		}
 		
 		data.add(side.ordinal());
