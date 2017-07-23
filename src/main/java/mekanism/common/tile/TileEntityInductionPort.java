@@ -442,13 +442,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!getConsumingSides().contains(side))
+		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount);
+
+		if(toUse < 0.0001 || (side != null && !sideIsConsumer(side)))
 		{
 			return 0;
 		}
 
-		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount);
-		
 		if(!simulate)
 		{
 			setEnergy(getEnergy() + toUse);
@@ -461,14 +461,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!getOutputtingSides().contains(side))
+		double toGive = Math.min(getEnergy(), amount);
+
+		if(toGive < 0.0001 || (side != null && !sideIsOutput(side)))
 		{
 			return 0;
 		}
 		
-		double toGive = Math.min(getEnergy(), amount);
-		setEnergy(getEnergy() - toGive);
-		
+		if (!simulate)
+		{
+			setEnergy(getEnergy() - toGive);
+		}
+
 		return toGive;
 	}
 

@@ -388,12 +388,12 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!(getConsumingSides().contains(side) || side == null))
+		double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
+
+		if(toUse < 0.0001 || (side != null && !sideIsConsumer(side)))
 		{
 			return 0;
 		}
-
-		double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
 		
 		if(!simulate)
 		{
@@ -406,12 +406,12 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!(getOutputtingSides().contains(side) || side == null))
+		double toGive = Math.min(getEnergy(), amount);
+
+		if(toGive < 0.0001 || (side != null && !sideIsOutput(side)))
 		{
 			return 0;
 		}
-		
-		double toGive = Math.min(getEnergy(), amount);
 		
 		if(!simulate)
 		{

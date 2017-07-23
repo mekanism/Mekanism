@@ -360,12 +360,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!getOutputtingSides().contains(side))
+		double toGive = Math.min(getEnergy(), amount);
+
+		if(toGive < 0.0001 || (side != null && !sideIsOutput(side)))
 		{
 			return 0;
 		}
-		
-		double toGive = Math.min(getEnergy(), amount);
 		
 		if(!simulate)
 		{
