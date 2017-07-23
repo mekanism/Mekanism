@@ -65,6 +65,7 @@ public class MekanismClient extends Mekanism
 		Mekanism.gasmaskOn.clear();
 		Mekanism.flamethrowerActive.clear();
 		Mekanism.activeVibrators.clear();
+		Mekanism.freeRunnerOn.clear();
 		
 		SynchronizedBoilerData.clientHotMap.clear();
 		

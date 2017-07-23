@@ -15,5 +15,6 @@ public class ClientPlayerTracker
 		Mekanism.jetpackOn.remove(event.player);
 		Mekanism.gasmaskOn.remove(event.player);
 		Mekanism.flamethrowerActive.remove(event.player);
+		Mekanism.freeRunnerOn.remove(event.player);
 	}
 }
