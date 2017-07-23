@@ -244,7 +244,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(type.isElectric)
 			{
-				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
 			}
 
 			if(hasTank(itemstack) && type != MachineType.FLUID_TANK)
@@ -970,5 +970,19 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				setBucketMode(stack, state);
 			}
 		}
+	}
+
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		if(MachineType.get(stack) == MachineType.FLUID_TANK)
+		{
+			if(getFluidStack(stack) != null)
+			{
+				return 1;
+			}
+			return 16;
+		}
+		return super.getItemStackLimit(stack);
 	}
 }

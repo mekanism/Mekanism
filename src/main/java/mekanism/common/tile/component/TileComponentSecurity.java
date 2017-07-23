@@ -214,7 +214,7 @@ public class TileComponentSecurity implements ITileComponent
 		{
 			data.add(true);
 			data.add(ownerUUID.toString());
-			data.add(UsernameCache.getLastKnownUsername(ownerUUID));
+			data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
 		}
 		else {
 			data.add(false);

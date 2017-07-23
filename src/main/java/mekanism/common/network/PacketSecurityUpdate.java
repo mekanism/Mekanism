@@ -13,6 +13,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
+import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -51,7 +52,7 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 			if(packetType == SecurityPacket.UPDATE)
 			{
 				playerUUID = uuid;
-				playerUsername = UsernameCache.getLastKnownUsername(uuid);
+				playerUsername = MekanismUtils.getLastKnownUsername(uuid);
 				securityData = data;
 			}
 		}
@@ -92,7 +93,7 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 				for(SecurityFrequency frequency : frequencies)
 				{
 					PacketHandler.writeString(dataStream, frequency.ownerUUID.toString());
-					PacketHandler.writeString(dataStream, UsernameCache.getLastKnownUsername(frequency.ownerUUID));
+					PacketHandler.writeString(dataStream, MekanismUtils.getLastKnownUsername(frequency.ownerUUID));
 					new SecurityData(frequency).write(dataStream);
 				}
 			}

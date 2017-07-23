@@ -76,7 +76,7 @@ public class GuiFactory extends GuiMekanism
 
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
 		}
 
 		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)

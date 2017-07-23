@@ -57,6 +57,10 @@ repositories {
         name 'hwyla'
         url 'http://tehnut.info/maven'
     }
+    maven {
+        name 'buildcraft'
+        url 'https://mod-buildcraft.com/maven/'
+    }
 }
 
 // Define properties file
@@ -90,6 +94,7 @@ dependencies {
     compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
     compile "li.cil.oc:OpenComputers:MC${config.minecraft_version}-${config.opencomputers_version}:api"
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
+    deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
 }
 
 processResources

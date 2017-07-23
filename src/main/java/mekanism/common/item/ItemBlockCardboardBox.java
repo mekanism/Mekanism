@@ -38,7 +38,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 	public ItemBlockCardboardBox(Block block)
 	{
 		super(block);
-		setMaxStackSize(1);
+		setMaxStackSize(16);
 		metaBlock = block;
 
 		MinecraftForge.EVENT_BUS.register(this);
@@ -167,5 +167,16 @@ public class ItemBlockCardboardBox extends ItemBlock
 		{
 			event.setCanceled(true);
 		}
+	}
+
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		BlockData blockData = getBlockData(stack);
+		if(blockData != null)
+		{
+			return 1;
+		}
+		return super.getItemStackLimit(stack);
 	}
 }
