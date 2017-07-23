@@ -25,5 +25,21 @@ public class DefaultCableOutputter implements IStrictEnergyOutputter
     public static void register()
     {
         CapabilityManager.INSTANCE.register(IStrictEnergyOutputter.class, new NullStorage<>(), DefaultCableOutputter.class);
+        //empty backwards compat
+        DeprecatedCableOutputter.register();
+    }
+
+    @SuppressWarnings("deprecation")
+    public static class DeprecatedCableOutputter implements mekanism.api.energy.ICableOutputter{
+
+	    private static void register(){
+            CapabilityManager.INSTANCE.register(mekanism.api.energy.ICableOutputter.class, new NullStorage<>(), DeprecatedCableOutputter.class );
+        }
+
+        @Override
+        public boolean canOutputTo(EnumFacing side)
+        {
+            return false;
+        }
     }
 }

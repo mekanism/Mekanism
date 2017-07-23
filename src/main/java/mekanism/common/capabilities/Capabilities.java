@@ -36,6 +36,10 @@ public class Capabilities
     @CapabilityInject(IStrictEnergyOutputter.class)
     public static Capability<IStrictEnergyOutputter> ENERGY_OUTPUTTER_CAPABILITY = null;
 
+	@CapabilityInject(mekanism.api.energy.ICableOutputter.class)
+	@Deprecated //no longer in use.
+	public static Capability<mekanism.api.energy.ICableOutputter> CABLE_OUTPUTTER_CAPABILITY = null;
+
     @CapabilityInject(IConfigurable.class)
     public static Capability<IConfigurable> CONFIGURABLE_CAPABILITY = null;
 
