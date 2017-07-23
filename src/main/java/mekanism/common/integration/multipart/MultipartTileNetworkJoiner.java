@@ -13,10 +13,25 @@ import mekanism.common.base.ITileNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
+/**
+ * Used to route {@link ITileNetwork} packets sent to multipart containers with more than one possible recipient.<br>
+ * <br>
+ * When MCMP is enabled single byte EnumFacing ordinal headers are added to packets sent by glow panels and
+ * transmitters that are then used by this class to route packets to the part attached to the appropriate side.<br>
+ * <br>
+ * In this case, since transmitters do not attach to a side and therefore have no matching EnumFacing the special
+ * value 6 is used to represent the center slot.
+ */
 public class MultipartTileNetworkJoiner implements ITileNetwork
 {
 	private final HashMap<Byte, ITileNetwork> tileSideMap;  
 	
+	 /**
+	 * Called by MCMP's multipart container when more than one part implements {@link ITileNetwork}.<br>
+	 * <br>
+	 * Builds an internal map of part slots to {@link ITileNetwork} implementations in order to route packets.
+	 * @param tileList A list of the tile entities that implement {@link ITileNetwork} in the container.
+	 */
 	public MultipartTileNetworkJoiner(List<ITileNetwork> tileList)
 	{
 		tileSideMap = new HashMap<>();
