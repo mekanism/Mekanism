@@ -108,9 +108,19 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
+	public boolean sideIsOutput(EnumFacing side) {
+		return false;
+	}
+
+	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
 		return EnumSet.allOf(EnumFacing.class);
+	}
+
+	@Override
+	public boolean sideIsConsumer(EnumFacing side) {
+		return true;
 	}
 
 	@Override
@@ -235,7 +245,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public boolean canConnectEnergy(EnumFacing from)
 	{
-		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
+		return sideIsConsumer(from) || sideIsOutput(from);
 	}
 
 	@Override
@@ -283,27 +293,27 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public boolean isTeleporterCompatible(EnumFacing side)
 	{
-		return getOutputtingSides().contains(side);
+		return sideIsOutput(side);
 	}
 
 	@Override
 	public boolean canOutputEnergy(EnumFacing side)
 	{
-		return getOutputtingSides().contains(side);
+		return sideIsOutput(side);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
-		return getConsumingSides().contains(direction);
+		return sideIsConsumer(direction);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
-		return getOutputtingSides().contains(direction) && receiver instanceof IEnergyConductor;
+		return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
 	}
 
 	@Override
@@ -344,7 +354,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public boolean canReceiveEnergy(EnumFacing side)
 	{
-		return getConsumingSides().contains(side);
+		return sideIsConsumer(side);
 	}
 
 	@Override
@@ -418,8 +428,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
 				|| capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
 				|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
-				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
-				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
+				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
+				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))
 				|| capability == CapabilityEnergy.ENERGY
 				|| super.hasCapability(capability, facing);
 	}
@@ -437,8 +447,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 		
 		if(capability == Capabilities.TESLA_HOLDER_CAPABILITY
-				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
-				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
+				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
+				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing)))
 		{
 			return (T)teslaManager.getWrapper(this, facing);
 		}

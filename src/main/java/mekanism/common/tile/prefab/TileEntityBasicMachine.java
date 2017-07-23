@@ -30,10 +30,8 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
 	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
-	 * @param location - GUI texture path of this machine
-	 * @param perTick - the energy this machine consumes every tick in it's active state
-	 * @param baseTicksRequired - how many ticks it takes to run a cycle
 	 * @param maxEnergy - how much energy this machine can store
+	 * @param baseTicksRequired - how many ticks it takes to run a cycle
 	 */
 	public TileEntityBasicMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage, int upgradeSlot, int baseTicksRequired, ResourceLocation location)
 	{
@@ -46,6 +44,11 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
 		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
+	}
+
+	@Override
+	public boolean sideIsConsumer(EnumFacing side) {
+		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
 	}
 
 	@Override

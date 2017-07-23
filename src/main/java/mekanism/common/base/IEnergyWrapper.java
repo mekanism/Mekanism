@@ -25,8 +25,10 @@ import cofh.api.energy.IEnergyReceiver;
 public interface IEnergyWrapper extends IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, IStrictEnergyOutputter, IInventory
 {
 	public EnumSet<EnumFacing> getOutputtingSides();
+	public boolean sideIsOutput(EnumFacing side);
 
 	public EnumSet<EnumFacing> getConsumingSides();
+	public boolean sideIsConsumer(EnumFacing side);
 
 	public double getMaxOutput();
 }
