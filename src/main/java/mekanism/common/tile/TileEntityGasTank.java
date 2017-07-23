@@ -244,7 +244,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		if(configComponent.getSidesForData(TransmissionType.GAS, facing, 1).contains(side))
+		if(configComponent.hasSideForData(TransmissionType.GAS, facing, 1, side))
 		{
 			return gasTank.canReceive(type);
 		}
