@@ -14,6 +14,7 @@ import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
+import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -95,11 +96,10 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn.getTileEntity(pos);
-		
-		if(tile instanceof TileEntitySidedPipe)
+		TileEntitySidedPipe tile = getTileEntitySidedPipe(worldIn, pos);
+		if(tile != null)
 		{
-			state = state.withProperty(BlockStateTransmitter.tierProperty, ((TileEntitySidedPipe)tile).getBaseTier());
+			state = state.withProperty(BlockStateTransmitter.tierProperty, tile.getBaseTier());
 		}
 		
 		return state;
@@ -129,7 +129,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess w, BlockPos pos) 
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)w.getTileEntity(pos);
+		TileEntitySidedPipe tile = getTileEntitySidedPipe(w, pos);
 		
 		if(tile != null)
 		{
@@ -147,9 +147,9 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(pos);
+		TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 		
-		if(tile instanceof TileEntitySidedPipe && ((TileEntitySidedPipe)tile).getTransmitterType().getSize() == Size.SMALL)
+		if(tile != null && tile.getTransmitterType().getSize() == Size.SMALL)
 		{
 			return smallSides[6];
 		}
@@ -160,7 +160,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b) 
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
+		TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 		
 		if(tile != null)
 		{
@@ -176,13 +176,13 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
-		return getDefaultForTile((TileEntitySidedPipe)world.getTileEntity(pos)).offset(pos);
+		return getDefaultForTile(getTileEntitySidedPipe(world, pos)).offset(pos);
 	}
 	
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) 
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
+		TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 		
 		if(tile == null)
 		{
@@ -226,16 +226,20 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
-		TileEntitySidedPipe tileEntity = (TileEntitySidedPipe)world.getTileEntity(pos);
-		ItemStack itemStack = new ItemStack(MekanismBlocks.Transmitter, 1, tileEntity.getTransmitterType().ordinal());
-		
-		if(!itemStack.hasTagCompound())
+		ItemStack itemStack = ItemStack.EMPTY;
+		TileEntitySidedPipe tileEntity = getTileEntitySidedPipe(world, pos);
+		if(tileEntity != null)
 		{
-			itemStack.setTagCompound(new NBTTagCompound());
+			itemStack = new ItemStack(MekanismBlocks.Transmitter, 1, tileEntity.getTransmitterType().ordinal());
+			
+			if(!itemStack.hasTagCompound())
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+			
+			ITierItem tierItem = (ITierItem)itemStack.getItem();
+			tierItem.setBaseTier(itemStack, tileEntity.getBaseTier());
 		}
-		
-		ITierItem tierItem = (ITierItem)itemStack.getItem();
-		tierItem.setBaseTier(itemStack, tileEntity.getBaseTier());
 
 		return itemStack;
 	}
@@ -286,24 +290,33 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
-		tile.onAdded();
+		TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+		if(tile != null)
+		{
+			tile.onAdded();
+		}
 	}
 	
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor)
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
-		EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
-		tile.onNeighborBlockChange(side);
+		TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+		if(tile != null)
+		{
+			EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
+			tile.onNeighborBlockChange(side);
+		}
 	}
 	
 	@Override
 	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntitySidedPipe tile = (TileEntitySidedPipe)world.getTileEntity(pos);
-		EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
-		tile.onNeighborTileChange(side);
+		TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+		if(tile != null)
+		{
+			EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
+			tile.onNeighborTileChange(side);
+		}
 	}
 	
 	@Override
@@ -423,5 +436,25 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		}
 		
 		return null;
+	}
+	
+	private static TileEntitySidedPipe getTileEntitySidedPipe(IBlockAccess world, BlockPos pos)
+	{
+		TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
+		TileEntitySidedPipe sidedPipe = null;
+		if(tileEntity instanceof TileEntitySidedPipe)
+		{
+			sidedPipe = (TileEntitySidedPipe)tileEntity;
+		}
+		else if(Mekanism.hooks.MCMPLoaded)
+		{
+			TileEntity childEntity = MultipartMekanism.unwrapTileEntity(world);
+			if(childEntity instanceof TileEntitySidedPipe)
+			{
+				sidedPipe = (TileEntitySidedPipe)childEntity;
+			}
+		}
+		
+		return sidedPipe;
 	}
 }

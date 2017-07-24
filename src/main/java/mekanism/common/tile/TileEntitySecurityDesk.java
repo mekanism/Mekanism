@@ -262,7 +262,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		if(ownerUUID != null)
 		{
 			data.add(true);
-			data.add(UsernameCache.getLastKnownUsername(ownerUUID));
+			data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
 		}
 		else {
 			data.add(false);

@@ -102,7 +102,7 @@ public class GuiChemicalWasher extends GuiMekanism
 		
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -67,7 +67,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn.getTileEntity(pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 		
 		if(tile instanceof TileEntityReactorController)
 		{
@@ -254,7 +254,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 	@Override
 	public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
-		TileEntity tile = world.getTileEntity(pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 		
 		if(tile instanceof TileEntityReactorLogicAdapter)
 		{

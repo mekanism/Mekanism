@@ -132,7 +132,7 @@ public abstract class BlockGenerator extends BlockContainer
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
-		TileEntity tile = worldIn.getTileEntity(pos);
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 		
 		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
 		{
@@ -217,7 +217,7 @@ public abstract class BlockGenerator extends BlockContainer
 	{
 		if(client.enableAmbientLighting)
 		{
-			TileEntity tileEntity = world.getTileEntity(pos);
+			TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 
 			if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 			{

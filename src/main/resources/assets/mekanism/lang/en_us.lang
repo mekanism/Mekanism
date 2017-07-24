@@ -394,6 +394,7 @@ upgrade.anchor.desc=Keeps a machine's chunk loaded.
 //Key description text
 key.mode=Item Mode Switch
 key.armorMode=Armor Mode Switch
+key.feetMode=Feet Mode Switch
 key.voice=Voice
 
 //Entities
@@ -784,6 +785,9 @@ tooltip.balloon=Balloon
 tooltip.jetpack.regular=Regular
 tooltip.jetpack.hover=Hover
 tooltip.jetpack.disabled=Disabled
+
+tooltip.freerunner.regular=Regular
+tooltip.freerunner.disabled=Disabled
 
 tooltip.flamethrower.combat=Combat
 tooltip.flamethrower.heat=Heat

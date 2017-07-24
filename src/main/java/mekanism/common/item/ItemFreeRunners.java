@@ -82,7 +82,8 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
-		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
+		list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 
 	public ItemStack getUnchargedItem()
@@ -221,7 +222,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		{
 			ItemFreeRunners boots = (ItemFreeRunners)stack.getItem();
 
-			if(boots.getEnergy(stack) > 0 && event.getSource() == DamageSource.FALL)
+			if(boots.getMode(stack) == FreeRunnerMode.NORMAL && boots.getEnergy(stack) > 0 && event.getSource() == DamageSource.FALL)
 			{
 				boots.setEnergy(stack, boots.getEnergy(stack)-event.getAmount()*50);
 				event.setCanceled(true);
@@ -233,5 +234,45 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
 	{
 		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
+	}
+
+	public enum FreeRunnerMode
+	{
+		NORMAL("tooltip.freerunner.regular", EnumColor.DARK_GREEN),
+		DISABLED("tooltip.freerunner.disabled", EnumColor.DARK_RED);
+
+		private String unlocalized;
+		private EnumColor color;
+
+		FreeRunnerMode(String unlocalized, EnumColor color)
+		{
+			this.unlocalized = unlocalized;
+			this.color = color;
+		}
+
+		public FreeRunnerMode increment()
+		{
+			return ordinal() < values().length-1 ? values()[ordinal()+1] : values()[0];
+		}
+
+		public String getName()
+		{
+			return color + LangUtils.localize(unlocalized);
+		}
+	}
+
+	public FreeRunnerMode getMode(ItemStack itemStack)
+	{
+		return FreeRunnerMode.values()[ItemDataUtils.getInt(itemStack, "mode")];
+	}
+
+	public void setMode(ItemStack itemStack, FreeRunnerMode mode)
+	{
+		ItemDataUtils.setInt(itemStack, "mode", mode.ordinal());
+	}
+
+	public void incrementMode(ItemStack itemStack)
+	{
+		setMode(itemStack, getMode(itemStack).increment());
 	}
 }

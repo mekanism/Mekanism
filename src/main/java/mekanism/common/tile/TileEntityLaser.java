@@ -123,7 +123,12 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 	{
 		return EnumSet.of(facing.getOpposite());
 	}
-	
+
+	@Override
+	public boolean sideIsConsumer(EnumFacing side) {
+		return side == facing.getOpposite();
+	}
+
 	@Override
 	public void setActive(boolean active)
 	{

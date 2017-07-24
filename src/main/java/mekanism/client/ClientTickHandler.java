@@ -35,6 +35,7 @@ import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
+import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
@@ -220,10 +221,24 @@ public class ClientTickHandler
 					}
 				}
 			}
-			
+
+			if(Mekanism.freeRunnerOn.contains(mc.player.getName()) != isFreeRunnerOn(mc.player))
+			{
+				if(isFreeRunnerOn(mc.player) && mc.currentScreen == null)
+				{
+					Mekanism.freeRunnerOn.add(mc.player.getName());
+				}
+				else
+				{
+					Mekanism.freeRunnerOn.remove(mc.player.getName());
+				}
+
+				Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.UPDATE, mc.player.getName(), isFreeRunnerOn(mc.player)));
+			}
+
 			ItemStack bootStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-			if(!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners)
+			if(!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && isFreeRunnerOn(mc.player))
 			{
 				mc.player.stepHeight = 1.002F;
 			}
@@ -557,6 +572,28 @@ public class ClientTickHandler
 						return true;
 					}
 				}
+			}
+		}
+
+		return false;
+	}
+
+	public static boolean isFreeRunnerOn(EntityPlayer player)
+	{
+		if(player != mc.player)
+		{
+			return Mekanism.freeRunnerOn.contains(player.getName());
+		}
+
+		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+
+		if(!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners)
+		{
+			ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
+
+			if(/*freeRunners.getEnergy(stack) > 0 && */freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL)
+			{
+				return true;
 			}
 		}
 

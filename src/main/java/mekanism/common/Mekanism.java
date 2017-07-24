@@ -240,11 +240,12 @@ public class Mekanism
 	
 	public static KeySync keyMap = new KeySync();
 	
-	public static Set<String> jetpackOn = new HashSet<String>();
-	public static Set<String> gasmaskOn = new HashSet<String>();
-	public static Set<String> flamethrowerActive = new HashSet<String>();
+	public static Set<String> jetpackOn = new HashSet<>();
+	public static Set<String> gasmaskOn = new HashSet<>();
+	public static Set<String> freeRunnerOn = new HashSet<>();
+	public static Set<String> flamethrowerActive = new HashSet<>();
 	
-	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
+	public static Set<Coord4D> activeVibrators = new HashSet<>();
 	
 	static {		
 		MekanismFluids.register();
@@ -1202,6 +1203,7 @@ public class Mekanism
 		worldTickHandler.resetRegenChunks();
 		privateTeleporters.clear();
 		privateEntangloporters.clear();
+		freeRunnerOn.clear();
 		
 		//Reset consistent managers
 		MultiblockManager.reset();
@@ -1426,11 +1428,21 @@ public class Mekanism
 	public void onBlacklistUpdate(BoxBlacklistEvent event)
 	{
 		MekanismAPI.addBoxBlacklist(MekanismBlocks.CardboardBox, OreDictionary.WILDCARD_VALUE);
+
+		// Mekanism multiblock structures
 		MekanismAPI.addBoxBlacklist(MekanismBlocks.BoundingBlock, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(MekanismBlocks.BasicBlock2, 9);   // Security Desk
+		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock, 4);  // Digital Miner
+		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock2, 9); // Seismic Vibrator
+		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock3, 1); // Solar Neutron Activator
+
+		// Minecraft unobtainable
 		MekanismAPI.addBoxBlacklist(Blocks.BEDROCK, 0);
 		MekanismAPI.addBoxBlacklist(Blocks.PORTAL, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.END_PORTAL, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.END_PORTAL_FRAME, OreDictionary.WILDCARD_VALUE);
+
+		// Minecraft multiblock structures
 		MekanismAPI.addBoxBlacklist(Blocks.BED, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.OAK_DOOR, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.SPRUCE_DOOR, OreDictionary.WILDCARD_VALUE);

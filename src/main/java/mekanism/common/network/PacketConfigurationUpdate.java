@@ -60,7 +60,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 						}
 						else if(message.clickType == 2)
 						{
-							((ISideConfiguration)tile).getConfig().getConfig(message.transmission)[message.configIndex.ordinal()] = 0;
+							((ISideConfiguration)tile).getConfig().getConfig(message.transmission).set(message.configIndex, (byte) 0);
 						}
 		
 						tile.markDirty();

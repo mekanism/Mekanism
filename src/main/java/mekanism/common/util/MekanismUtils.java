@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import com.mojang.authlib.GameProfile;
 import ic2.api.energy.EnergyNet;
 
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
@@ -20,11 +22,7 @@ import mekanism.api.IMekWrench;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismFluids;
-import mekanism.common.MekanismItems;
-import mekanism.common.OreDictCache;
+import mekanism.common.*;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.BinTier;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -33,8 +31,6 @@ import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
-import mekanism.common.Upgrade;
-import mekanism.common.Version;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
@@ -58,6 +54,7 @@ import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.tile.component.SideConfig;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.block.Block;
@@ -82,19 +79,25 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.UsernameCache;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cofh.api.item.IToolHammer;
+
+import javax.annotation.Nonnull;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -106,6 +109,8 @@ public final class MekanismUtils
 	public static final EnumFacing[] SIDE_DIRS = new EnumFacing[] {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
 
 	public static final Map<String, Class<?>> classesFound = new HashMap<String, Class<?>>();
+
+	private static final List<UUID> warnedFails = new ArrayList<>();
 
 	/**
 	 * Checks for a new version of Mekanism.
@@ -169,11 +174,7 @@ public final class MekanismUtils
 	public static void updateDonators()
 	{
 		Mekanism.donators.clear();
-
-		for(String s : getHTML("https://dl.dropbox.com/u/90411166/Donators/Mekanism.txt"))
-		{
-			Mekanism.donators.add(s);
-		}
+		Mekanism.donators.addAll(getHTML("https://dl.dropbox.com/u/90411166/Donators/Mekanism.txt"));
 	}
 
 	/**
@@ -459,7 +460,28 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Returns an integer facing that converts a world-based orientation to a machine-based oriention.
+	 * Pre-calculated cache of translated block orientations
+	 */
+	private static final EnumFacing[][] baseOrientations = new EnumFacing[EnumFacing.VALUES.length][EnumFacing.VALUES.length];
+	static {
+		for (int blockFacing = 0; blockFacing < EnumFacing.VALUES.length; blockFacing++) {
+			for (int side = 0; side < EnumFacing.VALUES.length; side++) {
+				baseOrientations[blockFacing][side] = getBaseOrientation(EnumFacing.VALUES[side], EnumFacing.VALUES[blockFacing]);
+			}
+		}
+	}
+
+	/**
+	 * Returns the sides in the modified order relative to the machine-based orientation.
+	 * @param blockFacing - what orientation the block is facing
+	 * @return EnumFacing.VALUES, translated to machine orientation
+	 */
+	public static EnumFacing[] getBaseOrientations(EnumFacing blockFacing) {
+		return baseOrientations[blockFacing.ordinal()];
+	}
+
+	/**
+	 * Returns an integer facing that converts a world-based orientation to a machine-based orientation.
 	 * @param side - world based
 	 * @param blockFacing - what orientation the block is facing
 	 * @return machine orientation
@@ -546,21 +568,22 @@ public final class MekanismUtils
 	 */
 	public static void incrementOutput(ISideConfiguration config, TransmissionType type, EnumFacing direction)
 	{
-		int side = direction.ordinal();
-		int max = config.getConfig().getOutputs(type).size()-1;
-		int current = config.getConfig().getOutputs(type).indexOf(config.getConfig().getOutputs(type).get(config.getConfig().getConfig(type)[side]));
+		ArrayList<SideData> outputs = config.getConfig().getOutputs(type);
+		SideConfig sideConfig = config.getConfig().getConfig(type);
+		int max = outputs.size() - 1;
+		int current = outputs.indexOf(outputs.get(sideConfig.get(direction)));
 
 		if(current < max)
 		{
-			config.getConfig().getConfig(type)[side] = (byte)(current+1);
+			sideConfig.set(direction, (byte) (current+1));
 		}
 		else if(current == max)
 		{
-			config.getConfig().getConfig(type)[side] = 0;
+			sideConfig.set(direction, (byte) 0);
 		}
 
-		TileEntity tile = (TileEntity)config;
-
+		assert config instanceof TileEntity;
+		TileEntity tile = (TileEntity) config;
 		tile.markDirty();
 	}
 
@@ -572,19 +595,21 @@ public final class MekanismUtils
 	 */
 	public static void decrementOutput(ISideConfiguration config, TransmissionType type, EnumFacing direction)
 	{
-		int side = direction.ordinal();
-		int max = config.getConfig().getOutputs(type).size()-1;
-		int current = config.getConfig().getOutputs(type).indexOf(config.getConfig().getOutputs(type).get(config.getConfig().getConfig(type)[side]));
+		ArrayList<SideData> outputs = config.getConfig().getOutputs(type);
+		SideConfig sideConfig = config.getConfig().getConfig(type);
+		int max = outputs.size()-1;
+		int current = outputs.indexOf(outputs.get(sideConfig.get(direction)));
 
 		if(current > 0)
 		{
-			config.getConfig().getConfig(type)[side] = (byte)(current-1);
+			sideConfig.set(direction, (byte)(current - 1));
 		}
 		else if(current == 0)
 		{
-			config.getConfig().getConfig(type)[side] = (byte)max;
+			sideConfig.set(direction, (byte)max);
 		}
 
+		assert config instanceof TileEntity;
 		TileEntity tile = (TileEntity)config;
 		tile.markDirty();
 	}
@@ -1098,6 +1123,19 @@ public final class MekanismUtils
 
 		return "error";
 	}
+
+	public static String getEnergyDisplay(double energy, double max)
+	{
+		if(energy == Double.MAX_VALUE)
+		{
+			return LangUtils.localize("gui.infinite");
+		}
+
+		String energyString = getEnergyDisplay(energy);
+		String maxString = getEnergyDisplay(max);
+
+		return energyString + "/" + maxString;
+	}
 	
 	/**
 	 * Convert from the unit defined in the configuration to joules.
@@ -1503,6 +1541,30 @@ public final class MekanismUtils
 		return false;
 	}
 
+	@Nonnull
+	public static String getLastKnownUsername(UUID uuid)
+	{
+		String ret = UsernameCache.getLastKnownUsername(uuid);
+		
+		if(ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		{ // see if MC/Yggdrasil knows about it?!
+			GameProfile gp = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
+			
+			if(gp != null)
+			{
+				ret = gp.getName();
+			}
+		}
+		
+		if(ret == null && !warnedFails.contains(uuid))
+		{
+			Mekanism.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
+			warnedFails.add(uuid);
+		}
+		
+		return ret != null ? ret : "<???>";
+	}
+
 	public static enum ResourceType
 	{
 		GUI("gui"),
@@ -1525,5 +1587,10 @@ public final class MekanismUtils
 		{
 			return prefix + "/";
 		}
+	}
+
+	public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos)
+	{
+		return worldIn instanceof ChunkCache ? ((ChunkCache)worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
 	}
 }

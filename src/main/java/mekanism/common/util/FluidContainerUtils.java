@@ -27,40 +27,46 @@ public final class FluidContainerUtils
 	
 	public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainerBlock tile, int slotID, FluidChecker checker)
 	{
-		FluidStack ret = extractFluid(tileTank.getCapacity()-tileTank.getFluidAmount(), tile.inventory.get(slotID), checker);
-		tile.inventory.set(slotID, FluidUtil.getFluidHandler(tile.inventory.get(slotID)).getContainer());
+		IFluidHandlerItem handler = FluidUtil.getFluidHandler(tile.inventory.get(slotID));
+		FluidStack ret = null;
+		if (handler != null)
+		{
+			ret = extractFluid(tileTank.getCapacity() - tileTank.getFluidAmount(), handler, checker);
+			tile.inventory.set(slotID, handler.getContainer());
+		}
 		return ret;
 	}
 	
-	public static FluidStack extractFluid(int needed, ItemStack container, FluidChecker checker)
+	public static FluidStack extractFluid(int needed, IFluidHandlerItem handler, FluidChecker checker)
 	{
-		IFluidHandlerItem handler = FluidUtil.getFluidHandler(container);
+		if (handler == null)
+		{
+			return null;
+		}
+
+		FluidStack fluidStack = handler.drain(Integer.MAX_VALUE, false);
 		
-		if(handler == null || FluidUtil.getFluidContained(container) == null)
+		if(fluidStack == null)
 		{
 			return null;
 		}
 		
-		if(checker != null && !checker.isValid(FluidUtil.getFluidContained(container).getFluid()))
+		if(checker != null && !checker.isValid(fluidStack.getFluid()))
 		{
 			return null;
 		}
 		
-		FluidStack ret = handler.drain(needed, true);
-		
-		return ret;
+		return handler.drain(needed, true);
 	}
 	
 	public static int insertFluid(FluidTank tileTank, ItemStack container)
 	{
-		return insertFluid(tileTank.getFluid(), container);
+		return insertFluid(tileTank.getFluid(), FluidUtil.getFluidHandler(container));
 	}
 	
-	public static int insertFluid(FluidStack fluid, ItemStack container)
+	public static int insertFluid(FluidStack fluid, IFluidHandler handler)
 	{
-		IFluidHandler handler = FluidUtil.getFluidHandler(container);
-		
-		if(fluid == null)
+		if(fluid == null || handler == null)
 		{
 			return 0;
 		}
@@ -79,8 +85,13 @@ public final class FluidContainerUtils
 		{
 			ItemStack inputCopy = StackUtils.size(inventory.get(inSlot).copy(), 1);
 			
-			int drained = insertFluid(stack, inputCopy);
-			inputCopy = FluidUtil.getFluidHandler(inputCopy).getContainer();
+			IFluidHandlerItem handler = FluidUtil.getFluidHandler(inputCopy);
+			int drained = 0;
+			if (handler != null)
+			{
+				drained = insertFluid(stack, handler);
+				inputCopy = handler.getContainer();
+			}
 			
 			if(!inventory.get(outSlot).isEmpty() && (!ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy) || inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize()))
 			{
@@ -120,8 +131,14 @@ public final class FluidContainerUtils
 	{
 		final Fluid storedFinal = stored != null ? stored.getFluid() : null;
 		final ItemStack input = StackUtils.size(inventory.get(inSlot).copy(), 1);
+		final IFluidHandlerItem handler = FluidUtil.getFluidHandler(input);
+
+		if (handler == null)
+		{
+			return stored;
+		}
 		
-		FluidStack ret = extractFluid(needed, input, new FluidChecker() {
+		FluidStack ret = extractFluid(needed, handler, new FluidChecker() {
 			@Override
 			public boolean isValid(Fluid f)
 			{
@@ -129,7 +146,7 @@ public final class FluidContainerUtils
 			}
 		});
 		
-		ItemStack inputCopy = FluidUtil.getFluidHandler(input).getContainer();
+		ItemStack inputCopy = handler.getContainer();
 		
 		if(FluidUtil.getFluidContained(inputCopy) == null && !inputCopy.isEmpty())
 		{

@@ -1,9 +1,11 @@
 package mekanism.generators.common;
 
+import buildcraft.api.mj.MjAPI;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseRegistry;
@@ -101,13 +103,13 @@ public class MekanismGenerators implements IModule
 		{
 			for(IFuel s : BuildcraftFuelRegistry.fuel.getFuels())
 			{
-				if(!(s.getFluid() == null || GasRegistry.containsGas(s.getFluid().getName())))
+				if(s.getFluid() != null && !GasRegistry.containsGas(s.getFluid().getFluid().getName()))
 				{
-					GasRegistry.register(new Gas(s.getFluid()));
+					GasRegistry.register(new Gas(s.getFluid().getFluid()));
 				}
 			}
 
-			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (int)(240 * general.TO_RF), 40 * Fluid.BUCKET_VOLUME);
+			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (long)(240 * general.TO_RF / 20 * MjAPI.MJ), 40 * Fluid.BUCKET_VOLUME);
 		}
 		
 		//Update the config-dependent recipes after the recipes have actually been added in the first place
@@ -274,5 +276,13 @@ public class MekanismGenerators implements IModule
 			proxy.loadConfiguration();
 			TypeConfigManager.updateConfigRecipes(GeneratorType.getGeneratorsForConfig(), generators.generatorsManager);
 		}
+	}
+
+	@SubscribeEvent
+	public void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event)
+	{
+		// Mekanism Generators multiblock structures
+		MekanismAPI.addBoxBlacklist(GeneratorsBlocks.Generator, 5); // Advanced Solar Generator
+		MekanismAPI.addBoxBlacklist(GeneratorsBlocks.Generator, 6); // Wind Generator
 	}
 }

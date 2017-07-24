@@ -21,6 +21,7 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
@@ -271,6 +272,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 	public ArrayList<Object> getSyncPacket(TransporterStack stack, boolean kill)
 	{
 		ArrayList<Object> data = new ArrayList<Object>();
+		
+		if(Mekanism.hooks.MCMPLoaded)
+		{
+			MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
+		}
 
 		data.add(1);
 		data.add(kill);
@@ -344,7 +350,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 		TransporterUtils.incrementColor(getTransmitter());
 		onPartChanged(null);
 		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList())), new Range4D(new Coord4D(getPos(), getWorld())));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList<>())), new Range4D(new Coord4D(getPos(), getWorld())));
 		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
 		return EnumActionResult.SUCCESS;

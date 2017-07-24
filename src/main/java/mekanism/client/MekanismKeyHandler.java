@@ -10,11 +10,13 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemFlamethrower;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketFlamethrowerData;
+import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
@@ -46,17 +48,19 @@ public class MekanismKeyHandler extends MekKeyHandler
 {
 	public static final String keybindCategory = "Mekanism";
 	public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.mode"), Keyboard.KEY_M, keybindCategory);
-	public static KeyBinding armorModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.armorMode"), Keyboard.KEY_F, keybindCategory);
+	public static KeyBinding armorModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.armorMode"), Keyboard.KEY_G, keybindCategory);
+	public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.feetMode"), Keyboard.KEY_H, keybindCategory);
 	public static KeyBinding voiceKey = new KeyBinding("Mekanism " + LangUtils.localize("key.voice"), Keyboard.KEY_U, keybindCategory);
 	public static KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
 	public static KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
 
 	public MekanismKeyHandler()
 	{
-		super(new KeyBinding[] {modeSwitchKey, armorModeSwitchKey, voiceKey}, new boolean[] {false, false, true});
+		super(new KeyBinding[] {modeSwitchKey, armorModeSwitchKey, freeRunnerModeSwitchKey, voiceKey}, new boolean[] {false, false, true});
 		
 		ClientRegistry.registerKeyBinding(modeSwitchKey);
 		ClientRegistry.registerKeyBinding(armorModeSwitchKey);
+		ClientRegistry.registerKeyBinding(freeRunnerModeSwitchKey);
 		ClientRegistry.registerKeyBinding(voiceKey);
 		
 		MinecraftForge.EVENT_BUS.register(this);
@@ -154,6 +158,29 @@ public class MekanismKeyHandler extends MekKeyHandler
 
 				scubaTank.toggleFlowing(chestStack);
 				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.MODE, null, false));
+				SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+			}
+		}
+		else if(kb == freeRunnerModeSwitchKey)
+		{
+			EntityPlayer player = FMLClientHandler.instance().getClient().player;
+			ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+			Item feetItem = StackUtils.getItem(feetStack);
+
+			if(feetItem instanceof ItemFreeRunners)
+			{
+				ItemFreeRunners freeRunners = (ItemFreeRunners)feetItem;
+
+				if(player.isSneaking())
+				{
+					freeRunners.setMode(feetStack, ItemFreeRunners.FreeRunnerMode.DISABLED);
+				}
+				else
+				{
+					freeRunners.incrementMode(feetStack);
+				}
+
+				Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.isSneaking()));
 				SoundHandler.playSound(MekanismSounds.HYDRAULIC);
 			}
 		}

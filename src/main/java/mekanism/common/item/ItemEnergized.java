@@ -66,7 +66,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
 	{
-		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
 	}
 
 	public ItemStack getUnchargedItem()

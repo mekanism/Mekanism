@@ -287,13 +287,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 	@Override
 	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!canReceiveEnergy(side))
+		double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
+
+		if(toUse < 0.0001 || (side != null && !canReceiveEnergy(side)))
 		{
 			return 0;
 		}
 
-		double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
-		
 		if(!simulate)
 		{
 			setEnergy(getEnergy() + toUse);

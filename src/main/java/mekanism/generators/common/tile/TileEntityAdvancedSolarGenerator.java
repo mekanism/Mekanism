@@ -26,6 +26,11 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	}
 
 	@Override
+	public boolean sideIsOutput(EnumFacing side) {
+		return side == facing;
+	}
+
+	@Override
 	public void onPlace()
 	{
 		Coord4D current = Coord4D.get(this);

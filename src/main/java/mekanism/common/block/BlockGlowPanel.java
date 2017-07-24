@@ -8,7 +8,9 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGlowPanel;
+import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.tile.TileEntityGlowPanel;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -71,7 +73,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 		return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
 	}
 
@@ -79,7 +81,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) 
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 		
 		if(tileEntity != null)
 		{
@@ -97,10 +99,10 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 		
-		if(!world.isRemote && !canStay(tileEntity))
-		{			
+		if(tileEntity != null && !world.isRemote && !canStay(world, pos))
+		{
 			float motion = 0.7F;
 			double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -117,10 +119,10 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 		
-		if(!tileEntity.getWorld().isRemote && !canStay(tileEntity))
-		{			
+		if(tileEntity != null && !tileEntity.getWorld().isRemote && !canStay(world, pos))
+		{
 			float motion = 0.7F;
 			double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -137,11 +139,11 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(pos);
+		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 		
-		if(tile != null && tile instanceof TileEntityGlowPanel)
+		if(tileEntity != null)
 		{
-			return bounds[((TileEntityGlowPanel)tile).side.ordinal()];
+			return bounds[tileEntity.side.ordinal()];
 		}
 		
 		return super.getBoundingBox(state, world, pos);
@@ -153,10 +155,27 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 		return world.isSideSolid(pos.offset(side.getOpposite()), side);
     }
 	
-	public static boolean canStay(TileEntityGlowPanel tileEntity)
+	public static boolean canStay(IBlockAccess world, BlockPos pos)
 	{
-		Coord4D adj = new Coord4D(tileEntity.getPos().offset(tileEntity.side), tileEntity.getWorld());
-		return tileEntity.getWorld().isSideSolid(adj.getPos(), tileEntity.side.getOpposite());
+		boolean canStay = false;
+		
+		if(Mekanism.hooks.MCMPLoaded)
+		{
+			canStay = MultipartMekanism.hasCenterSlot(world, pos);
+		}
+		
+		if(!canStay)
+		{
+			TileEntity tileEntity = world.getTileEntity(pos);
+			if(tileEntity instanceof TileEntityGlowPanel)
+			{
+				TileEntityGlowPanel glowPanel = (TileEntityGlowPanel)tileEntity;
+				Coord4D adj = new Coord4D(glowPanel.getPos().offset(glowPanel.side), glowPanel.getWorld());
+				canStay = glowPanel.getWorld().isSideSolid(adj.getPos(), glowPanel.side.getOpposite());
+			}
+		}
+		
+		return canStay;
 	}
 	
 	@Override
@@ -236,5 +255,25 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     public boolean isFullBlock(IBlockState state)
     {
         return false;
+    }
+    
+    private static TileEntityGlowPanel getTileEntityGlowPanel(IBlockAccess world, BlockPos pos)
+    {
+    	TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
+    	TileEntityGlowPanel glowPanel = null;
+    	if(tileEntity instanceof TileEntityGlowPanel)
+    	{
+    		glowPanel = (TileEntityGlowPanel)tileEntity;
+    	}
+    	else if(Mekanism.hooks.MCMPLoaded)
+    	{
+    		TileEntity childEntity = MultipartMekanism.unwrapTileEntity(world);
+    		if(childEntity instanceof TileEntityGlowPanel)
+    		{
+    			glowPanel = (TileEntityGlowPanel)childEntity;
+    		}
+    	}
+    	
+    	return glowPanel;
     }
 }

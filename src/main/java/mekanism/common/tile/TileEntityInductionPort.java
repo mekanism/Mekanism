@@ -103,6 +103,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
+	public boolean sideIsOutput(EnumFacing side) {
+		if (structure != null && mode)
+		{
+			return !structure.locations.contains(Coord4D.get(this).offset(side));
+		}
+		return false;
+	}
+
+	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
 		if(structure != null && !mode)
@@ -112,7 +121,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		
 		return EnumSet.noneOf(EnumFacing.class);
 	}
-	
+
+	@Override
+	public boolean sideIsConsumer(EnumFacing side) {
+		return (structure != null && !mode);
+	}
+
 	@Method(modid = "IC2")
 	public void register()
 	{
@@ -241,7 +255,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		if(getConsumingSides().contains(from))
+		if(sideIsConsumer(from))
 		{
 			double toAdd = (int)Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), maxReceive* general.FROM_RF);
 
@@ -260,7 +274,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
-		if(getOutputtingSides().contains(from))
+		if(sideIsOutput(from))
 		{
 			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_RF));
 
@@ -335,21 +349,21 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public boolean canOutputEnergy(EnumFacing side)
 	{
-		return getOutputtingSides().contains(side);
+		return sideIsOutput(side);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
-		return getConsumingSides().contains(direction);
+		return sideIsConsumer(direction);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
-		return getOutputtingSides().contains(direction) && receiver instanceof IEnergyConductor;
+		return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
 	}
 
 	@Override
@@ -390,7 +404,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public boolean canReceiveEnergy(EnumFacing side)
 	{
-		return getConsumingSides().contains(side);
+		return sideIsConsumer(side);
 	}
 
 	@Override
@@ -428,13 +442,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!getConsumingSides().contains(side))
+		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount);
+
+		if(toUse < 0.0001 || (side != null && !sideIsConsumer(side)))
 		{
 			return 0;
 		}
 
-		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount);
-		
 		if(!simulate)
 		{
 			setEnergy(getEnergy() + toUse);
@@ -447,14 +461,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Override
 	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!getOutputtingSides().contains(side))
+		double toGive = Math.min(getEnergy(), amount);
+
+		if(toGive < 0.0001 || (side != null && !sideIsOutput(side)))
 		{
 			return 0;
 		}
 		
-		double toGive = Math.min(getEnergy(), amount);
-		setEnergy(getEnergy() - toGive);
-		
+		if (!simulate)
+		{
+			setEnergy(getEnergy() - toGive);
+		}
+
 		return toGive;
 	}
 
@@ -512,8 +530,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 				|| capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
 				|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
 				|| capability == Capabilities.CONFIGURABLE_CAPABILITY
-				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
-				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
+				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
+				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))
 				|| capability == CapabilityEnergy.ENERGY
 				|| super.hasCapability(capability, facing);
 	}
@@ -531,8 +549,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		}
 		
 		if(capability == Capabilities.TESLA_HOLDER_CAPABILITY
-				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getConsumingSides().contains(facing))
-				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
+				|| (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
+				|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing)))
 		{
 			return (T)teslaManager.getWrapper(this, facing);
 		}

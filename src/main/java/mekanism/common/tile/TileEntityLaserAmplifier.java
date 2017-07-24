@@ -196,6 +196,11 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
 		double toGive = Math.min(getEnergy(), amount);
+
+		if (toGive < 0.0001)
+		{
+			return 0;
+		}
 		
 		if(!simulate)
 		{

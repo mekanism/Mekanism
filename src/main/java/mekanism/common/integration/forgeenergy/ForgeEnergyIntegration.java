@@ -44,13 +44,13 @@ public class ForgeEnergyIntegration implements IEnergyStorage
 	@Override
 	public boolean canExtract() 
 	{
-		return tileEntity.getOutputtingSides().contains(side);
+		return tileEntity.sideIsOutput(side);
 	}
 
 	@Override
 	public boolean canReceive() 
 	{
-		return tileEntity.getConsumingSides().contains(side);
+		return tileEntity.sideIsConsumer(side);
 	}
 	
 	public static int rfToForge(int rf)

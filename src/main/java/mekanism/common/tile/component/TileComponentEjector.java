@@ -153,13 +153,18 @@ public class TileComponentEjector implements ITileComponent
 		List<EnumFacing> outputSides = new ArrayList<EnumFacing>();
 		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
 
-		for(int i = 0; i < configurable.getConfig().getConfig(type).length; i++)
+		SideConfig sideConfig = configurable.getConfig().getConfig(type);
+		ArrayList<SideData> outputs = configurable.getConfig().getOutputs(type);
+
+		EnumFacing[] facings = MekanismUtils.getBaseOrientations(tileEntity.facing);
+
+		for(int i = 0; i < EnumFacing.VALUES.length; i++)
 		{
-			EnumFacing side = MekanismUtils.getBaseOrientation(EnumFacing.getFront(i), tileEntity.facing);
-			
-			if(configurable.getConfig().getConfig(type)[side.ordinal()] == configurable.getConfig().getOutputs(type).indexOf(data))
+			EnumFacing side = facings[i];
+
+			if(sideConfig.get(side) == outputs.indexOf(data))
 			{
-				outputSides.add(EnumFacing.getFront(i));
+				outputSides.add(EnumFacing.VALUES[i]);
 			}
 		}
 		
