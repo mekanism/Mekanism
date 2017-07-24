@@ -162,7 +162,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
+	public boolean sideIsConsumer(EnumFacing side) 
+	{
 		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
 	}
 
@@ -173,7 +174,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public boolean sideIsOutput(EnumFacing side) {
+	public boolean sideIsOutput(EnumFacing side)
+	{
 		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 2, side);
 	}
 

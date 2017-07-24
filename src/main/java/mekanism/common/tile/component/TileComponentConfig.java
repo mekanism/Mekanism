@@ -83,6 +83,11 @@ public class TileComponentConfig implements ITileComponent
 
 	public boolean hasSideForData(TransmissionType type, EnumFacing facing, int dataIndex, EnumFacing sideToTest)
 	{
+		if(sideToTest == null)
+		{
+			return false;
+		}
+		
 		return getConfig(type).get(sideToTest) == dataIndex;
 	}
 	
