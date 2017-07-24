@@ -121,6 +121,10 @@ public class MultipartTileNetworkJoiner implements ITileNetwork
 				if(part instanceof ITileNetwork)
 				{
 					tileNetworkParts++;
+					if(tileNetworkParts > 1)
+					{
+						break;
+					}
 				}
 			}
 		}
