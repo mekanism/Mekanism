@@ -214,6 +214,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	}
 
 	@Override
+	public boolean sideIsConsumer(EnumFacing side) {
+		return side == facing.getOpposite();
+	}
+
+	@Override
 	public void setControlType(RedstoneControl type)
 	{
 		controlType = type;

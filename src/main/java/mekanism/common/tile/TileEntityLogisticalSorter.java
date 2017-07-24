@@ -559,6 +559,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
+	public boolean sideIsConsumer(EnumFacing side) {
+		return false;
+	}
+
+	@Override
 	public boolean canSetFacing(int facing)
 	{
 		return true;

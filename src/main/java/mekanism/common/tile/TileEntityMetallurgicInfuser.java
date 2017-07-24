@@ -184,7 +184,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 		
 		for(TransmissionType transmission : configComponent.transmissions)
 		{
-			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission));
+			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
 			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
 		}
 		

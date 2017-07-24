@@ -245,10 +245,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public int pushUp(FluidStack fluid, boolean doFill)
 	{
 		Coord4D up = Coord4D.get(this).offset(EnumFacing.UP);
-		
-		if(up.getTileEntity(world) instanceof TileEntityFluidTank)
+		TileEntity tileEntity = up.getTileEntity(world);
+		if(tileEntity instanceof TileEntityFluidTank)
 		{
-			IFluidHandler handler = CapabilityUtils.getCapability(up.getTileEntity(world), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
+			IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
 			
 			if(PipeUtils.canFill(handler, fluid))
 			{
@@ -565,7 +565,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		TileEntity tile = world.getTileEntity(getPos().offset(EnumFacing.DOWN));
-		if(from == EnumFacing.DOWN && world != null && getPos() != null)
+		if(from == EnumFacing.DOWN && world != null)
 		{
 			if(isActive && !(tile instanceof TileEntityFluidTank))
 			{
