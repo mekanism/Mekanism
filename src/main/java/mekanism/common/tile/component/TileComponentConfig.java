@@ -83,7 +83,8 @@ public class TileComponentConfig implements ITileComponent
 
 	public boolean hasSideForData(TransmissionType type, EnumFacing facing, int dataIndex, EnumFacing sideToTest)
 	{
-		return getConfig(type).get(sideToTest) == dataIndex;
+		EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
+		return getConfig(type).get(translatedFacings[sideToTest.ordinal()]) == dataIndex;
 	}
 	
 	public void setCanEject(TransmissionType type, boolean eject)
