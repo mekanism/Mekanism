@@ -385,6 +385,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
+	public boolean sideIsConsumer(EnumFacing side)
+	{
+		return facing.getOpposite() == side;
+	}
+
+	@Override
 	public boolean canSetFacing(int side)
 	{
 		return side != 0 && side != 1;
