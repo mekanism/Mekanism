@@ -103,13 +103,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side)
 	{
-		return EnumSet.noneOf(EnumFacing.class);
-	}
-
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
 		return false;
 	}
 	

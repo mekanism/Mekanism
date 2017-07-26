@@ -373,26 +373,24 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean sideIsOutput(EnumFacing side) {
-		if (!hasFrequency())
+	public boolean sideIsOutput(EnumFacing side) 
+	{
+		if(!hasFrequency())
 		{
 			return false;
 		}
+		
 		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 2, side);
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return !hasFrequency() ? nothing : configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
-	}
-
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
-		if (!hasFrequency())
+		if(!hasFrequency())
 		{
 			return false;
 		}
+		
 		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
 	}
 

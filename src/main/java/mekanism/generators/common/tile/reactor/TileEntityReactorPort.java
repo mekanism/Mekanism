@@ -296,12 +296,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
-	{
-		return EnumSet.noneOf(EnumFacing.class);
-	}
-
-	@Override
 	public boolean sideIsConsumer(EnumFacing side) {
 		return false;
 	}

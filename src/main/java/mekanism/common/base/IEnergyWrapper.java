@@ -27,7 +27,6 @@ public interface IEnergyWrapper extends IStrictEnergyStorage, IEnergyReceiver, I
 	public EnumSet<EnumFacing> getOutputtingSides();
 	public boolean sideIsOutput(EnumFacing side);
 
-	public EnumSet<EnumFacing> getConsumingSides();
 	public boolean sideIsConsumer(EnumFacing side);
 
 	public double getMaxOutput();
