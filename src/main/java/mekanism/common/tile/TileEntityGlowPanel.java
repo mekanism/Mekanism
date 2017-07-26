@@ -11,6 +11,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,6 +47,11 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	@Override
 	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
+		if(Mekanism.hooks.MCMPLoaded)
+		{
+			MultipartTileNetworkJoiner.addMultipartHeader(this, data, side);
+		}
+		
 		data.add(side.ordinal());
 		data.add(colour.getMetaValue());
 		
@@ -72,6 +78,12 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 		nbt.setInteger("colour", colour.getMetaValue());
 		
 		return nbt;
+	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag()
+	{
+		return writeToNBT(new NBTTagCompound());
 	}
 
 	@Override

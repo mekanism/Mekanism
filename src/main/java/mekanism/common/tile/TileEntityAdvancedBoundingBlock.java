@@ -34,89 +34,97 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public boolean isEmpty()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return true;
 		}
 		
-		return getInv().isEmpty();
+		return inv.isEmpty();
 	}
 	
 	@Override
 	public int getSizeInventory()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().getSizeInventory();
+		return inv.getSizeInventory();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return ItemStack.EMPTY;
 		}
 
-		return getInv().getStackInSlot(i);
+		return inv.getStackInSlot(i);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return ItemStack.EMPTY;
 		}
 
-		return getInv().decrStackSize(i, j);
+		return inv.decrStackSize(i, j);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int i)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return ItemStack.EMPTY;
 		}
 
-		return getInv().removeStackFromSlot(i);
+		return inv.removeStackFromSlot(i);
 	}
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return;
 		}
 
-		getInv().setInventorySlotContents(i, itemstack);
+		inv.setInventorySlotContents(i, itemstack);
 	}
 
 	@Override
 	public String getName()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return "null";
 		}
 
-		return getInv().getName();
+		return inv.getName();
 	}
 
 	@Override
 	public boolean hasCustomName()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().hasCustomName();
+		return inv.hasCustomName();
 	}
 
 	@Override
@@ -128,56 +136,61 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public int getInventoryStackLimit()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().getInventoryStackLimit();
+		return inv.getInventoryStackLimit();
 	}
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer entityplayer)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().isUsableByPlayer(entityplayer);
+		return inv.isUsableByPlayer(entityplayer);
 	}
 
 	@Override
 	public void openInventory(EntityPlayer player)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return;
 		}
 
-		getInv().openInventory(player);
+		inv.openInventory(player);
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return;
 		}
 
-		getInv().closeInventory(player);
+		inv.closeInventory(player);
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().canBoundInsert(getPos(), i, itemstack);
+		return inv.canBoundInsert(getPos(), i, itemstack);
 	}
 
 	@Override
@@ -204,12 +217,13 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return InventoryUtils.EMPTY;
 		}
 
-		return getInv().getBoundSlots(getPos(), side);
+		return inv.getBoundSlots(getPos(), side);
 	}
 
 	@Override
@@ -221,59 +235,58 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing side)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().canBoundExtract(getPos(), i, itemstack, side);
+		return inv.canBoundExtract(getPos(), i, itemstack, side);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().acceptsEnergyFrom(emitter, direction);
+		return inv.acceptsEnergyFrom(emitter, direction);
 	}
 
 	@Override
 	@Method(modid = "redstoneflux")
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		if(getInv() == null || !canReceiveEnergy(from))
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null || !canReceiveEnergy(from))
 		{
 			return 0;
 		}
 
-		return getInv().receiveEnergy(from, maxReceive, simulate);
+		return inv.receiveEnergy(from, maxReceive, simulate);
 	}
 
 	@Override
 	@Method(modid = "redstoneflux")
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().extractEnergy(from, maxExtract, simulate);
+		return inv.extractEnergy(from, maxExtract, simulate);
 	}
 
 	@Override
 	@Method(modid = "redstoneflux")
 	public boolean canConnectEnergy(EnumFacing from)
 	{
-		if(getInv() == null)
-		{
-			return false;
-		}
-
 		return canReceiveEnergy(from);
 	}
 
@@ -281,82 +294,84 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Method(modid = "redstoneflux")
 	public int getEnergyStored(EnumFacing from)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().getEnergyStored(from);
+		return inv.getEnergyStored(from);
 	}
 
 	@Override
 	@Method(modid = "redstoneflux")
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().getMaxEnergyStored(from);
+		return inv.getMaxEnergyStored(from);
 	}
 
 	@Override
 	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(getInv() == null || !canReceiveEnergy(side))
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null || !canReceiveEnergy(side))
 		{
 			return 0;
 		}
 
-		return getInv().acceptEnergy(side, amount, simulate);
+		return inv.acceptEnergy(side, amount, simulate);
 	}
 
 	@Override
 	public boolean canReceiveEnergy(EnumFacing side)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().canBoundReceiveEnergy(getPos(), side);
+		return inv.canBoundReceiveEnergy(getPos(), side);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public double getDemandedEnergy()
 	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getDemandedEnergy();
+		IAdvancedBoundingBlock inv = getInv();
+		return inv == null ? 0 : inv.getDemandedEnergy();
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage)
 	{
-		if(getInv() == null || !canReceiveEnergy(directionFrom))
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null || !canReceiveEnergy(directionFrom))
 		{
 			return amount;
 		}
 
-		return getInv().injectEnergy(directionFrom, amount, voltage);
+		return inv.injectEnergy(directionFrom, amount, voltage);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getSinkTier()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().getSinkTier();
+		return inv.getSinkTier();
 	}
 
 	public IAdvancedBoundingBlock getInv()
@@ -374,7 +389,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainPos, world).getTileEntity(world);
+		return (IAdvancedBoundingBlock) tile;
 	}
 
 	@Override
@@ -382,9 +397,10 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		super.onPower();
 
-		if(getInv() != null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv != null)
 		{
-			getInv().onPower();
+			inv.onPower();
 		}
 	}
 
@@ -393,86 +409,104 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		super.onNoPower();
 
-		if(getInv() != null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv != null)
 		{
-			getInv().onNoPower();
+			inv.onNoPower();
 		}
 	}
 
 	@Override
 	public String[] getMethods()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return new String[] {};
 		}
 
-		return getInv().getMethods();
+		return inv.getMethods();
 	}
 
 	@Override
 	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return new Object[] {};
 		}
 
-		return getInv().invoke(method, arguments);
+		return inv.invoke(method, arguments);
 	}
 
 	@Override
 	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return new NBTTagCompound();
 		}
 		
-		return getInv().getConfigurationData(nbtTags);
+		return inv.getConfigurationData(nbtTags);
 	}
 
 	@Override
 	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return;
 		}
 		
-		getInv().setConfigurationData(nbtTags);
+		inv.setConfigurationData(nbtTags);
 	}
 
 	@Override
 	public String getDataType()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return "null";
 		}
 		
-		return getInv().getDataType();
+		return inv.getDataType();
 	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(getInv() == null || capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		if (capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		{
+			return super.hasCapability(capability, facing);
+		}
+
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return super.hasCapability(capability, facing);
 		}
 		
-		return getInv().hasCapability(capability, facing);
+		return inv.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(getInv() == null || capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		if (capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		{
+			return super.getCapability(capability, facing);
+		}
+
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return super.getCapability(capability, facing);
 		}
 		
-		return getInv().getCapability(capability, facing);
+		return inv.getCapability(capability, facing);
 	}
 }

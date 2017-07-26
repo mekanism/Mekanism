@@ -394,6 +394,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	{
 		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
 	}
+	
+	@Override
+	public boolean sideIsConsumer(EnumFacing side)
+	{
+		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
+	}
 
 	public void sortInventory()
 	{

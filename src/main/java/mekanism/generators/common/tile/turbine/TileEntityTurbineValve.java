@@ -77,7 +77,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if(structure != null)
 		{
-			EnumSet set = EnumSet.allOf(EnumFacing.class);
+			EnumSet<EnumFacing> set = EnumSet.allOf(EnumFacing.class);
 			
 			for(EnumFacing side : EnumFacing.VALUES)
 			{
@@ -94,9 +94,23 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
+	public boolean sideIsOutput(EnumFacing side) {
+		if (structure != null)
+		{
+			return !structure.locations.contains(Coord4D.get(this).offset(side));
+		}
+		return false;
+	}
+
+	@Override
 	public EnumSet<EnumFacing> getConsumingSides()
 	{
 		return EnumSet.noneOf(EnumFacing.class);
+	}
+
+	@Override
+	public boolean sideIsConsumer(EnumFacing side) {
+		return false;
 	}
 	
 	@Method(modid = "IC2")
@@ -185,7 +199,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Method(modid = "redstoneflux")
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
-		if(getOutputtingSides().contains(from))
+		if(sideIsOutput(from))
 		{
 			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_RF));
 
@@ -259,7 +273,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public boolean canOutputEnergy(EnumFacing side)
 	{
-		return getOutputtingSides().contains(side);
+		return sideIsOutput(side);
 	}
 
 	@Override
@@ -273,7 +287,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Method(modid = "IC2")
 	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
-		return getOutputtingSides().contains(direction) && receiver instanceof IEnergyConductor;
+		return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
 	}
 
 	@Override
@@ -351,12 +365,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public double pullEnergy(EnumFacing side, double amount, boolean simulate)
 	{
-		if(!getOutputtingSides().contains(side))
+		double toGive = Math.min(getEnergy(), amount);
+
+		if(toGive < 0.0001 || (side != null && !sideIsOutput(side)))
 		{
 			return 0;
 		}
-		
-		double toGive = Math.min(getEnergy(), amount);
 		
 		if(!simulate)
 		{
@@ -478,7 +492,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 					|| capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 					|| capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
 					|| capability == Capabilities.TESLA_HOLDER_CAPABILITY
-					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing))
+					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))
 					|| capability == CapabilityEnergy.ENERGY)
 			{
 				return true;
@@ -507,7 +521,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 			}
 			
 			if(capability == Capabilities.TESLA_HOLDER_CAPABILITY
-					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getOutputtingSides().contains(facing)))
+					|| (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing)))
 			{
 				return (T)teslaManager.getWrapper(this, facing);
 			}
